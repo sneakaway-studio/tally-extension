@@ -25,9 +25,27 @@ function getPageData() {
 		console.log($("#token").val());
 		console.log("grab it",data)
 	}
-
+	// check page tags
+	data.tags = savePageTags(data);
 	return data;
 }
+
+// check the page for tags
+function savePageTags(data){
+	// create array
+	let tags = [];
+	// add potential tags to array
+	tags.push.apply( tags, cleanStringReturnTagArray(data.description) );
+	tags.push.apply( tags, cleanStringReturnTagArray(data.h1) );
+	tags.push.apply( tags, cleanStringReturnTagArray(data.keywords) );
+	tags.push.apply( tags, cleanStringReturnTagArray(data.title) );
+	//console.log( "tags", JSON.stringify(tags) );
+	// delete duplicates
+	tags = remove_duplicates(tags);
+	tags = removeStopWords(null,tags);
+	return tags;
+}
+
 
 
 function getDescription(){
@@ -38,7 +56,7 @@ function getDescription(){
 }
 function getH1(){
     var str = "";
-    if ( $('h1').length)
+    if ($('h1').length)
      	str = $('h1').text().trim();
     return str;
 }

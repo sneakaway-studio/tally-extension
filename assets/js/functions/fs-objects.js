@@ -33,9 +33,6 @@ var randomObjKey = function (obj) {
 	return keys[ keys.length * Math.random() << 0];
 };
 
-
-
-
 /**
  *	Return number of properties in an object
  */
@@ -53,4 +50,21 @@ function convertArrayToObject(arr,key){
 		return result;
 	}, {});
 	return obj;
+}
+
+/**
+ *	Convert an array to an object with <key> as key
+ */
+function remove_duplicates(array_){
+    var ret_array = [];
+    for (var a = array_.length - 1; a >= 0; a--) {
+        for (var b = array_.length - 1; b >= 0; b--) {
+            if(array_[a] == array_[b] && a != b){
+                delete array_[b];
+            }
+        }
+        if(array_[a] != undefined)
+            ret_array.push(array_[a]);
+    }
+    return ret_array;
 }
