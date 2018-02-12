@@ -1,0 +1,18 @@
+
+
+
+
+#tally { position: absolute; z-index:9999999999999; }
+
+
+#tyd {
+    height: 60px; width: 100%; max-width: 100%; background: #222; color: #ddd;
+    left: 0; bottom: 0px; position: fixed; opacity: 1; font: 12px/15px Courier, monospace;
+}
+
+/* #tyd { position: fixed; left: -500px; top: -500px; background: rgba(0,0,0,.2);
+	padding: 3px; padding-bottom: 6px; font: 13px/ 16px Arial; color: #444; border-radius: 4px;
+
+} */
+
+.data-field { display: inline-block; background: #000; padding: 5px; }
