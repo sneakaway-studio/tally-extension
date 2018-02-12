@@ -2,17 +2,20 @@
 
 
 
-#tally { position: absolute; z-index:9999999999999; }
+#tally, #tyd { position: absolute; z-index:9999999999999; }
 
 
 #tyd {
-    height: 60px; width: 100%; max-width: 100%; background: #222; color: #ddd;
+    height: 100px; width: 100%; max-width: 100%; background: rgba(0,0,0,.5); color: #ddd;
     left: 0; bottom: 0px; position: fixed; opacity: 1; font: 12px/15px Courier, monospace;
 }
 
-/* #tyd { position: fixed; left: -500px; top: -500px; background: rgba(0,0,0,.2);
-	padding: 3px; padding-bottom: 6px; font: 13px/ 16px Arial; color: #444; border-radius: 4px;
+/* apply a "hand" abd "closed-hand" cursor during drag operation. */
+.grabbable { cursor: move; /* fallback if grab cursor is unsupported */ cursor: grab; cursor: -moz-grab; cursor: -webkit-grab; }
+.grabbable:active { cursor: grabbing; cursor: -moz-grabbing; cursor: -webkit-grabbing; }
 
-} */
+
+
+
 
 .data-field { display: inline-block; background: #000; padding: 5px; }

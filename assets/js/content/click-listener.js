@@ -19,7 +19,7 @@ function addMainClickEventListener(){
 			// and reset timer
 			setTimeout(function() {pageData.mouseupFired = false;}, 500);
 			// update debugger
-			updateDisplay();
+			updateDebugger();
 			// get data about the event
 			eventData = {
 				action: 	null,
@@ -112,7 +112,7 @@ var clickEventHandler = function (eventData,target) {
 		console.log("\n///// event => mouseup -> ["+ eventData.action +"]");
 
 		// update debugger
-		updateDisplay();
+		updateDebugger();
 		// create scoreUpdater object
 		var serverUpdate = newServerUpdate();
 

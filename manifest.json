@@ -2,7 +2,7 @@
     "manifest_version": 2,
 
     "name": "Tally - Cross Browser",
-    "description": "TESTIN 123",
+    "description": "The 2018 cross browser version",
     "version": "1.0",
     "author": "Owen Mundy",
 
@@ -40,11 +40,11 @@
 			"assets/libs/store2.min.js",
             "assets/js/functions/fs-objects.js",
             "assets/js/functions/fs-strings.js",
-            "assets/js/content/debugger.js",
             "assets/js/content/game-rules.js",
             "assets/js/content/pageData.js",
             "assets/js/content/storage.js",
             "assets/js/content/main.js",
+            "assets/js/content/debugger.js",
             "assets/js/content/click-listener.js"
         ],
 		"css": [
