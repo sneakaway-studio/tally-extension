@@ -8,7 +8,7 @@ let pageData = getPageData(),
     tally_meta = {};
 
 
-function initFromBackground(){
+function initGetData(){
 	Promise // after async functions then update
 		.all([getUserPromise, getOptionsPromise, getMetaPromise]) // , getLastServerUpdatePromise
 		.then(function(results) {
@@ -30,31 +30,18 @@ function initFromBackground(){
 			console.log('one or more promises have failed: ' + error);
 		});
 }
-initFromBackground();
+initGetData();
 
-
-function addHTML(){
-    var tallyHTML = "<div id='tally' class='reset-this-root reset-this'>"+
-                        "<div id='tyd' class='draggable data-field grabbable'>"+
-                        "</div>"+
-                    "</div>";
-    $('body').append(tallyHTML);
-
-}
-addHTML();
 
 function updateAfterInit(){
     console.log("updateAfterInit()");
     addMainClickEventListener();
+    checkPageTags();
     updateDebugger();
+    //checkPageForMonsters(pageData.tags);
 }
 
-function updateDebugger(){
-    var str =   "tally_user: " + JSON.stringify(tally_user) +"<br>"+
-                "tally_options: " + JSON.stringify(tally_options) +"<br>"+
-                "pageData: " + JSON.stringify(pageData) +"<br>";
-    $('#tyd').html(str);
-}
+
 
 // create timed functions
 var timedEvents = {
@@ -63,9 +50,6 @@ var timedEvents = {
 		if (document.hasFocus()){
             pageData.time = pageData.time + 0.5;
             updateDebugger();
-            // console.log(pageData.time);
-            // store("tally_wtf",{"hello":pageData.time});
-            // console.log(111,store("tally_wtf"));
         }
 	}, 500)
 };
