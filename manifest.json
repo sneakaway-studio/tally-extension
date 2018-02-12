@@ -1,0 +1,61 @@
+{
+    "manifest_version": 2,
+
+    "name": "Tally - Cross Browser",
+    "description": "TESTIN 123",
+    "version": "1.0",
+    "author": "Owen Mundy",
+
+
+
+    "icons": {
+        "48": "assets/icons/tally_icon_48x48.png"
+    },
+    "browser_action": {
+        "default_title": "Tally - Cross Browser",
+        "default_icon": {
+            "16": "assets/icons/tally_icon_16x16.png",
+            "48": "assets/icons/tally_icon_48x48.png",
+            "128": "assets/icons/tally_icon_128x128.png"
+        },
+        "default_popup": "assets/pages/options.html"
+    },
+    "background": {
+        "scripts": [
+            "assets/libs/jquery-3.2.1.min.js",
+			"assets/libs/store2.min.js",
+            "assets/libs/hot-reload.js",
+            "assets/js/content/game-rules.js",
+            "assets/js/functions/fs-objects.js",
+            "assets/js/functions/fs-dates.js",
+            "assets/js/background/background.js",
+            "assets/js/background/listener.js"
+        ]
+    },
+    "content_scripts": [{
+        "matches": ["<all_urls>"],
+        "js": [
+            "assets/libs/jquery-3.2.1.min.js",
+			"assets/libs/jquery-ui.min.js",
+			"assets/libs/store2.min.js",
+            "assets/js/functions/fs-objects.js",
+            "assets/js/functions/fs-strings.js",
+            "assets/js/content/debugger.js",
+            "assets/js/content/game-rules.js",
+            "assets/js/content/pageData.js",
+            "assets/js/content/storage.js",
+            "assets/js/content/main.js",
+            "assets/js/content/click-listener.js"
+        ],
+		"css": [
+			"assets/css/reset.css",
+			"assets/libs/jquery-ui.min.css",
+			"assets/css/styles.css"
+		],
+        "run_at": "document_end"
+    }],
+    "permissions": [
+        "activeTab",
+        "storage"
+    ]
+}
