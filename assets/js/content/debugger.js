@@ -38,8 +38,8 @@ $( function() {
 
 function updateDebugger(){
 	if (!$("#tyd").length) return;
-    var str =   "tally_user: " + JSON.stringify(tally_user) +"<br>"+
-                "tally_options: " + JSON.stringify(tally_options) +"<br>"+
-                "pageData: " + JSON.stringify(pageData) +"<br>";
+    var str =   "<b>tally_user</b>: " + JSON.stringify(tally_user) +"<br>"+
+                //"tally_options: " + JSON.stringify(tally_options) +"<br>"+
+                "<b>pageData</b>: " + JSON.stringify(pageData) +"<br>";
     $('#tyd').html(str);
 }

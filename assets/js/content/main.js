@@ -36,7 +36,6 @@ initGetData();
 function updateAfterInit(){
     console.log("updateAfterInit()");
     addMainClickEventListener();
-    checkPageTags();
     updateDebugger();
     //checkPageForMonsters(pageData.tags);
 }
