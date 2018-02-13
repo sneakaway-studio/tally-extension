@@ -17,7 +17,7 @@ function addMainClickEventListener(){
 			// set to true
 			pageData.mouseupFired = true;
 			// and reset timer
-			setTimeout(function() {pageData.mouseupFired = false;}, 500);
+			setTimeout(function() { pageData.mouseupFired = false; }, 500);
 			// update debugger
 			debug.update();
 			// get data about the event
@@ -56,14 +56,14 @@ function addMainClickEventListener(){
 var clickEventHandler = function (eventData,target) {
 	//if (!pageData.activeOnPage || tally_options.gameMode === "disabled") return;
 	// console.log("clickEventHandler() > eventData",eventData,target);
-	// console.log("clickEventHandler() > target.id",target.id);
+	//console.log("clickEventHandler() > target",target);
 
 	/**
 	 * 	1. Determine if this is a node we want to ignore (tally interface links, etc.)
 	 */
 
 	let exit = "";
-	if (ignoreNode(target.id) || ignoreNode(eventData.tag))
+	if (ignoreNode(target.id) || ignoreNode(target.className) || ignoreNode(eventData.tag))
 		exit = " -> ignore ["+ target.id +", "+ eventData.tag +"] node(s)";
 	// else if ( pageData.url == pageData.previousUrl) // THIS BREAKS ON FB
 	// 	exit = " -> url is not different";
@@ -138,9 +138,8 @@ var clickEventHandler = function (eventData,target) {
 				else eventData.text = "IMG";
 
 			}
-		} else {
-			// plain old link
-		}
+		} else { }// plain old link
+
 		// everything above is a click
 		serverUpdate.scoreData.clicks ++;
 
@@ -155,6 +154,9 @@ var clickEventHandler = function (eventData,target) {
 		// add and update scores
 		serverUpdate.scoreData.score += gameRules.clickScore[eventData.action];
 
+		// only allow points for clicking (FB Like, etc.) the first time
+		$(target).toggleClass("tally-clicked");
+
 // do display
 /*
 
@@ -168,20 +170,15 @@ var clickEventHandler = function (eventData,target) {
 // sync to server
 
 		// send serverUpdate object to server via background
-//		syncToServer(serverUpdate);
+		syncToServer(serverUpdate);
 
+//
+// chrome.runtime.sendMessage({'action':'sendDataTest','data':{}}, function(response) {
+// 		console.log('<< >> sendDataTest()',response);
+//
+// 	}
+// );
 
-chrome.runtime.sendMessage({'action':'sendDataTest','data':{}}, function(response) {
-		console.log('<< >> sendDataTest()',response);
-
-	}
-);
-
-
-
-
-		// only allow points for clicking (things like FB Like) the first time
-		//target.className += target.className + " ss"; // need to come back to this
 
 
 
@@ -195,20 +192,19 @@ chrome.runtime.sendMessage({'action':'sendDataTest','data':{}}, function(respons
 
 };
 
-
-
 const ignoreNodes = [
-	"tally","tyd","body"
+	"tally","tyd","body","tally-clicked"
 ];
 /**
  *	Confirm target is not a Tally or Tally Debugger link (tyd)
  */
 function ignoreNode(str){
 	str = String(str).trim().toLowerCase();
-	if (str === "") return false;
+	if (str === "" || str == undefined) return false;
 	for (var i=0,l=ignoreNodes.length; i<l; i++){
+		console.log(" -> ignoreNode()",ignoreNodes[i] +" === "+ str);
 		if (str.indexOf(ignoreNodes[i]) >= 0) {
-			//console.log(" -> ignoreNode()",ignoreNodes[i] +" === "+ str);
+			console.log(" -> ignoreNode()",ignoreNodes[i] +" === "+ str);
 			return true;
 		}
 	}

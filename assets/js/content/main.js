@@ -8,7 +8,7 @@ let pageData = getPageData(),
     tally_meta = {};
 
 
-function init(){
+$( function() {
 	Promise // after async functions then update
 		.all([getUserPromise, getOptionsPromise, getMetaPromise]) // , getLastServerUpdatePromise
 		.then(function(results) {
@@ -22,8 +22,8 @@ function init(){
 		.catch(function(error) {
 			console.log('one or more promises have failed: ' + error);
 		});
-}
-init();
+});
+
 
 /**
  * Make sure Tally isn't disabled on this page|domain|subdomain
@@ -42,14 +42,14 @@ function shouldExtensionBeActiveOnPage(_tally_options){
 function startGame(){
     console.log(">>>>> startGame() -> Starting Tally on this page");
     debug.add();
-    addMainClickEventListener();
     debug.update();
+    addMainClickEventListener();
     //checkPageForMonsters(pageData.tags);
 }
 
-
-
-// create timed functions
+/**
+ * Timed functions
+ */
 var timedEvents = {
 	pageTimerInterval: setInterval(function(){
 		// if this page is visible

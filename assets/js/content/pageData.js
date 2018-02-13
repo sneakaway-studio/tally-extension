@@ -1,7 +1,9 @@
 /*jshint esversion: 6 */
 
 
-
+/**
+ *	Get data about this page
+ */
 function getPageData() {
 	var url = document.location.href;
     // only run on web pages
@@ -58,8 +60,7 @@ function getDescription(){
 }
 function getH1(){
     var str = "";
-    if ($('h1').length)
-     	str = $('h1').text().trim();
+    if ($('h1').length) str = $('h1').text().trim();
     return str;
 }
 function getKeywords(){
@@ -88,6 +89,7 @@ function newServerUpdate(){
 			"description": pageData.description,
 			"domain": pageData.domain,
 			"keywords": pageData.keywords,
+			"tags": pageData.tags,
 			"time": pageData.time,
 			"title": pageData.title,
 			"url": pageData.url
@@ -105,7 +107,7 @@ function newServerUpdate(){
 			"text":""
 		},
 		"userData":{
-			"updateToken":tally_meta.updateToken,
+			"token":"",
 		}
 	};
 	console.log("newScoreUpdater() -> obj",obj);
