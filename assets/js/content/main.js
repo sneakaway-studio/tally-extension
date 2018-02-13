@@ -8,35 +8,42 @@ let pageData = getPageData(),
     tally_meta = {};
 
 
-function initGetData(){
+function init(){
 	Promise // after async functions then update
 		.all([getUserPromise, getOptionsPromise, getMetaPromise]) // , getLastServerUpdatePromise
 		.then(function(results) {
-			//console.log('init() Promise >>>>> all data has loaded',results,tally_user,tally_options);
-
-			// // check if extension should be active on this page before proceeding
-			// pageData.activeOnPage = shouldExtensionBeActiveOnPage();
-			// updateDebuggerDisplay();
-			// if (pageData.activeOnPage) {
-			// 	log("Tally is loaded");
-			// //	addMO();
-			// 	addMainClickEventListener();
-			 //	updateAfterInit();
-			// }
-
-            updateAfterInit();
+			console.log('>>>>> init() Promise all data has loaded',tally_user,tally_options);
+			// check if extension should be active on this page before proceeding
+			pageData.activeOnPage = shouldExtensionBeActiveOnPage(tally_options);
+            if (pageData.activeOnPage) {
+                startGame();
+            }
 		})
 		.catch(function(error) {
 			console.log('one or more promises have failed: ' + error);
 		});
 }
-initGetData();
+init();
 
-
-function updateAfterInit(){
-    console.log("updateAfterInit()");
+/**
+ * Make sure Tally isn't disabled on this page|domain|subdomain
+ */
+function shouldExtensionBeActiveOnPage(_tally_options){
+	if (_tally_options.disabledDomains.length < 1 ||
+		($.inArray(pageData.domain, _tally_options.disabledDomains) >= 0) ||
+		($.inArray(pageData.subDomain, _tally_options.disabledDomains) >= 0)) {
+		console.log("Tally is disabled on this domain");
+		return false;
+	} else return true;
+}
+/**
+ * Run Game
+ */
+function startGame(){
+    console.log(">>>>> startGame() -> Starting Tally on this page");
+    debug.add();
     addMainClickEventListener();
-    updateDebugger();
+    debug.update();
     //checkPageForMonsters(pageData.tags);
 }
 
@@ -48,7 +55,7 @@ var timedEvents = {
 		// if this page is visible
 		if (document.hasFocus()){
             pageData.time = pageData.time + 0.5;
-            updateDebugger();
+            debug.update();
         }
 	}, 500)
 };

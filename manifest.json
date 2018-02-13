@@ -43,10 +43,10 @@
             "assets/js/content/game-rules.js",
             "assets/js/content/pageData.js",
             "assets/js/content/storage.js",
-            "assets/js/content/main.js",
-            "assets/js/content/interface.js",
             "assets/js/content/debugger.js",
-            "assets/js/content/click-listener.js"
+            "assets/js/content/interface.js",
+            "assets/js/content/click-listener.js",
+            "assets/js/content/main.js"
         ],
 		"css": [
 			"assets/css/reset.css",

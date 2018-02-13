@@ -19,7 +19,7 @@ function addMainClickEventListener(){
 			// and reset timer
 			setTimeout(function() {pageData.mouseupFired = false;}, 500);
 			// update debugger
-			updateDebugger();
+			debug.update();
 			// get data about the event
 			eventData = {
 				action: 	null,
@@ -112,7 +112,7 @@ var clickEventHandler = function (eventData,target) {
 		console.log("\n///// event => mouseup -> ["+ eventData.action +"]");
 
 		// update debugger
-		updateDebugger();
+		debug.update();
 		// create scoreUpdater object
 		var serverUpdate = newServerUpdate();
 
@@ -157,8 +157,7 @@ var clickEventHandler = function (eventData,target) {
 
 // do display
 /*
-		// update debugger display
-		updateDebuggerDisplay();
+
 		// play sound
 		playSound('coin');
 		// show click visual

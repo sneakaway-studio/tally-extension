@@ -8,7 +8,8 @@ function getPageData() {
 	if (!url || !url.match(/^http/)) return;
     // object
 	var data = {
-        description: getDescription(),
+        activeOnPage: false,
+		description: getDescription(),
         domain: extractRootDomain(document.location.href),
     	h1: getH1(),
     	keywords: getKeywords(),

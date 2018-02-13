@@ -38,7 +38,6 @@ const getOptionsPromise = new Promise(
 );
 function saveOptions(calledFrom) {
 	chrome.runtime.sendMessage({'action':'saveOptions','data':tally_options}, function(response) {
-			//console.log(tally_options.debuggerPosition);
 			console.log("<<<<< ",calledFrom,'> saveOptions()',JSON.stringify(response));
 		}
 	);
@@ -62,8 +61,7 @@ function syncToServer(data) {
 	chrome.runtime.sendMessage({'action':'syncToServer','data':data}, function(response) {
 			console.log('<< >> syncToServer()',response);
 			tally_user = response.data;
-			updateDisplay();
-			//updateDebuggerDisplay();
+			//updateDisplay();
 		}
 	);
 }
