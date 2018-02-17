@@ -138,13 +138,12 @@ var clickEventHandler = function (eventData,target) {
 				else eventData.text = "IMG";
 
 			}
-		} else { }// plain old link
+		} // else plain old link
 
-		// everything above is a click
+		// after all actions decided...
+
+		// if we are this far it is a click
 		serverUpdate.scoreData.clicks ++;
-
-// after all actions decided...
-
 		// store / reset page time
 		serverUpdate.pageData.time = pageData.time;
 		pageData.time = 0;
@@ -154,34 +153,33 @@ var clickEventHandler = function (eventData,target) {
 		// add and update scores
 		serverUpdate.scoreData.score += gameRules.clickScore[eventData.action];
 
-		// only allow points for clicking (FB Like, etc.) the first time
+		// only allow points for clicking the first time (FB Like, etc.)
 		$(target).toggleClass("tally-clicked");
 
-// do display
-/*
 
-		// play sound
-		playSound('coin');
-		// show click visual
-		showClickVisualText(eventData,"+"+ gameRules.clickScore[eventData.action]);
-		// activate tally
-		activateTally(eventData.action);
-*/
-// sync to server
+
+		// // play sound
+		// playSound('coin');
+		// // show click visual
+		// showClickVisualText(eventData,"+"+ gameRules.clickScore[eventData.action]);
+		// // activate tally
+		// activateTally(eventData.action);
+
+
+
+
+
+		//
+		// chrome.runtime.sendMessage({'action':'sendDataTest','data':{}}, function(response) {
+		// 		console.log('<< >> sendDataTest()',response);
+		//
+		// 	}
+		// );
+
+
 
 		// send serverUpdate object to server via background
 		syncToServer(serverUpdate);
-
-//
-// chrome.runtime.sendMessage({'action':'sendDataTest','data':{}}, function(response) {
-// 		console.log('<< >> sendDataTest()',response);
-//
-// 	}
-// );
-
-
-
-
 	}
 	// disable click action in case they are editing text
 	else if(eventData.action == "textSelect"){
@@ -202,9 +200,8 @@ function ignoreNode(str){
 	str = String(str).trim().toLowerCase();
 	if (str === "" || str == undefined) return false;
 	for (var i=0,l=ignoreNodes.length; i<l; i++){
-		console.log(" -> ignoreNode()",ignoreNodes[i] +" === "+ str);
 		if (str.indexOf(ignoreNodes[i]) >= 0) {
-			console.log(" -> ignoreNode()",ignoreNodes[i] +" === "+ str);
+			//console.log(" -> ignoreNode()",ignoreNodes[i] +" === "+ str);
 			return true;
 		}
 	}
