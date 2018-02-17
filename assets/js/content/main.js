@@ -34,7 +34,10 @@ function shouldExtensionBeActiveOnPage(_tally_options){
 		($.inArray(pageData.subDomain, _tally_options.disabledDomains) >= 0)) {
 		console.log("Tally is disabled on this domain");
 		return false;
-	} else return true;
+	} else if (pageData.contentType != "text/html") {
+        console.log("Tally is disabled on pages like "+ pageData.contentType);
+        return false;
+    } else return true;
 }
 /**
  * Run Game
