@@ -11,6 +11,7 @@ function getPageData() {
 	// object
 	var data = {
 		activeOnPage: false,
+		contentType: window.document.contentType,
 		description: getDescription(),
 		domain: extractRootDomain(document.location.href),
 		h1: getH1(),
