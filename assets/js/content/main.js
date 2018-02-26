@@ -44,8 +44,10 @@ function shouldExtensionBeActiveOnPage(_tally_options){
  */
 function startGame(){
     console.log(">>>>> startGame() -> Starting Tally on this page");
+    console.log(">>>>> pageData = "+ JSON.stringify(pageData));
     debug.add();
     debug.update();
+    startTally();
     addMainClickEventListener();
     //checkPageForMonsters(pageData.tags);
 }

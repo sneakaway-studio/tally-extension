@@ -49,7 +49,7 @@ function checkTokenOnLaunch(){
     let tally_secret = store("tally_secret"),
         tally_meta = store("tally_meta");
     console.log(tally_secret,tally_meta);
-    if (!tally_meta.serverOnline) return; 
+    if (!tally_meta.serverOnline) return;
     // if a token exsts
     if (prop(tally_secret.token) && tally_secret.token !== ""){
         console.log(tally_secret);
@@ -175,7 +175,7 @@ function createOptions(){
                 "showClickVisuals":false,
 				"playSounds":false,
 				"showAnimations":false,
-                "gameMode":"slim",
+                "gameMode":"full", //['disabled','stealth','full']
                 "disabledDomains":[
                     "drive.google.com",
                     "docs.google.com",

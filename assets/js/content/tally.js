@@ -2,8 +2,15 @@
 
 var Tally = (function() {
 	// private
+	var followCursor = false,  // is eye following currently active? on page load, no
+        blinking = true;
 
-	var followCursor = false;
+
+
+
+
+    /*  TALLY EYES
+     ******************************************************************************/
 
 	// update eye following state
 	function setFollowCursor(state = true) {
@@ -14,34 +21,77 @@ var Tally = (function() {
 			$('.tally_eye_pupil').removeClass("tally_eye_pupil_active");
 	}
 
+    function moveEye(which, how, event) {
+        if (!followCursor) return;
+        var eye = $(which);
+        var x, y, rad, rot;
+        if (how == "mouse") {
+            x = (eye.offset().left) + (eye.width() / 2);
+            y = (eye.offset().top) + (eye.height() / 2);
+            rad = Math.atan2(event.pageX - x, event.pageY - y);
+            rot = (rad * (180 / Math.PI) * -1) + 180;
+            eye.css({
+                '-webkit-transform': 'rotate(' + rot + 'deg)',
+                '-moz-transform': 'rotate(' + rot + 'deg)',
+                '-ms-transform': 'rotate(' + rot + 'deg)',
+                'transform': 'rotate(' + rot + 'deg)'
+            });
+        } else if (how == "lookAtUser") {
+            setFollowCursor(false);
+        }
+    }
+
+
+    /*  TALLY THOUGHTS
+     *****************************************************************************/
+
+    function tallyThought(str, lines = -1, duration = 2000) {
+    	if (!prop(tally_options) || tally_options.gameMode != "full") return;
+    	// adjust lines if not received
+    	if (lines === -1)
+    		lines = Math.ceil(str.length / 29);
+    	// make the size of the box dependent on str.length
+    	$('#tally_thought_bubble').css({
+    		'display': 'flex',
+    		'height': lines * 30 + "px", // normal height for 50 chars is: 80px;
+    		'left': '10px' // make it visible
+    	});
+    	$('#tally_thought').html(str);
+    	// show
+    	var cssProperties = anime({
+    		targets: '#tally_thought_bubble',
+    		opacity: 1,
+    		duration: 400
+    	});
+    	//console.log("lines",lines)
+    	if (duration > -1)
+    		setTimeout(hideTallyThought, duration);
+    }
+    // hide tallyThought
+    function hideTallyThought() {
+    	var cssProperties = anime({
+    		targets: '#tally_thought_bubble',
+    		opacity: 0,
+    		duration: 500
+    	});
+    	$('#tally_thought_bubble').css({
+    		'left': '-500px',
+    		'display': 'none'
+    	});
+    }
+
+
 	// public
 	return {
+        thought: function(str, lines, duration){
+            tallyThought(str,lines,duration);
+        },
 		// BLINK
-		blinking: true,
 		blink: function() {
-			if (this.blinking == true) console.log("blink");
+			if (blinking == true) console.log("blink");
 		},
-		// is eye following currently active? on page load, no
-		//followCursor: false,
 		moveEye: function(which, how, event) {
-			if (!followCursor) return;
-
-			var eye = $(which);
-			var x, y, rad, rot;
-			if (how == "mouse") {
-				x = (eye.offset().left) + (eye.width() / 2);
-				y = (eye.offset().top) + (eye.height() / 2);
-				rad = Math.atan2(event.pageX - x, event.pageY - y);
-				rot = (rad * (180 / Math.PI) * -1) + 180;
-				eye.css({
-					'-webkit-transform': 'rotate(' + rot + 'deg)',
-					'-moz-transform': 'rotate(' + rot + 'deg)',
-					'-ms-transform': 'rotate(' + rot + 'deg)',
-					'transform': 'rotate(' + rot + 'deg)'
-				});
-			} else if (how == "lookAtUser") {
-				setFollowCursor(false);
-			}
+            moveEye(which, how, event);
 		},
 		callSetFollowCursor: function(state) {
 			setFollowCursor(state);
@@ -63,8 +113,6 @@ var Tally = (function() {
 	};
 })();
 
-Tally.blink();
-// Tally.moveEyes();
 
 
 
@@ -72,14 +120,23 @@ Tally.blink();
 
 
 
-/*  TALLY EYES
- ******************************************************************************/
 
-$(function() {
+
+
+
+/**
+ *	Start Tally
+ */
+function startTally(){
+
+    // only show Tally if game mode == full
+	if (prop(pageData) && !pageData.activeOnPage) return;
+    if (!prop(tally_options) || tally_options.gameMode != "full") return;
+
+    //Tally.blink();
+
 
 	$(document).mousemove(function(event) {
-		if (!pageData.activeOnPage) return;
-		if (prop(tally_options) && !tally_options.showTally) return;
 		if (Tally.getFollowCursor == false) return;
 		Tally.callSetFollowCursor(true);
 		Tally.moveEye(".tally_eye_left", "mouse", event);
@@ -87,10 +144,10 @@ $(function() {
 	});
 
 	function addTallyHTML() {
-		if (tally_options.showTally) {
+		if (prop(tally_options) && tally_options.gameMode == "full") {
 			let str =
 				"<div id='tally_character_container'>" +
-				"<div id='tally_thought_bubble' class='tally_speech-bubble'>" +
+				"<div id='tally_thought_bubble' class='tally_speech_bubble'>" +
 				"<div id='tally_thought'></div>" +
 				"</div>" +
 				"<div id='tally_eyes'>" +
@@ -132,19 +189,55 @@ $(function() {
 	}
 	addTallyHTML();
 
-	/**
-	 *	Start Tally
-	 */
-	function startTally() {
-		if (!pageData.activeOnPage) return;
-		if (prop(tally_options) && !tally_options.showTally) return;
+
+	// function startTally() {
+	// 	if (!pageData.activeOnPage) return;
+	// 	if (!prop(tally_options) || tally_options.gameMode != "full") return;
 
 		// add the tally_character click action
 		document.getElementById('tally_character_container').onclick = function() {
-			// tallyThought(tallyMenu(),5,-1);
+			Tally.thought(tallyMenu(),5,-1);
 			// playSound("shoot");
 		};
 		Tally.lookAtUser();
-	}
+	//}
 
-});
+
+
+
+    /*  TALLY MENU
+     *****************************************************************************/
+
+    function tallyMenu(){
+    	var str = 	"<div id='tally_menu'>"+
+    				// https://en.wikipedia.org/wiki/Glossary_of_video_game_terms
+    				"<button id='tally_menu_profile'>View your profile</button>"+
+    				"<button id='tally_menu_install'>View install page</button>"+
+    				//"<button id='tally_menu_credits'>Experiments</button>"+
+    				"<button id='tally_menu_sneakaway'>sneakaway.studio</button>"+
+    				"<button id='tally_menu_neotopia'>Neotopia: Data and Humanity</button>"+
+    				"</div>";
+    	return str;
+    }
+
+    // launch title page
+    $(document).on('click','#tally_menu_profile',function(){
+        // use "on" because these elements are added dynamically)
+    	window.open( chrome.extension.getURL('assets/pages/profile/profile.html') );
+    });
+    $(document).on('click','#tally_menu_install',function(){
+    	window.open( chrome.extension.getURL('assets/pages/install/install.html') );
+    });
+    $(document).on('click','#tally_menu_sneakaway',function(){
+    	window.open( 'https://sneakaway.studio' );
+    });
+    $(document).on('click','#tally_menu_neotopia',function(){
+    	window.open( 'http://www.nabi.or.kr/english/project/coming_read.nab?idx=583' );
+    });
+
+
+console.log(121212)
+
+    Tally.thought("hello world! 😀");
+
+};

@@ -35,7 +35,7 @@ function getPageData() {
 	data.tags = getPageTags(data);
 	return data;
 }
-  
+
 
 /**
  *	If on dashboard page then check for updates to token
