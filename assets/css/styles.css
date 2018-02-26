@@ -7,7 +7,7 @@
 
 #tyd {
     height: 50px; width: 100%; max-width: 100%; background: rgba(0,0,0,.7); color: #eee;
-    left: 0; bottom: 0px; position: fixed; opacity: 1; font: 12px/15px "Lucida Console", Monaco, monospace;
+    left: 0; bottom: 100px; position: fixed; opacity: 1; font: 12px/15px "Lucida Console", Monaco, monospace;
 }
 /* apply a "hand" abd "closed-hand" cursor during drag operation. */
 .grabbable { cursor: move; /* fallback if grab cursor is unsupported */ cursor: grab; cursor: -moz-grab; cursor: -webkit-grab; }
