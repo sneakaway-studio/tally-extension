@@ -2,7 +2,7 @@
 
 
 /*  Listener for messages in order to receive/pass data to contentscript.js
-******************************************************************************/
+******************************************************************************/ 
 
 chrome.runtime.onMessage.addListener(
 	function(request, sender, sendResponse) {
