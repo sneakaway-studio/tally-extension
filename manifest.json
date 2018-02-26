@@ -29,7 +29,8 @@
             "assets/js/functions/fs-objects.js",
             "assets/js/functions/fs-dates.js",
             "assets/js/background/background.js",
-            "assets/js/background/listener.js"
+            "assets/js/background/background-ajax.js",
+            "assets/js/background/background-listener.js"
         ]
     },
     "content_scripts": [{
@@ -49,6 +50,7 @@
             "assets/js/content/debugger.js",
             "assets/js/content/interface.js",
             "assets/js/content/click-listener.js",
+            "assets/js/content/tally.js",
             "assets/js/content/main.js"
         ],
 		"css": [

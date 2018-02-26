@@ -13,6 +13,7 @@ chrome.runtime.onInstalled.addListener(function (object) {
         createApp();
     // otherwise is there a valid token?
     } else {
+        checkAPIServerStatus();
         checkTokenOnLaunch();
     }
 });
@@ -35,7 +36,7 @@ function createApp(){
     	store("tally_urls",{});
 
         // start registration
-        launchRegistration();
+        launchRegistration("createApp() -> first install");
 	} catch(ex){
 		console.log("failed to create user");
 	}
@@ -45,8 +46,10 @@ function createApp(){
  *  Contact server to verify token
  */
 function checkTokenOnLaunch(){
-    let tally_secret = store("tally_secret");
-    //console.log(tally_secret);
+    let tally_secret = store("tally_secret"),
+        tally_meta = store("tally_meta");
+    console.log(tally_secret,tally_meta);
+    if (!tally_meta.serverOnline) return; 
     // if a token exsts
     if (prop(tally_secret.token) && tally_secret.token !== ""){
         console.log(tally_secret);
@@ -64,28 +67,28 @@ function checkTokenOnLaunch(){
                     startApp();
                 } else {
                     console.log("!!!!! checkTokenOnLaunch() -> no validToken found, launching registration");
-                    launchRegistration();
+                    launchRegistration("checkTokenOnLaunch() -> no validToken found");
                 }
     		},
             error: function( jqXhr, textStatus, errorThrown ){
                 console.error("!!!!! checkTokenOnLaunch() -> error: "+ errorThrown );
-                launchRegistration();
+                launchRegistration("checkTokenOnLaunch() -> error");
             }
     	}).fail(function (jqXHR, textStatus, errorThrown) {
             console.error("!!!!! checkTokenOnLaunch() -> fail: "+ errorThrown );
-            launchRegistration();
+            launchRegistration("checkTokenOnLaunch() -> fail");
         });
     } else {
         // there is no token on first install so...
-        launchRegistration();
+        launchRegistration("there is no token on first install so...");
     }
 }
 
-function launchRegistration(){
+function launchRegistration(calledFrom){
     let tally_meta = store("tally_meta");
     //launch install page
     chrome.tabs.create({url: tally_meta.website+"/signup"}, function(tab){
-        console.log(">>>>> launchRegistration() -> launching install page");
+        console.log(">>>>> launchRegistration("+calledFrom+") -> launching install page");
     });
 
 }
