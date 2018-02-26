@@ -6,7 +6,7 @@
 
 chrome.runtime.onMessage.addListener(
 	function(request, sender, sendResponse) {
-		console.log(">>>>> BACKGROUND LISTENER: onMessage.request =",JSON.stringify(request));
+		//console.log(">>>>> BACKGROUND LISTENER: onMessage.request =",JSON.stringify(request));
 
         if (request.action == "getData" && request.obj){
             sendResponse({"action":request.action, "message":1, "_data": _data });
@@ -32,6 +32,8 @@ chrome.runtime.onMessage.addListener(
             store("tally_user",createUser());
             sendResponse({"action":request.action,"message":1}); // send success response
         }
+
+
 
 
 
@@ -70,6 +72,19 @@ chrome.runtime.onMessage.addListener(
 		else if (request.action == "sendDataTest"){
 			sendDataTest({});
 		}
+
+        // saveToken
+        else if (request.action == "saveToken"){
+			let _tally_secret = store("tally_secret"),
+				message = 0;
+			if (_tally_secret.token != request.data.token){
+				_tally_secret.token = request.data.token;
+				_tally_secret.tokenExpires = request.data.tokenExpires;
+	            store("tally_secret",_tally_secret);
+				message = 1;
+			}
+            sendResponse({"action":request.action,"message":message});
+        }
 
         // syncToServer - receive and send score, event, page data to server
 		else if (request.action == "syncToServer"){

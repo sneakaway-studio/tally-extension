@@ -43,7 +43,7 @@ function saveOptions(calledFrom) {
 	);
 }
 
-// META
+// GET TALLY_META
 const getMetaPromise = new Promise(
 	(resolve,reject) => {
 		//if (!pageData.activeOnPage) return;
@@ -55,11 +55,26 @@ const getMetaPromise = new Promise(
 		);
 	}
 );
+// SAVE TOKEN FROM DASHBOARD
+function saveToken(data){
+	chrome.runtime.sendMessage({'action':'saveToken','data':data}, function(response) {
+			console.log('<{!}> saveToken()',response);
+			if (response.message == 1){
+				console.log("grab it", data);
+
+
+				$.growl({ title: "Growl", message: "The kitten is awake!" });
+				$.growl.notice({ message: "User token updated!" });
+			}
+		}
+	);
+}
+
 // SEND DATA TO BACKEND / SERVER
 function syncToServer(data) {
 	//if (!pageData.activeOnPage) return;
 	chrome.runtime.sendMessage({'action':'syncToServer','data':data}, function(response) {
-			console.log('<< >> syncToServer()',response);
+			console.log('<{!}> syncToServer()',response);
 			tally_user = response.data;
 			//updateDisplay();
 		}

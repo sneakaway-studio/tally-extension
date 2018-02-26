@@ -169,15 +169,6 @@ var clickEventHandler = function (eventData,target) {
 
 
 
-		//
-		// chrome.runtime.sendMessage({'action':'sendDataTest','data':{}}, function(response) {
-		// 		console.log('<< >> sendDataTest()',response);
-		//
-		// 	}
-		// );
-
-
-
 		// send serverUpdate object to server via background
 		syncToServer(serverUpdate);
 	}

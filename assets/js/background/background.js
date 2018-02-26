@@ -1,29 +1,27 @@
+/*jshint esversion: 6 */
 
 
 
 
 // on first install
 chrome.runtime.onInstalled.addListener(function (object) {
-    console.log(">>>>> new [update|install] detected");
+    console.log("!!!!! new [update|install] detected");
     // is this the first install?
     if ( !prop(store("tally_meta")) ){
+        console.log("!!!!! no tally_meta found, creating app");
         // attempt to install if not found
         createApp();
-    // } else if (!hasValidKey()){
-    //     // start registration
-    //     startRegistration();
-    // } else if (!hasValidToken()){
-    //     // get/refresh token
-    //     getUpdateToken();
+    // otherwise is there a valid token?
     } else {
-        // safe to proceed, update all data and let's play
-        startApp();
+        checkTokenOnLaunch();
     }
 });
 
 
-//createApp();//testing
-// no version installed so need to create user, etc.
+
+/**
+ *  Create user, options, meta, etc.
+ */
 function createApp(){
     console.log(">>>>> createApp() -> first install: creating tally_user");
 	try {
@@ -32,20 +30,65 @@ function createApp(){
 		store("tally_options",createOptions());
 		store("tally_meta",createMeta());
 		store("tally_secret",createSecret());
-        // createOptions();
-        // createGame();
-        // createMeta();
         // these are empty the first time
     	store("tally_domains",{});
     	store("tally_urls",{});
 
         // start registration
-        //...
+        launchRegistration();
 	} catch(ex){
 		console.log("failed to create user");
 	}
 }
 
+/**
+ *  Contact server to verify token
+ */
+function checkTokenOnLaunch(){
+    let tally_secret = store("tally_secret");
+    //console.log(tally_secret);
+    // if a token exsts
+    if (prop(tally_secret.token) && tally_secret.token !== ""){
+        console.log(tally_secret);
+        $.ajax({
+            url: tally_meta.api+"/verifyToken",
+    		type: "POST",
+            timeout: 15000, // set timeout to 15 secs to catch ERR_CONNECTION_REFUSED
+            contentType: 'application/json',
+            dataType: 'json',
+    		data: JSON.stringify({"token":tally_secret.token}),
+    		success: function(result){
+    			console.log("<{!}> hasValidToken() result =",JSON.stringify(result));
+                if (result.message === 1){
+                    console.log(">>>>> checkTokenOnLaunch() -> everything is cool, starting game");
+                    startApp();
+                } else {
+                    console.log("!!!!! checkTokenOnLaunch() -> no validToken found, launching registration");
+                    launchRegistration();
+                }
+    		},
+            error: function( jqXhr, textStatus, errorThrown ){
+                console.error("!!!!! checkTokenOnLaunch() -> error: "+ errorThrown );
+                launchRegistration();
+            }
+    	}).fail(function (jqXHR, textStatus, errorThrown) {
+            console.error("!!!!! checkTokenOnLaunch() -> fail: "+ errorThrown );
+            launchRegistration();
+        });
+    } else {
+        // there is no token on first install so...
+        launchRegistration();
+    }
+}
+
+function launchRegistration(){
+    let tally_meta = store("tally_meta");
+    //launch install page
+    chrome.tabs.create({url: tally_meta.website+"/signup"}, function(tab){
+        console.log(">>>>> launchRegistration() -> launching install page");
+    });
+
+}
 
 
 function startApp(){
@@ -68,7 +111,7 @@ function startApp(){
 
 function sendDataTest(data){
     $.ajax({
-        url: "http://localhost:5000/json_test",
+        url: tally_meta.api+"/json_test",
 		type: "GET",
         timeout: 15000, // set timeout to 15 secs to catch ERR_CONNECTION_REFUSED
         contentType: 'application/json',
@@ -150,7 +193,8 @@ function createMeta(){
                 "userOnline":navigator.onLine,
 				"serverOnline":0,
 				"connectionSpeed":0,
-				"api":"http://127.0.0.1:3000",
+				"api":"http://localhost:5000/api",
+				"website":"http://localhost:5000",
                 "browser": getBrowser()
             };
 	return obj;
@@ -173,26 +217,9 @@ function getBrowser() {
  *  Create Secret object on installation
  */
 function createSecret(){
-	var obj = { "key":"tally6d8fv87df7ydvsd7sSKfhA89asdapqdaklkj2j2kj29ks", // "tally6d8fv87df7ydvsd7sSKfhA89asdapqdaklkj2j2kj29ks"
-				"updateToken": getUpdateToken()
+	var obj = { "key":"",
+				"token": "",
+                "tokenExpires": null
             };
 	return obj;
-}
-
-/*  BACKGROUND AUTH FUNCTIONS
-******************************************************************************/
-
-
-// Verify that a key is correct
-function verifyKey(key){
-	if (key.substr(0,3) == "ty_"){
-		return 1;
-	}
-	return 0;
-}
-
-
-// get updateToken from server
-function getUpdateToken() {
-	return "93d8258d39b7f7220a02b0e66";
 }

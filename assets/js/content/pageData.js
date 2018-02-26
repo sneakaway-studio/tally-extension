@@ -28,16 +28,31 @@ function getPageData() {
 		url: document.location.href
 	};
 	// test for grabbing token of logged in user
-	if (data.url.indexOf("localhost:5000/dashboard") > 0) {
-		console.log($("#token").val());
-		console.log("grab it", data)
+	if (data.url.indexOf("/dashboard") > 0 && $("#token").length && $("#token").length) {
+		checkPageToken();
 	}
 	// check page tags
 	data.tags = getPageTags(data);
 	return data;
 }
+  
 
-// check the page for tags
+/**
+ *	If on dashboard page then check for updates to token
+ */
+function checkPageToken(){
+	var data = {
+		token: $("#token").val(),
+		tokenExpires: $("#tokenExpires").val()
+	}
+	console.log(data)
+	saveToken(data);
+}
+
+
+/**
+ *	Get all "tags" on a page
+ */
 function getPageTags(data) {
 	// create array
 	let tags = [],
