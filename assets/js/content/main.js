@@ -45,8 +45,8 @@ function shouldExtensionBeActiveOnPage(_tally_options){
 function startGame(){
     console.log(">>>>> startGame() -> Starting Tally on this page");
     console.log(">>>>> pageData = "+ JSON.stringify(pageData));
-    debug.add();
-    debug.update();
+    Debug.add();
+    Debug.update();
     startTally();
     addMainClickEventListener();
     //checkPageForMonsters(pageData.tags);
@@ -60,7 +60,7 @@ var timedEvents = {
 		// if this page is visible
 		if (document.hasFocus()){
             pageData.time = pageData.time + 0.5;
-            debug.update();
+            Debug.update();
         }
 	}, 500)
 };
