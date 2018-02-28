@@ -1,0 +1,203 @@
+/**
+ *  popup.js
+ *  - for options, about, etc. pages
+ */
+
+
+
+
+/**
+ *  Debugging
+ */
+
+// reset tally_user
+document.getElementById("opt_reset_user").onclick = function(){
+	chrome.runtime.sendMessage({action: "resetUser"}, function(response) {
+			console.log(response); // display success message
+  		showStatus("User has been reset");
+		}
+	);
+};
+// reset tally_options
+document.getElementById("opt_reset_options").onclick = function(){
+	chrome.runtime.sendMessage({action: "resetOptions"}, function(response) {
+			console.log(response); // display success message
+  			showStatus("Options have been reset");
+		}
+	);
+};
+
+
+
+
+
+/**
+ *  User Management
+ */
+
+var tally_options = {};
+
+document.addEventListener('DOMContentLoaded', getOptions);
+
+function getOptions() {
+	chrome.runtime.sendMessage({'action':'getOptions'}, function(response) {
+			console.log("getOptions()",JSON.stringify(response.tally_options));
+			tally_options = response.tally_options;
+			// game options
+			document.getElementById('showTally').checked = tally_options.showTally;
+			document.getElementById('playSounds').checked = tally_options.playSounds;
+			document.getElementById("showClickVisuals").checked = tally_options.showClickVisuals;
+			document.getElementById("showAnimations").checked = tally_options.showAnimations;
+			// privacy
+	//		document.getElementById("gameMode").value = tally_options.gameMode;
+			$("#gameMode").val(tally_options.gameMode);
+			document.getElementById("disabledDomains").value = tally_options.disabledDomains.join("\n");
+			// debugging
+			document.getElementById("showDebugger").checked = tally_options.showDebugger;
+			document.getElementById("debuggerPosition").value = tally_options.debuggerPosition;
+		}
+	);
+}
+
+/**
+ *  Trigger save
+ */
+$("input").mouseup(function(){
+	// wait a moment so the options are saved before the input has changed value
+	window.setTimeout(function(){
+		saveOptions("popup options");
+	}, 250);
+
+});
+$("select#gameMode").change(function(){
+	let val = document.getElementById("gameMode").value;
+	if (val === "full"){
+		document.getElementById('showTally').checked = true;
+		document.getElementById('playSounds').checked = true;
+		document.getElementById("showClickVisuals").checked = true;
+		document.getElementById("showAnimations").checked = true;
+	}
+	else if (val === "silent"){
+		document.getElementById('showTally').checked = false;
+		document.getElementById('playSounds').checked = false;
+		document.getElementById("showClickVisuals").checked = false;
+		document.getElementById("showAnimations").checked = false;
+	}
+	else if (val === "disabled"){
+		document.getElementById('showTally').checked = false;
+		document.getElementById('playSounds').checked = false;
+		document.getElementById("showClickVisuals").checked = false;
+		document.getElementById("showAnimations").checked = false;
+	}
+	saveOptions("popup options");
+});
+// timeout to save textarea
+var timeoutId;
+$('#disabledDomains').on('input propertychange change', function() {
+    console.log('Textarea Change');
+
+    clearTimeout(timeoutId);
+    timeoutId = setTimeout(function() {
+        // Runs 1 second (1000 ms) after the last change
+        saveOptions("popup options");
+    }, 1000);
+});
+
+
+
+function saveOptions() {
+	// game options
+	tally_options.showTally 		= $('#showTally').prop('checked');
+	tally_options.playSounds 		= $('#playSounds').prop('checked');
+	tally_options.showClickVisuals 	= $('#showClickVisuals').prop('checked');
+	tally_options.showAnimations 	= $('#showAnimations').prop('checked');
+	// privacy
+	tally_options.gameMode 			= $("#gameMode").val();
+	tally_options.disabledDomains 	= $('#disabledDomains').val().trim().replace(/\r\n/g,"\n").split("\n");
+	// debugging
+	tally_options.showDebugger 		= $('#showDebugger').prop('checked');
+	tally_options.debuggerPosition 	= $("#debuggerPosition").val();
+
+	console.log("saveOptions()",tally_options);
+
+  	// saveOptions in background.js
+	chrome.runtime.sendMessage({'action':'saveOptions','tally_options':tally_options}, function(response) {
+			console.log(response);
+			showStatus('User options saved'); // display success message
+			// refresh current page (w/new settings)
+			chrome.tabs.query({active: true, currentWindow: true}, function (arrayOfTabs) {
+				var code = 'window.location.reload();';
+				chrome.tabs.executeScript(arrayOfTabs[0].id, {code: code});
+			});
+		}
+	);
+}
+
+/*
+
+function login() {
+	chrome.runtime.sendMessage({'action':'startWebAuthLogin',}, function(response) {
+		}
+	);
+}
+
+
+
+
+
+console.log("Options",tally_options)
+
+
+document.querySelector('#login').addEventListener('click', login);
+
+*/
+
+
+
+
+
+/**
+ *  Interface and Tab management
+ */
+
+function openTab(btn,tabName) {
+	// update options from background
+	if (btn == "optionsBtn") getOptions();
+
+	//console.log(tabName)
+	// hide other tab content
+	var t = document.getElementsByClassName("tab");
+	for (let i = 0; i < t.length; i++)
+		t[i].style.display = "none";
+	document.getElementById(tabName).style.display = "block";
+	// hide other tabs
+	var b = document.getElementsByClassName("tab-button");
+	for (let i = 0; i < b.length; i++)
+		b[i].classList.remove("active");
+	// set correct one active
+	document.getElementById(btn).classList.add("active");
+}
+// set default
+//openTab("scoreBtn","scoreTab");
+openTab("optionsBtn","optionsTab");
+
+// tab buttons
+document.getElementById("debuggingBtn").onclick = function() { openTab("debuggingBtn","debuggingTab"); };
+document.getElementById("scoreBtn").onclick = function() { openTab("scoreBtn","scoreTab"); };
+document.getElementById("optionsBtn").onclick = function() { openTab("optionsBtn","optionsTab"); };
+document.getElementById("aboutBtn").onclick = function() { openTab("aboutBtn","aboutTab"); };
+
+// close the popup window
+document.getElementById("opt_close").onclick = function(){ window.close(); };
+
+// show status message
+function showStatus(msg){
+	// Update status to let user know options were saved.
+	var status = document.getElementById("status");
+	status.innerHTML = msg;
+	status.style.display = "block";
+	setTimeout(function() {
+		status.innerHTML = "";
+		status.style.display = "none";
+	}, 1250);
+}

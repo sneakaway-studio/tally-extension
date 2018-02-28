@@ -12,13 +12,13 @@
         "48": "assets/icons/tally_icon_48x48.png"
     },
     "browser_action": {
-        "default_title": "Tally - Cross Browser",
         "default_icon": {
             "16": "assets/icons/tally_icon_16x16.png",
             "48": "assets/icons/tally_icon_48x48.png",
             "128": "assets/icons/tally_icon_128x128.png"
         },
-        "default_popup": "assets/pages/options.html"
+		"default_title": "Tally",
+        "default_popup": "assets/pages/popup/popup.html"
     },
     "background": {
         "scripts": [

@@ -1,0 +1,132 @@
+<html>
+<head>
+<link rel="stylesheet" type="text/css" href="../_global.css">
+<link rel="stylesheet" type="text/css" href="./popup.css">
+</head>
+<body>
+
+<div class="container">
+
+<div class="opt_header">
+	<button id="opt_close" class="roundBtn"> X </button>
+	<div id="status"></div>
+	<h1>Tally</h1>
+</div>
+
+
+
+
+
+
+<div class="tab-button-group">
+	<button class="tab-button" id="scoreBtn">Score</button>
+	<button class="tab-button active" id="debuggingBtn">Debugging</button>
+	<button class="tab-button" id="optionsBtn">Options</button>
+	<button class="tab-button" id="aboutBtn">About</button>
+</div>
+
+
+
+
+
+
+
+<div id="scoreTab" class="tab">
+
+	<h2>Score</h2>
+	<p>This will be the score</p>
+
+</div>
+
+
+
+
+
+<div id="debuggingTab" class="tab">
+
+	<h2>Debugging</h2>
+
+	<button id="opt_reset_user">Reset user data</button>
+	<span id="opt_reset_user_status" class="status"></span><br>
+
+	<button id="opt_reset_options">Reset user options to defaults</button>
+	<span id="opt_reset_options_status" class="status"></span><br>
+
+
+</div>
+
+
+
+
+<div id="optionsTab" class="tab" style="display:none">
+
+	<h2>Options</h2>
+
+
+	<h3>Game</h3>
+
+	<label for="showTally">Show Tally</label>
+	<input class="option-radio-btn" id="showTally" value="true" type="checkbox">
+	<br>
+
+	<label for="showClickVisuals">Show click visuals</label>
+	<input class="option-radio-btn" id="showClickVisuals" value="true" type="checkbox">
+	<br>
+
+	<label for="showAnimations">Show animations</label>
+	<input class="option-radio-btn" id="showAnimations" value="true" type="checkbox">
+	<br>
+
+	<label for="playSounds">Play sounds</label>
+	<input class="option-radio-btn" id="playSounds" value="true" type="checkbox">
+	<br>
+
+
+	<h3>Privacy</h3>
+<!--
+	<label for="gameMode">Game mode</label>
+	<select class="option-dropdown" id="gameMode">
+		<option value="full">full (turn it up to 11!)</option>
+		<option value="silent">silent (all display and sounds off)</option>
+		<option value="disabled">disabled (game is disabled)</option>
+	</select>
+	<br>
+-->
+	<label for="disabledDomains">Disabled domains</label><br>
+	<textarea class="option-textarea" id="disabledDomains" rows="4" cols="40">
+	</textarea>
+	<br>
+
+
+	<h3>Development</h3>
+
+	<label for="showDebugger">Show debugger</label>
+	<input class="option-radio-btn" id="showDebugger" value="true" type="checkbox">
+	<br>
+
+	<label for="debuggerPosition">Debugger position</label>
+	<input id="debuggerPosition" type="input">
+	<br>
+
+
+
+	<!--
+		<button id="login">Login</button><br>
+	-->
+
+</div>
+
+<div id="aboutTab" class="tab" style="display:none">
+
+	<h2>About</h2>
+	<p>Link to site</p>
+
+</div>
+
+
+
+</div>
+<script src="../../libs/jquery-3.2.1.min.js"></script>
+<script src="./popup.js"></script>
+</body>
+</html>
