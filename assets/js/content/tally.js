@@ -38,7 +38,7 @@ var Tally = (function() {
 			setFollowCursor(false);
 		}
 	}
-	// make tally stare at user
+	// make tally stare at player
 	function stare() {
 		moveEye(".tally_eye_left", "stare");
 		moveEye(".tally_eye_right", "stare");
@@ -47,12 +47,9 @@ var Tally = (function() {
 		}, 400);
 	}
 
-	/*  TALLY THOUGHTS
-	 *****************************************************************************/
-
-	function showTallyThought(str, lines=-1, duration=2000, sound=false) {
+	function showTallyThought(str, lines = -1, duration = 2000, sound = false) {
 		if (sound)
-			Sound.play("tally","thought-basic-open");
+			Sound.play("tally", "thought-basic-open");
 		// adjust lines if not received
 		if (lines === -1)
 			lines = Math.ceil(str.length / 29);
@@ -75,9 +72,9 @@ var Tally = (function() {
 			setTimeout(hideTallyThought, duration);
 	}
 
-	function hideTallyThought(sound=false) {
+	function hideTallyThought(sound = false) {
 		if (sound)
-			Sound.play("tally","thought-basic-close");
+			Sound.play("tally", "thought-basic-close");
 		var cssProperties = anime({
 			targets: '#tally_thought_bubble',
 			opacity: 0,
@@ -127,9 +124,9 @@ var Tally = (function() {
 			stare();
 		},
 		menu: function() {
-			if (tallyMenuOpen){
+			if (tallyMenuOpen) {
 				hideTallyThought(true);
-			}else
+			} else
 				showTallyThought(tallyMenu(), 3, -1, true);
 			tallyMenuOpen = !tallyMenuOpen;
 		}
@@ -204,7 +201,9 @@ function startTally() {
 
 	// add the tally_character click action
 	document.getElementById('tally_character_container').onclick = function() {
-		Tally.menu();
+//		Tally.menu();
+//		Tally.thought(Thoughts.thought("random","hello"), -1, 2000, false);
+		Tally.thought(Thoughts.thought("trackers","lots"), -1, 2000, false);
 	};
 
 
@@ -225,6 +224,6 @@ function startTally() {
 
 
 
-	Tally.thought("hello world! 😀",-1,2000,false);
+//	Tally.thought(Thoughts.random.hello, -1, 2000, false);
 
 }

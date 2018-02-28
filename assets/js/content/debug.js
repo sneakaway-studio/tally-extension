@@ -1,5 +1,9 @@
 /*jshint esversion: 6 */
 
+
+/*  DEBUGGER
+******************************************************************************/
+
 var Debug = (function() {
 	// PRIVATE
 
@@ -28,7 +32,7 @@ var Debug = (function() {
 	function update(){
 		if (!prop(tally_options) || !tally_options.showDebugger) return;
 		if (!$("#tyd").length) return;
-		
+
 		var str =   "<b>tally_user</b>: " + JSON.stringify(tally_user) +"<br>"+
 					//"tally_options: " + JSON.stringify(tally_options) +"<br>"+
 					//"<b>pageData</b>: " + JSON.stringify(pageData) +"<br>"+
@@ -43,10 +47,5 @@ var Debug = (function() {
 	return {
 		add: add,
 		update: update
-
 	};
 })();
-
-
-/*  DEBUGGER
-******************************************************************************/
