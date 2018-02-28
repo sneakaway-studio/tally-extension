@@ -2,37 +2,9 @@
 
 
 
-/*  DEBUGGING
+
+/*  GETTING / SAVING OPTIONS
 ******************************************************************************/
-
-
-// reset tally_user
-document.getElementById("opt_reset_user").onclick = function(){
-	chrome.runtime.sendMessage({action: "resetUser"}, function(response) {
-			console.log(response); // display success message
-  			showStatus("User has been reset");
-		}
-	);
-};
-// reset tally_options
-document.getElementById("opt_reset_options").onclick = function(){
-	chrome.runtime.sendMessage({action: "resetOptions"}, function(response) {
-			console.log(response); // display success message
-  			showStatus("Options have been reset");
-		}
-	);
-};
-
-
-
-
-
-/*  DEBUGGING
-******************************************************************************/
-
-/**
- *  User Management
- */
 
 var tally_options = {};
 
@@ -69,12 +41,30 @@ function saveOptions() {
 			showStatus('User options saved'); // display success message
 			// refresh current page (w/new settings)
 			chrome.tabs.query({active: true, currentWindow: true}, function (arrayOfTabs) {
-				var code = 'window.location.reload();';
+				console.log("query again")
+				var code = 'window.location.reload(1);';
 				chrome.tabs.executeScript(arrayOfTabs[0].id, {code: code});
 			});
 		}
 	);
 }
+
+// reset tally_user
+document.getElementById("opt_reset_user").onclick = function(){
+	chrome.runtime.sendMessage({action: "resetUser"}, function(response) {
+			console.log(response); // display success message
+  			showStatus("User has been reset");
+		}
+	);
+};
+// reset tally_options
+document.getElementById("opt_reset_options").onclick = function(){
+	chrome.runtime.sendMessage({action: "resetOptions"}, function(response) {
+			console.log(response); // display success message
+  			showStatus("Options have been reset");
+		}
+	);
+};
 
 
 
