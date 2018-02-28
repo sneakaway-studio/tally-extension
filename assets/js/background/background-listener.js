@@ -46,7 +46,8 @@ chrome.runtime.onMessage.addListener(
         }
         // saveOptions
         else if (request.action == "saveOptions"){
-            store("tally_options",request.data); // store in localStorage
+			let options = setOptions(request.data);
+            store("tally_options",options); // store in localStorage
             sendResponse({"action":request.action,"message":1});			// send success response
         }
         // resetOptions (same as creating new options)

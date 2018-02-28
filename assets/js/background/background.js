@@ -172,10 +172,10 @@ function createAchievements(){
 }
 function createOptions(){
 	var obj = { "showTally":true,
-                "showClickVisuals":false,
-				"playSounds":false,
-				"showAnimations":false,
-                "gameMode":"full", //['disabled','stealth','full']
+                "showClickVisuals":true,
+				"playSounds":true,
+				"showAnimations":true,
+                "gameMode":"full",
                 "disabledDomains":[
                     "drive.google.com",
                     "docs.google.com",
@@ -183,8 +183,24 @@ function createOptions(){
 				"showDebugger":true,
 				"debuggerPosition":[0,300]
 			};
+    obj = setOptions(obj);
 	return obj;
 }
+function setOptions(options){
+    if (options.gameMode == "full"){
+        options.showTally = true;
+        options.showClickVisuals = true;
+        options.playSounds = true;
+        options.showAnimations = true;
+    } else if (options.gameMode == "stealth" || options.gameMode == "disabled"){
+        options.showTally = false;
+        options.showClickVisuals = false;
+        options.playSounds = false;
+        options.showAnimations = false;
+    }
+    return options;
+}
+
 /**
  *  Create Meta object on installation
  */
