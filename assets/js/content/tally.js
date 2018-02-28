@@ -18,7 +18,7 @@ var Tally = (function() {
 		else
 			$('.tally_eye_pupil').removeClass("tally_eye_pupil_active");
 	}
-	// move a single eye
+	// move a single eye, call twice to move both
 	function moveEye(which, how, event) {
 		if (!followCursor) return;
 		var eye = $(which);

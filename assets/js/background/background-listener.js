@@ -2,7 +2,7 @@
 
 
 /*  Listener for messages in order to receive/pass data to contentscript.js
-******************************************************************************/ 
+******************************************************************************/
 
 chrome.runtime.onMessage.addListener(
 	function(request, sender, sendResponse) {
@@ -46,7 +46,7 @@ chrome.runtime.onMessage.addListener(
         }
         // saveOptions
         else if (request.action == "saveOptions"){
-            store("tally_options",request.tally_option); // store in localStorage
+            store("tally_options",request.data); // store in localStorage
             sendResponse({"action":request.action,"message":1});			// send success response
         }
         // resetOptions (same as creating new options)

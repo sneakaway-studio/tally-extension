@@ -65,33 +65,17 @@
 
 	<h3>Game</h3>
 
-	<label for="showTally">Show Tally</label>
-	<input class="option-radio-btn" id="showTally" value="true" type="checkbox">
-	<br>
-
-	<label for="showClickVisuals">Show click visuals</label>
-	<input class="option-radio-btn" id="showClickVisuals" value="true" type="checkbox">
-	<br>
-
-	<label for="showAnimations">Show animations</label>
-	<input class="option-radio-btn" id="showAnimations" value="true" type="checkbox">
-	<br>
-
-	<label for="playSounds">Play sounds</label>
-	<input class="option-radio-btn" id="playSounds" value="true" type="checkbox">
+	<label for="gameMode">Game mode</label>
+	<select class="option-dropdown" id="gameMode">
+		<option value="full">full (turn it up to 11!)</option>
+		<option value="stealth">stealth (all visuals and sounds off)</option>
+		<option value="disabled">disabled (game is disabled)</option>
+	</select>
 	<br>
 
 
 	<h3>Privacy</h3>
-<!--
-	<label for="gameMode">Game mode</label>
-	<select class="option-dropdown" id="gameMode">
-		<option value="full">full (turn it up to 11!)</option>
-		<option value="silent">silent (all display and sounds off)</option>
-		<option value="disabled">disabled (game is disabled)</option>
-	</select>
-	<br>
--->
+
 	<label for="disabledDomains">Disabled domains</label><br>
 	<textarea class="option-textarea" id="disabledDomains" rows="4" cols="40">
 	</textarea>
