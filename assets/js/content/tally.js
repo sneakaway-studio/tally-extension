@@ -51,6 +51,9 @@ var Tally = (function() {
 	 *****************************************************************************/
 
 	function showTallyThought(str, lines = -1, duration = 2000) {
+
+		Sound.play("tally","thought-basic-open");
+
 		// adjust lines if not received
 		if (lines === -1)
 			lines = Math.ceil(str.length / 29);
@@ -74,6 +77,7 @@ var Tally = (function() {
 	}
 
 	function hideTallyThought() {
+		Sound.play("tally","thought-basic-close");
 		var cssProperties = anime({
 			targets: '#tally_thought_bubble',
 			opacity: 0,
@@ -95,8 +99,6 @@ var Tally = (function() {
 			"<button id='tally_menu_profile'>View your profile</button>" +
 			"<button id='tally_menu_install'>View install page</button>" +
 			//"<button id='tally_menu_credits'>Experiments</button>"+
-			"<button id='tally_menu_sneakaway'>sneakaway.studio</button>" +
-			"<button id='tally_menu_neotopia'>Neotopia: Data and Humanity</button>" +
 			"</div>";
 		return str;
 	}
@@ -125,10 +127,10 @@ var Tally = (function() {
 			stare();
 		},
 		menu: function() {
-			if (tallyMenuOpen)
+			if (tallyMenuOpen){
 				hideTallyThought();
-			else
-				showTallyThought(tallyMenu(), 5, -1);
+			}else
+				showTallyThought(tallyMenu(), 3, -1);
 			tallyMenuOpen = !tallyMenuOpen;
 		}
 
@@ -146,7 +148,7 @@ function startTally() {
 
 	// only show Tally if game mode == full
 	if (prop(pageData) && !pageData.activeOnPage) return;
-	if (!prop(tally_options) || tally_options.gameMode != "full") return;
+	if (!prop(tally_options) || !tally_options.showTally) return;
 
 	//Tally.blink();
 
@@ -203,7 +205,6 @@ function startTally() {
 	// add the tally_character click action
 	document.getElementById('tally_character_container').onclick = function() {
 		Tally.menu();
-		// playSound("shoot");
 	};
 
 

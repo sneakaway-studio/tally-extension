@@ -49,6 +49,7 @@
             "assets/js/content/pageData.js",
             "assets/js/content/storage.js",
             "assets/js/content/interface.js",
+            "assets/js/content/sound.js",
             "assets/js/content/debugger.js",
             "assets/js/content/click-listener.js",
             "assets/js/content/tally.js",
@@ -68,5 +69,9 @@
         "activeTab",
         "storage"
     ],
-    "web_accessible_resources": ["*.png","*.jpg","*.JPG"]
+    "web_accessible_resources": [
+        "*.png",
+        "*.jpg","*.JPG",
+        "/assets/sounds/*"
+    ]
 }
