@@ -87,6 +87,7 @@ var Sound = (function() {
 			audio.play();
     }
 
+	// PUBLIC
 	return {
 		test: function(category, index, delay) {
 			testSound(category, index, delay);

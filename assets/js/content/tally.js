@@ -50,10 +50,9 @@ var Tally = (function() {
 	/*  TALLY THOUGHTS
 	 *****************************************************************************/
 
-	function showTallyThought(str, lines = -1, duration = 2000) {
-
-		Sound.play("tally","thought-basic-open");
-
+	function showTallyThought(str, lines=-1, duration=2000, sound=false) {
+		if (sound)
+			Sound.play("tally","thought-basic-open");
 		// adjust lines if not received
 		if (lines === -1)
 			lines = Math.ceil(str.length / 29);
@@ -76,8 +75,9 @@ var Tally = (function() {
 			setTimeout(hideTallyThought, duration);
 	}
 
-	function hideTallyThought() {
-		Sound.play("tally","thought-basic-close");
+	function hideTallyThought(sound=false) {
+		if (sound)
+			Sound.play("tally","thought-basic-close");
 		var cssProperties = anime({
 			targets: '#tally_thought_bubble',
 			opacity: 0,
@@ -108,8 +108,8 @@ var Tally = (function() {
 	 *****************************************************************************/
 
 	return {
-		thought: function(str, lines, duration) {
-			showTallyThought(str, lines, duration);
+		thought: function(str, lines, duration, sound) {
+			showTallyThought(str, lines, duration, sound);
 		},
 		blink: function() {
 			if (blinking == true) console.log("blink");
@@ -128,9 +128,9 @@ var Tally = (function() {
 		},
 		menu: function() {
 			if (tallyMenuOpen){
-				hideTallyThought();
+				hideTallyThought(true);
 			}else
-				showTallyThought(tallyMenu(), 3, -1);
+				showTallyThought(tallyMenu(), 3, -1, true);
 			tallyMenuOpen = !tallyMenuOpen;
 		}
 
@@ -225,6 +225,6 @@ function startTally() {
 
 
 
-	Tally.thought("hello world! 😀");
+	Tally.thought("hello world! 😀",-1,2000,false);
 
 }
