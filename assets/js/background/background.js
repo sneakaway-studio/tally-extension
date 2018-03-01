@@ -176,6 +176,7 @@ function createOptions(){
 				"playSounds":true,
 				"showAnimations":true,
                 "gameMode":"full",
+                "skin":"default",
                 "disabledDomains":[
                     "drive.google.com",
                     "docs.google.com",

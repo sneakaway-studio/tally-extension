@@ -4,7 +4,8 @@ var Tally = (function() {
 	// PRIVATE
 	var followCursor = false, // is eye following currently active? on page load, no
 		blinking = true,
-		tallyMenuOpen = false;
+		tallyMenuOpen = false,
+		skin = "";
 
 
 	/*  TALLY EYES
@@ -48,8 +49,8 @@ var Tally = (function() {
 	}
 
 	function showTallyThought(str, lines = -1, duration = 2000, sound = false) {
-		if (sound)
-			Sound.play("tally", "thought-basic-open");
+		// if (sound)
+		// 	Sound.test("tally", "thought-basic-open");
 		// adjust lines if not received
 		if (lines === -1)
 			lines = Math.ceil(str.length / 29);
@@ -69,12 +70,13 @@ var Tally = (function() {
 		stare();
 		//console.log("lines",lines)
 		if (duration > -1)
-			setTimeout(hideTallyThought, duration);
+			// hide after period based on string length
+			setTimeout(hideTallyThought, duration*(str.length/22));
 	}
 
 	function hideTallyThought(sound = false) {
-		if (sound)
-			Sound.play("tally", "thought-basic-close");
+		// if (sound)
+		// 	Sound.test("tally", "thought-basic-close");
 		var cssProperties = anime({
 			targets: '#tally_thought_bubble',
 			opacity: 0,
@@ -98,6 +100,28 @@ var Tally = (function() {
 			//"<button id='tally_menu_credits'>Experiments</button>"+
 			"</div>";
 		return str;
+	}
+
+
+	/*  TALLY CHARACTER
+	 *****************************************************************************/
+
+	let skins = [
+		"skin-color-cyan.png",
+		"skin-color-magenta.png",
+		"skin-color-yellow.png",
+		"skin-grad-rainbow.png",
+		"skin-grad-yellow-orange.png",
+		"skin-pattern-camo-grey.png",
+		"skin-pattern-flower-retro.png",
+		"skin-pattern-plaid-red.png"
+	];
+
+	function updateSkin() {
+		// temp: random skins
+		let r = Math.floor(Math.random()*skins.length);
+		let skin = chrome.extension.getURL('assets/img/tally-skins/'+skins[r]);
+		$("#tally_character_container").css("background-image", "url('"+skin+"')");
 	}
 
 
@@ -129,6 +153,9 @@ var Tally = (function() {
 			} else
 				showTallyThought(tallyMenu(), 3, -1, true);
 			tallyMenuOpen = !tallyMenuOpen;
+		},
+		updateSkin: function(){
+			updateSkin();
 		}
 
 
@@ -203,7 +230,12 @@ function startTally() {
 	document.getElementById('tally_character_container').onclick = function() {
 //		Tally.menu();
 //		Tally.thought(Thoughts.thought("random","hello"), -1, 2000, false);
-		Tally.thought(Thoughts.thought("trackers","lots"), -1, 2000, false);
+	//	Tally.thought(Thoughts.thought("trackers","lots"), -1, 2000, true);
+
+	Tally.thought(Thoughts.thought("random","funny"), -1, 2000, true);
+		//Sound.test("tally", "tally-fun-fact.mp3");
+		Sound.test("tally");
+		Tally.updateSkin();
 	};
 
 
