@@ -5,7 +5,8 @@ var Tally = (function() {
 	var followCursor = false, // is eye following currently active? on page load, no
 		blinking = true,
 		tallyMenuOpen = false,
-		skin = "";
+		skin = "",
+		thoughtOpen = false;
 
 
 	/*  TALLY EYES
@@ -48,44 +49,59 @@ var Tally = (function() {
 		}, 400);
 	}
 
-	function showTallyThought(str, lines = -1, duration = 2000, sound = false) {
+	function showThought(str, sound = false) {
+		console.log("showThought",str);
+		if (thoughtOpen) return;
+		// set duration and number of lines based on str.length
+		let duration = (str.length/15)+1000,
+			lines = Math.ceil(str.length / 29);
+
 		// if (sound)
 		// 	Sound.test("tally", "thought-basic-open");
 		// adjust lines if not received
-		if (lines === -1)
-			lines = Math.ceil(str.length / 29);
+
+		// add text
+		$('#tally_thought').html(str);
+
 		// make the size of the box dependent on str.length
 		$('#tally_thought_bubble').css({
 			'display': 'flex',
 			'height': lines * 30 + "px", // normal height for 50 chars is: 80px;
-			'left': '10px' // make it visible
+			'left': '10px',
+			'opacity':1 // make it visible
 		});
-		$('#tally_thought').html(str);
-		// show
-		var cssProperties = anime({
-			targets: '#tally_thought_bubble',
-			opacity: 1,
-			duration: 400
-		});
+
+		// // show
+		// var cssProperties = anime({
+		// 	targets: '#tally_thought_bubble',
+		// 	opacity: 1,
+		// 	duration: 400
+		// });
 		stare();
 		//console.log("lines",lines)
-		if (duration > -1)
-			// hide after period based on string length
-			setTimeout(hideTallyThought, duration*(str.length/22));
+		thoughtOpen = true;
+		// hide after period
+		setTimeout(hideThought, duration);
 	}
 
-	function hideTallyThought(sound = false) {
+	function hideThought(sound = false) {
+		console.log("hideThought");
+		if (!thoughtOpen) return;
 		// if (sound)
 		// 	Sound.test("tally", "thought-basic-close");
-		var cssProperties = anime({
-			targets: '#tally_thought_bubble',
-			opacity: 0,
-			duration: 500
-		});
+		// var cssProperties = anime({
+		// 	targets: '#tally_thought_bubble',
+		// 	opacity: 0,
+		// 	duration: 500
+		// });
 		$('#tally_thought_bubble').css({
 			'left': '-500px',
-			'display': 'none'
+			'display': 'none',
+			'opacity':0
 		});
+		thoughtOpen = false;
+		// testing
+		Tally.updateSkin();
 	}
 
 
@@ -117,6 +133,13 @@ var Tally = (function() {
 		"skin-pattern-plaid-red.png"
 	];
 
+	function preloadSkins(){
+		let str = "";
+		for (let i=0,l=skins.length; i<l; i++){
+			str += "url('"+ chrome.extension.getURL('assets/img/tally-skins/'+skins[i]) +"')";
+		}
+		$("#tally_character_container").css("content", str);
+	}
 	function updateSkin() {
 		// temp: random skins
 		let r = Math.floor(Math.random()*skins.length);
@@ -129,8 +152,8 @@ var Tally = (function() {
 	 *****************************************************************************/
 
 	return {
-		thought: function(str, lines, duration, sound) {
-			showTallyThought(str, lines, duration, sound);
+		showThought: function(str, lines, duration, sound) {
+			showThought(str, lines, duration, sound);
 		},
 		blink: function() {
 			if (blinking == true) console.log("blink");
@@ -149,14 +172,15 @@ var Tally = (function() {
 		},
 		menu: function() {
 			if (tallyMenuOpen) {
-				hideTallyThought(true);
+				hideThought(true);
 			} else
-				showTallyThought(tallyMenu(), 3, -1, true);
+				showThought(tallyMenu(), 3, -1, true);
 			tallyMenuOpen = !tallyMenuOpen;
 		},
 		updateSkin: function(){
 			updateSkin();
-		}
+		},
+		preloadSkins: preloadSkins
 
 
 	};
@@ -225,17 +249,19 @@ function startTally() {
 		"</div>";
 	$('#tally').append(str);
 
+	// maybe temp...
+	Tally.preloadSkins();
 
 	// add the tally_character click action
 	document.getElementById('tally_character_container').onclick = function() {
 //		Tally.menu();
-//		Tally.thought(Thoughts.thought("random","hello"), -1, 2000, false);
-	//	Tally.thought(Thoughts.thought("trackers","lots"), -1, 2000, true);
+//		Tally.showThought(Thoughts.thought("random","hello"), false);
+	//	Tally.showThought(Thoughts.thought("trackers","lots"), true);
 
-	Tally.thought(Thoughts.thought("random","funny"), -1, 2000, true);
+	Tally.showThought(Thoughts.thought("random","funny"), true);
 		//Sound.test("tally", "tally-fun-fact.mp3");
 		Sound.test("tally");
-		Tally.updateSkin();
+
 	};
 
 
@@ -256,6 +282,6 @@ function startTally() {
 
 
 
-//	Tally.thought(Thoughts.random.hello, -1, 2000, false);
+//	Tally.showThought(Thoughts.random.hello, false);
 
 }
