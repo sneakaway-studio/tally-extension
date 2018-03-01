@@ -6,10 +6,19 @@
 /*  GETTING / SAVING OPTIONS
 ******************************************************************************/
 
-var tally_options = {};
+var tally_options = {},tally_user = {};
 
 document.addEventListener('DOMContentLoaded', getOptions);
 
+function getUser() {
+	chrome.runtime.sendMessage({'action':'getUser'}, function(response) {
+			console.log("getUser()",JSON.stringify(response.data));
+			tally_user = response.data;
+			
+			$("#skinsList").html(tally_user.skins);
+		}
+	);
+}
 function getOptions() {
 	chrome.runtime.sendMessage({'action':'getOptions'}, function(response) {
 			console.log("getOptions()",JSON.stringify(response.data));
@@ -101,6 +110,7 @@ $('#disabledDomains').on('input propertychange change', function() {
 function openTab(btn,tabName) {
 	// update options from background
 	if (btn == "optionsBtn") getOptions();
+	if (btn == "skinsBtn") getUser();
 
 	//console.log(tabName)
 	// hide other tab content
@@ -117,10 +127,12 @@ function openTab(btn,tabName) {
 }
 // set default
 //openTab("scoreBtn","scoreTab");
-openTab("optionsBtn","optionsTab");
+//openTab("optionsBtn","optionsTab");
+openTab("skinsBtn","skinsTab");
 
 // tab buttons
 document.getElementById("debuggingBtn").onclick = function() { openTab("debuggingBtn","debuggingTab"); };
+document.getElementById("skinsBtn").onclick = function() { openTab("skinsBtn","skinsTab"); };
 document.getElementById("scoreBtn").onclick = function() { openTab("scoreBtn","scoreTab"); };
 document.getElementById("optionsBtn").onclick = function() { openTab("optionsBtn","optionsTab"); };
 document.getElementById("aboutBtn").onclick = function() { openTab("aboutBtn","aboutTab"); };
