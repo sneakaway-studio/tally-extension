@@ -149,7 +149,8 @@ function sendDataTest(data){
 function createUser(){
 	var obj = { "username":"ow3n",
                 "score":createScore(),
-                "achievements":createAchievements()
+                "achievements":createAchievements(),
+                "skins":["color-magenta"]
 			};
 	return obj;
 }
@@ -176,7 +177,7 @@ function createOptions(){
 				"playSounds":true,
 				"showAnimations":true,
                 "gameMode":"full",
-                "skin":"default",
+                "skin":"color-magenta",
                 "disabledDomains":[
                     "drive.google.com",
                     "docs.google.com",

@@ -122,29 +122,42 @@ var Tally = (function() {
 	/*  TALLY CHARACTER
 	 *****************************************************************************/
 
-	let skins = [
-		"skin-color-cyan.png",
-		"skin-color-magenta.png",
-		"skin-color-yellow.png",
-		"skin-grad-rainbow.png",
-		"skin-grad-yellow-orange.png",
-		"skin-pattern-camo-grey.png",
-		"skin-pattern-flower-retro.png",
-		"skin-pattern-plaid-red.png"
-	];
+	// var skins = [
+	// 	"color-cyan",
+	// 	"color-magenta",
+	// 	"color-yellow",
+	// 	"grad-rainbow",
+	// 	"grad-yellow-orange",
+	// 	"pattern-camo-grey",
+	// 	"pattern-flower-retro",
+	// 	"pattern-plaid-red"
+	// ];
+
+	//let skins = tally_user.skins;
+
+	var skins = ["color-magenta"];
+
+	function updateSkinsArray(){
+		skins = tally_user.skins;
+	}
 
 	function preloadSkins(){
+		console.log("preloadSkins()",tally_user.skins);
+		updateSkinsArray();
 		let str = "";
 		for (let i=0,l=skins.length; i<l; i++){
-			str += "url('"+ chrome.extension.getURL('assets/img/tally-skins/'+skins[i]) +"')";
+			str += "url('"+ chrome.extension.getURL('assets/img/tally-skins/skin-'+skins[i]) +".png')";
 		}
-		$("#tally_character_container").css("content", str);
+		$("#tally::after").css({
+			"position":"absolute","width":"0","height":"0","overflow":"hidden","z-index":"-1","content": str
+		});
 	}
 	function updateSkin() {
+		updateSkinsArray();
 		// temp: random skins
 		let r = Math.floor(Math.random()*skins.length);
-		let skin = chrome.extension.getURL('assets/img/tally-skins/'+skins[r]);
-		$("#tally_character_container").css("background-image", "url('"+skin+"')");
+		let url = chrome.extension.getURL('assets/img/tally-skins/skin-'+ skins[r] +'.png');
+		$("#tally_character_container").css("background-image", "url('"+ url +"')");
 	}
 
 
