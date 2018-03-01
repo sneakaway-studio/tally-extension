@@ -33,9 +33,13 @@ var Sound = (function() {
 		"monsters": {},
 		"songs": {},
 		"tally": {
-			"click":"Blip-select2.wav",
-            "thought-basic-open":"Hit-hurt2.wav",
-            "thought-basic-close":"Hit-hurt1.wav",
+			"tally-fun-fact.mp3":"tally-fun-fact.mp3",
+			"tally-hello-q.mp3":"tally-hello-q.mp3",
+			"tally-how-are-you-q.mp3":"tally-how-are-you-q.mp3",
+			"tally-leaving-so-soon.mp3":"tally-leaving-so-soon.mp3",
+			"tally-pay-attention.mp3":"tally-pay-attention.mp3",
+			"tally-sad.mp3":"tally-sad.mp3",
+			"tally-watch-ooout.mp3":"tally-watch-ooout.mp3"
         },
 		"user": {
 			"click":"Pickup-coin2.wav"
@@ -50,20 +54,23 @@ var Sound = (function() {
 	 * @param  {integer} index - A specific index in the category
 	 * @param  {integer} delay - Delay in milliseconds
 	 */
-	function testSound(category, index, delay) {
+	function random(category, index, delay) {
 		if (!tally_options.playSounds) return;
-		//log("playSound("+ category +","+ index +")");
+		//console.log("playSound("+ category +","+ index +")");
 		var soundFile = "";
-		// if a specific category && index provided
+		// if a specific category && index provided, then get that sound
 		if (prop(category) && prop(index))
-			soundFile = "_tests/"+ sounds._tests[category][index];
+			soundFile = category +"/"+ sounds[category][index];
 		// else pick random index from category
 		else if (prop(category) && !prop(index))
-			soundFile = "_tests/"+ sounds._tests[category][Math.floor((Math.random() * sounds._tests[category].length))];
+			// for array
+			//soundFile = category +"/"+ sounds[category][Math.floor((Math.random() * sounds[category].length))];
+			// random from obj
+			soundFile = category +"/"+ randomObjProperty(sounds[category]);
 		// else pick random category && index
 		else if (!prop(category) && !prop(index)) {
-			var categoryArr = randomObjProperty(sounds._tests); // reference to array group in sounds
-			soundFile = "_tests/"+ categoryArr[Math.floor(Math.random() * categoryArr.length)];
+			var categoryArr = randomObjProperty(sounds); // reference to array group in sounds
+			soundFile = category +"/"+ categoryArr[Math.floor(Math.random() * categoryArr.length)];
 		}
 		play(soundFile,delay);
 	}
@@ -76,6 +83,7 @@ var Sound = (function() {
 
     // generic play function
     function play(soundFile,delay=0){
+		console.log("Sound.play("+ soundFile +")");
 		// load/play sound
         var audio = new Audio(chrome.extension.getURL("assets/sounds/"+ soundFile));
         audio.volume = 0.3;
@@ -90,7 +98,7 @@ var Sound = (function() {
 	// PUBLIC
 	return {
 		test: function(category, index, delay) {
-			testSound(category, index, delay);
+			random(category, index, delay);
 		},
 		play: function(category, index, delay) {
 			playSound(category, index, delay);
