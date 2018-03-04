@@ -4,8 +4,7 @@ var Tally = (function() {
 	// PRIVATE
 	var followCursor = false, // is eye following currently active? on page load, no
 		blinking = true,
-		tallyMenuOpen = false
-		thoughtOpen = false;
+		tallyMenuOpen = false;
 
 
 	/*  TALLY EYES
@@ -48,61 +47,6 @@ var Tally = (function() {
 		}, 400);
 	}
 
-	function showThought(str, sound = false) {
-		console.log("showThought",str);
-		if (thoughtOpen) return;
-		// set duration and number of lines based on str.length
-		let duration = (str.length/15)+1000,
-			lines = Math.ceil(str.length / 29);
-
-		// if (sound)
-		// 	Sound.test("tally", "thought-basic-open");
-		// adjust lines if not received
-
-		// add text
-		$('#tally_thought').html(str);
-
-		// make the size of the box dependent on str.length
-		$('#tally_thought_bubble').css({
-			'display': 'flex',
-			'height': lines * 30 + "px", // normal height for 50 chars is: 80px;
-			'left': '10px',
-			'opacity':1 // make it visible
-		});
-
-		// // show
-		// var cssProperties = anime({
-		// 	targets: '#tally_thought_bubble',
-		// 	opacity: 1,
-		// 	duration: 400
-		// });
-		stare();
-		//console.log("lines",lines)
-		thoughtOpen = true;
-		// hide after period
-		setTimeout(hideThought, duration);
-	}
-
-	function hideThought(sound = false) {
-		console.log("hideThought");
-		if (!thoughtOpen) return;
-		// if (sound)
-		// 	Sound.test("tally", "thought-basic-close");
-		// var cssProperties = anime({
-		// 	targets: '#tally_thought_bubble',
-		// 	opacity: 0,
-		// 	duration: 500
-		// });
-		$('#tally_thought_bubble').css({
-			'left': '-500px',
-			'display': 'none',
-			'opacity':0
-		});
-		thoughtOpen = false;
-		// testing
-		Skin.update();
-	}
-
 
 	/*  TALLY MENU
 	 *****************************************************************************/
@@ -126,9 +70,6 @@ var Tally = (function() {
 
 	// PUBLIC
 	return {
-		showThought: function(str, lines, duration, sound) {
-			showThought(str, lines, duration, sound);
-		},
 		blink: function() {
 			if (blinking == true) console.log("blink");
 		},
@@ -141,14 +82,12 @@ var Tally = (function() {
 		getFollowCursor: function(state) {
 			return followCursor;
 		},
-		stare: function() {
-			stare();
-		},
+		stare: stare,
 		menu: function() {
 			if (tallyMenuOpen) {
-				hideThought(true);
+				Thought.hide(true);
 			} else
-				showThought(tallyMenu(), 3, -1, true);
+				Thought.show(tallyMenu(), 3, -1, true);
 			tallyMenuOpen = !tallyMenuOpen;
 		}
 
@@ -225,10 +164,10 @@ function startTally() {
 	// add the tally_character click action
 	document.getElementById('tally_character_container').onclick = function() {
 //		Tally.menu();
-//		Tally.showThought(Thoughts.thought("random","hello"), false);
-	//	Tally.showThought(Thoughts.thought("trackers","lots"), true);
+//		Tally.show(Thought.get("random","hello"), false);
+	//	Tally.show(Thought.get("trackers","lots"), true);
 
-	Tally.showThought(Thoughts.thought("random","funny"), true);
+	Thought.show(Thought.get("trackers","general"), true);
 		//Sound.test("tally", "tally-fun-fact.mp3");
 		Sound.test("tally");
 

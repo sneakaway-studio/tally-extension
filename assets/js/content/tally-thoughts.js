@@ -1,70 +1,116 @@
 /*jshint esversion: 6 */
 
-var Thoughts = (function() {
+var Thought = (function() {
 	// PRIVATE
 
-	// all the thoughts go in "data"
-	// it is an object, a hierarchical data type
-	var data = {
-		// For monsters, Tally Could say something like
-		// 		"You found a <monster-name-from-monster-spreadsheet> !!"
-		// but she could also say something special about each one
-		"monsters": {
-			"006-suv":"Say something special about this monster?"
-		},
-		// the first level in the hierarchy is the "category"
-		"narrative": {
-			// the next level in the hierarchy could either be a single index, like this one
-			"story1":"My story is ...",
-			"story2":"Long ago I ..."
-		},
-		// things related to the page
-		"page": {
+	var thoughtOpen = false;
 
+
+
+	var data = {
+		monsters: {
+			captured: ['You just captured a product monster!'],
+			launch: ['A product monster!!!', 'Look out!!!'],
+			'006-suv': 'Say something special about this monster?'
 		},
-		"player": {
-			// or if the index is an array "[]", the app would pick a random one from the list
-			"complements":[
-				"Nice clicking!!",
-				"I would totally click that"
+		narrative: {
+			story1: 'e.g. In the beginning ...',
+			story2: 'e.g. Then something happened ...',
+			story3: 'e.g. Then something else happened ...'
+		},
+		page: {
+			title: ['The title of this page is *****']
+		},
+		player: {
+			complement: ['Nice clicking!']
+		},
+		random: {
+			greeting: ['How are you?', 'Hello world! 😀']
+		},
+		trackers: {
+			lots: ['There are a lot of trackers on this page.',
+				'Careful, there are trackers nearby.',
+				'Seriously, it\'s getting kind of creepy around here.',
+				'I think I saw a product monster.',
+				'This place makes me nervous.'
+			],
+			few: ['There are only a few trackers on this page.'],
+			none: ['There are no trackers on this page.'],
+			general: ['Trackers are scripts embedded in websites that collect and store information about you and your behavior',
+				'Trackers include analytics tools that tell website owners who is visiting their site.',
+				'Most trackers belong to companies who want to collect as much data as possible about you.',
+				'Trackers are just a part of a large system wherein your data is harvested in order to influence, not only what you buy, but who you vote for, and what you think about important issues.',
+				'The data that trackers collect can include your age, where you live, what you read, and your interests.',
+				'Data that trackers collect is packaged and sold to others, including advertisers, other companies, even governments.'
 			]
-		},
-		// these are random remarks
-		"random": {
-			"hello": "hello world! 😀",
-			"funny":[
-				"Haha!",
-				"Fun fact ...",
-				"Hello?",
-				"How are you?",
-				"Leaving so soon?",
-				"Pay attention",
-				"Sad",
-				"Watch out!"
-			]
-		},
-		"trackers":{
-			"lots":[
-				"There are a lot of trackers on this page.",
-				"Careful, there are trackers nearby.",
-				"No, but seriously it's getting kind of creepy around here.",
-				"I think I saw a product monster.",
-				"This place makes me nervous."
-			],
-			"few":[
-				"There are only a few trackers on this page"
-			],
-			"none":[
-				"There are no trackers on this page"
-			],
 		}
 	};
 
 
-	function getThought (category,index){
+
+	function showThought(str, sound = false) {
+
+		if (thoughtOpen) return;
+		// set number of lines based on str.length
+		let lines = Math.ceil(str.length / 29);
+		// set duration based on number lines
+		let duration = lines * 1200;
+
+			console.log("showThought", str, duration, lines);
+
+		// if (sound)
+		// 	Sound.test("tally", "thought-basic-open");
+		// adjust lines if not received
+
+		// add text
+		$('#tally_thought').html(str);
+
+		// make the size of the box dependent on str.length
+		$('#tally_thought_bubble').css({
+			'display': 'flex',
+			'height': lines * 30 + "px", // normal height for 50 chars is: 80px;
+			'left': '10px',
+			'opacity': 1 // make it visible
+		});
+
+		// // show
+		// var cssProperties = anime({
+		// 	targets: '#tally_thought_bubble',
+		// 	opacity: 1,
+		// 	duration: 400
+		// });
+		Tally.stare();
+		//console.log("lines",lines)
+		thoughtOpen = true;
+		// hide after period
+		setTimeout(hideThought, duration);
+	}
+
+	function hideThought(sound = false) {
+		console.log("hideThought");
+		if (!thoughtOpen) return;
+		// if (sound)
+		// 	Sound.test("tally", "thought-basic-close");
+		// var cssProperties = anime({
+		// 	targets: '#tally_thought_bubble',
+		// 	opacity: 0,
+		// 	duration: 500
+		// });
+		$('#tally_thought_bubble').css({
+			'left': '-500px',
+			'display': 'none',
+			'opacity': 0
+		});
+		thoughtOpen = false;
+		// testing
+		Skin.update();
+	}
+
+	// return thought text
+	function getThought(category, index) {
 		let d = data[category][index];
-		if (Array.isArray(d)){
-			let r = Math.floor(Math.random()*d.length);
+		if (Array.isArray(d)) {
+			let r = Math.floor(Math.random() * d.length);
 			return data[category][index][r];
 		}
 		// else its a string
@@ -74,9 +120,13 @@ var Thoughts = (function() {
 
 	// PUBLIC
 	return {
-		thought: function(category,index) {
-			return getThought(category,index);
-		}
+		get: function(category, index) {
+			return getThought(category, index);
+		},
+		show: function(str, lines, duration, sound) {
+			showThought(str, lines, duration, sound);
+		},
+		hide: hideThought
 
 	};
 })();
