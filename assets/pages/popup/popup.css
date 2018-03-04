@@ -27,10 +27,16 @@ h1 {  }
 
 /* tab content */
 
-div.tab { background-color: #f1f1f1; padding:10px; }
+div.tab { background-color: #f1f1f1; padding:10px; overflow: auto;}
 
 
 /* buttons */
 
 .roundBtn { border-radius: 7px; background: #9cc; padding: 5px 9px; border: none; }
 .roundBtn:hover { background: #ddd; cursor: pointer; }
+
+
+/* skins */
+
+.skinThumb { width: 70px; height: 70px; float: left; }
+.skinThumb img { width: 70px; height: 70px; }

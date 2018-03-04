@@ -2,6 +2,18 @@
 
 
 
+function updateTabSkins(){
+	let str = "";
+	for (var key in tally_user.skins) {
+		str += "<span class='skinThumb'><a href='#'>";
+		str += "<img src='";
+		str += chrome.extension.getURL('assets/img/tally-skins/skin-'+ tally_user.skins[key] +".png");
+		str += "'></a></span>";
+	}
+	$("#skinsList").html(str);
+}
+
+
 
 /*  GETTING / SAVING OPTIONS
 ******************************************************************************/
@@ -10,12 +22,11 @@ var tally_options = {},tally_user = {};
 
 document.addEventListener('DOMContentLoaded', getOptions);
 
-function getUser() {
+function getUser(callback) {
 	chrome.runtime.sendMessage({'action':'getUser'}, function(response) {
 			console.log("getUser()",JSON.stringify(response.data));
 			tally_user = response.data;
-			
-			$("#skinsList").html(tally_user.skins);
+			callback();
 		}
 	);
 }
@@ -110,7 +121,7 @@ $('#disabledDomains').on('input propertychange change', function() {
 function openTab(btn,tabName) {
 	// update options from background
 	if (btn == "optionsBtn") getOptions();
-	if (btn == "skinsBtn") getUser();
+	if (btn == "skinsBtn") getUser(updateTabSkins);
 
 	//console.log(tabName)
 	// hide other tab content

@@ -29,7 +29,7 @@ var Skin = (function() {
 		updateList();
 		let str = "";
 		for (let i=0,l=skins.length; i<l; i++){
-			str += "url('"+ chrome.extension.getURL('assets/img/tally-skins/skin-'+skins[i]) +".png')";
+			str += "url('"+ chrome.extension.getURL('assets/img/tally-skins/skin-'+skins[i] +".png'") +")";
 		}
 		$("#tally::after").css({
 			"position":"absolute","width":"0","height":"0","overflow":"hidden","z-index":"-1","content": str
