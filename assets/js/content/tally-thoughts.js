@@ -39,7 +39,6 @@ var Thought = (function() {
 			general: ['Trackers are scripts embedded in websites that collect and store information about you and your behavior',
 				'Trackers include analytics tools that tell website owners who is visiting their site.',
 				'Most trackers belong to companies who want to collect as much data as possible about you.',
-				'Trackers are just a part of a large system wherein your data is harvested in order to influence, not only what you buy, but who you vote for, and what you think about important issues.',
 				'The data that trackers collect can include your age, where you live, what you read, and your interests.',
 				'Data that trackers collect is packaged and sold to others, including advertisers, other companies, even governments.'
 			]
@@ -56,7 +55,7 @@ var Thought = (function() {
 		// set duration based on number lines
 		let duration = lines * 1200;
 
-			console.log("showThought", str, duration, lines);
+		console.log("showThought", str, duration, lines);
 
 		// if (sound)
 		// 	Sound.test("tally", "thought-basic-open");

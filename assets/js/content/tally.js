@@ -1,6 +1,8 @@
 /*jshint esversion: 6 */
 
 var Tally = (function() {
+	"use strict";
+
 	// PRIVATE
 	var followCursor = false, // is eye following currently active? on page load, no
 		blinking = true,
@@ -118,7 +120,7 @@ function startTally() {
 	});
 
 	let str =
-		"<div id='tally_character_container'>" +
+		"<div id='tally_character_container' class='draggable'>" +
 		"<div id='tally_thought_bubble' class='tally_speech_bubble'>" +
 		"<div id='tally_thought'></div>" +
 		"</div>" +
@@ -137,26 +139,33 @@ function startTally() {
 		"<div class='tally_score_pages'></div>" +
 		"<div class='tally_score_domains'></div>" +
 
-		"<div class='tyd_dropdown'>" +
-		"<select class='reset-this tyd_dropdown_select' size=1>" +
-		"<option value='tallyThoughtHello'>*</option>" +
-		"<option value='showRandomProductMonsterFromAbove'>showRandomProductMonsterFromAbove</option>" +
-		"<option value='showProductMonsterFromAbove'>showProductMonsterFromAbove</option>" +
-		"<option value='showProductMonsterVideo'>showProductMonsterVideo</option>" +
-		"<option value='stare'>stare</option>" +
-		"<option value='tallyThoughtHello'>tallyThought</option>" +
-		"<option value='tallyThoughtShowScore'>tallyThoughtShowScore</option>" +
-		"<option value='explodeThePage'>explodeThePage</option>" +
-		"<option value='transform-180-null'>transform-180-null</option>" +
-		"<option value='transform-null-.5'>transform-null-.5</option>" +
-		"<option value='mirrorPage'>mirrorPage</option>" +
-		"<option value='resetDebuggerPosition'>resetDebuggerPosition</option>" +
-		"<option value='returnAllNodes'>returnAllNodes</option>" +
-		"</select>​" +
-		"</div>" +
+		// "<div class='tyd_dropdown'>" +
+		// "<select class='reset-this tyd_dropdown_select' size=1>" +
+		// "<option value='tallyThoughtHello'>*</option>" +
+		// "<option value='showRandomProductMonsterFromAbove'>showRandomProductMonsterFromAbove</option>" +
+		// "<option value='showProductMonsterFromAbove'>showProductMonsterFromAbove</option>" +
+		// "<option value='showProductMonsterVideo'>showProductMonsterVideo</option>" +
+		// "<option value='stare'>stare</option>" +
+		// "<option value='tallyThoughtHello'>tallyThought</option>" +
+		// "<option value='tallyThoughtShowScore'>tallyThoughtShowScore</option>" +
+		// "<option value='explodeThePage'>explodeThePage</option>" +
+		// "<option value='transform-180-null'>transform-180-null</option>" +
+		// "<option value='transform-null-.5'>transform-null-.5</option>" +
+		// "<option value='mirrorPage'>mirrorPage</option>" +
+		// "<option value='resetDebuggerPosition'>resetDebuggerPosition</option>" +
+		// "<option value='returnAllNodes'>returnAllNodes</option>" +
+		// "</select>​" +
+		// "</div>" +
 		"</div>" +
 		"</div>";
 	$('#tally').append(str);
+
+	$("#tally_character_container").draggable({
+		drag: function(){
+		},
+		stop: function(){
+		}
+	});
 
 	// maybe temp...
 	Skin.preload();
