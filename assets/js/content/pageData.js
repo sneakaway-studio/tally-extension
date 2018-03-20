@@ -1,4 +1,4 @@
-/*jshint esversion: 6 */
+"use strict";
 
 
 /**
@@ -44,8 +44,8 @@ function checkPageToken(){
 	var data = {
 		token: $("#token").val(),
 		tokenExpires: $("#tokenExpires").val()
-	}
-	console.log(data)
+	};
+	console.log(data);
 	saveToken(data);
 }
 

@@ -1,4 +1,4 @@
-/*jshint esversion: 6 */
+"use strict";
 
 
 /*  Listener for messages in order to receive/pass data to contentscript.js

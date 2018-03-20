@@ -1,7 +1,6 @@
-/*jshint esversion: 6 */
+"use strict";
 
 var Tally = (function() {
-	"use strict";
 
 	// PRIVATE
 	var followCursor = false, // is eye following currently active? on page load, no

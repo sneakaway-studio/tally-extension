@@ -1,10 +1,10 @@
-/*jshint esversion: 6 */
+"use strict";
 
 
 
 
 // on first install
-chrome.runtime.onInstalled.addListener(function (object) {
+chrome.runtime.onInstalled.addListener(function () {
     console.log("!!!!! new [update|install] detected");
     // is this the first install?
     if ( !prop(store("tally_meta")) ){

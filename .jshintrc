@@ -1,0 +1,23 @@
+{
+    "indent": 1,
+    "strict": "global",
+    "unused": true,
+    "browser": true,
+    "undef": true,
+    "validthis": true,
+    "esversion": 6,
+    "globals": {
+        "$": false,
+        "Storage": false,
+        "Sound": false,
+        "tally_user": false,
+        "tally_options": false,
+        "chrome": false,
+        "prop": false,
+        "Tally": false,
+        "Skin": false,
+        "Thought": false,
+        "Debug": false
+    },
+    "-W117": true
+}

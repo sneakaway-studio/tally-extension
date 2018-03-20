@@ -1,3 +1,4 @@
+"use strict";
 
 /*  DATE FUNCTIONS
 ******************************************************************************/
@@ -5,7 +6,7 @@
 /**
  *	Return a date in ISO string
  */
-function returnDateISO(_date=null){ 
+function returnDateISO(_date=null){
 	var date = new Date();
 	if (_date != null)
 		date = _date;

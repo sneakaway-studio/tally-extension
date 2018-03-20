@@ -1,4 +1,4 @@
-/*jshint esversion: 6 */
+"use strict";
 
 
 
@@ -33,7 +33,7 @@ function checkAPIServerStatus(callback) {
     	img.src = tally_meta.api +"/pixel";
         store("tally_meta");
     } catch(ex){
-        log("server not online");
+        console.log("server not online");
     }
 }
 

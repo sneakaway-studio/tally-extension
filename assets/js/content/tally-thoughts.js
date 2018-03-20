@@ -1,4 +1,4 @@
-/*jshint esversion: 6 */
+"use strict";
 
 var Thought = (function() {
 	// PRIVATE

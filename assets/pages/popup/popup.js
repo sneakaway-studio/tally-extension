@@ -1,4 +1,4 @@
-/*jshint esversion: 6 */
+"use strict";
 
 
 
@@ -18,13 +18,13 @@ function updateTabSkins(){
 /*  GETTING / SAVING OPTIONS
 ******************************************************************************/
 
-var tally_options = {},tally_user = {};
+let tally_options = {}, tally_user = {};
 
 document.addEventListener('DOMContentLoaded', getOptions);
 
 function getUser(callback) {
 	chrome.runtime.sendMessage({'action':'getUser'}, function(response) {
-			console.log("getUser()",JSON.stringify(response.data));
+			//console.log("getUser()",JSON.stringify(response.data));
 			tally_user = response.data;
 			callback();
 		}
@@ -32,7 +32,7 @@ function getUser(callback) {
 }
 function getOptions() {
 	chrome.runtime.sendMessage({'action':'getOptions'}, function(response) {
-			console.log("getOptions()",JSON.stringify(response.data));
+			//console.log("getOptions()",JSON.stringify(response.data));
 			tally_options = response.data;
 			// game
 			$("#gameMode").val(tally_options.gameMode);
@@ -53,15 +53,15 @@ function saveOptions() {
 	tally_options.showDebugger 		= $('#showDebugger').prop('checked');
 	tally_options.debuggerPosition 	= $("#debuggerPosition").val();
 
-	console.log("saveOptions()",tally_options);
+	//console.log("saveOptions()",tally_options);
 
   	// saveOptions in background.js
 	chrome.runtime.sendMessage({'action':'saveOptions','data':tally_options}, function(response) {
-			console.log(response);
+			//console.log(response);
 			showStatus('User options saved'); // display success message
 			// refresh current page (w/new settings)
 			chrome.tabs.query({active: true, currentWindow: true}, function (arrayOfTabs) {
-				console.log("query again")
+				//console.log("query again")
 				var code = 'window.location.reload(1);';
 				chrome.tabs.executeScript(arrayOfTabs[0].id, {code: code});
 			});
@@ -72,7 +72,7 @@ function saveOptions() {
 // reset tally_user
 document.getElementById("opt_reset_user").onclick = function(){
 	chrome.runtime.sendMessage({action: "resetUser"}, function(response) {
-			console.log(response); // display success message
+			//console.log(response); // display success message
   			showStatus("User has been reset");
 		}
 	);
@@ -80,7 +80,7 @@ document.getElementById("opt_reset_user").onclick = function(){
 // reset tally_options
 document.getElementById("opt_reset_options").onclick = function(){
 	chrome.runtime.sendMessage({action: "resetOptions"}, function(response) {
-			console.log(response); // display success message
+			//console.log(response); // display success message
   			showStatus("Options have been reset");
 		}
 	);
@@ -103,7 +103,7 @@ $("select#gameMode").change(function(){
 // timeout to save textarea
 var timeoutId;
 $('#disabledDomains').on('input propertychange change', function() {
-    console.log('Textarea Change');
+    //console.log('Textarea Change');
 
     clearTimeout(timeoutId);
     timeoutId = setTimeout(function() {

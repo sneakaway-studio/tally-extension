@@ -1,4 +1,4 @@
-/*jshint esversion: 6 */
+"use strict";
 
 var Sound = (function() {
 	// PRIVATE
@@ -90,7 +90,7 @@ var Sound = (function() {
 		if (delay > 0)
 			setTimeout(function() {
 				audio.play();
-			}, delay)
+			}, delay);
 		else
 			audio.play();
     }
