@@ -32,15 +32,6 @@ var Sound = (function() {
 		"awards": {},
 		"monsters": {},
 		"songs": {},
-		"tally": {
-			"tally-fun-fact.mp3":"tally-fun-fact.mp3",
-			"tally-hello-q.mp3":"tally-hello-q.mp3",
-			"tally-how-are-you-q.mp3":"tally-how-are-you-q.mp3",
-			"tally-leaving-so-soon.mp3":"tally-leaving-so-soon.mp3",
-			"tally-pay-attention.mp3":"tally-pay-attention.mp3",
-			"tally-sad.mp3":"tally-sad.mp3",
-			"tally-watch-ooout.mp3":"tally-watch-ooout.mp3"
-        },
 		"user": {
 			"click":"Pickup-coin2.wav"
 		}

@@ -154,15 +154,15 @@ var clickEventHandler = function (eventData,target) {
 		serverUpdate.scoreData.score += gameRules.clickScore[eventData.action];
 
 		// only allow points for clicking the first time (FB Like, etc.)
-		$(target).toggleClass("tally-clicked");
+//		$(target).toggleClass("tally-clicked");
 
 
 
-		// // play sound
-		// playSound('coin');
-		// // show click visual
-		// showClickVisualText(eventData,"+"+ gameRules.clickScore[eventData.action]);
-		// // activate tally
+		// play sound
+		Sound.play('user','click');
+		// show click visual
+		Effects.showClickVisualText(eventData,"+"+ gameRules.clickScore[eventData.action]);
+		// activate tally
 		// activateTally(eventData.action);
 
 
