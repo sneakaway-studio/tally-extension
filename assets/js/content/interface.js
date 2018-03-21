@@ -3,9 +3,10 @@
 $( function() {
 
     function addBaseHTML(){
-        let str =   "<div id='tally' class='reset-this-root reset-this'>"+
+        let str =   "<div id='tally_wrapper' class='reset-this-root reset-this'>"+
                     "<div id='tally_click_visual'></div>"+
-                    "</div>";
+                    "<div id='tally'>"+
+                    "</div></div>";
         $('body').append(str);
     }
     addBaseHTML();
