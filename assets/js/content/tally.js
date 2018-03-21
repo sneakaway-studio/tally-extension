@@ -160,26 +160,34 @@ function startTally() {
 	$('#tally').append(str);
 
 	$("#tally_character_container").draggable({
-		drag: function(){
-		},
-		stop: function(){
-		}
+		drag: function() {},
+		stop: function() {}
 	});
 
 	// maybe temp...
 	Skin.preload();
 
+
+
 	// add the tally_character click action
-	document.getElementById('tally_character_container').onclick = function() {
-//		Tally.menu();
-//		Tally.show(Thought.get("random","hello"), false);
-	//	Tally.show(Thought.get("trackers","lots"), true);
+	$(document).on('click', '#tally_character_container', function() {
+		//Tally.menu();
 
-	Thought.show(Thought.get("trackers","general"), true);
-		//Sound.test("tally", "tally-fun-fact.mp3");
-		Sound.test("tally");
 
-	};
+		// SOUND EXAMPLES
+
+		let r = Math.random();
+		if (r < 0.3)
+			// example of category/subcategory + sound
+			Thought.show(["random", "greeting", 0], true);
+		else if (r < 0.6)
+			// example of category/index + no sound
+			Thought.show(["narrative", 0, "story3"], true);
+		else
+			// example of passing just a string + sound
+			Thought.show("this is just a string", "neutral");
+
+	});
 
 
 	// launch title page
@@ -199,6 +207,6 @@ function startTally() {
 
 
 
-//	Tally.showThought(Thoughts.random.hello, false);
+	//	Tally.showThought(Thoughts.random.hello, false);
 
 }

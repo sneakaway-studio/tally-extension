@@ -86,13 +86,12 @@ const getLastServerUpdatePromise = new Promise(
 		//if (!pageData.activeOnPage) return;
 		chrome.runtime.sendMessage({'action':'getLastServerUpdate'}, function(response) {
 				console.log('>>>>> getLastServerUpdatePromise()',response.data);
+				let tally_lastServerUpdate = {};
 				if (prop(response.data)){
-					tally_lastServerUpdate = response.data; // store data
+					let tally_lastServerUpdate = response.data; // store data
 					pageData.previousUrl = tally_lastServerUpdate.pageData.url;
-				} else {
-					tally_lastServerUpdate = {}; // store data
 				}
-				resolve(response.data); // resolve promise
+				resolve(tally_lastServerUpdate); // resolve promise
 			}
 		);
 	}

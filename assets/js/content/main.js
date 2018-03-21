@@ -11,7 +11,7 @@ let pageData = getPageData(),
 $( function() {
 	Promise // after async functions then update
 		.all([getUserPromise, getOptionsPromise, getMetaPromise]) // , getLastServerUpdatePromise
-		.then(function(results) {
+		.then(function() {
 			console.log('>>>>> init() Promise all data has loaded',tally_user,tally_options);
 			// check if extension should be active on this page before proceeding
 			pageData.activeOnPage = shouldExtensionBeActiveOnPage(tally_options);

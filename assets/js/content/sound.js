@@ -48,6 +48,16 @@ var Sound = (function() {
 
 
 
+	let moods = {
+		cautious: 3,
+		danger: 3,
+		happy: 2,
+		neutral: 2,
+		question: 2,
+		sad: 1
+	};
+
+
 	/**
 	 * Play a sound from a category and index of sounds
 	 * @param  {string} category - The general category of sounds
@@ -77,11 +87,23 @@ var Sound = (function() {
     // Sound.play ("tally","general")
     function playSound(category, index, delay) {
         if (!tally_options.playSounds) return;
-        var soundFile = category +"/"+ sounds[category][index];
-		play(soundFile,delay);
+        let file = category +"/"+ sounds[category][index];
+		play(file,delay);
     }
+	// play a random example of a mood
+	function playMood(mood){
+        if (!tally_options.playSounds) return;
+		//console.log("Sound.new()",mood);
+		let r = Math.ceil(Math.random() * moods[mood]);
+		let file = "tally/moods-v2/"+ mood +"-"+ r +"-2.mp3";
+		play(file);
+	}
 
-    // generic play function
+
+
+	/**
+	 *	Generic play function (called from others in this obj)
+	 */
     function play(soundFile,delay=0){
 		console.log("Sound.play("+ soundFile +")");
 		// load/play sound
@@ -102,6 +124,9 @@ var Sound = (function() {
 		},
 		play: function(category, index, delay) {
 			playSound(category, index, delay);
+		},
+		playMood: function(mood){
+			playMood(mood);
 		}
 
 	};
