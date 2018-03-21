@@ -137,24 +137,6 @@ function startTally() {
 		"<div class='tally_score_likes'></div>" +
 		"<div class='tally_score_pages'></div>" +
 		"<div class='tally_score_domains'></div>" +
-
-		// "<div class='tyd_dropdown'>" +
-		// "<select class='reset-this tyd_dropdown_select' size=1>" +
-		// "<option value='tallyThoughtHello'>*</option>" +
-		// "<option value='showRandomProductMonsterFromAbove'>showRandomProductMonsterFromAbove</option>" +
-		// "<option value='showProductMonsterFromAbove'>showProductMonsterFromAbove</option>" +
-		// "<option value='showProductMonsterVideo'>showProductMonsterVideo</option>" +
-		// "<option value='stare'>stare</option>" +
-		// "<option value='tallyThoughtHello'>tallyThought</option>" +
-		// "<option value='tallyThoughtShowScore'>tallyThoughtShowScore</option>" +
-		// "<option value='explodeThePage'>explodeThePage</option>" +
-		// "<option value='transform-180-null'>transform-180-null</option>" +
-		// "<option value='transform-null-.5'>transform-null-.5</option>" +
-		// "<option value='mirrorPage'>mirrorPage</option>" +
-		// "<option value='resetDebuggerPosition'>resetDebuggerPosition</option>" +
-		// "<option value='returnAllNodes'>returnAllNodes</option>" +
-		// "</select>​" +
-		// "</div>" +
 		"</div>" +
 		"</div>";
 	$('#tally').append(str);

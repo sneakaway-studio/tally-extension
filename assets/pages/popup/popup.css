@@ -30,6 +30,21 @@ h1 {  }
 div.tab { background-color: #f1f1f1; padding:10px; overflow: auto;}
 
 
+
+/* colums */
+.cols {
+    display: flex;
+    flex-wrap: wrap;
+}
+.cols .col {
+    flex: 1 0 25%;
+    box-sizing: border-box;
+    background: #e0ddd5;
+    color: #171e42;
+    padding: 10px;
+}
+
+
 /* buttons */
 
 .roundBtn { border-radius: 7px; background: #9cc; padding: 5px 9px; border: none; }

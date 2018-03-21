@@ -1,113 +1,138 @@
 <!DOCTYPE html>
 <html>
+
 <head>
 <meta charset="UTF-8">
 <link rel="stylesheet" type="text/css" href="../_global.css">
 <link rel="stylesheet" type="text/css" href="./popup.css">
 </head>
+
 <body>
 
 <div class="container">
 
-<div class="opt_header">
-	<button id="opt_close" class="roundBtn"> X </button>
-	<div id="status"></div>
-	<h1>Tally</h1>
-</div>
+	<div class="opt_header">
+		<button id="opt_close" class="roundBtn"> X </button>
+		<div id="status"></div>
+		<h1>Tally</h1>
+	</div>
 
-<div class="tab-button-group">
-	<button class="tab-button" id="scoreBtn">Score</button>
-	<button class="tab-button" id="skinsBtn">Skins</button>
-	<button class="tab-button active" id="debuggingBtn">Debugging</button>
-	<button class="tab-button" id="optionsBtn">Options</button>
-	<button class="tab-button" id="aboutBtn">About</button>
-</div>
-
-
+	<div class="tab-button-group">
+		<button class="tab-button" id="scoreBtn">Score</button>
+		<button class="tab-button" id="skinsBtn">Skins</button>
+		<button class="tab-button active" id="debuggingBtn">Debugging</button>
+		<button class="tab-button" id="optionsBtn">Options</button>
+		<button class="tab-button" id="aboutBtn">About</button>
+	</div>
 
 
 
 
 
-<div id="scoreTab" class="tab">
-
-	<h2>Score</h2>
-	<p>This will be the score</p>
-
-</div>
 
 
+	<div id="scoreTab" class="tab">
 
+		<h2>Score</h2>
+		<p>This will be the score</p>
 
-
-<div id="skinsTab" class="tab">
-
-	<h2>Skins</h2>
-	<p>These are the skins you have been awarded</p>
-	<ul id="skinsList">
-
-	</ul>
-</div>
-
-
-
-<div id="debuggingTab" class="tab">
-
-	<h2>Debugging</h2>
-
-	<button id="opt_reset_user">Reset user data</button>
-	<span id="opt_reset_user_status" class="status"></span><br>
-
-	<button id="opt_reset_options">Reset user options to defaults</button>
-	<span id="opt_reset_options_status" class="status"></span><br>
-
-</div>
+	</div>
 
 
 
 
-<div id="optionsTab" class="tab" style="display:none">
 
-	<h3>Game</h3>
+	<div id="skinsTab" class="tab">
 
-	<label for="gameMode">Game mode</label>
-	<select class="option-dropdown" id="gameMode">
-		<option value="full">Full – All the feels!</option>
-		<option value="stealth">Stealth – Visuals and sounds off</option>
-		<option value="disabled">Disabled</option>
-	</select>
-	<br>
+		<h2>Skins</h2>
+		<p>These are the skins you have been awarded</p>
+		<ul id="skinsList">
 
-
-	<h3>Privacy</h3>
-
-	<label for="disabledDomains">Disabled domains</label><br>
-	<textarea class="option-textarea" id="disabledDomains" rows="4" cols="40">
-	</textarea>
-	<br>
-
-
-	<h3>Development</h3>
-
-	<label for="showDebugger">Show debugger</label>
-	<input class="option-radio-btn" id="showDebugger" value="true" type="checkbox">
-	<br>
-
-	<label for="debuggerPosition">Debugger position</label>
-	<input id="debuggerPosition" type="input">
-	<br>
+		</ul>
+	</div>
 
 
 
+	<div id="debuggingTab" class="tab">
 
-</div>
+		<h2>Debugging</h2>
 
-<div id="aboutTab" class="tab" style="display:none">
+		<h3>Tests</h3>
 
-	<h2>About</h2>
-	<p>Link to site</p>
+		<div class="cols">
+			<div class="col">
+				<button id="tallyThoughtHello">tallyThoughtHello</button><br>
+				<button id="showRandomProductMonsterFromAbove">showRandomProductMonsterFromAbove</button><br>
+				<button id="showProductMonsterFromAbove">showProductMonsterFromAbove</button><br>
+				<button id="showProductMonsterVideo">showProductMonsterVideo</button><br>
+				<button id="stare">stare</button><br>
+			</div>
 
-</div>
+			<div class="col">
+				<button id="tallyThoughtShowScore">tallyThoughtShowScore</button><br>
+				<button id="explodeThePage">explodeThePage</button><br>
+				<button id="transform-180-null">transform-180-null</button><br>
+				<button id="transform-null-.5">transform-null-.5</button><br>
+				<button id="mirrorPage">mirrorPage</button><br>
+				<button id="resetDebuggerPosition">resetDebuggerPosition</button><br>
+				<button id="returnAllNodes">returnAllNodes</button><br>
+			</div>
+		</div>
+
+		<h3>Resets</h3>
+
+		<button id="opt_reset_user">Reset user data</button>
+		<span id="opt_reset_user_status" class="status"></span><br>
+
+		<button id="opt_reset_options">Reset user options to defaults</button>
+		<span id="opt_reset_options_status" class="status"></span><br>
+
+	</div>
+
+
+
+
+	<div id="optionsTab" class="tab" style="display:none">
+
+		<h3>Game</h3>
+
+		<label for="gameMode">Game mode</label>
+		<select class="option-dropdown" id="gameMode">
+			<option value="full">Full – All the feels!</option>
+			<option value="stealth">Stealth – Visuals and sounds off</option>
+			<option value="disabled">Disabled</option>
+		</select>
+		<br>
+
+
+		<h3>Privacy</h3>
+
+		<label for="disabledDomains">Disabled domains</label><br>
+		<textarea class="option-textarea" id="disabledDomains" rows="4" cols="40"></textarea>
+		<br>
+
+
+		<h3>Development</h3>
+
+		<label for="showDebugger">Show debugger</label>
+		<input class="option-radio-btn" id="showDebugger" value="true" type="checkbox">
+		<br>
+
+		<label for="debuggerPosition">Debugger position</label>
+		<input id="debuggerPosition" type="input">
+		<br>
+
+
+
+
+	</div>
+
+	<div id="aboutTab" class="tab" style="display:none">
+
+		<h2>About</h2>
+		<p>Link to site</p>
+
+	</div>
 
 
 
@@ -115,4 +140,5 @@
 <script src="../../libs/jquery-3.2.1.min.js"></script>
 <script src="./popup.js"></script>
 </body>
+
 </html>
