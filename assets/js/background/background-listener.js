@@ -34,8 +34,18 @@ chrome.runtime.onMessage.addListener(
         }
 
 
+		/*  GAME STATUS MANAGEMENT
+        ******************************************************************************/
 
-
+		// getGameStatus
+        else if (request.action == "getGameStatus"){
+            sendResponse({"action":request.action,"data": store("tally_gameStatus") });
+        }
+		// saveGameStatus
+        else if (request.action == "saveGameStatus"){
+			store("tally_gameStatus",request.data);
+            sendResponse({"action":request.action,"message":1});
+        }
 
         /*  OPTIONS MANAGEMENT
         ******************************************************************************/

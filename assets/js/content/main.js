@@ -5,7 +5,8 @@ let pageData = getPageData(),
     eventData = {},
     tally_user = {},
     tally_options = {},
-    tally_meta = {};
+    tally_meta = {},
+    tally_gameStatus = {};
 
 
 $( function() {
