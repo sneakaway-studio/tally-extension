@@ -6,7 +6,7 @@ let pageData = getPageData(),
     tally_user = {},
     tally_options = {},
     tally_meta = {},
-    tally_gameStatus = {};
+    tally_monsters = {};
 
 
 $( function() {
@@ -51,6 +51,9 @@ function startGame(){
     startTally();
     addMainClickEventListener();
     //checkPageForMonsters(pageData.tags);
+
+    Monster.update();
+    Monster.check();
 }
 
 /**
