@@ -10,7 +10,7 @@ const getUserPromise = new Promise(
 	(resolve,reject) => {
 		//if (!pageData.activeOnPage) return;
 		chrome.runtime.sendMessage({'action':'getUser'}, function(response) {
-				console.log('>>>>> getUserPromise()',JSON.stringify(response.data));
+				//console.log('>>>>> getUserPromise()',JSON.stringify(response.data));
 				tally_user = response.data; // store data
 				resolve(response.data); // resolve promise
 			}
@@ -29,7 +29,7 @@ const getOptionsPromise = new Promise(
 	(resolve,reject) => {
 		//if (!pageData.activeOnPage) return;
 		chrome.runtime.sendMessage({'action':'getOptions'}, function(response) {
-				console.log('>>>>> getOptionsPromise()',response.data);
+				//console.log('>>>>> getOptionsPromise()',response.data);
 				tally_options = response.data; // store data
 				resolve(response.data); // resolve promise
 			}
@@ -38,7 +38,7 @@ const getOptionsPromise = new Promise(
 );
 function saveOptions(calledFrom) {
 	chrome.runtime.sendMessage({'action':'saveOptions','data':tally_options}, function(response) {
-			console.log("<<<<< ",calledFrom,'> saveOptions()',JSON.stringify(response));
+			//console.log("<<<<< ",calledFrom,'> saveOptions()',JSON.stringify(response));
 		}
 	);
 }
@@ -48,7 +48,7 @@ const getMetaPromise = new Promise(
 	(resolve,reject) => {
 		//if (!pageData.activeOnPage) return;
 		chrome.runtime.sendMessage({'action':'getMeta'}, function(response) {
-				console.log('>>>>> getMetaPromise()',response.data);
+				//console.log('>>>>> getMetaPromise()',response.data);
 				tally_meta = response.data; // store data
 				resolve(response.data); // resolve promise
 			}
@@ -85,7 +85,7 @@ const getLastServerUpdatePromise = new Promise(
 	(resolve,reject) => {
 		//if (!pageData.activeOnPage) return;
 		chrome.runtime.sendMessage({'action':'getLastServerUpdate'}, function(response) {
-				console.log('>>>>> getLastServerUpdatePromise()',response.data);
+				//console.log('>>>>> getLastServerUpdatePromise()',response.data);
 				let tally_lastServerUpdate = {};
 				if (prop(response.data)){
 					let tally_lastServerUpdate = response.data; // store data

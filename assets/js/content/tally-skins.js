@@ -25,7 +25,7 @@ var Skin = (function() {
 	}
 
 	function preload(){
-		console.log("preloadSkins()",tally_user.skins);
+		//console.log("preloadSkins()",tally_user.skins);
 		updateList();
 		let str = "";
 		for (let i=0,l=skins.length; i<l; i++){

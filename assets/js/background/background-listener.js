@@ -44,6 +44,7 @@ chrome.runtime.onMessage.addListener(
         }
 		// saveMonsterStatus
         else if (request.action == "saveMonsterStatus"){
+			console.log("saveMonsterStatus()",request.data)
 			store("tally_monster_status",request.data);
             sendResponse({"action":request.action,"message":1});
         }
