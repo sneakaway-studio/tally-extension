@@ -39,7 +39,7 @@ chrome.runtime.onMessage.addListener(
 
 		// getMonsterStatus
         else if (request.action == "getMonsterStatus"){
-			let data = store("tally_monster") || {};
+			let data = store("tally_monster_status") || {};
             sendResponse({"action":request.action,"data": store("tally_monster_status",data) });
         }
 		// saveMonsterStatus
