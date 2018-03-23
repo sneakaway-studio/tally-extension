@@ -16,8 +16,29 @@ var Monster = (function() {
 			if (!response) return;
 			console.log('>>>>> Monster.update()', JSON.stringify(response.data));
 			status = response.data; // store data
+			checkStatusTimes();
 			checkAfterUpdate();
 		});
+	}
+
+	/**
+	 *	Make sure all statuses are within n time ago
+	 */
+	function checkStatusTimes(){
+		let now = Date.now();
+		for(var mid in status){
+			// how long has it been since this monster was seen?
+			console.log("time", now - status[mid].updatedAt);
+
+			// if longer than 5 mins (300 secs) then delete
+			let seconds = ((now - status[mid].updatedAt) / 1000);
+			if ((seconds) > 60) {
+				console.log("DELETING, TOO LONG", "seconds", seconds);
+				delete status[mid];
+			}
+		}
+		// save after checking times
+		saveStatus();
 	}
 	/**
 	 *	Check the page for a monster
@@ -53,25 +74,14 @@ var Monster = (function() {
 		let stage = 1;
 		// does the monster id exist in status?
 		if (status[mid]) {
-			// how long has it been since this monster was seen?
-			console.log("time", now - status[mid].updatedAt);
-			// if longer than 5 mins (300 secs) then delete
-			let seconds = ((now - status[mid].updatedAt) / 1000);
-			if ((seconds) > 60) {
-				console.log("DELETING, TOO LONG", "seconds", seconds);
-				delete status[mid];
+			// what stage are we at with this monster?
+			if (status[mid].stage == 1) {
+				// we should prompt stage 2
+			} else if (status[mid].stage == 2) {
+				// we should prompt stage 3
 			}
-			// we can continue
-			else {
-				let speed = 0;
-				// what stage are we at with this monster?
-				if (status[mid].stage == 1) {
-					// we should prompt stage 2
-				} else if (status[mid].stage == 2) {
-					// we should prompt stage 3
-				}
-				launch(mid,speed);
-			}
+			launch(mid, status[mid].stage);
+
 			// the monster is in the status exists, increase the startGame
 			console.log('MATCH', mid, MonsterData.dataById[mid], status[mid]);
 		} else { // add it
@@ -99,7 +109,10 @@ var Monster = (function() {
 	 */
 	function launch(mid) {
 		let m = MonsterData.dataById[mid];
-		$.growl({ title: "LAUNCHING MONSTER!!!", message: m.name +" ["+ m.mid +"]" });
+		$.growl({
+			title: "LAUNCHING MONSTER!!!",
+			message: m.name + " [" + m.mid + "]"
+		});
 
 	}
 
