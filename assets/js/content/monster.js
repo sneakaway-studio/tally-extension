@@ -24,11 +24,11 @@ var Monster = (function() {
 	/**
 	 *	Make sure all statuses are within n time ago
 	 */
-	function checkStatusTimes(){
+	function checkStatusTimes() {
 		let now = Date.now();
-		for(var mid in status){
+		for (var mid in status) {
 			// how long has it been since this monster was seen?
-			console.log("time", now - status[mid].updatedAt);
+			console.log(mid + ". ", now - status[mid].updatedAt);
 
 			// if longer than 5 mins (300 secs) then delete
 			let seconds = ((now - status[mid].updatedAt) / 1000);
@@ -74,13 +74,29 @@ var Monster = (function() {
 		let stage = 1;
 		// does the monster id exist in status?
 		if (status[mid]) {
+			// random control var
+			let r = Math.random();
 			// what stage are we at with this monster?
 			if (status[mid].stage == 1) {
 				// we should prompt stage 2
+				if (r > 0.5) {
+					status[mid].stage = 2;
+					// tally warn
+					Thought.show(["monster", "close", 0], true);
+				} else {
+					// tally warn
+					Thought.show(["monster", "far", 0], true);
+				}
 			} else if (status[mid].stage == 2) {
 				// we should prompt stage 3
+				if (r > 0.5) {
+					launch(mid);
+				} else {
+					// tally warn
+					Thought.show(["monster", "close", 0], true);
+				}
 			}
-			launch(mid, status[mid].stage);
+
 
 			// the monster is in the status exists, increase the startGame
 			console.log('MATCH', mid, MonsterData.dataById[mid], status[mid]);
@@ -92,6 +108,19 @@ var Monster = (function() {
 		}
 		saveStatus();
 	}
+
+	/**
+	 *	Launch a product monster
+	 */
+	function launch(mid, stage) {
+		let m = MonsterData.dataById[mid];
+		$.growl({
+			title: "LAUNCHING MONSTER!!!",
+			message: "MONSTER: " + m.name + " [" + m.mid + "] <br>STAGE: " + stage
+		});
+
+	}
+
 	/**
 	 *	Save the status
 	 */
@@ -103,19 +132,6 @@ var Monster = (function() {
 			//console.log('<<<<< > saveMonsterStatus()',JSON.stringify(response));
 		});
 	}
-
-	/**
-	 *	Launch a product monster
-	 */
-	function launch(mid) {
-		let m = MonsterData.dataById[mid];
-		$.growl({
-			title: "LAUNCHING MONSTER!!!",
-			message: m.name + " [" + m.mid + "]"
-		});
-
-	}
-
 
 	// PUBLIC
 	return {

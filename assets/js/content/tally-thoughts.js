@@ -76,7 +76,7 @@ var Thought = (function() {
 
 	// return thought text
 	function getThought(arr) {
-		//console.log("getThought()", arr);
+		console.log("getThought()", arr);
 
 		// get category
 		let category = ThoughtData.data[arr[0]];
@@ -84,6 +84,7 @@ var Thought = (function() {
 		// if there is a subcategory then select random
 		if (arr[1]) {
 			let subcategory = arr[1];
+			if (category[subcategory].length < 1) return;
 			let r = Math.floor(Math.random() * category[subcategory].length);
 			return category[subcategory][r];
 		}
