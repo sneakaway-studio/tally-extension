@@ -34,8 +34,20 @@ chrome.runtime.onMessage.addListener(
         }
 
 
-		/*  MONSTER MANAGEMENT
+		/*  GAME STATUS && MONSTER MANAGEMENT
         ******************************************************************************/
+
+		// getGameStatus
+        else if (request.action == "getGameStatus"){
+			let data = store("tally_game_status") || {};
+            sendResponse({"action":request.action,"data": store("tally_game_status",data) });
+        }
+		// saveGameStatus
+        else if (request.action == "saveGameStatus"){
+			console.log("saveGameStatus()",request.data);
+			store("tally_game_status",request.data);
+            sendResponse({"action":request.action,"message":1});
+        }
 
 		// getMonsterStatus
         else if (request.action == "getMonsterStatus"){
@@ -44,7 +56,7 @@ chrome.runtime.onMessage.addListener(
         }
 		// saveMonsterStatus
         else if (request.action == "saveMonsterStatus"){
-			console.log("saveMonsterStatus()",request.data)
+			console.log("saveMonsterStatus()",request.data);
 			store("tally_monster_status",request.data);
             sendResponse({"action":request.action,"message":1});
         }

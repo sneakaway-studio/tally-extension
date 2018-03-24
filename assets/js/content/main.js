@@ -6,7 +6,8 @@ let pageData = getPageData(),
 	tally_user = {},
 	tally_options = {},
 	tally_meta = {},
-	tally_monsters = {};
+	tally_game_status = getGameStatus(),
+	tally_monster_status = {};
 
 
 $(function() {
