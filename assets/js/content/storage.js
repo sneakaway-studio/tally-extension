@@ -96,3 +96,19 @@ const getLastServerUpdatePromise = new Promise(
 		);
 	}
 );
+
+
+function getGameStatus() {
+	chrome.runtime.sendMessage({'action':'getGameStatus'}, function(response) {
+			console.log("<<<<< ",'> getGameStatus()',JSON.stringify(response));
+			tally_game_status = response.data;
+		}
+	);
+}
+function saveGameStatus(data) {
+	tally_game_status = data;
+	chrome.runtime.sendMessage({'action':'saveGameStatus','data':tally_game_status}, function(response) {
+			console.log("<<<<< ",'> saveGameStatus()',JSON.stringify(response));
+		}
+	);
+}

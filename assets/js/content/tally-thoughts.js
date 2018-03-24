@@ -36,13 +36,11 @@ var Thought = (function() {
 		let lines = 1;
 		// 28 characters per line * 2
 		if (str.length > 0)
-			lines = Math.ceil(str.length / 56);
+			lines = Math.ceil(str.length / 35);
 		// set duration based on number lines
-		let duration = lines * 1200;
+		let duration = lines * 1800;
 
 		console.log("showThought", str, duration, lines);
-
-
 
 		// add text
 		$('#tally_thought').html(str);
@@ -70,13 +68,13 @@ var Thought = (function() {
 			'opacity': 0
 		});
 		thoughtOpen = false;
-		// testing
-		Skin.update();
 	}
 
 	// return thought text
 	function getThought(arr) {
 		console.log("getThought()", arr);
+		// make sure it is an array
+		if (!Array.isArray(arr)) return;
 
 		// get category
 		let category = ThoughtData.data[arr[0]];
@@ -89,7 +87,7 @@ var Thought = (function() {
 			return category[subcategory][r];
 		}
 		// if there is no subcategory, then get by index
-		else if (arr[2] != null) {
+		else if (arr[2]) {
 			let index = arr[2];
 			return category[index];
 		}

@@ -81,19 +81,19 @@ var Monster = (function() {
 				// we should prompt stage 2
 				if (r > 0.5) {
 					status[mid].stage = 2;
-					// tally warn
 					Thought.show(["monster", "close", 0], true);
+					Skin.set("color-orange");
 				} else {
-					// tally warn
 					Thought.show(["monster", "far", 0], true);
+					Skin.set("color-yellow");
 				}
 			} else if (status[mid].stage == 2) {
 				// we should prompt stage 3
 				if (r > 0.5) {
 					launch(mid);
 				} else {
-					// tally warn
 					Thought.show(["monster", "close", 0], true);
+					Skin.set("color-orange");
 				}
 			}
 
@@ -114,6 +114,12 @@ var Monster = (function() {
 	 */
 	function launch(mid, stage) {
 		let m = MonsterData.dataById[mid];
+
+		Thought.show(["monster", "launch", 0], true);
+		Skin.set("color-red");
+
+
+
 		$.growl({
 			title: "LAUNCHING MONSTER!!!",
 			message: "MONSTER: " + m.name + " [" + m.mid + "] <br>STAGE: " + stage

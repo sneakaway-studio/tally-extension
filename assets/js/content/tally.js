@@ -110,6 +110,8 @@ function startTally() {
 
 	//Tally.blink();
 
+	// maybe temp...
+	Skin.preload();
 
 	$(document).mousemove(function(event) {
 		if (Tally.getFollowCursor == false) return;
@@ -146,9 +148,8 @@ function startTally() {
 		stop: function() {}
 	});
 
-	// maybe temp...
-	Skin.preload();
-
+	// set skins
+	Skin.set(tally_game_status.skin);
 
 
 	// add the tally_character click action
