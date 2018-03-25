@@ -36,7 +36,7 @@ var Thought = (function() {
 		let lines = 1;
 		// 28 characters per line * 2
 		if (str.length > 0)
-			lines = Math.ceil(str.length / 35);
+			lines = Math.ceil(str.length / 32);
 		// set duration based on number lines
 		let duration = lines * 1800;
 
@@ -48,7 +48,7 @@ var Thought = (function() {
 		// adjust size of the box
 		$('#tally_thought_bubble').css({
 			'display': 'flex',
-			'height': lines * 34 + "px",
+			'height': lines * 32 + "px",
 			'left': '10px',
 			'opacity': 1 // make it visible
 		});
@@ -61,6 +61,7 @@ var Thought = (function() {
 	}
 
 	function hideThought(sound = false) {
+		return;
 		if (!thoughtOpen) return;
 		$('#tally_thought_bubble').css({
 			'left': '-500px',

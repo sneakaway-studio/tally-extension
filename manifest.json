@@ -66,6 +66,7 @@
 			"assets/libs/jquery-ui.min.css",
 			"assets/libs/jquery.growl.css",
 			"assets/css/styles.css",
+			"assets/css/monster.css",
 			"assets/css/tally.css"
 		],
         "run_at": "document_end"
