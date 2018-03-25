@@ -1,0 +1,21 @@
+.tally_monster_sprite, .tally_monster_text_wrapper_top, .tally_monster_text_wrapper_bottom, .tally_monster_points_wrapper {
+    top: -700px;
+    left: -700px;
+    opacity: 0;
+    position: absolute;
+    z-index: 9999999999999;
+}
+
+.tally_monster_sprite {
+    position: absolute;
+    width: 500px;
+    height: 400px;
+    background: url('') left center no-repeat;
+    animation: monster_keyframes 0.4s steps(3) infinite;
+}
+
+@keyframes monster_keyframes {
+    100% {
+        background-position: -1500px;
+    }
+}
