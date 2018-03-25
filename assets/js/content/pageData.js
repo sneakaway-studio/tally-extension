@@ -11,6 +11,10 @@ function getPageData() {
 	// object
 	var data = {
 		activeOnPage: false,
+		browser: {
+			width: window.innerWidth || document.body.clientWidth,
+			height: window.innerHeight || document.body.clientHeight
+		},
 		contentType: window.document.contentType,
 		description: getDescription(),
 		domain: extractRootDomain(document.location.href),
@@ -40,7 +44,7 @@ function getPageData() {
 /**
  *	If on dashboard page then check for updates to token
  */
-function checkPageToken(){
+function checkPageToken() {
 	var data = {
 		token: $("#token").val(),
 		tokenExpires: $("#tokenExpires").val()
@@ -74,18 +78,20 @@ function getPageTags(data) {
 /**
  *	Get all trackers hidden on this page
  */
-function getTrackers(){
+function getTrackers() {
 
 	var foundObj = {},
 		foundArr = [],
 		// testing
-		trackers = { 'Analytics':['statcounter.com','_gaq'] };
+		trackers = {
+			'Analytics': ['statcounter.com', '_gaq']
+		};
 	// get a much larger list
 	trackers = disconnectTrackingServices;
 	// get scripts on the page
 	var scripts = document.getElementsByTagName("script");
 	// loop through each script
-	for(var i=0, l=scripts.length; i < l; i++){
+	for (var i = 0, l = scripts.length; i < l; i++) {
 		// get source of script
 		let str = "";
 		if (scripts[i].src !== "") str = scripts[i].src;
@@ -107,7 +113,7 @@ function getTrackers(){
 
 		// this method uses the single array (no categories)
 		// I think this may be the way to go in the end
-		if (foundArr.indexOf(scriptDomain) < 0 && trackers.indexOf(scriptDomain) >= 0){
+		if (foundArr.indexOf(scriptDomain) < 0 && trackers.indexOf(scriptDomain) >= 0) {
 			foundArr.push(scriptDomain);
 		}
 

@@ -113,16 +113,63 @@ var Monster = (function() {
 	 *	Launch a product monster
 	 */
 	function launch(mid, stage) {
-		let m = MonsterData.dataById[mid];
+		let monster = MonsterData.dataById[mid],
+			duration = 4500,
+			top = 600;
 
 		Thought.show(["monster", "launch", 0], true);
 		Skin.set("color-red");
 
 
+		// insert monster
+
+		// reference to image file
+		var url = chrome.extension.getURL('assets/img/monsters/' + monster.mid + '-anim-sheet.png');
+		// set content
+		$('.tally_monster_sprite').css('background-image', 'url( ' + url + ')');
+
+		// hide outside page
+		$('.tally_monster_sprite').css({
+			'top': pageData.browser.height + 100 + "px", // hide it up
+			'left': (pageData.browser.width / 2) - 250 + "px", // center
+			'display': 'block',
+			'opacity': 1
+		});
+		// animate up
+		var anim = anime({
+			targets: '.tally_monster_sprite',
+			translateY: {
+				delay: 500, // wait for page to load
+				value: -top,
+				duration: duration
+			},
+			begin: function() { // play sound n milliseconds after animation begins
+				//playSound('powerup',0,10);
+			}
+		});
+
+
+
+
+		// // animate monster
+		// anime({
+		// 	targets: '#tally_monster',
+		// 	translateY: -30,
+		// 	duration: 600,
+		// 	opacity: 0,
+		// 	easing: 'easeInOutQuad',
+		// 	complete: function() {
+		// 		// reset
+		// 		$('#tally_click_visual').css({
+		// 			'transform': 'none'
+		// 		});
+		// 	}
+		// });
+
 
 		$.growl({
 			title: "LAUNCHING MONSTER!!!",
-			message: "MONSTER: " + m.name + " [" + m.mid + "] <br>STAGE: " + stage
+			message: "MONSTER: " + monster.name + " [" + monster.mid + "] <br>STAGE: " + stage
 		});
 
 	}
