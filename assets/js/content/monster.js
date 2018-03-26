@@ -8,35 +8,26 @@ var Monster = (function() {
 	function check() {
 		// don't check if disabled
 		if (tally_options.gameMode === "disabled") return;
-		chrome.runtime.sendMessage({
-			'action': 'getRecentMonsters'
-		}, function(response) {
-			if (!response) return;
-			console.log('>>>>> Monster.update()', JSON.stringify(response.data));
-			tally_recent_monsters = response.data; // store data
-			checkRecentTimes();
-			checkAfterUpdate();
-		});
+		checkRecentTimes();
+		checkAfterUpdate();
 	}
 
 	/**
 	 *	Make sure all monster are recent
 	 */
 	function checkRecentTimes() {
-		console.log('>>>>> Monster.checkRecentTimes()', JSON.stringify(tally_recent_monsters));
 		let now = Date.now();
 		for (var mid in tally_recent_monsters) {
 			// how long has it been since this monster was seen?
-			console.log(mid + ". ", now - tally_recent_monsters[mid].updatedAt);
+			//console.log(mid + ". ", now - tally_recent_monsters[mid].updatedAt);
 
 			// if longer than 5 mins (300 secs) then delete
 			let seconds = ((now - tally_recent_monsters[mid].updatedAt) / 1000);
 			if ((seconds) > 60) {
-				console.log("DELETING, TOO LONG", "seconds", seconds);
+				console.log("DELETING", MonsterData.dataById[mid].slug, "seconds", seconds);
 				delete tally_recent_monsters[mid];
 			}
 		}
-		console.log('>>>>> Monster.checkRecentTimes()', JSON.stringify(tally_recent_monsters));
 		// save after checking times
 		saveRecent();
 	}
@@ -65,7 +56,6 @@ var Monster = (function() {
 			}
 		}
 		console.log('>>>>> Monster.checkAfterUpdate()', JSON.stringify(tally_recent_monsters));
-		Debug.update();
 	}
 
 	/**
@@ -98,13 +88,12 @@ var Monster = (function() {
 					Skin.set("color-orange");
 				}
 			}
-
-
 			// the monster is recent, increase the startGame
 			console.log('MATCH', mid, MonsterData.dataById[mid], tally_recent_monsters[mid]);
 		} else { // add it
 			tally_recent_monsters[mid] = {
 				"stage": stage,
+				"slug": MonsterData.dataById[mid].slug,
 				"updatedAt": now
 			};
 		}
@@ -121,6 +110,10 @@ var Monster = (function() {
 
 		Thought.show(["monster", "launch", 0], true);
 		Skin.set("color-red");
+
+		// update stage
+		tally_recent_monsters[mid].stage = 3;
+		saveRecent();
 
 
 		// insert monster
@@ -186,6 +179,7 @@ var Monster = (function() {
 		}, function(response) {
 			//console.log('<<<<< > saveRecentMonsters()',JSON.stringify(response));
 		});
+		Debug.update();
 	}
 
 	// PUBLIC

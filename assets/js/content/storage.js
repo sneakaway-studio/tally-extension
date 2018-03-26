@@ -61,7 +61,7 @@ const getRecentMonstersPromise = new Promise(
 		//if (!pageData.activeOnPage) return;
 		chrome.runtime.sendMessage({'action':'getRecentMonsters'}, function(response) {
 				//console.log('>>>>> getRecentMonsters()',response.data);
-				Monster.recent = response.data; // store data
+				tally_recent_monsters = response.data; // store data
 				resolve(response.data); // resolve promise
 			}
 		);
@@ -114,7 +114,7 @@ const getLastServerUpdatePromise = new Promise(
 
 function getGameStatus() {
 	chrome.runtime.sendMessage({'action':'getGameStatus'}, function(response) {
-			console.log("<<<<< ",'> getGameStatus()',JSON.stringify(response));
+			//console.log("<<<<< ",'> getGameStatus()',JSON.stringify(response));
 			tally_game_status = response.data;
 		}
 	);
@@ -122,7 +122,7 @@ function getGameStatus() {
 function saveGameStatus(data) {
 	tally_game_status = data;
 	chrome.runtime.sendMessage({'action':'saveGameStatus','data':tally_game_status}, function(response) {
-			console.log("<<<<< ",'> saveGameStatus()',JSON.stringify(response));
+			//console.log("<<<<< ",'> saveGameStatus()',JSON.stringify(response));
 		}
 	);
 }
