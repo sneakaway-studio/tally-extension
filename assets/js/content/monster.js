@@ -2,43 +2,43 @@
 
 var Monster = (function() {
 
-	let status = {};
+	let recent = {};
 
 	/**
-	 *	Initial check function, refreshes status from back end continues to next
+	 *	Initial check function, refreshes recent monsters from back end continues to next
 	 */
 	function check() {
 		// don't check if disabled
 		if (tally_options.gameMode === "disabled") return;
 		chrome.runtime.sendMessage({
-			'action': 'getMonsterStatus'
+			'action': 'getRecentMonsters'
 		}, function(response) {
 			if (!response) return;
 			console.log('>>>>> Monster.update()', JSON.stringify(response.data));
-			status = response.data; // store data
-			checkStatusTimes();
+			recent = response.data; // store data
+			checkRecentTimes();
 			checkAfterUpdate();
 		});
 	}
 
 	/**
-	 *	Make sure all statuses are within n time ago
+	 *	Make sure all monster are recent
 	 */
-	function checkStatusTimes() {
+	function checkRecentTimes() {
 		let now = Date.now();
-		for (var mid in status) {
+		for (var mid in recent) {
 			// how long has it been since this monster was seen?
-			console.log(mid + ". ", now - status[mid].updatedAt);
+			console.log(mid + ". ", now - recent[mid].updatedAt);
 
 			// if longer than 5 mins (300 secs) then delete
-			let seconds = ((now - status[mid].updatedAt) / 1000);
+			let seconds = ((now - recent[mid].updatedAt) / 1000);
 			if ((seconds) > 60) {
 				console.log("DELETING, TOO LONG", "seconds", seconds);
-				delete status[mid];
+				delete recent[mid];
 			}
 		}
 		// save after checking times
-		saveStatus();
+		saveRecent();
 	}
 	/**
 	 *	Check the page for a monster
@@ -55,7 +55,7 @@ var Monster = (function() {
 				let arr = MonsterData.idsByTag[tag];
 				let mid = 0;
 				if (arr.length > 1) {
-					// pick random monster-id from list, this will be the page monster
+					// pick random monster id from list, this will be the page monster
 					mid = arr[Math.floor(Math.random() * arr.length)];
 					//console.log('MATCH', tag, arr, mid, MonsterData.dataById[mid]);
 					// we have identified a match, let's handle the monster
@@ -72,22 +72,22 @@ var Monster = (function() {
 	function handleMonster(mid) {
 		let now = Date.now();
 		let stage = 1;
-		// does the monster id exist in status?
-		if (status[mid]) {
+		// does the monster id exist in recent?
+		if (recent[mid]) {
 			// random control var
 			let r = Math.random();
 			// what stage are we at with this monster?
-			if (status[mid].stage == 1) {
+			if (recent[mid].stage == 1) {
 				// we should prompt stage 2
 				if (r > 0.5) {
-					status[mid].stage = 2;
+					recent[mid].stage = 2;
 					Thought.show(["monster", "close", 0], true);
 					Skin.set("color-orange");
 				} else {
 					Thought.show(["monster", "far", 0], true);
 					Skin.set("color-yellow");
 				}
-			} else if (status[mid].stage == 2) {
+			} else if (recent[mid].stage == 2) {
 				// we should prompt stage 3
 				if (r > 0.5) {
 					launch(mid);
@@ -98,15 +98,15 @@ var Monster = (function() {
 			}
 
 
-			// the monster is in the status exists, increase the startGame
-			console.log('MATCH', mid, MonsterData.dataById[mid], status[mid]);
+			// the monster is recent, increase the startGame
+			console.log('MATCH', mid, MonsterData.dataById[mid], recent[mid]);
 		} else { // add it
-			status[mid] = {
+			recent[mid] = {
 				"stage": stage,
 				"updatedAt": now
 			};
 		}
-		saveStatus();
+		saveRecent();
 	}
 
 	/**
@@ -175,19 +175,20 @@ var Monster = (function() {
 	}
 
 	/**
-	 *	Save the status
+	 *	Save the recent
 	 */
-	function saveStatus() {
+	function saveRecent() {
 		chrome.runtime.sendMessage({
-			'action': 'saveMonsterStatus',
-			'data': status
+			'action': 'saveRecentMonsters',
+			'data': recent
 		}, function(response) {
-			//console.log('<<<<< > saveMonsterStatus()',JSON.stringify(response));
+			//console.log('<<<<< > saveRecentMonsters()',JSON.stringify(response));
 		});
 	}
 
 	// PUBLIC
 	return {
-		check: check
+		check: check,
+		recent:recent
 	};
 })();

@@ -32,12 +32,13 @@ var Debug = (function() {
 	function update(){
 		if (!prop(tally_options) || !tally_options.showDebugger) return;
 		if (!$("#tyd").length) return;
-
+console.log("Debug.update()");
 		var str =   "<b>tally_user</b>: " + JSON.stringify(tally_user) +"<br>"+
 					//"tally_options: " + JSON.stringify(tally_options) +"<br>"+
 					//"<b>pageData</b>: " + JSON.stringify(pageData) +"<br>"+
 					"<b>pageData.tags ("+ pageData.tags.length +")</b>: " + JSON.stringify(pageData.tags) +"<br>"+
 					"<b>pageData.trackers ("+ pageData.trackers.length +")</b>: " + JSON.stringify(pageData.trackers) +"<br>"+
+					"<b>Monster.recent ("+ objLength(Monster.recent) +")</b>: " + JSON.stringify(Monster.recent) +"<br>"+
 					"";
 		$('#tyd').html(str);
 	}

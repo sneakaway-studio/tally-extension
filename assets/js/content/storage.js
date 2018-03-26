@@ -55,6 +55,20 @@ const getMetaPromise = new Promise(
 		);
 	}
 );
+// GET RECENT MONSTERS
+const getRecentMonstersPromise = new Promise(
+	(resolve,reject) => {
+		//if (!pageData.activeOnPage) return;
+		chrome.runtime.sendMessage({'action':'getRecentMonsters'}, function(response) {
+				//console.log('>>>>> getRecentMonsters()',response.data);
+				Monster.recent = response.data; // store data
+				resolve(response.data); // resolve promise
+			}
+		);
+	}
+);
+
+
 // SAVE TOKEN FROM DASHBOARD
 function saveToken(data){
 	chrome.runtime.sendMessage({'action':'saveToken','data':data}, function(response) {

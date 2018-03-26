@@ -7,12 +7,12 @@ let pageData = getPageData(),
 	tally_options = {},
 	tally_meta = {},
 	tally_game_status = getGameStatus(),
-	tally_monster_status = {};
+	tally_recent_monsters = {};
 
 
 $(function() {
 	Promise // after async functions then update
-		.all([getUserPromise, getOptionsPromise, getMetaPromise]) // , getLastServerUpdatePromise
+		.all([getUserPromise, getOptionsPromise, getMetaPromise, getRecentMonstersPromise]) // , getLastServerUpdatePromise
 		.then(function() {
 			console.log('>>>>> init() Promise all data has loaded', tally_user, tally_options);
 			// check if extension should be active on this page before proceeding
@@ -47,12 +47,12 @@ function startGame() {
 	//    console.log(">>>>> startGame() -> Starting Tally on this page");
 	//    console.log(">>>>> pageData = "+ JSON.stringify(pageData));
 	Debug.add();
-	Debug.update();
 	startTally();
 	addMainClickEventListener();
 	//checkPageForMonsters(pageData.tags);
 
 	Monster.check();
+	Debug.update();
 }
 
 /**

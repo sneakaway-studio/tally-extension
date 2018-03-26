@@ -49,15 +49,15 @@ chrome.runtime.onMessage.addListener(
             sendResponse({"action":request.action,"message":1});
         }
 
-		// getMonsterStatus
-        else if (request.action == "getMonsterStatus"){
-			let data = store("tally_monster_status") || {};
-            sendResponse({"action":request.action,"data": store("tally_monster_status",data) });
+		// getRecentMonsters
+        else if (request.action == "getRecentMonsters"){
+			let data = store("tally_recent_monsters") || {};
+            sendResponse({"action":request.action,"data": store("tally_recent_monsters",data) });
         }
-		// saveMonsterStatus
-        else if (request.action == "saveMonsterStatus"){
-			console.log("saveMonsterStatus()",request.data);
-			store("tally_monster_status",request.data);
+		// saveRecentMonsters
+        else if (request.action == "saveRecentMonsters"){
+			console.log("saveRecentMonsters()",request.data);
+			store("tally_recent_monsters",request.data);
             sendResponse({"action":request.action,"message":1});
         }
 
