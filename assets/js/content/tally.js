@@ -148,9 +148,6 @@ function startTally() {
 		stop: function() {}
 	});
 
-	// set skins
-	Skin.set(tally_game_status.skin);
-
 
 	// add the tally_character click action
 	$(document).on('click', '#tally_character_container', function() {

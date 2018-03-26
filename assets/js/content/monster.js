@@ -16,7 +16,8 @@ var Monster = (function() {
 	 *	Make sure all monster are recent
 	 */
 	function checkRecentTimes() {
-		let now = Date.now();
+		let now = Date.now(),
+			highestStage = 0;
 		for (var mid in tally_recent_monsters) {
 			// how long has it been since this monster was seen?
 			//console.log(mid + ". ", now - tally_recent_monsters[mid].updatedAt);
@@ -27,7 +28,19 @@ var Monster = (function() {
 				console.log("DELETING", MonsterData.dataById[mid].slug, "seconds", seconds);
 				delete tally_recent_monsters[mid];
 			}
+			// check values for skin
+			if (tally_recent_monsters[mid].stage > highestStage) highestStage = tally_recent_monsters[mid].stage;
 		}
+		// set skin
+		if (highestStage == 0)
+			Skin.set("color-magenta");
+		else if (highestStage == 1)
+			Skin.set("color-yellow");
+		else if (highestStage == 2)
+			Skin.set("color-orange");
+		else if (highestStage == 3)
+			Skin.set("color-red");
+
 		// save after checking times
 		saveRecent();
 	}
@@ -70,14 +83,13 @@ var Monster = (function() {
 			let r = Math.random();
 			// what stage are we at with this monster?
 			if (tally_recent_monsters[mid].stage == 1) {
+				Thought.show(["monster", "far", 0], true);
+				Skin.set("color-yellow");
 				// we should prompt stage 2
 				if (r > 0.5) {
 					tally_recent_monsters[mid].stage = 2;
 					Thought.show(["monster", "close", 0], true);
 					Skin.set("color-orange");
-				} else {
-					Thought.show(["monster", "far", 0], true);
-					Skin.set("color-yellow");
 				}
 			} else if (tally_recent_monsters[mid].stage == 2) {
 				// we should prompt stage 3
@@ -89,7 +101,7 @@ var Monster = (function() {
 				}
 			}
 			// the monster is recent, increase the startGame
-			console.log('MATCH', mid, MonsterData.dataById[mid], tally_recent_monsters[mid]);
+			//console.log('MATCH', mid, MonsterData.dataById[mid], tally_recent_monsters[mid]);
 		} else { // add it
 			tally_recent_monsters[mid] = {
 				"stage": stage,
@@ -143,23 +155,6 @@ var Monster = (function() {
 			}
 		});
 
-
-
-
-		// // animate monster
-		// anime({
-		// 	targets: '#tally_monster',
-		// 	translateY: -30,
-		// 	duration: 600,
-		// 	opacity: 0,
-		// 	easing: 'easeInOutQuad',
-		// 	complete: function() {
-		// 		// reset
-		// 		$('#tally_click_visual').css({
-		// 			'transform': 'none'
-		// 		});
-		// 	}
-		// });
 
 
 		$.growl({
