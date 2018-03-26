@@ -2,8 +2,6 @@
 
 var Monster = (function() {
 
-	let recent = {};
-
 	/**
 	 *	Initial check function, refreshes recent monsters from back end continues to next
 	 */
@@ -15,7 +13,7 @@ var Monster = (function() {
 		}, function(response) {
 			if (!response) return;
 			console.log('>>>>> Monster.update()', JSON.stringify(response.data));
-			recent = response.data; // store data
+			tally_recent_monsters = response.data; // store data
 			checkRecentTimes();
 			checkAfterUpdate();
 		});
@@ -25,18 +23,20 @@ var Monster = (function() {
 	 *	Make sure all monster are recent
 	 */
 	function checkRecentTimes() {
+		console.log('>>>>> Monster.checkRecentTimes()', JSON.stringify(tally_recent_monsters));
 		let now = Date.now();
-		for (var mid in recent) {
+		for (var mid in tally_recent_monsters) {
 			// how long has it been since this monster was seen?
-			console.log(mid + ". ", now - recent[mid].updatedAt);
+			console.log(mid + ". ", now - tally_recent_monsters[mid].updatedAt);
 
 			// if longer than 5 mins (300 secs) then delete
-			let seconds = ((now - recent[mid].updatedAt) / 1000);
+			let seconds = ((now - tally_recent_monsters[mid].updatedAt) / 1000);
 			if ((seconds) > 60) {
 				console.log("DELETING, TOO LONG", "seconds", seconds);
-				delete recent[mid];
+				delete tally_recent_monsters[mid];
 			}
 		}
+		console.log('>>>>> Monster.checkRecentTimes()', JSON.stringify(tally_recent_monsters));
 		// save after checking times
 		saveRecent();
 	}
@@ -64,6 +64,8 @@ var Monster = (function() {
 				// else no match
 			}
 		}
+		console.log('>>>>> Monster.checkAfterUpdate()', JSON.stringify(tally_recent_monsters));
+		Debug.update();
 	}
 
 	/**
@@ -73,21 +75,21 @@ var Monster = (function() {
 		let now = Date.now();
 		let stage = 1;
 		// does the monster id exist in recent?
-		if (recent[mid]) {
+		if (tally_recent_monsters[mid]) {
 			// random control var
 			let r = Math.random();
 			// what stage are we at with this monster?
-			if (recent[mid].stage == 1) {
+			if (tally_recent_monsters[mid].stage == 1) {
 				// we should prompt stage 2
 				if (r > 0.5) {
-					recent[mid].stage = 2;
+					tally_recent_monsters[mid].stage = 2;
 					Thought.show(["monster", "close", 0], true);
 					Skin.set("color-orange");
 				} else {
 					Thought.show(["monster", "far", 0], true);
 					Skin.set("color-yellow");
 				}
-			} else if (recent[mid].stage == 2) {
+			} else if (tally_recent_monsters[mid].stage == 2) {
 				// we should prompt stage 3
 				if (r > 0.5) {
 					launch(mid);
@@ -99,9 +101,9 @@ var Monster = (function() {
 
 
 			// the monster is recent, increase the startGame
-			console.log('MATCH', mid, MonsterData.dataById[mid], recent[mid]);
+			console.log('MATCH', mid, MonsterData.dataById[mid], tally_recent_monsters[mid]);
 		} else { // add it
-			recent[mid] = {
+			tally_recent_monsters[mid] = {
 				"stage": stage,
 				"updatedAt": now
 			};
@@ -180,7 +182,7 @@ var Monster = (function() {
 	function saveRecent() {
 		chrome.runtime.sendMessage({
 			'action': 'saveRecentMonsters',
-			'data': recent
+			'data': tally_recent_monsters
 		}, function(response) {
 			//console.log('<<<<< > saveRecentMonsters()',JSON.stringify(response));
 		});
@@ -188,7 +190,6 @@ var Monster = (function() {
 
 	// PUBLIC
 	return {
-		check: check,
-		recent:recent
+		check: check
 	};
-})();
+}());
