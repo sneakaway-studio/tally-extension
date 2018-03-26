@@ -83,15 +83,7 @@ var Tally = (function() {
 		getFollowCursor: function(state) {
 			return followCursor;
 		},
-		stare: stare,
-		menu: function() {
-			if (tallyMenuOpen) {
-				Thought.hide(true);
-			} else
-				Thought.show(tallyMenu(), 3, -1, true);
-			tallyMenuOpen = !tallyMenuOpen;
-		}
-
+		stare: stare
 
 	};
 })();
@@ -151,21 +143,23 @@ function startTally() {
 
 	// add the tally_character click action
 	$(document).on('click', '#tally_character_container', function() {
-		//Tally.menu();
 
 
 		// SOUND EXAMPLES
 
 		let r = Math.random();
-		if (r < 0.3)
-			// example of category/subcategory + sound
-			Thought.show(["random", "greeting", 0], true);
-		else if (r < 0.6)
-			// example of category/index + no sound
-			Thought.show(["narrative", 0, "story3"], true);
+		if (r < 0.25)
+			// show thought from data, [category/subcategory/0], play sound
+			Thought.show("data",["random", "greeting", 0], true);
+		else if (r < 0.5)
+			// show thought from data, [category/0/index], play sound
+			Thought.show("data",["narrative", 0, "story3"], true);
+		else if (r < 0.5)
+			// show thought from facts, trackers, play sound
+			Thought.show("facts", "trackers", true);
 		else
-			// example of passing just a string + sound
-			Thought.show("this is just a string", "neutral");
+			// show thought <string>, play sound
+			Thought.show("string","this is just a string", true, "neutral");
 
 	});
 
@@ -186,7 +180,5 @@ function startTally() {
 	});
 
 
-
-	//	Tally.showThought(Thoughts.random.hello, false);
 
 }

@@ -6,32 +6,7 @@ var Thought = (function() {
 	var thoughtOpen = false;
 
 
-
-	/**
-	 *	Show the thought bubble [with text and sound]
-	 */
-	function showThought(reference, sound=false) {
-		if (thoughtOpen) return; // if open, exit
-		console.log("showThought()", reference, sound);
-
-		// for holding the text
-		let thought = {}, str = "";
-
-		// if Array then getThought()
-		if (Array.isArray(reference)) {
-			thought = getThought(reference);
-			str = thought.text;
-			if (sound && thought.mood)
-				//Sound.test("tally", "thought-basic-open");
-				Sound.playMood(thought.mood);
-		}
-		// otherwise just store it and move on
-		else if (typeof reference === 'string') {
-			str = reference;
-			if (sound && typeof sound === 'string')
-				Sound.playMood(sound);
-		}
-
+	function show(str) {
 		// set number of lines based on str.length
 		let lines = 1;
 		// 28 characters per line * 2
@@ -40,7 +15,7 @@ var Thought = (function() {
 		// set duration based on number lines
 		let duration = lines * 1800;
 
-		console.log("showThought", str, duration, lines);
+		console.log("showThought()", type, reference, _sound, str, duration, lines);
 
 		// add text
 		$('#tally_thought').html(str);
@@ -60,8 +35,43 @@ var Thought = (function() {
 		setTimeout(hideThought, duration);
 	}
 
+	/**
+	 *	Show the thought bubble [with text and sound]
+	 */
+	function showThought(type, reference, playSound = false, sound = "") {
+		if (thoughtOpen) return; // if open, exit
+		//console.log("showThought()", type, reference, _sound);
+
+		let thought = {},
+			str = "";
+
+		if (type == "data") {
+			thought = getFromData(reference);
+			str = thought.text;
+			sound = thought.mood;
+		} else if (type == "facts") {
+			thought = getFromFacts(reference);
+			str = reference;
+		} else if (type == "string") {
+			str = reference;
+		}
+
+		if (playSound && sound) {
+			//Sound.test("tally", "thought-basic-open");
+			Sound.playMood(sound);
+		}
+		// otherwise just store it and move on
+		else if (typeof reference === 'string') {
+			str = reference;
+			if (sound && typeof sound === 'string')
+				Sound.playMood(sound);
+		}
+
+
+	}
+
 	function hideThought(sound = false) {
-		return;
+		return; //testing
 		if (!thoughtOpen) return;
 		$('#tally_thought_bubble').css({
 			'left': '-500px',
@@ -71,9 +81,18 @@ var Thought = (function() {
 		thoughtOpen = false;
 	}
 
+	function getFromFacts(arr) {
+		console.log("getFromFacts()", arr);
+		// make sure it is an array
+		if (!Array.isArray(arr)) return;
+		let domain = ThoughtData.facts[arr[0]];
+		let r = Math.floor(Math.random() * domain);
+		return domain[r];
+	}
+
 	// return thought text
-	function getThought(arr) {
-		console.log("getThought()", arr);
+	function getFromData(arr) {
+		console.log("getFromData()", arr);
 		// make sure it is an array
 		if (!Array.isArray(arr)) return;
 
@@ -101,8 +120,14 @@ var Thought = (function() {
 		get: function(category, index) {
 			return getThought(category, index);
 		},
-		show: function(str, lines, duration, sound) {
-			showThought(str, lines, duration, sound);
+		show: function(type, str, sound) {
+			showThought(type, str, sound);
+		},
+		getFromData: function(reference) {
+			getFromData(reference);
+		},
+		getFromFacts: function(reference) {
+			getFromFacts(reference);
 		},
 		hide: hideThought
 
