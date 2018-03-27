@@ -2,9 +2,10 @@
 
 var Tally = (function() {
 
+	let TALLY_DEBUG = false;
+
 	// PRIVATE
 	var followCursor = false, // is eye following currently active? on page load, no
-		blinking = true,
 		tallyMenuOpen = false;
 
 
@@ -71,9 +72,6 @@ var Tally = (function() {
 
 	// PUBLIC
 	return {
-		blink: function() {
-			if (blinking == true) console.log("blink");
-		},
 		moveEye: function(which, how, event) {
 			moveEye(which, how, event);
 		},
@@ -99,8 +97,6 @@ function startTally() {
 	// only show Tally if game mode == full
 	if (prop(pageData) && !pageData.activeOnPage) return;
 	if (!prop(tally_options) || !tally_options.showTally) return;
-
-	//Tally.blink();
 
 	// maybe temp...
 	Skin.preload();
@@ -143,6 +139,11 @@ function startTally() {
 
 	// add the tally_character click action
 	$(document).on('click', '#tally_character_container', function() {
+
+
+
+		console.log()
+		return;
 
 
 		// SOUND EXAMPLES
