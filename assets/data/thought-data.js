@@ -5,10 +5,10 @@ var ThoughtData = (function() {
 
 	var data = {
 		"monster": {
-            "far": [{
-                "text": "This place makes me nervous.",
-                "mood": "cautious"
-            }],
+			"far": [{
+				"text": "This place makes me nervous.",
+				"mood": "cautious"
+			}],
 			"close": [{
 				"text": "There are monsters nearby ...",
 				"mood": "cautious"
@@ -471,6 +471,6 @@ var ThoughtData = (function() {
 	return {
 		data: data,
 		facts: facts
-	}
+	};
 
 })();

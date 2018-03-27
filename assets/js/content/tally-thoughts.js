@@ -3,96 +3,32 @@
 var Thought = (function() {
 	// PRIVATE
 
-	var thoughtOpen = false;
-	let THOUGHT_DEBUG = true;
+	let thoughtOpen = false,
+	 	THOUGHT_DEBUG = true;
 
-	function showThought(str) {
-
-		// set number of lines based on str.length
-		let lines = 1;
-		// 28 characters per line * 2
-		if (str.length > 0)
-			lines = Math.ceil(str.length / 32);
-		// set duration based on number lines
-		let duration = lines * 1800;
-
-		if (THOUGHT_DEBUG) console.log("showThought()", type, reference, _sound, str, duration, lines);
-
-		// add text
-		$('#tally_thought').html(str);
-
-		// adjust size of the box
-		$('#tally_thought_bubble').css({
-			'display': 'flex',
-			'height': lines * 32 + "px",
-			'left': '10px',
-			'opacity': 1 // make it visible
-		});
-		// make Tally look at user
-		Tally.stare();
-		thoughtOpen = true;
-		// hide after appropriate reading period
-		setTimeout(hideThought, duration);
-	}
 
 	/**
-	 *	Show the thought bubble [with text and sound]
+	 *	Get a random fact (by domain)
 	 */
-	function show(type, reference, playSound = false, sound = "") {
+	function getFact(domain) {
+		let r = Math.floor(Math.random() * ThoughtData.facts[domain].length);
+		return ThoughtData.facts[domain][r];
+	}
+	/**
+	 *	Show a fact
+	 */
+	function showFact(fact, sound) {
+		console.log("showFact()",fact,sound);
 		if (thoughtOpen) return; // if open, exit
-		//if (THOUGHT_DEBUG) console.log("showThought()", type, reference, _sound);
-
-		let thought = {},
-			str = "";
-
-		if (type == "data") {
-			thought = getFromData(reference);
-			str = thought.text;
-			sound = thought.mood;
-		} else if (type == "facts") {
-			thought = getFromFacts(reference);
-			str = reference;
-		} else if (type == "string") {
-			str = reference;
-		}
-
-		if (playSound && sound) {
-			//Sound.test("tally", "thought-basic-open");
-			Sound.playMood(sound);
-		}
-		// otherwise just store it and move on
-		else if (typeof reference === 'string') {
-			str = reference;
-			if (sound && typeof sound === 'string')
-				Sound.playMood(sound);
-		}
-
-		showThought(str);
+		Sound.playMood(sound);
+		show(fact.fact);
 	}
 
-	function hideThought(sound = false) {
-		return; //testing
-		if (!thoughtOpen) return;
-		$('#tally_thought_bubble').css({
-			'left': '-500px',
-			'display': 'none',
-			'opacity': 0
-		});
-		thoughtOpen = false;
-	}
 
-	function getFromFacts(arr) {
-		if (THOUGHT_DEBUG) console.log("getFromFacts()", arr);
-		// make sure it is an array
-		if (!Array.isArray(arr)) return;
-		let domain = ThoughtData.facts[arr[0]];
-		let r = Math.floor(Math.random() * domain);
-		return domain[r];
-	}
-
-	// return thought text
-	function getFromData(arr) {
-		if (THOUGHT_DEBUG) console.log("getFromData()", arr);
+	/**
+	 *	Return a thought
+	 */
+	function getThought(arr) {
 		// make sure it is an array
 		if (!Array.isArray(arr)) return;
 
@@ -112,21 +48,97 @@ var Thought = (function() {
 			return category[index];
 		}
 		// otherwise
-		else return "";
+		else return false;
 	}
+	/**
+	 *	Show the thought bubble [with text and sound]
+	 */
+	function showThought(thought,sound) {
+		console.log("showThought()",thought,sound);
+		if (thoughtOpen) return; // if open, exit
+		if (sound) Sound.playMood(thought.mood);
+		show(thought.text);
+	}
+
+
+
+	/**
+	 *	Show the thought bubble [with text and sound]
+	 */
+	function showString(str,sound) {
+		console.log("showString()",str,sound);
+		if (thoughtOpen) return; // if open, exit
+		if (sound) Sound.playMood(sound);
+		show(str);
+	}
+
+
+
+
+	/**
+	 *	Show a thought string
+	 */
+	function show(str) {
+		if (THOUGHT_DEBUG) console.log("show()", str);
+		thoughtOpen = true;
+
+		// set number of lines based on str.length
+		let lines = 1;
+		// 28 characters per line * 2
+		if (str.length > 0)
+			lines = Math.ceil(str.length / 32);
+		// set duration based on number lines
+		let duration = lines * 1800;
+		// add text
+		$('#tally_thought').html(str);
+		// adjust size of the box
+		$('#tally_thought_bubble').css({
+			'display': 'flex',
+			'height': lines * 32 + "px",
+			'left': '10px',
+			'opacity': 1 // make it visible
+		});
+		// make Tally look at user
+		Tally.stare();
+		// hide after appropriate reading period
+		setTimeout(hide, duration);
+	}
+
+	function hide() {
+		//return; //testing
+		if (!thoughtOpen) return;
+		$('#tally_thought_bubble').css({
+			'left': '-500px',
+			'display': 'none',
+			'opacity': 0
+		});
+		thoughtOpen = false;
+	}
+
+
+
 
 	// PUBLIC
 	return {
-		getFromData: function(reference) {
-			getFromData(reference);
+		getThought: function(arr) {
+			return getThought(arr);
 		},
-		getFromFacts: function(reference) {
-			getFromFacts(reference);
+		showThought: function(thought, sound) {
+			showThought(thought, sound);
 		},
-		show: function(type, str, sound) {
-			showThought(type, str, sound);
+		getFact: function(domain) {
+			return getFact(domain);
 		},
-		hide: hideThought
+		showFact: function(fact, sound) {
+			showFact(fact, sound);
+		},
+		showString: function(str,sound){
+			showString(str, sound);
+		},
+		show: function(str, sound) {
+			show(str, sound);
+		},
+		hide: hide
 
 	};
 })();

@@ -141,26 +141,21 @@ function startTally() {
 	$(document).on('click', '#tally_character_container', function() {
 
 
-
-		console.log()
-		return;
-
-
-		// SOUND EXAMPLES
+		// EXAMPLES
 
 		let r = Math.random();
 		if (r < 0.25)
 			// show thought from data, [category/subcategory/0], play sound
-			Thought.show("data",["random", "greeting", 0], true);
+			Thought.showThought(Thought.getThought(["random", "greeting", 0]),true);
 		else if (r < 0.5)
 			// show thought from data, [category/0/index], play sound
-			Thought.show("data",["narrative", 0, "story3"], true);
-		else if (r < 0.5)
+			Thought.showThought(Thought.getThought(["narrative", 0, "story3"]), true);
+		else if (r < 0.75)
 			// show thought from facts, trackers, play sound
-			Thought.show("facts", "trackers", true);
+			Thought.showFact(Thought.getFact("trackers"), "neutral");
 		else
 			// show thought <string>, play sound
-			Thought.show("string","this is just a string", true, "neutral");
+			Thought.showString("this is just a string", "neutral");
 
 	});
 
