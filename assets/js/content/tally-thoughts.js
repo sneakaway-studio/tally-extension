@@ -4,9 +4,10 @@ var Thought = (function() {
 	// PRIVATE
 
 	var thoughtOpen = false;
+	let THOUGHT_DEBUG = true;
 
+	function showThought(str) {
 
-	function show(str) {
 		// set number of lines based on str.length
 		let lines = 1;
 		// 28 characters per line * 2
@@ -15,7 +16,7 @@ var Thought = (function() {
 		// set duration based on number lines
 		let duration = lines * 1800;
 
-		console.log("showThought()", type, reference, _sound, str, duration, lines);
+		if (THOUGHT_DEBUG) console.log("showThought()", type, reference, _sound, str, duration, lines);
 
 		// add text
 		$('#tally_thought').html(str);
@@ -29,7 +30,6 @@ var Thought = (function() {
 		});
 		// make Tally look at user
 		Tally.stare();
-		//console.log("lines",lines)
 		thoughtOpen = true;
 		// hide after appropriate reading period
 		setTimeout(hideThought, duration);
@@ -38,9 +38,9 @@ var Thought = (function() {
 	/**
 	 *	Show the thought bubble [with text and sound]
 	 */
-	function showThought(type, reference, playSound = false, sound = "") {
+	function show(type, reference, playSound = false, sound = "") {
 		if (thoughtOpen) return; // if open, exit
-		//console.log("showThought()", type, reference, _sound);
+		//if (THOUGHT_DEBUG) console.log("showThought()", type, reference, _sound);
 
 		let thought = {},
 			str = "";
@@ -67,7 +67,7 @@ var Thought = (function() {
 				Sound.playMood(sound);
 		}
 
-
+		showThought(str);
 	}
 
 	function hideThought(sound = false) {
@@ -82,7 +82,7 @@ var Thought = (function() {
 	}
 
 	function getFromFacts(arr) {
-		console.log("getFromFacts()", arr);
+		if (THOUGHT_DEBUG) console.log("getFromFacts()", arr);
 		// make sure it is an array
 		if (!Array.isArray(arr)) return;
 		let domain = ThoughtData.facts[arr[0]];
@@ -92,7 +92,7 @@ var Thought = (function() {
 
 	// return thought text
 	function getFromData(arr) {
-		console.log("getFromData()", arr);
+		if (THOUGHT_DEBUG) console.log("getFromData()", arr);
 		// make sure it is an array
 		if (!Array.isArray(arr)) return;
 
@@ -117,17 +117,14 @@ var Thought = (function() {
 
 	// PUBLIC
 	return {
-		get: function(category, index) {
-			return getThought(category, index);
-		},
-		show: function(type, str, sound) {
-			showThought(type, str, sound);
-		},
 		getFromData: function(reference) {
 			getFromData(reference);
 		},
 		getFromFacts: function(reference) {
 			getFromFacts(reference);
+		},
+		show: function(type, str, sound) {
+			showThought(type, str, sound);
 		},
 		hide: hideThought
 
