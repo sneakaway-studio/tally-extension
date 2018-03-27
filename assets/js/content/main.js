@@ -9,19 +9,20 @@ let pageData = getPageData(),
 	tally_game_status = getGameStatus(),
 	tally_recent_monsters = {};
 
+let MAIN_DEBUG = false;
 
 $(function() {
 	Promise // after async functions then update
 		.all([getUserPromise, getOptionsPromise, getMetaPromise, getRecentMonstersPromise]) // , getLastServerUpdatePromise
 		.then(function() {
-			console.log('>>>>> init() Promise all data has loaded', tally_user, tally_options);
+			if (MAIN_DEBUG) console.log('>>>>> init() Promise all data has loaded', tally_user, tally_options);
 			// check if extension should be active on this page before proceeding
 			pageData.activeOnPage = shouldExtensionBeActiveOnPage(tally_options);
 			if (pageData.activeOnPage)
 				startGame();
 		})
 		.catch(function(error) {
-			console.log('one or more promises have failed: ' + error);
+			if (MAIN_DEBUG) console.log('one or more promises have failed: ' + error);
 		});
 });
 
@@ -33,10 +34,10 @@ function shouldExtensionBeActiveOnPage(_tally_options) {
 	if (_tally_options.disabledDomains.length < 1 ||
 		($.inArray(pageData.domain, _tally_options.disabledDomains) >= 0) ||
 		($.inArray(pageData.subDomain, _tally_options.disabledDomains) >= 0)) {
-		console.log("Tally is disabled on this domain");
+		if (MAIN_DEBUG) console.log("Tally is disabled on this domain");
 		return false;
 	} else if (pageData.contentType != "text/html") {
-		console.log("Tally is disabled on pages like " + pageData.contentType);
+		if (MAIN_DEBUG) console.log("Tally is disabled on pages like " + pageData.contentType);
 		return false;
 	} else return true;
 }
