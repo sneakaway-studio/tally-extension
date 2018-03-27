@@ -2,6 +2,8 @@
 
 var Monster = (function() {
 
+	let MONSTER_DEBUG = true;
+
 	/**
 	 *	Initial check function, refreshes recent monsters from back end continues to next
 	 */
@@ -22,12 +24,10 @@ var Monster = (function() {
 			// loop through them
 			for (var mid in tally_recent_monsters) {
 				// how long has it been since this monster was seen?
-				console.log("..... checkRecentTimes()", mid + ". ", now - tally_recent_monsters[mid].updatedAt);
-
 				// if longer than 5 mins (300 secs) then delete
 				let seconds = ((now - tally_recent_monsters[mid].updatedAt) / 1000);
 				if ((seconds) > 60) { // 60 seconds for testing
-					console.log("..... DELETING", MonsterData.dataById[mid].slug, "seconds", seconds);
+					if (MONSTER_DEBUG) console.log("..... checkRecentTimes() -> DELETING", MonsterData.dataById[mid].slug, "seconds", seconds);
 					delete tally_recent_monsters[mid];
 				}
 				// skin should reflect highest stage
@@ -59,13 +59,13 @@ var Monster = (function() {
 				if (arr.length > 1) {
 					// pick random monster id from list, this will be the page monster
 					mid = arr[Math.floor(Math.random() * arr.length)];
-					console.log('!!!!! #' + tag, "has", arr.length, 'MATCHES', arr, "randomly selecting...", MonsterData.dataById[mid].slug);
+					if (MONSTER_DEBUG) console.log('!!!!! #' + tag, "has", arr.length, 'MATCHES', arr, "randomly selecting...", MonsterData.dataById[mid].slug);
 					// we have identified a match, let's handle the monster
 					handleMatch(mid);
 				}
 			}
 		}
-		console.log('>>>>> Monster.checkForTagMatches()', JSON.stringify(tally_recent_monsters));
+		if (MONSTER_DEBUG) console.log('>>>>> Monster.checkForTagMatches()', JSON.stringify(tally_recent_monsters));
 	}
 
 
@@ -110,7 +110,7 @@ var Monster = (function() {
 				}
 			}
 
-			console.log('!!!!! handleMatch()', MonsterData.dataById[mid].slug, tally_recent_monsters[mid]);
+			if (MONSTER_DEBUG) console.log('!!!!! handleMatch()', MonsterData.dataById[mid].slug, tally_recent_monsters[mid]);
 		}
 		// set skin
 		setSkinStage(tally_recent_monsters[mid].stage);
