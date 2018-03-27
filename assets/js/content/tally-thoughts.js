@@ -82,6 +82,9 @@ var Thought = (function() {
 		if (THOUGHT_DEBUG) console.log("show()", str);
 		thoughtOpen = true;
 
+		if (str.indexOf("{{type}}") > -1)
+			str = templating(str,"type",Monster.current());
+
 		// set number of lines based on str.length
 		let lines = 1;
 		// 28 characters per line * 2
@@ -116,6 +119,11 @@ var Thought = (function() {
 	}
 
 
+	function templating(string, find, replace) {
+
+		return string.replace(new RegExp('\{\{(?:\\s+)?(' + find + ')(?:\\s+)?\}\}'), replace);
+
+	}
 
 
 	// PUBLIC

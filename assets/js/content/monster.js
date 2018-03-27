@@ -2,7 +2,8 @@
 
 var Monster = (function() {
 
-	let MONSTER_DEBUG = true;
+	let MONSTER_DEBUG = true,
+		current = "";
 
 	/**
 	 *	Initial check function, refreshes recent monsters from back end continues to next
@@ -111,6 +112,7 @@ var Monster = (function() {
 				} else {
 					// or prompt stage 3
 					tally_recent_monsters[mid].stage = 3;
+					current = mid;
 					Thought.showThought(Thought.getThought(["monster", "launch", 0]), true);
 					launch(mid);
 				}
@@ -208,8 +210,13 @@ var Monster = (function() {
 		Debug.update();
 	}
 
+	function getCurrent() {
+		return current;
+	}
+
 	// PUBLIC
 	return {
-		check: check
+		check: check,
+		current: getCurrent
 	};
 }());

@@ -141,7 +141,13 @@ function startTally() {
 	$(document).on('click', '#tally_character_container', function() {
 
 
+
+
 		// EXAMPLES
+
+		// Thought.showThought(Thought.getThought(["monster", "launch", 0]),true);
+		// return;
+
 
 		let r = Math.random();
 		if (r < 0.25)
