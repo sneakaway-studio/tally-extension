@@ -86,26 +86,32 @@ var Monster = (function() {
 		}
 		// otherwise monster has been stored
 		else {
+			// randomizer
+			let r = Math.random();
 			// what stage are we at with this monster?
 			if (tally_recent_monsters[mid].stage == 0) {
 
 			} else if (tally_recent_monsters[mid].stage == 1) {
-				// 50% - show them a thought
-				if (Math.random() > 0.5)
-					Thought.show("data", ["monster", "far", 0], true);
-				// 50% - prompt stage 2
-				if (Math.random() > 0.5) {
+				if (r < 0.3) {
+					// do nothing
+				} else if (r < 0.6) {
+					// show them a thought
+					Thought.showThought(Thought.getThought(["monster", "far", 0]), true);
+				} else {
+					// or prompt stage 2
 					tally_recent_monsters[mid].stage = 2;
-					Thought.show("data", ["monster", "close", 0], true);
+					Thought.showThought(Thought.getThought(["monster", "close", 0]), true);
 				}
 			} else if (tally_recent_monsters[mid].stage == 2) {
-				// 50% - show them a thought
-				if (Math.random() > 0.5)
-					Thought.show("data", ["monster", "close", 0], true);
-				// 50% - prompt stage 3
-				if (Math.random() > 0.5) {
+				if (r < 0.3) {
+					// do nothing
+				} else if (r < 0.6) {
+					// show them a thought
+					Thought.showThought(Thought.getThought(["monster", "close", 0]), true);
+				} else {
+					// or prompt stage 3
 					tally_recent_monsters[mid].stage = 3;
-					Thought.show("data", ["monster", "launch", 0], true);
+					Thought.showThought(Thought.getThought(["monster", "launch", 0]), true);
 					launch(mid);
 				}
 			}
@@ -171,6 +177,22 @@ var Monster = (function() {
 			message: "MONSTER: " + monster.name + " [" + monster.mid + "] <br>STAGE: " + stage
 		});
 
+
+		// temp: call after capture OR miss
+		setTimeout(function() {
+			reset(mid);
+		}, 2000);
+	}
+
+
+
+	/**
+	 *	Reset monster
+	 */
+	function reset(mid) {
+		if (tally_recent_monsters[mid])
+			delete tally_recent_monsters[mid];
+		saveRecentMonsters();
 	}
 
 	/**
