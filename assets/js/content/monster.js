@@ -36,6 +36,7 @@ var Monster = (function() {
 					highestStage = tally_recent_monsters[mid].stage;
 			}
 		}
+		saveRecentMonsters();
 		// set the skin color
 		setSkinStage(highestStage);
 		// continue
@@ -66,7 +67,6 @@ var Monster = (function() {
 				}
 			}
 		}
-		saveRecentMonsters();
 		if (MONSTER_DEBUG) console.log('>>>>> Monster.checkForTagMatches()', JSON.stringify(tally_recent_monsters));
 	}
 
