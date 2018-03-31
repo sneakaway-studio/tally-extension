@@ -1,5 +1,6 @@
 "use strict";
 
+
 // load objects
 let pageData = getPageData(),
 	eventData = {},
@@ -13,7 +14,7 @@ let MAIN_DEBUG = false;
 
 $(function() {
 	Promise // after async functions then update
-		.all([getUserPromise, getOptionsPromise, getMetaPromise, getRecentMonstersPromise]) // , getLastServerUpdatePromise
+		.all([getUserPromise, getOptionsPromise, getMetaPromise, getRecentMonstersPromise]) // , getLastBackgroundUpdatePromise
 		.then(function() {
 			if (MAIN_DEBUG) console.log('>>>>> init() Promise all data has loaded', tally_user, tally_options);
 			// check if extension should be active on this page before proceeding

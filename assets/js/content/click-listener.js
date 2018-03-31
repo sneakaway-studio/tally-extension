@@ -115,7 +115,7 @@ var clickEventHandler = function (eventData,target) {
 		// update
 		Debug.update();
 		// create scoreUpdater object
-		var serverUpdate = newServerUpdate();
+		var serverUpdate = newBackgroundUpdate();
 
 
 		// more checking...
@@ -167,11 +167,8 @@ var clickEventHandler = function (eventData,target) {
 		// activateTally(eventData.action);
 
 
-
-
-
 		// send serverUpdate object to server via background
-		syncToServer(serverUpdate);
+		sendBackgroundUpdate(serverUpdate);
 	}
 	// disable click action in case they are editing text
 	else if(eventData.action == "textSelect"){

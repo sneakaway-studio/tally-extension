@@ -44,7 +44,7 @@ chrome.runtime.onMessage.addListener(
         }
 		// saveGameStatus
         else if (request.action == "saveGameStatus"){
-			console.log("saveGameStatus()",request.data);
+			console.log("saveGameStatus",request.data);
 			store("tally_game_status",request.data);
             sendResponse({"action":request.action,"message":1});
         }
@@ -56,7 +56,7 @@ chrome.runtime.onMessage.addListener(
         }
 		// saveRecentMonsters
         else if (request.action == "saveRecentMonsters"){
-			console.log("saveRecentMonsters()",request.data);
+			//console.log("saveRecentMonsters()",request.data);
 			store("tally_recent_monsters",request.data);
             sendResponse({"action":request.action,"message":1});
         }
@@ -95,7 +95,7 @@ chrome.runtime.onMessage.addListener(
 		******************************************************************************/
 
 		else if (request.action == "sendDataTest"){
-			sendDataTest({});
+			sendDataTest({"token":"hello"});
 		}
 
         // saveToken
@@ -111,11 +111,12 @@ chrome.runtime.onMessage.addListener(
             sendResponse({"action":request.action,"message":message});
         }
 
-        // syncToServer - receive and send score, event, page data to server
-		else if (request.action == "syncToServer"){
-console.log(request);
+        // sendBackgroundUpdate - receive and send score, event, page data to server
+		else if (request.action == "sendBackgroundUpdate"){
+			console.log(">>>>> BACKGROUND LISTENER: sendBackgroundUpdate",JSON.stringify(request.data));
+
 			// store serverUpdate object
-			store("tally_lastServerUpdate",request.data);
+			store("tally_lastBackgroundUpdate",request.data);
 
 			// save score updates to user and store
             let _tally_user = store("tally_user");
@@ -124,14 +125,14 @@ console.log(request);
 
 			// (attempt to) send data to server, response to callback
             let _tally_meta = store("tally_meta");
-//			if (_tally_meta.serverOnline) sendData(request.data,sendResponse,"syncToServer");
+//			if (_tally_meta.serverOnline) sendData(request.data,sendResponse,"sendBackgroundUpdate");
 
 			// reply to contentscript with updated tally_user
 			sendResponse({"action":request.action,"message":1, "data": store("tally_user") });
         }
-        // getLastServerUpdate
-        else if (request.action == "getLastServerUpdate"){
-            sendResponse({"action":request.action, "data": store("tally_lastServerUpdate")});
+        // getLastBackgroundUpdate
+        else if (request.action == "getLastBackgroundUpdate"){
+            sendResponse({"action":request.action, "data": store("tally_lastBackgroundUpdate")});
         }
 
 

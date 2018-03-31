@@ -85,27 +85,30 @@ function saveToken(data){
 }
 
 // SEND DATA TO BACKEND / SERVER
-function syncToServer(data) {
+function sendBackgroundUpdate(data) {
 	//if (!pageData.activeOnPage) return;
-	chrome.runtime.sendMessage({'action':'syncToServer','data':data}, function(response) {
-			console.log('<{!}> syncToServer()',response);
+	chrome.runtime.sendMessage({'action':'sendBackgroundUpdate','data':data}, function(response) {
+			console.log('<{!}> sendBackgroundUpdate()',response);
 			tally_user = response.data;
 			//updateDisplay();
 		}
 	);
 }
+
+
+
 // GET LAST SERVER UPDATE
-const getLastServerUpdatePromise = new Promise(
+const getLastBackgroundUpdatePromise = new Promise(
 	(resolve,reject) => {
 		//if (!pageData.activeOnPage) return;
-		chrome.runtime.sendMessage({'action':'getLastServerUpdate'}, function(response) {
-				//console.log('>>>>> getLastServerUpdatePromise()',response.data);
-				let tally_lastServerUpdate = {};
+		chrome.runtime.sendMessage({'action':'getLastBackgroundUpdate'}, function(response) {
+				//console.log('>>>>> getLastBackgroundUpdatePromise()',response.data);
+				let _lastServerUpdate = {};
 				if (prop(response.data)){
-					let tally_lastServerUpdate = response.data; // store data
-					pageData.previousUrl = tally_lastServerUpdate.pageData.url;
+					_lastServerUpdate = response.data; // store data
+					pageData.previousUrl = _lastServerUpdate.pageData.url;
 				}
-				resolve(tally_lastServerUpdate); // resolve promise
+				resolve(_lastServerUpdate); // resolve promise
 			}
 		);
 	}

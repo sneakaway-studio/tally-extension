@@ -34,8 +34,8 @@ function createApp() {
 		store("tally_meta", createMeta());
 		store("tally_secret", createSecret());
 		// these are empty the first time
-		store("tally_domains", {});
-		store("tally_urls", {});
+//		store("tally_domains", {});
+//		store("tally_urls", {});
 
 		// start registration
 		launchRegistration("createApp() -> first install");
@@ -118,26 +118,6 @@ function startApp() {
 
 
 
-function sendDataTest(data) {
-	$.ajax({
-		url: tally_meta.api + "/json_test",
-		type: "GET",
-		timeout: 15000, // set timeout to 15 secs to catch ERR_CONNECTION_REFUSED
-		contentType: 'application/json',
-		dataType: 'json',
-		data: JSON.stringify(data),
-		success: function(result) {
-			//console.log("sendData() RESULT =",result);
-			console.log("\nsendData() RESULT =", JSON.stringify(result));
-
-		},
-		error: function(jqXhr, textStatus, errorThrown) {
-			console.error(errorThrown);
-		}
-	}).fail(function(jqXHR, textStatus, errorThrown) {
-		console.error(errorThrown);
-	});
-}
 
 
 

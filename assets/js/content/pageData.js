@@ -158,7 +158,7 @@ function getTitle() {
 /**
  *  Create new serverUpdate object (to send to backend and/or server)
  */
-function newServerUpdate() {
+function newBackgroundUpdate() {
 	var obj = {
 		"pageData": {
 			"description": pageData.description,
@@ -182,7 +182,7 @@ function newServerUpdate() {
 			"text": ""
 		},
 		"userData": {
-			"token": "",
+			"token": "INSERT_FROM_BACKGROUND",
 		}
 	};
 	console.log("newScoreUpdater() -> obj", obj);
