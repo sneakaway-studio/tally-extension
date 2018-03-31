@@ -1,6 +1,5 @@
 "use strict";
 
-
 // load objects
 let pageData = getPageData(),
 	eventData = {},

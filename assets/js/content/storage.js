@@ -84,7 +84,7 @@ function saveToken(data){
 	);
 }
 
-// SEND DATA TO BACKEND / SERVER
+// SEND DATA TO BACKGROUND
 function sendBackgroundUpdate(data) {
 	//if (!pageData.activeOnPage) return;
 	chrome.runtime.sendMessage({'action':'sendBackgroundUpdate','data':data}, function(response) {
@@ -97,18 +97,18 @@ function sendBackgroundUpdate(data) {
 
 
 
-// GET LAST SERVER UPDATE
+// GET LAST BACKGROUND UPDATE
 const getLastBackgroundUpdatePromise = new Promise(
 	(resolve,reject) => {
 		//if (!pageData.activeOnPage) return;
 		chrome.runtime.sendMessage({'action':'getLastBackgroundUpdate'}, function(response) {
 				//console.log('>>>>> getLastBackgroundUpdatePromise()',response.data);
-				let _lastServerUpdate = {};
+				let _lastBackgroundUpdate = {};
 				if (prop(response.data)){
-					_lastServerUpdate = response.data; // store data
-					pageData.previousUrl = _lastServerUpdate.pageData.url;
+					_lastBackgroundUpdate = response.data; // store data
+					pageData.previousUrl = _lastBackgroundUpdate.pageData.url;
 				}
-				resolve(_lastServerUpdate); // resolve promise
+				resolve(_lastBackgroundUpdate); // resolve promise
 			}
 		);
 	}

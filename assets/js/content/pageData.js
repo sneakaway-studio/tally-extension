@@ -156,7 +156,7 @@ function getTitle() {
 
 
 /**
- *  Create new serverUpdate object (to send to backend and/or server)
+ *  Create new backgroundUpdate object
  */
 function newBackgroundUpdate() {
 	var obj = {

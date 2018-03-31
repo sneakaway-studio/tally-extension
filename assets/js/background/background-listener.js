@@ -115,7 +115,7 @@ chrome.runtime.onMessage.addListener(
 		else if (request.action == "sendBackgroundUpdate"){
 			console.log(">>>>> BACKGROUND LISTENER: sendBackgroundUpdate",JSON.stringify(request.data));
 
-			// store serverUpdate object
+			// store backgroundUpdate object
 			store("tally_lastBackgroundUpdate",request.data);
 
 			// save score updates to user and store
