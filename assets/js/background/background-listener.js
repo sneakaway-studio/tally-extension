@@ -199,7 +199,7 @@ function createServerUpdate(data) {
 		"token": _tally_secret.token,
 		"url": data.pageData.url || "",
 	};
-	console.log("createServerUpdate()", obj);
+	//console.log("createServerUpdate()", obj);
 	return obj;
 }
 

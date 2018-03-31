@@ -220,7 +220,7 @@ function createMeta() {
 		"lastSyncedResult": 0,
 		"userOnline": navigator.onLine,
 		"serverOnline": 0,
-		"connectionSpeed": 0,
+		"serverOnlineTime": 0,
 		"api": "http://localhost:5000/api",
 		"website": "http://localhost:5000",
 		"browser": getBrowser()
