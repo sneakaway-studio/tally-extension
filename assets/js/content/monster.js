@@ -66,6 +66,7 @@ var Monster = (function() {
 				}
 			}
 		}
+		saveRecentMonsters();
 		if (MONSTER_DEBUG) console.log('>>>>> Monster.checkForTagMatches()', JSON.stringify(tally_recent_monsters));
 	}
 
