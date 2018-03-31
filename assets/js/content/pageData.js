@@ -173,8 +173,8 @@ function newBackgroundUpdate() {
 			"score": 0,
 			"clicks": 0,
 			"likes": 0,
-			"pages": 0,
-			"domains": 0,
+			// "pages": 0,
+			// "domains": 0,
 			"level": 0
 		},
 		"eventData": {

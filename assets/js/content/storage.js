@@ -89,8 +89,8 @@ function sendBackgroundUpdate(data) {
 	//if (!pageData.activeOnPage) return;
 	chrome.runtime.sendMessage({'action':'sendBackgroundUpdate','data':data}, function(response) {
 			console.log('<{!}> sendBackgroundUpdate()',response);
-			tally_user = response.data;
-			//updateDisplay();
+			tally_user = response.tally_user;
+			Debug.update();
 		}
 	);
 }

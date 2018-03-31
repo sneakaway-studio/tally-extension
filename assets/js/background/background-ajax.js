@@ -7,6 +7,30 @@
 ******************************************************************************/
 
 
+function sendServerUpdate(data) {
+    console.log("sendServerUpdate()",data);
+    let _tally_meta = store("tally_meta");
+    if (!_tally_meta.serverOnline) return;
+	$.ajax({
+		//url: _tally_meta.api + "/user/userExtensionUpdate",
+        url: "http://localhost:5000/api/user/extensionUpdate",
+		type: "PUT",
+		timeout: 15000, // set timeout to 15 secs to catch ERR_CONNECTION_REFUSED
+		contentType: 'application/json',
+		dataType: 'json',
+		data: JSON.stringify(data),
+		success: function(result) {
+			console.log("\sendServerUpdate() RESULT =", JSON.stringify(result));
+		},
+		error: function(jqXhr, textStatus, errorThrown) {
+			console.error(errorThrown);
+		}
+	}).fail(function(jqXHR, textStatus, errorThrown) {
+		console.error(errorThrown);
+	});
+}
+
+
 /**
  *  Check to see if API Server is online
  */

@@ -147,8 +147,8 @@ function createScore() {
 		"score": 0,
 		"clicks": 0,
 		"likes": 0,
-		"pages": 0,
-		"domains": 0,
+		// "pages": 0,
+		// "domains": 0,
 		"level": 0,
 	};
 	return obj;
@@ -247,7 +247,6 @@ function getBrowser() {
  */
 function createSecret() {
 	var obj = {
-		"key": "",
 		"token": "3HYBTpmJiclmDPnCJThC3dwdmaNIJuU21aq5Iw9sFXtnpYo6GF",
 		"tokenExpires": "2018-03-24T15:45:08.000Z"
 	};
