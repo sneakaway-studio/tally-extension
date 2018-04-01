@@ -71,5 +71,5 @@ var timedEvents = {
 	// check if server online
 	serverOnlineInt: setInterval(function() {
 		checkAPIServerStatus();
-	}, 5 * 1000) //00
+	}, 500 * 1000) //
 };

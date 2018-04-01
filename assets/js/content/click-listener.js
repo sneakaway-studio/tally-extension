@@ -161,7 +161,7 @@ var clickEventHandler = function (eventData,target) {
 // temp off for testing
 
 		// send backgroundUpdate object to server via background
-		sendBackgroundUpdate(backgroundUpdate);
+		sendBackgroundUpdate(backgroundUpdate); 
 
 		/**
 		 * 	5. Game responses
