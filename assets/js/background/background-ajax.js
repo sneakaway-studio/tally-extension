@@ -15,18 +15,15 @@ function sendServerUpdate(data) {
 		//url: _tally_meta.api + "/user/userExtensionUpdate",
 		url: "http://localhost:5000/api/user/extensionUpdate",
 		type: "PUT",
-		timeout: 15000, // set timeout to 15 secs to catch ERR_CONNECTION_REFUSED
-		contentType: 'application/json',
-		dataType: 'json',
-		data: JSON.stringify(data),
-		success: function(result) {
-			console.log("\sendServerUpdate() RESULT =", JSON.stringify(result));
-		},
-		error: function(jqXhr, textStatus, errorThrown) {
-			console.error(errorThrown);
-		}
-	}).fail(function(jqXHR, textStatus, errorThrown) {
-		console.error(errorThrown);
+		contentType: 'application/json', // type of data you are sending
+		dataType: 'json', // type of data you expect to receive
+		data: JSON.stringify(data)
+	}).done(result => {
+		console.log("sendServerUpdate() RESULT =", JSON.stringify(result));
+	}).fail(() => {
+		console.error("sendServerUpdate() RESULT =", JSON.stringify(errorThrown));
+        // server might not be reachable
+        checkAPIServerStatus();
 	});
 }
 

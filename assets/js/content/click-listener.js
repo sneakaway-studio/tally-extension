@@ -131,7 +131,7 @@ var clickEventHandler = function (eventData,target) {
 			if (eventData.tag == "IMG"){
 				// update score
 				eventData.action = "image";
-				backgroundUpdate.scoreData.images ++;
+				//backgroundUpdate.scoreData.images ++; // might remove
 
 				// also try to get alt tag
 				if ( $(target).attr("alt") != "")
@@ -223,8 +223,8 @@ function newBackgroundUpdate() {
 			"score": 0,
 			"clicks": 0,
 			"likes": 0,
-			// "pages": 0,
-			// "domains": 0,
+			"pages": 0,
+			// "domains": 0, // probably won't track this
 			"level": 0
 		},
 		"eventData": {
@@ -235,6 +235,6 @@ function newBackgroundUpdate() {
 			"token": "INSERT_FROM_BACKGROUND",
 		}
 	};
-	console.log("newScoreUpdater() -> obj", obj);
+	console.log("newBackgroundUpdate() -> obj", obj);
 	return obj;
 }

@@ -33,13 +33,14 @@ var Debug = (function() {
 		if (!prop(tally_options) || !tally_options.showDebugger) return;
 		if (!$("#tyd").length) return;
 
-		var str =   "<b>tally_user</b>: " + JSON.stringify(tally_user) +"<br>"+
+		var str =   "<div style='overflow-y: scroll; height:100px;'>"+
+					"<b>tally_user</b>: " + JSON.stringify(tally_user) +"<br>"+
 					//"tally_options: " + JSON.stringify(tally_options) +"<br>"+
 					//"<b>pageData</b>: " + JSON.stringify(pageData) +"<br>"+
 					"<b>pageData.tags ("+ pageData.tags.length +")</b>: " + JSON.stringify(pageData.tags) +"<br>"+
 					"<b>pageData.trackers ("+ pageData.trackers.length +")</b>: " + JSON.stringify(pageData.trackers) +"<br>"+
 					"<b>tally_recent_monsters ("+ objLength(tally_recent_monsters) +")</b>: " + JSON.stringify(tally_recent_monsters) +"<br>"+
-					"";
+					"</div>";
 		$('#tyd').html(str);
 	}
 

@@ -193,6 +193,7 @@ function createServerUpdate(data) {
 	var obj = {
 		"clicks": data.scoreData.clicks || 0,
 		"likes": data.scoreData.likes || 0,
+		"pages": data.scoreData.pages || 0,
 		"score": data.scoreData.score || 0,
 		"time": data.pageData.time || 0,
 		"tags": data.pageData.tags || "",

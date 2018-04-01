@@ -122,11 +122,11 @@ function startTally() {
 		"<span class='tally_eye_pupil'></span></span></span>" +
 		"</div>" +
 		"<div id='tally_character'>" +
-		"<div class='tally_score_score'></div>" +
-		"<div class='tally_score_clicks'></div>" +
-		"<div class='tally_score_likes'></div>" +
-		"<div class='tally_score_pages'></div>" +
-		"<div class='tally_score_domains'></div>" +
+		// "<div class='tally_score_score'></div>" +
+		// "<div class='tally_score_clicks'></div>" +
+		// "<div class='tally_score_likes'></div>" +
+		// "<div class='tally_score_pages'></div>" +
+		// "<div class='tally_score_domains'></div>" +
 		"</div>" +
 		"</div>";
 	$('#tally').append(str);

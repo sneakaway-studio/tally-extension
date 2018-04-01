@@ -17,7 +17,7 @@ chrome.runtime.onInstalled.addListener(function() {
 		checkTokenOnLaunch();
 	}
 });
-
+ 
 
 
 /**
@@ -34,8 +34,8 @@ function createApp() {
 		store("tally_meta", createMeta());
 		store("tally_secret", createSecret());
 		// these are empty the first time
-//		store("tally_domains", {});
-//		store("tally_urls", {});
+		//		store("tally_domains", {});
+		//		store("tally_urls", {});
 
 		// start registration
 		launchRegistration("createApp() -> first install");
@@ -54,37 +54,32 @@ function checkTokenOnLaunch() {
 	if (!tally_meta.serverOnline) return;
 	// if a token exsts
 	if (prop(tally_secret.token) && tally_secret.token !== "") {
-		console.log(tally_secret);
 		$.ajax({
-			url: tally_meta.api + "/verifyToken",
-			type: "POST",
-			timeout: 15000, // set timeout to 15 secs to catch ERR_CONNECTION_REFUSED
-			contentType: 'application/json',
-			dataType: 'json',
-			data: JSON.stringify({
-				"token": tally_secret.token
-			}),
-			success: function(result) {
+				url: tally_meta.api + "/verifyToken",
+				type: "POST",
+				timeout: 15000, // set timeout to 15 secs to catch ERR_CONNECTION_REFUSED
+				contentType: 'application/json',
+				dataType: 'json',
+				data: JSON.stringify({
+					"token": tally_secret.token
+				})
+
+			}).done(result => {
 				console.log("<{!}> hasValidToken() result =", JSON.stringify(result));
-				if (result.message === 1) {
+				// check date on token
+				if (result.tokenExpires && result.tokenExpires) {
 					console.log(">>>>> checkTokenOnLaunch() -> everything is cool, starting game");
 					startApp();
 				} else {
-					console.log("!!!!! checkTokenOnLaunch() -> no validToken found, launching registration");
 					launchRegistration("checkTokenOnLaunch() -> no validToken found");
 				}
-			},
-			error: function(jqXhr, textStatus, errorThrown) {
-				console.error("!!!!! checkTokenOnLaunch() -> error: " + errorThrown);
-				launchRegistration("checkTokenOnLaunch() -> error");
-			}
-		}).fail(function(jqXHR, textStatus, errorThrown) {
-			console.error("!!!!! checkTokenOnLaunch() -> fail: " + errorThrown);
-			launchRegistration("checkTokenOnLaunch() -> fail");
-		});
+			})
+			.fail(function(jqXHR, textStatus, errorThrown) {
+				launchRegistration("checkTokenOnLaunch() -> fail: " + errorThrown);
+			});
 	} else {
-		// there is no token on first install so...
-		launchRegistration("there is no token on first install so...");
+		// there is no token so launch reg (again?)
+		launchRegistration("checkTokenOnLaunch() -> NO TOKEN FOUND");
 	}
 }
 
@@ -94,7 +89,7 @@ function launchRegistration(calledFrom) {
 	chrome.tabs.create({
 		url: tally_meta.website + "/signup"
 	}, function(tab) {
-		console.log(">>>>> launchRegistration(" + calledFrom + ") -> launching install page");
+		console.log("!!!!! launchRegistration(" + calledFrom + ") -> launching install page");
 	});
 
 }
@@ -102,17 +97,17 @@ function launchRegistration(calledFrom) {
 
 function startApp() {
 	try {
-		tally_user = store("tally_user");
-		tally_options = store("tally_options");
-		tally_meta = store("tally_meta");
-		tally_secret = store("tally_secret");
+		let tally_user = store("tally_user"),
+			tally_options = store("tally_options"),
+			tally_meta = store("tally_meta"),
+			tally_secret = store("tally_secret");
 		console.log("############################## welcome back ! ##############################");
 		console.log("tally_user", JSON.stringify(tally_user));
 		console.log("tally_options", JSON.stringify(tally_options));
 		console.log("tally_meta", JSON.stringify(tally_meta));
 		console.log("tally_secret", JSON.stringify(tally_secret));
 	} catch (ex) {
-		console.log("failed to get tally_user");
+		console.log("startApp() failed");
 	}
 }
 
@@ -120,14 +115,8 @@ function startApp() {
 
 
 
-
-
-
-
-
 /*  BACKGROUND INIT FUNCTIONS
  ******************************************************************************/
-
 
 /**
  *  Create user
@@ -147,8 +136,8 @@ function createScore() {
 		"score": 0,
 		"clicks": 0,
 		"likes": 0,
-		// "pages": 0,
-		// "domains": 0,
+		"pages": 0,
+		// "domains": 0, // probably won't track this
 		"level": 0,
 	};
 	return obj;
@@ -156,14 +145,13 @@ function createScore() {
 // Track status of current game
 function createGameStatus() {
 	var obj = {
-		"skin":"color-magenta"
+		"skin": "color-magenta"
 	};
 	return obj;
 }
 // Keep track of monsters
 function createRecentMonsters() {
-	var obj = {
-	};
+	var obj = {};
 	return obj;
 }
 
