@@ -34,8 +34,8 @@ function createApp() {
 		store("tally_meta", createMeta());
 		store("tally_secret", createSecret());
 		// these are empty the first time
-		store("tally_domains", {});
-		store("tally_urls", {});
+//		store("tally_domains", {});
+//		store("tally_urls", {});
 
 		// start registration
 		launchRegistration("createApp() -> first install");
@@ -118,26 +118,6 @@ function startApp() {
 
 
 
-function sendDataTest(data) {
-	$.ajax({
-		url: tally_meta.api + "/json_test",
-		type: "GET",
-		timeout: 15000, // set timeout to 15 secs to catch ERR_CONNECTION_REFUSED
-		contentType: 'application/json',
-		dataType: 'json',
-		data: JSON.stringify(data),
-		success: function(result) {
-			//console.log("sendData() RESULT =",result);
-			console.log("\nsendData() RESULT =", JSON.stringify(result));
-
-		},
-		error: function(jqXhr, textStatus, errorThrown) {
-			console.error(errorThrown);
-		}
-	}).fail(function(jqXHR, textStatus, errorThrown) {
-		console.error(errorThrown);
-	});
-}
 
 
 
@@ -167,8 +147,8 @@ function createScore() {
 		"score": 0,
 		"clicks": 0,
 		"likes": 0,
-		"pages": 0,
-		"domains": 0,
+		// "pages": 0,
+		// "domains": 0,
 		"level": 0,
 	};
 	return obj;
@@ -240,7 +220,7 @@ function createMeta() {
 		"lastSyncedResult": 0,
 		"userOnline": navigator.onLine,
 		"serverOnline": 0,
-		"connectionSpeed": 0,
+		"serverOnlineTime": 0,
 		"api": "http://localhost:5000/api",
 		"website": "http://localhost:5000",
 		"browser": getBrowser()
@@ -267,7 +247,6 @@ function getBrowser() {
  */
 function createSecret() {
 	var obj = {
-		"key": "",
 		"token": "3HYBTpmJiclmDPnCJThC3dwdmaNIJuU21aq5Iw9sFXtnpYo6GF",
 		"tokenExpires": "2018-03-24T15:45:08.000Z"
 	};

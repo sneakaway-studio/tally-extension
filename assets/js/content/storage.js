@@ -84,28 +84,31 @@ function saveToken(data){
 	);
 }
 
-// SEND DATA TO BACKEND / SERVER
-function syncToServer(data) {
+// SEND DATA TO BACKGROUND
+function sendBackgroundUpdate(data) {
 	//if (!pageData.activeOnPage) return;
-	chrome.runtime.sendMessage({'action':'syncToServer','data':data}, function(response) {
-			console.log('<{!}> syncToServer()',response);
-			tally_user = response.data;
-			//updateDisplay();
+	chrome.runtime.sendMessage({'action':'sendBackgroundUpdate','data':data}, function(response) {
+			console.log('<{!}> sendBackgroundUpdate()',response);
+			tally_user = response.tally_user;
+			Debug.update();
 		}
 	);
 }
-// GET LAST SERVER UPDATE
-const getLastServerUpdatePromise = new Promise(
+
+
+
+// GET LAST BACKGROUND UPDATE
+const getLastBackgroundUpdatePromise = new Promise(
 	(resolve,reject) => {
 		//if (!pageData.activeOnPage) return;
-		chrome.runtime.sendMessage({'action':'getLastServerUpdate'}, function(response) {
-				//console.log('>>>>> getLastServerUpdatePromise()',response.data);
-				let tally_lastServerUpdate = {};
+		chrome.runtime.sendMessage({'action':'getLastBackgroundUpdate'}, function(response) {
+				//console.log('>>>>> getLastBackgroundUpdatePromise()',response.data);
+				let _lastBackgroundUpdate = {};
 				if (prop(response.data)){
-					let tally_lastServerUpdate = response.data; // store data
-					pageData.previousUrl = tally_lastServerUpdate.pageData.url;
+					_lastBackgroundUpdate = response.data; // store data
+					pageData.previousUrl = _lastBackgroundUpdate.pageData.url;
 				}
-				resolve(tally_lastServerUpdate); // resolve promise
+				resolve(_lastBackgroundUpdate); // resolve promise
 			}
 		);
 	}

@@ -115,7 +115,7 @@ var clickEventHandler = function (eventData,target) {
 		// update
 		Debug.update();
 		// create scoreUpdater object
-		var serverUpdate = newServerUpdate();
+		var backgroundUpdate = newBackgroundUpdate();
 
 
 		// more checking...
@@ -123,7 +123,7 @@ var clickEventHandler = function (eventData,target) {
 		// check if it is a FB like
 		if (eventData.text == "Like" || target.className == "_39n"){
 			eventData.action = "like";
-			serverUpdate.scoreData.likes ++;
+			backgroundUpdate.scoreData.likes ++;
 		}
 		// if there is no text
 		else if (eventData.text == ""){
@@ -131,7 +131,7 @@ var clickEventHandler = function (eventData,target) {
 			if (eventData.tag == "IMG"){
 				// update score
 				eventData.action = "image";
-				serverUpdate.scoreData.images ++;
+				backgroundUpdate.scoreData.images ++;
 
 				// also try to get alt tag
 				if ( $(target).attr("alt") != "")
@@ -139,25 +139,33 @@ var clickEventHandler = function (eventData,target) {
 				else eventData.text = "IMG";
 
 			}
-		} // else plain old link
+		}
 
-		// after all actions decided...
+		/**
+		 * 	4. Store information about the click
+		 */
 
 		// if we are this far it is a click
-		serverUpdate.scoreData.clicks ++;
+		backgroundUpdate.scoreData.clicks ++;
 		// store / reset page time
-		serverUpdate.pageData.time = pageData.time;
+		backgroundUpdate.pageData.time = pageData.time;
 		pageData.time = 0;
 		// store event strings
-		serverUpdate.eventData.action = eventData.action;
-		serverUpdate.eventData.text = eventData.text;
+		backgroundUpdate.eventData.action = eventData.action;
+		backgroundUpdate.eventData.text = eventData.text;
 		// add and update scores
-		serverUpdate.scoreData.score += gameRules.clickScore[eventData.action];
+		backgroundUpdate.scoreData.score += gameRules.clickScore[eventData.action];
 
 		// only allow points for clicking the first time (FB Like, etc.)
 //		$(target).toggleClass("tally-clicked");
+// temp off for testing
 
+		// send backgroundUpdate object to server via background
+		sendBackgroundUpdate(backgroundUpdate); 
 
+		/**
+		 * 	5. Game responses
+		 */
 
 		// play sound
 		Sound.play('user','click');
@@ -165,13 +173,6 @@ var clickEventHandler = function (eventData,target) {
 		Effects.showClickVisualText(eventData,"+"+ gameRules.clickScore[eventData.action]);
 		// activate tally
 		// activateTally(eventData.action);
-
-
-
-
-
-		// send serverUpdate object to server via background
-		syncToServer(serverUpdate);
 	}
 	// disable click action in case they are editing text
 	else if(eventData.action == "textSelect"){
