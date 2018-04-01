@@ -161,7 +161,7 @@ var clickEventHandler = function (eventData,target) {
 // temp off for testing
 
 		// send backgroundUpdate object to server via background
-		sendBackgroundUpdate(backgroundUpdate); 
+		sendBackgroundUpdate(backgroundUpdate);
 
 		/**
 		 * 	5. Game responses
@@ -200,4 +200,41 @@ function ignoreNode(str){
 	}
 	//console.log("ignoreNode()",str);
 	return false;
+}
+
+
+
+
+/**
+ *  Create new backgroundUpdate object
+ */
+function newBackgroundUpdate() {
+	var obj = {
+		"pageData": {
+			"description": pageData.description,
+			"domain": pageData.domain,
+			"keywords": pageData.keywords,
+			"tags": pageData.tags,
+			"time": pageData.time,
+			"title": pageData.title,
+			"url": pageData.url
+		},
+		"scoreData": {
+			"score": 0,
+			"clicks": 0,
+			"likes": 0,
+			// "pages": 0,
+			// "domains": 0,
+			"level": 0
+		},
+		"eventData": {
+			"action": "",
+			"text": ""
+		},
+		"userData": {
+			"token": "INSERT_FROM_BACKGROUND",
+		}
+	};
+	console.log("newScoreUpdater() -> obj", obj);
+	return obj;
 }
