@@ -27,6 +27,7 @@ chrome.runtime.onInstalled.addListener(function() {
  *  Start the app (always called)
  */
 function startApp(){
+	console.log(">>>>> startApp()");
 	// check the API status, if connected then check token
 	checkAPIServerStatus();
 }

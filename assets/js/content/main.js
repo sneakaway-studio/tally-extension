@@ -31,6 +31,7 @@ $(function() {
  * Make sure Tally isn't disabled on this page|domain|subdomain
  */
 function shouldExtensionBeActiveOnPage() {
+	console.log("tally_meta",tally_meta); 
 	if (!tally_meta.serverOnline) {
 		return false;
 	} else if (tally_options.disabledDomains.length < 1 ||
@@ -70,7 +71,7 @@ function startGame() {
 			});
 		}
 	}
- 
+
 
 	Monster.check();
 	Debug.update();

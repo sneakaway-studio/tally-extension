@@ -17,8 +17,6 @@ chrome.runtime.onMessage.addListener(
 		}
 
 
-
-
 		/*  USER MANAGEMENT
 		 ******************************************************************************/
 
@@ -125,7 +123,7 @@ chrome.runtime.onMessage.addListener(
 			});
 		}
 
-
+ 
 
 
 		/*  DATA MANAGEMENT
@@ -139,7 +137,8 @@ chrome.runtime.onMessage.addListener(
 				_tally_secret.token = request.data.token;
 				_tally_secret.tokenExpires = request.data.tokenExpires;
 				store("tally_secret", _tally_secret);
-				verifyToken();
+				// (re)start app and verifyToken
+				startApp();
 				message = 1;
 			}
 			sendResponse({
