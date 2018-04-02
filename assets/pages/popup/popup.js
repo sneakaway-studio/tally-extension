@@ -88,15 +88,15 @@ function getMeta(callback) {
 		if (tally_meta.userAuthenticated) $("#authStatus").html("true");
 		else $("#authStatus").html("false");
 		// token
-		if (tally_meta.userHasValidToken) $("#tokenStatus").html("true");
+		if (tally_meta.userTokenValid) $("#tokenStatus").html("true");
 		else $("#tokenStatus").html("false");
 		// token expires
-		if (tally_meta.userHasValidToken) $("#tokenExpires").html("true");
+		if (tally_meta.userTokenValid) $("#tokenExpires").html("true");
 		else $("#tokenExpires").html("false");
 
 
 		$("#authStatus").html((tally_meta.serverOnline ? "yes" : "no"));
-		$("#tokenStatus").html((tally_meta.userHasValidToken ? "yes" : "no"));
+		$("#tokenStatus").html((tally_meta.userTokenValid ? "yes" : "no"));
 		$("#tokenExpires").html((tally_meta.userTokenExpires ? tally_meta.userTokenExpires : "null"));
 		$("#serverStatus").html((tally_meta.serverOnline ? "yes" : "no"));
 
