@@ -75,10 +75,7 @@ function saveToken(data){
 			console.log('<{!}> saveToken()',response);
 			if (response.message == 1){
 				console.log("grab it", data);
-
-
-				$.growl({ title: "Growl", message: "The kitten is awake!" });
-				$.growl.notice({ message: "User token updated!" });
+				$.growl({ title: "TOKEN SAVED!", message: "User token updated!" });
 			}
 		}
 	);
