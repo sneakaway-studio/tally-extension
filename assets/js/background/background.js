@@ -1,74 +1,38 @@
 "use strict";
 
+// FLOW OF BACKGROUND...
+/*	if tally_meta not found...
+		-> createApp() -> launchStartScreen() -> startApp() ...
+	if tally_meta is found OR after createApp()...
+		-> startApp() -> checkAPIServerStatus() -> checkTokenStatus() -> content script takes over */
+
+
 /**
- *  Listener for installations (first|any)
+ *  Listen for installations (first|any)
  */
 chrome.runtime.onInstalled.addListener(function() {
 	console.log("!!!!! new installation detected");
 	// is this the first install?
 	if (!prop(store("tally_meta"))) {
 		console.log("!!!!! no tally_meta found, creating app");
-		// attempt to install if not found
+		// run create app script
 		createApp();
-		// otherwise is there a valid token?
 	} else {
-		// check the API status, if connected then check token
-		checkAPIServerStatus(checkTokenStatus);
+		// run start app script
+		startApp();
 	}
 });
 
 /**
- *  Contact server to verify token
+ *  Start the app (always called)
  */
-function checkTokenStatus() {
-	let _tally_meta = store("tally_meta");
-	// if server not online, stop everything
-	if (!_tally_meta.serverOnline) return;
-	// get token status
-	_tally_meta.userTokenStatus = verifyToken(handleTokenStatus);
-	store("tally_meta", _tally_meta);
-}
-
-function handleTokenStatus(){
-	let _tally_meta = store("tally_meta");
-	//dataReport();
-	// if userTokenStatus is ok
-	if (_tally_meta.userTokenStatus == "ok") {
-		console.log(">>>>> handleTokenStatus() -> everything is cool, starting game");
-	} else if (_tally_meta.userTokenStatus == "expired") {
-		console.log(">>>>> handleTokenStatus() -> TOKEN EXPIRED");
-		// prompt handled by content script
-	} else {
-		// there is no token, but have we prompted them before?
-		// launch registration
-		console.log(">>>>> handleTokenStatus() -> NO TOKEN FOUND");
-		launchRegistration();
-	}
-}
-
-
-/**
- *  Launch registration page
- */
-function launchRegistration() {
-	let _tally_meta = store("tally_meta");
-	// if we haven't prompted them too many times
-	if (_tally_meta.userTokenPrompts < 2) {
-		// increment prompts
-		_tally_meta.userTokenPrompts++;
-		store("tally_meta", _tally_meta);
-
-		//launch install page
-		chrome.tabs.create({
-			url: _tally_meta.website + "/signup"
-		}, function(tab) {
-			console.log("!!!!! launchRegistration() -> launching registration page",tab.url);
-		});
-	}
+function startApp(){
+	// check the API status, if connected then check token
+	checkAPIServerStatus();
 }
 
 /**
- *  Data report
+ *  Data reporting
  */
 function dataReport() {
 	try {

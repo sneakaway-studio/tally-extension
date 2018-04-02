@@ -7,9 +7,9 @@
  ******************************************************************************/
 
 /**
- *  Check to see if API Server is online
+ *  Check if API Server is online
  */
-function checkAPIServerStatus(callback) {
+function checkAPIServerStatus() {
 	let _tally_meta = store("tally_meta");
 	// time it
 	var started = new Date().getTime();
@@ -25,8 +25,8 @@ function checkAPIServerStatus(callback) {
 		_tally_meta.serverOnline = 1;
 		_tally_meta.userOnline = 1;
 		_tally_meta.serverOnlineTime = ended - started;
-		// callback (checkTokenStatus)
-		if (callback) callback();
+		// since server is online check token
+		verifyToken();
 	}).fail(error => {
 		// server is not online, do not start game
 		console.error("<{!}> checkAPIServerStatus() SERVER IS NOT ONLINE, DO NOT START GAME", JSON.stringify(error));
@@ -43,14 +43,17 @@ function checkAPIServerStatus(callback) {
 /**
  *  Verify token is valid, not expired
  */
-function verifyToken(callback) {
+function verifyToken() {
 	let _tally_secret = store("tally_secret"),
 		_tally_meta = store("tally_meta");
-    // if a token exsts
-    if (!prop(_tally_secret.token) || _tally_secret.token == "") return "";
-    // check with server
+	// if a token does not exist
+	if (!_tally_secret.token || _tally_secret.token == ""){
+		handleTokenStatus(0, 0, "", 0);
+        return;
+    }
+	// check with server
 	$.ajax({
-		url: _tally_meta.api + "/verifyToken",
+		url: _tally_meta.api + "/user/verifyToken",
 		type: "POST",
 		timeout: 15000, // set timeout to 15 secs to catch ERR_CONNECTION_REFUSED
 		contentType: 'application/json',
@@ -64,41 +67,55 @@ function verifyToken(callback) {
 		// check date on token
 		if (result.tokenExpires)
 			diff = returnDateDifferenceMinutes(result.tokenExpires);
-
+        // if diff is > 0 (in the future)
 		if (diff && diff > 0) {
 			console.log("<{!}> verifyToken() OK", diff, result.tokenExpires);
-			_tally_meta.userTokenExpires = result.tokenExpires;
-			_tally_meta.userTokenExpiresDiff = diff;
-            _tally_meta.userTokenStatus = "ok";
-			_tally_meta.userTokenValid = 1;
+			handleTokenStatus(result.tokenExpires, diff, "ok", 1);
 		} else {
 			console.log("<{!}> verifyToken() EXPIRED", result.tokenExpires);
-			_tally_meta.userTokenExpires = result.tokenExpires;
-			_tally_meta.userTokenExpiresDiff = diff;
-            _tally_meta.userTokenStatus = "expired";
-			_tally_meta.userTokenValid = 0;
+			handleTokenStatus(result.tokenExpires, diff, "expired", 0);
 		}
 	}).fail(function(jqXHR, textStatus, errorThrown) {
 		console.log("<{!}> verifyToken() result =", jqXHR, textStatus, errorThrown);
-        _tally_meta.userTokenExpires = 0;
-        _tally_meta.userTokenExpiresDiff = 0
-		_tally_meta.userTokenStatus = "error";
-        _tally_meta.userTokenValid = 0;
-	}).always(() => {
-		console.log("<{!}> verifyToken() userTokenStatus =", _tally_meta.userTokenStatus);
-		// save result
-		store("tally_meta", _tally_meta);
-        // callback: handleTokenStatus()
-        if (callback) callback();
-		return _tally_meta.userTokenStatus;
+		handleTokenStatus(0, 0, "error", 0);
 	});
 }
 
-
+/**
+ *  Handle token status
+ */
+function handleTokenStatus(_expires, _expiresDiff, _status, _valid){
+	let _tally_meta = store("tally_meta");
+    _tally_meta.userTokenExpires = _expires;
+    _tally_meta.userTokenExpiresDiff = _expiresDiff;
+    _tally_meta.userTokenStatus = _status;
+    _tally_meta.userTokenValid = _valid;
+    // save result
+    store("tally_meta", _tally_meta);
+	//dataReport();
+	// if userTokenStatus is ok
+	if (_tally_meta.userTokenStatus == "ok") {
+		console.log(">>>>> handleTokenStatus() -> everything is cool, start game");
+		// content script takes over
+	} else if (_tally_meta.userTokenStatus == "expired") {
+		console.log(">>>>> handleTokenStatus() -> TOKEN EXPIRED");
+		// prompts handled by content script
+	} else {
+		// tally_meta exists but there is no token or there is an error
+		// have we prompted them before?
+		// launch registration
+		console.log(">>>>> handleTokenStatus() -> NO TOKEN FOUND");
+		launchStartScreen();
+	}
+}
+ 
+/**
+ *  Send update to API server
+ */
 function sendServerUpdate(data) {
 	console.log("<{!}> sendServerUpdate()", data);
 	let _tally_meta = store("tally_meta");
-	if (!_tally_meta.serverOnline) return;
+	if (!_tally_meta.serverOnline || _tally_meta.userTokenStatus != "ok") return;
 	$.ajax({
 		type: "PUT",
 		url: _tally_meta.api + "/user/extensionUpdate",

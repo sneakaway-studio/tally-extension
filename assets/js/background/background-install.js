@@ -4,7 +4,7 @@
  *  Create user, options, meta, etc.
  */
 function createApp() {
-	console.log(">>>>> createApp() -> first install: creating tally_user");
+	console.log("!!!!! createApp() -> first install: creating tally_user");
 	try {
 		// Create objects
 		store("tally_user", createUser());
@@ -17,13 +17,45 @@ function createApp() {
 		// store("tally_domains", {});
 		// store("tally_urls", {});
 
-		// start registration
-		launchRegistration();
+		// start app
+        startApp();
 	} catch (ex) {
 		console.log("failed to create user");
 	}
 }
 
+/**
+ *  Launch registration page
+ */
+function launchStartScreen() {
+
+	// if we haven't prompted them too many times
+	if (_tally_meta.userTokenPrompts <= 1) {
+		//launch install page
+		chrome.tabs.create({
+			url: chrome.extension.getURL('assets/pages/startScreen/startScreen.html')
+		}, function(tab) {
+            // increment prompts
+            let _tally_meta = store("tally_meta");
+            _tally_meta.userTokenPrompts++;
+            store("tally_meta", _tally_meta);
+			console.log(">>>>> launchStartScreen() -> launching start screen", tab.url);
+		});
+	} else {
+        // do nothing, content script will prompt them
+    }
+}
+
+/**
+ *  Launch registration page
+ */
+// function launchRegistrationPage() {
+// 	chrome.tabs.create({
+// 		url: _tally_meta.website + "/signup"
+// 	}, function(tab) {
+// 		console.log(">>>>> launchRegistrationPage() -> launching registration page", tab.url);
+// 	});
+// }
 
 
 /*  BACKGROUND INIT FUNCTIONS
@@ -152,8 +184,8 @@ function getBrowser() {
  */
 function createSecret() {
 	var obj = {
-		"token": "3HYBTpmJiclmDPnCJThC3dwdmaNIJuU21aq5Iw9sFXtnpYo6GF",
-		"tokenExpires": "2018-03-24T15:45:08.000Z"
+		"token": "",//"3HYBTpmJiclmDPnCJThC3dwdmaNIJuU21aq5Iw9sFXtnpYo6GF",
+		"tokenExpires": "",//"2018-03-24T15:45:08.000Z"
 	};
 	return obj;
 }

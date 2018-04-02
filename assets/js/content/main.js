@@ -31,7 +31,7 @@ $(function() {
  * Make sure Tally isn't disabled on this page|domain|subdomain
  */
 function shouldExtensionBeActiveOnPage() {
-	if (!tally_meta.serverOnline){
+	if (!tally_meta.serverOnline) {
 		return false;
 	} else if (tally_options.disabledDomains.length < 1 ||
 		($.inArray(pageData.domain, tally_options.disabledDomains) >= 0) ||
@@ -59,13 +59,18 @@ function startGame() {
 	//checkPageForMonsters(pageData.tags);
 
 
-	console.log(">>>>> tally_meta = "+ JSON.stringify(tally_meta));
-if (tally_meta.userTokenValid != 1 || tally_meta.userTokenExpiresDiff < 0){
-	$.growl({
-		title: "YOUR TOKEN HAS EXPIRED",
-		message: "Click here to get a new one"
-	});
-}
+	console.log(">>>>> tally_meta = " + JSON.stringify(tally_meta));
+	if (tally_meta.userTokenStatus == "expired") {
+		$.growl({
+			title: "YOUR TOKEN HAS EXPIRED",
+			message: "Click here to get a new one"
+		});
+	} else if (tally_meta.userTokenStatus != "ok") {
+		$.growl({
+			title: "YOU HAVE NO TOKEN",
+			message: "<a href='"+ tally_meta.website +"/dashboard' target='_blank'>Link your account to start playing Tally</a>"
+		});
+	}
 
 
 	Monster.check();
