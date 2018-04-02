@@ -224,8 +224,19 @@ document.getElementById("opt_close").onclick = function() {
 };
 
 $(document).on('click', '#updateTokenBtn', function() {
-	window.open("https://tallygame.net/signin");
+	window.open(tally_meta.website + "/signin");
 });
+$(document).on('click', '#viewProfileBtn', function() {
+	window.open(tally_meta.website + "/profile");
+});
+$(document).on('click', '#editProfileBtn', function() {
+	window.open(tally_meta.website + "/dashboard");
+});
+$(document).on('click', '#viewLeaderboardsBtn', function() {
+	window.open(tally_meta.website + "/leaderboards");
+});
+
+
 
 
 /*  TAB FUNCTIONS
