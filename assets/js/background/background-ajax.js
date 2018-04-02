@@ -108,7 +108,7 @@ function handleTokenStatus(_expires, _expiresDiff, _status, _valid){
 		launchStartScreen();
 	}
 }
- 
+   
 /**
  *  Send update to API server
  */

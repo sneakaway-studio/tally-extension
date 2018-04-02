@@ -26,9 +26,9 @@ function createApp() {
 
 /**
  *  Launch registration page
- */
+ */ 
 function launchStartScreen() {
-
+    let _tally_meta = store("tally_meta");
 	// if we haven't prompted them too many times
 	if (_tally_meta.userTokenPrompts <= 1) {
 		//launch install page
@@ -36,7 +36,6 @@ function launchStartScreen() {
 			url: chrome.extension.getURL('assets/pages/startScreen/startScreen.html')
 		}, function(tab) {
             // increment prompts
-            let _tally_meta = store("tally_meta");
             _tally_meta.userTokenPrompts++;
             store("tally_meta", _tally_meta);
 			console.log(">>>>> launchStartScreen() -> launching start screen", tab.url);

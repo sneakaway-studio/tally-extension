@@ -47,10 +47,8 @@ function shouldExtensionBeActiveOnPage() {
  * Run Game
  */
 function startGame() {
-	//    console.log(">>>>> startGame() -> Starting Tally on this page");
+	console.log(">>>>> startGame() -> Starting Tally on this page");
 	//    console.log(">>>>> pageData = "+ JSON.stringify(pageData));
-
-
 
 
 	Debug.add();
@@ -58,20 +56,21 @@ function startGame() {
 	addMainClickEventListener();
 	//checkPageForMonsters(pageData.tags);
 
-
 	console.log(">>>>> tally_meta = " + JSON.stringify(tally_meta));
-	if (tally_meta.userTokenStatus == "expired") {
-		$.growl({
-			title: "YOUR TOKEN HAS EXPIRED",
-			message: "Click here to get a new one"
-		});
-	} else if (tally_meta.userTokenStatus != "ok") {
-		$.growl({
-			title: "YOU HAVE NO TOKEN",
-			message: "<a href='"+ tally_meta.website +"/dashboard' target='_blank'>Link your account to start playing Tally</a>"
-		});
+	if (pageData.url != tally_meta.website + "/dashboard") {
+		if (tally_meta.userTokenStatus == "expired") {
+			$.growl({
+				title: "YOUR TOKEN HAS EXPIRED",
+				message: "Click here to get a new one"
+			});
+		} else if (tally_meta.userTokenStatus != "ok") {
+			$.growl({
+				title: "YOU HAVE NO TOKEN",
+				message: "<a href='" + tally_meta.website + "/dashboard' target='_blank'>Link your account to start playing Tally</a>"
+			});
+		}
 	}
-
+ 
 
 	Monster.check();
 	Debug.update();
