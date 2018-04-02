@@ -11,7 +11,30 @@ let tally_options = {},
 	tally_user = {},
 	tally_meta = {};
 
-document.addEventListener('DOMContentLoaded', getOptions);
+
+// if user hasn't logged in then show login only
+function init(){
+	chrome.runtime.sendMessage({
+		'action': 'getMeta'
+	}, function(response) {
+		//console.log("getMeta()",JSON.stringify(response.data));
+		tally_meta = response.data;
+		if (tally_meta.userTokenStatus != "ok"){
+			// display only the login
+			let str = "<a href='"+ tally_meta.website + "/signup" + "' target='_blank'>Link your Tally account</a>";
+			$("#content").html(str);
+		}
+		else { getOptions(); }
+	});
+
+}
+
+
+
+
+
+
+document.addEventListener('DOMContentLoaded', init);
 
 function getUser(callback) {
 	chrome.runtime.sendMessage({

@@ -20,202 +20,206 @@
 			<h1>Tally</h1>
 		</div>
 
-		<div class="tab-button-group">
-			<button class="tab-button active" id="statusBtn">Status</button>
-			<button class="tab-button" id="optionsBtn">Options</button>
-			<button class="tab-button" id="aboutBtn">About</button>
-			<button class="tab-button" id="debuggingBtn">Debugging</button>
-		</div>
+		<div id="content">
+
+			<div class="tab-button-group">
+				<button class="tab-button active" id="statusBtn">Status</button>
+				<button class="tab-button" id="optionsBtn">Options</button>
+				<button class="tab-button" id="aboutBtn">About</button>
+				<button class="tab-button" id="debuggingBtn">Debugging</button>
+			</div>
 
 
 
 
-		<div id="statusTab" class="tab">
+			<div id="statusTab" class="tab">
 
 
-			<button class="button" id="viewProfileBtn">view profile</button>
-			<button class="button" id="editProfileBtn">edit profile</button>
-			<button class="button" id="viewLeaderboardsBtn">view leaderboards</button>
+				<button class="button" id="viewProfileBtn">view profile</button>
+				<button class="button" id="editProfileBtn">edit profile</button>
+				<button class="button" id="viewLeaderboardsBtn">view leaderboards</button>
 
-			<div class="tabSection">
-				<h3>Score</h3>
-				<table>
-					<tr>
-						<td>Score</td>
-						<td class="data-field" id="score"></td>
-					</tr>
-					<tr>
-						<td>Clicks</td>
-						<td class="data-field" id="clicks"></td>
-					</tr>
-					<tr>
-						<td>Likes</td>
-						<td class="data-field" id="likes"></td>
-					</tr>
-					<tr>
-						<td>Pages</td>
-						<td class="data-field" id="pages"></td>
-					</tr>
-					<tr>
-						<td>Monsters</td>
-						<td class="data-field" id="monsters"></td>
-					</tr>
-				</table>
+				<div class="tabSection">
+					<h3>Score</h3>
+					<table>
+						<tr>
+							<td>Score</td>
+							<td class="data-field" id="score"></td>
+						</tr>
+						<tr>
+							<td>Clicks</td>
+							<td class="data-field" id="clicks"></td>
+						</tr>
+						<tr>
+							<td>Likes</td>
+							<td class="data-field" id="likes"></td>
+						</tr>
+						<tr>
+							<td>Pages</td>
+							<td class="data-field" id="pages"></td>
+						</tr>
+						<tr>
+							<td>Monsters</td>
+							<td class="data-field" id="monsters"></td>
+						</tr>
+					</table>
+
+				</div>
+
+
+				<div class="tabSection">
+					<h3>Connection</h3>
+					<table>
+						<tr>
+							<td>User logged-in</td>
+							<td class="data-field" id="authStatus"></td>
+							<td></td>
+						</tr>
+						<tr>
+							<td>User has valid token</td>
+							<td class="data-field" id="tokenStatus"></td>
+							<td></td>
+						</tr>
+						<tr>
+							<td>Token expires</td>
+							<td class="data-field" id="tokenExpires"></td>
+							<td><button class="button" id="updateTokenBtn">update token</button></td>
+						</tr>
+						<tr>
+							<td>Game server online</td>
+							<td class="data-field" id="serverStatus"></td>
+							<td></td>
+						</tr>
+					</table>
+				</div>
+
+				<div class="tabSection">
+					<h3>Game</h3>
+
+					<table>
+						<tr>
+							<td>Version</td>
+							<td class="data-field" id="version"></td>
+						</tr>
+						<tr>
+							<td>Installed on</td>
+							<td class="data-field" id="installedOn"></td>
+						</tr>
+					</table>
+
+				</div>
+
 
 			</div>
 
 
-			<div class="tabSection">
-				<h3>Connection</h3>
-				<table>
-					<tr>
-						<td>User logged-in</td>
-						<td class="data-field" id="authStatus"></td>
-						<td></td>
-					</tr>
-					<tr>
-						<td>User has valid token</td>
-						<td class="data-field" id="tokenStatus"></td>
-						<td></td>
-					</tr>
-					<tr>
-						<td>Token expires</td>
-						<td class="data-field" id="tokenExpires"></td>
-						<td><button class="button" id="updateTokenBtn">update token</button></td>
-					</tr>
-					<tr>
-						<td>Game server online</td>
-						<td class="data-field" id="serverStatus"></td>
-						<td></td>
-					</tr>
-				</table>
-			</div>
-
-			<div class="tabSection">
-				<h3>Game</h3>
-
-				<table>
-					<tr>
-						<td>Version</td>
-						<td class="data-field" id="version"></td>
-					</tr>
-					<tr>
-						<td>Installed on</td>
-						<td class="data-field" id="installedOn"></td>
-					</tr>
-				</table>
-
-			</div>
 
 
-		</div>
+			<div id="optionsTab" class="tab" style="display:none">
+
+				<div class="tabSection">
+					<h3>Skins</h3>
+
+					<p>These are the skins you have been awarded</p>
+					<div id="skinThumbs"></div>
+				</div>
 
 
+				<div class="tabSection">
+					<h3>Game</h3>
 
-
-		<div id="optionsTab" class="tab" style="display:none">
-
-			<div class="tabSection">
-				<h3>Skins</h3>
-
-				<p>These are the skins you have been awarded</p>
-				<div id="skinThumbs"></div>
-			</div>
-
-
-			<div class="tabSection">
-				<h3>Game</h3>
-
-				<label for="gameMode">Game mode</label>
-				<select class="option-dropdown" id="gameMode">
+					<label for="gameMode">Game mode</label>
+					<select class="option-dropdown" id="gameMode">
 					<option value="full">Full – All the feels!</option>
 					<option value="stealth">Stealth – Visuals and sounds off</option>
 					<option value="disabled">Disabled</option>
 				</select>
+				</div>
+
+
+				<div class="tabSection">
+					<h3>Privacy</h3>
+
+					<label for="disabledDomains">Disabled domains</label><br>
+					<textarea class="option-textarea" id="disabledDomains" rows="4" cols="40"></textarea>
+				</div>
+
 			</div>
 
 
-			<div class="tabSection">
-				<h3>Privacy</h3>
-
-				<label for="disabledDomains">Disabled domains</label><br>
-				<textarea class="option-textarea" id="disabledDomains" rows="4" cols="40"></textarea>
-			</div>
-
-		</div>
 
 
 
+			<div id="aboutTab" class="tab" style="display:none">
 
+				<div class="tabSection">
+					<p>Tally is a multiplayer web-based game that identifies hidden data-trackers in your browser, presenting them as various animated monsters. </p>
 
-		<div id="aboutTab" class="tab" style="display:none">
+					<p>Learn more at <a href="https://tallygame.net" target="_blank">tallygame.net</a></p>
 
-			<div class="tabSection">
-				<p>Tally is a multiplayer web-based game that identifies hidden data-trackers in your browser, presenting them as various animated monsters. </p>
+					<a href="https://twitter.com/tally_game" target="_blank"><i class="fab fa-twitter"></i></a>
+					<a href="https://www.instagram.com/tallygameofficial" target="_blank"><i class="fab fa-instagram"></i></a>
+					<a href="https://www.facebook.com/tallygame/" target="_blank"><i class="fab fa-facebook"></i></a>
+				</div>
 
-				<p>Learn more at <a href="https://tallygame.net" target="_blank">tallygame.net</a></p>
-
-				<a href="https://twitter.com/tally_game" target="_blank"><i class="fab fa-twitter"></i></a>
-				<a href="https://www.instagram.com/tallygameofficial" target="_blank"><i class="fab fa-instagram"></i></a>
-				<a href="https://www.facebook.com/tallygame/" target="_blank"><i class="fab fa-facebook"></i></a>
-			</div>
-
-		</div>
-
-
-
-		<div id="debuggingTab" class="tab">
-
-			<div class="tabSection">
-				<h2>Debugging</h2>
-
-				<label for="showDebugger">Show debugger</label>
-				<input class="option-radio-btn" id="showDebugger" value="true" type="checkbox">
-				<br>
-
-				<label for="debuggerPosition">Debugger position</label>
-				<input id="debuggerPosition" type="input">
-				<br>
 			</div>
 
 
-			<div class="tabSection">
-				<h3>Tests</h3>
 
-				<div class="cols">
-					<div class="col">
-						<button class="button" id="tallyThoughtHello">tallyThoughtHello</button><br>
-						<button class="button" id="showRandomProductMonsterFromAbove">showRandomProductMonsterFromAbove</button><br>
-						<button class="button" id="showProductMonsterFromAbove">showProductMonsterFromAbove</button><br>
-						<button class="button" id="showProductMonsterVideo">showProductMonsterVideo</button><br>
-						<button class="button" id="stare">stare</button><br>
-					</div>
+			<div id="debuggingTab" class="tab">
 
-					<div class="col">
-						<button class="button" id="tallyThoughtShowScore">tallyThoughtShowScore</button><br>
-						<button class="button" id="explodeThePage">explodeThePage</button><br>
-						<button class="button" id="transform-180-null">transform-180-null</button><br>
-						<button class="button" id="transform-null-.5">transform-null-.5</button><br>
-						<button class="button" id="mirrorPage">mirrorPage</button><br>
-						<button class="button" id="resetDebuggerPosition">resetDebuggerPosition</button><br>
-						<button class="button" id="returnAllNodes">returnAllNodes</button><br>
+				<div class="tabSection">
+					<h2>Debugging</h2>
+
+					<label for="showDebugger">Show debugger</label>
+					<input class="option-radio-btn" id="showDebugger" value="true" type="checkbox">
+					<br>
+
+					<label for="debuggerPosition">Debugger position</label>
+					<input id="debuggerPosition" type="input">
+					<br>
+				</div>
+
+
+				<div class="tabSection">
+					<h3>Tests</h3>
+
+					<div class="cols">
+						<div class="col">
+							<button class="button" id="tallyThoughtHello">tallyThoughtHello</button><br>
+							<button class="button" id="showRandomProductMonsterFromAbove">showRandomProductMonsterFromAbove</button><br>
+							<button class="button" id="showProductMonsterFromAbove">showProductMonsterFromAbove</button><br>
+							<button class="button" id="showProductMonsterVideo">showProductMonsterVideo</button><br>
+							<button class="button" id="stare">stare</button><br>
+						</div>
+
+						<div class="col">
+							<button class="button" id="tallyThoughtShowScore">tallyThoughtShowScore</button><br>
+							<button class="button" id="explodeThePage">explodeThePage</button><br>
+							<button class="button" id="transform-180-null">transform-180-null</button><br>
+							<button class="button" id="transform-null-.5">transform-null-.5</button><br>
+							<button class="button" id="mirrorPage">mirrorPage</button><br>
+							<button class="button" id="resetDebuggerPosition">resetDebuggerPosition</button><br>
+							<button class="button" id="returnAllNodes">returnAllNodes</button><br>
+						</div>
 					</div>
 				</div>
+
+
+				<div class="tabSection">
+					<h3>Resets</h3>
+
+					<button class="button" id="opt_reset_user">Reset user data</button>
+					<span id="opt_reset_user_status" class="status"></span><br>
+
+					<button class="button" id="opt_reset_options">Reset user options to defaults</button>
+					<span id="opt_reset_options_status" class="status"></span><br>
+				</div>
+
 			</div>
 
-
-			<div class="tabSection">
-				<h3>Resets</h3>
-
-				<button class="button" id="opt_reset_user">Reset user data</button>
-				<span id="opt_reset_user_status" class="status"></span><br>
-
-				<button class="button" id="opt_reset_options">Reset user options to defaults</button>
-				<span id="opt_reset_options_status" class="status"></span><br>
-			</div>
 
 		</div>
-
 
 	</div>
 	<script src="../../libs/jquery-3.2.1.min.js"></script>
