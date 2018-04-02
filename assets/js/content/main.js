@@ -17,7 +17,7 @@ $(function() {
 		.then(function() {
 			if (MAIN_DEBUG) console.log('>>>>> init() Promise all data has loaded', tally_user, tally_options);
 			// check if extension should be active on this page before proceeding
-			pageData.activeOnPage = shouldExtensionBeActiveOnPage(tally_options);
+			pageData.activeOnPage = shouldExtensionBeActiveOnPage();
 			if (pageData.activeOnPage)
 				startGame();
 		})
@@ -30,10 +30,12 @@ $(function() {
 /**
  * Make sure Tally isn't disabled on this page|domain|subdomain
  */
-function shouldExtensionBeActiveOnPage(_tally_options) {
-	if (_tally_options.disabledDomains.length < 1 ||
-		($.inArray(pageData.domain, _tally_options.disabledDomains) >= 0) ||
-		($.inArray(pageData.subDomain, _tally_options.disabledDomains) >= 0)) {
+function shouldExtensionBeActiveOnPage() {
+	if (!tally_meta.serverOnline){
+		return false;
+	} else if (tally_options.disabledDomains.length < 1 ||
+		($.inArray(pageData.domain, tally_options.disabledDomains) >= 0) ||
+		($.inArray(pageData.subDomain, tally_options.disabledDomains) >= 0)) {
 		if (MAIN_DEBUG) console.log("Tally is disabled on this domain");
 		return false;
 	} else if (pageData.contentType != "text/html") {
@@ -47,10 +49,24 @@ function shouldExtensionBeActiveOnPage(_tally_options) {
 function startGame() {
 	//    console.log(">>>>> startGame() -> Starting Tally on this page");
 	//    console.log(">>>>> pageData = "+ JSON.stringify(pageData));
+
+
+
+
 	Debug.add();
 	startTally();
 	addMainClickEventListener();
 	//checkPageForMonsters(pageData.tags);
+
+
+	console.log(">>>>> tally_meta = "+ JSON.stringify(tally_meta));
+if (tally_meta.userTokenValid != 1 || tally_meta.userTokenExpiresDiff < 0){
+	$.growl({
+		title: "YOUR TOKEN HAS EXPIRED",
+		message: "Click here to get a new one"
+	});
+}
+
 
 	Monster.check();
 	Debug.update();
