@@ -18,7 +18,7 @@ function createApp() {
 		// store("tally_urls", {});
 
 		// start app
-        startApp();
+		startApp();
 	} catch (ex) {
 		console.log("failed to create user");
 	}
@@ -26,23 +26,23 @@ function createApp() {
 
 /**
  *  Launch registration page
- */ 
+ */
 function launchStartScreen() {
-    let _tally_meta = store("tally_meta");
+	let _tally_meta = store("tally_meta");
 	// if we haven't prompted them too many times
 	if (_tally_meta.userTokenPrompts <= 1) {
 		//launch install page
 		chrome.tabs.create({
 			url: chrome.extension.getURL('assets/pages/startScreen/startScreen.html')
 		}, function(tab) {
-            // increment prompts
-            _tally_meta.userTokenPrompts++;
-            store("tally_meta", _tally_meta);
+			// increment prompts
+			_tally_meta.userTokenPrompts++;
+			store("tally_meta", _tally_meta);
 			console.log(">>>>> launchStartScreen() -> launching start screen", tab.url);
 		});
 	} else {
-        // do nothing, content script will prompt them
-    }
+		// do nothing, content script will prompt them
+	}
 }
 
 /**
@@ -75,12 +75,13 @@ function createUser() {
 // Create Score object (separate function so we can reset)
 function createScore() {
 	var obj = {
-		"score": 0,
 		"clicks": 0,
+		"domains": 0,
+		"level": 0,
 		"likes": 0,
 		"pages": 0,
-		// "domains": 0, // probably won't track this
-		"level": 0,
+		"score": 0,
+		"time": 0,
 	};
 	return obj;
 }
@@ -183,8 +184,8 @@ function getBrowser() {
  */
 function createSecret() {
 	var obj = {
-		"token": "",//"3HYBTpmJiclmDPnCJThC3dwdmaNIJuU21aq5Iw9sFXtnpYo6GF",
-		"tokenExpires": "",//"2018-03-24T15:45:08.000Z"
+		"token": "", //"3HYBTpmJiclmDPnCJThC3dwdmaNIJuU21aq5Iw9sFXtnpYo6GF",
+		"tokenExpires": "", //"2018-03-24T15:45:08.000Z"
 	};
 	return obj;
 }

@@ -9,7 +9,7 @@ let pageData = getPageData(),
 	tally_game_status = getGameStatus(),
 	tally_recent_monsters = {};
 
-let MAIN_DEBUG = false;
+let MAIN_DEBUG = true;
 
 $(function() {
 	Promise // after async functions then update
@@ -31,8 +31,8 @@ $(function() {
  * Make sure Tally isn't disabled on this page|domain|subdomain
  */
 function shouldExtensionBeActiveOnPage() {
-	console.log("tally_meta",tally_meta); 
 	if (!tally_meta.serverOnline) {
+		if (MAIN_DEBUG) console.log("Connection to Tally server is down");
 		return false;
 	} else if (tally_options.disabledDomains.length < 1 ||
 		($.inArray(pageData.domain, tally_options.disabledDomains) >= 0) ||

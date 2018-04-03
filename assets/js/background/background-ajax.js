@@ -108,13 +108,14 @@ function handleTokenStatus(_expires, _expiresDiff, _status, _valid){
 		launchStartScreen();
 	}
 }
-   
+
 /**
  *  Send update to API server
  */
 function sendServerUpdate(data) {
 	console.log("<{!}> sendServerUpdate()", data);
-	let _tally_meta = store("tally_meta");
+	let _tally_meta = store("tally_meta"),
+        _tally_user = store("tally_user");
 	if (!_tally_meta.serverOnline || _tally_meta.userTokenStatus != "ok") return;
 	$.ajax({
 		type: "PUT",
@@ -124,6 +125,14 @@ function sendServerUpdate(data) {
 		data: JSON.stringify(data)
 	}).done(result => {
 		console.log("<{!}> sendServerUpdate() RESULT =", JSON.stringify(result));
+        // treat all server data as master
+        if (result[0].username) _tally_user.username = result[0].username;
+        if (result[0].clicks) _tally_user.score.clicks = result[0].clicks;
+        if (result[0].likes) _tally_user.score.likes = result[0].likes;
+        if (result[0].pages) _tally_user.score.pages = result[0].pages;
+        if (result[0].score) _tally_user.score.score = result[0].score;
+        if (result[0].time) _tally_user.score.time = result[0].time;
+        store("tally_user",_tally_user);
 	}).fail(error => {
 		console.error("<{!}> sendServerUpdate() RESULT =", JSON.stringify(error));
 		// server might not be reachable

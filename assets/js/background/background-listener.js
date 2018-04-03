@@ -123,7 +123,7 @@ chrome.runtime.onMessage.addListener(
 			});
 		}
 
- 
+
 
 
 		/*  DATA MANAGEMENT
@@ -199,6 +199,7 @@ function createServerUpdate(data) {
 		"tags": data.pageData.tags || "",
 		"token": _tally_secret.token,
 		"url": data.pageData.url || "",
+		"domain": data.pageData.domain || "",
 	};
 	//console.log("createServerUpdate()", obj);
 	return obj;
