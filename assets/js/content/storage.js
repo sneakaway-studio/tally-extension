@@ -24,7 +24,7 @@ function saveUser() {
 		'action': 'saveUser',
 		'data': tally_user
 	}, function(response) {
-		console.log("<<<<< ", calledFrom, '> saveUser()', JSON.stringify(response));
+		console.log("<<<<< saveUser()", JSON.stringify(response));
 	});
 }
 

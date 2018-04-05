@@ -144,7 +144,11 @@ var Monster = (function() {
 	function launch(mid, stage) {
 		let monster = MonsterData.dataById[mid],
 			duration = 4500,
-			top = 600;
+			top = 600,
+			level = 1;
+
+		// if they already have this one, increase level
+		if (tally_user.achievements.monsters[mid]) level = tally_user.achievements.monsters[mid].level + 1;
 
 		// insert monster
 
@@ -172,6 +176,27 @@ var Monster = (function() {
 				//playSound('powerup',0,10);
 			}
 		});
+
+		// somewhere here we would attach a click listener to the monster
+		// let's assume we've done that so we can add the monster to the user's monsters
+		// and then push to the server
+
+
+		// add to tally_user
+		if (tally_user.achievements.monsters[mid]) {
+			tally_user.achievements.monsters[mid].level = level;
+		} else {
+			tally_user.achievements.monsters[mid] = {
+				"level": level
+			};
+		}
+		saveUser();
+		// create backgroundUpdate object
+		var backgroundUpdate = newBackgroundUpdate();
+		backgroundUpdate.achievementData.monsters[mid] = {
+			"level": level
+		};
+		sendBackgroundUpdate(backgroundUpdate);
 
 
 

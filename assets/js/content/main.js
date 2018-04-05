@@ -9,7 +9,7 @@ let pageData = getPageData(),
 	tally_game_status = getGameStatus(),
 	tally_recent_monsters = {};
 
-let MAIN_DEBUG = true;
+let MAIN_DEBUG = false;
 
 $(function() {
 	Promise // after async functions then update
@@ -48,7 +48,7 @@ function shouldExtensionBeActiveOnPage() {
  * Run Game
  */
 function startGame() {
-	console.log(">>>>> startGame() -> Starting Tally on this page");
+	if (MAIN_DEBUG) console.log(">>>>> startGame() -> Starting Tally on this page");
 	//    console.log(">>>>> pageData = "+ JSON.stringify(pageData));
 
 
@@ -57,7 +57,7 @@ function startGame() {
 	addMainClickEventListener();
 	//checkPageForMonsters(pageData.tags);
 
-	console.log(">>>>> tally_meta = " + JSON.stringify(tally_meta));
+	if (MAIN_DEBUG) console.log(">>>>> tally_meta = " + JSON.stringify(tally_meta));
 	if (pageData.url != tally_meta.website + "/dashboard") {
 		if (tally_meta.userTokenStatus == "expired") {
 			$.growl({

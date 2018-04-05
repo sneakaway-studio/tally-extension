@@ -115,7 +115,7 @@ var clickEventHandler = function(eventData, target) {
 
 		// update
 		Debug.update();
-		// create scoreUpdater object
+		// create backgroundUpdate object
 		var backgroundUpdate = newBackgroundUpdate();
 
 
@@ -232,6 +232,9 @@ function newBackgroundUpdate() {
 		"eventData": {
 			"action": "",
 			"text": ""
+		},
+		"achievementData":{
+			"monsters":{}
 		},
 		"userData": {
 			"token": "INSERT_IN_BACKGROUND",
