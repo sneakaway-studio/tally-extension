@@ -179,34 +179,15 @@ var Monster = (function() {
 			}
 		});
 
-		// somewhere here we would attach a click listener to the monster
-		// let's assume we've done that so we can add the monster to the user's monsters
-		// and then push to the server
-
-
-		// add to tally_user
-		if (tally_user.achievements.monsters[mid]) {
-			tally_user.achievements.monsters[mid].level = level;
-		} else {
-			tally_user.achievements.monsters[mid] = {
-				"level": level
-			};
-		}
-		saveUser();
-		// create backgroundUpdate object
-		var backgroundUpdate = newBackgroundUpdate();
-		backgroundUpdate.achievementData.monsters[mid] = {
-			"level": level
-		};
-		sendBackgroundUpdate(backgroundUpdate);
-
-
-
+		// temp
 		$.growl({
 			title: "LAUNCHING MONSTER!!!",
 			message: "MONSTER: " + monster.name + " [" + monster.mid + "] <br>STAGE: " + tally_recent_monsters[mid].stage
 		});
 
+		// somewhere here we would attach a click listener to the monster
+		// let's assume we've done that so we can test capture()
+		capture(mid);
 
 		// temp: call after capture OR miss
 		setTimeout(function() {
@@ -214,7 +195,31 @@ var Monster = (function() {
 		}, 2000);
 	}
 
-
+	/**
+	 *	User captures monster
+	 */
+	function capture(mid){
+		if (MONSTER_DEBUG) console.log('!!!!! Monster.capture()', mid, tally_recent_monsters[mid].stage);
+		// add monster to tally_user.achievements
+		if (tally_user.achievements.monsters[mid]) {
+			tally_user.achievements.monsters[mid].level = level;
+		} else {
+			tally_user.achievements.monsters[mid] = {
+				"level": level
+			};
+		}
+		// save user in background
+		saveUser();
+		// create backgroundUpdate object
+		var backgroundUpdate = newBackgroundUpdate();
+		backgroundUpdate.achievementData.monsters[mid] = {
+			"level": level
+		};
+		// then push to the server
+//		sendBackgroundUpdate(backgroundUpdate);
+		// finally reset monster
+		reset(mid);
+	}
 
 	/**
 	 *	Reset monster
@@ -226,7 +231,7 @@ var Monster = (function() {
 	}
 
 	/**
-	 *	Save the recent
+	 *	Save the recent monsters
 	 */
 	function saveRecentMonsters() {
 		chrome.runtime.sendMessage({
