@@ -34,3 +34,12 @@
 		-1px 1px 0 #fff,
 		1px 1px 0 #fff;
 }
+
+
+/* hide everything from printing */
+@media print {
+	.no-print, .no-print * {
+		display: none !important;
+		height: 0;
+	}
+}
