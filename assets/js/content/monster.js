@@ -3,7 +3,8 @@
 var Monster = (function() {
 
 	let MONSTER_DEBUG = true,
-		current = "";
+		current = "",
+		secondsBeforeDelete = 60; // 60 seconds for testing
 
 	/**
 	 *	Initial check function, refreshes recent monsters from back end continues to next
@@ -15,7 +16,7 @@ var Monster = (function() {
 	}
 
 	/**
-	 *	Make sure all monster are recent
+	 *	Make sure all monsters are recent, deletes those that aren't
 	 */
 	function checkRecentTimes() {
 		let now = Date.now(),
@@ -27,7 +28,7 @@ var Monster = (function() {
 				// how long has it been since this monster was seen?
 				// if longer than 5 mins (300 secs) then delete
 				let seconds = ((now - tally_recent_monsters[mid].updatedAt) / 1000);
-				if ((seconds) > 60) { // 60 seconds for testing
+				if ((seconds) > secondsBeforeDelete) {
 					if (MONSTER_DEBUG) console.log("..... checkRecentTimes() -> DELETING", MonsterData.dataById[mid].slug, "seconds", seconds);
 					delete tally_recent_monsters[mid];
 				}
@@ -56,6 +57,7 @@ var Monster = (function() {
 			if (MonsterData.idsByTag[tag]) {
 				// save reference
 				let arr = MonsterData.idsByTag[tag];
+				// the monster id that will be picked
 				let mid = 0;
 				// if there are matches...
 				if (arr.length > 1) {
@@ -64,10 +66,10 @@ var Monster = (function() {
 					if (MONSTER_DEBUG) console.log('!!!!! #' + tag, "has", arr.length, 'MATCHES', arr, "randomly selecting...", MonsterData.dataById[mid].slug);
 					// we have identified a match, let's handle the monster
 					handleMatch(mid);
+					break;
 				}
 			}
 		}
-		if (MONSTER_DEBUG) console.log('>>>>> Monster.checkForTagMatches()', JSON.stringify(tally_recent_monsters));
 	}
 
 
@@ -75,9 +77,10 @@ var Monster = (function() {
 	 *	A monster has been matched to page tags, handle it
 	 */
 	function handleMatch(mid) {
-		let now = Date.now();
+		let now = Date.now(),
+			launchMonster = false;
 
-		// does the monster id exist in recent?
+		// if the monster id does not exist in recent
 		if (!prop(tally_recent_monsters[mid])) {
 			// add it
 			tally_recent_monsters[mid] = {
@@ -86,7 +89,7 @@ var Monster = (function() {
 				"updatedAt": now
 			};
 		}
-		// otherwise monster has been stored
+		// otherwise monster has been seen before
 		else {
 			// randomizer
 			let r = Math.random();
@@ -94,10 +97,13 @@ var Monster = (function() {
 			if (tally_recent_monsters[mid].stage == 0) {
 				// do nothing
 			} else if (tally_recent_monsters[mid].stage == 1) {
-				if (r < 0.4) {
+				if (r < 0.2) {
+					// go back to normal stage
+					tally_recent_monsters[mid].stage == 0
+				} else if (r < 0.4) {
 					// do nothing
 				} else if (r < 0.7) {
-					// show them a thought
+					// show them a thought but don't change stage
 					Thought.showThought(Thought.getThought(["monster", "far", 0]), true);
 				} else {
 					// or prompt stage 2
@@ -113,35 +119,41 @@ var Monster = (function() {
 				} else {
 					// or prompt stage 3 - launch
 					tally_recent_monsters[mid].stage = 3;
-					current = mid;
-					Thought.showThought(Thought.getThought(["monster", "launch", 0]), true);
-					launch(mid);
+					launchMonster = true;
 				}
 			}
 
-			if (MONSTER_DEBUG) console.log('!!!!! handleMatch()', MonsterData.dataById[mid].slug, tally_recent_monsters[mid]);
+			//if (MONSTER_DEBUG) console.log('!!!!! handleMatch()', MonsterData.dataById[mid].slug, tally_recent_monsters[mid]);
 		}
+		if (MONSTER_DEBUG) console.log('!!!!! Monster.handleMatch()', MonsterData.dataById[mid].slug, "stage =",tally_recent_monsters[mid].stage);
 		// set skin
 		Skin.setStage(tally_recent_monsters[mid].stage);
 		// save monsters
 		saveRecentMonsters();
+		// should we launch a monster?
+		if (launchMonster) {
+			current = mid;
+			Thought.showThought(Thought.getThought(["monster", "launch", 0]), true);
+			launch(mid);
+		}
 	}
-
 
 	/**
 	 *	Launch a product monster
 	 */
-	function launch(mid, stage) {
+	function launch(mid) {
+		if (MONSTER_DEBUG) console.log('!!!!! Monster.launch()', mid, tally_recent_monsters[mid].stage);
+		// don't launch them if game isn't running in full
+		if (tally_options.gameMode != "full") return;
+
 		let monster = MonsterData.dataById[mid],
 			duration = 4500,
 			top = 600,
 			level = 1;
 
 		// if they already have this one, increase level
-		if (tally_user.achievements.monsters[mid]) level = tally_user.achievements.monsters[mid].level + 1;
-
-		// insert monster
-
+		if (tally_user.achievements.monsters[mid])
+			level = tally_user.achievements.monsters[mid].level + 1;
 		// reference to image file
 		var url = chrome.extension.getURL('assets/img/monsters/' + monster.mid + '-anim-sheet.png');
 		// set content
@@ -192,7 +204,7 @@ var Monster = (function() {
 
 		$.growl({
 			title: "LAUNCHING MONSTER!!!",
-			message: "MONSTER: " + monster.name + " [" + monster.mid + "] <br>STAGE: " + stage
+			message: "MONSTER: " + monster.name + " [" + monster.mid + "] <br>STAGE: " + tally_recent_monsters[mid].stage
 		});
 
 
