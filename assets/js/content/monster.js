@@ -38,7 +38,7 @@ var Monster = (function() {
 		}
 		saveRecentMonsters();
 		// set the skin color
-		setSkinStage(highestStage);
+		Skin.setStage(highestStage);
 		// continue
 		checkForTagMatches();
 	}
@@ -92,11 +92,11 @@ var Monster = (function() {
 			let r = Math.random();
 			// what stage are we at with this monster?
 			if (tally_recent_monsters[mid].stage == 0) {
-
+				// do nothing
 			} else if (tally_recent_monsters[mid].stage == 1) {
-				if (r < 0.3) {
+				if (r < 0.4) {
 					// do nothing
-				} else if (r < 0.6) {
+				} else if (r < 0.7) {
 					// show them a thought
 					Thought.showThought(Thought.getThought(["monster", "far", 0]), true);
 				} else {
@@ -105,13 +105,13 @@ var Monster = (function() {
 					Thought.showThought(Thought.getThought(["monster", "close", 0]), true);
 				}
 			} else if (tally_recent_monsters[mid].stage == 2) {
-				if (r < 0.3) {
+				if (r < 0.4) {
 					// do nothing
-				} else if (r < 0.6) {
+				} else if (r < 0.7) {
 					// show them a thought
 					Thought.showThought(Thought.getThought(["monster", "close", 0]), true);
 				} else {
-					// or prompt stage 3
+					// or prompt stage 3 - launch
 					tally_recent_monsters[mid].stage = 3;
 					current = mid;
 					Thought.showThought(Thought.getThought(["monster", "launch", 0]), true);
@@ -122,21 +122,11 @@ var Monster = (function() {
 			if (MONSTER_DEBUG) console.log('!!!!! handleMatch()', MonsterData.dataById[mid].slug, tally_recent_monsters[mid]);
 		}
 		// set skin
-		setSkinStage(tally_recent_monsters[mid].stage);
+		Skin.setStage(tally_recent_monsters[mid].stage);
+		// save monsters
 		saveRecentMonsters();
 	}
-	/**
-	 *	Set the skin color
-	 */
-	function setSkinStage(n) {
-		let stageColors = [
-			"color-magenta",
-			"color-yellow",
-			"color-orange",
-			"color-red"
-		];
-		Skin.set(stageColors[n]);
-	}
+
 
 	/**
 	 *	Launch a product monster

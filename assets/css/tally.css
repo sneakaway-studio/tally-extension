@@ -1,4 +1,6 @@
 
+
+
 /* TALLY CHARACTER */
 
 #tally_character_container, #tally_thought_bubble { position: absolute; z-index:9999999999999; }
@@ -6,8 +8,9 @@
 #tally_character_container { font: 14px/ 20px Arial; padding: 12px;
 	height: 222px; width: 223px; max-width: 100%;
 	left: 0; bottom: -177px; position: fixed; opacity: 1;
-	background-image:url('chrome-extension://__MSG_@@extension_id__/assets/img/tally-skins/skin-color-magenta.png');
-	background-repeat:no-repeat;
+	/* bitmap method */
+	/* background-image:url('chrome-extension://__MSG_@@extension_id__/assets/img/tally-skins/skin-color-magenta.png');
+	background-repeat:no-repeat; */
 	/* testing
 	bottom: 100px;*/
 }
@@ -15,6 +18,11 @@
 #tally_character { margin: 55px 0 0 30px; }
 
 
+#tally-svg { width: 223px; height: 222px; position: absolute; top: -10px; left: 0px;}
+
+
+
+/* TALLY THOUGHTS */
 
 #tally_thought_bubble { width: 220px; height: 80px; bottom: 270px; left: -500px; opacity: 0; display:flex; }
 #tally_thought_bubble #tally_thought { padding:8px; text-align: center; margin:auto;

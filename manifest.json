@@ -78,7 +78,7 @@
         "storage"
     ],
     "web_accessible_resources": [
-        "*.png",
+        "*.svg","*.png",
         "*.jpg","*.JPG",
         "/assets/sounds/*"
     ]

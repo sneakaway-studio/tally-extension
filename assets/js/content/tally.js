@@ -99,7 +99,7 @@ function startTally() {
 	if (!prop(tally_options) || !tally_options.showTally) return;
 
 	// maybe temp...
-	Skin.preload();
+	//Skin.preload(); // don't need now, replacing with svg
 
 	$(document).mousemove(function(event) {
 		if (Tally.getFollowCursor == false) return;
@@ -113,6 +113,21 @@ function startTally() {
 		"<div id='tally_thought_bubble' class='tally_speech_bubble'>" +
 		"<div id='tally_thought'></div>" +
 		"</div>" +
+		"<div id='tally_character'>" +
+
+		// bitmap method
+		//"<img class='tally-svg' src='" + chrome.extension.getURL('assets/img/tally/tally.svg') + "'>" +
+
+		// add svg
+		'<svg version="1.1" id="tally-svg" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" ' +
+		'x="0px" y="0px" viewBox="0 0 914 814" style="enable-background:new 0 0 914 814;" xml:space="preserve">' +
+		'<style type="text/css"> .st0{fill:#C308C1;} .st1{fill:#D32CF1;} </style>' +
+		'<path id="tally-back" class="st0" d="M652.5,793.8l255.5-281L565.2,127.6l-307.3,35L5,366l88.5,346.8L652.5,793.8z"/>' +
+		'<path id="tally-front" class="st1" d="M199.8,809l419.9-139.2l126.5,10.1l161.9-319L690.5,14.1L509.8,36.2L450.2,'+
+		'4L258.3,66.9l-190,23.2 l-17.7,443L199.8,809z"/>' +
+		'</svg>' +
+
+		"</div>" +
 		"<div id='tally_eyes'>" +
 		"<span class='tally_lid'>" +
 		"<span class='tally_eye tally_eye_left'>" +
@@ -120,13 +135,6 @@ function startTally() {
 		"<span class='tally_lid'>" +
 		"<span class='tally_eye tally_eye_right'>" +
 		"<span class='tally_eye_pupil'></span></span></span>" +
-		"</div>" +
-		"<div id='tally_character'>" +
-		// "<div class='tally_score_score'></div>" +
-		// "<div class='tally_score_clicks'></div>" +
-		// "<div class='tally_score_likes'></div>" +
-		// "<div class='tally_score_pages'></div>" +
-		// "<div class='tally_score_domains'></div>" +
 		"</div>" +
 		"</div>";
 	$('#tally').append(str);
@@ -152,7 +160,7 @@ function startTally() {
 		let r = Math.random();
 		if (r < 0.25)
 			// show thought from data, [category/subcategory/0], play sound
-			Thought.showThought(Thought.getThought(["random", "greeting", 0]),true);
+			Thought.showThought(Thought.getThought(["random", "greeting", 0]), true);
 		else if (r < 0.5)
 			// show thought from data, [category/0/index], play sound
 			Thought.showThought(Thought.getThought(["narrative", 0, "story3"]), true);
