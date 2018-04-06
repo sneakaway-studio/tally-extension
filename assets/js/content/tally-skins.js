@@ -4,10 +4,10 @@ var Skin = (function() {
 	// PRIVATE
 
 	// default
-	var skins = {
+	let skins = {
 		"color-magenta": {
-			front: "#C308C1",
-			back: "#D32CF1"
+			front: "#D32CF1",
+			back: "#C308C1"
 		},
 		"color-red": {
 			front: "#fd0202",
@@ -21,7 +21,8 @@ var Skin = (function() {
 			front: "#f1ce2c",
 			back: "#e0c02a"
 		}
-	};
+	},
+	skinStage = 0;
 
 	// var skins = [
 	// 	"color-cyan",
@@ -92,6 +93,7 @@ var Skin = (function() {
 	 *	Set the skin color based on the stage
 	 */
 	function setStage(n) {
+		skinStage = n;
 		let stageColors = [
 			"color-magenta",
 			"color-yellow",
@@ -108,7 +110,8 @@ var Skin = (function() {
 		},
 		setStage: function(n) {
 			setStage(n);
-		}
+		},
+		skins:skins
 		//preload: preload
 
 	};
