@@ -187,7 +187,7 @@ function openTab(btn, tabName) {
 	// update options from background
 	if (btn == "optionsBtn") {
 		getOptions();
-		getUser(updateTabSkins);
+		//getUser(updateTabSkins);
 	}
 	if (btn == "statusBtn") {
 		getUser();

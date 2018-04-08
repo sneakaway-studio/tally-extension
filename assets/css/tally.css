@@ -19,7 +19,7 @@
 
 
 #tally-svg { width: 223px; height: 222px; position: absolute; top: -10px; left: 0px;}
-svg * {
+#tally-svg svg * {
     transition: all 1.5s;
 }
 
