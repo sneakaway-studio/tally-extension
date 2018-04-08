@@ -68,6 +68,7 @@ function createUser() {
 		"username": "ow3n",
 		"score": createScore(),
 		"achievements": createAchievements(),
+		"monsters": createMonsters(),
 		"skins": ["color-magenta"]
 	};
 	return obj;
@@ -101,11 +102,16 @@ function createRecentMonsters() {
 // Create Achievements object (separate function so we can reset)
 function createAchievements() {
 	var obj = {
-		"monsters": {},
 	};
 	return obj;
 }
 
+// Create Monsters object (separate function so we can reset)
+function createMonsters() {
+	var obj = {
+	};
+	return obj;
+}
 function createOptions() {
 	var obj = {
 		"showTally": true,
