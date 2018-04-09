@@ -195,6 +195,29 @@ var Monster = (function() {
 		// set content
 		$('.tally_monster_sprite').css('background-image', 'url( ' + url + ')');
 
+		let pos = "bottom";
+		launchFrom(mid,pos)
+
+		// temp
+		$.growl({
+			title: "LAUNCHING MONSTER!!!",
+			message: "MONSTER: " + monster.name + " [" + monster.mid + "] <br>STAGE: " + tally_recent_monsters[mid].stage
+		});
+
+		// somewhere here we would attach a click listener to the monster
+		// let's assume we've done that so we can test capture()
+		capture(mid,level);
+
+		// temp: call after capture OR miss
+		setTimeout(function() {
+			reset(mid);
+		}, 2000);
+
+	}
+
+	function launchFrom(_mid,_pos){
+
+
 		// hide outside page
 		$('.tally_monster_sprite').css({
 			'top': pageData.browser.height + 100 + "px", // hide it up
@@ -215,21 +238,10 @@ var Monster = (function() {
 			}
 		});
 
-		// temp
-		$.growl({
-			title: "LAUNCHING MONSTER!!!",
-			message: "MONSTER: " + monster.name + " [" + monster.mid + "] <br>STAGE: " + tally_recent_monsters[mid].stage
-		});
 
-		// somewhere here we would attach a click listener to the monster
-		// let's assume we've done that so we can test capture()
-		capture(mid,level);
 
-		// temp: call after capture OR miss
-		setTimeout(function() {
-			reset(mid);
-		}, 2000);
 	}
+
 
 	/**
 	 *	User captures monster
