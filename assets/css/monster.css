@@ -5,6 +5,17 @@
     position: absolute;
     z-index: 9999999999999;
 }
+
+/* ted */
+.tally_monster_award {
+
+    opacity: 0;
+    position: absolute;
+    z-index: 9999999999999;
+}
+
+
+
 .tally_monster_sprite {
     margin: auto;
     transform: scale(0.5);

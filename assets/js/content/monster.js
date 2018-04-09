@@ -204,7 +204,7 @@ var Monster = (function() {
 
 		// somewhere here we would attach a click listener to the monster
 		// let's assume we've done that so we can test capture()
-		capture(mid, level);
+		capture(mid, level)	;
 
 		// temp: call after capture OR miss
 		setTimeout(function() {
@@ -275,6 +275,13 @@ var Monster = (function() {
 	 */
 	function showAward(mid) {
 		// ted...
+
+
+		let str = "<div>"+ mid +"</div>";
+		$('.tally_monster_award').html(str);
+
+		// move it into position
+
 	}
 
 	/**
