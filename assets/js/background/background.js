@@ -28,6 +28,8 @@ chrome.runtime.onInstalled.addListener(function() {
  */
 function startApp(){
 	console.log(">>>>> startApp()");
+	// set development or production
+	checkForDevelopmentServer();	
 	// check the API status, if connected then check token
 	checkAPIServerStatus();
 }

@@ -12,6 +12,7 @@ function createApp() {
 		store("tally_game_status", createGameStatus());
 		store("tally_recent_monsters", createRecentMonsters());
 		store("tally_meta", createMeta());
+        checkForDevelopmentServer();
 		store("tally_secret", createSecret());
 		// these are empty the first time
 		// store("tally_domains", {});
@@ -164,10 +165,12 @@ function createMeta() {
 		"userOnline": navigator.onLine,
 		"serverOnline": 0,
 		"serverOnlineTime": 0,
-		"api": "http://localhost:5000/api",
-		"website": "http://localhost:5000",
+		"api": Config.production.api,
+		"website": Config.production.website,
 		"browser": getBrowser()
 	};
+    //obj.api = Config.development.api;
+    //obj.website = Config.development.website; 
 	return obj;
 }
 
