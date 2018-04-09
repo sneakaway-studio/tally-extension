@@ -5,17 +5,22 @@
     position: absolute;
     z-index: 9999999999999;
 }
-
 .tally_monster_sprite {
+    margin: auto;
+    transform: scale(0.5);
+    border: 2px solid red;
     position: absolute;
     width: 500px;
     height: 400px;
     background: url('') left center no-repeat;
     animation: monster_keyframes 0.4s steps(3) infinite;
 }
-
 @keyframes monster_keyframes {
+    0% {
+        transform: scale(0.5);
+    }
     100% {
         background-position: -1500px;
+        transform: scale(0.5);
     }
 }
