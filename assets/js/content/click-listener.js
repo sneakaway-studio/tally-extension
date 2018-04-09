@@ -168,7 +168,7 @@ var clickEventHandler = function(eventData, target) {
 		/**
 		 * 	5. Game responses
 		 */
-
+ 
 		// play sound
 		Sound.play('user', 'click');
 		// show click visual

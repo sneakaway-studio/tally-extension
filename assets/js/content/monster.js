@@ -257,6 +257,14 @@ var Monster = (function() {
 		reset(mid);
 	}
 
+
+	/**
+	 * Play award animation
+	 */
+	function showAward(mid){
+		// ted...
+	}
+
 	/**
 	 *	Reset monster
 	 */
