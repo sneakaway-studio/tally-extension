@@ -37,11 +37,11 @@ var Debug = (function() {
 		var str = "<div>" +
 			"<b>tally_user.score</b>: " + JSON.stringify(tally_user.score) + "<br>" +
 			"<b>tally_user.monsters</b>: " + JSON.stringify(tally_user.monsters) + "<br>" +
+			"<b>tally_recent_monsters (" + objLength(tally_recent_monsters) + ")</b>: " + JSON.stringify(tally_recent_monsters) + "<br>" +
 			//"tally_options: " + JSON.stringify(tally_options) +"<br>"+
 			//"<b>pageData</b>: " + JSON.stringify(pageData) +"<br>"+
 			"<b>pageData.tags (" + pageData.tags.length + ")</b>: " + JSON.stringify(pageData.tags) + "<br>" +
 			"<b>pageData.trackers (" + pageData.trackers.length + ")</b>: " + JSON.stringify(pageData.trackers) + "<br>" +
-			"<b>tally_recent_monsters (" + objLength(tally_recent_monsters) + ")</b>: " + JSON.stringify(tally_recent_monsters) + "<br>" +
 			"</div>";
 		$('#tyd').html(str);
 	}

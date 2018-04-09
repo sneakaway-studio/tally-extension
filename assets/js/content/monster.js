@@ -10,7 +10,8 @@ var Monster = (function() {
 	 *	Test to make sure API is working
 	 */
 	function test() {
-		if (!tally_recent_monsters) return;
+		// make sure there are monsters nearby
+		if (!tally_recent_monsters || objLength(tally_recent_monsters) <= 0) return;
 
 		// TESTING
 		let _mid = randomObjKey(tally_recent_monsters),
@@ -100,6 +101,7 @@ var Monster = (function() {
 	 *	Create a monster
 	 */
 	function create(_mid,_stage=1){
+		if (!prop(_mid) || !prop(_stage) || !prop(MonsterData.dataById[_mid])) return;
 		if (MONSTER_DEBUG) console.log('..... Monster.create()', _mid,_stage,MonsterData.dataById[_mid]);
 		let monster = {
 			"captured": 0,
