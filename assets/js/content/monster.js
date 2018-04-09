@@ -16,7 +16,7 @@ var Monster = (function() {
 		// TESTING
 		let _mid = randomObjKey(tally_recent_monsters),
 			_stage = 3;
-		tally_recent_monsters[_mid] = create(_mid,_stage);
+		tally_recent_monsters[_mid] = create(_mid, _stage);
 		tally_recent_monsters[_mid].captured = 1;
 		if (MONSTER_DEBUG) console.log("+++++ Monster.test()", MonsterData.dataById[_mid]);
 		// save
@@ -100,9 +100,9 @@ var Monster = (function() {
 	/**
 	 *	Create a monster
 	 */
-	function create(_mid,_stage=1){
+	function create(_mid, _stage = 1) {
 		if (!prop(_mid) || !prop(_stage) || !prop(MonsterData.dataById[_mid])) return;
-		if (MONSTER_DEBUG) console.log('..... Monster.create()', _mid,_stage,MonsterData.dataById[_mid]);
+		if (MONSTER_DEBUG) console.log('..... Monster.create()', _mid, _stage, MonsterData.dataById[_mid]);
 		let monster = {
 			"captured": 0,
 			"level": 1,
@@ -183,8 +183,6 @@ var Monster = (function() {
 		if (tally_options.gameMode != "full") return;
 
 		let monster = MonsterData.dataById[mid],
-			duration = 4500,
-			top = 600,
 			level = 1;
 
 		// if they already have this one, increase level
@@ -196,7 +194,7 @@ var Monster = (function() {
 		$('.tally_monster_sprite').css('background-image', 'url( ' + url + ')');
 
 		let pos = "bottom";
-		launchFrom(mid,pos)
+		launchFrom(mid, pos)
 
 		// temp
 		$.growl({
@@ -206,7 +204,7 @@ var Monster = (function() {
 
 		// somewhere here we would attach a click listener to the monster
 		// let's assume we've done that so we can test capture()
-		capture(mid,level);
+		capture(mid, level);
 
 		// temp: call after capture OR miss
 		setTimeout(function() {
@@ -215,8 +213,10 @@ var Monster = (function() {
 
 	}
 
-	function launchFrom(_mid,_pos){
+	function launchFrom(_mid, _pos) {
 
+		let _duration = 4500,
+			_top = 600;
 
 		// hide outside page
 		$('.tally_monster_sprite').css({
@@ -230,8 +230,8 @@ var Monster = (function() {
 			targets: '.tally_monster_sprite',
 			translateY: {
 				delay: 500, // wait for page to load
-				value: -top,
-				duration: duration
+				value: -_top,
+				duration: _duration
 			},
 			begin: function() { // play sound n milliseconds after animation begins
 				//playSound('powerup',0,10);
@@ -246,7 +246,7 @@ var Monster = (function() {
 	/**
 	 *	User captures monster
 	 */
-	function capture(mid,level) {
+	function capture(mid, level) {
 		if (MONSTER_DEBUG) console.log('!!!!! Monster.capture()', mid, tally_recent_monsters[mid].stage);
 		// add monsters to tally_user
 		if (tally_user.monsters[mid]) {
@@ -273,7 +273,7 @@ var Monster = (function() {
 	/**
 	 * Play award animation
 	 */
-	function showAward(mid){
+	function showAward(mid) {
 		// ted...
 	}
 
