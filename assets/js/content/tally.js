@@ -123,10 +123,10 @@ function startTally() {
 		// add svg
 		'<svg version="1.1" id="tally-svg" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" ' +
 		'x="0px" y="0px" viewBox="0 0 914 814" style="enable-background:new 0 0 914 814;" xml:space="preserve">' +
-		'<style type="text/css"> .st0{fill:'+ Skin.skins[tally_game_status.skin].back +';}'+
-		' .st1{fill:'+ Skin.skins[tally_game_status.skin].front +';} </style>' +
+		'<style type="text/css"> .st0{fill:' + Skin.skins[tally_game_status.skin].back + ';}' +
+		' .st1{fill:' + Skin.skins[tally_game_status.skin].front + ';} </style>' +
 		'<path id="tally-back" class="st0" d="M652.5,793.8l255.5-281L565.2,127.6l-307.3,35L5,366l88.5,346.8L652.5,793.8z"/>' +
-		'<path id="tally-front" class="st1" d="M199.8,809l419.9-139.2l126.5,10.1l161.9-319L690.5,14.1L509.8,36.2L450.2,'+
+		'<path id="tally-front" class="st1" d="M199.8,809l419.9-139.2l126.5,10.1l161.9-319L690.5,14.1L509.8,36.2L450.2,' +
 		'4L258.3,66.9l-190,23.2 l-17.7,443L199.8,809z"/>' +
 		'</svg>' +
 
@@ -151,8 +151,10 @@ function startTally() {
 	// add the tally_character click action
 	$(document).on('click', '#tally_character_container', function() {
 
-
-
+		// launch one of the nearby monsters
+		//if (pageData.domain.indexOf("localhost") >= 0)
+		Monster.test();
+		return;
 
 		// EXAMPLES
 
