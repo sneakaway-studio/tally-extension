@@ -61,6 +61,7 @@ var clickEventHandler = function(eventData, target) {
 	// console.log("clickEventHandler() > eventData",eventData,target);
 	//console.log("clickEventHandler() > target",target);
 
+
 	/**
 	 * 	1. Determine if this is a node we want to ignore (tally interface links, etc.)
 	 */
@@ -233,8 +234,26 @@ function newBackgroundUpdate() {
 			"action": "",
 			"text": ""
 		},
-		"achievementData":{
-			"monsters":{}
+		"userData": {
+			"token": "INSERT_IN_BACKGROUND",
+		}
+	};
+	console.log("newBackgroundUpdate() -> obj", obj);
+	return obj;
+}
+
+/**
+ *  Create new backgroundUpdate object
+ */
+function newBackgroundMonsterUpdate(mid) {
+	var obj = {
+		"pageData": {
+			"domain": pageData.domain,
+			"tags": pageData.tags,
+			"time": pageData.time,
+			"url": pageData.url
+		},
+		"monsterData":{
 		},
 		"userData": {
 			"token": "INSERT_IN_BACKGROUND",

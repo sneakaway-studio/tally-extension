@@ -141,6 +141,34 @@ function sendServerUpdate(data) {
 }
 
 
+
+/**
+ *  Send monster update to API server
+ */
+function sendServerMonsterUpdate(data) {
+	console.log("<{!}> sendServerMonsterUpdate()", data);
+	let _tally_meta = store("tally_meta"),
+        _tally_user = store("tally_user");
+	if (!_tally_meta.serverOnline || _tally_meta.userTokenStatus != "ok") return;
+	$.ajax({
+		type: "PUT",
+		url: _tally_meta.api + "/user/extensionMonsterUpdate",
+		contentType: 'application/json',
+		dataType: 'json',
+		data: JSON.stringify(data)
+	}).done(result => {
+		console.log("<{!}> sendServerMonsterUpdate() RESULT =", JSON.stringify(result));
+        // treat all server data as master
+//        if (result[0].username) _tally_user.username = result[0].username;
+//        store("tally_user",_tally_user);
+	}).fail(error => {
+		console.error("<{!}> sendServerMonsterUpdate() RESULT =", JSON.stringify(error));
+		// server might not be reachable
+		checkAPIServerStatus();
+	});
+}
+
+
 // create timed functions
 var timedEvents = {
 	// check if user is online

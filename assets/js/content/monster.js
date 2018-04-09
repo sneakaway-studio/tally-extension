@@ -7,6 +7,29 @@ var Monster = (function() {
 		secondsBeforeDelete = 60; // 60 seconds for testing
 
 	/**
+	 *	Test to make sure API is working
+	 */
+	function test() {
+		if (!tally_recent_monsters) return;
+
+		// TESTING
+		let _mid = randomObjKey(tally_recent_monsters),
+			_stage = 3;
+		tally_recent_monsters[_mid] = create(_mid,_stage);
+		tally_recent_monsters[_mid].captured = 1;
+		if (MONSTER_DEBUG) console.log("+++++ Monster.test()", MonsterData.dataById[_mid]);
+		// save
+		saveRecentMonsters();
+		// set the skin color
+		Skin.setStage(tally_recent_monsters[_mid].stage);
+		current = _mid;
+		Thought.showThought(Thought.getThought(["monster", "launch", 0]), true);
+		launch(_mid);
+		//capture(_mid);
+	}
+
+
+	/**
 	 *	Initial check function, refreshes recent monsters from back end continues to next
 	 */
 	function check() {
@@ -74,20 +97,31 @@ var Monster = (function() {
 
 
 	/**
+	 *	Create a monster
+	 */
+	function create(_mid,_stage=1){
+		if (MONSTER_DEBUG) console.log('..... Monster.create()', _mid,_stage,MonsterData.dataById[_mid]);
+		let monster = {
+			"captured": 0,
+			"level": 1,
+			"mid": _mid,
+			"stage": _stage,
+			"slug": MonsterData.dataById[_mid].slug,
+			"updatedAt": Date.now()
+		};
+		return monster;
+	}
+
+	/**
 	 *	A monster has been matched to page tags, handle it
 	 */
 	function handleMatch(mid) {
-		let now = Date.now(),
-			launchMonster = false;
+		let launchMonster = false;
 
 		// if the monster id does not exist in recent
 		if (!prop(tally_recent_monsters[mid])) {
 			// add it
-			tally_recent_monsters[mid] = {
-				"stage": 1,
-				"slug": MonsterData.dataById[mid].slug,
-				"updatedAt": now
-			};
+			tally_recent_monsters[mid] = create(mid);
 		}
 		// otherwise monster has been seen before
 		else {
@@ -125,7 +159,7 @@ var Monster = (function() {
 
 			//if (MONSTER_DEBUG) console.log('!!!!! handleMatch()', MonsterData.dataById[mid].slug, tally_recent_monsters[mid]);
 		}
-		if (MONSTER_DEBUG) console.log('!!!!! Monster.handleMatch()', MonsterData.dataById[mid].slug, "stage =",tally_recent_monsters[mid].stage);
+		if (MONSTER_DEBUG) console.log('!!!!! Monster.handleMatch()', MonsterData.dataById[mid].slug, "stage =", tally_recent_monsters[mid].stage);
 		// set skin
 		Skin.setStage(tally_recent_monsters[mid].stage);
 		// save monsters
@@ -152,8 +186,8 @@ var Monster = (function() {
 			level = 1;
 
 		// if they already have this one, increase level
-		if (tally_user.achievements.monsters[mid])
-			level = tally_user.achievements.monsters[mid].level + 1;
+		if (tally_user.monsters[mid])
+			level = tally_user.monsters[mid].level + 1;
 		// reference to image file
 		var url = chrome.extension.getURL('assets/img/monsters/' + monster.mid + '-anim-sheet.png');
 		// set content
@@ -187,7 +221,7 @@ var Monster = (function() {
 
 		// somewhere here we would attach a click listener to the monster
 		// let's assume we've done that so we can test capture()
-		capture(mid);
+		capture(mid,level);
 
 		// temp: call after capture OR miss
 		setTimeout(function() {
@@ -198,25 +232,25 @@ var Monster = (function() {
 	/**
 	 *	User captures monster
 	 */
-	function capture(mid){
+	function capture(mid,level) {
 		if (MONSTER_DEBUG) console.log('!!!!! Monster.capture()', mid, tally_recent_monsters[mid].stage);
-		// add monster to tally_user.achievements
-		if (tally_user.achievements.monsters[mid]) {
-			tally_user.achievements.monsters[mid].level = level;
+		// add monsters to tally_user
+		if (tally_user.monsters[mid]) {
+			tally_user.monsters[mid].level = level;
 		} else {
-			tally_user.achievements.monsters[mid] = {
+			tally_user.monsters[mid] = {
 				"level": level
 			};
 		}
 		// save user in background
 		saveUser();
 		// create backgroundUpdate object
-		var backgroundUpdate = newBackgroundUpdate();
-		backgroundUpdate.achievementData.monsters[mid] = {
-			"level": level
-		};
+		var backgroundMonsterUpdate = newBackgroundMonsterUpdate();
+		backgroundMonsterUpdate.monsterData = tally_recent_monsters[mid];
+		backgroundMonsterUpdate.monsterData.level = level;
+		backgroundMonsterUpdate.monsterData.captured = tally_recent_monsters[mid].captured;
 		// then push to the server
-//		sendBackgroundUpdate(backgroundUpdate);
+		sendBackgroundMonsterUpdate(backgroundMonsterUpdate);
 		// finally reset monster
 		reset(mid);
 	}
@@ -250,6 +284,7 @@ var Monster = (function() {
 	// PUBLIC
 	return {
 		check: check,
-		current: getCurrent
+		current: getCurrent,
+		test: test
 	};
 }());

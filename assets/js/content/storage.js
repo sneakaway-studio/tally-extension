@@ -109,6 +109,19 @@ function sendBackgroundUpdate(data) {
 	});
 }
 
+// SEND MONSTER DATA TO BACKGROUND
+function sendBackgroundMonsterUpdate(data) {
+	//if (!pageData.activeOnPage) return;
+	chrome.runtime.sendMessage({
+		'action': 'sendBackgroundMonsterUpdate',
+		'data': data
+	}, function(response) {
+		console.log('<{!}> sendBackgroundMonsterUpdate()', response);
+//		tally_user = response.tally_user;
+		Debug.update();
+	});
+}
+
 
 
 // GET LAST BACKGROUND UPDATE

@@ -171,8 +171,6 @@ chrome.runtime.onMessage.addListener(
 				"tally_user": _tally_user
 			});
 		}
-
-
 		// getLastBackgroundUpdate
 		else if (request.action == "getLastBackgroundUpdate") {
 			sendResponse({
@@ -181,12 +179,42 @@ chrome.runtime.onMessage.addListener(
 			});
 		}
 
+
+		// sendBackgroundMonsterUpdate - receive and send Monster, page data to server
+		else if (request.action == "sendBackgroundMonsterUpdate") {
+			console.log(">>>>> BACKGROUND LISTENER: sendBackgroundMonsterUpdate", JSON.stringify(request.data));
+
+			// store backgroundUpdate object
+			store("tally_last_monster_update", request.data);
+
+			// create new serverUpdate
+			var serverMonsterUpdate = createMonsterUpdate(request.data);
+			// (attempt to) send data to server, response to callback
+			sendServerMonsterUpdate(serverMonsterUpdate);
+
+			// reply to contentscript with updated tally_user
+			sendResponse({
+				"action": request.action,
+				"message": 1,
+				//				"tally_user": _tally_user
+			});
+		}
+		// getLastBackgroundUpdate
+		else if (request.action == "getLastBackgroundMonsterUpdate") {
+			sendResponse({
+				"action": request.action,
+				"data": store("tally_last_monster_update")
+			});
+		}
+
+
+
 	}
 );
 
 
 /**
- *  createServerUpdate
+ *  Create Server Update
  */
 function createServerUpdate(data) {
 	let _tally_secret = store("tally_secret");
@@ -205,6 +233,26 @@ function createServerUpdate(data) {
 	return obj;
 }
 
+/**
+ *  Create Server *Monster* Update
+ */
+function createMonsterUpdate(data) {
+	let _tally_secret = store("tally_secret");
+	var obj = {
+		"monster": {
+			"level": data.monsterData.level,
+			"mid": data.monsterData.mid,
+			"captured": data.monsterData.captured
+		},
+		"token": _tally_secret.token,
+		"time": data.pageData.time || 0,
+		"tags": data.pageData.tags || "",
+		"url": data.pageData.url || "",
+		"domain": data.pageData.domain || "",
+	};
+	console.log("createMonsterUpdate()", obj);
+	return obj;
+}
 
 /**
  *  Adjust local score from score obj, saves it locally
