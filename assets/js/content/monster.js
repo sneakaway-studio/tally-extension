@@ -291,7 +291,7 @@ var Monster = (function() {
 		// insert the text
 		$('.tally_award_text').html(str);
 
-		console.log("showAward()", mid, award_);
+		console.log("showAward()", mid, award_title);
 
 		// move it into position
 		var basicTimeline = anime.timeline();
