@@ -35,3 +35,42 @@
         transform: scale(0.5);
     }
 }
+#tally_award_background {
+  width: 2000px;
+  height: 680px;
+  transform: rotate(-20deg);
+  position: absolute;
+  bottom: -1420px;
+  background-color: #462795
+}
+
+#tally_award_text {
+  background-color: #462795;
+  font-family: "Arial", serif;
+  color: white;
+  font-size: 2vw;
+  width: 30%;
+  height: 40%;
+  position: relative;
+  left: 70%;
+  z-index: 6;
+  visibility: visible;
+}
+
+.tally_award_monster_wrapper {
+  height: auto;
+  width: 100vw;
+  position:fixed;
+  bottom:-400px;
+  z-index:2;
+  visibility: hidden;
+}
+.tally_award_text_wrapper {
+  height: auto;
+  width: 100vw;
+  position:fixed;
+  bottom:4%;
+  left: 450px;
+  z-index:3;
+  visibility: hidden;
+}

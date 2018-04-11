@@ -278,18 +278,24 @@ var Monster = (function() {
 	 */
 	function showAward(mid) {
 		// store the text
+		
+		var url = chrome.extension.getURL('assets/img/monsters/' + monster.mid + '-anim-sheet.png');
+		// set content
+		$('.tally_award_monster').css('background-image', 'url( ' + url + ')');
+
+		let award_backgrounds = "<div class='tally_award_monster_wrapper'> + <div id = 'tally_award_monster'> + + </div> + </div>"
 		let award_title = "You caught the monster",
 			award_subtitle = "You leveled up",
 			award_fact_title = "Did you know?", // Did you know?
 			award_fact = Thought.getFact("trackers");
 
-		let str = "<div class='award_title'>" + award_title + "</div>" +
+		let award_text = "<div class='award_title'>" + award_title + "</div>" +
 			"<div class='award_subtitle'>" + award_subtitle + "</div>" +
 			"<div class='award_fact_title'>" + award_fact_title + "</div>" +
 			"<div class='award_fact'>" + award_fact + "</div>";
 
 		// insert the text
-		$('.tally_award_text').html(str);
+		$('.tally_award_text').html(award_text);
 
 		console.log("showAward()", mid, award_title, award_subtitle, award_fact_title, award_fact);
 
