@@ -279,7 +279,7 @@ var Monster = (function() {
 	function showAward(mid) {
 		// ted...
 		let award_ = "<div>"+ mid +"</div>";
-		$('.tally_award_background').html(str);
+		$('.tally_award_background').html(award_);
 
 		// move it into position
 		var basicTimeline = anime.timeline();
@@ -302,7 +302,7 @@ var Monster = (function() {
 		targets: '.tally_award_text',
 		translateX: -450,
 		easing: 'easeOutExpo'
-		}); 
+		});
 			}
 
 	/**
