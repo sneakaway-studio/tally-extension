@@ -278,9 +278,9 @@ var Monster = (function() {
 	 */
 	function showAward(mid) {
 		// store the text
-		let award_title = "text",
-			award_subtitle = Thought.getFact("trackers"),
-			award_fact_title = Thought.getFact("trackers"),
+		let award_title = "You caught the monster",
+			award_subtitle = "You leveled up",
+			award_fact_title = "Did you know?", // Did you know?
 			award_fact = Thought.getFact("trackers");
 
 		let str = "<div class='award_title'>" + award_title + "</div>" +
@@ -291,7 +291,7 @@ var Monster = (function() {
 		// insert the text
 		$('.tally_award_text').html(str);
 
-		console.log("showAward()", mid, award_title);
+		console.log("showAward()", mid, award_title, award_subtitle, award_fact_title, award_fact);
 
 		// move it into position
 		var basicTimeline = anime.timeline();
