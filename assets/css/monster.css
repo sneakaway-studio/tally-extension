@@ -6,13 +6,7 @@
     z-index: 9999999999999;
 }
 
-/* ted */
-.tally_monster_award {
 
-    opacity: 0;
-    position: absolute;
-    z-index: 9999999999999;
-}
 
 
 
@@ -35,7 +29,17 @@
         transform: scale(0.5);
     }
 }
-#tally_award_background {
+
+
+
+/* ted */
+.tally_monster_award {
+
+    opacity: 0;
+    position: absolute;
+    z-index: 9999999999999;
+}
+.tally_award_background {
   width: 2000px;
   height: 680px;
   transform: rotate(-20deg);
@@ -44,7 +48,7 @@
   background-color: #462795
 }
 
-#tally_award_text {
+.tally_award_text {
   background-color: #462795;
   font-family: "Arial", serif;
   color: white;
