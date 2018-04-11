@@ -238,7 +238,7 @@ var Monster = (function() {
 			}
 		});
 
-		$(document).on('click','.tally_monster_sprite',function(){
+		$(document).on('click', '.tally_monster_sprite', function() {
 			showAward(_mid)
 		})
 
@@ -277,33 +277,45 @@ var Monster = (function() {
 	 * Play award animation
 	 */
 	function showAward(mid) {
-		// ted...
-		let award_ = "<div>"+ mid +"</div>";
-		$('.tally_award_background').html(award_);
+		// store the text
+		let award_title = "text",
+			award_subtitle = Thought.getFact("trackers"),
+			award_fact_title = Thought.getFact("trackers"),
+			award_fact = Thought.getFact("trackers");
+
+		let str = "<div class='award_title'>" + award_title + "</div>" +
+			"<div class='award_subtitle'>" + award_title + "</div>" +
+			"<div class='award_fact_title'>" + award_fact_title + "</div>" +
+			"<div class='award_fact'>" + award_fact + "</div>";
+
+		// insert the text
+		$('.tally_award_text').html(str);
+
+		console.log("showAward()", mid, award_);
 
 		// move it into position
 		var basicTimeline = anime.timeline();
 		basicTimeline
-		.add({
-		targets: '.tally_award_background',
-		rotate: {
-		    value: -20,
-		    },
-		translateY: -1000,
+			.add({
+				targets: '.tally_award_background',
+				rotate: {
+					value: -20,
+				},
+				translateY: -1000,
 
-		easing: 'easeInOutCubic',
-		})
-		.add({
-		targets: '.tally_award_monster',
-		translateY: -400,
-		easing: 'easeOutExpo'
-		})
-		.add({
-		targets: '.tally_award_text',
-		translateX: -450,
-		easing: 'easeOutExpo'
-		});
-			}
+				easing: 'easeInOutCubic',
+			})
+			.add({
+				targets: '.tally_award_monster',
+				translateY: -400,
+				easing: 'easeOutExpo'
+			})
+			.add({
+				targets: '.tally_award_text',
+				translateX: -450,
+				easing: 'easeOutExpo'
+			});
+	}
 
 	/**
 	 *	Reset monster
