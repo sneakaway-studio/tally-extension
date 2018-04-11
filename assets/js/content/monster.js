@@ -275,14 +275,32 @@ var Monster = (function() {
 	 */
 	function showAward(mid) {
 		// ted...
-
-
-		let str = "<div>"+ mid +"</div>";
-		$('.tally_monster_award').html(str);
+		let award_ = "<div>"+ mid +"</div>";
+		$('.tally_award_background').html(str);
 
 		// move it into position
+		var basicTimeline = anime.timeline();
+		basicTimeline
+		.add({
+		targets: '.tally_award_background',
+		rotate: {
+		    value: -20,
+		    },
+		translateY: -1000,
 
-	}
+		easing: 'easeInOutCubic',
+		})
+		.add({
+		targets: '.tally_award_monster',
+		translateY: -400,
+		easing: 'easeOutExpo'
+		})
+		.add({
+		targets: '.tally_award_text',
+		translateX: -450,
+		easing: 'easeOutExpo'
+		}); 
+			}
 
 	/**
 	 *	Reset monster
