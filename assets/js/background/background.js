@@ -7,6 +7,11 @@
 		-> startApp() -> checkAPIServerStatus() -> checkTokenStatus() -> content script takes over */
 
 
+
+
+
+
+
 /**
  *  Listen for installations (first|any)
  */
@@ -26,12 +31,27 @@ chrome.runtime.onInstalled.addListener(function() {
 /**
  *  Start the app (always called)
  */
-function startApp(){
+function startApp() {
 	console.log(">>>>> startApp()");
+
+	// my local development
+	switchDevAPIs("development");
+	//switchDevAPIs("production");
+
 	// set development or production
-	checkForDevelopmentServer();	
+	checkForDevelopmentServer();
 	// check the API status, if connected then check token
 	checkAPIServerStatus();
+}
+
+/**
+ *  Switch between dev/prod server
+ */
+function switchDevAPIs(dev) {
+	let _tally_meta = store("tally_meta");
+	_tally_meta.api = Config[dev].api;
+	_tally_meta.website = Config[dev].website;
+	store("tally_meta", _tally_meta);
 }
 
 /**
