@@ -250,7 +250,7 @@ $(document).on('click', '#updateTokenBtn', function() {
 	window.open(tally_meta.website + "/signin");
 });
 $(document).on('click', '#viewProfileBtn', function() {
-	window.open(tally_meta.website + "/profile");
+	window.open(tally_meta.website + "/profile/"+tally_user.username);
 });
 $(document).on('click', '#editProfileBtn', function() {
 	window.open(tally_meta.website + "/dashboard");
