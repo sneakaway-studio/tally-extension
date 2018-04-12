@@ -194,7 +194,7 @@ var Monster = (function() {
 		$('.tally_monster_sprite').css('background-image', 'url( ' + url + ')');
 
 		let pos = "bottom";
-		launchFrom(mid, pos)
+		launchFrom(mid, pos);
 
 		// temp
 		$.growl({
@@ -214,7 +214,7 @@ var Monster = (function() {
 	}
 
 	function launchFrom(_mid, _pos) {
-
+		console.log("launchFrom()",_mid, _pos)
 		let _duration = 4500,
 			_top = 600;
 
@@ -224,7 +224,7 @@ var Monster = (function() {
 			'left': (pageData.browser.width / 2) - 250 + "px", // center
 			'display': 'block',
 			'opacity': 1
-		});
+		}); 
 		// animate up
 		var anim = anime({
 			targets: '.tally_monster_sprite',
@@ -235,12 +235,13 @@ var Monster = (function() {
 			},
 			begin: function() { // play sound n milliseconds after animation begins
 				//playSound('powerup',0,10);
+
 			}
 		});
 
 		$(document).on('click', '.tally_monster_sprite', function() {
-			showAward(_mid)
-		})
+			showAward(_mid);
+		});
 
 
 	}

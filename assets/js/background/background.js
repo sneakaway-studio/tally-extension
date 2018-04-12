@@ -34,9 +34,9 @@ chrome.runtime.onInstalled.addListener(function() {
 function startApp() {
 	console.log(">>>>> startApp()");
 
-	// my local development
-	switchDevAPIs("development");
-	//switchDevAPIs("production");
+	// switch server to development(local)/production
+	//switchDevAPIs("development");
+	switchDevAPIs("production");
 
 	// set development or production
 	checkForDevelopmentServer();

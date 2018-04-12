@@ -10,7 +10,7 @@
  /**
   *  Check if API Server is online
   */
- function checkForDevelopmentServer() { 
+ function checkForDevelopmentServer() {
      let _tally_meta = store("tally_meta");
  	$.ajax({
  		type: "GET",
@@ -19,6 +19,7 @@
  		contentType: 'application/json', // type of data you are sending
  		dataType: 'json', // type of data you expect to receive
  	}).done(result => {
+ 		console.log("<{!}> checkForDevelopmentServer()", JSON.stringify(result));
          // set development
         _tally_meta.api = Config.development.api;
         _tally_meta.website = Config.development.website;
@@ -29,7 +30,6 @@
         _tally_meta.website = Config.production.website;
  		return false;
  	}).always(() => {
- 		console.log("<{!}> checkForDevelopmentServer()", JSON.stringify(result));
         // save result
 		store("tally_meta", _tally_meta);
  	});
