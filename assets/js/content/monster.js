@@ -218,14 +218,29 @@ var Monster = (function() {
 		let _duration = 4500,
 			_top = 600;
 
+		let x = 0,
+			y = 300,
+			rotation = 0,
+			scale = 1;
+
+		let pathID = randomObjKey(MonsterPaths);
+
 		// hide outside page
 		$('.tally_monster_sprite_container').css({
-			'top': (pageData.browser.height / 2) + 100 + "px", // hide it up
-			'left': (pageData.browser.width / 2) - 250 + "px", // center
-			'display': 'block',
-			'opacity': 1
-		});
-		// animate up
+            'top': y - 250,//(pageData.browser.height / 2) + 100 + "px", // hide it up
+            'left': x - 200,//(pageData.browser.width / 2) - 250 + "px", // center
+            'display': 'block',
+            'opacity': 1
+        });
+
+        $('.monster_path').css({
+            'top': y, //(pageData.browser.height / 2) + 100 + "px", // hide it up
+            'left': x //(pageData.browser.width / 2) - 250 + "px", // center
+        });
+
+        $('.monster_path').attr('viewBox', '0 0 ' + MonsterPaths[pathID]['width'] + ' ' + MonsterPaths[pathID]['height']);
+
+        $('.monster_path path').attr('d', MonsterPaths[pathID]['d']);
 
         var path = anime.path('.monster_path path');
 
@@ -235,7 +250,8 @@ var Monster = (function() {
             translateY: path('y'),
             rotate: path('angle'),
             easing: 'linear',
-            duration: 2000,
+            duration: 10000,
+            direction: 'reverse',
             loop: true
         });
 

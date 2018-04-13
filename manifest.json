@@ -50,6 +50,7 @@
             "assets/data/game-rules.js",
             "assets/data/thought-data.js",
             "assets/data/monster-data.js",
+            "assets/data/monster-paths.js",
             "assets/js/content/pageData.js",
             "assets/js/content/interface.js",
             "assets/js/content/monster.js",
