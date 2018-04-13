@@ -194,7 +194,7 @@ var Monster = (function() {
 		$('.tally_monster_sprite').css('background-image', 'url( ' + url + ')');
 
 		let pos = "bottom";
-		launchFrom(mid, pos);
+		launchFrom(mid, pos, level);
 
 		// temp
 		$.growl({
@@ -204,7 +204,7 @@ var Monster = (function() {
 
 		// somewhere here we would attach a click listener to the monster
 		// let's assume we've done that so we can test capture()
-		//capture(mid, level)	;
+		//capture(mid, level);
 
 		// temp: call after capture OR miss
 		setTimeout(function() {
@@ -213,18 +213,18 @@ var Monster = (function() {
 
 	}
 
-	function launchFrom(_mid, _pos) {
-		console.log("launchFrom()",_mid, _pos)
+	function launchFrom(_mid, _pos, _level) {
+		console.log("launchFrom()", _mid, _pos)
 		let _duration = 4500,
 			_top = 600;
 
 		// hide outside page
 		$('.tally_monster_sprite').css({
-			'top': pageData.browser.height + 100 + "px", // hide it up
+			'top': (pageData.browser.height / 2) - 200 + "px", // hide it up
 			'left': (pageData.browser.width / 2) - 250 + "px", // center
 			'display': 'block',
 			'opacity': 1
-		}); 
+		});
 		// animate up
 		var anim = anime({
 			targets: '.tally_monster_sprite',
@@ -241,6 +241,7 @@ var Monster = (function() {
 
 		$(document).on('click', '.tally_monster_sprite', function() {
 			showAward(_mid);
+			capture(_mid, _level);
 		});
 
 

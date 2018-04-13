@@ -190,7 +190,7 @@ chrome.runtime.onMessage.addListener(
 			// create new serverUpdate
 			var serverMonsterUpdate = createMonsterUpdate(request.data);
 			// (attempt to) send data to server, response to callback
-			sendServerMonsterUpdate(serverMonsterUpdate);
+			sendMonsterUpdate(serverMonsterUpdate);
 
 			// reply to contentscript with updated tally_user
 			sendResponse({

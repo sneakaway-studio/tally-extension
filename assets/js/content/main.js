@@ -66,7 +66,7 @@ function startGame() {
 			});
 		} else if (tally_meta.userTokenStatus != "ok") {
 			$.growl({
-				title: "YOU HAVE NO TOKEN",
+				title: "YOU HAVE NO TOKEN", 
 				message: "<a href='" + tally_meta.website + "/dashboard' target='_blank'>Link your account to start playing Tally</a>"
 			});
 		}
