@@ -226,18 +226,31 @@ var Monster = (function() {
 			'opacity': 1
 		});
 		// animate up
-		var anim = anime({
-			targets: '.tally_monster_sprite_container',
-			translateY: {
-				delay: 500, // wait for page to load
-				value: -_top,
-				duration: _duration
-			},
-			begin: function() { // play sound n milliseconds after animation begins
-				//playSound('powerup',0,10);
 
-			}
-		});
+        var path = anime.path('.monster_path path');
+
+        var motionPath = anime({
+            targets: '.tally_monster_sprite_container',
+            translateX: path('x'),
+            translateY: path('y'),
+            rotate: path('angle'),
+            easing: 'linear',
+            duration: 2000,
+            loop: true
+        });
+
+		// var anim = anime({
+		// 	targets: '.tally_monster_sprite_container',
+		// 	translateY: {
+		// 		delay: 500, // wait for page to load
+		// 		value: -_top,
+		// 		duration: _duration
+		// 	},
+		// 	begin: function() { // play sound n milliseconds after animation begins
+		// 		//playSound('powerup',0,10);
+        //
+		// 	}
+		// });
 
 		$(document).on('click', '.tally_monster_sprite', function() {
 			showAward(_mid);
