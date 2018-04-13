@@ -191,7 +191,7 @@ var Monster = (function() {
 		// reference to image file
 		var url = chrome.extension.getURL('assets/img/monsters/' + monster.mid + '-anim-sheet.png');
 		// set content
-		$('.tally_monster_sprite').css('background-image', 'url( ' + url + ')');
+		$('.tally_monster_sprite_inner').css('background-image', 'url( ' + url + ')');
 
 		let pos = "bottom";
 		launchFrom(mid, pos, level);
@@ -219,15 +219,15 @@ var Monster = (function() {
 			_top = 600;
 
 		// hide outside page
-		$('.tally_monster_sprite').css({
-			'top': (pageData.browser.height / 2) - 200 + "px", // hide it up
+		$('.tally_monster_sprite_container').css({
+			'top': (pageData.browser.height / 2) + 100 + "px", // hide it up
 			'left': (pageData.browser.width / 2) - 250 + "px", // center
 			'display': 'block',
 			'opacity': 1
 		});
 		// animate up
 		var anim = anime({
-			targets: '.tally_monster_sprite',
+			targets: '.tally_monster_sprite_container',
 			translateY: {
 				delay: 500, // wait for page to load
 				value: -_top,
