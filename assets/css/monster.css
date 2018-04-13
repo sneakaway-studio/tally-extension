@@ -11,6 +11,7 @@
     top: 0;
     left: 0;
     z-index: 9999999999999;
+    border: 2px solid red;
 }
 
 .tally_monster_sprite_container {

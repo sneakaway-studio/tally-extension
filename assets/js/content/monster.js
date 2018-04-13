@@ -215,32 +215,29 @@ var Monster = (function() {
 
 	function launchFrom(_mid, _pos, _level) {
 		console.log("launchFrom()", _mid, _pos)
-		let _duration = 4500,
-			_top = 600;
+		let _duration = 4500;
 
 		let x = 0,
-			y = 300,
-			rotation = 0,
-			scale = 1;
+			y = 300;
 
-		let pathID = randomObjKey(MonsterPaths);
+		let pathID = 'wave1';//randomObjKey(MonsterPaths);
 
-		// hide outside page
+		// position monster
 		$('.tally_monster_sprite_container').css({
-            'top': y - 250,//(pageData.browser.height / 2) + 100 + "px", // hide it up
-            'left': x - 200,//(pageData.browser.width / 2) - 250 + "px", // center
+            'top': y - 250,
+            'left': x - 200,
             'display': 'block',
             'opacity': 1
         });
-
+		// position path
         $('.monster_path').css({
-            'top': y, //(pageData.browser.height / 2) + 100 + "px", // hide it up
-            'left': x //(pageData.browser.width / 2) - 250 + "px", // center
+            'top': y,
+            'left': x
         });
 
+        // assign SVG shape
+        $('.monster_path path').attr('d', MonsterPaths[pathID].d);
         $('.monster_path').attr('viewBox', '0 0 ' + MonsterPaths[pathID]['width'] + ' ' + MonsterPaths[pathID]['height']);
-
-        $('.monster_path path').attr('d', MonsterPaths[pathID]['d']);
 
         var path = anime.path('.monster_path path');
 
@@ -250,7 +247,7 @@ var Monster = (function() {
             translateY: path('y'),
             rotate: path('angle'),
             easing: 'linear',
-            duration: 10000,
+            duration: _duration,
             direction: 'reverse',
             loop: true
         });
