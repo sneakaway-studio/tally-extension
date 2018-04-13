@@ -68,7 +68,7 @@
   width: 2000px;
   height: 680px;
   transform: rotate(-20deg);
-  position: absolute;
+  position: fixed;
   bottom: -1420px;
   background-color: #462795
 }
