@@ -252,19 +252,6 @@ var Monster = (function() {
             loop: true
         });
 
-		// var anim = anime({
-		// 	targets: '.tally_monster_sprite_container',
-		// 	translateY: {
-		// 		delay: 500, // wait for page to load
-		// 		value: -_top,
-		// 		duration: _duration
-		// 	},
-		// 	begin: function() { // play sound n milliseconds after animation begins
-		// 		//playSound('powerup',0,10);
-        //
-		// 	}
-		// });
-
 		$(document).on('click', '.tally_monster_sprite', function() {
 			showAward(_mid);
 			capture(_mid, _level);
