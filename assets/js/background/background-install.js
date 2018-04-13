@@ -12,7 +12,6 @@ function createApp() {
 		store("tally_game_status", createGameStatus());
 		store("tally_recent_monsters", createRecentMonsters());
 		store("tally_meta", createMeta());
-        checkForDevelopmentServer();
 		store("tally_secret", createSecret());
 		// these are empty the first time
 		// store("tally_domains", {});
@@ -102,17 +101,16 @@ function createRecentMonsters() {
 
 // Create Achievements object (separate function so we can reset)
 function createAchievements() {
-	var obj = {
-	};
+	var obj = {};
 	return obj;
 }
 
 // Create Monsters object (separate function so we can reset)
 function createMonsters() {
-	var obj = {
-	};
+	var obj = {};
 	return obj;
 }
+
 function createOptions() {
 	var obj = {
 		"showTally": true,
@@ -169,10 +167,9 @@ function createMeta() {
 		"website": Config.production.website,
 		"browser": getBrowser()
 	};
-    //obj.api = Config.development.api;
-    //obj.website = Config.development.website; 
 	return obj;
 }
+
 
 function getBrowser() {
 	if (navigator.userAgent.indexOf("Chrome") != -1) {

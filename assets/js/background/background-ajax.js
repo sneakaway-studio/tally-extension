@@ -10,7 +10,7 @@
  /**
   *  Check if API Server is online
   */
- function checkForDevelopmentServer() { 
+ function checkForDevelopmentServer() {
      let _tally_meta = store("tally_meta");
  	$.ajax({
  		type: "GET",
@@ -19,6 +19,7 @@
  		contentType: 'application/json', // type of data you are sending
  		dataType: 'json', // type of data you expect to receive
  	}).done(result => {
+ 		console.log("<{!}> checkForDevelopmentServer()", JSON.stringify(result));
          // set development
         _tally_meta.api = Config.development.api;
         _tally_meta.website = Config.development.website;
@@ -29,7 +30,6 @@
         _tally_meta.website = Config.production.website;
  		return false;
  	}).always(() => {
- 		console.log("<{!}> checkForDevelopmentServer()", JSON.stringify(result));
         // save result
 		store("tally_meta", _tally_meta);
  	});
@@ -174,8 +174,8 @@ function sendServerUpdate(data) {
 /**
  *  Send monster update to API server
  */
-function sendServerMonsterUpdate(data) {
-	console.log("<{!}> sendServerMonsterUpdate()", data);
+function sendMonsterUpdate(data) {
+	console.log("<{!}> sendMonsterUpdate()", data);
 	let _tally_meta = store("tally_meta"),
         _tally_user = store("tally_user");
 	if (!_tally_meta.serverOnline || _tally_meta.userTokenStatus != "ok") return;
@@ -186,12 +186,12 @@ function sendServerMonsterUpdate(data) {
 		dataType: 'json',
 		data: JSON.stringify(data)
 	}).done(result => {
-		console.log("<{!}> sendServerMonsterUpdate() RESULT =", JSON.stringify(result));
+		console.log("<{!}> sendMonsterUpdate() RESULT =", JSON.stringify(result));
         // treat all server data as master
 //        if (result[0].username) _tally_user.username = result[0].username;
 //        store("tally_user",_tally_user);
 	}).fail(error => {
-		console.error("<{!}> sendServerMonsterUpdate() RESULT =", JSON.stringify(error));
+		console.error("<{!}> sendMonsterUpdate() RESULT =", JSON.stringify(error));
 		// server might not be reachable
 		checkAPIServerStatus();
 	});
