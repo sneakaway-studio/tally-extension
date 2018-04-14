@@ -3,7 +3,7 @@
     left: -700px;
     opacity: 0;
     position: absolute;
-    z-index: 9999999999999;
+    z-index: 99999999999999;
 }
 
 .tally_monster_sprite_container {
@@ -58,10 +58,23 @@
 }
 
 
-.tally_monster_award {
 
-    opacity: 0;
-    position: absolute;
+.tally_award_monster_wrapper {
+  height: auto;
+  width: 100vw;
+  position:fixed;
+  bottom:-400px;
+  z-index:9999999999999;
+  visibility: hidden;
+
+}
+.tally_award_monster {
+    width: 35vw;
+    height: 35vh;
+    position: relative;
+    left: 30%;
+    opacity: 1;
+    visibility: visible;
     z-index: 9999999999999;
 }
 .tally_award_background {
@@ -70,7 +83,8 @@
   transform: rotate(-20deg);
   position: fixed;
   bottom: -1420px;
-  background-color: #462795
+  background-color: #462795;
+  z-index: 100000;
 }
 
 .tally_award_text {
@@ -82,24 +96,16 @@
   height: 40%;
   position: relative;
   left: 70%;
-  z-index: 6;
+  z-index: 100100;
   visibility: visible;
 }
 
-.tally_award_monster_wrapper {
-  height: auto;
-  width: 100vw;
-  position:fixed;
-  bottom:-400px;
-  z-index:2;
-  visibility: hidden;
-}
 .tally_award_text_wrapper {
   height: auto;
   width: 100vw;
   position:fixed;
   bottom:4%;
   left: 450px;
-  z-index:3;
+  z-index:100010;
   visibility: hidden;
 } 

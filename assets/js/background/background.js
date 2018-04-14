@@ -37,7 +37,7 @@ function startApp() {
 	// switch server to development(local)/production
 	//switchDevAPIs("development");
 	switchDevAPIs("production");
-
+ 
 	// set development or production
 	checkForDevelopmentServer();
 	// check the API status, if connected then check token

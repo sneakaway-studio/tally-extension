@@ -216,7 +216,7 @@ var Monster = (function() {
 	function launchFrom(_mid, _pos, _level) {
 		console.log("launchFrom()", _mid, _pos)
 		let _duration = 4500,
-			_top = 600;
+			_top = 300;
 
 		// hide outside page
 		$('.tally_monster_sprite_container').css({
@@ -252,7 +252,7 @@ var Monster = (function() {
 	 *	User captures monster
 	 */
 	function capture(mid, level) {
-		if (MONSTER_DEBUG) console.log('!!!!! Monster.capture()', mid, tally_recent_monsters[mid].stage);
+		if (MONSTER_DEBUG) console.log('!!!!! Monster.capture()', mid);
 		// add monsters to tally_user
 		if (tally_user.monsters[mid]) {
 			tally_user.monsters[mid].level = level;
@@ -264,7 +264,7 @@ var Monster = (function() {
 		// save user in background
 		saveUser();
 		// create backgroundUpdate object
-		var backgroundMonsterUpdate = newBackgroundMonsterUpdate();
+		var backgroundMonsterUpdate = newBackgroundMonsterUpdate(mid);
 		backgroundMonsterUpdate.monsterData = tally_recent_monsters[mid];
 		backgroundMonsterUpdate.monsterData.level = level;
 		backgroundMonsterUpdate.monsterData.captured = tally_recent_monsters[mid].captured;
@@ -303,12 +303,14 @@ var Monster = (function() {
 					value: -20,
 				},
 				translateY: -1000,
-
 				easing: 'easeInOutCubic',
+				/*direction: 'alternate',
+				delay: 1000,*/
+				
 			})
 			.add({
 				targets: '.tally_award_monster',
-				translateY: -400,
+				translateY: -500,
 				easing: 'easeOutExpo'
 			})
 			.add({
