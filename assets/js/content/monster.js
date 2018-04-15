@@ -113,6 +113,8 @@ var Monster = (function() {
 			"slug": MonsterData.dataById[_mid].slug,
 			"updatedAt": Date.now()
 		};
+		if (tally_user.monsters[_mid] && tally_user.monsters[_mid].level)
+		 	monster.level = tally_user.monsters[_mid].level + 1;
 		return monster;
 	}
 

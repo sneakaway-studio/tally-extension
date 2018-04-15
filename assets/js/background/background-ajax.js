@@ -157,10 +157,21 @@ function sendMonsterUpdate(data) {
 		dataType: 'json',
 		data: JSON.stringify(data)
 	}).done(result => {
-		console.log("<{!}> sendMonsterUpdate() RESULT =", JSON.stringify(result));
+		//console.log("<{!}> sendMonsterUpdate() RESULT =", JSON.stringify(result));
 		// treat all server data as master
-		//_tally_user.monsters = result;
-		//store("tally_user", _tally_user);
+		let monsters = {};
+		if (result.length > 0) {
+			// loop and associate keys to objs
+			for (let i = 0, l = result.length; i < l; i++) {
+				monsters[result[i].mid] = {
+					"level": result[i].level
+				};
+			}
+		}
+		console.log("<{!}> sendMonsterUpdate() RESULT =", JSON.stringify(monsters));
+		// store user
+		_tally_user.monsters = monsters;
+		store("tally_user", _tally_user);
 	}).fail(error => {
 		console.error("<{!}> sendMonsterUpdate() RESULT =", JSON.stringify(error));
 		// server might not be reachable
