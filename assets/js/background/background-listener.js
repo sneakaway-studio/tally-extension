@@ -196,7 +196,7 @@ chrome.runtime.onMessage.addListener(
 			sendResponse({
 				"action": request.action,
 				"message": 1,
-				//				"tally_user": _tally_user
+				//"tally_user": _tally_user
 			});
 		}
 		// getLastBackgroundUpdate
