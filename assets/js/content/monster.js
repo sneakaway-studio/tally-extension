@@ -7,7 +7,7 @@ var Monster = (function() {
         secondsBeforeDelete = 60; // 60 seconds for testing
 
     /**
-     *    Test to make sure API is working
+     *	Test to make sure API is working
      */
     function test() {
         // make sure there are monsters nearby
@@ -32,7 +32,7 @@ var Monster = (function() {
 
 
     /**
-     *    Initial check function, refreshes nearby monsters from back end continues to next
+     *	Initial check function, refreshes nearby monsters from back end continues to next
      */
     function check() {
         // don't check if disabled
@@ -41,7 +41,7 @@ var Monster = (function() {
     }
 
     /**
-     *    Make sure all monsters are nearby, deletes those that aren't
+     *	Make sure all monsters are nearby, deletes those that aren't
      */
     function checkNearbyMonsterTimes() {
         let now = Date.now(),
@@ -70,7 +70,7 @@ var Monster = (function() {
     }
 
     /**
-     *    Check the page for a monster
+     *	Check the page for a monster
      */
     function checkForTagMatches() {
         //console.log('>>>>> Monster.check()', pageData.tags);
@@ -99,7 +99,7 @@ var Monster = (function() {
 
 
     /**
-     *    Create a monster
+     *	Create a monster
      */
     function create(_mid, _stage = 1) {
         if (!prop(_mid) || !prop(_stage) || !prop(MonsterData.dataById[_mid])) return;
@@ -113,11 +113,13 @@ var Monster = (function() {
             "slug": MonsterData.dataById[_mid].slug,
             "updatedAt": Date.now()
         };
+        if (tally_user.monsters[_mid] && tally_user.monsters[_mid].level)
+            monster.level = tally_user.monsters[_mid].level + 1;
         return monster;
     }
 
     /**
-     *    A monster has been matched to page tags, handle it
+     *	A monster has been matched to page tags, handle it
      */
     function handleMatch(mid) {
         let launchMonster = false;
@@ -137,7 +139,7 @@ var Monster = (function() {
             } else if (tally_nearby_monsters[mid].stage == 1) {
                 if (r < 0.2) {
                     // go back to normal stage
-                    tally_nearby_monsters[mid].stage = 0;
+                    tally_nearby_monsters[mid].stage == 0
                 } else if (r < 0.4) {
                     // do nothing
                 } else if (r < 0.7) {
@@ -177,7 +179,7 @@ var Monster = (function() {
     }
 
     /**
-     *    Launch a product monster
+     *	Launch a product monster
      */
     function launch(mid) {
         // don't launch them if game isn't running in full mode
@@ -205,7 +207,7 @@ var Monster = (function() {
         });
 
         // temp: call after capture OR miss
-        setTimeout(function () {
+        setTimeout(function() {
             reset(mid);
         }, 2000);
 
@@ -213,31 +215,35 @@ var Monster = (function() {
 
     function launchFrom(_mid, _pos, _level) {
         console.log("launchFrom()", _mid, _pos)
-
         let _duration = 4500;
 
-        let x = 0,
-            y = 300;
+        let pathID = randomObjKey(MonsterPaths);
 
-        let pathID = 'wave1';//randomObjKey(MonsterPaths);
+        let x = MonsterPaths[pathID].x,
+            y = MonsterPaths[pathID].y,
+            scale = MonsterPaths[pathID]['scale'];
 
         // position monster
         $('.tally_monster_sprite_container').css({
-
             'top': y - 250,
             'left': x - 200,
             'display': 'block',
             'opacity': 1
         });
-        // position path
+
         $('.monster_path').css({
             'top': y,
             'left': x
         });
 
-        // assign SVG shape
         $('.monster_path path').attr('d', MonsterPaths[pathID].d);
         $('.monster_path').attr('viewBox', '0 0 ' + scale + ' ' + scale);
+
+
+        $(document).on('click', '.tally_monster_sprite', function () {
+            showAward(_mid);
+            capture(_mid, _level);
+        });
 
         var path = anime.path('.monster_path path');
 
@@ -252,21 +258,14 @@ var Monster = (function() {
             loop: true
         });
 
-
-        $(document).on('click', '.tally_monster_sprite', function () {
-            showAward(_mid);
-            capture(_mid, _level);
-        });
-
-
     }
 
 
     /**
-     *    User captures monster
+     *	User captures monster
      */
     function capture(mid, level) {
-        if (MONSTER_DEBUG) console.log('!!!!! Monster.capture()', mid, tally_recent_monsters[mid].stage);
+        if (MONSTER_DEBUG) console.log('!!!!! Monster.capture()', mid);
         // add monsters to tally_user
         if (tally_user.monsters[mid]) {
             tally_user.monsters[mid].level = level;
@@ -278,10 +277,11 @@ var Monster = (function() {
         // save user in background
         saveUser();
         // create backgroundUpdate object
-        var backgroundMonsterUpdate = newBackgroundMonsterUpdate();
-        backgroundMonsterUpdate.monsterData = tally_recent_monsters[mid];
+        var backgroundMonsterUpdate = newBackgroundMonsterUpdate(mid);
+        backgroundMonsterUpdate.monsterData = tally_nearby_monsters[mid];
         backgroundMonsterUpdate.monsterData.level = level;
-        backgroundMonsterUpdate.monsterData.captured = tally_recent_monsters[mid].captured;
+        backgroundMonsterUpdate.monsterData.captured = tally_nearby_monsters[mid].captured;
+        backgroundMonsterUpdate.monsterData.missed = tally_nearby_monsters[mid].missed;
         // then push to the server
         sendBackgroundMonsterUpdate(backgroundMonsterUpdate);
         // finally reset monster
@@ -317,12 +317,14 @@ var Monster = (function() {
                     value: -20,
                 },
                 translateY: -1000,
-
                 easing: 'easeInOutCubic',
+                /*direction: 'alternate',
+                delay: 1000,*/
+
             })
             .add({
                 targets: '.tally_award_monster',
-                translateY: -400,
+                translateY: -500,
                 easing: 'easeOutExpo'
             })
             .add({
@@ -333,23 +335,23 @@ var Monster = (function() {
     }
 
     /**
-     *    Reset monster
+     *	Reset monster
      */
     function reset(mid) {
-        if (tally_recent_monsters[mid])
-            delete tally_recent_monsters[mid];
-        saveRecentMonsters();
+        if (tally_nearby_monsters[mid])
+            delete tally_nearby_monsters[mid];
+        saveNearbyMonsters();
     }
 
     /**
-     *    Save the recent monsters
+     *	Save the nearby monsters
      */
-    function saveRecentMonsters() {
+    function saveNearbyMonsters() {
         chrome.runtime.sendMessage({
-            'action': 'saveRecentMonsters',
-            'data': tally_recent_monsters
-        }, function (response) {
-            //console.log('<<<<< > saveRecentMonsters()',JSON.stringify(response));
+            'action': 'saveNearbyMonsters',
+            'data': tally_nearby_monsters
+        }, function(response) {
+            //console.log('<<<<< > saveNearbyMonsters()',JSON.stringify(response));
         });
         Debug.update();
     }
@@ -364,5 +366,4 @@ var Monster = (function() {
         current: getCurrent,
         test: test
     };
-}
-);
+}());
