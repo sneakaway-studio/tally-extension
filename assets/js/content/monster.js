@@ -6,6 +6,10 @@ var Monster = (function() {
 		current = "",
 		secondsBeforeDelete = 60; // 60 seconds for testing
 
+        let animePath = {},
+            animePathAnimation = {};
+
+
 	/**
 	 *	Test to make sure API is working
 	 */
@@ -217,30 +221,28 @@ var Monster = (function() {
 	function launchFrom(_mid, _pos, _level) {
 		console.log("launchFrom()", _mid, _pos);
 
-
 		let _duration = 4500, // default animation duration
 			_direction = "normal", // default animation direction
 			pathID = randomObjKey(MonsterPaths); // pick a random path
 
+        // position monster path
+		$('.monster_path').css({
+			'top': MonsterPaths[pathID].y,
+			'left': MonsterPaths[pathID].x
+		});
+        // set data for monster path
+		$('.monster_path path').attr('d', MonsterPaths[pathID].d);
+        // set viewbox for monster path
+		$('.monster_path').attr('viewBox', '0 0 ' + MonsterPaths[pathID].scale + ' ' + MonsterPaths[pathID].scale);
 
-		// position monster
+        // set position monster (off screen)
 		$('.tally_monster_sprite_container').css({
 			'top': MonsterPaths[pathID].y - 250,
 			'left': MonsterPaths[pathID].x - 200,
 			'display': 'block',
 			'opacity': 1
 		});
-
-		$('.monster_path').css({
-			'top': MonsterPaths[pathID].y,
-			'left': MonsterPaths[pathID].x
-		});
-
-		$('.monster_path path').attr('d', MonsterPaths[pathID].d);
-		$('.monster_path').attr('viewBox', '0 0 ' + MonsterPaths[pathID].scale + ' ' + MonsterPaths[pathID].scale);
-
-
-		// set direction
+		// set direction of monster (default is normal, i.e. right)
 		if (prop(tally_nearby_monsters[_mid].facing)) {
             // set direction left
 			if (tally_nearby_monsters[_mid].facing == -1)
@@ -253,12 +255,13 @@ var Monster = (function() {
 			}
 		}
 
-		var path = anime.path('.monster_path path');
+        // path for anime
+		animePath = anime.path('.monster_path path');
 
-		var motionPath = anime({
+		animePathAnimation = anime({
 			targets: '.tally_monster_sprite_container',
-			translateX: path('x'),
-			translateY: path('y'),
+			translateX: animePath('x'),
+			translateY: animePath('y'),
 			//rotate: path('angle'),
 			easing: 'linear',
 			duration: _duration,
