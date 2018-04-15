@@ -168,7 +168,7 @@ var clickEventHandler = function(eventData, target) {
 		/**
 		 * 	5. Game responses
 		 */
- 
+
 		// play sound
 		Sound.play('user', 'click');
 		// show click visual
@@ -252,8 +252,6 @@ function newBackgroundMonsterUpdate(mid) {
 			"tags": pageData.tags,
 			"time": pageData.time,
 			"url": pageData.url
-		},
-		"monsterData":{
 		},
 		"userData": {
 			"token": "INSERT_IN_BACKGROUND",
