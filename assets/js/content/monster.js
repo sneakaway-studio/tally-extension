@@ -191,24 +191,21 @@ var Monster = (function() {
 		if (tally_options.gameMode != "full") return;
 		if (MONSTER_DEBUG) console.log('!!!!! Monster.launch()', mid, tally_nearby_monsters[mid]);
 
-		let monster = MonsterData.dataById[mid],
-			level = 1;
-
-		// if they already have this one, increase level
+		// if they already have this one, add and increase the level
 		if (tally_user.monsters[mid])
-			level = tally_user.monsters[mid].level + 1;
+			tally_nearby_monsters[mid].level = tally_user.monsters[mid].level + 1;
 		// reference to image file
-		var url = chrome.extension.getURL('assets/img/monsters/' + monster.mid + '-anim-sheet.png');
+		var url = chrome.extension.getURL('assets/img/monsters/' + mid + '-anim-sheet.png');
 		// set content
 		$('.tally_monster_sprite_inner').css('background-image', 'url( ' + url + ')');
 
 		let pos = "bottom";
-		launchFrom(mid, pos, level);
+		launchFrom(mid, pos);
 
 		// temp: show growl
 		$.growl({
 			title: "LAUNCHING MONSTER!!!",
-			message: "MONSTER: " + monster.name + " [" + monster.mid + "] "
+			message: "MONSTER: " + MonsterData.dataById[mid].name + " [" + mid + "] "
 		});
 
 		// temp: call after capture OR miss
@@ -218,7 +215,7 @@ var Monster = (function() {
 
 	}
 
-	function launchFrom(_mid, _pos, _level) {
+	function launchFrom(_mid, _pos) {
 		console.log("launchFrom()", _mid, _pos);
 
 		let _duration = 4500, // default animation duration
@@ -269,11 +266,9 @@ var Monster = (function() {
 			loop: true
 		});
 
-
-
 		$(document).on('click', '.tally_monster_sprite', function() {
 			showAward(_mid);
-			capture(_mid, _level);
+			capture(_mid);
 		});
 
 	}
@@ -282,25 +277,28 @@ var Monster = (function() {
 	/**
 	 *	User captures monster
 	 */
-	function capture(mid, level) {;
+	function capture(mid) {;
+
+        // pause animation
+        animePathAnimation.pause();
+        // then move it to the award display
+        /// ......
 
 		if (MONSTER_DEBUG) console.log('!!!!! Monster.capture()', mid);
 		// add monsters to tally_user
 		if (tally_user.monsters[mid]) {
-			tally_user.monsters[mid].level = level;
+			tally_user.monsters[mid].level = tally_nearby_monsters[mid].level;
 		} else {
 			tally_user.monsters[mid] = {
-				"level": level
+				"level": tally_nearby_monsters[mid].level
 			};
 		}
 		// save user in background
 		saveUser();
 		// create backgroundUpdate object
 		var backgroundMonsterUpdate = newBackgroundMonsterUpdate(mid);
+        // store the nearby monster in it
 		backgroundMonsterUpdate.monsterData = tally_nearby_monsters[mid];
-		backgroundMonsterUpdate.monsterData.level = level;
-		backgroundMonsterUpdate.monsterData.captured = tally_nearby_monsters[mid].captured;
-		backgroundMonsterUpdate.monsterData.missed = tally_nearby_monsters[mid].missed;
 		// then push to the server
 		sendBackgroundMonsterUpdate(backgroundMonsterUpdate);
 		// finally reset monster
