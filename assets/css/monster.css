@@ -20,7 +20,7 @@
     top: 0;
     left: 0;
     z-index: 9999999999999;
-    border: 2px solid red;
+    opacity: 0;
 }
 
 .tally_monster_sprite_container {
@@ -65,12 +65,8 @@
 }
 
 @keyframes monster_keyframes {
-    0% {
-        transform: scale(0.5);
-    }
     100% {
         background-position: -1500px;
-        transform: scale(0.5);
     }
 }
 

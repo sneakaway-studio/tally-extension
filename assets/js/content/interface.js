@@ -5,8 +5,8 @@ $( function() {
     function addBaseHTML(){
         let str =   "<div id='tally_wrapper' class='reset-this-root reset-this no-print'>"+
                         "<svg class='monster_path' version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\">\n" +
-            "<path fill=\"none\" stroke=\"red\"></path>\n" +
-            "</svg>"+
+                            "<g><path fill=\"none\" stroke=\"none\"></path></g>\n" +
+                        "</svg>"+
                         "<div id='tally_click_visual'></div>"+
                         "<div class='tally_monster_sprite_container'>"+
                             "<div class='tally_monster_sprite'>" +
