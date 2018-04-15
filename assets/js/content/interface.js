@@ -30,11 +30,10 @@ $( function() {
                     "</div>";
         $('body').append(str);
     }
-    addBaseHTML();
 
 
-
-
-
+    // if game should be active
+    //if (prop(pageData) && pageData.activeOnPage)
+        addBaseHTML();
 
 });

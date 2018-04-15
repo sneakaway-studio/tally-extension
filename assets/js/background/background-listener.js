@@ -66,18 +66,18 @@ chrome.runtime.onMessage.addListener(
 			});
 		}
 
-		// getRecentMonsters
-		else if (request.action == "getRecentMonsters") {
-			let data = store("tally_recent_monsters") || {};
+		// getNearbyMonsters
+		else if (request.action == "getNearbyMonsters") {
+			let data = store("tally_nearby_monsters") || {};
 			sendResponse({
 				"action": request.action,
-				"data": store("tally_recent_monsters", data)
+				"data": store("tally_nearby_monsters", data)
 			});
 		}
-		// saveRecentMonsters
-		else if (request.action == "saveRecentMonsters") {
-			//console.log("saveRecentMonsters()",request.data);
-			store("tally_recent_monsters", request.data);
+		// saveNearbyMonsters
+		else if (request.action == "saveNearbyMonsters") {
+			//console.log("saveNearbyMonsters()",request.data);
+			store("tally_nearby_monsters", request.data);
 			sendResponse({
 				"action": request.action,
 				"message": 1
@@ -196,7 +196,7 @@ chrome.runtime.onMessage.addListener(
 			sendResponse({
 				"action": request.action,
 				"message": 1,
-				//				"tally_user": _tally_user
+				//"tally_user": _tally_user
 			});
 		}
 		// getLastBackgroundUpdate
@@ -242,7 +242,8 @@ function createMonsterUpdate(data) {
 		"monster": {
 			"level": data.monsterData.level,
 			"mid": data.monsterData.mid,
-			"captured": data.monsterData.captured
+			"captured": data.monsterData.captured,
+			"missed": data.monsterData.missed
 		},
 		"token": _tally_secret.token,
 		"time": data.pageData.time || 0,
@@ -250,7 +251,7 @@ function createMonsterUpdate(data) {
 		"url": data.pageData.url || "",
 		"domain": data.pageData.domain || "",
 	};
-	console.log("createMonsterUpdate()", obj);
+	//console.log("createMonsterUpdate()", obj);
 	return obj;
 }
 

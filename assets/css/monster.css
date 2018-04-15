@@ -1,10 +1,19 @@
+
+
+/*  GLOBAL
+******************************************************************************/
+
 .tally_monster_sprite_container, .tally_monster_text_wrapper_top, .tally_monster_text_wrapper_bottom, .tally_monster_points_wrapper {
     top: -700px;
     left: -700px;
     opacity: 0;
     position: absolute;
-    z-index: 9999999999999;
+    z-index: 99999999999999;
 }
+
+
+/*  MONSTER SPRITE (WHEN IT LAUNCHES)
+******************************************************************************/
 
 .monster_path {
     position: absolute;
@@ -37,48 +46,64 @@
     animation: monster_keyframes 0.4s steps(3) infinite;
 }
 
-/*.tally_monster_sprite_wrapper {*/
-    /*margin: auto;*/
-    /*border: 2px solid red;*/
-    /*position: absolute;*/
-    /*width: 500px;*/
-    /*height: 400px;*/
-    /*background: url('') left center no-repeat;*/
-    /*transform: scale(0.5) !important;*/
-/*}*/
+.tally_monster_sprite_wrapper {
+    margin: auto;
+    border: 2px solid red;
+    position: absolute;
+    width: 500px;
+    height: 400px;
+    background: url('') left center no-repeat;
+    transform: scale(0.5) !important;
+}
 
-/*.tally_monster_sprite {*/
-    /*position: relative;*/
-    /*display: inline-block;*/
-    /*width: 100%;*/
-    /*height: 100%;*/
-    /*animation: monster_keyframes 0.4s steps(3) infinite;*/
-/*}*/
+.tally_monster_sprite {
+    position: relative;
+    display: inline-block;
+    width: 100%;
+    height: 100%;
+    animation: monster_keyframes 0.4s steps(3) infinite;
+}
 
 @keyframes monster_keyframes {
     0% {
-        /*transform: scale(0.5);*/
+        transform: scale(0.5);
     }
     100% {
         background-position: -1500px;
-        /*transform: scale(0.5);*/
+        transform: scale(0.5);
     }
 }
 
-/*
-.tally_monster_award {
 
-    opacity: 0;
-    position: absolute;
+/*  MONSTER AWARD
+******************************************************************************/
+
+.tally_award_monster_wrapper {
+  height: auto;
+  width: 100vw;
+  position:fixed;
+  bottom:-400px;
+  z-index:9999999999999;
+  visibility: hidden;
+
+}
+.tally_award_monster {
+    width: 35vw;
+    height: 35vh;
+    position: relative;
+    left: 30%;
+    opacity: 1;
+    visibility: visible;
     z-index: 9999999999999;
 }
 .tally_award_background {
   width: 2000px;
   height: 680px;
   transform: rotate(-20deg);
-  position: absolute;
+  position: fixed;
   bottom: -1420px;
-  background-color: #462795
+  background-color: #462795;
+  z-index: 100000;
 }
 
 .tally_award_text {
@@ -90,24 +115,16 @@
   height: 40%;
   position: relative;
   left: 70%;
-  z-index: 6;
+  z-index: 100100;
   visibility: visible;
 }
 
-.tally_award_monster_wrapper {
-  height: auto;
-  width: 100vw;
-  position:fixed;
-  bottom:-400px;
-  z-index:2;
-  visibility: hidden;
-}
 .tally_award_text_wrapper {
   height: auto;
   width: 100vw;
   position:fixed;
   bottom:4%;
   left: 450px;
-  z-index:3;
+  z-index:100010;
   visibility: hidden;
-} */
+}
