@@ -65,7 +65,7 @@
   position:fixed;
   bottom:-400px;
   z-index:9999999999999;
-  visibility: hidden;
+  /*visibility: hidden;*/
 
 }
 .tally_award_monster {

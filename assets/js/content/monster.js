@@ -284,7 +284,8 @@ var Monster = (function() {
 		// get the url for the monster sprite
 		var url = chrome.extension.getURL('assets/img/monsters/' + mid + '-anim-sheet.png');
 		// set monster sprite
-		$('.tally_award_monster').css('background-image', 'url( ' + url + ')');
+		$('.tally_award_monster').css('background', 'url( ' + url + ')')
+//		$('.tally_award_monster').css('background-size','100% 100%')
 
 		// insert the text in all these
 		$('.award_title').html("You caught the monster");
@@ -310,7 +311,7 @@ var Monster = (function() {
 			})
 			.add({
 				targets: '.tally_award_monster',
-				translateY: -500,
+				translateY: -400,
 				easing: 'easeOutExpo'
 			})
 			.add({
