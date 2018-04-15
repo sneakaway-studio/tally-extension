@@ -1,3 +1,8 @@
+
+
+/*  GLOBAL
+******************************************************************************/
+
 .tally_monster_sprite_container, .tally_monster_text_wrapper_top, .tally_monster_text_wrapper_bottom, .tally_monster_points_wrapper {
     top: -700px;
     left: -700px;
@@ -5,6 +10,10 @@
     position: absolute;
     z-index: 99999999999999;
 }
+
+
+/*  MONSTER SPRITE (WHEN IT LAUNCHES)
+******************************************************************************/
 
 .tally_monster_sprite_container {
     position: absolute;
@@ -58,6 +67,8 @@
 }
 
 
+/*  MONSTER AWARD
+******************************************************************************/
 
 .tally_award_monster_wrapper {
   height: auto;
@@ -108,4 +119,4 @@
   left: 450px;
   z-index:100010;
   visibility: hidden;
-} 
+}
