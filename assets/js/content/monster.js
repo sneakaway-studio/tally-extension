@@ -28,7 +28,7 @@ var Monster = (function() {
 		Thought.showThought(Thought.getThought(["monster", "launch", 0]), true);
 		launch(_mid);
 		//capture(_mid);
-	} 
+	}
 
 
 	/**
@@ -180,9 +180,9 @@ var Monster = (function() {
 	 *	Launch a product monster
 	 */
 	function launch(mid) {
-		if (MONSTER_DEBUG) console.log('!!!!! Monster.launch()', mid, tally_recent_monsters[mid].stage);
-		// don't launch them if game isn't running in full
+		// don't launch them if game isn't running in full mode
 		if (tally_options.gameMode != "full") return;
+		if (MONSTER_DEBUG) console.log('!!!!! Monster.launch()', mid, tally_recent_monsters[mid]);
 
 		let monster = MonsterData.dataById[mid],
 			level = 1;
@@ -198,15 +198,11 @@ var Monster = (function() {
 		let pos = "bottom";
 		launchFrom(mid, pos, level);
 
-		// temp
+		// temp: show growl
 		$.growl({
 			title: "LAUNCHING MONSTER!!!",
-			message: "MONSTER: " + monster.name + " [" + monster.mid + "] <br>STAGE: " + tally_recent_monsters[mid].stage
+			message: "MONSTER: " + monster.name + " [" + monster.mid + "] "
 		});
-
-		// somewhere here we would attach a click listener to the monster
-		// let's assume we've done that so we can test capture()
-		//capture(mid, level);
 
 		// temp: call after capture OR miss
 		setTimeout(function() {
@@ -259,8 +255,6 @@ var Monster = (function() {
 			showAward(_mid);
 			capture(_mid, _level);
 		});
-
-
 	}
 
 
@@ -323,7 +317,7 @@ var Monster = (function() {
 				easing: 'easeInOutCubic',
 				/*direction: 'alternate',
 				delay: 1000,*/
-				
+
 			})
 			.add({
 				targets: '.tally_award_monster',
