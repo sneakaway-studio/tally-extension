@@ -208,11 +208,6 @@ var Monster = (function() {
 			message: "MONSTER: " + MonsterData.dataById[mid].name + " [" + mid + "] "
 		});
 
-		// temp: call after capture OR miss
-		setTimeout(function() {
-			reset(mid);
-		}, 2000);
-
 	}
 
 	function launchFrom(_mid, _pos) {
@@ -284,7 +279,7 @@ var Monster = (function() {
         // then move it to the award display
         /// ......
 
-		if (MONSTER_DEBUG) console.log('!!!!! Monster.capture()', mid);
+		if (MONSTER_DEBUG) console.log('!!!!! Monster.capture()', mid, tally_nearby_monsters[mid]);
 		// add monsters to tally_user
 		if (tally_user.monsters[mid]) {
 			tally_user.monsters[mid].level = tally_nearby_monsters[mid].level;
