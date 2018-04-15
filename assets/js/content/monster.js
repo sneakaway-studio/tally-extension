@@ -137,7 +137,7 @@ var Monster = (function() {
 			} else if (tally_nearby_monsters[mid].stage == 1) {
 				if (r < 0.2) {
 					// go back to normal stage
-					tally_nearby_monsters[mid].stage == 0
+					tally_nearby_monsters[mid].stage = 0;
 				} else if (r < 0.4) {
 					// do nothing
 				} else if (r < 0.7) {
