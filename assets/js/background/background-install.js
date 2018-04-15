@@ -10,7 +10,7 @@ function createApp() {
 		store("tally_user", createUser());
 		store("tally_options", createOptions());
 		store("tally_game_status", createGameStatus());
-		store("tally_recent_monsters", createRecentMonsters());
+		store("tally_nearby_monsters", createNearbyMonsters());
 		store("tally_meta", createMeta());
 		store("tally_secret", createSecret());
 		// these are empty the first time
@@ -94,7 +94,7 @@ function createGameStatus() {
 	return obj;
 }
 // Keep track of monsters
-function createRecentMonsters() {
+function createNearbyMonsters() {
 	var obj = {};
 	return obj;
 }

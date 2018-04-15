@@ -7,13 +7,13 @@ let pageData = getPageData(),
 	tally_options = {},
 	tally_meta = {},
 	tally_game_status = getGameStatus(),
-	tally_recent_monsters = {};
+	tally_nearby_monsters = {};
 
 let MAIN_DEBUG = false;
 
 $(function() {
 	Promise // after async functions then update
-		.all([getUserPromise, getOptionsPromise, getMetaPromise, getRecentMonstersPromise]) // , getLastBackgroundUpdatePromise
+		.all([getUserPromise, getOptionsPromise, getMetaPromise, getNearbyMonstersPromise]) // , getLastBackgroundUpdatePromise
 		.then(function() {
 			if (MAIN_DEBUG) console.log('>>>>> init() Promise all data has loaded', tally_user, tally_options);
 			// check if extension should be active on this page before proceeding

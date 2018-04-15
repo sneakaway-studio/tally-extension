@@ -64,15 +64,15 @@ const getMetaPromise = new Promise(
 		});
 	}
 );
-// GET RECENT MONSTERS
-const getRecentMonstersPromise = new Promise(
+// GET NEARBY MONSTERS
+const getNearbyMonstersPromise = new Promise(
 	(resolve, reject) => {
 		//if (!pageData.activeOnPage) return;
 		chrome.runtime.sendMessage({
-			'action': 'getRecentMonsters'
+			'action': 'getNearbyMonsters'
 		}, function(response) {
-			//console.log('>>>>> getRecentMonsters()',response.data);
-			tally_recent_monsters = response.data; // store data
+			//console.log('>>>>> getNearbyMonsters()',response.data);
+			tally_nearby_monsters = response.data; // store data
 			resolve(response.data); // resolve promise
 		});
 	}

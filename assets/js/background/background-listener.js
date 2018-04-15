@@ -66,18 +66,18 @@ chrome.runtime.onMessage.addListener(
 			});
 		}
 
-		// getRecentMonsters
-		else if (request.action == "getRecentMonsters") {
-			let data = store("tally_recent_monsters") || {};
+		// getNearbyMonsters
+		else if (request.action == "getNearbyMonsters") {
+			let data = store("tally_nearby_monsters") || {};
 			sendResponse({
 				"action": request.action,
-				"data": store("tally_recent_monsters", data)
+				"data": store("tally_nearby_monsters", data)
 			});
 		}
-		// saveRecentMonsters
-		else if (request.action == "saveRecentMonsters") {
-			//console.log("saveRecentMonsters()",request.data);
-			store("tally_recent_monsters", request.data);
+		// saveNearbyMonsters
+		else if (request.action == "saveNearbyMonsters") {
+			//console.log("saveNearbyMonsters()",request.data);
+			store("tally_nearby_monsters", request.data);
 			sendResponse({
 				"action": request.action,
 				"message": 1

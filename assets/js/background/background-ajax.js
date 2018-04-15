@@ -159,8 +159,8 @@ function sendMonsterUpdate(data) {
 	}).done(result => {
 		console.log("<{!}> sendMonsterUpdate() RESULT =", JSON.stringify(result));
 		// treat all server data as master
-		_tally_user.monsters = result;
-		store("tally_user", _tally_user);
+		//_tally_user.monsters = result;
+		//store("tally_user", _tally_user);
 	}).fail(error => {
 		console.error("<{!}> sendMonsterUpdate() RESULT =", JSON.stringify(error));
 		// server might not be reachable

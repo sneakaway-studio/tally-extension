@@ -11,19 +11,19 @@ var Monster = (function() {
 	 */
 	function test() {
 		// make sure there are monsters nearby
-		if (!tally_recent_monsters || objLength(tally_recent_monsters) <= 0) return;
+		if (!tally_nearby_monsters || objLength(tally_nearby_monsters) <= 0) return;
 
 		// TESTING
-		let _mid = randomObjKey(tally_recent_monsters),
+		let _mid = randomObjKey(tally_nearby_monsters),
 			_stage = 3;
-		tally_recent_monsters[_mid] = create(_mid, _stage);
-		tally_recent_monsters[_mid].captured = 1;
-		tally_recent_monsters[_mid].missed = 0;
+		tally_nearby_monsters[_mid] = create(_mid, _stage);
+		tally_nearby_monsters[_mid].captured = 1;
+		tally_nearby_monsters[_mid].missed = 0;
 		if (MONSTER_DEBUG) console.log("+++++ Monster.test()", MonsterData.dataById[_mid]);
 		// save
-		saveRecentMonsters();
+		saveNearbyMonsters();
 		// set the skin color
-		Skin.setStage(tally_recent_monsters[_mid].stage);
+		Skin.setStage(tally_nearby_monsters[_mid].stage);
 		current = _mid;
 		Thought.showThought(Thought.getThought(["monster", "launch", 0]), true);
 		launch(_mid);
@@ -32,37 +32,37 @@ var Monster = (function() {
 
 
 	/**
-	 *	Initial check function, refreshes recent monsters from back end continues to next
+	 *	Initial check function, refreshes nearby monsters from back end continues to next
 	 */
 	function check() {
 		// don't check if disabled
 		if (tally_options.gameMode === "disabled") return;
-		checkRecentTimes();
+		checkNearbyMonsterTimes();
 	}
 
 	/**
-	 *	Make sure all monsters are recent, deletes those that aren't
+	 *	Make sure all monsters are nearby, deletes those that aren't
 	 */
-	function checkRecentTimes() {
+	function checkNearbyMonsterTimes() {
 		let now = Date.now(),
 			highestStage = 0;
-		// make sure tally_recent_monsters exists
-		if (tally_recent_monsters && objLength(tally_recent_monsters) > 0) {
+		// make sure tally_nearby_monsters exists
+		if (tally_nearby_monsters && objLength(tally_nearby_monsters) > 0) {
 			// loop through them
-			for (var mid in tally_recent_monsters) {
+			for (var mid in tally_nearby_monsters) {
 				// how long has it been since this monster was seen?
 				// if longer than 5 mins (300 secs) then delete
-				let seconds = ((now - tally_recent_monsters[mid].updatedAt) / 1000);
+				let seconds = ((now - tally_nearby_monsters[mid].updatedAt) / 1000);
 				if ((seconds) > secondsBeforeDelete) {
-					if (MONSTER_DEBUG) console.log("..... checkRecentTimes() -> DELETING", MonsterData.dataById[mid].slug, "seconds", seconds);
-					delete tally_recent_monsters[mid];
+					if (MONSTER_DEBUG) console.log("..... checkNearbyMonsterTimes() -> DELETING", MonsterData.dataById[mid].slug, "seconds", seconds);
+					delete tally_nearby_monsters[mid];
 				}
 				// skin should reflect highest stage
-				if (prop(tally_recent_monsters[mid]) && tally_recent_monsters[mid].stage > highestStage)
-					highestStage = tally_recent_monsters[mid].stage;
+				if (prop(tally_nearby_monsters[mid]) && tally_nearby_monsters[mid].stage > highestStage)
+					highestStage = tally_nearby_monsters[mid].stage;
 			}
 		}
-		saveRecentMonsters();
+		saveNearbyMonsters();
 		// set the skin color
 		Skin.setStage(highestStage);
 		// continue
@@ -122,22 +122,22 @@ var Monster = (function() {
 	function handleMatch(mid) {
 		let launchMonster = false;
 
-		// if the monster id does not exist in recent
-		if (!prop(tally_recent_monsters[mid])) {
+		// if the monster id does not exist in nearby
+		if (!prop(tally_nearby_monsters[mid])) {
 			// add it
-			tally_recent_monsters[mid] = create(mid);
+			tally_nearby_monsters[mid] = create(mid);
 		}
 		// otherwise monster has been seen before
 		else {
 			// randomizer
 			let r = Math.random();
 			// what stage are we at with this monster?
-			if (tally_recent_monsters[mid].stage == 0) {
+			if (tally_nearby_monsters[mid].stage == 0) {
 				// do nothing
-			} else if (tally_recent_monsters[mid].stage == 1) {
+			} else if (tally_nearby_monsters[mid].stage == 1) {
 				if (r < 0.2) {
 					// go back to normal stage
-					tally_recent_monsters[mid].stage == 0
+					tally_nearby_monsters[mid].stage == 0
 				} else if (r < 0.4) {
 					// do nothing
 				} else if (r < 0.7) {
@@ -145,10 +145,10 @@ var Monster = (function() {
 					Thought.showThought(Thought.getThought(["monster", "far", 0]), true);
 				} else {
 					// or prompt stage 2
-					tally_recent_monsters[mid].stage = 2;
+					tally_nearby_monsters[mid].stage = 2;
 					Thought.showThought(Thought.getThought(["monster", "close", 0]), true);
 				}
-			} else if (tally_recent_monsters[mid].stage == 2) {
+			} else if (tally_nearby_monsters[mid].stage == 2) {
 				if (r < 0.4) {
 					// do nothing
 				} else if (r < 0.7) {
@@ -156,18 +156,18 @@ var Monster = (function() {
 					Thought.showThought(Thought.getThought(["monster", "close", 0]), true);
 				} else {
 					// or prompt stage 3 - launch
-					tally_recent_monsters[mid].stage = 3;
+					tally_nearby_monsters[mid].stage = 3;
 					launchMonster = true;
 				}
 			}
 
-			//if (MONSTER_DEBUG) console.log('!!!!! handleMatch()', MonsterData.dataById[mid].slug, tally_recent_monsters[mid]);
+			//if (MONSTER_DEBUG) console.log('!!!!! handleMatch()', MonsterData.dataById[mid].slug, tally_nearby_monsters[mid]);
 		}
-		if (MONSTER_DEBUG) console.log('!!!!! Monster.handleMatch()', MonsterData.dataById[mid].slug, "stage =", tally_recent_monsters[mid].stage);
+		if (MONSTER_DEBUG) console.log('!!!!! Monster.handleMatch()', MonsterData.dataById[mid].slug, "stage =", tally_nearby_monsters[mid].stage);
 		// set skin
-		Skin.setStage(tally_recent_monsters[mid].stage);
+		Skin.setStage(tally_nearby_monsters[mid].stage);
 		// save monsters
-		saveRecentMonsters();
+		saveNearbyMonsters();
 		// should we launch a monster?
 		if (launchMonster) {
 			current = mid;
@@ -182,7 +182,7 @@ var Monster = (function() {
 	function launch(mid) {
 		// don't launch them if game isn't running in full mode
 		if (tally_options.gameMode != "full") return;
-		if (MONSTER_DEBUG) console.log('!!!!! Monster.launch()', mid, tally_recent_monsters[mid]);
+		if (MONSTER_DEBUG) console.log('!!!!! Monster.launch()', mid, tally_nearby_monsters[mid]);
 
 		let monster = MonsterData.dataById[mid],
 			level = 1;
@@ -253,8 +253,10 @@ var Monster = (function() {
 
 		$(document).on('click', '.tally_monster_sprite', function() {
 			showAward(_mid);
-			capture(_mid, _level);
+			//capture(_mid, _level);
 		});
+		// temp for testing backend
+		capture(_mid, _level);
 	}
 
 
@@ -275,10 +277,10 @@ var Monster = (function() {
 		saveUser();
 		// create backgroundUpdate object
 		var backgroundMonsterUpdate = newBackgroundMonsterUpdate(mid);
-		backgroundMonsterUpdate.monsterData = tally_recent_monsters[mid];
+		backgroundMonsterUpdate.monsterData = tally_nearby_monsters[mid];
 		backgroundMonsterUpdate.monsterData.level = level;
-		backgroundMonsterUpdate.monsterData.captured = tally_recent_monsters[mid].captured;
-		backgroundMonsterUpdate.monsterData.missed = tally_recent_monsters[mid].missed;
+		backgroundMonsterUpdate.monsterData.captured = tally_nearby_monsters[mid].captured;
+		backgroundMonsterUpdate.monsterData.missed = tally_nearby_monsters[mid].missed;
 		// then push to the server
 		sendBackgroundMonsterUpdate(backgroundMonsterUpdate);
 		// finally reset monster
@@ -335,20 +337,20 @@ var Monster = (function() {
 	 *	Reset monster
 	 */
 	function reset(mid) {
-		if (tally_recent_monsters[mid])
-			delete tally_recent_monsters[mid];
-		saveRecentMonsters();
+		if (tally_nearby_monsters[mid])
+			delete tally_nearby_monsters[mid];
+		saveNearbyMonsters();
 	}
 
 	/**
-	 *	Save the recent monsters
+	 *	Save the nearby monsters
 	 */
-	function saveRecentMonsters() {
+	function saveNearbyMonsters() {
 		chrome.runtime.sendMessage({
-			'action': 'saveRecentMonsters',
-			'data': tally_recent_monsters
+			'action': 'saveNearbyMonsters',
+			'data': tally_nearby_monsters
 		}, function(response) {
-			//console.log('<<<<< > saveRecentMonsters()',JSON.stringify(response));
+			//console.log('<<<<< > saveNearbyMonsters()',JSON.stringify(response));
 		});
 		Debug.update();
 	}
