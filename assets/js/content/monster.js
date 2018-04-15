@@ -217,6 +217,7 @@ var Monster = (function() {
 
 	function launchFrom(_mid, _pos, _level) {
 		console.log("launchFrom()", _mid, _pos)
+
 		let _duration = 4500;
 
 		let x = 0,
@@ -279,7 +280,7 @@ var Monster = (function() {
 		// save user in background
 		saveUser();
 		// create backgroundUpdate object
-		var backgroundMonsterUpdate = newBackgroundMonsterUpdate();
+		var backgroundMonsterUpdate = newBackgroundMonsterUpdate(mid);
 		backgroundMonsterUpdate.monsterData = tally_recent_monsters[mid];
 		backgroundMonsterUpdate.monsterData.level = level;
 		backgroundMonsterUpdate.monsterData.captured = tally_recent_monsters[mid].captured;
@@ -319,12 +320,14 @@ var Monster = (function() {
 					value: -20,
 				},
 				translateY: -1000,
-
 				easing: 'easeInOutCubic',
+				/*direction: 'alternate',
+				delay: 1000,*/
+				
 			})
 			.add({
 				targets: '.tally_award_monster',
-				translateY: -400,
+				translateY: -500,
 				easing: 'easeOutExpo'
 			})
 			.add({

@@ -34,23 +34,20 @@ chrome.runtime.onInstalled.addListener(function() {
 function startApp() {
 	console.log(">>>>> startApp()");
 
-	// switch server to development(local)/production
-	switchDevAPIs("development");
-	//switchDevAPIs("production");
-
-	// set development or production
-	checkForDevelopmentServer();
+	// set server/api (edit in Inspect views background page / Application / Local Storage)
+	checkCurrentAPI();
 	// check the API status, if connected then check token
 	checkAPIServerStatus();
 }
 
 /**
- *  Switch between dev/prod server
+ *  Set development or production server
  */
-function switchDevAPIs(dev) {
+function checkCurrentAPI() {
 	let _tally_meta = store("tally_meta");
-	_tally_meta.api = Config[dev].api;
-	_tally_meta.website = Config[dev].website;
+	_tally_meta.api = Config[_tally_meta.currentAPI].api;
+	_tally_meta.website = Config[_tally_meta.currentAPI].website;
+	console.log("checkCurrentAPI()", _tally_meta.currentAPI,_tally_meta.api,_tally_meta.website);
 	store("tally_meta", _tally_meta);
 }
 
