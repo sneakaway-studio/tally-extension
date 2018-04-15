@@ -15,6 +15,14 @@
 /*  MONSTER SPRITE (WHEN IT LAUNCHES)
 ******************************************************************************/
 
+.monster_path {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 9999999999999;
+    border: 2px solid red;
+}
+
 .tally_monster_sprite_container {
     position: absolute;
     height: 400px;

@@ -18,6 +18,7 @@ var Monster = (function() {
 			_stage = 3;
 		tally_recent_monsters[_mid] = create(_mid, _stage);
 		tally_recent_monsters[_mid].captured = 1;
+		tally_recent_monsters[_mid].missed = 0;
 		if (MONSTER_DEBUG) console.log("+++++ Monster.test()", MonsterData.dataById[_mid]);
 		// save
 		saveRecentMonsters();
@@ -27,7 +28,7 @@ var Monster = (function() {
 		Thought.showThought(Thought.getThought(["monster", "launch", 0]), true);
 		launch(_mid);
 		//capture(_mid);
-	}
+	} 
 
 
 	/**
@@ -105,6 +106,7 @@ var Monster = (function() {
 		if (MONSTER_DEBUG) console.log('..... Monster.create()', _mid, _stage, MonsterData.dataById[_mid]);
 		let monster = {
 			"captured": 0,
+			"missed": 0,
 			"level": 1,
 			"mid": _mid,
 			"stage": _stage,
@@ -215,29 +217,43 @@ var Monster = (function() {
 
 	function launchFrom(_mid, _pos, _level) {
 		console.log("launchFrom()", _mid, _pos)
-		let _duration = 4500,
-			_top = 300;
 
-		// hide outside page
+		let _duration = 4500;
+
+		let x = 0,
+			y = 300;
+
+		let pathID = 'wave1';//randomObjKey(MonsterPaths);
+
+		// position monster
 		$('.tally_monster_sprite_container').css({
-			'top': (pageData.browser.height / 2) + 100 + "px", // hide it up
-			'left': (pageData.browser.width / 2) - 250 + "px", // center
-			'display': 'block',
-			'opacity': 1
-		});
-		// animate up
-		var anim = anime({
-			targets: '.tally_monster_sprite_container',
-			translateY: {
-				delay: 500, // wait for page to load
-				value: -_top,
-				duration: _duration
-			},
-			begin: function() { // play sound n milliseconds after animation begins
-				//playSound('powerup',0,10);
+            'top': y - 250,
+            'left': x - 200,
+            'display': 'block',
+            'opacity': 1
+        });
+		// position path
+        $('.monster_path').css({
+            'top': y,
+            'left': x
+        });
 
-			}
-		});
+        // assign SVG shape
+        $('.monster_path path').attr('d', MonsterPaths[pathID].d);
+        $('.monster_path').attr('viewBox', '0 0 ' + MonsterPaths[pathID]['width'] + ' ' + MonsterPaths[pathID]['height']);
+
+        var path = anime.path('.monster_path path');
+
+        var motionPath = anime({
+            targets: '.tally_monster_sprite_container',
+            translateX: path('x'),
+            translateY: path('y'),
+            rotate: path('angle'),
+            easing: 'linear',
+            duration: _duration,
+            direction: 'reverse',
+            loop: true
+        });
 
 		$(document).on('click', '.tally_monster_sprite', function() {
 			showAward(_mid);
@@ -268,6 +284,7 @@ var Monster = (function() {
 		backgroundMonsterUpdate.monsterData = tally_recent_monsters[mid];
 		backgroundMonsterUpdate.monsterData.level = level;
 		backgroundMonsterUpdate.monsterData.captured = tally_recent_monsters[mid].captured;
+		backgroundMonsterUpdate.monsterData.missed = tally_recent_monsters[mid].missed;
 		// then push to the server
 		sendBackgroundMonsterUpdate(backgroundMonsterUpdate);
 		// finally reset monster

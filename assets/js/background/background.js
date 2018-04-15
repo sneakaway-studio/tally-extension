@@ -26,7 +26,7 @@ chrome.runtime.onInstalled.addListener(function() {
 		// run start app script
 		startApp();
 	}
-});
+}); 
 
 /**
  *  Start the app (always called)
