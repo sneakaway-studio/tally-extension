@@ -32,15 +32,18 @@ $(function() {
  */
 function shouldExtensionBeActiveOnPage() {
 	if (!tally_meta.serverOnline) {
-		if (MAIN_DEBUG) console.log("Connection to Tally server is down");
+		if (MAIN_DEBUG) console.log("!!!!! Connection to Tally server is down");
 		return false;
+	// } else if (!tally_meta.userTokenValid) {
+	// 	if (MAIN_DEBUG) console.log("!!!!! userTokenValid is not valid");
+	// 	return false;
 	} else if (tally_options.disabledDomains.length < 1 ||
 		($.inArray(pageData.domain, tally_options.disabledDomains) >= 0) ||
 		($.inArray(pageData.subDomain, tally_options.disabledDomains) >= 0)) {
-		if (MAIN_DEBUG) console.log("Tally is disabled on this domain");
+		if (MAIN_DEBUG) console.log("!!!!! Tally is disabled on this domain");
 		return false;
 	} else if (pageData.contentType != "text/html") {
-		if (MAIN_DEBUG) console.log("Tally is disabled on pages like " + pageData.contentType);
+		if (MAIN_DEBUG) console.log("!!!!! Tally is disabled on pages like " + pageData.contentType);
 		return false;
 	} else return true;
 }
@@ -66,7 +69,7 @@ function startGame() {
 			});
 		} else if (tally_meta.userTokenStatus != "ok") {
 			$.growl({
-				title: "YOU HAVE NO TOKEN", 
+				title: "YOU HAVE NO TOKEN",
 				message: "<a href='" + tally_meta.website + "/dashboard' target='_blank'>Link your account to start playing Tally</a>"
 			});
 		}

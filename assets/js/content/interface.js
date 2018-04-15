@@ -1,9 +1,6 @@
 "use strict";
 
 $( function() {
-    // return if game should not be active
-    if (prop(pageData) && !pageData.activeOnPage) return;
-    addBaseHTML();
 
     function addBaseHTML(){
         let str =   "<div id='tally_wrapper' class='reset-this-root reset-this no-print'>"+
@@ -35,5 +32,8 @@ $( function() {
     }
 
 
+    // if game should be active
+    //if (prop(pageData) && pageData.activeOnPage)
+        addBaseHTML();
 
 });

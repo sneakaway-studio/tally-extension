@@ -251,7 +251,7 @@ function createMonsterUpdate(data) {
 		"url": data.pageData.url || "",
 		"domain": data.pageData.domain || "",
 	};
-	console.log("createMonsterUpdate()", obj);
+	//console.log("createMonsterUpdate()", obj);
 	return obj;
 }
 
