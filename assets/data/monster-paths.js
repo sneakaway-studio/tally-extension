@@ -19,4 +19,4 @@ var MonsterPaths = {
 		'scale': 900,
 		'direction': ''
 	}
-}
+};
