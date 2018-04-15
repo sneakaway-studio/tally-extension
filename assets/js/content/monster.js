@@ -18,6 +18,7 @@ var Monster = (function() {
 			_stage = 3;
 		tally_recent_monsters[_mid] = create(_mid, _stage);
 		tally_recent_monsters[_mid].captured = 1;
+		tally_recent_monsters[_mid].missed = 0;
 		if (MONSTER_DEBUG) console.log("+++++ Monster.test()", MonsterData.dataById[_mid]);
 		// save
 		saveRecentMonsters();
@@ -27,7 +28,7 @@ var Monster = (function() {
 		Thought.showThought(Thought.getThought(["monster", "launch", 0]), true);
 		launch(_mid);
 		//capture(_mid);
-	}
+	} 
 
 
 	/**
@@ -105,6 +106,7 @@ var Monster = (function() {
 		if (MONSTER_DEBUG) console.log('..... Monster.create()', _mid, _stage, MonsterData.dataById[_mid]);
 		let monster = {
 			"captured": 0,
+			"missed": 0,
 			"level": 1,
 			"mid": _mid,
 			"stage": _stage,
@@ -265,7 +267,7 @@ var Monster = (function() {
 	 *	User captures monster
 	 */
 	function capture(mid, level) {
-		if (MONSTER_DEBUG) console.log('!!!!! Monster.capture()', mid, tally_recent_monsters[mid].stage);
+		if (MONSTER_DEBUG) console.log('!!!!! Monster.capture()', mid);
 		// add monsters to tally_user
 		if (tally_user.monsters[mid]) {
 			tally_user.monsters[mid].level = level;
@@ -281,6 +283,7 @@ var Monster = (function() {
 		backgroundMonsterUpdate.monsterData = tally_recent_monsters[mid];
 		backgroundMonsterUpdate.monsterData.level = level;
 		backgroundMonsterUpdate.monsterData.captured = tally_recent_monsters[mid].captured;
+		backgroundMonsterUpdate.monsterData.missed = tally_recent_monsters[mid].missed;
 		// then push to the server
 		sendBackgroundMonsterUpdate(backgroundMonsterUpdate);
 		// finally reset monster

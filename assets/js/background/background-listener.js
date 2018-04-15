@@ -242,7 +242,8 @@ function createMonsterUpdate(data) {
 		"monster": {
 			"level": data.monsterData.level,
 			"mid": data.monsterData.mid,
-			"captured": data.monsterData.captured
+			"captured": data.monsterData.captured,
+			"missed": data.monsterData.missed
 		},
 		"token": _tally_secret.token,
 		"time": data.pageData.time || 0,
