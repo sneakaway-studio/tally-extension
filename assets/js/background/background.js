@@ -26,7 +26,7 @@ chrome.runtime.onInstalled.addListener(function() {
 		// run start app script
 		startApp();
 	}
-});
+}); 
 
 /**
  *  Start the app (always called)
@@ -35,8 +35,8 @@ function startApp() {
 	console.log(">>>>> startApp()");
 
 	// switch server to development(local)/production
-	//switchDevAPIs("development");
-	switchDevAPIs("production");
+	switchDevAPIs("development");
+	//switchDevAPIs("production");
 
 	// set development or production
 	checkForDevelopmentServer();
