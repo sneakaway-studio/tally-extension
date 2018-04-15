@@ -240,10 +240,6 @@ var Monster = (function() {
         $('.monster_path').attr('viewBox', '0 0 ' + scale + ' ' + scale);
 
 
-        $(document).on('click', '.tally_monster_sprite', function () {
-            showAward(_mid);
-            capture(_mid, _level);
-        });
 
         var path = anime.path('.monster_path path');
 
@@ -251,11 +247,18 @@ var Monster = (function() {
             targets: '.tally_monster_sprite_container',
             translateX: path('x'),
             translateY: path('y'),
-            rotate: path('angle'),
+            //rotate: path('angle'),
             easing: 'linear',
             duration: _duration,
             direction: MonsterPaths[pathID]['direction'],
             loop: true
+        });
+
+
+
+        $(document).on('click', '.tally_monster_sprite', function () {
+            showAward(_mid);
+            capture(_mid, _level);
         });
 
     }
@@ -264,7 +267,8 @@ var Monster = (function() {
     /**
      *	User captures monster
      */
-    function capture(mid, level) {
+    function capture(mid, level) {;
+
         if (MONSTER_DEBUG) console.log('!!!!! Monster.capture()', mid);
         // add monsters to tally_user
         if (tally_user.monsters[mid]) {
