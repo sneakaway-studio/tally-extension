@@ -107,6 +107,7 @@ var Monster = (function() {
 		let monster = {
 			"captured": 0,
 			"missed": 0,
+			"facing": MonsterData.dataById[_mid].facing,
 			"level": 1,
 			"mid": _mid,
 			"stage": _stage,
@@ -218,7 +219,7 @@ var Monster = (function() {
 
 
 		let _duration = 4500, // default animation duration
-            _direction = "", // default animation direction
+			_direction = "normal", // default animation direction
 			pathID = randomObjKey(MonsterPaths); // pick a random path
 
 
@@ -239,8 +240,18 @@ var Monster = (function() {
 		$('.monster_path').attr('viewBox', '0 0 ' + MonsterPaths[pathID].scale + ' ' + MonsterPaths[pathID].scale);
 
 
-        // set direction
-    //    if ()
+		// set direction
+		if (prop(tally_nearby_monsters[_mid].facing)) {
+            // set direction left
+			if (tally_nearby_monsters[_mid].facing == -1)
+				_direction = "reverse";
+            // pick random
+			else if (tally_nearby_monsters[_mid].facing == 0) {
+				let r = Math.random();
+				if (r < 0.5)
+					_direction = "reverse";
+			}
+		}
 
 		var path = anime.path('.monster_path path');
 
