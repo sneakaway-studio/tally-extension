@@ -11,7 +11,7 @@ var Monster = (function() {
 
 
 	/**
-	 *	Test to make sure API is working  
+	 *	Test to make sure API is working
 	 */
 	function test() {
 		// make sure there are monsters nearby
@@ -58,7 +58,7 @@ var Monster = (function() {
 				// if longer than 5 mins (300 secs) then delete
 				let seconds = ((now - tally_nearby_monsters[mid].updatedAt) / 1000);
 				if ((seconds) > secondsBeforeDelete) {
-					if (MONSTER_DEBUG) console.log("..... checkNearbyMonsterTimes() -> DELETING", MonsterData.dataById[mid].slug, "seconds", seconds);
+					if (MONSTER_DEBUG) console.log("..... Monster.checkNearbyMonsterTimes() -> DELETING", MonsterData.dataById[mid].slug, "seconds", seconds);
 					delete tally_nearby_monsters[mid];
 				}
 				// skin should reflect highest stage
@@ -92,7 +92,7 @@ var Monster = (function() {
 				if (arr.length > 1) {
 					// pick random monster id from list, this will be the page monster
 					mid = arr[Math.floor(Math.random() * arr.length)];
-					if (MONSTER_DEBUG) console.log('!!!!! #' + tag, "has", arr.length, 'MATCHES', arr, "randomly selecting...", MonsterData.dataById[mid].slug);
+					if (MONSTER_DEBUG) console.log('!!!!! Monster.checkForTagMatches() -> #' + tag, "has", arr.length, 'MATCHES', arr, "randomly selecting...", MonsterData.dataById[mid].slug);
 					// we have identified a match, let's handle the monster
 					handleMatch(mid);
 					break;
@@ -168,7 +168,7 @@ var Monster = (function() {
 				}
 			}
 
-			//if (MONSTER_DEBUG) console.log('!!!!! handleMatch()', MonsterData.dataById[mid].slug, tally_nearby_monsters[mid]);
+			//if (MONSTER_DEBUG) console.log('!!!!! Monster.handleMatch()', MonsterData.dataById[mid].slug, tally_nearby_monsters[mid]);
 		}
 		if (MONSTER_DEBUG) console.log('!!!!! Monster.handleMatch()', MonsterData.dataById[mid].slug, "stage =", tally_nearby_monsters[mid].stage);
 		// set skin
@@ -211,11 +211,11 @@ var Monster = (function() {
 	}
 
 	function launchFrom(_mid, _pos) {
-		console.log("launchFrom()", _mid, _pos, tally_nearby_monsters[_mid]);
+		console.log("!!!!! Monster.launchFrom()", _mid, _pos, tally_nearby_monsters[_mid]);
 
-		let _duration = ((pageData.browser.width/15) + 3800) /*+ (tally_nearby_monsters[_mid].level * 100)*/, // animation duration
+		let _duration = ((pageData.browser.width / 15) + 3800) /*+ (tally_nearby_monsters[_mid].level * 100)*/ , // animation duration
 			_direction = "normal", // default animation direction
-            _scale = pageData.browser.width > 1200 ? 0.65 : 0.5, // increase scale w/larger screens
+			_scale = pageData.browser.width > 1200 ? 0.65 : 0.5, // increase scale w/larger screens
 			pathID = randomObjKey(MonsterPaths); // pick a random path
 
 		// position monster path
@@ -234,10 +234,10 @@ var Monster = (function() {
 			'left': MonsterPaths[pathID].x - 200,
 			'display': 'block',
 			'opacity': 1,
-			'transform': 'scale('+ _scale +')'
+			'transform': 'scale(' + _scale + ')'
 		});
-        $('.tally_monster_sprite').css({
-			'transform': 'scale('+ _scale +')'
+		$('.tally_monster_sprite').css({
+			'transform': 'scale(' + _scale + ')'
 		});
 
 		// set direction of monster (default is normal, i.e. right)
@@ -264,53 +264,70 @@ var Monster = (function() {
 			easing: 'linear',
 			duration: _duration,
 			direction: _direction,
-			loop: true
+			loop: true,
+            // if monster completes it's loop without user clicking call miss()
+			complete: function(anim) {
+				console.log(anim.completed);
+                miss(_mid);
+			}
 		});
 
+        // add click handler
 		$(document).on('click', '.tally_monster_sprite', function() {
-			showAward(_mid);
+            if (!prop(tally_nearby_monsters[_mid])) return;
 			capture(_mid);
 		});
-
-        // need to set timer or wait until it reaches end
-
 	}
 
 
 	/**
 	 *	User captures monster
 	 */
-	function capture(mid) {;
-
+	function capture(_mid) {
 		// pause animation
 		animePathAnimation.pause();
-		// then move it to the award display
-		/// ......
+		// show award
+		showAward(_mid);
+		// save and push results to server
+		saveAndPush(_mid);
+	}
 
-		if (MONSTER_DEBUG) console.log('!!!!! Monster.capture()', mid, tally_nearby_monsters[mid]);
+
+	/**
+	 *	User misses monster
+	 */
+	function miss(_mid) {
+        // set missed instead of captured
+        tally_nearby_monsters[_mid].captured = 0;
+        tally_nearby_monsters[_mid].missed = 1;
+		// save and push results to server
+		saveAndPush(_mid);
+	}
+
+	/**
+	 *	Save monster locally, push to background / server
+	 */
+	function saveAndPush(_mid) {
+		if (MONSTER_DEBUG) console.log('<<!>> Monster.saveAfterLaunch()', _mid, tally_nearby_monsters[_mid]);
 		// add monsters to tally_user
-		if (tally_user.monsters[mid]) {
-			tally_user.monsters[mid].level = tally_nearby_monsters[mid].level;
+		if (tally_user.monsters[_mid]) {
+			tally_user.monsters[_mid].level = tally_nearby_monsters[_mid].level;
 		} else {
-			tally_user.monsters[mid] = {
-				"level": tally_nearby_monsters[mid].level
+			tally_user.monsters[_mid] = {
+				"level": tally_nearby_monsters[_mid].level
 			};
 		}
-
-
-// need to set missed/captured
-
 
 		// save user in background
 		saveUser();
 		// create backgroundUpdate object
-		var backgroundMonsterUpdate = newBackgroundMonsterUpdate(mid);
+		var backgroundMonsterUpdate = newBackgroundMonsterUpdate(_mid);
 		// store the nearby monster in it
-		backgroundMonsterUpdate.monsterData = tally_nearby_monsters[mid];
+		backgroundMonsterUpdate.monsterData = tally_nearby_monsters[_mid];
 		// then push to the server
 		sendBackgroundMonsterUpdate(backgroundMonsterUpdate);
 		// finally reset monster
-		reset(mid);
+		reset(_mid);
 	}
 
 
@@ -331,7 +348,7 @@ var Monster = (function() {
 		$('.award_fact_title').html("Did you know?");
 		$('.award_fact').html(Thought.getFact("trackers"));
 
-		console.log("showAward()", mid);
+		console.log("+++++ Monster.showAward()", mid);
 
 		// move it into position
 		var basicTimeline = anime.timeline();
