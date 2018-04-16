@@ -272,6 +272,8 @@ var Monster = (function() {
 			capture(_mid);
 		});
 
+        // need to set timer or wait until it reaches end
+
 	}
 
 
@@ -294,6 +296,11 @@ var Monster = (function() {
 				"level": tally_nearby_monsters[mid].level
 			};
 		}
+
+
+// need to set missed/captured
+
+
 		// save user in background
 		saveUser();
 		// create backgroundUpdate object
