@@ -6,8 +6,8 @@ var Monster = (function() {
 		current = "",
 		secondsBeforeDelete = 60; // 60 seconds for testing
 
-        let animePath = {},
-            animePathAnimation = {};
+	let animePath = {},
+		animePathAnimation = {};
 
 
 	/**
@@ -211,35 +211,41 @@ var Monster = (function() {
 	}
 
 	function launchFrom(_mid, _pos) {
-		console.log("launchFrom()", _mid, _pos);
+		console.log("launchFrom()", _mid, _pos, tally_nearby_monsters[_mid]);
 
-		let _duration = 4500, // default animation duration
+		let _duration = ((pageData.browser.width/15) + 3800) /*+ (tally_nearby_monsters[_mid].level * 100)*/, // animation duration
 			_direction = "normal", // default animation direction
+            _scale = pageData.browser.width > 1200 ? 0.65 : 0.5, // increase scale w/larger screens
 			pathID = randomObjKey(MonsterPaths); // pick a random path
 
-        // position monster path
+		// position monster path
 		$('.monster_path').css({
 			'top': MonsterPaths[pathID].y,
 			'left': MonsterPaths[pathID].x
 		});
-        // set data for monster path
+		// set data for monster path
 		$('.monster_path path').attr('d', MonsterPaths[pathID].d);
-        // set viewbox for monster path
+		// set viewbox for monster path
 		$('.monster_path').attr('viewBox', '0 0 ' + MonsterPaths[pathID].scale + ' ' + MonsterPaths[pathID].scale);
 
-        // set position monster (off screen)
+		// set position monster (off screen)
 		$('.tally_monster_sprite_container').css({
 			'top': MonsterPaths[pathID].y - 250,
 			'left': MonsterPaths[pathID].x - 200,
 			'display': 'block',
-			'opacity': 1
+			'opacity': 1,
+			'transform': 'scale('+ _scale +')'
 		});
+        $('.tally_monster_sprite').css({
+			'transform': 'scale('+ _scale +')'
+		});
+
 		// set direction of monster (default is normal, i.e. right)
 		if (prop(tally_nearby_monsters[_mid].facing)) {
-            // set direction left
+			// set direction left
 			if (tally_nearby_monsters[_mid].facing == -1)
 				_direction = "reverse";
-            // pick random
+			// pick random
 			else if (tally_nearby_monsters[_mid].facing == 0) {
 				let r = Math.random();
 				if (r < 0.5)
@@ -247,7 +253,7 @@ var Monster = (function() {
 			}
 		}
 
-        // path for anime
+		// path for anime
 		animePath = anime.path('.monster_path path');
 
 		animePathAnimation = anime({
@@ -266,6 +272,8 @@ var Monster = (function() {
 			capture(_mid);
 		});
 
+        // need to set timer or wait until it reaches end
+
 	}
 
 
@@ -274,10 +282,10 @@ var Monster = (function() {
 	 */
 	function capture(mid) {;
 
-        // pause animation
-        animePathAnimation.pause();
-        // then move it to the award display
-        /// ......
+		// pause animation
+		animePathAnimation.pause();
+		// then move it to the award display
+		/// ......
 
 		if (MONSTER_DEBUG) console.log('!!!!! Monster.capture()', mid, tally_nearby_monsters[mid]);
 		// add monsters to tally_user
@@ -288,11 +296,16 @@ var Monster = (function() {
 				"level": tally_nearby_monsters[mid].level
 			};
 		}
+
+
+// need to set missed/captured
+
+
 		// save user in background
 		saveUser();
 		// create backgroundUpdate object
 		var backgroundMonsterUpdate = newBackgroundMonsterUpdate(mid);
-        // store the nearby monster in it
+		// store the nearby monster in it
 		backgroundMonsterUpdate.monsterData = tally_nearby_monsters[mid];
 		// then push to the server
 		sendBackgroundMonsterUpdate(backgroundMonsterUpdate);

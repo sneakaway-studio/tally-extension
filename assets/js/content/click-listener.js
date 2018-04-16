@@ -127,6 +127,10 @@ var clickEventHandler = function(eventData, target) {
 			eventData.action = "like";
 			backgroundUpdate.scoreData.likes++;
 		}
+		// check if it is a stackoverflow
+		else if (target.className == "vote" || target.className == "vote-up-off") {
+			eventData.action = "SO-vote";
+		}
 		// if there is no text
 		else if (eventData.text == "") {
 			// if it is an image

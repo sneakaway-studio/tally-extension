@@ -15,12 +15,18 @@
 /*  MONSTER SPRITE (WHEN IT LAUNCHES)
 ******************************************************************************/
 
-.monster_path {
-    position: absolute;
+svg.monster_path {
+    position: fixed;
     top: 0;
     left: 0;
+    /* make positive and opacity:1 to test */
     z-index: -9999999999999;
     opacity: 0;
+}
+svg.monster_path path {
+    fill: none;
+    stroke: none;
+    /* stroke: #900; */
 }
 
 .tally_monster_sprite_container {
@@ -34,7 +40,7 @@
     margin: 0 auto;
     width: 500px;
     height: 400px;
-    transform: scale(0.5);
+    /* transform: scale(0.5); */
 }
 .tally_monster_sprite_inner {
     position: absolute;
