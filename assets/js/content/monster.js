@@ -4,7 +4,7 @@ var Monster = (function() {
 
 	let MONSTER_DEBUG = true,
 		current = "",
-		secondsBeforeDelete = 60; // 60 seconds for testing
+		secondsBeforeDelete = 300; // 60 seconds for testing
 
 	let animePath = {},
 		animePathAnimation = {};
