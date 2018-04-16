@@ -253,9 +253,9 @@ var Monster = (function() {
 			}
 		}
 
-		// path for anime
+		// path for animation
 		animePath = anime.path('.monster_path path');
-
+        // start animation
 		animePathAnimation = anime({
 			targets: '.tally_monster_sprite_container',
 			translateX: animePath('x'),
@@ -263,11 +263,11 @@ var Monster = (function() {
 			//rotate: path('angle'),
 			easing: 'linear',
 			duration: _duration,
-			direction: _direction,
-			loop: true,
+			direction: _direction, 
+			loop: 1, // true will loop, for testing
             // if monster completes it's loop without user clicking call miss()
 			complete: function(anim) {
-				console.log(anim.completed);
+				//console.log(anim.completed);
                 miss(_mid);
 			}
 		});
@@ -308,7 +308,7 @@ var Monster = (function() {
 	 *	Save monster locally, push to background / server
 	 */
 	function saveAndPush(_mid) {
-		if (MONSTER_DEBUG) console.log('<<!>> Monster.saveAfterLaunch()', _mid, tally_nearby_monsters[_mid]);
+		if (MONSTER_DEBUG) console.log('<{!}> Monster.saveAfterLaunch()', _mid, tally_nearby_monsters[_mid]);
 		// add monsters to tally_user
 		if (tally_user.monsters[_mid]) {
 			tally_user.monsters[_mid].level = tally_nearby_monsters[_mid].level;

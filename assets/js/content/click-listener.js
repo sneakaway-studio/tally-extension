@@ -261,6 +261,6 @@ function newBackgroundMonsterUpdate(mid) {
 			"token": "INSERT_IN_BACKGROUND",
 		}
 	};
-	console.log("newBackgroundUpdate() -> obj", obj);
+	console.log("<{!}> newBackgroundMonsterUpdate() -> obj", obj);
 	return obj;
 }
