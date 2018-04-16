@@ -11,7 +11,7 @@ var Monster = (function() {
 
 
 	/**
-	 *	Test to make sure API is working
+	 *	Test to make sure API is working  
 	 */
 	function test() {
 		// make sure there are monsters nearby
