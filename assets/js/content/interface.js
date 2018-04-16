@@ -13,9 +13,6 @@ $( function() {
                                 "<div class='tally_monster_sprite_inner'></div>"+
                             "</div>"+
                         "</div>"+
-                        "<div class='tally_award_monster_wrapper'>"+
-                            "<div class='tally_award_monster'></div>"+
-                        "</div>"+
                         "<div class='tally_award_text_wrapper'>"+
                             "<div class='tally_award_text'>"+
                                 "<div class='award_title'></div>" +

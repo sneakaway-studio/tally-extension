@@ -203,10 +203,10 @@ var Monster = (function() {
 		launchFrom(mid, pos);
 
 		// temp: show growl
-		$.growl({
-			title: "LAUNCHING MONSTER!!!",
-			message: "MONSTER: " + MonsterData.dataById[mid].name + " [" + mid + "] "
-		});
+		// $.growl({
+		// 	title: "LAUNCHING MONSTER!!!",
+		// 	message: "MONSTER: " + MonsterData.dataById[mid].name + " [" + mid + "] "
+		// });
 
 	}
 
@@ -255,7 +255,7 @@ var Monster = (function() {
 
 		// path for animation
 		animePath = anime.path('.monster_path path');
-        // start animation
+		// start animation
 		animePathAnimation = anime({
 			targets: '.tally_monster_sprite_container',
 			translateX: animePath('x'),
@@ -263,18 +263,20 @@ var Monster = (function() {
 			//rotate: path('angle'),
 			easing: 'linear',
 			duration: _duration,
-			direction: _direction, 
+			direction: _direction,
 			loop: 1, // true will loop, for testing
-            // if monster completes it's loop without user clicking call miss()
+			// if monster completes it's loop without user clicking call miss()
 			complete: function(anim) {
 				//console.log(anim.completed);
-                miss(_mid);
+				// only call miss() if it wasn't captured
+				if (prop(tally_nearby_monsters[_mid]) && tally_nearby_monsters[_mid].captured == 0)
+					miss(_mid);
 			}
 		});
 
-        // add click handler
+		// add click handler
 		$(document).on('click', '.tally_monster_sprite', function() {
-            if (!prop(tally_nearby_monsters[_mid])) return;
+			if (!prop(tally_nearby_monsters[_mid])) return;
 			capture(_mid);
 		});
 	}
@@ -284,22 +286,55 @@ var Monster = (function() {
 	 *	User captures monster
 	 */
 	function capture(_mid) {
-		// pause animation
+		// testing: pause animation
 		animePathAnimation.pause();
-		// show award
+	//	animePathAnimation.remove('.tally_monster_sprite_container');
+        //
+        //
+        // animePath = {};
+		// animePathAnimation = {};
+
+        
+		// move monster and show award
+		moveMonsterToAward(_mid);
 		showAward(_mid);
 		// save and push results to server
 		saveAndPush(_mid);
 	}
+	/**
+	 *	Move monster down to award area
+	 */
+	function moveMonsterToAward(_mid) {
+		console.log("!!!!! Monster.moveMonsterToAward()", _mid, tally_nearby_monsters[_mid]);
 
+		let _scale = 1,
+			_left = (pageData.browser.width / 2) - 250;
+		$('.tally_monster_sprite_container').css({
+            // 'top':'none',
+			// 'bottom': 0,
+			// 'left': _left +'px',
+			'display': 'block',
+			'opacity': 1,
+			'transform': 'scale(' + _scale + ')'
+		});
+
+		var moveMonster = anime({
+			targets: '.tally_monster_sprite_container',
+			bottom: '0',
+			left: _left + 'px',
+			easing: 'linear',
+			duration: 2000
+		});
+	}
 
 	/**
 	 *	User misses monster
 	 */
 	function miss(_mid) {
-        // set missed instead of captured
-        tally_nearby_monsters[_mid].captured = 0;
-        tally_nearby_monsters[_mid].missed = 1;
+		console.log("!!!!! Monster.miss()", _mid, tally_nearby_monsters[_mid]);
+		// set missed instead of captured
+		tally_nearby_monsters[_mid].captured = 0;
+		tally_nearby_monsters[_mid].missed = 1;
 		// save and push results to server
 		saveAndPush(_mid);
 	}
@@ -337,10 +372,10 @@ var Monster = (function() {
 	function showAward(mid) {
 		// store the text
 
-		// get the url for the monster sprite
-		var url = chrome.extension.getURL('assets/img/monsters/' + mid + '-anim-sheet.png');
-		// set monster sprite
-		$('.tally_award_monster').css('background-image', 'url( ' + url + ')');
+		// // get the url for the monster sprite
+		// var url = chrome.extension.getURL('assets/img/monsters/' + mid + '-anim-sheet.png');
+		// // set monster sprite
+		// $('.tally_award_monster').css('background-image', 'url( ' + url + ')');
 
 		// insert the text in all these
 		$('.award_title').html("You caught the monster");
@@ -364,11 +399,11 @@ var Monster = (function() {
 				delay: 1000,*/
 
 			})
-			.add({
-				targets: '.tally_award_monster',
-				translateY: -500,
-				easing: 'easeOutExpo'
-			})
+			// .add({
+			// 	targets: '.tally_award_monster',
+			// 	translateY: -500,
+			// 	easing: 'easeOutExpo'
+			// })
 			.add({
 				targets: '.tally_award_text',
 				translateX: -450,
