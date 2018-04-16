@@ -79,54 +79,80 @@ svg.monster_path path {
 
 /*  MONSTER AWARD
 ******************************************************************************/
-
-.tally_award_monster_wrapper {
-  height: auto;
-  width: 100vw;
-  position:fixed;
-  bottom:-400px;
-  z-index:9999999999999;
-  visibility: hidden;
-
-}
-.tally_award_monster {
-    width: 35vw;
-    height: 35vh;
-    position: relative;
-    left: 30%;
-    opacity: 1;
-    visibility: visible;
-    z-index: 9999999999999;
-}
 .tally_award_background {
   width: 2000px;
-  height: 680px;
+  height: 700px;
   transform: rotate(-20deg);
   position: fixed;
   bottom: -1420px;
-  background-color: #462795;
-  z-index: 100000;
-}
-
-.tally_award_text {
-  background-color: #462795;
-  font-family: "Arial", serif;
-  color: white;
-  font-size: 2vw;
-  width: 30%;
-  height: 40%;
-  position: relative;
-  left: 70%;
-  z-index: 100100;
-  visibility: visible;
+  left: 0%;
+  background-color: #462795
 }
 
 .tally_award_text_wrapper {
   height: auto;
   width: 100vw;
   position:fixed;
-  bottom:4%;
+
+  bottom:1%;
   left: 450px;
-  z-index:100010;
+  z-index:3;
   visibility: hidden;
+}
+.tally_award_text {
+  background-color: #462795;
+  font-family: "Futura", serif;
+  color: white;
+  position: relative;
+  width: 30%;
+  height: 50%;
+  left: 70%;
+  z-index: 6;
+  visibility: visible;
+}
+.award_title{
+  position: static;
+  text-align: center;
+  font-size: 3vw;
+  background-color: #462795
+}
+.award_fact_title {
+  position: relative;
+  padding: 0.5%;
+  left: 30%;
+  bottom: 7vh;
+  width: 40%;
+  height: 12%;
+  font-size: 2vw;
+  background-color: #DE4929;
+  z-index: 20;
+}
+.award_fact{
+  position: relative;
+  text-align: center;
+  border: 1px solid white; 
+  bottom: 1%;
+  padding: 7%;
+  left: 2%;
+  width: 80%;
+  height: 40px;
+  font-size: 1.2vw;
+  background-color: #462795;
+  overflow: auto;
+}
+.award_subtitle a {
+  color: #DE4929;
+}
+.award_fact_title h6 {
+  position: relative;
+  top: 0%;
+  text-align: center;
+}
+.award_subtitle h5 {
+  position: absolute;
+  text-align: center;
+  font-size: 1.5vw;
+  background-color: #462795;
+  left: 5%;
+  top: 26%;
 }
