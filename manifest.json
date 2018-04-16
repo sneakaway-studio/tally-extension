@@ -68,6 +68,7 @@
 			"assets/css/reset.css",
 			"assets/libs/jquery-ui.min.css",
 			"assets/libs/jquery.growl.css",
+			"assets/libs/cssshake.min.css",
 			"assets/css/styles.css",
 			"assets/css/monster.css",
 			"assets/css/tally.css"

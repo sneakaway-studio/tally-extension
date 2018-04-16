@@ -127,6 +127,10 @@ var clickEventHandler = function(eventData, target) {
 			eventData.action = "like";
 			backgroundUpdate.scoreData.likes++;
 		}
+		// check if it is a stackoverflow
+		else if (target.className == "vote" || target.className == "vote-up-off") {
+			eventData.action = "SO-vote";
+		}
 		// if there is no text
 		else if (eventData.text == "") {
 			// if it is an image
@@ -168,7 +172,7 @@ var clickEventHandler = function(eventData, target) {
 		/**
 		 * 	5. Game responses
 		 */
- 
+
 		// play sound
 		Sound.play('user', 'click');
 		// show click visual
@@ -253,12 +257,10 @@ function newBackgroundMonsterUpdate(mid) {
 			"time": pageData.time,
 			"url": pageData.url
 		},
-		"monsterData":{
-		},
 		"userData": {
 			"token": "INSERT_IN_BACKGROUND",
 		}
 	};
-	console.log("newBackgroundUpdate() -> obj", obj);
+	console.log("<{!}> newBackgroundMonsterUpdate() -> obj", obj);
 	return obj;
 }

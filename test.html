@@ -1,0 +1,86 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="description" content="This is the Tally game test page! description,food,drink">
+<meta name="keywords" content="tally,game,art,disruption,keywords,games,home,shopping,art,travel,paint,food">
+<title>Tally test page (title)</title>
+<style>
+a { cursor: pointer; cursor: hand; }
+.container { text-align: center; margin: 30px 0 0 0; }
+</style>
+<script>
+function addText(id,txt){
+	document.getElementById(id).value = txt;
+}
+function appendButton(){
+
+	var btn = document.createElement("BUTTON");        // Create a <button> element
+	var t = document.createTextNode(Math.random());       // Create a text node
+	btn.appendChild(t);                                // Append the text to <button>
+	document.getElementById("appendTo").appendChild(btn);
+}
+</script>
+</head>
+<body>
+
+
+<h1>Tally game test page (h1)</h1>
+
+
+
+<h3>Images</h3>
+<a href="#"><img style="max-width:200px" src="https://img.buzzfeed.com/buzzfeed-static/static/2014-04/enhanced/webdr02/4/16/enhanced-12294-1396642693-17.jpg?downsize=715:*&output-format=auto&output-quality=auto" alt="this is image alt text"></a>
+
+
+<h3>Buttons</h3>
+
+<a class="myBtn">An a tag</a><br>
+<A class="myBtn">An A tag</A><br>
+<a class="myBtn"><span>A span inside an a tag</span></a><br>
+<a class="myBtn"><span><span>A span inside a span inside an a tag</span></span></a><br>
+<button>A button tag</button><br>
+<button onclick="appendButton()">A button tag (append button through mutation)</button><br>
+<div id="appendTo"></div>
+
+
+
+<h3>Speciality buttons</h3>
+
+<a class="myBtn">Like</a><br>
+
+<div class="vote">
+<input type="hidden" name="_id_" value="41783487">
+<a class="vote-up-off" title="This answer is useful">up vote</a>
+</div>
+
+
+
+<h3>Forms</h3>
+<button>This is the Button text</button><br>
+<input type="text" id="input1">This is a Text input</input>
+<input type="password">This is aassword input</input><br>
+<input type="radio">This is aRadio input</input>
+<input type="checkbox">This is aCheckbox input</input><br>
+<textarea>This is a textarea</textarea>
+<h3>Text</h3>
+<ul>
+	<li><a href="#link1">This is an unordered link 1</a></li>
+	<li><a href="#link2">This is an unordered link 2</a></li>
+	<li><a href="#link3">This is an unordered link 3</a></li>
+</ul>
+
+<ol>
+	<li><a href="#link1">This is an ordered link 1</a></li>
+	<li><a href="#link2">This is an ordered link 2</a></li>
+	<li><a href="#link3">This is an ordered link 3</a></li>
+</ol>
+
+
+
+
+
+
+</body>
+</html>
