@@ -16,7 +16,7 @@
 ******************************************************************************/
 
 svg.monster_path {
-    position: absolute;
+    position: fixed;
     top: 0;
     left: 0;
     z-index: 9999999999999;
@@ -39,7 +39,7 @@ svg.monster_path path {
     margin: 0 auto;
     width: 500px;
     height: 400px;
-    transform: scale(0.5);
+    /* transform: scale(0.5); */
 }
 .tally_monster_sprite_inner {
     position: absolute;
