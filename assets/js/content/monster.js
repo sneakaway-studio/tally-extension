@@ -288,11 +288,7 @@ var Monster = (function() {
 	function capture(_mid) {
 		// testing: pause animation
 		animePathAnimation.pause();
-	//	animePathAnimation.remove('.tally_monster_sprite_container');
-        //
-        //
-        // animePath = {};
-		// animePathAnimation = {};
+		//	anime.remove('.tally_monster_sprite_container');
 
 
 		// move monster and show award
@@ -309,14 +305,21 @@ var Monster = (function() {
 
 		let _scale = 1,
 			_left = (pageData.browser.width / 2) - 250;
-		$('.tally_monster_sprite_container').css({
-            // 'top':'none',
-			// 'bottom': 0,
-			// 'left': _left +'px',
-			'display': 'block',
-			'opacity': 1,
-			'transform': 'scale(' + _scale + ')'
-		});
+
+		// set data for monster path
+		$('.monster_path path').attr('d', "");
+
+
+        // jquery test to put monster in spot
+        // only works on horizontal wave
+		// $('.tally_monster_sprite_container').css({
+		// 	'top':'none',
+		// 	'bottom': 0,
+		// 	'left': _left +'px',
+		// 	'display': 'block',
+		// 	'opacity': 1,
+		// 	'transform': 'scale(' + _scale + ')'
+		// });
 
 		var moveMonster = anime({
 			targets: '.tally_monster_sprite_container',
@@ -370,44 +373,51 @@ var Monster = (function() {
 	 * Play award animation
 	 */
 	function showAward(mid) {
-		// store the text
-
-		// // get the url for the monster sprite
-		// var url = chrome.extension.getURL('assets/img/monsters/' + mid + '-anim-sheet.png');
-		// // set monster sprite
-		// $('.tally_award_monster').css('background-image', 'url( ' + url + ')');
-
-		// insert the text in all these
-		$('.award_title').html("You caught the monster");
-		$('.award_subtitle').html("You leveled up");
-		$('.award_fact_title').html("Did you know?");
-		$('.award_fact').html(Thought.getFact("trackers"));
-
 		console.log("+++++ Monster.showAward()", mid);
 
-		// move it into position
-		var basicTimeline = anime.timeline();
-		basicTimeline
+		// insert text
+		$('.award_title').html("<h4>YOU CONTAINED THE MONSTER!</h4>");
+		$('.award_subtitle').html("<h5>You leveled up! <a href='https://tallygame.net/signup'> Check out your score</a></h5>");
+		$('.award_fact_title').html("<h6>Did you know?</h6>");
+		$('.award_fact').html(Thought.getFact("trackers"));
+
+		var insertTimeline = anime.timeline();
+		insertTimeline
 			.add({
 				targets: '.tally_award_background',
-				rotate: {
-					value: -20,
-				},
-				translateY: -1000,
+				rotate: -20,
+				translateY: [{
+						value: -1400,
+						duration: 2000,
+						delay: 0,
+						elasticity: 100
+					},
+					{
+						value: 1400,
+						duration: 2000,
+						delay: 6000,
+						elasticity: 0
+					}
+				],
 				easing: 'easeInOutCubic',
-				/*direction: 'alternate',
-				delay: 1000,*/
-
 			})
-			// .add({
-			// 	targets: '.tally_award_monster',
-			// 	translateY: -500,
-			// 	easing: 'easeOutExpo'
-			// })
 			.add({
 				targets: '.tally_award_text',
-				translateX: -450,
-				easing: 'easeOutExpo'
+				translateX: [{
+						value: -800,
+						duration: 2000,
+						delay: 600,
+						elasticity: 0
+					},
+					{
+						value: 800,
+						duration: 2000,
+						delay: 4500,
+						elasticity: 0
+					}
+				],
+				easing: 'easeOutExpo',
+				offset: 900
 			});
 	}
 
