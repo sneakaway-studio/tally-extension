@@ -8,8 +8,8 @@ $( function() {
                             "<g><path></path></g>" +
                         "</svg>"+
                         "<div id='tally_click_visual'></div>"+
-                        "<div class='tally_monster_sprite_container'>"+
-                            "<div class='tally_monster_sprite shake-slow'>" +
+                        "<div class='tally_monster_sprite_container shake-vertical shake-constant'>"+
+                            "<div class='tally_monster_sprite shake-slow '>" +
                                 "<div class='tally_monster_sprite_inner'></div>"+
                             "</div>"+
                         "</div>"+
