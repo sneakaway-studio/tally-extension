@@ -27,8 +27,8 @@ var Monster = (function() {
 		currentMID = _mid;
 		Thought.showThought(Thought.getThought(["monster", "launch", 0]), true);
 		launch(_mid);
-        // testing
-        //capture(_mid);
+		// testing
+		//capture(_mid);
 	}
 
 
@@ -277,8 +277,8 @@ var Monster = (function() {
 			if (!prop(tally_nearby_monsters[_mid])) return;
 			capture(_mid);
 		});
-        // TESTING
-        //capture(_mid);
+		// TESTING
+		//capture(_mid);
 	}
 
 
@@ -373,19 +373,20 @@ var Monster = (function() {
 	/**
 	 * Play award animation
 	 */
-	function showAward(mid) {
-		console.log("+++++ Monster.showAward()", mid);
+	function showAward(_mid) {
+		console.log("+++++ Monster.showAward()", _mid);
 
 		// insert text
 		$('.award_title').html("YOU CONTAINED THE MONSTER!!!!!");
 		$('.award_subtitle').html("You leveled up! <a href='https://tallygame.net/signup'> Check out your score</a>");
 		$('.award_did_you_know').html("<h6>Did you know?</h6>");
-        let fact = Thought.getFact("trackers");
-        let str = fact.fact || "";
-        if (fact.url && fact.source) str += "Source: <a href='"+ fact.url +"' target='_blank'>"+ fact.source +"</a>";
-        if (fact.year) str += " ("+ fact.year +")";
+		let fact = Thought.getFact("trackers");
+		let str = fact.fact || "";
+		if (fact.url && fact.source) str += " Source: <a href='" + fact.url + "' target='_blank'>" + fact.source + "</a>";
+		if (fact.year) str += " (" + fact.year + ")";
 		$('.award_fact').html(str);
 
+        // hide background and text
 		var insertTimeline = anime.timeline();
 		insertTimeline
 			.add({
@@ -427,13 +428,11 @@ var Monster = (function() {
 
 		// hide monster
 		window.setTimeout(function() {
-            // TESTING
-            // return;
+			// TESTING
+			// return;
 
 			// get monster position
-			let pos = $('.tally_monster_sprite_container').position(),
-				w = $('.tally_monster_sprite_container').width() / 2,
-				h = $('.tally_monster_sprite_container').height() / 2;
+			let pos = $('.tally_monster_sprite_container').position();
 			// stop current animation
 			$('.tally_monster_sprite_container').css({
 				'animation-name': 'none',
@@ -442,9 +441,7 @@ var Monster = (function() {
 			});
 			// add new css keyframe
 			addKeyFrames(
-				'hideBelow',
-				//'from{ background-color: red;}' +
-				'to{ top: 1000px; }'
+				'hideBelow', 'to { top: 1000px; }'
 			);
 			// start animation
 			$('.tally_monster_sprite_container').css({
@@ -454,6 +451,13 @@ var Monster = (function() {
 				'animation-iteration-count': 1,
 				'animation-fill-mode': 'forwards'
 			});
+            // add event listener to check when done
+            $(".tally_monster_sprite_container")
+                .one("animationend webkitAnimationEnd oAnimationEnd MSAnimationEnd", function() {
+                    //console.log("animation done", tally_nearby_monsters[_mid]);
+                    // code to execute after animation ends
+                    $('.tally_monster_sprite_container').css({'display':'none'});
+                });
 		}, 7000);
 
 
@@ -482,9 +486,9 @@ var Monster = (function() {
 	}
 
 
-    /**
-     *	Return the current monster MID
-     */
+	/**
+	 *	Return the current monster MID
+	 */
 	function getCurrent() {
 		return currentMID;
 	}
