@@ -21,7 +21,7 @@ var Monster = (function() {
 		let _mid = randomObjKey(tally_nearby_monsters),
 			_stage = 3;
 		tally_nearby_monsters[_mid] = create(_mid, _stage);
-		tally_nearby_monsters[_mid].captured = 1;
+		tally_nearby_monsters[_mid].captured = 0;
 		tally_nearby_monsters[_mid].missed = 0;
 		if (MONSTER_DEBUG) console.log("+++++ Monster.test()", MonsterData.dataById[_mid]);
 		// save
@@ -217,7 +217,6 @@ var Monster = (function() {
 			_direction = "normal", // default animation direction
 			_scale = pageData.browser.width > 1200 ? 0.65 : 0.5; // increase scale w/larger screens
 
-
 		// set direction of monster (default is normal, i.e. right)
 		if (prop(tally_nearby_monsters[_mid].facing)) {
 			// set direction left
@@ -230,7 +229,6 @@ var Monster = (function() {
 					_direction = "reverse";
 			}
 		}
-
 
 		// set start / end positions
 		// need to add some randomness here
@@ -245,7 +243,7 @@ var Monster = (function() {
 				y: pageData.browser.height / 2 - 200
 			}
 		};
-		console.log("coords", coords);
+		//console.log("coords", coords);
 
 		// add animation keyframes
 		addKeyFrames(
@@ -257,7 +255,8 @@ var Monster = (function() {
 		$('.tally_monster_sprite_container').css({
 			'animation-name': 'leftToRight',
 			'animation-duration': '4s',
-			'animation-iteration-count:': '3',
+			'animation-iteration-count:': 1,
+			'-webkit-animation-iteration-count': ' 1',
 			'animation-direction': _direction,
 			'animation-fill-mode': 'forwards',
 			'display': 'block',
@@ -267,34 +266,14 @@ var Monster = (function() {
 			'transform': 'scale(' + _scale + ')'
 		});
 
-
-
-		// TO ADD: LISTEN FOR MISSES
-
-		//
-		// // add event listener to check when done
-		// var e = document.getElementById("watchme");
-		// e.addEventListener("animationend", listener, false);
-		// e.className = "slidein";
-		//
-		//
-
-
-
-		// 	// if monster completes it's loop without user clicking call miss()
-		// 	complete: function(anim) {
-		// 		//console.log(anim.completed);
-		// 		// only call miss() if it wasn't captured
-		// 		if (prop(tally_nearby_monsters[_mid]) && tally_nearby_monsters[_mid].captured == 0)
-		// 			miss(_mid);
-		// 	}
-		// });
-
-
-
-
-
-
+		// add event listener to check when done
+		$(".tally_monster_sprite_container")
+			.one("animationend webkitAnimationEnd oAnimationEnd MSAnimationEnd", function() {
+				console.log("animation done", tally_nearby_monsters[_mid]);
+				// code to execute after animation ends
+				if (prop(tally_nearby_monsters[_mid]) && tally_nearby_monsters[_mid].captured == 0)
+					miss(_mid);
+			});
 
 		// add click handler
 		$(document).on('click', '.tally_monster_sprite', function() {
@@ -304,13 +283,12 @@ var Monster = (function() {
 	}
 
 
-
-
-
 	/**
 	 *	User captures monster
 	 */
 	function capture(_mid) {
+		tally_nearby_monsters[_mid].captured = 1;
+		tally_nearby_monsters[_mid].missed = 0;
 		// move monster and show award
 		moveMonsterToAward(_mid);
 		showAward(_mid);
@@ -337,7 +315,7 @@ var Monster = (function() {
 		addKeyFrames(
 			'moveToAward',
 			//'from{ background-color: red;}' +
-			'to{ transform: scale(' + _scale + '); left: 30%; top: ' + (pageData.browser.height - 320) + 'px; border: 2px solid red;}'
+			'to{ transform: scale(' + _scale + '); left: 30%; top: ' + (pageData.browser.height - 320) + 'px;}'
 		);
 		// start animation
 		$('.tally_monster_sprite_container').css({
@@ -345,12 +323,9 @@ var Monster = (function() {
 			'animation-duration': '0.5s',
 			'animation-delay': '0.25s',
 			'animation-direction': 'normal',
-			'animation-iteration-count': '1',
+			'animation-iteration-count': 1,
 			'animation-fill-mode': 'forwards'
 		});
-
-
-
 	}
 
 	/**
@@ -358,6 +333,10 @@ var Monster = (function() {
 	 */
 	function miss(_mid) {
 		console.log("!!!!! Monster.miss()", _mid, tally_nearby_monsters[_mid]);
+		// stop current animation
+		$('.tally_monster_sprite_container').css({
+			'animation-name': 'none',
+		});
 		// set missed instead of captured
 		tally_nearby_monsters[_mid].captured = 0;
 		tally_nearby_monsters[_mid].missed = 1;
@@ -369,7 +348,7 @@ var Monster = (function() {
 	 *	Save monster locally, push to background / server
 	 */
 	function saveAndPush(_mid) {
-		if (MONSTER_DEBUG) console.log('<{!}> Monster.saveAfterLaunch()', _mid, tally_nearby_monsters[_mid]);
+		if (MONSTER_DEBUG) console.log('<{!}> Monster.saveAndPush()', _mid, tally_nearby_monsters[_mid]);
 		// add monsters to tally_user
 		if (tally_user.monsters[_mid]) {
 			tally_user.monsters[_mid].level = tally_nearby_monsters[_mid].level;
@@ -402,7 +381,11 @@ var Monster = (function() {
 		$('.award_title').html("<h4>YOU CONTAINED THE MONSTER!</h4>");
 		$('.award_subtitle').html("<h5>You leveled up! <a href='https://tallygame.net/signup'> Check out your score</a></h5>");
 		$('.award_fact_title').html("<h6>Did you know?</h6>");
-		$('.award_fact').html(Thought.getFact("trackers"));
+        let fact = Thought.getFact("trackers");
+        let str = fact.fact || "";
+        if (fact.url && fact.source) str += "Source: <a src='"+ fact.url +"' target='_blank'>"+ fact.source +"</a>";
+        if (fact.year) str += " "+ fact.year;
+		$('.award_fact').html(str);
 
 		var insertTimeline = anime.timeline();
 		insertTimeline
@@ -443,7 +426,7 @@ var Monster = (function() {
 				offset: 900
 			});
 
-
+		// hide monster
 		window.setTimeout(function() {
 			// get monster position
 			let pos = $('.tally_monster_sprite_container').position(),
@@ -466,10 +449,10 @@ var Monster = (function() {
 				'animation-name': 'hideBelow',
 				'animation-duration': '0.5s',
 				'animation-direction': 'normal',
-				'animation-iteration-count': '1',
+				'animation-iteration-count': 1,
 				'animation-fill-mode': 'forwards'
 			});
-		}, 5800);
+		}, 7000);
 
 
 	}
