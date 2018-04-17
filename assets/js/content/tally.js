@@ -150,6 +150,10 @@ function startTally() {
 	});
 
 
+
+// TESTING
+//Monster.test();
+
 	// add the tally_character click action
 	$(document).on('click', '#tally_character_container', function() {
 

@@ -3,12 +3,8 @@
 var Monster = (function() {
 
 	let MONSTER_DEBUG = true,
-		current = "",
+		currentMID = "",
 		secondsBeforeDelete = 300; // 60 seconds for testing
-
-	let animePath = {},
-		animePathAnimation = {};
-
 
 	/**
 	 *	Test to make sure API is working
@@ -28,10 +24,11 @@ var Monster = (function() {
 		saveNearbyMonsters();
 		// set the skin color
 		Skin.setStage(tally_nearby_monsters[_mid].stage);
-		current = _mid;
+		currentMID = _mid;
 		Thought.showThought(Thought.getThought(["monster", "launch", 0]), true);
 		launch(_mid);
-		//capture(_mid);
+        // testing
+        //capture(_mid);
 	}
 
 
@@ -177,7 +174,7 @@ var Monster = (function() {
 		saveNearbyMonsters();
 		// should we launch a monster?
 		if (launchMonster) {
-			current = mid;
+			currentMID = mid;
 			Thought.showThought(Thought.getThought(["monster", "launch", 0]), true);
 			launch(mid);
 		}
@@ -280,6 +277,8 @@ var Monster = (function() {
 			if (!prop(tally_nearby_monsters[_mid])) return;
 			capture(_mid);
 		});
+        // TESTING
+        //capture(_mid);
 	}
 
 
@@ -301,7 +300,7 @@ var Monster = (function() {
 	function moveMonsterToAward(_mid) {
 		console.log("!!!!! Monster.moveMonsterToAward()", _mid, tally_nearby_monsters[_mid]);
 
-		let _scale = pageData.browser.width > 1200 ? 0.75 : 0.55; // increase scale w/larger screens
+		let _scale = pageData.browser.width > 1200 ? 0.85 : 0.65; // increase scale w/larger screens
 
 		// get monster position
 		let pos = $('.tally_monster_sprite_container').position();
@@ -315,7 +314,7 @@ var Monster = (function() {
 		addKeyFrames(
 			'moveToAward',
 			//'from{ background-color: red;}' +
-			'to{ transform: scale(' + _scale + '); left: 30%; top: ' + (pageData.browser.height - 320) + 'px;}'
+			'to{ transform: scale(' + _scale + ',' + _scale + '); left: 30%; top: ' + (pageData.browser.height - 370) + 'px;}'
 		);
 		// start animation
 		$('.tally_monster_sprite_container').css({
@@ -378,13 +377,13 @@ var Monster = (function() {
 		console.log("+++++ Monster.showAward()", mid);
 
 		// insert text
-		$('.award_title').html("<h4>YOU CONTAINED THE MONSTER!</h4>");
-		$('.award_subtitle').html("<h5>You leveled up! <a href='https://tallygame.net/signup'> Check out your score</a></h5>");
-		$('.award_fact_title').html("<h6>Did you know?</h6>");
+		$('.award_title').html("YOU CONTAINED THE MONSTER!!!!!");
+		$('.award_subtitle').html("You leveled up! <a href='https://tallygame.net/signup'> Check out your score</a>");
+		$('.award_did_you_know').html("<h6>Did you know?</h6>");
         let fact = Thought.getFact("trackers");
         let str = fact.fact || "";
-        if (fact.url && fact.source) str += "Source: <a src='"+ fact.url +"' target='_blank'>"+ fact.source +"</a>";
-        if (fact.year) str += " "+ fact.year;
+        if (fact.url && fact.source) str += "Source: <a href='"+ fact.url +"' target='_blank'>"+ fact.source +"</a>";
+        if (fact.year) str += " ("+ fact.year +")";
 		$('.award_fact').html(str);
 
 		var insertTimeline = anime.timeline();
@@ -418,7 +417,7 @@ var Monster = (function() {
 					{
 						value: 800,
 						duration: 2000,
-						delay: 4500,
+						delay: 4000,
 						elasticity: 0
 					}
 				],
@@ -428,6 +427,9 @@ var Monster = (function() {
 
 		// hide monster
 		window.setTimeout(function() {
+            // TESTING
+            // return;
+
 			// get monster position
 			let pos = $('.tally_monster_sprite_container').position(),
 				w = $('.tally_monster_sprite_container').width() / 2,
@@ -457,9 +459,6 @@ var Monster = (function() {
 
 	}
 
-
-
-
 	/**
 	 *	Reset monster
 	 */
@@ -482,8 +481,12 @@ var Monster = (function() {
 		Debug.update();
 	}
 
+
+    /**
+     *	Return the current monster MID
+     */
 	function getCurrent() {
-		return current;
+		return currentMID;
 	}
 
 	// PUBLIC

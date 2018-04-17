@@ -8,8 +8,6 @@
     position: absolute;
     z-index: 99999999999999;
 }
-
-
 /*  MONSTER SPRITE (WHEN IT LAUNCHES)
 ******************************************************************************/
 
@@ -69,8 +67,6 @@ svg.monster_path path {
         background-position: -1500px;
     }
 }
-
-
 /*  MONSTER AWARD
 ******************************************************************************/
 
@@ -87,55 +83,51 @@ svg.monster_path path {
     height: auto;
     width: 100vw;
     position: fixed;
-    bottom: 1%;
+    bottom: 0%;
     left: 650px;
     z-index: 3;
     visibility: hidden;
 }
 .tally_award_text {
-    background-color: #462795;
-    font-family: "Futura", serif;
+    font: 1.3vw/1.6vw Arial, sans-serif;
+    font-weight: normal;
     color: white;
     position: relative;
     width: 30%;
-    height: 50%;
-    left: 70%;
+    height: 45%;
+    left: 79%;
     z-index: 6;
     visibility: visible;
 }
+.tally_award_text a:link, .tally_award_text a:hover, .tally_award_text a:visited, .tally_award_text a:active {
+    color: #DE4929;
+    text-decoration-line: none;
+}
 .award_title {
+    font: 3vw/3.5vw "Futura", "Trebuchet MS", Arial, sans-serif;
+    font-style: italic;
     position: static;
     text-align: center;
-    font-size: 3vw;
-    background-color: #462795
 }
-.award_fact_title {
+.award_subtitle {
+    display: block;
+    font-weight: normal;
+    text-align: center;
+    padding-top: 20px;
+    background-color: #462795;
+}
+.award_did_you_know {
     position: relative;
     right: -30%;
     width: 40%;
     height: 20px;
     font-size: 2vw;
     z-index: 32;
+    top: -20px;
 }
-.award_fact {
-    position: relative;
-    text-align: center;
-    border: 1px solid white;
-    bottom: 5px;
-    padding: 7%;
-    left: 2%;
-    width: 80%;
-    height: 45px;
-    font-size: 1.2vw;
-    background-color: #462795;
-    overflow: auto;
-    z-index: 30;
-}
-.award_subtitle a {
-    color: #DE4929;
-    text-decoration-line: none;
-}
-.award_fact_title h6 {
+.award_did_you_know h6 {
+    font-family: "Futura", "Trebuchet MS", Arial, sans-serif;
+    font-weight: normal;
     position: static;
     text-align: center;
     top: -20px;
@@ -144,11 +136,16 @@ svg.monster_path path {
     padding-top: 4%;
     padding-bottom: 4%;
 }
-.award_subtitle h5 {
-    position: absolute;
+.award_fact {
+    position: relative;
+    top: -20px;
     text-align: center;
-    font-size: 1.5vw;
+    border: 1px solid white;
+    padding: 7%;
+    left: 2%;
+    width: 80%;
+    height: 95px;
     background-color: #462795;
-    left: 5%;
-    top: 25%;
+    overflow: auto;
+    z-index: 30;
 }

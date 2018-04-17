@@ -17,7 +17,7 @@ $( function() {
                             "<div class='tally_award_text'>"+
                                 "<div class='award_title'></div>" +
                     			"<div class='award_subtitle'></div>" +
-                    			"<div class='award_fact_title'></div>" +
+                    			"<div class='award_did_you_know'></div>" +
                     			"<div class='award_fact'></div>" +
                             "</div>"+
                         "</div>"+
