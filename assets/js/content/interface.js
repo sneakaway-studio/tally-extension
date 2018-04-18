@@ -4,9 +4,6 @@ $( function() {
 
     function addBaseHTML(){
         let str =   "<div id='tally_wrapper' class='reset-this-root reset-this no-print'>"+
-                        "<svg class='monster_path' version='1.1' xmlns='http://www.w3.org/2000/svg'>" +
-                            "<g><path></path></g>" +
-                        "</svg>"+
                         "<div id='tally_click_visual'></div>"+
                         "<div class='tally_monster_sprite_container shake-vertical shake-constant'>"+
                             "<div class='tally_monster_sprite shake-slow '>" +
