@@ -69,7 +69,6 @@ svg.monster_path path {
 }
 /*  MONSTER AWARD
 ******************************************************************************/
-
 .tally_award_background {
     width: 4000px;
     height: 750px;
@@ -95,7 +94,7 @@ svg.monster_path path {
     color: white;
     position: relative;
     width: 30%;
-    height: 45%;
+    height: 100%;
     left: 79%;
     z-index: 6;
     visibility: visible;
@@ -106,15 +105,17 @@ svg.monster_path path {
 }
 .award_title {
     font: 3vw/3.5vw "Futura", "Trebuchet MS", Arial, sans-serif;
+    position: relative;
+    top: -20px;
     font-style: italic;
-    position: static;
     text-align: center;
 }
 .award_subtitle {
     display: block;
+    position: relative;
+    top: -15px;
     font-weight: normal;
     text-align: center;
-    padding-top: 20px;
     background-color: #462795;
 }
 .award_did_you_know {
@@ -124,7 +125,7 @@ svg.monster_path path {
     height: 20px;
     font-size: 2vw;
     z-index: 32;
-    top: -20px;
+    top: -10px;
 }
 .award_did_you_know h6 {
     font-family: "Futura", "Trebuchet MS", Arial, sans-serif;

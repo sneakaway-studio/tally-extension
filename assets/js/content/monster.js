@@ -402,7 +402,7 @@ var Monster = (function() {
 					{
 						value: 1400,
 						duration: 2000,
-						delay: 6000,
+						delay: 12000,
 						elasticity: 0
 					}
 				],
@@ -419,7 +419,7 @@ var Monster = (function() {
 					{
 						value: 800,
 						duration: 2000,
-						delay: 4000,
+						delay: 10000,
 						elasticity: 0
 					}
 				],
@@ -447,7 +447,7 @@ var Monster = (function() {
 			// start animation
 			$('.tally_monster_sprite_container').css({
 				'animation-name': 'hideBelow',
-				'animation-duration': '0.5s',
+				'animation-duration': '2.0s',
 				'animation-direction': 'normal',
 				'animation-iteration-count': 1,
 				'animation-fill-mode': 'forwards'
@@ -459,7 +459,7 @@ var Monster = (function() {
                     // code to execute after animation ends
                     $('.tally_monster_sprite_container').css({'display':'none'});
                 });
-		}, 7000);
+		}, 13000);
 
 
 	}
