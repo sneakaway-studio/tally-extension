@@ -77,7 +77,8 @@ svg.monster_path path {
     position: fixed;
     bottom: -1420px;
     left: 20%;
-    background-color: #462795
+    background-color: #462795;
+    z-index: 99999998;
 }
 .tally_award_text_wrapper {
     height: auto;
@@ -85,7 +86,7 @@ svg.monster_path path {
     position: fixed;
     bottom: 0%;
     left: 650px;
-    z-index: 3;
+    z-index: 99999999;
     visibility: hidden;
 }
 .tally_award_text {
@@ -142,7 +143,7 @@ svg.monster_path path {
     text-align: center;
     border: 1px solid white;
     padding: 7%;
-    left: 2%;
+    left: 10%;
     width: 80%;
     height: 95px;
     background-color: #462795;
