@@ -29,11 +29,13 @@ var Sound = (function() {
 				"powerup4.wav",
 			]
 		},
-		"awards": {},
+		"awards": {
+			"monster": "Victory-3.mp3"
+		},
 		"monsters": {},
 		"songs": {},
 		"user": {
-			"click":"Pickup-coin2.wav"
+			"click": "Pickup-coin2.wav"
 		}
 	};
 
@@ -61,32 +63,32 @@ var Sound = (function() {
 		var soundFile = "";
 		// if a specific category && index provided, then get that sound
 		if (prop(category) && prop(index))
-			soundFile = category +"/"+ sounds[category][index];
+			soundFile = category + "/" + sounds[category][index];
 		// else pick random index from category
 		else if (prop(category) && !prop(index))
 			// for array
 			//soundFile = category +"/"+ sounds[category][Math.floor((Math.random() * sounds[category].length))];
 			// random from obj
-			soundFile = category +"/"+ randomObjProperty(sounds[category]);
+			soundFile = category + "/" + randomObjProperty(sounds[category]);
 		// else pick random category && index
 		else if (!prop(category) && !prop(index)) {
 			var categoryArr = randomObjProperty(sounds); // reference to array group in sounds
-			soundFile = category +"/"+ categoryArr[Math.floor(Math.random() * categoryArr.length)];
+			soundFile = category + "/" + categoryArr[Math.floor(Math.random() * categoryArr.length)];
 		}
-		play(soundFile,delay);
+		play(soundFile, delay);
 	}
-    // Sound.play ("tally","general")
-    function playSound(category, index, delay) {
-        if (!tally_options.playSounds) return;
-        let file = category +"/"+ sounds[category][index];
-		play(file,delay);
-    }
+	// Sound.play ("tally","general")
+	function playSound(category, index, delay) {
+		if (!tally_options.playSounds) return;
+		let file = category + "/" + sounds[category][index];
+		play(file, delay);
+	}
 	// play a random example of a mood
-	function playMood(mood){
-        if (!tally_options.playSounds) return;
+	function playMood(mood) {
+		if (!tally_options.playSounds) return;
 		//console.log("Sound.new()",mood);
 		let r = Math.ceil(Math.random() * moods[mood]);
-		let file = "tally/moods-v2/"+ mood +"-"+ r +"-2.mp3";
+		let file = "tally/moods-v2/" + mood + "-" + r + "-2.mp3";
 		play(file);
 	}
 
@@ -95,18 +97,18 @@ var Sound = (function() {
 	/**
 	 *	Generic play function (called from others in this obj)
 	 */
-    function play(soundFile,delay=0){
-		//console.log("Sound.play("+ soundFile +")");
+	function play(soundFile, delay = 0) {
+		console.log("Sound.play("+ soundFile +")");
 		// load/play sound
-        var audio = new Audio(chrome.extension.getURL("assets/sounds/"+ soundFile));
-        audio.volume = 0.3;
+		var audio = new Audio(chrome.extension.getURL("assets/sounds/" + soundFile));
+		audio.volume = 0.3;
 		if (delay > 0)
 			setTimeout(function() {
 				audio.play();
 			}, delay);
 		else
 			audio.play();
-    }
+	}
 
 	// PUBLIC
 	return {
@@ -116,7 +118,7 @@ var Sound = (function() {
 		play: function(category, index, delay) {
 			playSound(category, index, delay);
 		},
-		playMood: function(mood){
+		playMood: function(mood) {
 			playMood(mood);
 		}
 

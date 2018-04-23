@@ -426,6 +426,8 @@ var Monster = (function() {
 				offset: 900
 			});
 
+		Sound.play('awards', 'monster');
+
 		// hide monster
 		window.setTimeout(function() {
 			// TESTING
