@@ -323,7 +323,8 @@ var Monster = (function() {
 			'animation-delay': '0.25s',
 			'animation-direction': 'normal',
 			'animation-iteration-count': 1,
-			'animation-fill-mode': 'forwards'
+			'animation-fill-mode': 'forwards',
+			'position': 'fixed'
 		});
 	}
 
