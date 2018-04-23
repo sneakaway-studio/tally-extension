@@ -1,5 +1,37 @@
 "use strict";
 
+// object to track pressed keys
+var keys = {
+	m: false,
+	tilda: false
+};
+
+/**
+ * 	If keydown detected
+ */
+$(document.body).keydown(function(event) {
+	if (event.keyCode == 77) // key == m
+		keys.m = true;
+	else if (event.keyCode == 192) // key == tilda
+		keys.tilda = true;
+	if (keys.m && keys.tilda) {
+		console.log("m + tilda");
+		Monster.test();
+	}
+	//console.log(event.keyCode,keys);
+});
+/**
+ * 	Reset keys that are no longer pressed
+ */
+$(document.body).keyup(function(event) {
+	// reset status of the button 'released' == 'false'
+	if (event.keyCode == 77)
+		keys.m = false;
+	else if (event.keyCode == 192)
+		keys.tilda = false;
+	//console.log(event.keyCode,keys);
+});
+
 var Monster = (function() {
 
 	let MONSTER_DEBUG = true,
@@ -276,6 +308,17 @@ var Monster = (function() {
 		$(document).on('click', '.tally_monster_sprite', function() {
 			if (!prop(tally_nearby_monsters[_mid])) return;
 			capture(_mid);
+		});
+		$(document.body).keydown(function(event) {
+			if (event.keyCode == 77) // key == e
+				keys.m = true;
+			else if (event.keyCode == 192) // key == tilda
+				keys.tilda = true;
+			if (keys.m && keys.tilda) {
+				console.log("m + tilda");
+				Monster.test();
+			}
+			//console.log(event.keyCode,keys);
 		});
 		// TESTING
 		//capture(_mid);
