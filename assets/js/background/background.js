@@ -8,10 +8,6 @@
 
 
 
-
-
-
-
 /**
  *  Listen for installations (first|any)
  */
@@ -26,19 +22,35 @@ chrome.runtime.onInstalled.addListener(function() {
 		// run start app script
 		startApp();
 	}
-}); 
+});
 
 /**
  *  Start the app (always called)
  */
 function startApp() {
 	console.log(">>>>> startApp()");
-
+	isNewVersion();
 	// set server/api (edit in Inspect views background page / Application / Local Storage)
 	checkCurrentAPI();
 	// check the API status, if connected then check token
 	checkAPIServerStatus();
 }
+
+/**
+ * 	Check if it is a new version
+ */
+function isNewVersion() {
+	let _tally_meta = store("tally_meta"),
+		manifestData = chrome.runtime.getManifest();
+	if (_tally_meta.version == manifestData.version) {
+		console.log(_tally_meta.version, manifestData.version, "..... SAME VERSION");
+		return true;
+	} else {
+		console.log(_tally_meta.version, manifestData.version, "!!!!! NEW VERSION");
+		return false;
+	}
+}
+
 
 /**
  *  Set development or production server
@@ -47,7 +59,7 @@ function checkCurrentAPI() {
 	let _tally_meta = store("tally_meta");
 	_tally_meta.api = Config[_tally_meta.currentAPI].api;
 	_tally_meta.website = Config[_tally_meta.currentAPI].website;
-	console.log("checkCurrentAPI()", _tally_meta.currentAPI,_tally_meta.api,_tally_meta.website);
+	console.log("checkCurrentAPI()", _tally_meta.currentAPI, _tally_meta.api, _tally_meta.website);
 	store("tally_meta", _tally_meta);
 }
 
