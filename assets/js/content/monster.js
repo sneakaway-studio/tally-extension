@@ -106,7 +106,7 @@ var Monster = (function() {
 	 *	Check the page for a monster
 	 */
 	function checkForTagMatches() {
-		//console.log('>>>>> Monster.check()', pageData.tags);
+		if (MONSTER_DEBUG) console.log('>>>>> Monster.check()', pageData.tags);
 		// loop through the tags on the page
 		for (var i = 0, l = pageData.tags.length; i < l; i++) {
 			// save reference
@@ -117,11 +117,11 @@ var Monster = (function() {
 				let arr = MonsterData.idsByTag[tag];
 				// the monster id that will be picked
 				let mid = 0;
-				// if there are matches...
-				if (arr.length > 1) {
+				// if there is at least one match...
+				if (arr.length > 0) {
 					// pick random monster id from list, this will be the page monster
 					mid = arr[Math.floor(Math.random() * arr.length)];
-					if (MONSTER_DEBUG) console.log('!!!!! Monster.checkForTagMatches() -> #' + tag, "has", arr.length, 'MATCHES', arr, "randomly selecting...", MonsterData.dataById[mid].slug);
+					if (MONSTER_DEBUG) console.log('!!!!! Monster.checkForTagMatches() -> #' + tag, "has", arr.length, 'MATCHE(S)', arr, "randomly selecting...", MonsterData.dataById[mid].slug);
 					// we have identified a match, let's handle the monster
 					handleMatch(mid);
 					break;

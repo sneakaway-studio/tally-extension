@@ -22,8 +22,8 @@ var Tally = (function() {
 	}
 	// move a single eye, call twice to move both
 	function moveEye(which, how, event) {
-	    // return if game should not be active
-	    if (!prop(pageData) || !pageData.activeOnPage) return;
+		// return if game should not be active
+		if (!prop(pageData) || !pageData.activeOnPage) return;
 		if (!followCursor) return;
 		var eye = $(which);
 		var x, y, rad, rot;
@@ -151,8 +151,8 @@ function startTally() {
 
 
 
-// TESTING
-//Monster.test();
+	// TESTING
+	//Monster.test();
 
 	// add the tally_character click action
 	$(document).on('click', '#tally_character_container', function() {
