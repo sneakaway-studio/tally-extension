@@ -9,6 +9,7 @@ let pageData = getPageData(),
 	tally_game_status = getGameStatus(),
 	tally_nearby_monsters = {};
 
+
 let MAIN_DEBUG = false;
 
 $(function() {
@@ -34,9 +35,9 @@ function shouldExtensionBeActiveOnPage() {
 	if (!tally_meta.serverOnline) {
 		if (MAIN_DEBUG) console.log("!!!!! Connection to Tally server is down");
 		return false;
-	// } else if (!tally_meta.userTokenValid) {
-	// 	if (MAIN_DEBUG) console.log("!!!!! userTokenValid is not valid");
-	// 	return false;
+		// } else if (!tally_meta.userTokenValid) {
+		// 	if (MAIN_DEBUG) console.log("!!!!! userTokenValid is not valid");
+		// 	return false;
 	} else if (tally_options.disabledDomains.length < 1 ||
 		($.inArray(pageData.domain, tally_options.disabledDomains) >= 0) ||
 		($.inArray(pageData.subDomain, tally_options.disabledDomains) >= 0)) {
@@ -79,6 +80,28 @@ function startGame() {
 	Monster.check();
 	Debug.update();
 }
+
+/**
+ *	Refresh app
+ */
+function refreshApp() {
+	pageData = getPageData();
+	tally_game_status = getGameStatus();
+	Monster.check();
+	Debug.update();
+}
+
+/**
+ *	MutationObserver to detect title element changes (e.g. youtube and other ajax sites)
+ */
+new MutationObserver(function(mutations) {
+    console.log("title changed", mutations[0].target.nodeValue);
+	refreshApp();
+}).observe(
+    document.querySelector('title'),
+    { subtree: true, characterData: true, childList: true }
+);
+
 
 /**
  * Timed functions
