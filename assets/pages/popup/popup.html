@@ -44,23 +44,27 @@
 					<table>
 						<tr>
 							<td>Score</td>
-							<td class="data-field" id="score"></td>
+							<td><span class="data-field" id="score"></span></td>
 						</tr>
 						<tr>
 							<td>Clicks</td>
-							<td class="data-field" id="clicks"></td>
+							<td><span class="data-field" id="clicks"></span></td>
 						</tr>
 						<tr>
 							<td>Likes</td>
-							<td class="data-field" id="likes"></td>
+							<td><span class="data-field" id="likes"></span></td>
 						</tr>
 						<tr>
 							<td>Pages</td>
-							<td class="data-field" id="pages"></td>
+							<td><span class="data-field" id="pages"></span></td>
+						</tr>
+						<tr>
+							<td>Time</td>
+							<td><span class="data-field" id="time"></span> seconds</td>
 						</tr>
 						<tr>
 							<td>Monsters</td>
-							<td class="data-field" id="monsters"></td>
+							<td><span class="data-field" id="monsters"></span></td>
 						</tr>
 					</table>
 
@@ -72,22 +76,22 @@
 					<table>
 						<tr>
 							<td>User logged-in</td>
-							<td class="data-field" id="authStatus"></td>
+							<td><span class="data-field" id="authStatus"></span></td>
 							<td></td>
 						</tr>
 						<tr>
 							<td>User has valid token</td>
-							<td class="data-field" id="tokenStatus"></td>
+							<td><span class="data-field" id="tokenStatus"></span></td>
 							<td></td>
 						</tr>
 						<tr>
 							<td>Token expires</td>
-							<td class="data-field" id="tokenExpires"></td>
+							<td><span class="data-field" id="tokenExpires"></span></td>
 							<td><button class="button" id="updateTokenBtn">update token</button></td>
 						</tr>
 						<tr>
 							<td>Game server online</td>
-							<td class="data-field" id="serverStatus"></td>
+							<td><span class="data-field" id="serverStatus"></span></td>
 							<td></td>
 						</tr>
 					</table>
@@ -99,11 +103,11 @@
 					<table>
 						<tr>
 							<td>Version</td>
-							<td class="data-field" id="version"></td>
+							<td><span class="data-field" id="version"></td>
 						</tr>
 						<tr>
 							<td>Installed on</td>
-							<td class="data-field" id="installedOn"></td>
+							<td><span class="data-field" id="installedOn"></td>
 						</tr>
 					</table>
 
@@ -223,6 +227,7 @@
 
 	</div>
 	<script src="../../libs/jquery-3.2.1.min.js"></script>
+	<script src="../../js/functions/fs-objects.js"></script>
 	<script src="./popup.js"></script>
 </body>
 

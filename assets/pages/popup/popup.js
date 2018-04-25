@@ -47,7 +47,8 @@ function getUser(callback) {
 		$("#likes").html(tally_user.score.likes);
 		$("#clicks").html(tally_user.score.clicks);
 		$("#pages").html(tally_user.score.pages);
-		$("#monsters").html(tally_user.monsters.length);
+		$("#time").html(tally_user.score.time);
+		$("#monsters").html(objLength(tally_user.monsters));
 
 		if (callback) callback();
 	});
