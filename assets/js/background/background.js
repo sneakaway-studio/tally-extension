@@ -18,6 +18,10 @@ chrome.runtime.onInstalled.addListener(function() {
 		console.log("!!!!! no tally_meta found, creating app");
 		// run create app script
 		createApp();
+	// } else if (isNewVersion()) {
+	// 	// does the manifest version installed match the version in tally_meta
+	// 	console.log("SAME VERSION");
+	// 	createApp();
 	} else {
 		// run start app script
 		startApp();
@@ -42,12 +46,12 @@ function startApp() {
 function isNewVersion() {
 	let _tally_meta = store("tally_meta"),
 		manifestData = chrome.runtime.getManifest();
-	if (_tally_meta.version == manifestData.version) {
+	if (_tally_meta.version != manifestData.version) {
 		console.log(_tally_meta.version, manifestData.version, "..... SAME VERSION");
-		return true;
+		return false;
 	} else {
 		console.log(_tally_meta.version, manifestData.version, "!!!!! NEW VERSION");
-		return false;
+		return true;
 	}
 }
 
