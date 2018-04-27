@@ -166,25 +166,13 @@ function createMeta() {
 		"currentAPI": "production", // or "development";
 		"api": Config.production.api, // default to production
 		"website": Config.production.website,
-		"browser": getBrowser()
+		"browser": Environment.getBrowserName()
 	};
 	return obj;
 }
 
 
-function getBrowser() {
-	if (navigator.userAgent.indexOf("Chrome") != -1) {
-		return "Chrome";
-	} else if (navigator.userAgent.indexOf("Opera") != -1) {
-		return "Opera";
-	} else if (navigator.userAgent.indexOf("MSIE") != -1) {
-		return "IE";
-	} else if (navigator.userAgent.indexOf("Firefox") != -1) {
-		return "Firefox";
-	} else {
-		return "unknown";
-	}
-}
+
 
 /**
  *  Create Secret object on installation

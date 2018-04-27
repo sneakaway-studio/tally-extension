@@ -12,18 +12,26 @@ function getPageData() {
 	var data = {
 		activeOnPage: false,
 		browser: {
+			name: Environment.getBrowserName(),
+			cookieEnabled: navigator.cookieEnabled || "",
+			language: Environment.getBrowserLanguage(),
+			platform: Environment.getPlatform(),
 			width: window.innerWidth || document.body.clientWidth,
 			height: window.innerHeight || document.body.clientHeight
 		},
+		screen: {
+            width: screen.width,
+            height: screen.height
+        },
 		contentType: window.document.contentType,
 		description: getDescription(),
-		domain: extractRootDomain(document.location.href),
+		domain: Environment.extractRootDomain(document.location.href),
 		h1: getH1(),
 		keywords: getKeywords(),
 		mouseX: 0,
 		mouseY: 0,
 		mouseupFired: false,
-		subDomain: extractSubDomain(document.location.href),
+		subDomain: Environment.extractSubDomain(document.location.href),
 		tags: "",
 		time: 0,
 		title: getTitle(),
@@ -37,6 +45,7 @@ function getPageData() {
 	}
 	// check page tags
 	data.tags = getPageTags(data);
+	console.log("pageData",data);
 	return data;
 }
 
@@ -97,7 +106,7 @@ function getTrackers() {
 		if (scripts[i].src !== "") str = scripts[i].src;
 		else if (scripts[i].textContent) str = scripts[i].textContent;
 		// get root domain of scripts
-		let scriptDomain = extractRootDomain(str);
+		let scriptDomain = Environment.extractRootDomain(str);
 		//console.log(scriptDomain);
 
 		// // this method loops through each tracker category
