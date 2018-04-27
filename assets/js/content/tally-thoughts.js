@@ -4,7 +4,7 @@ var Thought = (function() {
 	// PRIVATE
 
 	let thoughtOpen = false,
-	 	THOUGHT_DEBUG = true;
+		THOUGHT_DEBUG = true;
 
 
 	/**
@@ -18,7 +18,7 @@ var Thought = (function() {
 	 *	Show a fact
 	 */
 	function showFact(fact, sound) {
-		console.log("showFact()",fact,sound);
+		console.log("showFact()", fact, sound);
 		if (thoughtOpen) return; // if open, exit
 		Sound.playMood(sound);
 		show(fact.fact);
@@ -53,8 +53,8 @@ var Thought = (function() {
 	/**
 	 *	Show the thought bubble [with text and sound]
 	 */
-	function showThought(thought,sound) {
-		console.log("showThought()",thought,sound);
+	function showThought(thought, sound) {
+		console.log("showThought()", thought, sound);
 		if (thoughtOpen) return; // if open, exit
 		if (sound) Sound.playMood(thought.mood);
 		show(thought.text);
@@ -65,8 +65,8 @@ var Thought = (function() {
 	/**
 	 *	Show the thought bubble [with text and sound]
 	 */
-	function showString(str,sound) {
-		console.log("showString()",str,sound);
+	function showString(str, sound) {
+		console.log("showString()", str, sound);
 		if (thoughtOpen) return; // if open, exit
 		if (sound) Sound.playMood(sound);
 		show(str);
@@ -82,8 +82,8 @@ var Thought = (function() {
 		if (THOUGHT_DEBUG) console.log("show()", str);
 		thoughtOpen = true;
 
-		if (str.indexOf("{{type}}") > -1)
-			str = templating(str,"type",Monster.current());
+		// replace any template strings
+		str = searchReplaceTemplateStr(str);
 
 		// set number of lines based on str.length
 		let lines = 1;
@@ -118,11 +118,30 @@ var Thought = (function() {
 		thoughtOpen = false;
 	}
 
-
-	function templating(string, find, replace) {
-
-		return string.replace(new RegExp('\{\{(?:\\s+)?(' + find + ')(?:\\s+)?\}\}'), replace);
-
+	/**
+	 *	Search and replace any template
+	 */
+	function searchReplaceTemplateStr(str) {
+		let find = "",
+			replace = "";
+		// check for any template replacement matches
+		if (str.indexOf("{{Monster.current}}") > -1) {
+			find = "Monster.current";
+			replace = Monster.current();
+		}
+		if (str.indexOf("{{pageData.title}}") > -1) {
+			find = "pageData.title";
+			replace = pageData.title;
+		}
+		if (str.indexOf("{{pageData.browser.name}}") > -1) {
+			find = "pageData.browser.name";
+			replace = pageData.browser.name;
+		}
+		// perform replacement
+		if (find != "" && replace != "")
+			str = str.replace(new RegExp('\{\{(?:\\s+)?(' + find + ')(?:\\s+)?\}\}'), replace);
+		// return string
+		return str;
 	}
 
 
@@ -140,7 +159,7 @@ var Thought = (function() {
 		showFact: function(fact, sound) {
 			showFact(fact, sound);
 		},
-		showString: function(str,sound){
+		showString: function(str, sound) {
 			showString(str, sound);
 		},
 		show: function(str, sound) {
