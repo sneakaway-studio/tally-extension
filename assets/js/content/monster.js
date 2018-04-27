@@ -70,6 +70,7 @@ var Monster = (function() {
 	function check() {
 		// don't check if disabled
 		if (tally_options.gameMode === "disabled") return;
+		if (!pageData.activeOnPage) return;
 		checkNearbyMonsterTimes();
 	}
 

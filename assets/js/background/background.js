@@ -18,6 +18,8 @@ chrome.runtime.onInstalled.addListener(function() {
 		console.log("!!!!! no tally_meta found, creating app");
 		// run create app script
 		createApp();
+
+// NEED TO KEEP WORKING ON THIS
 	// } else if (isNewVersion()) {
 	// 	// does the manifest version installed match the version in tally_meta
 	// 	console.log("SAME VERSION");

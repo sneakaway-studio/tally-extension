@@ -76,7 +76,7 @@ function startGame() {
 		}
 	}
 
-
+	addMutationObserver();
 	Monster.check();
 	Debug.update();
 }
@@ -85,6 +85,7 @@ function startGame() {
  *	Refresh app
  */
 function refreshApp() {
+	if (!pageData.activeOnPage) return;
 	pageData = getPageData();
 	tally_game_status = getGameStatus();
 	Monster.check();
@@ -94,13 +95,19 @@ function refreshApp() {
 /**
  *	MutationObserver to detect title element changes (e.g. youtube and other ajax sites)
  */
-new MutationObserver(function(mutations) {
-    console.log("title changed", mutations[0].target.nodeValue);
-	refreshApp();
-}).observe(
-    document.querySelector('title'),
-    { subtree: true, characterData: true, childList: true }
-);
+function addMutationObserver(){
+	// if running on page
+	if (tally_options.gameMode === "disabled") return;
+	if (!pageData.activeOnPage) return;
+	new MutationObserver(function(mutations) {
+	    console.log("title changed", mutations[0].target.nodeValue);
+		refreshApp();
+	}).observe(
+	    document.querySelector('title'),
+	    { subtree: true, characterData: true, childList: true }
+	);
+}
+
 
 
 /**
