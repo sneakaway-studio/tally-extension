@@ -514,9 +514,14 @@ var Monster = (function() {
 	 *	Reset monster
 	 */
 	function reset(mid) {
-		if (tally_nearby_monsters[mid])
-			delete tally_nearby_monsters[mid];
+		// reset one
+		// if (tally_nearby_monsters[mid])
+		// 	delete tally_nearby_monsters[mid];
+		// reset them all
+		tally_nearby_monsters = {};
 		saveNearbyMonsters();
+		// set the skin color
+		Skin.setStage(0);
 	}
 
 	/**
