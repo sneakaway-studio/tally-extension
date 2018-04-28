@@ -164,7 +164,8 @@ function sendMonsterUpdate(data) {
 			// loop and associate keys to objs
 			for (let i = 0, l = result.length; i < l; i++) {
 				monsters[result[i].mid] = {
-					"level": result[i].level
+					"level": result[i].level,
+					"top": result[i].top
 				};
 			}
 		}

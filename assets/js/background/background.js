@@ -7,7 +7,7 @@
 		-> startApp() -> checkAPIServerStatus() -> checkTokenStatus() -> content script takes over */
 
 
-
+ 
 /**
  *  Listen for installations (first|any)
  */

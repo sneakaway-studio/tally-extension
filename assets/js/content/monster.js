@@ -208,6 +208,7 @@ var Monster = (function() {
 		// should we launch a monster?
 		if (launchMonster) {
 			currentMID = mid;
+			// show thought
 			Thought.showThought(Thought.getThought(["monster", "launch", 0]), true);
 			launch(mid);
 		}
@@ -420,6 +421,17 @@ var Monster = (function() {
 	 */
 	function showAward(_mid) {
 		console.log("+++++ Monster.showAward()", _mid);
+		console.log("your level:", tally_nearby_monsters[_mid].level," // top:", tally_user.monsters[_mid].top);
+
+		// check if they are top of leaderboards
+		if (tally_nearby_monsters[_mid].level == tally_user.monsters[_mid].top+1){
+			console.log("+++++ YOU JUST ARRIVED IN FIRST PLACE !!!! +++++");
+
+		} else if (tally_nearby_monsters[_mid].level > tally_user.monsters[_mid].top+1){
+			console.log("+++++ YOU ARE *STILL* IN FIRST PLACE +++++");
+		} else {
+			console.log("+++++ YOU ARE:", tally_user.monsters[_mid].top - tally_nearby_monsters[_mid].level, " POINTS BEHIND THE LEADER");
+		}
 
 		// insert text
 		$('.award_title').html("YOU CONTAINED THE MONSTER!!!!!");
