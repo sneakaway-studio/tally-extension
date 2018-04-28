@@ -3,24 +3,24 @@
 $(function() {
 
 	function addBaseHTML() {
-		let str = "<div id='tally_wrapper' class='reset-this-root reset-this no-print'>" +
-						"<div id='tally_click_visual'></div>" +
-						"<div class='tally_monster_sprite_container shake-vertical shake-constant'>" +
-						"<div class='tally_monster_sprite shake-slow '>" +
-						"<div class='tally_monster_sprite_inner'></div>" +
+		let str = "<div id='tally_wrapper' class='tally reset-this-root reset-this no-print'>" +
+						"<div class='tally' id='tally_click_visual'></div>" +
+						"<div class='tally tally_monster_sprite_container shake-vertical shake-constant'>" +
+						"<div class='tally tally_monster_sprite shake-slow '>" +
+						"<div class='tally tally_monster_sprite_inner'></div>" +
 					"</div>" +
 					"</div>" +
-					"<div class='tally_award_text_wrapper'>" +
-						"<div class='tally_award_text'>" +
-							"<div class='award_title'></div>" +
-							"<div class='award_subtitle'></div>" +
-							"<div class='award_did_you_know'></div>" +
-							"<div class='award_fact'></div>" +
+					"<div class='tally tally_award_text_wrapper'>" +
+						"<div class='tally tally_award_text'>" +
+							"<div class='tally award_title'></div>" +
+							"<div class='tally award_subtitle'></div>" +
+							"<div class='tally award_did_you_know'></div>" +
+							"<div class='tally award_fact'></div>" +
 						"</div>" +
 					"</div>" +
-					"<div class='tally_award_background'></div>" +
+					"<div class='tally tally_award_background'></div>" +
 
-					"<div id='tally'></div>" +
+					"<div class='tally' id='tally'></div>" +
 			"</div>";
 		$('body').append(str);
 	}

@@ -1,37 +1,5 @@
 "use strict";
 
-// object to track pressed keys
-var keys = {
-	m: false,
-	tilda: false
-};
-
-/**
- * 	If keydown detected
- */
-$(document.body).keydown(function(event) {
-	if (event.keyCode == 77) // key == m
-		keys.m = true;
-	else if (event.keyCode == 192) // key == tilda
-		keys.tilda = true;
-	if (keys.m && keys.tilda) {
-		console.log("m + tilda");
-		Monster.test();
-	}
-	//console.log(event.keyCode,keys);
-});
-/**
- * 	Reset keys that are no longer pressed
- */
-$(document.body).keyup(function(event) {
-	// reset status of the button 'released' == 'false'
-	if (event.keyCode == 77)
-		keys.m = false;
-	else if (event.keyCode == 192)
-		keys.tilda = false;
-	//console.log(event.keyCode,keys);
-});
-
 var Monster = (function() {
 
 	let MONSTER_DEBUG = true,
@@ -309,6 +277,9 @@ var Monster = (function() {
 		// add click handler
 		$(document).on('click', '.tally_monster_sprite', function() {
 			if (!prop(tally_nearby_monsters[_mid])) return;
+			// remove the click listener
+			$('.tally_monster_sprite').unbind();
+			// capture the monster
 			capture(_mid);
 		});
 		$(document.body).keydown(function(event) {
@@ -382,6 +353,8 @@ var Monster = (function() {
 		$('.tally_monster_sprite_container').css({
 			'animation-name': 'none',
 		});
+		// remove the click listener
+		$('.tally_monster_sprite').unbind();
 		// set missed instead of captured
 		tally_nearby_monsters[_mid].captured = 0;
 		tally_nearby_monsters[_mid].missed = 1;
@@ -421,13 +394,14 @@ var Monster = (function() {
 	 */
 	function showAward(_mid) {
 		console.log("+++++ Monster.showAward()", _mid);
-		console.log("your level:", tally_nearby_monsters[_mid].level," // top:", tally_user.monsters[_mid].top);
+		console.log("your level:", tally_nearby_monsters[_mid].level, " // top:", tally_user.monsters[_mid].top);
 
 		// check if they are top of leaderboards
-		if (tally_nearby_monsters[_mid].level == tally_user.monsters[_mid].top+1){
+
+		if (tally_nearby_monsters[_mid].level == tally_user.monsters[_mid].top + 1) {
 			console.log("+++++ YOU JUST ARRIVED IN FIRST PLACE !!!! +++++");
 
-		} else if (tally_nearby_monsters[_mid].level > tally_user.monsters[_mid].top+1){
+		} else if (tally_nearby_monsters[_mid].level > tally_user.monsters[_mid].top + 1) {
 			console.log("+++++ YOU ARE *STILL* IN FIRST PLACE +++++");
 		} else {
 			console.log("+++++ YOU ARE:", tally_user.monsters[_mid].top - tally_nearby_monsters[_mid].level, " POINTS BEHIND THE LEADER");
@@ -443,7 +417,7 @@ var Monster = (function() {
 		if (fact.year) str += " (" + fact.year + ")";
 		$('.award_fact').html(str);
 
-        // hide background and text
+		// hide background and text
 		var insertTimeline = anime.timeline();
 		insertTimeline
 			.add({
@@ -510,13 +484,15 @@ var Monster = (function() {
 				'animation-iteration-count': 1,
 				'animation-fill-mode': 'forwards'
 			});
-            // add event listener to check when done
-            $(".tally_monster_sprite_container")
-                .one("animationend webkitAnimationEnd oAnimationEnd MSAnimationEnd", function() {
-                    //console.log("animation done", tally_nearby_monsters[_mid]);
-                    // code to execute after animation ends
-                    $('.tally_monster_sprite_container').css({'display':'none'});
-                });
+			// add event listener to check when done
+			$(".tally_monster_sprite_container")
+				.one("animationend webkitAnimationEnd oAnimationEnd MSAnimationEnd", function() {
+					//console.log("animation done", tally_nearby_monsters[_mid]);
+					// code to execute after animation ends
+					$('.tally_monster_sprite_container').css({
+						'display': 'none'
+					});
+				});
 		}, 13000);
 
 

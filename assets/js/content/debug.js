@@ -11,7 +11,7 @@ var Debug = (function() {
 	function add() {
 		if (!prop(tally_options) || !tally_options.showDebugger) return;
 
-		let str = "<div id='tyd' class='draggable data-field grabbable'>" + "</div>";
+		let str = "<div id='tyd' class='tally draggable data-field grabbable'>" + "</div>";
 		$('#tally').append(str);
 		// make it draggable
 		$("#tyd").draggable({
@@ -34,14 +34,14 @@ var Debug = (function() {
 		if (!prop(tally_options) || !tally_options.showDebugger) return;
 		if (!$("#tyd").length) return;
 
-		var str = "<div>" +
-			"<b>tally_user.score</b>: " + JSON.stringify(tally_user.score) + "<br>" +
-			"<b>tally_user.monsters</b>: " + JSON.stringify(tally_user.monsters) + "<br>" +
-			"<b>tally_nearby_monsters (" + objLength(tally_nearby_monsters) + ")</b>: " + JSON.stringify(tally_nearby_monsters) + "<br>" +
+		var str = "<div class='tally'>" +
+			"<b class='tally'>tally_user.score</b>: " + JSON.stringify(tally_user.score) + "<br>" +
+			"<b class='tally'>tally_user.monsters</b>: " + JSON.stringify(tally_user.monsters) + "<br>" +
+			"<b class='tally'>tally_nearby_monsters (" + objLength(tally_nearby_monsters) + ")</b>: " + JSON.stringify(tally_nearby_monsters) + "<br>" +
 			//"tally_options: " + JSON.stringify(tally_options) +"<br>"+
 			//"<b>pageData</b>: " + JSON.stringify(pageData) +"<br>"+
-			"<b>pageData.tags (" + pageData.tags.length + ")</b>: " + JSON.stringify(pageData.tags) + "<br>" +
-			"<b>pageData.trackers (" + pageData.trackers.length + ")</b>: " + JSON.stringify(pageData.trackers) + "<br>" +
+			"<b class='tally'>pageData.tags (" + pageData.tags.length + ")</b>: " + JSON.stringify(pageData.tags) + "<br>" +
+			"<b class='tally'>pageData.trackers (" + pageData.trackers.length + ")</b>: " + JSON.stringify(pageData.trackers) + "<br>" +
 			"</div>";
 		$('#tyd').html(str);
 	}
@@ -53,3 +53,38 @@ var Debug = (function() {
 		update: update
 	};
 })();
+
+
+// object to track pressed keys
+var keys = {
+	e: false,
+	m: false,
+	tilda: false
+};
+
+/**
+ * 	If keydown detected
+ */
+$(document.body).keydown(function(event) {
+	if (event.keyCode == 69) keys.e = true; // e
+	else if (event.keyCode == 77) keys.m = true; // m
+	else if (event.keyCode == 192) keys.tilda = true; // ~
+	// launch monster
+	if (keys.m && keys.tilda)
+		Monster.test();
+	// explode page
+	if (keys.e && keys.tilda)
+		console.log("EXPLODE");
+		//animExplodeThePage();
+
+	//console.log(event.keyCode,keys);
+});
+/**
+ * 	Reset keys that are no longer pressed
+ */
+$(document.body).keyup(function(event) {
+	if (event.keyCode == 69) keys.e = false;
+	else if (event.keyCode == 77) keys.m = false;
+	else if (event.keyCode == 192) keys.tilda = false;
+	//console.log(event.keyCode,keys);
+});

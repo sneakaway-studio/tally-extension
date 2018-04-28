@@ -113,17 +113,17 @@ function startTally() {
 	//console.log("startTally()", tally_game_status.skin, Skin.skins);
 
 	let str =
-		"<div id='tally_character_container' class='draggable'>" +
-		"<div id='tally_thought_bubble' class='tally_speech_bubble'>" +
-		"<div id='tally_thought'></div>" +
+		"<div id='tally_character_container' class='tally draggable'>" +
+		"<div id='tally_thought_bubble' class='tally tally_speech_bubble'>" +
+		"<div id='tally_thought' class='tally'></div>" +
 		"</div>" +
-		"<div id='tally_character'>" +
+		"<div id='tally_character' class='tally'>" +
 
 		// bitmap method
 		//"<img class='tally-svg' src='" + chrome.extension.getURL('assets/img/tally/tally.svg') + "'>" +
 
 		// add svg
-		'<svg version="1.1" id="tally-svg" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" ' +
+		'<svg version="1.1" id="tally-svg" class="tally" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" ' +
 		'x="0px" y="0px" viewBox="0 0 914 814" style="enable-background:new 0 0 914 814;" xml:space="preserve">' +
 		'<style type="text/css"> .st0{fill:' + Skin.skins[tally_game_status.skin].back + ';}' +
 		' .st1{fill:' + Skin.skins[tally_game_status.skin].front + ';} </style>' +
@@ -133,13 +133,13 @@ function startTally() {
 		'</svg>' +
 
 		"</div>" +
-		"<div id='tally_eyes'>" +
-		"<span class='tally_lid'>" +
-		"<span class='tally_eye tally_eye_left'>" +
-		"<span class='tally_eye_pupil'></span></span></span>" +
-		"<span class='tally_lid'>" +
-		"<span class='tally_eye tally_eye_right'>" +
-		"<span class='tally_eye_pupil'></span></span></span>" +
+		"<div id='tally_eyes' class='tally'>" +
+		"<span class='tally tally_lid'>" +
+		"<span class='tally tally_eye tally_eye_left'>" +
+		"<span class='tally tally_eye_pupil'></span></span></span>" +
+		"<span class='tally tally_lid'>" +
+		"<span class='tally tally_eye tally_eye_right'>" +
+		"<span class='tally tally_eye_pupil'></span></span></span>" +
 		"</div>" +
 		"</div>";
 	$('#tally').append(str);
