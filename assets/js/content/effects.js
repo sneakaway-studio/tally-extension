@@ -7,7 +7,7 @@
 var Effects = (function() {
 
 
-
+	function explode(){}
 
 
 	/**
@@ -56,6 +56,7 @@ var Effects = (function() {
 	return {
 		showClickVisualText: function(eventData, str) {
 			showClickVisualText(eventData, str);
-		}
+		},
+		explode:explode
 	};
 })();

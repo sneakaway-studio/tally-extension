@@ -56,11 +56,11 @@ var Tally = (function() {
 	 *****************************************************************************/
 
 	function tallyMenu() {
-		var str = "<div id='tally_menu'>" +
+		var str = "<div class='tally' id='tally_menu'>" +
 			// https://en.wikipedia.org/wiki/Glossary_of_video_game_terms
-			"<button id='tally_menu_profile'>View your profile</button>" +
-			"<button id='tally_menu_install'>View install page</button>" +
-			//"<button id='tally_menu_credits'>Experiments</button>"+
+			"<button class='tally' id='tally_menu_profile'>View your profile</button>" +
+			"<button class='tally' id='tally_menu_install'>View install page</button>" +
+			//"<button class='tally' id='tally_menu_credits'>Experiments</button>"+
 			"</div>";
 		return str;
 	}
@@ -127,20 +127,20 @@ function startTally() {
 		'x="0px" y="0px" viewBox="0 0 914 814" style="enable-background:new 0 0 914 814;" xml:space="preserve">' +
 		'<style type="text/css"> .st0{fill:' + Skin.skins[tally_game_status.skin].back + ';}' +
 		' .st1{fill:' + Skin.skins[tally_game_status.skin].front + ';} </style>' +
-		'<path id="tally-back" class="st0" d="M652.5,793.8l255.5-281L565.2,127.6l-307.3,35L5,366l88.5,346.8L652.5,793.8z"/>' +
-		'<path id="tally-front" class="st1" d="M199.8,809l419.9-139.2l126.5,10.1l161.9-319L690.5,14.1L509.8,36.2L450.2,' +
+		'<path id="tally-back" class="tally st0" d="M652.5,793.8l255.5-281L565.2,127.6l-307.3,35L5,366l88.5,346.8L652.5,793.8z"/>' +
+		'<path id="tally-front" class="tally st1" d="M199.8,809l419.9-139.2l126.5,10.1l161.9-319L690.5,14.1L509.8,36.2L450.2,' +
 		'4L258.3,66.9l-190,23.2 l-17.7,443L199.8,809z"/>' +
 		'</svg>' +
 
 		"</div>" +
-		"<div id='tally_eyes' class='tally'>" +
-		"<span class='tally tally_lid'>" +
-		"<span class='tally tally_eye tally_eye_left'>" +
-		"<span class='tally tally_eye_pupil'></span></span></span>" +
-		"<span class='tally tally_lid'>" +
-		"<span class='tally tally_eye tally_eye_right'>" +
-		"<span class='tally tally_eye_pupil'></span></span></span>" +
-		"</div>" +
+		"<div class='tally' id='tally_eyes'>" +
+			"<span class='tally tally_lid'>" +
+				"<span class='tally tally_eye tally_eye_left'>" +
+					"<span class='tally tally_eye_pupil'></span></span></span>" +
+			"<span class='tally tally_lid'>" +
+				"<span class='tally tally_eye tally_eye_right'>" +
+					"<span class='tally tally_eye_pupil'></span></span></span>" +
+			"</div>" +
 		"</div>";
 	$('#tally').append(str);
 

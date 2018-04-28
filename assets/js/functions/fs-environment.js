@@ -88,9 +88,10 @@ var Environment = (function() {
 	/* DOMAINS */
 
 	/**
-	 *	Return domain name
+	 *	Return entire name from URL
 	 */
 	function extractHostname(url) {
+		//console.log("extractHostname()",url);
 		var hostname;
 		//find & remove protocol (http, ftp, etc.) and get hostname
 
@@ -104,24 +105,31 @@ var Environment = (function() {
 		hostname = hostname.split(':')[0];
 		//find & remove "?"
 		hostname = hostname.split('?')[0];
-
+		//console.log("extractHostname() hostname =",hostname);
 		return hostname;
 	}
 
+	/**
+	 *	Return just the domain and TLD name
+	 */
 	function extractRootDomain(url) {
+		//console.log("extractRootDomain()",url);
 		if (url == "") return "";
 		var domain = extractHostname(url),
 			splitArr = domain.split('.'),
 			arrLen = splitArr.length;
 
+
 		//extracting the root domain here
 		if (arrLen > 2) {
 			domain = splitArr[arrLen - 2] + '.' + splitArr[arrLen - 1];
 		}
+		//console.log("extractRootDomain() domain =",domain);
 		return domain;
 	}
 
 	function extractSubDomain(url) {
+		//console.log("extractSubDomain()");
 		if (url == "") return "";
 		var domain = extractHostname(url);
 		return domain;
@@ -133,13 +141,13 @@ var Environment = (function() {
 		getBrowserLanguage: getBrowserLanguage,
 		getPlatform: getPlatform,
 		extractHostname: function(url){
-			extractHostname(url);
+			return extractHostname(url);
 		},
 		extractRootDomain: function(url){
-			extractRootDomain(url);
+			return extractRootDomain(url);
 		},
 		extractSubDomain: function(url){
-			extractSubDomain(url);
+			return extractSubDomain(url);
 		},
 
 	};
