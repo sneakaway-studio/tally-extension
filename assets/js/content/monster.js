@@ -19,7 +19,7 @@ var Monster = (function() {
 		tally_nearby_monsters[_mid] = create(_mid, _stage);
 		tally_nearby_monsters[_mid].captured = 0;
 		tally_nearby_monsters[_mid].missed = 0;
-		if (MONSTER_DEBUG) console.log("+++++ Monster.test()", MonsterData.dataById[_mid]);
+		if (MONSTER_DEBUG) console.log("⊙⊙⊙⊙⊙ Monster.test()", MonsterData.dataById[_mid]);
 		// save
 		saveNearbyMonsters();
 		// set the skin color
@@ -56,7 +56,7 @@ var Monster = (function() {
 				// if longer than 5 mins (300 secs) then delete
 				let seconds = ((now - tally_nearby_monsters[mid].updatedAt) / 1000);
 				if ((seconds) > secondsBeforeDelete) {
-					if (MONSTER_DEBUG) console.log("..... Monster.checkNearbyMonsterTimes() -> DELETING", MonsterData.dataById[mid].slug, "seconds", seconds);
+					if (MONSTER_DEBUG) console.log("⊙⊙⊙⊙⊙ Monster.checkNearbyMonsterTimes() -> DELETING", MonsterData.dataById[mid].slug, "seconds", seconds);
 					delete tally_nearby_monsters[mid];
 				}
 				// skin should reflect highest stage
@@ -75,7 +75,7 @@ var Monster = (function() {
 	 *	Check the page for a monster
 	 */
 	function checkForTagMatches() {
-		if (MONSTER_DEBUG) console.log('>>>>> Monster.check()', pageData.tags);
+		if (MONSTER_DEBUG) console.log('⊙⊙⊙⊙⊙ Monster.check()', pageData.tags);
 		// loop through the tags on the page
 		for (var i = 0, l = pageData.tags.length; i < l; i++) {
 			// save reference
@@ -90,7 +90,7 @@ var Monster = (function() {
 				if (arr.length > 0) {
 					// pick random monster id from list, this will be the page monster
 					mid = arr[Math.floor(Math.random() * arr.length)];
-					if (MONSTER_DEBUG) console.log('!!!!! Monster.checkForTagMatches() -> #' + tag, "has", arr.length, 'MATCHE(S)', arr, "randomly selecting...", MonsterData.dataById[mid].slug);
+					if (MONSTER_DEBUG) console.log('!⊙⊙⊙⊙ Monster.checkForTagMatches() -> #' + tag, "has", arr.length, 'MATCH(ES)', arr, "randomly selecting...", MonsterData.dataById[mid].slug);
 					// we have identified a match, let's handle the monster
 					handleMatch(mid);
 					break;
@@ -105,7 +105,7 @@ var Monster = (function() {
 	 */
 	function create(_mid, _stage = 1) {
 		if (!prop(_mid) || !prop(_stage) || !prop(MonsterData.dataById[_mid])) return;
-		if (MONSTER_DEBUG) console.log('..... Monster.create()', _mid, _stage, MonsterData.dataById[_mid]);
+		if (MONSTER_DEBUG) console.log('⊙!⊙⊙⊙ Monster.create()', _mid, _stage, MonsterData.dataById[_mid]);
 		let monster = {
 			"captured": 0,
 			"missed": 0,
@@ -168,7 +168,7 @@ var Monster = (function() {
 
 			//if (MONSTER_DEBUG) console.log('!!!!! Monster.handleMatch()', MonsterData.dataById[mid].slug, tally_nearby_monsters[mid]);
 		}
-		if (MONSTER_DEBUG) console.log('!!!!! Monster.handleMatch()', MonsterData.dataById[mid].slug, "stage =", tally_nearby_monsters[mid].stage);
+		if (MONSTER_DEBUG) console.log('⊙⊙!⊙⊙ Monster.handleMatch()', MonsterData.dataById[mid].slug, "stage =", tally_nearby_monsters[mid].stage);
 		// set skin
 		Skin.setStage(tally_nearby_monsters[mid].stage);
 		// save monsters
@@ -188,7 +188,7 @@ var Monster = (function() {
 	function launch(mid) {
 		// don't launch them if game isn't running in full mode
 		if (tally_options.gameMode != "full") return;
-		if (MONSTER_DEBUG) console.log('!!!!! Monster.launch()', mid, tally_nearby_monsters[mid]);
+		if (MONSTER_DEBUG) console.log('⊙⊙⊙!⊙ Monster.launch()', mid, tally_nearby_monsters[mid]);
 
 		// if they already have this one, add and increase the level
 		if (tally_user.monsters[mid])
@@ -210,7 +210,7 @@ var Monster = (function() {
 	}
 
 	function launchFrom(_mid, _pos) {
-		console.log("!!!!! Monster.launchFrom()", _mid, _pos, tally_nearby_monsters[_mid]);
+		console.log("⊙⊙⊙⊙! Monster.launchFrom()", _mid, _pos, tally_nearby_monsters[_mid]);
 
 		let _duration = ((pageData.browser.width / 15) + 3800) /*+ (tally_nearby_monsters[_mid].level * 100)*/ , // animation duration
 			_direction = "normal", // default animation direction
@@ -314,7 +314,7 @@ var Monster = (function() {
 	 *	Move monster down to award area
 	 */
 	function moveMonsterToAward(_mid) {
-		console.log("!!!!! Monster.moveMonsterToAward()", _mid, tally_nearby_monsters[_mid]);
+		console.log("☆☆☆☆☆ Monster.moveMonsterToAward()", _mid, tally_nearby_monsters[_mid]);
 
 		let _scale = pageData.browser.width > 1200 ? 0.85 : 0.65; // increase scale w/larger screens
 
@@ -393,18 +393,18 @@ var Monster = (function() {
 	 * Play award animation
 	 */
 	function showAward(_mid) {
-		console.log("+++++ Monster.showAward()", _mid);
+		console.log("☆☆☆☆☆ Monster.showAward()", _mid);
 		console.log("your level:", tally_nearby_monsters[_mid].level, " // top:", tally_user.monsters[_mid].top);
 
 		// check if they are top of leaderboards
 
 		if (tally_nearby_monsters[_mid].level == tally_user.monsters[_mid].top + 1) {
-			console.log("+++++ YOU JUST ARRIVED IN FIRST PLACE !!!! +++++");
+			console.log("☆☆☆☆☆ YOU JUST ARRIVED IN FIRST PLACE !!!! ☆☆☆☆☆");
 
 		} else if (tally_nearby_monsters[_mid].level > tally_user.monsters[_mid].top + 1) {
-			console.log("+++++ YOU ARE *STILL* IN FIRST PLACE +++++");
+			console.log("☆☆☆☆☆ YOU ARE *STILL* IN FIRST PLACE ☆☆☆☆☆");
 		} else {
-			console.log("+++++ YOU ARE:", tally_user.monsters[_mid].top - tally_nearby_monsters[_mid].level, " POINTS BEHIND THE LEADER");
+			console.log("☆☆☆☆☆ YOU ARE:", tally_user.monsters[_mid].top - tally_nearby_monsters[_mid].level, " POINTS BEHIND THE LEADER");
 		}
 
 		// insert text

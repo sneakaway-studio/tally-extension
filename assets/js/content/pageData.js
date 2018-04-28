@@ -10,7 +10,7 @@ function getPageData() {
 	if (!url || !url.match(/^http/)) return;
 	// object
 	var data = {
-		activeOnPage: false,
+		activeOnPage: false, // default
 		browser: {
 			name: Environment.getBrowserName(),
 			cookieEnabled: navigator.cookieEnabled || "",
@@ -20,9 +20,9 @@ function getPageData() {
 			height: window.innerHeight || document.body.clientHeight
 		},
 		screen: {
-            width: screen.width,
-            height: screen.height
-        },
+			width: screen.width,
+			height: screen.height
+		},
 		contentType: window.document.contentType,
 		description: getDescription(),
 		domain: Environment.extractRootDomain(document.location.href),
@@ -45,7 +45,7 @@ function getPageData() {
 	}
 	// check page tags
 	data.tags = getPageTags(data);
-	console.log("pageData",data);
+	//console.log("pageData",data);
 	return data;
 }
 
@@ -104,7 +104,11 @@ function getTrackers() {
 		// get source of script
 		let str = "";
 		if (scripts[i].src !== "") str = scripts[i].src;
-		else if (scripts[i].textContent) str = scripts[i].textContent;
+		// not sure why this is here, why would we want textContent of script?
+		//else if (scripts[i].textContent) str = scripts[i].textContent;
+		// no script here
+		else continue;
+
 		// get root domain of scripts
 		let scriptDomain = Environment.extractRootDomain(str);
 		//console.log(scriptDomain);
@@ -123,6 +127,7 @@ function getTrackers() {
 		// this method uses the single array (no categories)
 		// I think this may be the way to go in the end
 		if (foundArr.indexOf(scriptDomain) < 0 && trackers.indexOf(scriptDomain) >= 0) {
+			console.log("👀 👀 getTrackers()", str, scriptDomain);
 			foundArr.push(scriptDomain);
 		}
 

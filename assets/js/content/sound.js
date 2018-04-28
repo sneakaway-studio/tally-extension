@@ -98,7 +98,7 @@ var Sound = (function() {
 	 *	Generic play function (called from others in this obj)
 	 */
 	function play(soundFile, delay = 0) {
-		console.log("Sound.play("+ soundFile +")");
+		console.log("♪♪♪♪♪ Sound.play("+ soundFile +")");
 		// load/play sound
 		var audio = new Audio(chrome.extension.getURL("assets/sounds/" + soundFile));
 		audio.volume = 0.3;

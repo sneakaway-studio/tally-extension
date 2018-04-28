@@ -11,6 +11,7 @@ let CLICK_DEBUG = false;
  *	addMainClickEventListener() - adds click event listener for anything "mouse"
  */
 function addMainClickEventListener() {
+	if (!pageData.activeOnPage) return;
 	// core mouseup listener
 	document.addEventListener("mouseup", function(e) {
 		// a bit of throttling: if mouseup was just fired ignore this click
@@ -242,7 +243,7 @@ function newBackgroundUpdate() {
 			"token": "INSERT_IN_BACKGROUND",
 		}
 	};
-	console.log("newBackgroundUpdate() -> obj", obj);
+	//console.log("<{!}> newBackgroundUpdate() -> obj", obj);
 	return obj;
 }
 
@@ -261,6 +262,6 @@ function newBackgroundMonsterUpdate(mid) {
 			"token": "INSERT_IN_BACKGROUND",
 		}
 	};
-	console.log("<{!}> newBackgroundMonsterUpdate() -> obj", obj);
+	//console.log("<{!}> newBackgroundMonsterUpdate() -> obj", obj);
 	return obj;
 }

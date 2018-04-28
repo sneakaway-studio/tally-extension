@@ -32,21 +32,25 @@ $(function() {
  * Make sure Tally isn't disabled on this page|domain|subdomain
  */
 function shouldExtensionBeActiveOnPage() {
+	//console.log("shouldExtensionBeActiveOnPage()",tally_options);
 	if (!tally_meta.serverOnline) {
 		if (MAIN_DEBUG) console.log("!!!!! Connection to Tally server is down");
 		return false;
-		// } else if (!tally_meta.userTokenValid) {
-		// 	if (MAIN_DEBUG) console.log("!!!!! userTokenValid is not valid");
-		// 	return false;
-	} else if (tally_options.disabledDomains.length < 1 ||
-		($.inArray(pageData.domain, tally_options.disabledDomains) >= 0) ||
-		($.inArray(pageData.subDomain, tally_options.disabledDomains) >= 0)) {
+	} else if (!tally_meta.userTokenValid) {
+		if (MAIN_DEBUG) console.log("!!!!! userTokenValid is not valid");
+		return false;
+	} else if (prop(tally_options.disabledDomains) &&
+		(($.inArray(pageData.domain, tally_options.disabledDomains) >= 0) ||
+		($.inArray(pageData.subDomain, tally_options.disabledDomains) >= 0))) {
 		if (MAIN_DEBUG) console.log("!!!!! Tally is disabled on this domain");
 		return false;
 	} else if (pageData.contentType != "text/html") {
 		if (MAIN_DEBUG) console.log("!!!!! Tally is disabled on pages like " + pageData.contentType);
 		return false;
-	} else return true;
+	} else {
+		//console.log("shouldExtensionBeActiveOnPage()", true);
+		return true;
+	}
 }
 /**
  * Run Game
@@ -54,27 +58,14 @@ function shouldExtensionBeActiveOnPage() {
 function startGame() {
 	if (MAIN_DEBUG) console.log(">>>>> startGame() -> Starting Tally on this page");
 	//    console.log(">>>>> pageData = "+ JSON.stringify(pageData));
-
+	if (!pageData.activeOnPage) return;
 
 	Debug.add();
 	startTally();
 	addMainClickEventListener();
 	//checkPageForMonsters(pageData.tags);
 
-	if (MAIN_DEBUG) console.log(">>>>> tally_meta = " + JSON.stringify(tally_meta));
-	if (pageData.url != tally_meta.website + "/dashboard") {
-		if (tally_meta.userTokenStatus == "expired") {
-			$.growl({
-				title: "YOUR TOKEN HAS EXPIRED",
-				message: "Click here to get a new one"
-			});
-		} else if (tally_meta.userTokenStatus != "ok") {
-			$.growl({
-				title: "YOU HAVE NO TOKEN",
-				message: "<a href='" + tally_meta.website + "/dashboard' target='_blank'>Link your account to start playing Tally</a>"
-			});
-		}
-	}
+	checkToken();
 
 	addMutationObserver();
 	Monster.check();
@@ -90,6 +81,24 @@ function refreshApp() {
 	tally_game_status = getGameStatus();
 	Monster.check();
 	Debug.update();
+}
+
+
+function checkToken(){
+	if (MAIN_DEBUG) console.log(">>>>> tally_meta = " + JSON.stringify(tally_meta));
+	if (pageData.url != tally_meta.website + "/dashboard") {
+		if (tally_meta.userTokenStatus == "expired") {
+			$.growl({
+				title: "YOUR TOKEN HAS EXPIRED",
+				message: "Click here to get a new one"
+			});
+		} else if (tally_meta.userTokenStatus != "ok") {
+			$.growl({
+				title: "YOU HAVE NO TOKEN",
+				message: "<a href='" + tally_meta.website + "/dashboard' target='_blank'>Link your account to start playing Tally</a>"
+			});
+		}
+	}
 }
 
 /**
