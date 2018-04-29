@@ -175,9 +175,9 @@ var clickEventHandler = function(eventData, target) {
 		 */
 
 		// play sound
-		Sound.play('user', 'click');
+		Sound.playCategory('user', 'click');
 		// show click visual
-		Effects.showClickVisualText(eventData, "+" + gameRules.clickScore[eventData.action]);
+		Effect.showClickVisualText(eventData, "+" + gameRules.clickScore[eventData.action]);
 		// activate tally
 		// activateTally(eventData.action);
 	}

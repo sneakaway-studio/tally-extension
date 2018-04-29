@@ -57,9 +57,9 @@ var Sound = (function() {
 	 * @param  {integer} index - A specific index in the category
 	 * @param  {integer} delay - Delay in milliseconds
 	 */
-	function random(category, index, delay) {
+	function playRandom(category, index, delay) {
 		if (!tally_options.playSounds) return;
-		//console.log("playSound("+ category +","+ index +")");
+		//console.log("playRandom("+ category +","+ index +")");
 		var soundFile = "";
 		// if a specific category && index provided, then get that sound
 		if (prop(category) && prop(index))
@@ -77,16 +77,16 @@ var Sound = (function() {
 		}
 		play(soundFile, delay);
 	}
-	// Sound.play ("tally","general")
-	function playSound(category, index, delay) {
+	// Sound.playCategory ("tally","general")
+	function playCategory(category, index, delay) {
 		if (!tally_options.playSounds) return;
 		let file = category + "/" + sounds[category][index];
 		play(file, delay);
 	}
-	// play a random example of a mood
+	// play a mood
 	function playMood(mood) {
 		if (!tally_options.playSounds) return;
-		//console.log("Sound.new()",mood);
+		//console.log("Sound.playMood()",mood);
 		let r = Math.ceil(Math.random() * moods[mood]);
 		let file = "tally/moods-v2/" + mood + "-" + r + "-2.mp3";
 		play(file);
@@ -112,11 +112,14 @@ var Sound = (function() {
 
 	// PUBLIC
 	return {
-		test: function(category, index, delay) {
-			random(category, index, delay);
+		playRandom: function(category, index, delay) {
+			playRandom(category, index, delay);
 		},
-		play: function(category, index, delay) {
-			playSound(category, index, delay);
+		playCategory: function(category, index, delay) {
+			playCategory(category, index, delay);
+		},
+		playFile: function(file) {
+			play(file);
 		},
 		playMood: function(mood) {
 			playMood(mood);
