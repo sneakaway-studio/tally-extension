@@ -151,7 +151,6 @@ function getGameStatus() {
 		tally_game_status = response.data;
 	});
 }
-
 function saveGameStatus(data) {
 	tally_game_status = data;
 	chrome.runtime.sendMessage({
@@ -159,5 +158,15 @@ function saveGameStatus(data) {
 		'data': tally_game_status
 	}, function(response) {
 		//console.log("<<<<< ",'> saveGameStatus()',JSON.stringify(response));
+	});
+}
+
+
+function getTopMonsters() {
+	chrome.runtime.sendMessage({
+		'action': 'getTopMonsters'
+	}, function(response) {
+		console.log("<<<<< ",'> getTopMonsters()',JSON.stringify(response));
+		tally_top_monsters = response.data;
 	});
 }

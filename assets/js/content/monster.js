@@ -107,6 +107,7 @@ var Monster = (function() {
 		if (!prop(_mid) || !prop(_stage) || !prop(MonsterData.dataById[_mid])) return;
 		if (MONSTER_DEBUG) console.log('⊙!⊙⊙⊙ Monster.create()', _mid, _stage, MonsterData.dataById[_mid]);
 		let monster = {
+			"totalCaptured": 0,
 			"captured": 0,
 			"missed": 0,
 			"facing": MonsterData.dataById[_mid].facing,
@@ -116,8 +117,10 @@ var Monster = (function() {
 			"slug": MonsterData.dataById[_mid].slug,
 			"updatedAt": Date.now()
 		};
-		if (tally_user.monsters[_mid] && tally_user.monsters[_mid].level)
-			monster.level = tally_user.monsters[_mid].level + 1;
+		// if it already exists then make it the number of captures +1
+		if (tally_user.monsters[_mid])
+			monster.totalCaptured = tally_user.monsters[_mid].captured;
+		//if (MONSTER_DEBUG) console.log('⊙!⊙⊙⊙ Monster.create()', _mid, monster,tally_user.monsters[_mid]);
 		return monster;
 	}
 
@@ -191,8 +194,8 @@ var Monster = (function() {
 		if (MONSTER_DEBUG) console.log('⊙⊙⊙!⊙ Monster.launch()', mid, tally_nearby_monsters[mid]);
 
 		// if they already have this one, add and increase the level
-		if (tally_user.monsters[mid])
-			tally_nearby_monsters[mid].level = tally_user.monsters[mid].level + 1;
+//		if (tally_user.monsters[mid])
+//			tally_nearby_monsters[mid].level = tally_user.monsters[mid].level + 1;
 		// reference to image file
 		var url = chrome.extension.getURL('assets/img/monsters/' + mid + '-anim-sheet.png');
 		// set content
@@ -304,6 +307,7 @@ var Monster = (function() {
 	function capture(_mid) {
 		tally_nearby_monsters[_mid].captured = 1;
 		tally_nearby_monsters[_mid].missed = 0;
+		tally_nearby_monsters[_mid].totalCaptured += 1;
 		// move monster and show award
 		moveMonsterToAward(_mid);
 		showAward(_mid);
@@ -393,19 +397,30 @@ var Monster = (function() {
 	 * Play award animation
 	 */
 	function showAward(_mid) {
-		console.log("☆☆☆☆☆ Monster.showAward()", _mid);
-		console.log("your level:", tally_nearby_monsters[_mid].level, " // top:", tally_user.monsters[_mid].top);
+		console.log("☆☆☆☆☆ Monster.showAward()", _mid, JSON.stringify(tally_top_monsters[_mid]),tally_nearby_monsters[_mid]);
 
-		// check if they are top of leaderboards
-
-		if (tally_nearby_monsters[_mid].level == tally_user.monsters[_mid].top + 1) {
-			console.log("☆☆☆☆☆ YOU JUST ARRIVED IN FIRST PLACE !!!! ☆☆☆☆☆");
-
-		} else if (tally_nearby_monsters[_mid].level > tally_user.monsters[_mid].top + 1) {
+// current, caught, top
+//1. 25,26,25
+//2. 24,25,25
+//3.  1, 2,25
+//if (prop(tally_top_monsters[_mid])){
+		// 1. Are they already at the top of the leaderboard?
+		// IOW is the monster level they are at (level-1) >= the top monster level?
+		if (tally_nearby_monsters[_mid].totalCaptured > tally_top_monsters[_mid].top) {
 			console.log("☆☆☆☆☆ YOU ARE *STILL* IN FIRST PLACE ☆☆☆☆☆");
-		} else {
-			console.log("☆☆☆☆☆ YOU ARE:", tally_user.monsters[_mid].top - tally_nearby_monsters[_mid].level, " POINTS BEHIND THE LEADER");
 		}
+		// 2. OR, are they just now coming to be on top?
+		else if ((tally_nearby_monsters[_mid].totalCaptured) == tally_top_monsters[_mid].top) {
+			console.log("☆☆☆☆☆ YOU JUST ARRIVED IN FIRST PLACE !!!! ☆☆☆☆☆");
+			Effect.explode();
+		}
+		// 3. OR, are they below top
+		else {
+			console.log("☆☆☆☆☆ YOU ARE:", tally_top_monsters[_mid].top - tally_nearby_monsters[_mid].totalCaptured, "POINTS BEHIND THE LEADER");
+		}
+//}
+
+
 
 		// insert text
 		$('.award_title').html("YOU CONTAINED THE MONSTER!!!!!");
@@ -457,7 +472,7 @@ var Monster = (function() {
 				offset: 900
 			});
 
-		Sound.play('awards', 'monster');
+		Sound.playCategory('awards', 'monster');
 
 		// hide monster
 		window.setTimeout(function() {
@@ -513,7 +528,7 @@ var Monster = (function() {
 	}
 
 	/**
-	 *	Save the nearby monsters
+	 *	Save nearby monsters
 	 */
 	function saveNearbyMonsters() {
 		chrome.runtime.sendMessage({
@@ -524,10 +539,8 @@ var Monster = (function() {
 		});
 		Debug.update();
 	}
-
-
 	/**
-	 *	Return the current monster MID
+	 *	Return current monster MID
 	 */
 	function getCurrent() {
 		return currentMID;

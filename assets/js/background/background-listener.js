@@ -66,6 +66,14 @@ chrome.runtime.onMessage.addListener(
 			});
 		}
 
+		// getTopMonsters
+		else if (request.action == "getTopMonsters") {
+			sendResponse({
+				"action": request.action,
+				"data": store("tally_top_monsters") || {}
+			});
+		}
+
 		// getNearbyMonsters
 		else if (request.action == "getNearbyMonsters") {
 			let data = store("tally_nearby_monsters") || {};

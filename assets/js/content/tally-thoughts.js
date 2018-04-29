@@ -54,7 +54,7 @@ var Thought = (function() {
 	 *	Show the thought bubble [with text and sound]
 	 */
 	function showThought(thought, sound) {
-		console.log("showThought()", thought, sound);
+		console.log("⪦⪦⪦⪦⪦ Thought.showThought()", thought, sound);
 		if (thoughtOpen) return; // if open, exit
 		if (sound) Sound.playMood(thought.mood);
 		show(thought.text);
@@ -66,7 +66,7 @@ var Thought = (function() {
 	 *	Show the thought bubble [with text and sound]
 	 */
 	function showString(str, sound) {
-		console.log("showString()", str, sound);
+		console.log("⪦⪦⪦⪦⪦ Thought.showString()", str, sound);
 		if (thoughtOpen) return; // if open, exit
 		if (sound) Sound.playMood(sound);
 		show(str);
@@ -79,7 +79,7 @@ var Thought = (function() {
 	 *	Show a thought string
 	 */
 	function show(str) {
-		if (THOUGHT_DEBUG) console.log("show()", str);
+		if (THOUGHT_DEBUG) console.log("⪦⪦⪦⪦⪦ Thought.show()", str);
 		thoughtOpen = true;
 
 		// replace any template strings

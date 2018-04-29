@@ -13,6 +13,7 @@ function createApp() {
 		store("tally_nearby_monsters", createNearbyMonsters());
 		store("tally_meta", createMeta());
 		store("tally_secret", createSecret());
+		store("tally_top_monsters", {});
 		// these are empty the first time
 		// store("tally_domains", {});
 		// store("tally_urls", {});

@@ -54,7 +54,7 @@ function convertArrayToObject(arr,key){
 }
 
 /**
- *	Convert an array to an object with <key> as key
+ *	Remove duplicates from an array
  */
 function removeDuplicates(array_){
     var ret_array = [];

@@ -7,7 +7,8 @@ let pageData = getPageData(),
 	tally_options = {},
 	tally_meta = {},
 	tally_game_status = getGameStatus(),
-	tally_nearby_monsters = {};
+	tally_nearby_monsters = {},
+	tally_top_monsters = getTopMonsters();
 
 
 let MAIN_DEBUG = false;
