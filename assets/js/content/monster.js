@@ -406,6 +406,7 @@ var Monster = (function() {
 //if (prop(tally_top_monsters[_mid])){
 
 		var additional_targets = '';
+		var victory_text = "YOU CONTAINED THE MONSTER!!!!!";
 
 		// 1. Are they already at the top of the leaderboard?
 		// IOW is the monster level they are at (level-1) >= the top monster level?
@@ -418,6 +419,7 @@ var Monster = (function() {
 			console.log("☆☆☆☆☆ YOU JUST ARRIVED IN FIRST PLACE !!!! ☆☆☆☆☆");
 			Effect.explode();
 			additional_targets = ', .tally_award_explode_background-1, .tally_award_explode_background-2';
+			victory_text = "YOU BROKE THE INTERNET!!!";
 		}
 		// 3. OR, are they below top
 		else {
@@ -428,7 +430,7 @@ var Monster = (function() {
 
 
 		// insert text
-		$('.award_title').html("YOU CONTAINED THE MONSTER!!!!!");
+		$('.award_title').html(victory_text);
 		$('.award_subtitle').html("You leveled up! <a href='https://tallygame.net/signup'> Check out your score</a>");
 		$('.award_did_you_know').html("<h6>Did you know?</h6>");
 		let fact = Thought.getFact("trackers");
