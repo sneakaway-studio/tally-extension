@@ -454,12 +454,12 @@ var Monster = (function() {
 						delay: 0,
 						elasticity: 100
 					},
-					/**{
+					{
 						value: 1400,
 						duration: 2000,
 						delay: 12000,
 						elasticity: 0
-					}*/
+					}
 				],
 				easing: 'easeInOutCubic',
 			})
@@ -471,12 +471,12 @@ var Monster = (function() {
 						delay: 600,
 						elasticity: 0
 					},
-					/**{
-						value: 800,
+					{
+						value: 2020,
 						duration: 2000,
 						delay: 10000,
 						elasticity: 0
-					}*/
+					}
 				],
 				easing: 'easeOutExpo',
 				offset: 900
