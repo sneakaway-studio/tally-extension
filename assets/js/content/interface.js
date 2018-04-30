@@ -19,6 +19,8 @@ $(function() {
 						"</div>" +
 					"</div>" +
 					"<div class='tally tally_award_background'></div>" +
+					"<div class='tally_award_explode_background-1'></div>"+
+          "<div class='tally_award_explode_background-2'></div>"+
 
 					"<div class='tally' id='tally'></div>" +
 			"</div>";

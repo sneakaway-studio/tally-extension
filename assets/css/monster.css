@@ -79,6 +79,26 @@ svg.monster_path path {
     background-color: #462795;
     z-index: 99999998;
 }
+.tally_award_explode_background-1 {
+    width: 4000px;
+    height: 750px;
+    transform: rotate(-20.5deg);
+    position: fixed;
+    bottom: -1400px;
+    left: 20%;
+    background-color: #F25132;
+    z-index: 99999997;
+}
+.tally_award_explode_background-2 {
+    width: 4000px;
+    height: 750px;
+    transform: rotate(-21deg);
+    position: fixed;
+    bottom: -1380px;
+    left: 20%;
+    background-color: #FCD067;
+    z-index: 99999996;
+}
 .tally_award_text_wrapper {
     height: auto;
     width: 100vw;
