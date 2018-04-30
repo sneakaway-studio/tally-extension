@@ -437,12 +437,6 @@ var Monster = (function() {
 		if (fact.year) str += " (" + fact.year + ")";
 		$('.award_fact').html(str);
 
-		if (true){
-
-		} else {
-			additional_targets = '';
-		};
-
 		// hide background and text
 		var insertTimeline = anime.timeline();
 		insertTimeline
