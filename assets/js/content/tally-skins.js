@@ -67,7 +67,7 @@ var Skin = (function() {
 	 *	Set the skin color using a reference: "color-magenta"
 	 */
 	function set(skin) {
-		console.log("⋇⋇⋇⋇⋇ Skin.set()", skin);
+		console.log("👚👗 Skin.set()", skin);
 		if (skin != "" && prop(tally_game_status)) tally_game_status.skin = skin;
 		saveGameStatus(tally_game_status);
 		updateList();

@@ -67,8 +67,9 @@ function startGame() {
 	//checkPageForMonsters(pageData.tags);
 
 	checkToken();
-
-	addMutationObserver();
+	// if youtube
+	if (pageData.domain = "youtube.com")
+		addMutationObserver();
 	Monster.check();
 	Debug.update();
 }
@@ -106,9 +107,8 @@ function checkToken(){
  *	MutationObserver to detect title element changes (e.g. youtube and other ajax sites)
  */
 function addMutationObserver(){
-	// if running on page
-	if (tally_options.gameMode === "disabled") return;
-	if (!pageData.activeOnPage) return;
+	// if running
+	if (tally_options.gameMode === "disabled" || !pageData.activeOnPage) return;
 	new MutationObserver(function(mutations) {
 	    console.log("title changed", mutations[0].target.nodeValue);
 		refreshApp();

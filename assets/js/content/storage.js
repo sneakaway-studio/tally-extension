@@ -166,7 +166,7 @@ function getTopMonsters() {
 	chrome.runtime.sendMessage({
 		'action': 'getTopMonsters'
 	}, function(response) {
-		console.log("<<<<< ",'> getTopMonsters()',JSON.stringify(response));
+		//console.log("<<<<< ",'> getTopMonsters()',JSON.stringify(response));
 		tally_top_monsters = response.data;
 	});
 }
