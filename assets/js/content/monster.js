@@ -425,7 +425,7 @@ var Monster = (function() {
 		// insert text
 		$('.award_title').html("YOU CONTAINED THE MONSTER!!!!!");
 		$('.award_subtitle').html("You leveled up! <a href='https://tallygame.net/signup'> Check out your score</a>");
-		$('.award_did_you_know').html("<h6>Did you know?</h6>");
+		$('.award_did_you_know').html("<h6 class='tally'>Did you know?</h6>");
 		let fact = Thought.getFact("trackers");
 		let str = fact.fact || "";
 		if (fact.url && fact.source) str += " Source: <a href='" + fact.url + "' target='_blank'>" + fact.source + "</a>";

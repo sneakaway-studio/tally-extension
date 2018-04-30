@@ -62,7 +62,7 @@ var clickEventHandler = function(eventData, target) {
 	// console.log("clickEventHandler() > eventData",eventData,target);
 	//console.log("clickEventHandler() > target",target,target.className);
 
-
+  
 	/**
 	 * 	1. Determine if this is a node we want to ignore (tally interface links, etc.)
 	 */
