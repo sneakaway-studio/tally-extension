@@ -60,7 +60,7 @@ function addMainClickEventListener() {
 var clickEventHandler = function(eventData, target) {
 	//if (!pageData.activeOnPage || tally_options.gameMode === "disabled") return;
 	// console.log("clickEventHandler() > eventData",eventData,target);
-	//console.log("clickEventHandler() > target",target);
+	//console.log("clickEventHandler() > target",target,target.className);
 
 
 	/**
@@ -83,7 +83,9 @@ var clickEventHandler = function(eventData, target) {
 
 	// Check if click target is an Anchor or if target's parent element is an Anchor.
 	if (eventData.tag == "A" || eventData.parentTag == "A" ||
-		eventData.gParentTag == "A" || target.className == "_39n" /* FB */ ) {
+		eventData.gParentTag == "A" || target.className == "_39n" || /* FB */
+		target.className.indexOf("ProfileTweet-actionCountForPresentation") > -1
+	) {
 		eventData.action = "click";
 	}
 	// click target is a Button
@@ -124,7 +126,9 @@ var clickEventHandler = function(eventData, target) {
 		// more checking...
 
 		// check if it is a FB like
-		if (eventData.text == "Like" || target.className == "_39n") {
+		if (eventData.text == "Like" || target.className == "_39n" /* FB */ ||
+			target.className.indexOf("ProfileTweet-actionCountForPresentation") > -1 /* Twitter */
+		) {
 			eventData.action = "like";
 			backgroundUpdate.scoreData.likes++;
 		}
