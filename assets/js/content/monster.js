@@ -405,14 +405,22 @@ var Monster = (function() {
 //3.  1, 2,25
 //if (prop(tally_top_monsters[_mid])){
 
-		var additional_targets = '';
-		var victory_text = "YOU CONTAINED THE MONSTER!!!!!";
+		// insert text
+		$('.award_subtitle').html("You leveled up! <a href='https://tallygame.net/signup'> Check out your score</a>");
+		let additional_targets = '';
+		let victory_text = "YOU CONTAINED THE MONSTER!!!!!";
+		let fact = Thought.getFact("trackers");
+		let boxText = "<h6>Did you know?</h6>";
+		let str = fact.fact || "";
+		if (fact.url && fact.source) str += " Source: <a href='" + fact.url + "' target='_blank'>" + fact.source + "</a>";
+		if (fact.year) str += " (" + fact.year + ")";
 
 		// 1. Are they already at the top of the leaderboard?
 		// IOW is the monster level they are at (level-1) >= the top monster level?
 		if (tally_nearby_monsters[_mid].totalCaptured > tally_top_monsters[_mid].top) {
 			console.log("☆☆☆☆☆ YOU ARE *STILL* IN FIRST PLACE ☆☆☆☆☆");
 			additional_targets = ', .tally_award_explode_background-1, .tally_award_explode_background-2';
+			victory_text = "YOU ARE STILL IN FIRST!!!";
 		}
 		// 2. OR, are they just now coming to be on top?
 		else if ((tally_nearby_monsters[_mid].totalCaptured) == tally_top_monsters[_mid].top) {
@@ -420,6 +428,8 @@ var Monster = (function() {
 			Effect.explode();
 			additional_targets = ', .tally_award_explode_background-1, .tally_award_explode_background-2';
 			victory_text = "YOU BROKE THE INTERNET!!!";
+			box_text = "Reset the page";
+			str = "";
 		}
 		// 3. OR, are they below top
 		else {
@@ -427,16 +437,9 @@ var Monster = (function() {
 		}
 //}
 
-
-
-		// insert text
+		// insert specific text
 		$('.award_title').html(victory_text);
-		$('.award_subtitle').html("You leveled up! <a href='https://tallygame.net/signup'> Check out your score</a>");
-		$('.award_did_you_know').html("<h6>Did you know?</h6>");
-		let fact = Thought.getFact("trackers");
-		let str = fact.fact || "";
-		if (fact.url && fact.source) str += " Source: <a href='" + fact.url + "' target='_blank'>" + fact.source + "</a>";
-		if (fact.year) str += " (" + fact.year + ")";
+		$('.award_did_you_know').html(boxText);
 		$('.award_fact').html(str);
 
 		// hide background and text
