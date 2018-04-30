@@ -404,15 +404,20 @@ var Monster = (function() {
 //2. 24,25,25
 //3.  1, 2,25
 //if (prop(tally_top_monsters[_mid])){
+
+		var additional_targets = '';
+
 		// 1. Are they already at the top of the leaderboard?
 		// IOW is the monster level they are at (level-1) >= the top monster level?
 		if (tally_nearby_monsters[_mid].totalCaptured > tally_top_monsters[_mid].top) {
 			console.log("☆☆☆☆☆ YOU ARE *STILL* IN FIRST PLACE ☆☆☆☆☆");
+			additional_targets = ', .tally_award_explode_background-1, .tally_award_explode_background-2';
 		}
 		// 2. OR, are they just now coming to be on top?
 		else if ((tally_nearby_monsters[_mid].totalCaptured) == tally_top_monsters[_mid].top) {
 			console.log("☆☆☆☆☆ YOU JUST ARRIVED IN FIRST PLACE !!!! ☆☆☆☆☆");
 			Effect.explode();
+			additional_targets = ', .tally_award_explode_background-1, .tally_award_explode_background-2';
 		}
 		// 3. OR, are they below top
 		else {
@@ -432,11 +437,17 @@ var Monster = (function() {
 		if (fact.year) str += " (" + fact.year + ")";
 		$('.award_fact').html(str);
 
+		if (true){
+
+		} else {
+			additional_targets = '';
+		};
+
 		// hide background and text
 		var insertTimeline = anime.timeline();
 		insertTimeline
 			.add({
-				targets: '.tally_award_background',
+				targets: '.tally_award_background' + additional_targets,
 				rotate: -20,
 				translateY: [{
 						value: -1400,
