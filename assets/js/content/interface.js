@@ -11,12 +11,12 @@ $(function() {
 					"</div>" +
 					"</div>" +
 					"<div class='tally tally_award_text_wrapper'>" +
-						"<div class='tally tally_award_text'>" +
+						
 							"<div class='tally award_title'></div>" +
 							"<div class='tally award_subtitle'></div>" +
 							"<div class='tally award_did_you_know'></div>" +
 							"<div class='tally award_fact'></div>" +
-						"</div>" +
+						
 					"</div>" +
 					"<div class='tally tally_award_background'></div>" +
 					"<div class='tally_award_explode_background-1'></div>"+

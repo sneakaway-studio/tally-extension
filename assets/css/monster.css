@@ -99,15 +99,20 @@ svg.monster_path path {
     background-color: #FCD067;
     z-index: 99999996;
 }
+
 .tally_award_text_wrapper {
-    height: auto;
-    width: 100vw;
+    width: 28%;
+    height: 40%;
     position: fixed;
     bottom: 0%;
-    left: 650px;
+    right: -2000px;
+    font-family: "Futura", "Trebuchet MS", Arial, sans-serif;
+    color: #FFF;
+    text-align: center;
     z-index: 99999999;
-    visibility: hidden;
+    visibility: visible;
 }
+/*
 .tally_award_text {
     font: 1.3vw/1.6vw Arial, sans-serif;
     font-weight: normal;
@@ -119,54 +124,49 @@ svg.monster_path path {
     z-index: 6;
     visibility: visible;
 }
+*/
 .tally_award_text a:link, .tally_award_text a:hover, .tally_award_text a:visited, .tally_award_text a:active {
     color: #DE4929;
     text-decoration-line: none;
 }
 .award_title {
-    font: 3vw/3.5vw "Futura", "Trebuchet MS", Arial, sans-serif;
+    width: 100%;
+    height: 40%;
     position: relative;
-    top: -20px;
-    font-style: italic;
-    text-align: center;
+    font-size: 2.5vmax;
 }
 .award_subtitle {
-    display: block;
+    width: 100%;
+    height: 20%;
+    bottom: 9%;
     position: relative;
-    top: -50px;
-    font-weight: normal;
-    text-align: center;
-    background-color: #462795;
+    font-size: 2vmin;
 }
 .award_did_you_know {
     position: relative;
-    right: -30%;
-    width: 40%;
-    height: 20px;
-    font-size: 2vw;
+    right: -20%;
+    width: 60%;
+    height: 20%;
     z-index: 32;
-    top: -10px;
+    top: -15%;
 }
 .award_did_you_know h6 {
     font-family: "Futura", "Trebuchet MS", Arial, sans-serif;
-    font-weight: normal;
-    position: static;
-    text-align: center;
-    top: -20px;
+    position: relative;
     color: #FFF;
     background-color: #DE4929;
-    padding-top: 4%;
-    padding-bottom: 4%;
+    padding-top: 2%;
+    padding-bottom: 1.75%;
+    font-size: 2vmin;
 }
 .award_fact {
     position: relative;
-    top: -20px;
-    text-align: center;
+    bottom: 30%;
     border: 1px solid white;
-    padding: 7%;
+    padding: 7vmin;
     left: 10%;
     width: 80%;
-    height: 95px;
+    height: 20%;
     background-color: #462795;
     overflow: auto;
     z-index: 30;
