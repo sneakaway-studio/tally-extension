@@ -14,6 +14,7 @@ function createApp() {
 		store("tally_meta", createMeta());
 		store("tally_secret", createSecret());
 		store("tally_top_monsters", {});
+
 		// these are empty the first time
 		// store("tally_domains", {});
 		// store("tally_urls", {});
@@ -66,7 +67,7 @@ function launchStartScreen() {
  */
 function createUser() {
 	var obj = {
-		"username": "ow3n",
+		"username": "",
 		"score": createScore(),
 		"achievements": createAchievements(),
 		"monsters": createMonsters(),
@@ -169,6 +170,10 @@ function createMeta() {
 		"website": Config.production.website,
 		"browser": Environment.getBrowserName()
 	};
+	// testing installation
+	obj.currentAPI = "development";
+	obj.api = Config.development.api;
+	obj.website = Config.development.website;
 	return obj;
 }
 

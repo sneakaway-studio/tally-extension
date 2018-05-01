@@ -43,7 +43,7 @@ function checkAPIServerStatus() {
 /**
  *  Verify token is valid, not expired
  */
-function verifyToken() {
+function verifyToken(callback) {
 	let _tally_secret = store("tally_secret"),
 		_tally_meta = store("tally_meta");
 	// if a token does not exist
@@ -96,6 +96,7 @@ function handleTokenStatus(_expires, _expiresDiff, _status, _valid) {
 	// if userTokenStatus is ok
 	if (_tally_meta.userTokenStatus == "ok") {
 		console.log(">>>>> handleTokenStatus() -> everything is cool, start game");
+		checkServerForDataOnStartApp();
 		// content script takes over
 	} else if (_tally_meta.userTokenStatus == "expired") {
 		console.log(">>>>> handleTokenStatus() -> TOKEN EXPIRED");
@@ -158,28 +159,14 @@ function sendMonsterUpdate(data) {
 		dataType: 'json',
 		data: JSON.stringify(data)
 	}).done(result => {
-		console.log("<{!}> sendMonsterUpdate() RESULT =", JSON.stringify(result));
+		//console.log("<{!}> sendMonsterUpdate() RESULT =", JSON.stringify(result));
+
 		// treat all server data as master
-		//let monsters = {};
-		// if (result.userMonsters.length > 0) {
-		// 	// loop and associate keys to objs
-		// 	for (let i = 0, l = result.userMonsters.length; i < l; i++) {
-		// 		monsters.userMonsters[result[i].mid] = {
-		// 			"level": result.userMonsters[i].level,
-		// 			"top": result.userMonsters[i].top
-		// 		};
-		// 	}
-		// }
-		//
-		// _tally_user.monsters = convertArrayOfObjectsToObjectWithKey(result.userMonsters,"mid");
-		// _tally_top_monsters = convertArrayOfObjectsToObjectWithKey(result.topMonsters,"mid");
+		_tally_user.monsters = convertArrayToObject(result.userMonsters,"mid");
+		_tally_top_monsters = convertArrayToObject(result.topMonsters,"mid");
 
-
-				_tally_user.monsters = convertArrayToObject(result.userMonsters,"mid");
-				_tally_top_monsters = convertArrayToObject(result.topMonsters,"mid");
-
-console.log("<{!}> sendMonsterUpdate() RESULT =", JSON.stringify(_tally_user.monsters));
-console.log("<{!}> sendMonsterUpdate() RESULT =", JSON.stringify(_tally_top_monsters));
+		console.log("<{!}> sendMonsterUpdate() RESULT =", JSON.stringify(_tally_user.monsters));
+		console.log("<{!}> sendMonsterUpdate() RESULT =", JSON.stringify(_tally_top_monsters));
 
 		store("tally_user", _tally_user);
 		store("tally_top_monsters", _tally_top_monsters);
@@ -189,19 +176,46 @@ console.log("<{!}> sendMonsterUpdate() RESULT =", JSON.stringify(_tally_top_mons
 		checkAPIServerStatus();
 	});
 }
-// may be a duplicate of another function I already wrote
-// function convertArrayOfObjectsToObjectWithKey(arr,key){
-// 	let obj = {};
-// 	if (arr.length > 0) {
-// 		// loop and associate keys to objs
-// 		for (let i = 0, l = arr.length; i < l; i++) {
-// 			obj[arr[i][key]] = arr[i];
-// 		}
-// 		return obj
-// 	} else {
-// 		return {};
-// 	}
-// }
+/**
+ *  Refresh monsters from API server
+ */
+function getMonstersFromServer() {
+	console.log("<{!}> getMonstersFromServer()");
+	let _tally_meta = store("tally_meta"),
+		_tally_user = store("tally_user"),
+		_tally_top_monsters = store("tally_top_monsters"),
+		username = "";
+
+	console.log("<{!}> getMonstersFromServer()",_tally_meta,_tally_user);
+	if (!_tally_meta.serverOnline || _tally_meta.userTokenStatus != "ok") return;
+	if (prop(_tally_user.username) && _tally_user.username != "") username = _tally_user.username;
+	$.ajax({
+		type: "GET",
+		url: _tally_meta.api + "/monsters/"+username,
+		contentType: 'application/json',
+		dataType: 'json',
+	}).done(result => {
+		//console.log("<{!}> getMonstersFromServer() RESULT =", JSON.stringify(result));
+
+		// treat all server data as master
+		_tally_user.monsters = convertArrayToObject(result.userMonsters,"mid");
+		_tally_top_monsters = convertArrayToObject(result.topMonsters,"mid");
+
+		console.log("<{!}> getMonstersFromServer() RESULT =", JSON.stringify(_tally_user.monsters));
+		console.log("<{!}> getMonstersFromServer() RESULT =", JSON.stringify(_tally_top_monsters));
+
+		store("tally_user", _tally_user);
+		store("tally_top_monsters", _tally_top_monsters);
+	}).fail(error => {
+		console.error("<{!}> getMonstersFromServer() RESULT =", JSON.stringify(error));
+		// server might not be reachable
+		checkAPIServerStatus();
+	});
+}
+
+
+
+
 
 
 
