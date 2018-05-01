@@ -410,7 +410,7 @@ var Monster = (function() {
 		let additional_targets = '';
 		let victory_text = "YOU CONTAINED THE MONSTER!!!!!";
 		let fact = Thought.getFact("trackers");
-		let boxText = "<h6>Did you know?</h6>";
+		let box_text = "<h6>Did you know?</h6>";
 		let str = fact.fact || "";
 		if (fact.url && fact.source) str += " Source: <a href='" + fact.url + "' target='_blank'>" + fact.source + "</a>";
 		if (fact.year) str += " (" + fact.year + ")";
@@ -428,7 +428,7 @@ var Monster = (function() {
 			Effect.explode();
 			additional_targets = ', .tally_award_explode_background-1, .tally_award_explode_background-2';
 			victory_text = "YOU BROKE THE INTERNET!!!";
-			box_text = "Reset the page";
+			box_text = "<h6>Reset the page<h6>";
 			str = "";
 		}
 		// 3. OR, are they below top
@@ -439,8 +439,12 @@ var Monster = (function() {
 
 		// insert specific text
 		$('.award_title').html(victory_text);
-		$('.award_did_you_know').html(boxText);
+		$('.award_did_you_know').html(box_text);
 		$('.award_fact').html(str);
+
+		$(".tally_award_background").click(function(){
+			$(".tally_award_background").hide();
+		});
 
 		// hide background and text
 		var insertTimeline = anime.timeline();
