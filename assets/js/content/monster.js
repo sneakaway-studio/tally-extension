@@ -410,7 +410,7 @@ var Monster = (function() {
 		let additional_targets = '';
 		let victory_text = "YOU CONTAINED THE MONSTER!!!!!";
 		let fact = Thought.getFact("trackers");
-		let boxText = "<h6>Did you know?</h6>";
+		let box_text = "<h6>Did you know?</h6>";
 		let str = fact.fact || "";
 		if (fact.url && fact.source) str += " Source: <a href='" + fact.url + "' target='_blank'>" + fact.source + "</a>";
 		if (fact.year) str += " (" + fact.year + ")";
@@ -439,7 +439,7 @@ var Monster = (function() {
 
 		// insert specific text
 		$('.award_title').html(victory_text);
-		$('.award_did_you_know').html(boxText);
+		$('.award_did_you_know').html(box_text);
 		$('.award_fact').html(str);
 
 		// hide background and text
