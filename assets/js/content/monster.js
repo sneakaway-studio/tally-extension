@@ -442,8 +442,8 @@ var Monster = (function() {
 		$('.award_did_you_know').html(box_text);
 		$('.award_fact').html(str);
 
-		$(".tally_award_background").click(function(){
-			$(".tally_award_background").hide();
+		$('.tally_award_background' + additional_targets).click(function(){
+			$('.tally_award_background' + additional_targets).hide();
 		});
 
 		// hide background and text
