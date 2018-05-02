@@ -226,7 +226,8 @@ function updateTabSkins() {
  ******************************************************************************/
 
 // set default
-openTab("statusBtn", "statusTab");
+openTab("aboutBtn", "aboutTab");
+//openTab("statusBtn", "statusTab");
 //openTab("optionsBtn","optionsTab");
 
 // tab buttons
@@ -259,6 +260,13 @@ $(document).on('click', '#editProfileBtn', function() {
 $(document).on('click', '#viewLeaderboardsBtn', function() {
 	window.open(tally_meta.website + "/leaderboards");
 });
+
+
+$(document).on('click', '#testerSurveyBtn', function() {
+	window.open("https://docs.google.com/forms/d/e/1FAIpQLSeGx8zsF4aMQZH1eM0SzOvcpXijt8Bem1pzg4eni9eK8Jr-Lg/viewform");
+});
+
+
 
 
 

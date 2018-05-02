@@ -23,9 +23,9 @@
 		<div id="content">
 
 			<div class="tab-button-group">
-				<button class="tab-button active" id="statusBtn">Status</button>
+				<button class="tab-button" id="statusBtn">Status</button>
 				<button class="tab-button" id="optionsBtn">Options</button>
-				<button class="tab-button" id="aboutBtn">About</button>
+				<button class="tab-button active" id="aboutBtn">About</button>
 				<button class="tab-button" id="debuggingBtn">Debugging</button>
 			</div>
 
@@ -86,7 +86,7 @@
 						</tr>
 						<tr>
 							<td>Token expires</td>
-							<td><span class="data-field" id="tokenExpires"></span></td>
+							<td><span class="data-field" id="tokenExpires" style="text-align:left;"></span></td>
 							<td><button class="button" id="updateTokenBtn">update token</button></td>
 						</tr>
 						<tr>
@@ -161,6 +161,9 @@
 
 					<p>Learn more at <a href="https://tallygame.net" target="_blank">tallygame.net</a></p>
 
+					<p><button class="button" id="testerSurveyBtn">Beta Tester Feedback Survey</button></p>
+
+
 					<a href="https://twitter.com/tally_game" target="_blank"><i class="fab fa-twitter"></i></a>
 					<a href="https://www.instagram.com/tallygameofficial" target="_blank"><i class="fab fa-instagram"></i></a>
 					<a href="https://www.facebook.com/tallygame/" target="_blank"><i class="fab fa-facebook"></i></a>
@@ -178,12 +181,14 @@
 					<label for="showDebugger">Show debugger</label>
 					<input class="option-radio-btn" id="showDebugger" value="true" type="checkbox">
 					<br>
-
+<!--
 					<label for="debuggerPosition">Debugger position</label>
 					<input id="debuggerPosition" type="input">
 					<br>
+-->
 				</div>
 
+<!--
 
 				<div class="tabSection">
 					<h3>Tests</h3>
@@ -208,7 +213,7 @@
 						</div>
 					</div>
 				</div>
-
+-->
 
 				<div class="tabSection">
 					<h3>Resets</h3>
