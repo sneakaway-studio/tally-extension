@@ -265,7 +265,9 @@ $(document).on('click', '#viewLeaderboardsBtn', function() {
 $(document).on('click', '#testerSurveyBtn', function() {
 	window.open("https://docs.google.com/forms/d/e/1FAIpQLSeGx8zsF4aMQZH1eM0SzOvcpXijt8Bem1pzg4eni9eK8Jr-Lg/viewform");
 });
-
+$(document).on('click', '#gameTrailerBtn', function() {
+	window.open("https://www.youtube.com/watch?v=xfsbm1cI2uo");
+});
 
 
 
