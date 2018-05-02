@@ -185,8 +185,8 @@ function createMeta() {
  */
 function createSecret() {
 	var obj = {
-		"token": "", //"3HYBTpmJiclmDPnCJThC3dwdmaNIJuU21aq5Iw9sFXtnpYo6GF",
-		"tokenExpires": "", //"2018-03-24T15:45:08.000Z"
+		"token": "", 
+		"tokenExpires": "",
 	};
 	return obj;
 }
