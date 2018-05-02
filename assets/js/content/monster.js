@@ -404,15 +404,32 @@ var Monster = (function() {
 //2. 24,25,25
 //3.  1, 2,25
 //if (prop(tally_top_monsters[_mid])){
+
+		// insert text
+		$('.award_subtitle').html("You leveled up! <a href='https://tallygame.net/signup'> Check out your score</a>");
+		let additional_targets = '';
+		let victory_text = "YOU CONTAINED THE MONSTER!!!!!";
+		let fact = Thought.getFact("trackers");
+		let box_text = "<h6>Did you know?</h6>";
+		let str = fact.fact || "";
+		if (fact.url && fact.source) str += " Source: <a href='" + fact.url + "' target='_blank'>" + fact.source + "</a>";
+		if (fact.year) str += " (" + fact.year + ")";
+
 		// 1. Are they already at the top of the leaderboard?
 		// IOW is the monster level they are at (level-1) >= the top monster level?
 		if (tally_nearby_monsters[_mid].totalCaptured > tally_top_monsters[_mid].top) {
 			console.log("☆☆☆☆☆ YOU ARE *STILL* IN FIRST PLACE ☆☆☆☆☆");
+			additional_targets = ', .tally_award_explode_background-1, .tally_award_explode_background-2';
+			victory_text = "YOU ARE STILL IN FIRST!!!";
 		}
 		// 2. OR, are they just now coming to be on top?
 		else if ((tally_nearby_monsters[_mid].totalCaptured) == tally_top_monsters[_mid].top) {
 			console.log("☆☆☆☆☆ YOU JUST ARRIVED IN FIRST PLACE !!!! ☆☆☆☆☆");
 			Effect.explode();
+			additional_targets = ', .tally_award_explode_background-1, .tally_award_explode_background-2';
+			victory_text = "YOU BROKE THE INTERNET!!!";
+			box_text = "<h6>Reset the page<h6>";
+			str = "";
 		}
 		// 3. OR, are they below top
 		else {
@@ -420,23 +437,22 @@ var Monster = (function() {
 		}
 //}
 
+		// insert specific text
+		$('.award_title').html(victory_text);
+		$('.award_did_you_know').html(box_text);
 
 
-		// insert text
-		$('.award_title').html("YOU CONTAINED THE MONSTER!!!!!");
-		$('.award_subtitle').html("You leveled up! <a href='https://tallygame.net/signup'> Check out your score</a>");
-		$('.award_did_you_know').html("<h6 class='tally'>Did you know?</h6>");
-		let fact = Thought.getFact("trackers");
-		let str = fact.fact || "";
-		if (fact.url && fact.source) str += " Source: <a href='" + fact.url + "' target='_blank'>" + fact.source + "</a>";
-		if (fact.year) str += " (" + fact.year + ")";
 		$('.award_fact').html(str);
+
+		$('.tally_award_background' + additional_targets).click(function(){
+			$('.tally_award_background' + additional_targets).hide();
+		});
 
 		// hide background and text
 		var insertTimeline = anime.timeline();
 		insertTimeline
 			.add({
-				targets: '.tally_award_background',
+				targets: '.tally_award_background' + additional_targets,
 				rotate: -20,
 				translateY: [{
 						value: -1400,
@@ -454,15 +470,15 @@ var Monster = (function() {
 				easing: 'easeInOutCubic',
 			})
 			.add({
-				targets: '.tally_award_text',
+				targets: '.tally_award_text_wrapper',
 				translateX: [{
-						value: -800,
+						value: -2020,
 						duration: 2000,
 						delay: 600,
 						elasticity: 0
 					},
 					{
-						value: 800,
+						value: 2020,
 						duration: 2000,
 						delay: 10000,
 						elasticity: 0
