@@ -7,7 +7,7 @@
 		-> startApp() -> checkAPIServerStatus() -> checkTokenStatus() -> content script takes over */
 
 
- 
+
 /**
  *  Listen for installations (first|any)
  */
@@ -40,6 +40,11 @@ function startApp() {
 	checkCurrentAPI();
 	// check the API status, if connected then check token
 	checkAPIServerStatus();
+}
+
+function checkServerForDataOnStartApp(){
+    // populate monsters
+    getMonstersFromServer(); 
 }
 
 /**

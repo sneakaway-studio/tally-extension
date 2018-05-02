@@ -74,8 +74,8 @@ $(document.body).keydown(function(event) {
 		Monster.test();
 	// explode page
 	if (keys.e && keys.tilda)
-		console.log("EXPLODE");
-		//animExplodeThePage();
+		//console.log("EXPLODE");
+		Effect.explode(); 
 
 	//console.log(event.keyCode,keys);
 });

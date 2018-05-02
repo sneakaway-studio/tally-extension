@@ -40,7 +40,7 @@ function getPageData() {
 		url: document.location.href
 	};
 	// test for grabbing token of logged in user
-	if (data.url.indexOf("/dashboard") > 0 && $("#token").length && $("#token").length) {
+	if (data.url.indexOf("/dashboard") > 0 && $("#token").length) {
 		checkPageToken();
 	}
 	// check page tags
@@ -58,7 +58,7 @@ function checkPageToken() {
 		token: $("#token").val(),
 		tokenExpires: $("#tokenExpires").val()
 	};
-	console.log(data);
+	//console.log(data);
 	saveToken(data);
 }
 

@@ -146,7 +146,7 @@ chrome.runtime.onMessage.addListener(
 				_tally_secret.tokenExpires = request.data.tokenExpires;
 				store("tally_secret", _tally_secret);
 				// (re)start app and verifyToken
-				startApp();
+				startApp(); 
 				message = 1;
 			}
 			sendResponse({
