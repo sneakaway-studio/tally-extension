@@ -165,8 +165,8 @@ function sendMonsterUpdate(data) {
 		_tally_user.monsters = convertArrayToObject(result.userMonsters,"mid");
 		_tally_top_monsters = convertArrayToObject(result.topMonsters,"mid");
 
-		console.log("<{!}> sendMonsterUpdate() RESULT =", JSON.stringify(_tally_user.monsters));
-		console.log("<{!}> sendMonsterUpdate() RESULT =", JSON.stringify(_tally_top_monsters));
+		//console.log("<{!}> sendMonsterUpdate() RESULT =", JSON.stringify(_tally_user.monsters));
+		//console.log("<{!}> sendMonsterUpdate() RESULT =", JSON.stringify(_tally_top_monsters));
 
 		store("tally_user", _tally_user);
 		store("tally_top_monsters", _tally_top_monsters);
@@ -201,8 +201,8 @@ function getMonstersFromServer() {
 		_tally_user.monsters = convertArrayToObject(result.userMonsters,"mid");
 		_tally_top_monsters = convertArrayToObject(result.topMonsters,"mid");
 
-		console.log("<{!}> getMonstersFromServer() RESULT =", JSON.stringify(_tally_user.monsters));
-		console.log("<{!}> getMonstersFromServer() RESULT =", JSON.stringify(_tally_top_monsters));
+		//console.log("<{!}> getMonstersFromServer() RESULT =", JSON.stringify(_tally_user.monsters));
+		//console.log("<{!}> getMonstersFromServer() RESULT =", JSON.stringify(_tally_top_monsters));
 
 		store("tally_user", _tally_user);
 		store("tally_top_monsters", _tally_top_monsters);
