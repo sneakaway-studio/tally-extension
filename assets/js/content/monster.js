@@ -410,7 +410,7 @@ var Monster = (function() {
 		let additional_targets = '';
 		let victory_text = "YOU CONTAINED THE MONSTER!!!!!";
 		let fact = Thought.getFact("trackers");
-		let box_text = "<h6>Did you know?</h6>";
+		let box_text = "Did you know?";
 		let str = fact.fact || "";
 		if (fact.url && fact.source) str += " Source: <a href='" + fact.url + "' target='_blank'>" + fact.source + "</a>";
 		if (fact.year) str += " (" + fact.year + ")";
