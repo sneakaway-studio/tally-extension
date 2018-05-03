@@ -200,7 +200,7 @@ svg.monster_path path {
 .award_title {
   font: normal 3.3vmax/3.9vmax "Futura", "Trebuchet MS", Arial, sans-serif;
   padding: 0;
-  text-shadow: 2px 2px 0px rgba(70, 39, 149, 1);
+  text-shadow: 3px 3px 0px rgba(70, 39, 149, 1);
 }
 .award_subtitle {}
 .award_did_you_know {
