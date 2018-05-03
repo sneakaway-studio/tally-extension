@@ -460,12 +460,12 @@ var Monster = (function() {
 						delay: 0,
 						elasticity: 100
 					},
-					// {
-					// 	value: 1400,
-					// 	duration: 2000,
-					// 	delay: 12000,
-					// 	elasticity: 0
-					// }
+						{
+							value: 1400,
+							duration: 2000,
+							delay: 12000,
+							elasticity: 0
+						}
 				],
 				easing: 'easeInOutCubic',
 			})
@@ -477,12 +477,12 @@ var Monster = (function() {
 						delay: 600,
 						elasticity: 0
 					},
-					// {
-					// 	value: 2020,
-					// 	duration: 2000,
-					// 	delay: 10000,
-					// 	elasticity: 0
-					// }
+					{
+						value: 2020,
+						duration: 2000,
+						delay: 10000,
+						elasticity: 0
+					}
 				],
 				easing: 'easeOutExpo',
 				offset: 900
@@ -490,41 +490,41 @@ var Monster = (function() {
 
 		Sound.playCategory('awards', 'monster');
 
-		// // hide monster
-		// window.setTimeout(function() {
-		// 	// TESTING
-		// 	// return;
-		//
-		// 	// get monster position
-		// 	let pos = $('.tally_monster_sprite_container').position();
-		// 	// stop current animation
-		// 	$('.tally_monster_sprite_container').css({
-		// 		'animation-name': 'none',
-		// 		'left': (pos.left - 70) + 'px',
-		// 		'top': (pos.top - 70) + 'px',
-		// 	});
-		// 	// add new css keyframe
-		// 	addKeyFrames(
-		// 		'hideBelow', 'to { top: 1000px; }'
-		// 	);
-		// 	// start animation
-		// 	$('.tally_monster_sprite_container').css({
-		// 		'animation-name': 'hideBelow',
-		// 		'animation-duration': '2.0s',
-		// 		'animation-direction': 'normal',
-		// 		'animation-iteration-count': 1,
-		// 		'animation-fill-mode': 'forwards'
-		// 	});
-		// 	// add event listener to check when done
-		// 	$(".tally_monster_sprite_container")
-		// 		.one("animationend webkitAnimationEnd oAnimationEnd MSAnimationEnd", function() {
-		// 			//console.log("animation done", tally_nearby_monsters[_mid]);
-		// 			// code to execute after animation ends
-		// 			$('.tally_monster_sprite_container').css({
-		// 				'display': 'none'
-		// 			});
-		// 		});
-		// }, 13000);
+		// hide monster
+		window.setTimeout(function() {
+			// TESTING
+			// return;
+
+			// get monster position
+			let pos = $('.tally_monster_sprite_container').position();
+			// stop current animation
+			$('.tally_monster_sprite_container').css({
+				'animation-name': 'none',
+				'left': (pos.left - 70) + 'px',
+				'top': (pos.top - 70) + 'px',
+			});
+			// add new css keyframe
+			addKeyFrames(
+				'hideBelow', 'to { top: 1000px; }'
+			);
+			// start animation
+			$('.tally_monster_sprite_container').css({
+				'animation-name': 'hideBelow',
+				'animation-duration': '2.0s',
+				'animation-direction': 'normal',
+				'animation-iteration-count': 1,
+				'animation-fill-mode': 'forwards'
+			});
+			// add event listener to check when done
+			$(".tally_monster_sprite_container")
+				.one("animationend webkitAnimationEnd oAnimationEnd MSAnimationEnd", function() {
+					//console.log("animation done", tally_nearby_monsters[_mid]);
+					// code to execute after animation ends
+					$('.tally_monster_sprite_container').css({
+						'display': 'none'
+					});
+				});
+		}, 13000);
 
 
 	}

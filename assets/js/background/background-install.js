@@ -125,7 +125,7 @@ function createOptions() {
 			"drive.google.com",
 			"docs.google.com",
 		],
-		"showDebugger": true,
+		"showDebugger": false,
 		"debuggerPosition": [0, 300]
 	};
 	obj = setOptions(obj);
@@ -185,7 +185,7 @@ function createMeta() {
  */
 function createSecret() {
 	var obj = {
-		"token": "", 
+		"token": "",
 		"tokenExpires": "",
 	};
 	return obj;

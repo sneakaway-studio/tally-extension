@@ -11,7 +11,7 @@ function getMeta() {
 	});
 }
 
-$(document).on('click','#launchRegistrationBtn',function(){
+$(document).on('click','.launchRegistrationBtn',function(){
     chrome.tabs.create({
         url: tally_meta.website + "/signup"
     }, function(tab) {
