@@ -85,8 +85,9 @@ var Sound = (function() {
 	}
 	// play a mood
 	function playMood(mood) {
-		if (!tally_options.playSounds) return;
-		//console.log("Sound.playMood()",mood);
+		if (!tally_options.playSounds || !prop(mood)) return;
+		if (mood == "award") mood = "happy";
+		console.log("Sound.playMood()",mood);
 		let r = Math.ceil(Math.random() * moods[mood]);
 		let file = "tally/moods-v2/" + mood + "-" + r + "-2.mp3";
 		play(file);

@@ -4,7 +4,7 @@ var Thought = (function() {
 	// PRIVATE
 
 	let thoughtOpen = false,
-		THOUGHT_DEBUG = true;
+		THOUGHT_DEBUG = false;
 
 
 	/**
@@ -18,7 +18,7 @@ var Thought = (function() {
 	 *	Show a fact
 	 */
 	function showFact(fact, sound) {
-		console.log("💬 💬 showFact()", fact, sound);
+		if (THOUGHT_DEBUG) console.log("💬 💬 showFact()", fact, sound);
 		if (thoughtOpen) return; // if open, exit
 		Sound.playMood(sound);
 		show(fact.fact);
@@ -54,7 +54,7 @@ var Thought = (function() {
 	 *	Show the thought bubble [with text and sound]
 	 */
 	function showThought(thought, sound, ifOpen) {
-		console.log("💬 💬 Thought.showThought()", thought, sound, ifOpen);
+		if (THOUGHT_DEBUG) console.log("💬 💬 Thought.showThought()", thought, sound, ifOpen);
 		if (ifOpen) thoughtOpen = false; // override ifOpen = true
 		if (thoughtOpen) return; // else if open, then exit
 		if (sound) Sound.playMood(thought.mood);
@@ -67,7 +67,7 @@ var Thought = (function() {
 	 *	Show the thought bubble [with text and sound]
 	 */
 	function showString(str, sound) {
-		console.log("💬 💬 Thought.showString()", str, sound);
+		if (THOUGHT_DEBUG) console.log("💬 💬 Thought.showString()", str, sound);
 		if (thoughtOpen) return; // if open, exit
 		if (sound) Sound.playMood(sound);
 		show(str);
