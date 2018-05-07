@@ -44,7 +44,7 @@ function startApp() {
 
 function checkServerForDataOnStartApp(){
     // populate monsters
-    getMonstersFromServer(); 
+    getMonstersFromServer();
 }
 
 /**

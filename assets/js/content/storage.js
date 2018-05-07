@@ -170,3 +170,13 @@ function getTopMonsters() {
 		tally_top_monsters = response.data;
 	});
 }
+
+
+function setBadgeText(data) {
+	chrome.runtime.sendMessage({
+		'action': 'setBadgeText',
+		'data': data
+	}, function(response) {
+		//console.log("<<<<< ",'> saveGameStatus()',JSON.stringify(response));
+	});
+}

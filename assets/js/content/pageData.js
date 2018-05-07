@@ -132,6 +132,9 @@ function getTrackers() {
 		}
 
 	}
+	// set the number of trackers in the badge
+	setBadgeText(foundArr.length);
+
 	//console.log("foundObj",foundObj);
 	//console.log("foundArr",foundArr);
 	return foundArr;

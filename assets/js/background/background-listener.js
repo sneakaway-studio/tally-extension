@@ -131,6 +131,15 @@ chrome.runtime.onMessage.addListener(
 			});
 		}
 
+		// setBadgeText
+		else if (request.action == "setBadgeText") {
+			setBadgeText(request.data);
+			sendResponse({
+				"action": request.action,
+				"message": 1
+			});
+		}
+
 
 
 
@@ -146,7 +155,7 @@ chrome.runtime.onMessage.addListener(
 				_tally_secret.tokenExpires = request.data.tokenExpires;
 				store("tally_secret", _tally_secret);
 				// (re)start app and verifyToken
-				startApp(); 
+				startApp();
 				message = 1;
 			}
 			sendResponse({
@@ -280,4 +289,11 @@ function adjustScore(_score, scoreObj, n) {
 		}
 	}
 	return _score;
+}
+
+function setBadgeText(_text){
+	if (!_text || _text == '') return;
+	// show tracker numbers in badge
+	chrome.browserAction.setBadgeBackgroundColor({ color: [255, 108, 0, 255] });
+	chrome.browserAction.setBadgeText({text: ""+_text});
 }
