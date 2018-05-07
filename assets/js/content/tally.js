@@ -113,11 +113,11 @@ function startTally() {
 	//console.log("startTally()", tally_game_status.skin, Skin.skins);
 
 	let str =
-		"<div id='tally_character_container' class='tally draggable'>" +
-		"<div id='tally_thought_bubble' class='tally tally_speech_bubble'>" +
-		"<div id='tally_thought' class='tally'></div>" +
+		"<div class='tally draggable' id='tally_character_container'>" +
+		"<div class='tally tally_speech_bubble' id='tally_thought_bubble'>" +
+		"<div class='tally' id='tally_thought'></div>" +
 		"</div>" +
-		"<div id='tally_character' class='tally'>" +
+		"<div class='tally' id='tally_character'>" +
 
 		// bitmap method
 		//"<img class='tally-svg' src='" + chrome.extension.getURL('assets/img/tally/tally.svg') + "'>" +

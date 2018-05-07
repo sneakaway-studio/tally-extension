@@ -105,7 +105,7 @@ var Thought = (function() {
 		// adjust size of the box
 		$('#tally_thought_bubble').css({
 			'display': 'flex',
-			'height': (lines * 11) + 22 + "px",
+			'height': (lines * 12) + 26 + "px",
 			'left': '10px',
 			'opacity': 1 // make it visible
 		});
