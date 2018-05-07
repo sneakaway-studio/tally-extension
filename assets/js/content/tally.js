@@ -157,7 +157,7 @@ function startTally() {
 
 	// add the tally_character click action
 	$(document).on('click', '#tally_character_container', function() {
-
+return;
 		// launch one of the nearby monsters
 		//if (pageData.domain.indexOf("localhost") >= 0)
 		Monster.test();

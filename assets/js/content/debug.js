@@ -70,12 +70,12 @@ $(document.body).keydown(function(event) {
 	else if (event.keyCode == 77) keys.m = true; // m
 	else if (event.keyCode == 192) keys.tilda = true; // ~
 	// launch monster
-	if (keys.m && keys.tilda)
-		Monster.test();
-	// explode page
-	if (keys.e && keys.tilda)
-		//console.log("EXPLODE");
-		Effect.explode(); 
+	// if (keys.m && keys.tilda)
+	// 	Monster.test();
+	// // explode page
+	// if (keys.e && keys.tilda)
+	// 	//console.log("EXPLODE");
+	// 	Effect.explode();
 
 	//console.log(event.keyCode,keys);
 });
