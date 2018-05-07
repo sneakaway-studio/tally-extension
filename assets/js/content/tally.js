@@ -24,6 +24,7 @@ var Tally = (function() {
 	function moveEye(which, how, event) {
 		// return if game should not be active
 		if (!prop(pageData) || !pageData.activeOnPage) return;
+		if (!$(".tally")) return;
 		if (!followCursor) return;
 		var eye = $(which);
 		var x, y, rad, rot;

@@ -4,7 +4,7 @@ var Thought = (function() {
 	// PRIVATE
 
 	let thoughtOpen = false,
-		THOUGHT_DEBUG = false;
+		THOUGHT_DEBUG = true;
 
 
 	/**
@@ -17,8 +17,9 @@ var Thought = (function() {
 	/**
 	 *	Show a fact
 	 */
-	function showFact(fact, sound) {
-		if (THOUGHT_DEBUG) console.log("💬 💬 showFact()", fact, sound);
+	function showFact(fact, sound, ifOpen) {
+		if (THOUGHT_DEBUG) console.log("💬 💬 showFact()", fact, sound, ifOpen);
+		if (ifOpen) thoughtOpen = false; // override ifOpen = true
 		if (thoughtOpen) return; // if open, exit
 		Sound.playMood(sound);
 		show(fact.fact);
@@ -73,8 +74,9 @@ var Thought = (function() {
 	/**
 	 *	Show the thought bubble [with text and sound]
 	 */
-	function showString(str, sound) {
-		if (THOUGHT_DEBUG) console.log("💬 💬 Thought.showString()", str, sound);
+	function showString(str, sound, ifOpen) {
+		if (THOUGHT_DEBUG) console.log("💬 💬 Thought.showString()", str, sound, ifOpen);
+		if (ifOpen) thoughtOpen = false; // override ifOpen = true
 		if (thoughtOpen) return; // if open, exit
 		if (sound) Sound.playMood(sound);
 		show(str);
@@ -112,7 +114,7 @@ var Thought = (function() {
 		// make Tally look at user
 		Tally.stare();
 		// hide after appropriate reading period
-		setTimeout(hide, duration);
+		//setTimeout(hide, duration);
 	}
 
 	function hide() {
@@ -164,11 +166,11 @@ var Thought = (function() {
 		getFact: function(domain) {
 			return getFact(domain);
 		},
-		showFact: function(fact, sound) {
-			showFact(fact, sound);
+		showFact: function(fact, sound, ifOpen) {
+			showFact(fact, sound, ifOpen);
 		},
-		showString: function(str, sound) {
-			showString(str, sound);
+		showString: function(str, sound, ifOpen) {
+			showString(str, sound, ifOpen);
 		},
 		show: function(str, sound) {
 			show(str, sound);

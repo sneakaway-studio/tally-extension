@@ -92,6 +92,8 @@ function saveToken(data) {
 				title: "TOKEN SAVED!",
 				message: "User token updated!"
 			});
+
+			Thought.showString("Your user token updated!", "happy");
 		}
 	});
 }
