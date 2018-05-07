@@ -127,7 +127,7 @@ function getTrackers() {
 		// this method uses the single array (no categories)
 		// I think this may be the way to go in the end
 		if (foundArr.indexOf(scriptDomain) < 0 && trackers.indexOf(scriptDomain) >= 0) {
-			console.log("👀 👀 getTrackers()", str, scriptDomain);
+			//console.log("👀 👀 getTrackers()", str, scriptDomain);
 			foundArr.push(scriptDomain);
 		}
 

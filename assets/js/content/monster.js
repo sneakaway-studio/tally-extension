@@ -75,7 +75,7 @@ var Monster = (function() {
 	 *	Check the page for a monster
 	 */
 	function checkForTagMatches() {
-		if (MONSTER_DEBUG) console.log('⊙⊙⊙⊙⊙ Monster.check()', pageData.tags);
+		if (MONSTER_DEBUG) console.log('⊙⊙⊙⊙⊙ Monster.checkForTagMatches()', pageData.tags);
 		// loop through the tags on the page
 		for (var i = 0, l = pageData.tags.length; i < l; i++) {
 			// save reference
@@ -142,12 +142,14 @@ var Monster = (function() {
 			// what stage are we at with this monster?
 			if (tally_nearby_monsters[mid].stage == 0) {
 				// do nothing
+				Thought.showTrackerThought();
 			} else if (tally_nearby_monsters[mid].stage == 1) {
 				if (r < 0.2) {
 					// go back to normal stage
 					tally_nearby_monsters[mid].stage == 0;
 				} else if (r < 0.4) {
-					// do nothing
+					// show them a random thought
+					Thought.showTrackerThought();
 				} else if (r < 0.7) {
 					// show them a thought but don't change stage
 					Thought.showThought(Thought.getThought(["monster", "far", 0]), true);
@@ -157,8 +159,11 @@ var Monster = (function() {
 					Thought.showThought(Thought.getThought(["monster", "close", 0]), true);
 				}
 			} else if (tally_nearby_monsters[mid].stage == 2) {
-				if (r < 0.4) {
+				if (r < 0.2) {
 					// do nothing
+				} else if (r < 0.4) {
+					// do nothing
+					Thought.showTrackerThought();
 				} else if (r < 0.7) {
 					// show them a thought
 					Thought.showThought(Thought.getThought(["monster", "close", 0]), true);

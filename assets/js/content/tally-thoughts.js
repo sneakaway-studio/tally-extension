@@ -24,6 +24,13 @@ var Thought = (function() {
 		show(fact.fact);
 	}
 
+	function showTrackerThought(){
+		let num = "none";
+		if (pageData.trackers.length > 0) num = "few";
+		if (pageData.trackers.length > 3) num = "lots";
+		console.log("💬 💬 showTrackerThought()", num);
+		showThought(getThought(["tracker", num, 0]), true);
+	}
 
 	/**
 	 *	Return a thought
@@ -166,6 +173,7 @@ var Thought = (function() {
 		show: function(str, sound) {
 			show(str, sound);
 		},
+		showTrackerThought: showTrackerThought,
 		hide: hide
 
 	};
