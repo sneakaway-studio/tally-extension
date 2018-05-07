@@ -37,6 +37,10 @@ var Monster = (function() {
 	 */
 	function check() {
 		// don't check if disabled
+		if (pageData.domain == "tallygame.net") {
+			// need to reset
+			return;
+		}
 		if (tally_options.gameMode === "disabled") return;
 		if (!pageData.activeOnPage) return;
 		checkNearbyMonsterTimes();
@@ -412,7 +416,7 @@ var Monster = (function() {
 		if (!prop(tally_top_monsters[_mid])) return;
 
 		// insert text
-		$('.award_subtitle').html("You leveled up! <a href='https://tallygame.net/signup'> Check out your score</a>");
+		$('.award_subtitle').html("You leveled up! <a href='https://tallygame.net/profile'> Check out your score</a>");
 		let additional_targets = '';
 		let victory_text = "YOU CONTAINED THE MONSTER!!!!!";
 		let fact = Thought.getFact("trackers");
