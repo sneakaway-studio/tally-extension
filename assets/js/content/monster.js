@@ -280,8 +280,8 @@ var Monster = (function() {
 		// add click handler
 		$(document).on('click', '.tally_monster_sprite', function() {
 			if (!prop(tally_nearby_monsters[_mid])) return;
-			// remove the click listener
-			$('.tally_monster_sprite').unbind();
+			// remove the click listener from the monster
+			$('.tally_monster_sprite').off("click");
 			// capture the monster
 			capture(_mid);
 		});
@@ -305,6 +305,9 @@ var Monster = (function() {
 	 *	User captures monster
 	 */
 	function capture(_mid) {
+		// tell them they caught it
+		Thought.showThought(Thought.getThought(["monster", "captured", 0]), true, true);
+		// set vars
 		tally_nearby_monsters[_mid].captured = 1;
 		tally_nearby_monsters[_mid].missed = 0;
 		tally_nearby_monsters[_mid].totalCaptured += 1;
@@ -353,6 +356,8 @@ var Monster = (function() {
 	 */
 	function miss(_mid) {
 		console.log("!!!!! Monster.miss()", _mid, tally_nearby_monsters[_mid]);
+		// tell them they missed
+		Thought.showThought(Thought.getThought(["monster", "missed", 0]), true, true);
 		// stop current animation
 		$('.tally_monster_sprite_container').css({
 			'animation-name': 'none',
@@ -398,12 +403,7 @@ var Monster = (function() {
 	 */
 	function showAward(_mid) {
 		console.log("☆☆☆☆☆ Monster.showAward()", _mid, JSON.stringify(tally_top_monsters[_mid]),tally_nearby_monsters[_mid]);
-
-// current, caught, top
-//1. 25,26,25
-//2. 24,25,25
-//3.  1, 2,25
-//if (prop(tally_top_monsters[_mid])){
+		if (!prop(tally_top_monsters[_mid])) return;
 
 		// insert text
 		$('.award_subtitle').html("You leveled up! <a href='https://tallygame.net/signup'> Check out your score</a>");
@@ -414,6 +414,9 @@ var Monster = (function() {
 		let str = fact.fact || "";
 		if (fact.url && fact.source) str += " Source: <a href='" + fact.url + "' target='_blank'>" + fact.source + "</a>";
 		if (fact.year) str += " (" + fact.year + ")";
+
+		if (!prop(tally_top_monsters[_mid].top))
+			console.error(".top is undefined");
 
 		// 1. Are they already at the top of the leaderboard?
 		// IOW is the monster level they are at (level-1) >= the top monster level?
@@ -435,18 +438,11 @@ var Monster = (function() {
 		else {
 			console.log("☆☆☆☆☆ YOU ARE:", tally_top_monsters[_mid].top - tally_nearby_monsters[_mid].totalCaptured, "POINTS BEHIND THE LEADER");
 		}
-//}
 
 		// insert specific text
 		$('.award_title').html(victory_text);
 		$('.award_did_you_know').html(box_text);
-
-
 		$('.award_fact').html(str);
-
-		$('.tally_award_background, .tally_monster_sprite, .tally_award_text_wrapper' + additional_targets).click(function(){
-			$('.tally_award_background, .tally_monster_sprite, .tally_award_text_wrapper' + additional_targets).hide(1000);
-		});
 
 		// hide background and text
 		var insertTimeline = anime.timeline();
@@ -460,12 +456,12 @@ var Monster = (function() {
 						delay: 0,
 						elasticity: 100
 					},
-						{
-							value: 1400,
-							duration: 2000,
-							delay: 12000,
-							elasticity: 0
-						}
+					{
+						value: 1400,
+						duration: 2000,
+						delay: 12000,
+						elasticity: 0
+					}
 				],
 				easing: 'easeInOutCubic',
 			})
@@ -478,8 +474,8 @@ var Monster = (function() {
 						elasticity: 0
 					},
 					{
-						value: 2020,
-						duration: 2000,
+						value: 1020,
+						duration: 3000,
 						delay: 10000,
 						elasticity: 0
 					}
@@ -489,6 +485,14 @@ var Monster = (function() {
 			});
 
 		Sound.playCategory('awards', 'monster');
+
+		// insert listener to hide award on click (after brief pause to make sure it loaded)
+		window.setTimeout(function() {
+			$('.tally_award_background, .tally_monster_sprite, .tally_award_text_wrapper' + additional_targets).click(function(){
+				$('.tally_award_background, .tally_monster_sprite, .tally_award_text_wrapper' + additional_targets).hide(1000);
+			});
+
+		}, 1000);
 
 		// hide monster
 		window.setTimeout(function() {
@@ -510,7 +514,7 @@ var Monster = (function() {
 			// start animation
 			$('.tally_monster_sprite_container').css({
 				'animation-name': 'hideBelow',
-				'animation-duration': '2.0s',
+				'animation-duration': '1.0s',
 				'animation-direction': 'normal',
 				'animation-iteration-count': 1,
 				'animation-fill-mode': 'forwards'

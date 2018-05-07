@@ -68,8 +68,8 @@ function startGame() {
 
 	checkToken();
 	// if youtube
-	if (pageData.domain = "youtube.com")
-		addMutationObserver();
+	// if (pageData.domain = "youtube.com")
+	// 	addMutationObserver();
 	Monster.check();
 	Debug.update();
 }

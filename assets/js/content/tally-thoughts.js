@@ -18,7 +18,7 @@ var Thought = (function() {
 	 *	Show a fact
 	 */
 	function showFact(fact, sound) {
-		console.log("showFact()", fact, sound);
+		console.log("💬 💬 showFact()", fact, sound);
 		if (thoughtOpen) return; // if open, exit
 		Sound.playMood(sound);
 		show(fact.fact);
@@ -53,9 +53,10 @@ var Thought = (function() {
 	/**
 	 *	Show the thought bubble [with text and sound]
 	 */
-	function showThought(thought, sound) {
-		console.log("⪦⪦⪦⪦⪦ Thought.showThought()", thought, sound);
-		if (thoughtOpen) return; // if open, exit
+	function showThought(thought, sound, ifOpen) {
+		console.log("💬 💬 Thought.showThought()", thought, sound, ifOpen);
+		if (ifOpen) thoughtOpen = false; // override ifOpen = true
+		if (thoughtOpen) return; // else if open, then exit
 		if (sound) Sound.playMood(thought.mood);
 		show(thought.text);
 	}
@@ -66,7 +67,7 @@ var Thought = (function() {
 	 *	Show the thought bubble [with text and sound]
 	 */
 	function showString(str, sound) {
-		console.log("⪦⪦⪦⪦⪦ Thought.showString()", str, sound);
+		console.log("💬 💬 Thought.showString()", str, sound);
 		if (thoughtOpen) return; // if open, exit
 		if (sound) Sound.playMood(sound);
 		show(str);
@@ -79,7 +80,7 @@ var Thought = (function() {
 	 *	Show a thought string
 	 */
 	function show(str) {
-		if (THOUGHT_DEBUG) console.log("⪦⪦⪦⪦⪦ Thought.show()", str);
+		if (THOUGHT_DEBUG) console.log("💬 💬 Thought.show()", str);
 		thoughtOpen = true;
 
 		// replace any template strings
@@ -89,7 +90,7 @@ var Thought = (function() {
 		let lines = 1;
 		// 28 characters per line * 2
 		if (str.length > 0)
-			lines = Math.ceil(str.length / 32);
+			lines = Math.ceil(str.length / 28);
 		// set duration based on number lines
 		let duration = lines * 1800;
 		// add text
@@ -97,7 +98,7 @@ var Thought = (function() {
 		// adjust size of the box
 		$('#tally_thought_bubble').css({
 			'display': 'flex',
-			'height': lines * 32 + "px",
+			'height': (lines * 11) + 22 + "px",
 			'left': '10px',
 			'opacity': 1 // make it visible
 		});
@@ -127,7 +128,7 @@ var Thought = (function() {
 		// check for any template replacement matches
 		if (str.indexOf("{{Monster.current}}") > -1) {
 			find = "Monster.current";
-			replace = Monster.current();
+			replace = MonsterData.dataById[Monster.current()].name;
 		}
 		if (str.indexOf("{{pageData.title}}") > -1) {
 			find = "pageData.title";
@@ -139,7 +140,7 @@ var Thought = (function() {
 		}
 		// perform replacement
 		if (find != "" && replace != "")
-			str = str.replace(new RegExp('\{\{(?:\\s+)?(' + find + ')(?:\\s+)?\}\}'), replace);
+			str = str.replace(new RegExp('\{\{(?:\\s+)?(' + find + ')(?:\\s+)?\}\}'), "<span class='tally-replace'>"+ replace +"</span>");
 		// return string
 		return str;
 	}
@@ -150,8 +151,8 @@ var Thought = (function() {
 		getThought: function(arr) {
 			return getThought(arr);
 		},
-		showThought: function(thought, sound) {
-			showThought(thought, sound);
+		showThought: function(thought, sound, ifOpen) {
+			showThought(thought, sound, ifOpen);
 		},
 		getFact: function(domain) {
 			return getFact(domain);

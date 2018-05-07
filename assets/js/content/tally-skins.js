@@ -4,25 +4,26 @@ var Skin = (function() {
 	// PRIVATE
 
 	// default
-	let skins = {
-		"color-magenta": {
-			front: "#D32CF1",
-			back: "#C308C1"
+	let SKIN_DEBUG = false,
+		skins = {
+			"color-magenta": {
+				front: "#D32CF1",
+				back: "#C308C1"
+			},
+			"color-red": {
+				front: "#fd0202",
+				back: "#db0606"
+			},
+			"color-orange": {
+				front: "#fe8023",
+				back: "#ed6d10"
+			},
+			"color-yellow": {
+				front: "#f1ce2c",
+				back: "#e0c02a"
+			}
 		},
-		"color-red": {
-			front: "#fd0202",
-			back: "#db0606"
-		},
-		"color-orange": {
-			front: "#fe8023",
-			back: "#ed6d10"
-		},
-		"color-yellow": {
-			front: "#f1ce2c",
-			back: "#e0c02a"
-		}
-	},
-	skinStage = 0;
+		skinStage = 0;
 
 	// var skins = [
 	// 	"color-cyan",
@@ -44,7 +45,7 @@ var Skin = (function() {
 
 	// replacing with svg
 	// function preload() {
-	// 	//console.log("preloadSkins()",tally_user.skins);
+	// 	//if (SKIN_DEBUG) console.log("preloadSkins()",tally_user.skins);
 	// 	updateList();
 	// 	let str = "";
 	// 	// for (let i = 0, l = skins.length; i < l; i++) {
@@ -67,7 +68,7 @@ var Skin = (function() {
 	 *	Set the skin color using a reference: "color-magenta"
 	 */
 	function set(skin) {
-		console.log("👚👗 Skin.set()", skin);
+		if (SKIN_DEBUG) console.log("👚👗 Skin.set()", skin);
 		if (skin != "" && prop(tally_game_status)) tally_game_status.skin = skin;
 		saveGameStatus(tally_game_status);
 		updateList();
@@ -111,7 +112,7 @@ var Skin = (function() {
 		setStage: function(n) {
 			setStage(n);
 		},
-		skins:skins
+		skins: skins
 		//preload: preload
 
 	};

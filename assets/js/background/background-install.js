@@ -123,7 +123,7 @@ function createOptions() {
 		"skin": "color-magenta",
 		"disabledDomains": [
 			"drive.google.com",
-			"docs.google.com",
+			"docs.google.com", 
 		],
 		"showDebugger": false,
 		"debuggerPosition": [0, 300]
