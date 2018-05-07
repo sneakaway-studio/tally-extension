@@ -33,7 +33,8 @@
             "assets/js/background/background.js",
             "assets/js/background/background-install.js",
             "assets/js/background/background-ajax.js",
-            "assets/js/background/background-listener.js"
+            "assets/js/background/background-listener.js",
+            "assets/js/background/analytics.js"
         ]
     },
     "content_scripts": [{
@@ -80,11 +81,14 @@
     "permissions": [
         "*://*/*",
         "activeTab",
-        "storage"
+        "storage",
+		"https://www.google-analytics.com/"
     ],
     "web_accessible_resources": [
         "*.svg","*.png",
         "*.jpg","*.JPG",
         "/assets/sounds/*"
-    ]
+    ],
+    "content_security_policy": "script-src 'self' https://ssl.google-analytics.com; object-src 'self'"
+
 }
