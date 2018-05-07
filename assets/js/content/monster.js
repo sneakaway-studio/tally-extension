@@ -437,8 +437,12 @@ var Monster = (function() {
 			Effect.explode();
 			additional_targets = ', .tally_award_explode_background-1, .tally_award_explode_background-2';
 			victory_text = "YOU BROKE THE INTERNET!!!";
-			box_text = "<h6>Reset the page<h6>";
+			box_text = "<h6 class='resetPageButton'>Reset the page<h6>";
 			str = "";
+			// handler for page reset
+			$('.award_did_you_know').click(function(){
+				location.reload();
+			});
 		}
 		// 3. OR, are they below top
 		else {
