@@ -42,7 +42,7 @@ function shouldExtensionBeActiveOnPage() {
 		return false;
 	} else if (prop(tally_options.disabledDomains) &&
 		(($.inArray(pageData.domain, tally_options.disabledDomains) >= 0) ||
-		($.inArray(pageData.subDomain, tally_options.disabledDomains) >= 0))) {
+			($.inArray(pageData.subDomain, tally_options.disabledDomains) >= 0))) {
 		if (MAIN_DEBUG) console.log("!!!!! Tally is disabled on this domain");
 		return false;
 	} else if (pageData.contentType != "text/html") {
@@ -68,8 +68,9 @@ function startGame() {
 
 	checkToken();
 	// if youtube
-	// if (pageData.domain = "youtube.com")
-	// 	addMutationObserver();
+	if (pageData.domain == "youtube.com")
+		// 	addMutationObserver();
+		addTitleChecker();
 	Monster.check();
 	Debug.update();
 }
@@ -86,7 +87,7 @@ function refreshApp() {
 }
 
 
-function checkToken(){
+function checkToken() {
 	if (MAIN_DEBUG) console.log(">>>>> tally_meta = " + JSON.stringify(tally_meta));
 	if (pageData.url != tally_meta.website + "/dashboard") {
 		if (tally_meta.userTokenStatus == "expired") {
@@ -105,17 +106,33 @@ function checkToken(){
 
 /**
  *	MutationObserver to detect title element changes (e.g. youtube and other ajax sites)
+ *	NOTE: This slows down the page
  */
-function addMutationObserver(){
+function addMutationObserver() {
 	// if running
 	if (tally_options.gameMode === "disabled" || !pageData.activeOnPage) return;
 	new MutationObserver(function(mutations) {
-	    console.log("title changed", mutations[0].target.nodeValue);
+		console.log("title changed", mutations[0].target.nodeValue);
 		refreshApp();
 	}).observe(
-	    document.querySelector('title'),
-	    { subtree: true, characterData: true, childList: true }
+		document.querySelector('title'), {
+			subtree: true,
+			characterData: true,
+			childList: true
+		}
 	);
+}
+
+function addTitleChecker() {
+	let pageTitleInterval = setInterval(function() {
+		let title = getTitle();
+		if (title != pageData.title) {
+			//console.log("title changed", pageData.title, " to: ",title);
+			refreshApp();
+		} else {
+			//console.log("title is same", pageData.title, " to: ",title);
+		}
+	}, 10000);
 }
 
 
