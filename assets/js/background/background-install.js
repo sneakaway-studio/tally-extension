@@ -14,6 +14,7 @@ function createApp() {
 		store("tally_meta", createMeta());
 		store("tally_secret", createSecret());
 		store("tally_top_monsters", {});
+		store("tally_trackers", {"blocked":{}});
 
 		// these are empty the first time
 		// store("tally_domains", {});
@@ -123,7 +124,7 @@ function createOptions() {
 		"skin": "color-magenta",
 		"disabledDomains": [
 			"drive.google.com",
-			"docs.google.com", 
+			"docs.google.com",
 		],
 		"showDebugger": false,
 		"debuggerPosition": [0, 300]

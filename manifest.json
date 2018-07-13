@@ -20,7 +20,7 @@
 		"default_title": "Tally",
         "default_popup": "assets/pages/popup/popup.html"
     },
-    "background": { 
+    "background": {
         "scripts": [
             "assets/libs/jquery-3.2.1.min.js",
 			"assets/libs/store2.min.js",
@@ -57,6 +57,7 @@
             "assets/js/content/pageData.js",
             "assets/js/content/interface.js",
             "assets/js/content/monster.js",
+            "assets/js/content/tracker.js",
             "assets/js/content/storage.js",
             "assets/js/content/effects.js",
             "assets/js/content/sound.js",

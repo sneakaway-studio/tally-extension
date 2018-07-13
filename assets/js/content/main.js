@@ -8,16 +8,17 @@ let pageData = getPageData(),
 	tally_meta = {},
 	tally_game_status = getGameStatus(),
 	tally_nearby_monsters = {},
-	tally_top_monsters = getTopMonsters();
+	tally_top_monsters = getTopMonsters(),
+	tally_trackers = {};
 
 
 let MAIN_DEBUG = false;
 
 $(function() {
 	Promise // after async functions then update
-		.all([getUserPromise, getOptionsPromise, getMetaPromise, getNearbyMonstersPromise]) // , getLastBackgroundUpdatePromise
+		.all([getUserPromise, getOptionsPromise, getMetaPromise, getNearbyMonstersPromise, getTrackersPromise]) // , getLastBackgroundUpdatePromise
 		.then(function() {
-			if (MAIN_DEBUG) console.log('>>>>> init() Promise all data has loaded', tally_user, tally_options);
+			if (MAIN_DEBUG) console.log('>>>>> init() Promise all data has loaded', tally_user, tally_options, tally_trackers);
 			// check if extension should be active on this page before proceeding
 			pageData.activeOnPage = shouldExtensionBeActiveOnPage();
 			if (pageData.activeOnPage)
@@ -71,6 +72,9 @@ function startGame() {
 	if (pageData.domain == "youtube.com")
 		// 	addMutationObserver();
 		addTitleChecker();
+
+	// block a tracker if it is in list
+	Tracker.remove(pageData.trackers);
 	Monster.check();
 	Debug.update();
 }

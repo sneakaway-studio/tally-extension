@@ -91,6 +91,14 @@ chrome.runtime.onMessage.addListener(
 				"message": 1
 			});
 		}
+		// getTrackers
+		else if (request.action == "getTrackers") {
+			let data = store("tally_trackers") || {};
+			sendResponse({
+				"action": request.action,
+				"data": data
+			});
+		}
 
 		/*  OPTIONS MANAGEMENT
 		 ******************************************************************************/

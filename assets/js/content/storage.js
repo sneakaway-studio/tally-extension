@@ -78,6 +78,20 @@ const getNearbyMonstersPromise = new Promise(
 	}
 );
 
+// GET LIST OF TRACKERS
+const getTrackersPromise = new Promise(
+	(resolve, reject) => {
+		//if (!pageData.activeOnPage) return;
+		chrome.runtime.sendMessage({
+			'action': 'getTrackers'
+		}, function(response) {
+			//console.log('>>>>> getTrackers()',response.data);
+			tally_trackers = response.data; // store data
+			resolve(response.data); // resolve promise
+		});
+	}
+);
+
 
 // SAVE TOKEN FROM DASHBOARD
 function saveToken(data) {
