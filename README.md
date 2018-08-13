@@ -2,6 +2,8 @@
 
 ## Tally Chrome Extension README
 
+Current version 0.1.1
+
 
 ### Chrome and Opera Installation
 
