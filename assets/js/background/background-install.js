@@ -153,7 +153,7 @@ function setOptions(options) {
  */
 function createMeta() {
 	var obj = {
-		"version": 0.1,
+		"version": "0.1",
 		"installedOn": returnDateISO(),
 		"lastSyncedToServer": 0,
 		"lastSyncedResult": 0,
