@@ -34,6 +34,13 @@ div.tab { background-color: #f1f1f1; padding:15px; overflow: auto;}
 div.tabSection { float:none; margin: 10px 0;}
 
 
+/* soundVolume range slider */
+
+input[type=range] {
+  margin-top: 8px;
+}
+
+
 /* columns */
 .cols {
     display: flex;

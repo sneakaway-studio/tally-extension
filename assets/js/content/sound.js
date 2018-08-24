@@ -103,6 +103,7 @@ var Sound = (function() {
 		// load/play sound
 		var audio = new Audio(chrome.extension.getURL("assets/sounds/" + soundFile));
 		audio.volume = 0.3;
+		audio.volume = tally_options.soundVolume;
 		if (delay > 0)
 			setTimeout(function() {
 				audio.play();

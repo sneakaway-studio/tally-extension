@@ -62,6 +62,7 @@ function getOptions() {
 		tally_options = response.data;
 		// game
 		$("#gameMode").val(tally_options.gameMode);
+		$("#soundVolume").val(tally_options.soundVolume*100);
 		// privacy
 		document.getElementById("disabledDomains").value = tally_options.disabledDomains.join("\n");
 		// debugging
@@ -73,6 +74,7 @@ function getOptions() {
 function saveOptions() {
 	// game
 	tally_options.gameMode = $("#gameMode").val();
+	tally_options.soundVolume = $("#soundVolume").val() / 100;
 	// privacy
 	tally_options.disabledDomains = $('#disabledDomains').val().trim().replace(/\r\n/g, "\n").split("\n");
 	// debugging
@@ -163,8 +165,14 @@ $("input").mouseup(function() {
 		saveOptions("popup options");
 	}, 250);
 });
-$("select#gameMode").change(function() {
+$("select#gameMode").on('change', function() {
 	saveOptions("popup options");
+});
+$('#soundVolume').on('change', function(){
+	// play a sound to confirm new setting
+	var audio = new Audio(chrome.extension.getURL("assets/sounds/tally/tally-hello-q.mp3"));
+	audio.volume = $(this).val() / 100;
+	audio.play();
 });
 // timeout to save textarea
 var timeoutId;

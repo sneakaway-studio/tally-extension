@@ -134,10 +134,16 @@
 
 					<label for="gameMode">Game mode</label>
 					<select class="option-dropdown" id="gameMode">
-					<option value="full">Full – All the feels!</option>
-					<option value="stealth">Stealth – Visuals and sounds off</option>
-					<option value="disabled">Disabled</option>
-				</select>
+						<option value="full">Full – All the feels!</option>
+						<option value="stealth">Stealth – Visuals and sounds off</option>
+						<option value="disabled">Disabled</option>
+					</select>
+					<br>
+
+					<label for="soundVolume">Volume</label>
+					<input type="range" min="0" max="100" value="50" class="slider" id="soundVolume">
+					<br>
+
 				</div>
 
 
@@ -222,8 +228,8 @@
 					<button class="button" id="opt_reset_user">Reset user data</button>
 					<span id="opt_reset_user_status" class="status"></span><br>
 
-					<button class="button" id="opt_reset_options">Reset user options to defaults</button>
-					<span id="opt_reset_options_status" class="status"></span><br>
+								<button class="button" id="opt_reset_options">Reset user options to defaults</button>
+								<span id="opt_reset_options_status" class="status"></span><br>
 				</div>
 
 			</div>

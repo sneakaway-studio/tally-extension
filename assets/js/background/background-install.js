@@ -119,6 +119,7 @@ function createOptions() {
 		"showTally": true,
 		"showClickVisuals": true,
 		"playSounds": true,
+		"soundVolume": 0.3,
 		"showAnimations": true,
 		"gameMode": "full",
 		"skin": "color-magenta",
@@ -173,9 +174,9 @@ function createMeta() {
 		"browser": Environment.getBrowserName()
 	};
 	// testing installation
-	// obj.currentAPI = "development";
-	// obj.api = Config.development.api;
-	// obj.website = Config.development.website;
+		obj.currentAPI = "development";
+		obj.api = Config.development.api;
+		obj.website = Config.development.website;
 	return obj;
 }
 
