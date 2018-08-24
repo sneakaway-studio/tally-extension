@@ -150,7 +150,7 @@ var Monster = (function() {
 			} else if (tally_nearby_monsters[mid].stage == 1) {
 				if (r < 0.2) {
 					// go back to normal stage
-					tally_nearby_monsters[mid].stage == 0;
+					tally_nearby_monsters[mid].stage = 0;
 					Thought.showString("Want to give feedback? Click the survey button in the top-right menu.", "question");
 				} else if (r < 0.4) {
 					// show them a random thought

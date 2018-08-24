@@ -21,7 +21,7 @@ function checkAPIServerStatus() {
 		dataType: 'json', // type of data you expect to receive
 	}).done(result => {
 		console.log("<{!}> checkAPIServerStatus() SERVER ONLINE", JSON.stringify(result));
-		var ended = new Date().getTime();
+		var ended = new Date().getTime(); 
 		_tally_meta.serverOnline = 1;
 		_tally_meta.userOnline = 1;
 		_tally_meta.serverOnlineTime = ended - started;
