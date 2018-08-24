@@ -152,8 +152,9 @@ function setOptions(options) {
  *  Create Meta object on installation
  */
 function createMeta() {
+	var manifestData = chrome.runtime.getManifest();
 	var obj = {
-		"version": "0.1",
+		"version": manifestData.version, // set in manifest
 		"installedOn": returnDateISO(),
 		"lastSyncedToServer": 0,
 		"lastSyncedResult": 0,

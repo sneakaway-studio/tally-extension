@@ -53,12 +53,15 @@ function checkServerForDataOnStartApp(){
 function isNewVersion() {
 	let _tally_meta = store("tally_meta"),
 		manifestData = chrome.runtime.getManifest();
-	if (_tally_meta.version != manifestData.version) {
+	if (_tally_meta.version == manifestData.version) {
 		console.log(_tally_meta.version, manifestData.version, "..... SAME VERSION");
-		return false;
+		return true;
 	} else {
 		console.log(_tally_meta.version, manifestData.version, "!!!!! NEW VERSION");
-		return true;
+		// update version
+		_tally_meta.version = manifestData.version;
+		store("tally_meta", _tally_meta);
+		return false; 
 	}
 }
 
