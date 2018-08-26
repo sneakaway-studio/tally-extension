@@ -1,6 +1,9 @@
 
+
+
 #tally, #tyd {
     position: absolute;
+    display: block;
     z-index: 9999999999999;
 }
 
