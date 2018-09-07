@@ -26,3 +26,16 @@ Current version 0.1.1
 
 * Some settings can be changed by clicking on the Tally icon in the top, right of your screen
 * Some debugging options are available by clicking on Tally and then clicking on the astericks
+
+
+
+
+### Version 0.1.2
+
+* Adds sound volume range slider to options
+* Adds functions for progressive tracker blocking
+
+
+### Version 0.1.1
+
+Development version from Spring 2018 Digital Studies "Humanities Startup" course

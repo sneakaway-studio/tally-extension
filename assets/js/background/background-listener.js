@@ -91,12 +91,25 @@ chrome.runtime.onMessage.addListener(
 				"message": 1
 			});
 		}
-		// getTrackers
-		else if (request.action == "getTrackers") {
+		// getTrackerBlockList
+		else if (request.action == "getTrackerBlockList") {
 			let data = store("tally_trackers") || {};
 			sendResponse({
 				"action": request.action,
 				"data": data
+			});
+		}
+		// saveNearbyMonsters
+		else if (request.action == "saveTrackerBlockList") {
+			//console.log("saveTrackerBlockList()",request.data);
+			let data = store("tally_trackers") || {
+				"blocked": []
+			};
+			data.blocked = request.data
+			store("tally_trackers", data);
+			sendResponse({
+				"action": request.action,
+				"message": 1
 			});
 		}
 
@@ -299,9 +312,13 @@ function adjustScore(_score, scoreObj, n) {
 	return _score;
 }
 
-function setBadgeText(_text){
+function setBadgeText(_text) {
 	if (!_text || _text == '') return;
 	// show tracker numbers in badge
-	chrome.browserAction.setBadgeBackgroundColor({ color: [255, 108, 0, 255] });
-	chrome.browserAction.setBadgeText({text: ""+_text});
+	chrome.browserAction.setBadgeBackgroundColor({
+		color: [255, 108, 0, 255]
+	});
+	chrome.browserAction.setBadgeText({
+		text: "" + _text
+	});
 }

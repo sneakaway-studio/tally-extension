@@ -79,19 +79,29 @@ const getNearbyMonstersPromise = new Promise(
 );
 
 // GET LIST OF TRACKERS
-const getTrackersPromise = new Promise(
+const getTrackerBlockListPromise = new Promise(
 	(resolve, reject) => {
 		//if (!pageData.activeOnPage) return;
 		chrome.runtime.sendMessage({
-			'action': 'getTrackers'
+			'action': 'getTrackerBlockList'
 		}, function(response) {
-			//console.log('>>>>> getTrackers()',response.data);
+			//console.log('>>>>> getTrackerBlockList()',response.data);
 			tally_trackers = response.data; // store data
 			resolve(response.data); // resolve promise
 		});
 	}
 );
-
+// SAVE TRACKER BLOCK LIST
+function saveTrackerBlockList(data) {
+	//if (!pageData.activeOnPage) return;
+	chrome.runtime.sendMessage({
+		'action': 'saveTrackerBlockList',
+		'data': data
+	}, function(response) {
+		console.log('<{!}> saveTrackerBlockList()', response);
+		Debug.update();
+	});
+}
 
 // SAVE TOKEN FROM DASHBOARD
 function saveToken(data) {
@@ -184,6 +194,14 @@ function getTopMonsters() {
 	}, function(response) {
 		//console.log("<<<<< ",'> getTopMonsters()',JSON.stringify(response));
 		tally_top_monsters = response.data;
+	});
+}
+function getTrackerBlockList() {
+	chrome.runtime.sendMessage({
+		'action': 'getTrackerBlockList'
+	}, function(response) {
+		//console.log("<<<<< ",'> getTrackerBlockList()',JSON.stringify(response));
+		tally_trackers = response.data;
 	});
 }
 

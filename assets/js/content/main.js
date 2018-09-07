@@ -9,14 +9,14 @@ let pageData = getPageData(),
 	tally_game_status = getGameStatus(),
 	tally_nearby_monsters = {},
 	tally_top_monsters = getTopMonsters(),
-	tally_trackers = {};
+	tally_trackers = getTrackerBlockList();
 
 
 let MAIN_DEBUG = false;
 
 $(function() {
 	Promise // after async functions then update
-		.all([getUserPromise, getOptionsPromise, getMetaPromise, getNearbyMonstersPromise, getTrackersPromise]) // , getLastBackgroundUpdatePromise
+		.all([getUserPromise, getOptionsPromise, getMetaPromise, getNearbyMonstersPromise, getTrackerBlockListPromise]) // , getLastBackgroundUpdatePromise
 		.then(function() {
 			if (MAIN_DEBUG) console.log('>>>>> init() Promise all data has loaded', tally_user, tally_options, tally_trackers);
 			// check if extension should be active on this page before proceeding
@@ -73,9 +73,11 @@ function startGame() {
 		// 	addMutationObserver();
 		addTitleChecker();
 
-	// block a tracker if it is in list
-	Tracker.remove(pageData.trackers);
+	// remove trackers that have been caught
+	Tracker.removeCaughtTrackers(pageData.trackers);
+	// check for  monsters on the page
 	Monster.check();
+	// update debugger
 	Debug.update();
 }
 
