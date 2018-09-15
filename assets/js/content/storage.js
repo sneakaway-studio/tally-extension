@@ -161,7 +161,8 @@ const getLastBackgroundUpdatePromise = new Promise(
 			let _lastBackgroundUpdate = {};
 			if (prop(response.data)) {
 				_lastBackgroundUpdate = response.data; // store data
-				pageData.previousUrl = _lastBackgroundUpdate.pageData.url;
+				if (pageData)
+					pageData.previousUrl = _lastBackgroundUpdate.pageData.url;
 			}
 			resolve(_lastBackgroundUpdate); // resolve promise
 		});

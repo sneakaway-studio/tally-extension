@@ -58,12 +58,14 @@ function shouldExtensionBeActiveOnPage() {
  * Run Game
  */
 function startGame() {
+	// don't run if pageData failed
+	if (!pageData || pageData == undefined || !pageData.activeOnPage) return;
 	if (MAIN_DEBUG) console.log(">>>>> startGame() -> Starting Tally on this page");
 	//    console.log(">>>>> pageData = "+ JSON.stringify(pageData));
-	if (!pageData.activeOnPage) return;
 
 	Debug.add();
 	startTally();
+	startTimeEvents();
 	addMainClickEventListener();
 	//checkPageForMonsters(pageData.tags);
 
@@ -146,12 +148,16 @@ function addTitleChecker() {
 /**
  * Timed functions
  */
-var timedEvents = {
-	pageTimerInterval: setInterval(function() {
-		// if this page is visible
-		if (document.hasFocus()) {
-			pageData.time = pageData.time + 0.5;
-			Debug.update();
-		}
-	}, 500)
-};
+var timedEvents = {};
+
+function startTimeEvents(){
+	timedEvents = {
+		pageTimerInterval: setInterval(function() {
+			// if this page is visible
+			if (document.hasFocus()) {
+				pageData.time = pageData.time + 0.5;
+				Debug.update();
+			}
+		}, 500)
+	}
+}

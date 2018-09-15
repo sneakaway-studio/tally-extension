@@ -26,6 +26,8 @@ var Tally = (function() {
 		if (!prop(pageData) || !pageData.activeOnPage) return;
 		if (!$(".tally")) return;
 		if (!followCursor) return;
+		if ($(which).length == 0) return;
+		// store reference to which eye
 		var eye = $(which);
 		var x, y, rad, rot;
 		if (how == "mouse") {
