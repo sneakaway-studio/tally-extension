@@ -174,9 +174,9 @@ function createMeta() {
 		"browser": Environment.getBrowserName()
 	};
 	// testing installation
-		obj.currentAPI = "development";
-		obj.api = Config.development.api;
-		obj.website = Config.development.website;
+		// obj.currentAPI = "development";
+		// obj.api = Config.development.api;
+		// obj.website = Config.development.website;
 	return obj;
 }
 

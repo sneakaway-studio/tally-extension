@@ -62,7 +62,7 @@ var clickEventHandler = function(eventData, target) {
 	// console.log("clickEventHandler() > eventData",eventData,target);
 	//console.log("clickEventHandler() > target",target,target.className);
 
-  
+
 	/**
 	 * 	1. Determine if this is a node we want to ignore (tally interface links, etc.)
 	 */
@@ -168,7 +168,7 @@ var clickEventHandler = function(eventData, target) {
 		backgroundUpdate.scoreData.score += gameRules.clickScore[eventData.action];
 
 		// only allow points for clicking the first time (FB Like, etc.)
-		//		$(target).toggleClass("tally-clicked");
+				$(target).toggleClass("tally-clicked"); 
 		// temp off for testing
 
 		// send backgroundUpdate object to server via background
