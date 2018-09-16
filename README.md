@@ -34,8 +34,8 @@ Current version 0.1.1
 
 * Adds sound volume range slider to options
 * Adds functions for progressive tracker blocking
-
+* Other bug fixes
 
 ### Version 0.1.1
 
-Development version from Spring 2018 Digital Studies "Humanities Startup" course
+* Development version from Spring 2018 Digital Studies "Humanities Startup" course
