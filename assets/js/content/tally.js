@@ -69,8 +69,25 @@ var Tally = (function() {
 	}
 
 
+	function menu(){
+		//console.log(tallyMenuOpen)
+		if (tallyMenuOpen){
+			// open so close
+
+			tallyMenuOpen = false;
+		} else {
+			// closed so open
+
+			tallyMenuOpen = true;
+		}
+	}
+
+
+
 	/*  TALLY CHARACTER
 	 *****************************************************************************/
+
+
 
 
 
@@ -86,6 +103,7 @@ var Tally = (function() {
 		getFollowCursor: function(state) {
 			return followCursor;
 		},
+		menu: menu,
 		stare: stare
 
 	};
@@ -156,6 +174,13 @@ function startTally() {
 
 	// TESTING
 	//Monster.test();
+
+
+	$(document).on('mouseenter mouseleave','#tally_character_container',function(){
+		// works but don't need it yet
+		//Tally.menu();
+	});
+
 
 	// add the tally_character click action
 	$(document).on('click', '#tally_character_container', function() {

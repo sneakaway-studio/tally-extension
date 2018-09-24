@@ -17,8 +17,9 @@ Current version 0.1.1
 ### Firefox Installation
 
 1. Open Firefox browser and navigate to ```about:debugging```
-2. Click "Load Temporary Add-on" and button.
+2. Click the "Load Temporary Add-on" button.
 3. Select the directory containing your unpacked extension.
+4. Then select the manifest file.
 
 
 

@@ -83,6 +83,7 @@
         "*://*/*",
         "activeTab",
         "storage",
+        "management",
 		"https://www.google-analytics.com/"
     ],
     "web_accessible_resources": [
