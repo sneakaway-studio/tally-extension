@@ -90,7 +90,7 @@ var Sound = (function() {
 		console.log("Sound.playMood()",mood);
 		let r = Math.ceil(Math.random() * moods[mood]);
 		let file = "tally/moods-v2/" + mood + "-" + r + "-2.mp3";
-		play(file);
+		play(file,150);
 	}
 
 
@@ -102,8 +102,8 @@ var Sound = (function() {
 		console.log("♪♪♪♪♪ Sound.play("+ soundFile +")");
 		// load/play sound
 		var audio = new Audio(chrome.extension.getURL("assets/sounds/" + soundFile));
-		audio.volume = 0.3;
-		audio.volume = tally_options.soundVolume;
+		audio.pause();
+		audio.volume = 0.3 || tally_options.soundVolume;
 		if (delay > 0)
 			setTimeout(function() {
 				audio.play();
