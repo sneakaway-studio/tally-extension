@@ -36,6 +36,7 @@ svg#tally-svg * {
 #tally_thought_bubble #tally_thought { padding:8px; text-align: center; margin:auto;
 	font: 12px/16px "Monaco", "Andale Mono","Courier New", sans-serif; color: #fff }
 #tally_thought_bubble #tally_thought .tally-replace { color: #DE4929; }
+#tally_thought_bubble a { color:white; text-decoration: underline;}
 
 /* http://leaverou.github.io/bubbly/ */
 .tally_speech_bubble {
