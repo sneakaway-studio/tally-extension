@@ -30,6 +30,10 @@ Current version 0.1.1
 
 
 
+### Version 0.1.3
+
+* Monster update
+* Auth flow and other bug fixes
 
 ### Version 0.1.2
 
