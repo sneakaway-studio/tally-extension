@@ -64,6 +64,17 @@ const getMetaPromise = new Promise(
 		});
 	}
 );
+
+function saveMeta(calledFrom) {
+	chrome.runtime.sendMessage({
+		'action': 'saveMeta',
+		'data': tally_meta
+	}, function(response) {
+		//console.log("<<<<< ",calledFrom,'> saveMeta()',JSON.stringify(response));
+	});
+}
+
+
 // GET NEARBY MONSTERS
 const getNearbyMonstersPromise = new Promise(
 	(resolve, reject) => {
@@ -112,12 +123,12 @@ function saveToken(data) {
 		console.log('<{!}> saveToken()', response);
 		if (response.message == 1) {
 			console.log("grab it", data);
-			$.growl({
-				title: "TOKEN SAVED!",
-				message: "User token updated!"
-			});
+			// $.growl({
+			// 	title: "TOKEN SAVED!",
+			// 	message: "User token updated!"
+			// });
 
-			Thought.showString("Your user token updated!", "happy");
+			Thought.showString("Your user token has been updated!", "happy");
 		}
 	});
 }

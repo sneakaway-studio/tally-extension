@@ -151,6 +151,14 @@ chrome.runtime.onMessage.addListener(
 				"data": store("tally_meta")
 			});
 		}
+		// saveMeta
+		else if (request.action == "saveMeta") {
+			store("tally_meta", request.data);
+			sendResponse({
+				"action": request.action,
+				"message": 1
+			});
+		}
 
 		// setBadgeText
 		else if (request.action == "setBadgeText") {

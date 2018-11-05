@@ -1,66 +1,90 @@
 "use strict";
 
+var Page = (function() {
+	// PRIVATE
 
-/**
- *	Get data about this page
- */
-function getPageData() {
-	var url = document.location.href;
-	// only run on web pages
-	if (!url || !url.match(/^http/)) return;
-	// object
-	var data = {
-		activeOnPage: false, // default
-		browser: {
-			name: Environment.getBrowserName(),
-			cookieEnabled: navigator.cookieEnabled || "",
-			language: Environment.getBrowserLanguage(),
-			platform: Environment.getPlatform(),
-			width: window.innerWidth || document.body.clientWidth,
-			height: window.innerHeight || document.body.clientHeight
-		},
-		screen: {
-			width: screen.width,
-			height: screen.height
-		},
-		contentType: window.document.contentType,
-		description: getDescription(),
-		domain: Environment.extractRootDomain(document.location.href),
-		h1: getH1(),
-		keywords: getKeywords(),
-		mouseX: 0,
-		mouseY: 0,
-		mouseupFired: false,
-		subDomain: Environment.extractSubDomain(document.location.href),
-		tags: "",
-		time: 0,
-		title: getTitle(),
-		trackers: getTrackersOnPage(),
-		previousUrl: "",
-		url: document.location.href
-	};
-	// test for grabbing token of logged in user
-	if (data.url.indexOf("/dashboard") > 0 && $("#token").length) {
-		checkPageToken();
+
+
+	/**
+	 *	Get data about this page
+	 */
+	function getData() {
+
+		var url = document.location.href;
+		// only run on web pages
+		if (!url || !url.match(/^http/)) return;
+		// object
+		var data = {
+			activeOnPage: false, // default
+			browser: {
+				name: Environment.getBrowserName(),
+				cookieEnabled: navigator.cookieEnabled || "",
+				language: Environment.getBrowserLanguage(),
+				platform: Environment.getPlatform(),
+				width: window.innerWidth || document.body.clientWidth,
+				height: window.innerHeight || document.body.clientHeight
+			},
+			screen: {
+				width: screen.width,
+				height: screen.height
+			},
+			contentType: window.document.contentType,
+			description: getDescription(),
+			domain: Environment.extractRootDomain(document.location.href),
+			h1: getH1(),
+			keywords: getKeywords(),
+			mouseX: 0,
+			mouseY: 0,
+			mouseupFired: false,
+			subDomain: Environment.extractSubDomain(document.location.href),
+			tags: "",
+			time: 0,
+			title: getTitle(),
+			trackers: getTrackersOnPage(),
+			previousUrl: "",
+			url: document.location.href
+		};
+		// check page tags
+		data.tags = getPageTags(data);
+		//console.log("pageData",data);
+		return data;
 	}
-	// check page tags
-	data.tags = getPageTags(data);
-	//console.log("pageData",data);
-	return data;
-}
 
 
-/**
- *	If on dashboard page then check for updates to token
- */
-function checkPageToken() {
-	var data = {
-		token: $("#token").val(),
-		tokenExpires: $("#tokenExpires").val()
+
+	/**
+	 *	If on dashboard page then check for updates to token
+	 */
+	function checkDashboardUpdateToken() {
+		// console.log("tally_meta",tally_meta);
+		// console.log(pageData.url, tally_meta.website + "/dashboard");
+
+		// if user is on dashboard of current environment
+		if (pageData.url == tally_meta.website + "/dashboard" && $("#token").length ) {
+			// grab new token
+			var data = {
+				token: $("#token").val(),
+				tokenExpires: $("#tokenExpires").val()
+			};
+			//console.log(data);
+			saveToken(data);
+		}
+	}
+
+
+
+	// PUBLIC
+	return {
+		getData: getData,
+		checkDashboardUpdateToken: checkDashboardUpdateToken
+
 	};
-	//console.log(data);
-	saveToken(data);
-}
+})();
+
+
+
+
+
 
 
 /**

@@ -34,7 +34,6 @@ const reload = () => {
 };
 
 const watchChanges = (dir, lastTimestamp) => {
-    //return 0; 
 	timestampForFilesInDirectory(dir).then(timestamp => {
 		if (!lastTimestamp || (lastTimestamp === timestamp)) {
 			// retry after 1s

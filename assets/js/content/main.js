@@ -1,7 +1,7 @@
 "use strict";
 
 // load objects
-let pageData = getPageData(),
+let pageData = Page.getData(),
 	eventData = {},
 	tally_user = {},
 	tally_options = {},
@@ -19,6 +19,10 @@ $(function() {
 		.all([getUserPromise, getOptionsPromise, getMetaPromise, getNearbyMonstersPromise, getTrackerBlockListPromise]) // , getLastBackgroundUpdatePromise
 		.then(function() {
 			if (MAIN_DEBUG) console.log('>>>>> init() Promise all data has loaded', tally_user, tally_options, tally_trackers);
+
+			// check if we can update the token
+			Page.checkDashboardUpdateToken();
+
 			// check if extension should be active on this page before proceeding
 			pageData.activeOnPage = shouldExtensionBeActiveOnPage();
 			if (pageData.activeOnPage)
@@ -38,9 +42,6 @@ function shouldExtensionBeActiveOnPage() {
 	if (!tally_meta.serverOnline) {
 		if (MAIN_DEBUG) console.log("!!!!! Connection to Tally server is down");
 		return false;
-	} else if (!tally_meta.userTokenValid) {
-		if (MAIN_DEBUG) console.log("!!!!! userTokenValid is not valid");
-		return false;
 	} else if (prop(tally_options.disabledDomains) &&
 		(($.inArray(pageData.domain, tally_options.disabledDomains) >= 0) ||
 			($.inArray(pageData.subDomain, tally_options.disabledDomains) >= 0))) {
@@ -54,6 +55,9 @@ function shouldExtensionBeActiveOnPage() {
 		return true;
 	}
 }
+
+
+
 /**
  * Run Game
  */
@@ -88,7 +92,7 @@ function startGame() {
  */
 function refreshApp() {
 	if (!pageData.activeOnPage) return;
-	pageData = getPageData();
+	pageData = Page.getData();
 	tally_game_status = getGameStatus();
 	Monster.check();
 	Debug.update();
@@ -99,18 +103,43 @@ function checkToken() {
 	if (MAIN_DEBUG) console.log(">>>>> tally_meta = " + JSON.stringify(tally_meta));
 	if (pageData.url != tally_meta.website + "/dashboard") {
 		if (tally_meta.userTokenStatus == "expired") {
-			$.growl({
-				title: "YOUR TOKEN HAS EXPIRED",
-				message: "Click here to get a new one"
-			});
+			// $.growl({
+			// 	title: "YOUR TOKEN HAS EXPIRED",
+			// 	message: "Click here to get a new one"
+			// });
 		} else if (tally_meta.userTokenStatus != "ok") {
-			$.growl({
-				title: "YOU HAVE NO TOKEN",
-				message: "<a href='" + tally_meta.website + "/dashboard' target='_blank'>Link your account to start playing Tally</a>"
-			});
+			// $.growl({
+			// 	title: "YOU HAVE NO TOKEN",
+			// 	message: "<a href='" + tally_meta.website + "/dashboard' target='_blank'>Link your account to start playing Tally</a>"
+			// });
+
+		}
+		// if token not valid
+		if (tally_meta.userTokenStatus == "expired" || tally_meta.userTokenStatus != "ok") {
+			if (MAIN_DEBUG) console.log(">>>>> tally_meta >>>>>> TOKEN STILL BROKEN, tally_meta.userTokenPrompts = "+ tally_meta.userTokenPrompts);
+			// don't bother them every time
+			if (tally_meta.userTokenPrompts % 5 == 0){
+				Thought.showString("Please <a href='" + tally_meta.website + "/dashboard' target='_blank'>visit your dashboard</a> to update your token", "sad");
+			}
+			tally_meta.userTokenPrompts++;
+			saveMeta("checkToken()");
 		}
 	}
 }
+
+// /**
+//  * Prompt user to renew token?
+//  */
+// function promptUserRenewToken() {
+// 	//console.log("promptUserRenewToken()",tally_options);
+//
+// 	if (!tally_meta.userTokenValid) {
+// 		if (MAIN_DEBUG) console.log("!!!!! userTokenValid is not valid");
+// 		return true;
+// 	}
+// }
+
+
 
 /**
  *	MutationObserver to detect title element changes (e.g. youtube and other ajax sites)
@@ -150,7 +179,7 @@ function addTitleChecker() {
  */
 var timedEvents = {};
 
-function startTimeEvents(){
+function startTimeEvents() {
 	timedEvents = {
 		pageTimerInterval: setInterval(function() {
 			// if this page is visible
