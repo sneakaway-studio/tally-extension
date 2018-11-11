@@ -311,6 +311,25 @@ var Monster = (function() {
 	}
 
 
+
+	function generateMonsterValues(){
+
+		// generate a monsterLevel
+		// monsterLevel = tallyLevel + frequency + randomness
+		// 	7		+     (-2)    +     +/- Math.random() * (tallyLevel * .2 )
+		// 	7		+     (0)    +     +/- 1
+		// 	7		+     (4)   +     +/- 1
+
+		// generate the hp, str, df
+		// hp = monsterLevel * monster.hp;
+
+
+	}
+
+
+
+
+
 	/**
 	 *	User captures monster
 	 */

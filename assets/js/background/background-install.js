@@ -72,7 +72,10 @@ function createUser() {
 		"score": createScore(),
 		"achievements": createAchievements(),
 		"monsters": createMonsters(),
-		"skins": ["color-magenta"]
+		"skins": ["color-magenta"],
+		"stats": {
+			"hp":0,"xp":0,"str":0,"df":0
+		}
 	};
 	return obj;
 }
