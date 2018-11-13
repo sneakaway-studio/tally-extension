@@ -21,6 +21,8 @@ var Battle = (function() {
 	}
 
 
+
+
 	// end battle
 	function end() {
 		BattleConsole.hide();

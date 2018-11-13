@@ -24,7 +24,7 @@ $(function() {
 
 					"<div class='tally' id='tally'></div>" +
 
-					"<div class='tally' id='console'></div>" +
+					"<div class='tally' id='battle-console'></div>" +
 			"</div>";
 		$('body').append(str);
 	}

@@ -76,6 +76,7 @@
 			"assets/libs/jquery.growl.css",
 			"assets/libs/cssshake.min.css",
 			"assets/css/styles.css",
+			"assets/css/battle.css",
 			"assets/css/monster.css",
 			"assets/css/tally.css"
 		],

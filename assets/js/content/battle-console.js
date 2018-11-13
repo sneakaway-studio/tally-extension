@@ -10,8 +10,12 @@ var BattleConsole = (function() {
 
 	// show the console
 	function show(){
-		reset();
-
+		stream = "";
+		var str = "<div id='battle-console-inner'>This is the BattleConsole"+
+				"<div id='battle-console-stream'>"+"</div>"+
+				"</div>";
+		$("#battle-console").html(str);
+		$("#battle-console").css({"display":"block"});
 	}
 	// log to the console
 	function log(str){
@@ -25,11 +29,8 @@ var BattleConsole = (function() {
 	}
 	// show the console
 	function hide(){
-		reset();
-	}
-	// reset everything
-	function reset(){
-		stream = "";
+		$("#battle-console").html("");
+		$("#battle-console").css({"display":"none"});
 	}
 
 
