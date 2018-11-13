@@ -6,18 +6,21 @@
 var Battle = (function() {
 	// PRIVATE
 
-	var state = false;
+	var _active = false;
 
 	// start battle
 	function start(monster) {
-		state = true;
+		setActive(true);
 
 		// move tally into position
 		// add monster and move into position
 
 		// show console
 		BattleConsole.show();
-		BattleConsole.log("Battle started with " + monster + " monster!");
+		setTimeout(function() {
+			BattleConsole.log("Battle started with " + monster + " monster!");
+		}, 100);
+
 	}
 
 
@@ -29,12 +32,23 @@ var Battle = (function() {
 	}
 
 
+	function getActive() {
+		return _active;
+	}
+
+	function setActive(state) {
+		_active = state;
+	}
+
 	// PUBLIC
 	return {
 		start: function(monster) {
 			start(monster);
 		},
 		end: end,
-		state: state
+		getActive: getActive,
+		setActive: function(state) {
+			setActive(state);
+		}
 	};
 })();

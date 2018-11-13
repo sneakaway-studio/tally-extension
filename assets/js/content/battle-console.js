@@ -9,28 +9,35 @@ var BattleConsole = (function() {
 	var stream = "";
 
 	// show the console
-	function show(){
+	function show() {
 		stream = "";
-		var str = "<div id='battle-console-inner'>This is the BattleConsole"+
-				"<div id='battle-console-stream'>"+"</div>"+
-				"</div>";
+		var str = "<div id='battle-console-inner'>" +
+			"<div id='battle-console-stream'>" + "</div>" +
+			"</div>";
 		$("#battle-console").html(str);
-		$("#battle-console").css({"display":"block"});
+		$("#battle-console").css({
+			"display": "block"
+		});
 	}
 	// log to the console
-	function log(str){
-		if (!Battle.state) {
-			Battle.state = true;
-			console.log(112,Battle.state);
-			return;
-		}
+	function log(str) {
+		if (!Battle.getActive()) return;
+
 		stream = stream + "<div>" + str + "</div>";
-		console.log(stream);
+		$("#battle-console-stream").html(stream);
+		//console.log(stream);
+
+		// scroll
+		$('#battle-console-stream').stop().animate({
+			scrollTop: $('#battle-console-stream')[0].scrollHeight
+		}, 800);
 	}
 	// show the console
-	function hide(){
+	function hide() {
 		$("#battle-console").html("");
-		$("#battle-console").css({"display":"none"});
+		$("#battle-console").css({
+			"display": "none"
+		});
 	}
 
 
@@ -38,10 +45,10 @@ var BattleConsole = (function() {
 
 	// PUBLIC
 	return {
-		show:show,
-		log:function(str){
+		show: show,
+		log: function(str) {
 			log(str);
 		},
-		hide:hide
+		hide: hide
 	};
 })();
