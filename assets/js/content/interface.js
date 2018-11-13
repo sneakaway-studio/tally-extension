@@ -23,6 +23,8 @@ $(function() {
           			"<div class='tally_award_explode_background-2'></div>"+
 
 					"<div class='tally' id='tally'></div>" +
+
+					"<div class='tally' id='console'></div>" +
 			"</div>";
 		$('body').append(str);
 	}
