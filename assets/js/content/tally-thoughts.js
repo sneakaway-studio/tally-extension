@@ -4,7 +4,7 @@ var Thought = (function() {
 	// PRIVATE
 
 	let thoughtOpen = false,
-		THOUGHT_DEBUG = true;
+		THOUGHT_DEBUG = false;
 
 
 	/**
@@ -17,9 +17,9 @@ var Thought = (function() {
 	/**
 	 *	Show a fact
 	 */
-	function showFact(fact, sound, ifOpen) {
-		if (THOUGHT_DEBUG) console.log("💬 💬 showFact()", fact, sound, ifOpen);
-		if (ifOpen) thoughtOpen = false; // override ifOpen = true
+	function showFact(fact, sound, ifOpenUpdate) {
+		if (THOUGHT_DEBUG) console.log("💬 💬 showFact()", fact, sound, ifOpenUpdate);
+		if (ifOpenUpdate) thoughtOpen = false; // override ifOpenUpdate = true
 		if (thoughtOpen) return; // if open, exit
 		Sound.playMood(sound);
 		show(fact.fact);
@@ -61,9 +61,9 @@ var Thought = (function() {
 	/**
 	 *	Show the thought bubble [with text and sound]
 	 */
-	function showThought(thought, sound, ifOpen) {
-		if (THOUGHT_DEBUG) console.log("💬 💬 Thought.showThought()", thought, sound, ifOpen);
-		if (ifOpen) thoughtOpen = false; // override ifOpen = true
+	function showThought(thought, sound, ifOpenUpdate) {
+		if (THOUGHT_DEBUG) console.log("💬 💬 Thought.showThought()", thought, sound, ifOpenUpdate);
+		if (ifOpenUpdate) thoughtOpen = false; // override ifOpenUpdate = true
 		if (thoughtOpen) return; // else if open, then exit
 		if (sound) Sound.playMood(thought.mood);
 		show(thought.text);
@@ -74,9 +74,9 @@ var Thought = (function() {
 	/**
 	 *	Show the thought bubble [with text and sound]
 	 */
-	function showString(str, sound, ifOpen) {
-		if (THOUGHT_DEBUG) console.log("💬 💬 Thought.showString()", str, sound, ifOpen);
-		if (ifOpen) thoughtOpen = false; // override ifOpen = true
+	function showString(str, sound, ifOpenUpdate) {
+		if (THOUGHT_DEBUG) console.log("💬 💬 Thought.showString()", str, sound, ifOpenUpdate);
+		if (ifOpenUpdate) thoughtOpen = false; // true = update even if open
 		if (thoughtOpen) return; // if open, exit
 		if (sound) Sound.playMood(sound);
 		show(str);
@@ -138,7 +138,7 @@ var Thought = (function() {
 		if (str.indexOf("{{Monster.current}}") > -1) {
 			find = "Monster.current";
 			replace = MonsterData.dataById[Monster.current()].name;
-			//if (isVowel(replace[0])) replace = "n "+replace; 
+			//if (isVowel(replace[0])) replace = "n "+replace;
 		}
 		if (str.indexOf("{{pageData.title}}") > -1) {
 			find = "pageData.title";
@@ -161,17 +161,17 @@ var Thought = (function() {
 		getThought: function(arr) {
 			return getThought(arr);
 		},
-		showThought: function(thought, sound, ifOpen) {
-			showThought(thought, sound, ifOpen);
+		showThought: function(thought, sound, ifOpenUpdate) {
+			showThought(thought, sound, ifOpenUpdate);
 		},
 		getFact: function(domain) {
 			return getFact(domain);
 		},
-		showFact: function(fact, sound, ifOpen) {
-			showFact(fact, sound, ifOpen);
+		showFact: function(fact, sound, ifOpenUpdate) {
+			showFact(fact, sound, ifOpenUpdate);
 		},
-		showString: function(str, sound, ifOpen) {
-			showString(str, sound, ifOpen);
+		showString: function(str, sound, ifOpenUpdate) {
+			showString(str, sound, ifOpenUpdate);
 		},
 		show: function(str, sound) {
 			show(str, sound);

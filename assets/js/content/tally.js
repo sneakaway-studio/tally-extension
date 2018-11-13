@@ -58,25 +58,23 @@ var Tally = (function() {
 	/*  TALLY MENU
 	 *****************************************************************************/
 
-	function tallyMenu() {
-		var str = "<div class='tally' id='tally_menu'>" +
-			// https://en.wikipedia.org/wiki/Glossary_of_video_game_terms
-			"<button class='tally' id='tally_menu_profile'>View your profile</button>" +
-			"<button class='tally' id='tally_menu_install'>View install page</button>" +
-			//"<button class='tally' id='tally_menu_credits'>Experiments</button>"+
-			"</div>";
-		return str;
-	}
-
-
 	function menu(){
 		//console.log(tallyMenuOpen)
 		if (tallyMenuOpen){
 			// open so close
-
+			Thought.hide();
 			tallyMenuOpen = false;
 		} else {
 			// closed so open
+
+			var str = "<div class='tally' id='tally_menu'>" +
+				// https://en.wikipedia.org/wiki/Glossary_of_video_game_terms
+				"<button class='tally' id='tally_menu_profile'>View your profile</button>" +
+				"<button class='tally' id='tally_menu_install'>View install page</button>" +
+				//"<button class='tally' id='tally_menu_credits'>Experiments</button>"+
+				"</div>";
+
+			Thought.showString(str, false, true);
 
 			tallyMenuOpen = true;
 		}
@@ -179,6 +177,10 @@ function startTally() {
 	$(document).on('mouseenter mouseleave','#tally_character_container',function(){
 		// works but don't need it yet
 		//Tally.menu();
+	});
+
+	$(document).on('dblclick','#tally_character_container',function(){
+		
 	});
 
 
