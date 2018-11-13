@@ -180,7 +180,7 @@ function startTally() {
 	});
 
 	$(document).on('dblclick','#tally_character_container',function(){
-		
+		Battle.start("scary");
 	});
 
 
