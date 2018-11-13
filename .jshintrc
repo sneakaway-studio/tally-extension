@@ -1,7 +1,7 @@
 {
     "indent": 1,
     "strict": "global",
-    "unused": true,
+    "unused": false,
     "browser": true,
     "undef": true,
     "validthis": true,

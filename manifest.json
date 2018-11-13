@@ -57,6 +57,7 @@
             "assets/js/content/pageData.js",
             "assets/js/content/interface.js",
             "assets/js/content/monster.js",
+            "assets/js/content/battle.js",
             "assets/js/content/tracker.js",
             "assets/js/content/storage.js",
             "assets/js/content/effects.js",
