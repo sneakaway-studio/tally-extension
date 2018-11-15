@@ -4,22 +4,75 @@
 ******************************************************************************/
 #battle-console {
     display: none;
-    background-color:#685f68;
+    background-color: #685f68;
     padding: 10px;
     position: absolute;
     width: 30%;
-    height:100px;
-    margin-left:-15%;
-    left:50%;
+    height: 100px;
+    margin-left: -15%;
+    left: 50%;
     bottom: 3%;
 }
 #battle-console-stream {
-    background-color:#663366;
+    background-color: #663366;
     padding: 10px;
-    height:80px;
+    height: 80px;
     color: #cb7623;
     font: 0.9em/1.4em "Lucida Console", Monaco, monospace;
 }
 #battle-console-stream {
     overflow: scroll;
+}
+#battle-console-stream:last-child:after {
+    content: "";
+    /* position: absolute; */
+    top: 0;
+    right: -10px;
+    /* Remove display: inline-block if not required to be on the same line as text etc */
+    display: inline-block;
+    background-color: #cb7623;
+    vertical-align: top;
+    width: 10px;
+    /* Set height to the line height of .text */
+    height: 16px;
+    /*
+    Animation paramaters:
+    blink = animation-name,
+    1s = animation-duration,
+    step-end = animation-timing-function,
+    infinite = animation-iteration-count
+    */
+    -webkit-animation: blink 1s step-end infinite;
+    animation: blink 1s step-end infinite;
+}
+.noanimation {
+    background-color: #990000;
+    -webkit-transition: none !important;
+    -moz-transition: none !important;
+    -o-transition: none !important;
+    -ms-transition: none !important;
+    transition: none !important;
+}
+
+@-webkit-keyframes blink {
+    0% {
+        opacity: 1.0;
+    }
+    50% {
+        opacity: 0.0;
+    }
+    100% {
+        opacity: 1.0;
+    }
+}
+@keyframes blink {
+    0% {
+        opacity: 1.0;
+    }
+    50% {
+        opacity: 0.0;
+    }
+    100% {
+        opacity: 1.0;
+    }
 }

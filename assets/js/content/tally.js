@@ -180,7 +180,7 @@ function startTally() {
 	});
 
 	$(document).on('dblclick','#tally_character_container',function(){
-		if (Battle.getActive() == false)
+		if (!Battle.active())
 			Battle.start("scary");
 		else
 			BattleConsole.log("Some more stuff for the console "+  pageData.time);

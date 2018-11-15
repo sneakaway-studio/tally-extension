@@ -5,6 +5,28 @@
 
 
 /**
+ *	Typewriter effect
+ */
+function typeWriter(ele, str, i, caller) {
+	//console.log(ele, str, i);
+	if (i < str.length) {
+		document.getElementById(ele).innerHTML += str.charAt(i);
+		setTimeout(function() {
+			typeWriter(ele, str, ++i, caller);
+		}, 40);
+	}
+ 	else {
+		if (caller == "BattleConsole") {
+			// add a little time at the end of each line
+			setTimeout(function() {
+				BattleConsole.active(false);
+			}, 250);
+		}
+	}
+}
+
+
+/**
  *	Trim a string to length
  */
 function trimStr(str, length) {
@@ -34,7 +56,7 @@ function isVowel(x) {
 }
 
 function ucFirst(string) {
-    return string.charAt(0).toUpperCase() + string.slice(1);
+	return string.charAt(0).toUpperCase() + string.slice(1);
 }
 
 function removeStopWords(str = null, wordArr = null) {
