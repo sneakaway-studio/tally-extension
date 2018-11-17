@@ -217,16 +217,17 @@ function openTab(btn, tabName) {
 	document.getElementById(btn).classList.add("active");
 }
 
-function updateTabSkins() {
-	let str = "";
-	for (var key in tally_user.skins) {
-		str += "<span class='skinThumb'><a href='#'>";
-		str += "<img src='";
-		str += chrome.extension.getURL('assets/img/tally-skins/skin-' + tally_user.skins[key] + ".png");
-		str += "'></a></span>";
-	}
-	$("#skinThumbs").html(str);
-}
+// MARKED FOR DELETION
+// function updateTabSkins() {
+// 	let str = "";
+// 	for (var key in tally_user.skins) {
+// 		str += "<span class='skinThumb'><a href='#'>";
+// 		str += "<img src='";
+// 		str += chrome.extension.getURL('assets/img/tally-skins/skin-' + tally_user.skins[key] + ".png");
+// 		str += "'></a></span>";
+// 	}
+// 	$("#skinThumbs").html(str);
+// }
 
 
 
