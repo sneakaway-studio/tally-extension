@@ -68,7 +68,7 @@ function startGame() {
 	//    console.log(">>>>> pageData = "+ JSON.stringify(pageData));
 
 	Debug.add();
-	startTally();
+	Tally.start();
 	startTimeEvents();
 	addMainClickEventListener();
 	//checkPageForMonsters(pageData.tags);
