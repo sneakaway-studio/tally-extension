@@ -1,106 +1,193 @@
+/* SKIN TESTS */
+
+/* .tallySkinBack {
+    fill: #C308C155;
+}
+.tallySkinFront {
+    fill: #D32CF155;
+}
+
+ */
+
+
 
 
 
 /* TALLY CHARACTER */
-
-#tally_character_container, #tally_thought_bubble { position: absolute; z-index:9999999999999; }
-
-#tally_character_container { font: 14px/ 20px Arial; padding: 12px;
-	height: 222px; width: 223px; max-width: 100%;
-	left: 0; bottom: -143px; position: fixed; opacity: 1;
-	/* bitmap method */
-	/* background-image:url('chrome-extension://__MSG_@@extension_id__/assets/img/tally-skins/skin-color-magenta.png');
+#tally_character_container, #tally_thought_bubble {
+    position: absolute;
+    z-index: 9999999999999;
+}
+#tally_character_container {
+    font: 14px/ 20px Arial;
+    padding: 12px;
+    height: 222px;
+    width: 223px;
+    max-width: 100%;
+    left: 0;
+    bottom: -143px;
+    position: fixed;
+    opacity: 1;
+    /* bitmap method */
+    /* background-image:url('chrome-extension://__MSG_@@extension_id__/assets/img/tally-skins/skin-color-magenta.png');
 	background-repeat:no-repeat; */
-	/* testing
+    /* testing
 	bottom: 100px;*/
-
-	/* fix Tally's strange vertical position shift */
-	box-sizing: border-box; -moz-box-sizing: border-box; -webkit-box-sizing: border-box;
+    /* fix Tally's strange vertical position shift */
+    box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
 }
-#tally_character_container button { padding:5px; margin: 3px; background: #111; border: none; box-shadow: none; color: #fff;}
-#tally_character { margin: 55px 0 0 30px; width: 193px;
-	/* fix Tally's strange vertical position shift */
-	box-sizing: border-box; -moz-box-sizing: border-box; -webkit-box-sizing: border-box;
+#tally_character_container button {
+    padding: 5px;
+    margin: 3px;
+    background: #111;
+    border: none;
+    box-shadow: none;
+    color: #fff;
 }
-
-
-svg#tally-svg { width: 223px; height: 222px; position: absolute; top: -10px; left: 0px;}
+#tally_character {
+    margin: 55px 0 0 30px;
+    width: 193px;
+    /* fix Tally's strange vertical position shift */
+    box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+}
+svg#tally-svg {
+    width: 223px;
+    height: 222px;
+    position: absolute;
+    top: -10px;
+    left: 0px;
+}
 svg#tally-svg * {
     transition: all .9s;
 }
-
-
 /* TALLY THOUGHTS */
-
-#tally_thought_bubble { width: 220px; height: 80px; bottom: 270px; left: -500px; opacity: 0; display:flex; padding:0;}
-#tally_thought_bubble #tally_thought { padding:8px; text-align: center; margin:auto;
-	font: 12px/16px "Monaco", "Andale Mono","Courier New", sans-serif; color: #fff }
-#tally_thought_bubble #tally_thought .tally-replace { color: #DE4929; }
-#tally_thought_bubble a { color:white; text-decoration: underline;}
-
+#tally_thought_bubble {
+    width: 220px;
+    height: 80px;
+    bottom: 270px;
+    left: -500px;
+    opacity: 0;
+    display: flex;
+    padding: 0;
+}
+#tally_thought_bubble #tally_thought {
+    padding: 8px;
+    text-align: center;
+    margin: auto;
+    font: 12px/16px "Monaco", "Andale Mono", "Courier New", sans-serif;
+    color: #fff
+}
+#tally_thought_bubble #tally_thought .tally-replace {
+    color: #DE4929;
+}
+#tally_thought_bubble a {
+    color: white;
+    text-decoration: underline;
+}
 /* http://leaverou.github.io/bubbly/ */
 .tally_speech_bubble {
-	position: relative;
-	background: #252525;
-	border-radius: .4em;
+    position: relative;
+    background: #252525;
+    border-radius: .4em;
 }
-
 .tally_speech_bubble:after {
-	content: '';
-	position: absolute;
-	bottom: 0;
-	left: 70%;
-	width: 0;
-	height: 0;
-	border: 20px solid transparent;
-	border-top-color: #252525;
-	border-bottom: 0;
-	margin-left: -13px;
-	margin-bottom: -13px;
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 70%;
+    width: 0;
+    height: 0;
+    border: 20px solid transparent;
+    border-top-color: #252525;
+    border-bottom: 0;
+    margin-left: -13px;
+    margin-bottom: -13px;
 }
-
-
-
-#tally_eyes { position: absolute; top:20px; left: 122px; width: 100px; height: 50px; }
-.tally_lid { all: unset; width: 33px; height: 33px; margin:0; padding:0; display: inline-block; }
+#tally_eyes {
+    position: absolute;
+    top: 20px;
+    left: 122px;
+    width: 100px;
+    height: 50px;
+}
+.tally_lid {
+    all: unset;
+    width: 33px;
+    height: 33px;
+    margin: 0;
+    padding: 0;
+    display: inline-block;
+}
 .tally_eye {
-	position: relative;
-	display: inline-block;
-	border-radius: 50%;
-	height: 30px; width: 30px;
-	background: #000;
+    position: relative;
+    display: inline-block;
+    border-radius: 50%;
+    height: 30px;
+    width: 30px;
+    background: #000;
 }
 .tally_eye_pupil {
-	position: absolute;
-	bottom: 12px; right: 12px;
-	width: 7px; height: 7px;
-	background: #fff;
-	border-radius: 50%;
-	content: " ";
+    position: absolute;
+    bottom: 12px;
+    right: 12px;
+    width: 7px;
+    height: 7px;
+    background: #fff;
+    border-radius: 50%;
+    content: " ";
 }
 .tally_eye_pupil_active {
-	bottom: 17px; right: 10px;
+    bottom: 17px;
+    right: 10px;
 }
-
-.tally_eye_left { /*background:#900;*/ top: 5px; right: 28px; }
-.tally_eye_right { /*background:#090;*/ right: 8px; top: 15px; height: 33px; width: 33px; }
-.tally_eye_right:after { width: 8px; height: 8px; }
-
-
+.tally_eye_left {
+    /*background:#900;*/
+    top: 5px;
+    right: 28px;
+}
+.tally_eye_right {
+    /*background:#090;*/
+    right: 8px;
+    top: 15px;
+    height: 33px;
+    width: 33px;
+}
+.tally_eye_right:after {
+    width: 8px;
+    height: 8px;
+}
 /* TALLY: BLINK */
-
-.tally_lid { animation: tally_blink 2.0s infinite; }
-#tally_eyes { animation: tally_squeeze 2.0s infinite; }
-
+.tally_lid {
+    animation: tally_blink 2.0s infinite;
+}
+#tally_eyes {
+    animation: tally_squeeze 2.0s infinite;
+}
 @keyframes tally_blink {
-  90% { transform: none;
-  		animation-timing-function: ease-in; }
-  93% { transform: translateY(15px) scaleY(0) }
-  100% { animation-timing-function: ease-out; }
+    90% {
+        transform: none;
+        animation-timing-function: ease-in;
+    }
+    93% {
+        transform: translateY(15px) scaleY(0)
+    }
+    100% {
+        animation-timing-function: ease-out;
+    }
 }
 @keyframes tally_squeeze {
-  90% { transform: none;
-		animation-timing-function: ease-in; }
-  93% { transform: translateY(3px) scaleY(0.8) }
-  100% { animation-timing-function: ease-out; }
+    90% {
+        transform: none;
+        animation-timing-function: ease-in;
+    }
+    93% {
+        transform: translateY(3px) scaleY(0.8)
+    }
+    100% {
+        animation-timing-function: ease-out;
+    }
 }
