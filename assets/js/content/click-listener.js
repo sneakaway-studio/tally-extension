@@ -49,7 +49,8 @@ function addMainClickEventListener() {
 	});
 }
 
-
+// "shim" for clicking on SVGs
+SVGAnimatedString.prototype.indexOf = function () { return this.baseVal.indexOf.apply(this.baseVal, arguments); }
 
 /**
  *	clickEventHandler() - determines what kind of click was received, sends data to background.js
@@ -83,7 +84,8 @@ var clickEventHandler = function(eventData, target) {
 
 	// Check if click target is an Anchor or if target's parent element is an Anchor.
 	if (eventData.tag == "A" || eventData.parentTag == "A" ||
-		eventData.gParentTag == "A" || target.className == "_39n" || /* FB */
+		eventData.gParentTag == "A" || target.className == "_39n"
+		|| /* FB */
 		target.className.indexOf("ProfileTweet-actionCountForPresentation") > -1
 	) {
 		eventData.action = "click";
@@ -168,7 +170,7 @@ var clickEventHandler = function(eventData, target) {
 		backgroundUpdate.scoreData.score += gameRules.clickScore[eventData.action];
 
 		// only allow points for clicking the first time (FB Like, etc.)
-				$(target).toggleClass("tally-clicked"); 
+				$(target).toggleClass("tally-clicked");
 		// temp off for testing
 
 		// send backgroundUpdate object to server via background

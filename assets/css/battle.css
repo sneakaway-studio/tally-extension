@@ -6,7 +6,7 @@
     display: none;
     background-color: #685f68;
     padding: 10px;
-    position: absolute;
+    position: fixed;
     width: 30%;
     height: 100px;
     margin-left: -15%;
