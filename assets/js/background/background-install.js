@@ -125,7 +125,6 @@ function createOptions() {
 		"soundVolume": 0.3,
 		"showAnimations": true,
 		"gameMode": "full",
-		"skin": "color-magenta",
 		"disabledDomains": [
 			"drive.google.com",
 			"docs.google.com",
