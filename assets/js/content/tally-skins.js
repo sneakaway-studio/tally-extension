@@ -3,7 +3,7 @@
 window.Skin = (function() {
 	// PRIVATE
 
-	let SKIN_DEBUG = true;
+	let SKIN_DEBUG = false;
 	let skins = {
 			"color": {
 				"magenta": {
@@ -73,6 +73,11 @@ window.Skin = (function() {
 				},
 				"plaidRed": {
 					"url": chrome.extension.getURL('assets/img/tally-skins/skin-pattern-plaid-red.png'),
+					"w": 225,
+					"h": 225
+				},
+				"camoGrey": {
+					"url": chrome.extension.getURL('assets/img/tally-skins/skin-pattern-camo-grey.png'),
 					"w": 225,
 					"h": 225
 				},

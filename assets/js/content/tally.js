@@ -55,32 +55,6 @@ window.Tally = (function() {
 	}
 
 
-	/*  TALLY MENU
-	 *****************************************************************************/
-
-	function menu() {
-		//console.log(tallyMenuOpen)
-		if (tallyMenuOpen) {
-			// open so close
-			Thought.hide();
-			tallyMenuOpen = false;
-		} else {
-			// closed so open
-
-			var str = "<div class='tally' id='tally_menu'>" +
-				// https://en.wikipedia.org/wiki/Glossary_of_video_game_terms
-				"<button class='tally' id='tally_menu_profile'>View your profile</button>" +
-				"<button class='tally' id='tally_menu_install'>View install page</button>" +
-				//"<button class='tally' id='tally_menu_credits'>Experiments</button>"+
-				"</div>";
-
-			Thought.showString(str, false, true);
-
-			tallyMenuOpen = true;
-		}
-	}
-
-
 
 	/*  TALLY CHARACTER
 	 *****************************************************************************/
@@ -141,43 +115,20 @@ window.Tally = (function() {
 		//Monster.test();
 
 
+
+
+		// HOVER
 		$(document).on('mouseenter mouseleave', '#tally_character_container', function() {
 			// works but don't need it yet
 			//Tally.menu();
 		});
-
-		$(document).on('dblclick', '#tally_character_container', function() {
-			if (!Battle.active()) {
-				Battle.start("scary");
-				Skin.update("pattern-plaidRed");
-			} else {
-				BattleConsole.log("Some more stuff for the console " + pageData.time);
-				var r = Math.random();
-				if (r < 0.1)
-					Skin.update("color-magenta");
-				else if (r < 0.2)
-					Skin.update("color-cyan");
-				else if (r < 0.4)
-					Skin.update("gradient-rainbow");
-				else if (r < 0.6)
-					Skin.update("gradient-gold");
-				else if (r < 0.8)
-					Skin.update("image-flowerRetro");
-				// else if (r < .09)
-				// 	Skin.update("pattern-plaidYellow");
-				else if (r < 1)
-					Skin.update("image-plaidRed");
-			}
-		});
-
-
-		// add the tally_character click action
+		// ONE CLICK
 		$(document).on('click', '#tally_character_container', function() {
-			return;
+
 			// launch one of the nearby monsters
 			//if (pageData.domain.indexOf("localhost") >= 0)
 			Monster.test();
-			return;
+			 return;
 
 			// EXAMPLES
 
@@ -201,25 +152,81 @@ window.Tally = (function() {
 
 		});
 
+		// DOUBLE CLICK
+		$(document).on('dblclick', '#tally_character_container', function() {
 
-		// launch title page
-		$(document).on('click', '#tally_menu_profile', function() {
-			// use "on" because these elements are added dynamically)
-			window.open(chrome.extension.getURL('assets/pages/profile/profile.html'));
+			if (!Battle.active()) {
+				Battle.start("scary");
+				Skin.update("pattern-plaidRed");
+			} else {
+				BattleConsole.log("Some more stuff for the console " + pageData.time);
+				var r = Math.random();
+				if (r < 0.1)
+					Skin.update("color-magenta");
+				else if (r < 0.2)
+					Skin.update("color-cyan");
+				else if (r < 0.4)
+					Skin.update("gradient-rainbow");
+				else if (r < 0.6)
+					Skin.update("gradient-gold");
+				else if (r < 0.7)
+					Skin.update("image-flowerRetro");
+				else if (r < .08)
+					Skin.update("image-camoGrey");
+				else if (r < .09)
+					Skin.update("pattern-plaidYellow");
+				else if (r < 1)
+					Skin.update("image-plaidRed");
+			}
 		});
-		$(document).on('click', '#tally_menu_install', function() {
-			window.open(chrome.extension.getURL('assets/pages/install/install.html'));
-		});
-		$(document).on('click', '#tally_menu_sneakaway', function() {
-			window.open('https://sneakaway.studio');
-		});
-		$(document).on('click', '#tally_menu_neotopia', function() {
-			window.open('http://www.nabi.or.kr/english/project/coming_read.nab?idx=583');
-		});
+
+
+
+
+
+
+
+
+
+
+
 
 
 
 	}
+
+
+	/*  TALLY MENU
+	 *****************************************************************************/
+
+	function menu() {
+		//console.log(tallyMenuOpen)
+		if (tallyMenuOpen) {
+			// open so close
+			Thought.hide();
+			tallyMenuOpen = false;
+		} else {
+			// closed so open
+
+			var str = "<div class='tally' id='tally_menu'>" +
+				"<button class='tally' id='tally_menu_profile'>Profile</button>" +
+				"<button class='tally' id='tally_menu_install'>View install page</button>" +
+				"</div>";
+
+			Thought.showString(str, false, true);
+
+			tallyMenuOpen = true;
+		}
+
+		// launch title page
+		$(document).on('click', '#tally_menu_profile', function() {
+			window.open('https://tallygame.net/');
+		});
+		$(document).on('click', '#tally_menu_install', function() {
+			window.open(chrome.extension.getURL('assets/pages/install/install.html'));
+		});
+	}
+
 
 
 
