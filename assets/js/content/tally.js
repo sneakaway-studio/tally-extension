@@ -120,70 +120,17 @@ window.Tally = (function() {
 		// HOVER
 		$(document).on('mouseenter mouseleave', '#tally_character_container', function() {
 			// works but don't need it yet
-			//Tally.menu();
+			//tallyMenu();
 		});
 		// ONE CLICK
 		$(document).on('click', '#tally_character_container', function() {
-
-			// launch one of the nearby monsters
-			//if (pageData.domain.indexOf("localhost") >= 0)
-			Monster.test();
-			 return;
-
-			// EXAMPLES
-
-			// Thought.showThought(Thought.getThought(["monster", "launch", 0]),true);
-			// return;
-
-
-			let r = Math.random();
-			if (r < 0.25)
-				// show thought from data, [category/subcategory/0], play sound
-				Thought.showThought(Thought.getThought(["random", "greeting", 0]), true);
-			else if (r < 0.5)
-				// show thought from data, [category/0/index], play sound
-				Thought.showThought(Thought.getThought(["narrative", 0, "story3"]), true);
-			else if (r < 0.75)
-				// show thought from facts, trackers, play sound
-				Thought.showFact(Thought.getFact("trackers"), "neutral");
-			else
-				// show thought <string>, play sound
-				Thought.showString("this is just a string", "neutral");
-
+			//
 		});
-
 		// DOUBLE CLICK
 		$(document).on('dblclick', '#tally_character_container', function() {
-
-			if (!Battle.active()) {
-				Battle.start("scary");
-				Skin.update("pattern-plaidRed");
-			} else {
-				BattleConsole.log("Some more stuff for the console " + pageData.time);
-				var r = Math.random();
-				if (r < 0.1)
-					Skin.update("color-magenta");
-				else if (r < 0.2)
-					Skin.update("color-cyan");
-				else if (r < 0.4)
-					Skin.update("gradient-rainbow");
-				else if (r < 0.6)
-					Skin.update("gradient-gold");
-				else if (r < 0.7)
-					Skin.update("image-flowerRetro");
-				else if (r < .08)
-					Skin.update("image-camoGrey");
-				else if (r < .09)
-					Skin.update("pattern-plaidYellow");
-				else if (r < 1)
-					Skin.update("image-plaidRed");
-			}
+			// show testing menu
+			tallyMenu();
 		});
-
-
-
-
-
 
 
 
@@ -199,7 +146,7 @@ window.Tally = (function() {
 	/*  TALLY MENU
 	 *****************************************************************************/
 
-	function menu() {
+	function tallyMenu() {
 		//console.log(tallyMenuOpen)
 		if (tallyMenuOpen) {
 			// open so close
@@ -208,9 +155,13 @@ window.Tally = (function() {
 		} else {
 			// closed so open
 
-			var str = "<div class='tally' id='tally_menu'>" +
-				"<button class='tally' id='tally_menu_profile'>Profile</button>" +
-				"<button class='tally' id='tally_menu_install'>View install page</button>" +
+			var str = "<div class='tally' id='tally_menu'>Testing menu<br>" +
+				"<button class='tally' id='tallyMenu_profile'>View profile</button>" +
+				"<button class='tally' id='tallyMenu_startScreen'>View start screen</button>" +
+				"<button class='tally' id='tallyMenu_testNearbyMonster'>Test nearby monster</button>" +
+				"<button class='tally' id='tallyMenu_testBattle'>Test battle</button>" +
+				"<button class='tally' id='tallyMenu_randomThought'>Random thought</button>" +
+				"<button class='tally' id='tallyMenu_randomSkin'>Random skin</button>" +
 				"</div>";
 
 			Thought.showString(str, false, true);
@@ -219,11 +170,24 @@ window.Tally = (function() {
 		}
 
 		// launch title page
-		$(document).on('click', '#tally_menu_profile', function() {
-			window.open('https://tallygame.net/');
+		$(document).on('click', '#tallyMenu_profile', function() {
+			window.open('https://tallygame.net/profile/' + tally_user.username);
 		});
-		$(document).on('click', '#tally_menu_install', function() {
-			window.open(chrome.extension.getURL('assets/pages/install/install.html'));
+		$(document).on('click', '#tallyMenu_startScreen', function() {
+			window.open(chrome.extension.getURL('assets/pages/startScreen/startScreen.html'));
+		});
+		$(document).on('click', '#tallyMenu_testNearbyMonster', function() {
+			// launch one of the nearby monsters
+			Monster.test();
+		});
+		$(document).on('click', '#tallyMenu_testBattle', function() {
+			Battle.test();
+		});
+		$(document).on('click', '#tallyMenu_randomThought', function() {
+			Thought.random();
+		});
+		$(document).on('click', '#tallyMenu_randomSkin', function() {
+			Skin.random();
 		});
 	}
 
@@ -241,7 +205,6 @@ window.Tally = (function() {
 		getFollowCursor: function(state) {
 			return followCursor;
 		},
-		menu: menu,
 		stare: stare,
 		start: start
 

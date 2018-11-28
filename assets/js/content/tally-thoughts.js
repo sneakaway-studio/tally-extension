@@ -25,7 +25,7 @@ var Thought = (function() {
 		show(fact.fact);
 	}
 
-	function showTrackerThought(){
+	function showTrackerThought() {
 		let num = "none";
 		if (pageData.trackers.length > 0) num = "few";
 		if (pageData.trackers.length > 3) num = "lots";
@@ -82,7 +82,28 @@ var Thought = (function() {
 		show(str);
 	}
 
+	function random() {
+		// EXAMPLES
 
+		// Thought.showThought(Thought.getThought(["monster", "launch", 0]),true);
+		// return;
+
+
+		let r = Math.random();
+		if (r < 0.25)
+			// show thought from data, [category/subcategory/0], play sound
+			showThought(getThought(["random", "greeting", 0]), true);
+		else if (r < 0.5)
+			// show thought from data, [category/0/index], play sound
+			showThought(getThought(["onboarding", 0, "onboarding3"]), true);
+		else if (r < 0.75)
+			// show thought from facts, trackers, play sound
+			showFact(getFact("trackers"), "neutral", true);
+		else
+			// show thought <string>, play sound
+			showString("this is just a string", "neutral", true);
+
+	}
 
 
 	/**
@@ -150,7 +171,7 @@ var Thought = (function() {
 		}
 		// perform replacement
 		if (find != "" && replace != "")
-			str = str.replace(new RegExp('\{\{(?:\\s+)?(' + find + ')(?:\\s+)?\}\}'), "<span class='tally-replace'>"+ replace +"</span>");
+			str = str.replace(new RegExp('\{\{(?:\\s+)?(' + find + ')(?:\\s+)?\}\}'), "<span class='tally-replace'>" + replace + "</span>");
 		// return string
 		return str;
 	}
@@ -177,6 +198,7 @@ var Thought = (function() {
 			show(str, sound);
 		},
 		showTrackerThought: showTrackerThought,
+		random: random,
 		hide: hide
 
 	};

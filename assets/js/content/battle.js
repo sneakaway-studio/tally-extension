@@ -63,6 +63,16 @@ var Battle = (function() {
 	}
 
 
+	function test(){
+		if (!_active) {
+			start("scary");
+			Skin.update("pattern", "plaidRed");
+		} else {
+			BattleConsole.log("Some more stuff for the console " + pageData.time);
+			Skin.random();
+		}
+	}
+
 	// end battle
 	function end() {
 		BattleConsole.hide();
@@ -78,6 +88,7 @@ var Battle = (function() {
 			start(monster);
 		},
 		end: end,
+		test: test,
 		active: function(state) {
 			return active(state);
 		}

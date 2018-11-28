@@ -215,13 +215,31 @@ window.Skin = (function() {
 	}
 
 
-
+	function random(){
+		var r = Math.random();
+		if (r < 0.1)
+			update("color", "magenta");
+		else if (r < 0.2)
+			update("color", "cyan");
+		else if (r < 0.4)
+			update("gradient", "rainbow");
+		else if (r < 0.6)
+			update("gradient", "redGold", "animation");
+		else if (r < 0.7)
+			update("gradient", "blueGreen", "animation");
+		else if (r < 0.08)
+			update("image", "camoGrey");
+		else if (r < 0.09)
+			update("pattern", "plaidYellow");
+		else if (r < 1)
+			update("image", "plaidRed");
+	}
 
 
 	// PUBLIC
 	return {
-		update: function(skin) {
-			update(skin);
+		update: function(skinCat, skinColor, skinAnim) {
+			update(skinCat, skinColor, skinAnim);
 		},
 		returnBasicSVG: function() {
 			return returnBasicSVG();
@@ -229,6 +247,7 @@ window.Skin = (function() {
 		setStage: function(n) {
 			setStage(n);
 		},
+		random: random,
 		skins: skins,
 
 		returnSkin: function(skin) {
