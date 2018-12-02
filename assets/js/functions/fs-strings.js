@@ -20,6 +20,8 @@ function typeWriter(ele, str, i, caller) {
 			// add a little time at the end of each line
 			setTimeout(function() {
 				BattleConsole.active(false);
+				// text is done writing so color it
+				BattleConsole.colorText(ele);
 			}, 250);
 		}
 	}

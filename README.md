@@ -26,9 +26,15 @@ Current version 0.1.1
 ### Options
 
 * Some settings can be changed by clicking on the Tally icon in the top, right of your screen
-* Some debugging options are available by clicking on Tally and then clicking on the astericks
+* Some debugging options are available by double-clicking on Tally
 
 
+
+
+### Version 0.1.4
+
+* Adds double click debug menu option
+* Adds features to monster battle
 
 ### Version 0.1.3
 
