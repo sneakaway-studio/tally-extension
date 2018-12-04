@@ -1,58 +1,52 @@
 /*  BATTLE
 ******************************************************************************/
-
-
-
-
 /*  GLOBAL BOXES W/SHADOWS
 ******************************************************************************/
-
-
-/* button box with background */
+/* shadow box with background */
 .shadow-box-outer {
     box-sizing: border-box;
     z-index: 9999999999999;
 }
 .shadow-box-inner {
-	width: 100%;
+    width: 100%;
     box-shadow: 5px 5px #41d728;
     border: 8px solid #d32cf1;
-	background-color: #282c35;
+    background-color: #282c35;
     color: #abaeb2;
-	padding-left: 6px;
-	padding-right: 6px;
 }
-
-
-
-
 /*  CONSOLE
 ******************************************************************************/
-
-
-
-
 #battle-console {
     display: none;
     position: fixed;
     width: 40%;
-    height: 140px;
     margin-left: -20%;
     left: 50%;
     bottom: 3%;
+    height: 100px;
 }
 #battle-console-inner {
-    box-shadow:  #41d728;
+    box-shadow: #41d728;
     border-color: #d32cf1;
     background-color: #282c35;
+    width: 100%;
 }
 #battle-console-stream {
+    background-color: #282c35;
     box-sizing: border-box;
-    padding: 8px;
-    height: 80px;
     font: 0.9em/1.4em "Lucida Console", Monaco, monospace;
+    padding: 10px;
+    height: 100px;
+    overflow: scroll;
 }
-
+/* weird scrollbar issue */
+#battle-console-stream::-webkit-scrollbar {
+    background: rgba(0, 0, 0, 0);
+}
+#battle-console-stream::-webkit-scrollbar-corner {
+    background: rgba(0, 0, 0, 0);
+}
+/* text colors */
 #battle-console-stream .text-tally {
     color: #fd5be9
 }
@@ -65,14 +59,7 @@
 #battle-console-stream .text-xp {
     color: #fec875
 }
-
-
-
-
-
-#battle-console-stream {
-    overflow: scroll;
-}
+/* blinking cursor */
 #battle-console-stream:last-child:after {
     content: "";
     /* position: absolute; */
@@ -103,7 +90,6 @@
     -ms-transition: none !important;
     transition: none !important;
 }
-
 @-webkit-keyframes blink {
     0% {
         opacity: 1.0;
