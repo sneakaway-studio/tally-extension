@@ -1,30 +1,55 @@
 /*  BATTLE
 ******************************************************************************/
+
+
+
+
+/*  GLOBAL BOXES W/SHADOWS
+******************************************************************************/
+
+
+/* button box with background */
+.shadow-box-outer {
+    box-sizing: border-box;
+    z-index: 9999999999999;
+}
+.shadow-box-inner {
+	width: 100%;
+    box-shadow: 5px 5px #41d728;
+    border: 8px solid #d32cf1;
+	background-color: #282c35;
+    color: #abaeb2;
+	padding-left: 6px;
+	padding-right: 6px;
+}
+
+
+
+
 /*  CONSOLE
 ******************************************************************************/
+
+
+
+
 #battle-console {
     display: none;
-    background-color: #41d728;
     position: fixed;
     width: 40%;
-    height: 110px;
+    height: 140px;
     margin-left: -20%;
     left: 50%;
     bottom: 3%;
 }
 #battle-console-inner {
-    box-sizing: content-box;
-    border: 8px solid #d32cf1;
-    position: absolute;
-    top:6px;
-    left:6px;
-    width: 99%
+    box-shadow:  #41d728;
+    border-color: #d32cf1;
+    background-color: #282c35;
 }
 #battle-console-stream {
-    background-color: #282c35;
+    box-sizing: border-box;
     padding: 8px;
     height: 80px;
-    color: #abaeb2;
     font: 0.9em/1.4em "Lucida Console", Monaco, monospace;
 }
 
@@ -55,7 +80,7 @@
     right: -10px;
     /* Remove display: inline-block if not required to be on the same line as text etc */
     display: inline-block;
-    background-color: #cb7623;
+    background-color: #abaeb2;
     vertical-align: top;
     width: 10px;
     /* Set height to the line height of .text */

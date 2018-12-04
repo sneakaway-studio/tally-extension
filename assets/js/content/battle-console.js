@@ -22,7 +22,7 @@ var BattleConsole = (function() {
 	// show the console
 	function show() {
 		stream = "";
-		var str = "<div id='battle-console-inner'>" +
+		var str = "<div id='battle-console-inner' class='shadow-box-inner'>" +
 			"<div id='battle-console-stream'></div>" +
 			"</div>";
 		$("#battle-console").html(str);

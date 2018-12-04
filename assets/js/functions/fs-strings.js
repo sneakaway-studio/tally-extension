@@ -13,7 +13,7 @@ function typeWriter(ele, str, i, caller) {
 		document.getElementById(ele).innerHTML += str.charAt(i);
 		setTimeout(function() {
 			typeWriter(ele, str, ++i, caller);
-		}, 40);
+		}, 30);
 	}
  	else {
 		if (caller == "BattleConsole") {
