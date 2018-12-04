@@ -36,9 +36,9 @@ window.Tally = (function() {
 			rad = Math.atan2(event.pageX - x, event.pageY - y);
 			rot = (rad * (180 / Math.PI) * -1) + 180;
 			eye.css({
-				'-webkit-transform': 'rotate(' + rot + 'deg)',
-				'-moz-transform': 'rotate(' + rot + 'deg)',
-				'-ms-transform': 'rotate(' + rot + 'deg)',
+				// '-webkit-transform': 'rotate(' + rot + 'deg)',
+				// '-moz-transform': 'rotate(' + rot + 'deg)',
+				// '-ms-transform': 'rotate(' + rot + 'deg)',
 				'transform': 'rotate(' + rot + 'deg)'
 			});
 		} else if (how == "stare") {
@@ -139,7 +139,7 @@ window.Tally = (function() {
 
 
 
-
+// Battle.test();
 	}
 
 
@@ -159,7 +159,9 @@ window.Tally = (function() {
 				"<button class='tally' id='tallyMenu_profile'>View profile</button>" +
 				"<button class='tally' id='tallyMenu_startScreen'>View start screen</button>" +
 				"<button class='tally' id='tallyMenu_testNearbyMonster'>Test nearby monster</button>" +
-				"<button class='tally' id='tallyMenu_testBattle'>Test battle</button>" +
+				"<button class='tally' id='tallyMenu_startBattle'>Start battle</button>" +
+				"<button class='tally' id='tallyMenu_testBattleRumble'>Test battle rumble</button>" +
+				"<button class='tally' id='tallyMenu_endBattle'>End battle</button>" +
 				"<button class='tally' id='tallyMenu_randomThought'>Random thought</button>" +
 				"<button class='tally' id='tallyMenu_randomSkin'>Random skin</button>" +
 				"</div>";
@@ -180,8 +182,14 @@ window.Tally = (function() {
 			// launch one of the nearby monsters
 			Monster.test();
 		});
-		$(document).on('click', '#tallyMenu_testBattle', function() {
+		$(document).on('click', '#tallyMenu_startBattle', function() {
 			Battle.test();
+		});
+		$(document).on('click', '#tallyMenu_testBattleRumble', function() {
+			Battle.rumble();
+		});
+		$(document).on('click', '#tallyMenu_endBattle', function() {
+			Battle.end();
 		});
 		$(document).on('click', '#tallyMenu_randomThought', function() {
 			Thought.random();
