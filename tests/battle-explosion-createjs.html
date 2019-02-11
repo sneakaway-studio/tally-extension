@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+    <head>
+        <meta charset="utf-8">
+
+        <style>
+            body {
+      padding: 0;
+      margin: 0;
+      overflow: hidden;
+    }
+
+
+<!--
+
+THIS USES MEGA PROCESSOR
+
+ -->
+
+</style>
+    </head>
+    <body>
+        <canvas width="800" height="800" id="canvas"></canvas>
+
+
+<script src="https://cdn.jsdelivr.net/gh/CreateJS/EaselJS@ff1048658c9e5f19dacc020e4f3fc6c43a7b2a10/lib/easeljs-NEXT.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/PreloadJS/1.0.1/preloadjs.min.js"></script>
+
+<script>
+
+    var stage = new createjs.StageGL("canvas", {antialias:true,preserveBuffer:true});
+
+var MAX=200,
+    RADIUS = 40,
+    COLORS = [
+      {colors:["#8814E8", "#FF2484", "#E814D3", "#D322FF", "#8814E8"]} ];
+
+var colors, bgColor;
+var sb, ss,
+    store = [],
+    sprites = [];
+
+// Preload the font, since it sometimes isn't ready in time.
+var loader = new createjs.FontLoader({
+			src: "https://fonts.googleapis.com/css?family=Magra:700",
+			type: "fontcss"
+}, true);
+
+loader.load();
+
+
+function init() {
+  stage.autoClear = true;
+
+  var index = Math.random() * COLORS.length | 0;
+  colors = COLORS[index].colors;
+  bgColor = colors[Math.random()*colors.length|0];
+  bgColor = "#ffffffff";
+  stage.setClearColor(bgColor);
+  fill.fillCmd.style = bgColor;
+  fill.updateCache();
+
+  // Make Sprites, and create a SpriteSheet for GL
+  sb = new createjs.SpriteSheetBuilder();
+  for (var i=0, l=colors.length; i<l; i++) {
+    var sprite = new createjs.Shape();
+    sprite.graphics
+      .f(colors[i])
+      .dc(0,0,RADIUS);
+    sb.addFrame(sprite, new createjs.Rectangle(-RADIUS,-RADIUS,RADIUS*2,RADIUS*2),2);
+  }
+  ss = sb.build();
+
+  sprites.length = store.length = 0;
+  cont.removeAllChildren();
+
+
+
+    // Seed the effect so it looks right at the start.
+  for (var i=0; i<80; i++) {
+    tick();
+  }
+}
+
+
+
+// Object Pool
+function getSprite() {
+  var sprite = null;
+  if (store.length == 0) {
+    if (sprites.length >= MAX) { return; }
+    sprite = new createjs.Sprite(ss);
+  } else {
+    sprite = store.pop();
+  }
+  sprite.gotoAndStop(Math.random()*colors.length|0);
+  return sprite;
+}
+function returnSprite(sprite) {
+  store.unshift(sprite);
+}
+
+// Create a new sprite from the pool and initialize
+function createSprite() {
+  var sprite = getSprite();
+  if (sprite != null) {
+    cont.addChildAt(sprite, 0);
+    sprite.set({
+      a: Math.random() * Math.PI*2,
+      speed: Math.random() * 1,
+      g: 0.1,
+      scale: 0.5,
+      alpha: 0
+    });
+    var pos = Math.random() * 50;
+    sprite.x = Math.sin(sprite.a) * pos;
+    sprite.y = Math.cos(sprite.a) * pos;
+    sprites.push(sprite);
+  }
+}
+
+// Init
+var cont = new createjs.Container()
+  .set({x:400,y:400, scale:2}); // TODO: Center on size
+var fill = new createjs.Shape().set({alpha:0.05});
+fill.fillCmd = fill.graphics.f("#000").command;
+fill.graphics.dr(0,0,100,100);
+fill.cache(0,0,100,100);
+stage.addChild(fill, cont);
+
+createjs.Ticker.timingMode = "raf";
+createjs.Ticker.on("tick", tick);
+
+// On Tick, make a new sprite, and move the rest.
+var h = 1;
+function tick(event) {
+
+  createSprite();
+  //createSprite();
+  //createSprite();
+
+  for (var i=sprites.length-1; i>=0; i--) {
+    var sprite = sprites[i];
+    sprite.x += Math.sin(sprite.a)*sprite.speed;
+    sprite.y += Math.cos(sprite.a)*sprite.speed;
+    sprite.scale *= 0.97;
+    sprite.g *= 1.02;
+    sprite.y += sprite.g;
+    sprite.speed *= 0.997;
+    sprite.alpha = Math.min(1, sprite.alpha + 0.1);
+
+    if (sprite.scale < 0.01) {
+      sprites.splice(i, 1);
+      cont.removeChild(sprite);
+      returnSprite(sprite);
+    }
+  }
+
+
+  stage.update(event);
+}
+
+// Simple Resize
+window.addEventListener("resize", handleResize);
+function handleResize() {
+  var w = stage.canvas.width = window.innerWidth;
+  var h = stage.canvas.height = window.innerHeight;
+  cont.x = w >> 1;
+  cont.y = h >> 1;
+  fill.scaleX = w/100;
+  fill.scaleY = h/100;
+  stage.updateViewport(w,h);
+}
+handleResize();
+
+// stage.on("stagemousedown", function() {
+//     stage.autoClear = false;
+// })
+
+// Click to draw
+// stage.on("stagemouseup", init);
+// document.getElementById("overlay").addEventListener("click", init)
+init();
+
+
+</script>
+
+    </body>
+</html>

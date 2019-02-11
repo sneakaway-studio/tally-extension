@@ -1,0 +1,216 @@
+
+<!DOCTYPE HTML>
+<html>
+
+<head>
+    <title>sparks-sun</title>
+    <meta name="viewport" id="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <meta charset="utf-8">
+    <style type="text/css">
+        body {
+            font-family: Monospace;
+            background-color: #f0f0f0;
+            margin: 0px;
+            overflow: hidden;
+        }
+
+        #container {
+            width: 100%;
+            height: 100%;
+        }
+
+        #testCanvas {
+            background: #000;
+            background-image: url(https://news.nationalgeographic.com/content/dam/news/2018/05/17/you-can-train-your-cat/02-cat-training-NationalGeographic_1484324.ngsversion.1526587209178.adapt.1900.1.jpg);
+
+        }
+        #box {
+            position:absolute; top:140px; left:140px;
+            width:20px; height:20px;
+            background-color:black;
+            z-index: 20;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="container">
+        <div id="box"></div>
+        <canvas id="testCanvas"></canvas>
+    </div>
+    <script src="https://a-jie.github.io/Proton/example/lib/stats.min.js"></script>
+    <script src="https://a-jie.github.io/Proton/example/lib/TweenLite.min.js"></script>
+    <script src="https://a-jie.github.io/Proton/build/proton.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script>
+        var canvas;
+        var context;
+        var proton;
+        var renderer;
+        var emitter;
+        var stats;
+        var mouseObj;
+        var attractionForce;
+
+        main();
+
+        function main() {
+            canvas = document.getElementById("testCanvas");
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+
+            addStats();
+            loadImage();
+
+            mouseObj = {
+                x: canvas.width / 2,
+                y: canvas.height / 2
+            };
+
+            resize();
+        }
+
+        function addStats() {
+            stats = new Stats();
+            stats.setMode(2);
+            stats.domElement.style.position = 'absolute';
+            stats.domElement.style.left = '0px';
+            stats.domElement.style.top = '0px';
+            document.body.appendChild(stats.domElement);
+        }
+
+        function loadImage() {
+            var image = new Image()
+            image.onload = function (e) {
+                createProton(e.target);
+                tick();
+                canvas.addEventListener('mousedown', mouseDownHandler, false);
+            }
+            image.src = 'particle.png';
+        }
+
+        function createProton(image) {
+
+            proton = new Proton;
+            emitter = new Proton.Emitter();
+            emitter.rate = new Proton.Rate(new Proton.Span(30, 50), .1);
+
+            emitter.addInitialize(new Proton.Mass(1));
+            emitter.addInitialize(new Proton.Body(image));
+            //emitter.addInitialize(new Proton.P(new Proton.PointZone(canvas.width / 2, canvas.height / 2)));
+            emitter.addInitialize(new Proton.Life(1, 1.7));
+            emitter.addInitialize(new Proton.V(new Proton.Span(3, 5), new Proton.Span(0, 360), 'polar'));
+
+            emitter.addBehaviour(new Proton.Color('#462795', '#F25132'));
+            attractionForce = new Proton.Attraction(mouseObj, 10, 200);
+            emitter.addBehaviour(attractionForce);
+            emitter.addBehaviour(new Proton.Scale(Proton.getSpan(1, 1.6), Proton.getSpan(0, .1)));
+            emitter.addBehaviour(new Proton.Alpha(1, .2));
+
+            emitter.p.x = canvas.width / 2;
+            emitter.p.y = canvas.height / 2;
+            emitter.emit();
+            proton.addEmitter(emitter);
+
+            renderer = new Proton.WebGLRenderer(canvas);
+            renderer.blendFunc("SRC_ALPHA", "ONE");
+            proton.addRenderer(renderer);
+        }
+
+        function resize() {
+            window.onresize = function () {
+                canvas.width = window.innerWidth;
+                canvas.height = window.innerHeight;
+
+                mouseObj.x = canvas.width / 2;
+                mouseObj.y = canvas.height / 2;
+                emitter.p.x = canvas.width / 2;
+                emitter.p.y = canvas.height / 2;
+
+                renderer.resize(canvas.width, canvas.height);
+            }
+        }
+
+        function mouseDownHandler(e) {
+
+move(e.offsetX,e.offsetY)
+return;
+
+            TweenLite.to(emitter.p, 1.5, {
+                x: e.offsetX,
+                y: e.offsetY,
+            });
+
+            TweenLite.to(mouseObj, 3.5, {
+                x: e.offsetX,
+                y: e.offsetY,
+            });
+
+            attractionForce.reset(mouseObj, 0, 200);
+            setTimeout(function () { attractionForce.reset(mouseObj, 10, 200); }, 500);
+        }
+
+        function move(_x,_y) {
+            TweenLite.to(emitter.p, 1.5, {
+                x: _x,
+                y: _y,
+            });
+
+            TweenLite.to(mouseObj, 3.5, {
+                x: _x,
+                y: _y,
+            });
+
+            attractionForce.reset(mouseObj, 0, 200);
+            setTimeout(function () { attractionForce.reset(mouseObj, 10, 200); }, 500);
+        }
+
+
+        $(function () {
+            var pane = $('#container'),
+                box = $('#box'),
+                wh = pane.width() - box.width(),
+                wv = pane.height() - box.height(),
+                d = {},
+                x = 15;
+
+            function newh(v,a,b) {
+                var n = parseInt(v, 10) - (d[a] ? x : 0) + (d[b] ? x : 0);
+                return n < 0 ? 0 : n > wh ? wh : n;
+            } 
+
+            function newv(v,a,b) {
+                var n = parseInt(v, 10) - (d[a] ? x : 0) + (d[b] ? x : 0);
+                return n < 0 ? 0 : n > wv ? wv : n;
+            }
+
+            $(window).keydown(function(e) { d[e.which] = true; });
+            $(window).keyup(function(e) { d[e.which] = false; });
+
+            setInterval(function() {
+                box.css({
+                    left: function(i,v) { return newh(v, 37, 39); },
+                    top: function(i,v) { return newv(v, 38, 40); }
+                });
+                wh = pane.width() - box.width();
+                wv = pane.height() - box.height();
+            }, 50);
+        });
+
+
+        function tick() {
+            requestAnimationFrame(tick);
+
+            stats.begin();
+
+            if (proton) {
+                proton.update();
+                proton.stats.update(2, document.body);
+            }
+
+            stats.end();
+        }
+    </script>
+</body>
+
+</html>
