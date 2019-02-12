@@ -9,6 +9,7 @@
  */
 function typeWriter(ele, str, i, caller) {
 	//console.log(ele, str, i);
+	if (!document.getElementById(ele)) return;
 	if (i < str.length) {
 		document.getElementById(ele).innerHTML += str.charAt(i);
 		setTimeout(function() {

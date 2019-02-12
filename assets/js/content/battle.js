@@ -35,8 +35,8 @@ var Battle = (function() {
 		// get monster name
 		details.monsterName = MonsterData.dataById[mid].name + " monster";
 
-		// setup page
-		setupRumble();
+		// setup page for effects
+		BattleEffect.setup();
 
 
 		// move tally into position
@@ -93,78 +93,13 @@ var Battle = (function() {
 		}
 	}
 
-	let source,nodes,n = "*";
-
-	function setupRumble(){
-		// display source code of web page in background
-		if (source == null){
-			// add div
-			$("body").append("<blockquote id='battle-background'></blockquote>");
-			source = $("body").html();
-			source.replace(/[^<]/gi, '&lt;').replace(/[^>]/gi, '&gt;')
-			//console.log(source);
-		}
-		if (nodes == null){
-			// all possible html5 nodes
-			nodes = ['a', 'b', 'blockquote', 'br', 'button', 'canvas', 'code', 'dd', 'div', 'dl', 'dt',
-				'em', 'embed', 'footer', 'frame', 'form', 'header', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'hr',
-				'iframe', 'img', 'input', 'label', 'nav', 'ol', 'ul', 'li', 'option', 'p', 'pre', 'section', 'span',
-				'strong', 'sup', 'svg', 'table', 'tr', 'td', 'th', 'tbody', 'thead', 'template', 'textarea', 'text', 'u', 'video'
-			];
-			//console.log(nodes.join(", "));
-			// add any exclusions
-			for (let i = 0, l = nodes.length; i < l; i++) {
-				//console.log(nodes.length, nodes[i], $(nodes[i]).height(), $(nodes[i]).length);
-				// remove large divs
-				if ($(nodes[i]).length == 0 || $(nodes[i]).height() > 2000 || $(nodes[i]).height() == undefined) {
-					//console.log(" --> removed ");
-					delete nodes[i];
-				} else {
-					nodes[i] = nodes[i] + ':not(.tally)';
-				}
-			}
-
-			// clean empties from array
-			nodes = nodes.filter(function (el) {
-				return el != null;
-			});
-			console.log("final node count: "+nodes.length);
-
-			// format for selection
-			n = nodes.join(', ');
-			//console.log(n);
-		}
-	}
 
 
-	function rumble(degree="medium") {
-		if (source == null || nodes == null)
-			setupRumble();
-
-		if (degree == "small")
-			Sound.playFile("explosions/explode.mp3",0,-.2);
-		else if (degree == "medium")
-			Sound.playFile("explosions/explode.mp3",0,0);
-		else if (degree == "large")
-			Sound.playFile("explosions/explode.mp3",0,.2);
-
-		// display background
-		$("#battle-background").text(source);
-		// rumble page elements
-		$(n).addClass(degree+'-rumble');
-		// after delay set back to normal
-		setTimeout(function() {
-			$(n).removeClass(degree+'-rumble');
-			$("#battle-background").text("");
-		}, 500);
-		
-
-	}
 
 	// end battle
 	function end() {
-		_active = false;
 		BattleConsole.hide();
+		_active = false;
 	}
 
 
@@ -180,9 +115,6 @@ var Battle = (function() {
 		test: test,
 		active: function(state) {
 			return active(state);
-		},
-		rumble: function(degree) {
-			rumble(degree);
 		},
 		details: details
 	};

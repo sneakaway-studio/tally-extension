@@ -5,23 +5,20 @@
 
 var BattleConsole = (function() {
 	// PRIVATE
+	var stream, logId, _active, _queue;
 
-	var stream = "",
-		logId = 0,
-		_active = false,
+	// reset all vars
+	function reset() {
+		stream = "";
+		logId = 0;
+		_active = false;
 		_queue = [];
-
-
-	// control state
-	function active(state) {
-		if (state != undefined && (state === true || state === false))
-			_active = state;
-		return _active;
 	}
+
 
 	// show the console
 	function show() {
-		stream = "";
+		reset();
 		var str = "<div id='battle-console-inner' class='tally shadow-box-inner'>" +
 			"<div class='tally' id='battle-console-stream'></div>" +
 			"</div>";
@@ -33,11 +30,30 @@ var BattleConsole = (function() {
 		// move it into position
 		anime({
 			targets: '#battle-console',
-			translateY: -250,
+			translateY: "-250px",
 			elasticity: 100,
 			duration: 1000,
-			opacity: 1
 		});
+	}
+	// show the console
+	function hide() {
+		//reset();
+		anime({
+			targets: '#battle-console',
+			translateY: "250px",
+			duration: 1000,
+		});
+
+	}
+
+
+
+
+	// control state
+	function active(state) {
+		if (state != undefined && (state === true || state === false))
+			_active = state;
+		return _active;
 	}
 	// log to the console
 	function log(str) {
@@ -68,7 +84,7 @@ var BattleConsole = (function() {
 		}, 200);
 	}
 
-	function writeNextInQueue(lineSpeed=150) {
+	function writeNextInQueue(lineSpeed = 150) {
 		//console.log("writeNextInQueue() 1", str, _queue,_active);
 		// if currently active, stop
 		if (_active) return;
@@ -81,6 +97,8 @@ var BattleConsole = (function() {
 		logId++;
 		var ele = "<div class='tally tally_log_line'><span id='tally_log" + logId + "' class='tally_log_cursor'></span></div>";
 		$("#battle-console-stream").append(ele);
+		// make sure it exists first
+		if (!$('#battle-console-stream')[0]) return;
 		// scroll to new placeholder
 		$('#battle-console-stream').stop().animate({
 			scrollTop: $('#battle-console-stream')[0].scrollHeight
@@ -94,6 +112,7 @@ var BattleConsole = (function() {
 
 	function colorText(ele) {
 		var str = $("#" + ele).html();
+		if (str == undefined) return;
 		//console.log(str);
 		str = str.replace("Tally", "<span class='text-tally'>Tally</span>");
 		str = str.replace(Battle.details.monsterName, "<span class='text-xp'>" + Battle.details.monsterName + "</span>");
@@ -103,16 +122,7 @@ var BattleConsole = (function() {
 	}
 
 
-	// show the console
-	function hide() {
-		anime({
-			targets: '#battle-console',
-			translateY: 250,
-			duration: 2000,
-			opacity: 0
-		});
-		$("#battle-console").html("");
-	}
+
 
 
 

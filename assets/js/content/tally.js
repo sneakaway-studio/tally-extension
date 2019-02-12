@@ -159,9 +159,14 @@ window.Tally = (function() {
 				"<button class='tally' id='tallyMenu_profile'>View profile</button>" +
 				"<button class='tally' id='tallyMenu_startScreen'>View start screen</button>" +
 				"<button class='tally' id='tallyMenu_testNearbyMonster'>Test nearby monster</button>" +
-				"<button class='tally' id='tallyMenu_startBattle'>Start battle</button>" +
-				"<button class='tally' id='tallyMenu_testBattleRumble'>Test battle rumble</button>" +
-				"<button class='tally' id='tallyMenu_endBattle'>End battle</button>" +
+				"<hr>"+
+				"<button class='tally' id='tallyMenu_battleStart'>Start battle</button>" +
+				"<button class='tally' id='tallyMenu_battleEnd'>End battle</button>" +
+				"<button class='tally' id='tallyMenu_battleRumbleSmall'>small battle rumble</button>" +
+				"<button class='tally' id='tallyMenu_battleRumbleMedium'>medium battle rumble</button>" +
+				"<button class='tally' id='tallyMenu_battleRumbleLarge'>large battle rumble</button>" +
+				"<hr>"+
+				"<button class='tally' id='tallyMenu_explodePage'>Explode Page</button>" +
 				"<button class='tally' id='tallyMenu_randomThought'>Random thought</button>" +
 				"<button class='tally' id='tallyMenu_randomSkin'>Random skin</button>" +
 				"</div>";
@@ -182,14 +187,23 @@ window.Tally = (function() {
 			// launch one of the nearby monsters
 			Monster.test();
 		});
-		$(document).on('click', '#tallyMenu_startBattle', function() {
+		$(document).on('click', '#tallyMenu_battleStart', function() {
 			Battle.test();
 		});
-		$(document).on('click', '#tallyMenu_testBattleRumble', function() {
-			Battle.rumble();
+		$(document).on('click', '#tallyMenu_battleRumbleSmall', function() {
+			BattleEffect.rumble("small");
 		});
-		$(document).on('click', '#tallyMenu_endBattle', function() {
+		$(document).on('click', '#tallyMenu_battleRumbleMedium', function() {
+			BattleEffect.rumble("medium");
+		});
+		$(document).on('click', '#tallyMenu_battleRumbleLarge', function() {
+			BattleEffect.rumble("large");
+		});
+		$(document).on('click', '#tallyMenu_battleEnd', function() {
 			Battle.end();
+		});
+		$(document).on('click', '#tallyMenu_explodePage', function() {
+			Effect.explode();
 		});
 		$(document).on('click', '#tallyMenu_randomThought', function() {
 			Thought.random();

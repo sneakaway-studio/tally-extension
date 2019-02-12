@@ -253,7 +253,13 @@ chrome.runtime.onMessage.addListener(
 			});
 		}
 
-
+		// default to resolve promise
+		else {
+			sendResponse({
+				"action": request.action,
+				"data": {}
+			});
+		}
 
 	}
 );
