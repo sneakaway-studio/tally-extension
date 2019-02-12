@@ -9,14 +9,13 @@ var Battle = (function() {
 	var _active = false,
 		_logDelay = 1000,
 		details = {
-			"mid":null,
-			"monsterName":"",
-			"mostRecentAttack":"",
-			"mostRecentDamage":""
-		}
-		;
+			"mid": null,
+			"monsterName": "",
+			"mostRecentAttack": "",
+			"mostRecentDamage": ""
+		};
 
-	function getDetails(){
+	function getDetails() {
 		return details;
 	}
 
@@ -34,7 +33,10 @@ var Battle = (function() {
 		active(true);
 
 		// get monster name
-		details.monsterName = MonsterData.dataById[mid].name +" monster";
+		details.monsterName = MonsterData.dataById[mid].name + " monster";
+
+		// setup page
+		setupRumble();
 
 
 		// move tally into position
@@ -91,64 +93,72 @@ var Battle = (function() {
 		}
 	}
 
-	function rumble(degree) {
-		Sound.playFile("explosions/explode.mp3");
+	let source,nodes,n = "*";
 
-		// all possible html5 nodes
-		let nodes = ['a', 'a[href]', 'b', 'blockquote', 'br', 'button', 'canvas', 'code', 'dd', 'dl', 'dt',
-			'em', 'embed', 'footer', 'frame', 'form', 'header', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'hr',
-			'iframe', 'img', 'input', 'label', 'nav', 'ol', 'ul', 'li', 'option', 'p', 'pre', 'section', 'span',
-			'strong', 'sup', 'svg', 'table', 'tr', 'td', 'th', 'tbody', 'thead', 'textarea', 'text', 'u', 'video'
-		];
-		// add any exclusions
-		for (let i = 0, l = nodes.length; i < l; i++) {
-			nodes[i] = nodes[i] + ':not(.tally)';
+	function setupRumble(){
+		// display source code of web page in background
+		if (source == null){
+			// add div
+			$("body").append("<blockquote id='battle-background'></blockquote>");
+			source = $("body").html();
+			source.replace(/[^<]/gi, '&lt;').replace(/[^>]/gi, '&gt;')
+			//console.log(source);
 		}
-
-
-
-
-
-		// run animation
-		anime({
-			targets: document.querySelectorAll(nodes.toString()),
-			rotate: [
-				{
-					value: 2,
-					duration: 100,
-					easing: 'easeInOutSine'
-				},
-				{
-					value: -2,
-					duration: 100,
-					easing: 'easeInOutSine'
-				},
-				{
-					value: 1,
-					duration: 100,
-					easing: 'easeInOutSine'
-				},
-				{
-					value: -0.5,
-					duration: 200,
-					easing: 'easeInOutSine'
+		if (nodes == null){
+			// all possible html5 nodes
+			nodes = ['a', 'b', 'blockquote', 'br', 'button', 'canvas', 'code', 'dd', 'div', 'dl', 'dt',
+				'em', 'embed', 'footer', 'frame', 'form', 'header', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'hr',
+				'iframe', 'img', 'input', 'label', 'nav', 'ol', 'ul', 'li', 'option', 'p', 'pre', 'section', 'span',
+				'strong', 'sup', 'svg', 'table', 'tr', 'td', 'th', 'tbody', 'thead', 'template', 'textarea', 'text', 'u', 'video'
+			];
+			//console.log(nodes.join(", "));
+			// add any exclusions
+			for (let i = 0, l = nodes.length; i < l; i++) {
+				//console.log(nodes.length, nodes[i], $(nodes[i]).height(), $(nodes[i]).length);
+				// remove large divs
+				if ($(nodes[i]).length == 0 || $(nodes[i]).height() > 2000 || $(nodes[i]).height() == undefined) {
+					//console.log(" --> removed ");
+					delete nodes[i];
+				} else {
+					nodes[i] = nodes[i] + ':not(.tally)';
 				}
-			],
-			translateY: [
-				{
-					value: 2,
-					duration: 100,
-					easing: 'easeInOutSine'
-				},
-				{
-					value: -2,
-					duration: 100,
-					easing: 'easeInOutSine'
-				}
-			],
-			duration: 500,
-			// direction: 'alternate'
-		});
+			}
+
+			// clean empties from array
+			nodes = nodes.filter(function (el) {
+				return el != null;
+			});
+			console.log("final node count: "+nodes.length);
+
+			// format for selection
+			n = nodes.join(', ');
+			//console.log(n);
+		}
+	}
+
+
+	function rumble(degree="medium") {
+		if (source == null || nodes == null)
+			setupRumble();
+
+		if (degree == "small")
+			Sound.playFile("explosions/explode.mp3",0,-.2);
+		else if (degree == "medium")
+			Sound.playFile("explosions/explode.mp3",0,0);
+		else if (degree == "large")
+			Sound.playFile("explosions/explode.mp3",0,.2);
+
+		// display background
+		$("#battle-background").text(source);
+		// rumble page elements
+		$(n).addClass(degree+'-rumble');
+		// after delay set back to normal
+		setTimeout(function() {
+			$(n).removeClass(degree+'-rumble');
+			$("#battle-background").text("");
+		}, 500);
+		
+
 	}
 
 	// end battle

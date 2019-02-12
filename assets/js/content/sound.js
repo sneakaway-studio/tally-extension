@@ -98,12 +98,12 @@ var Sound = (function() {
 	/**
 	 *	Generic play function (called from others in this obj)
 	 */
-	function play(soundFile, delay = 0) {
-		console.log("♪♪♪♪♪ Sound.play("+ soundFile +")");
+	function play(soundFile, delay = 0, volumeModifier = 0) {
+		//console.log("♪♪♪♪♪ Sound.play("+ soundFile +","+ delay +","+ volumeModifier +")");
 		// load/play sound
 		var audio = new Audio(chrome.extension.getURL("assets/sounds/" + soundFile));
 		audio.pause();
-		audio.volume = tally_options.soundVolume || 0.3;
+		audio.volume = (tally_options.soundVolume || 0.3) + volumeModifier;
 		if (delay > 0)
 			setTimeout(function() {
 				audio.play();
@@ -120,8 +120,8 @@ var Sound = (function() {
 		playCategory: function(category, index, delay) {
 			playCategory(category, index, delay);
 		},
-		playFile: function(file) {
-			play(file);
+		playFile: function(file,delay,volume) {
+			play(file,delay,volume);
 		},
 		playMood: function(mood) {
 			playMood(mood);

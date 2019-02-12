@@ -22,8 +22,8 @@ var BattleConsole = (function() {
 	// show the console
 	function show() {
 		stream = "";
-		var str = "<div id='battle-console-inner' class='shadow-box-inner'>" +
-			"<div id='battle-console-stream'></div>" +
+		var str = "<div id='battle-console-inner' class='tally shadow-box-inner'>" +
+			"<div class='tally' id='battle-console-stream'></div>" +
 			"</div>";
 		$("#battle-console").html(str);
 		$("#battle-console").css({
@@ -68,7 +68,7 @@ var BattleConsole = (function() {
 		}, 200);
 	}
 
-	function writeNextInQueue() {
+	function writeNextInQueue(lineSpeed=150) {
 		//console.log("writeNextInQueue() 1", str, _queue,_active);
 		// if currently active, stop
 		if (_active) return;
@@ -79,7 +79,7 @@ var BattleConsole = (function() {
 		//console.log("writeNextInQueue() 2", str, _queue,_active);
 		// insert placeholder
 		logId++;
-		var ele = "<div class='tally_log_line'><span id='tally_log" + logId + "' class='tally_log_cursor'></span></div>";
+		var ele = "<div class='tally tally_log_line'><span id='tally_log" + logId + "' class='tally_log_cursor'></span></div>";
 		$("#battle-console-stream").append(ele);
 		// scroll to new placeholder
 		$('#battle-console-stream').stop().animate({
@@ -88,7 +88,7 @@ var BattleConsole = (function() {
 		// insert text
 		setTimeout(function() {
 			typeWriter("tally_log" + logId, str, 0, "BattleConsole");
-		}, 200);
+		}, lineSpeed);
 		//console.log(stream);
 	}
 
