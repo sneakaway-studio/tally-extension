@@ -155,20 +155,20 @@ window.Tally = (function() {
 		} else {
 			// closed so open
 
-			var str = "<div class='tally' id='tally_menu'>Testing menu<br>" +
-				"<button class='tally' id='tallyMenu_profile'>View profile</button>" +
-				"<button class='tally' id='tallyMenu_startScreen'>View start screen</button>" +
-				"<button class='tally' id='tallyMenu_testNearbyMonster'>Test nearby monster</button>" +
+			var str = "" +
+				"<button class='tally' id='tallyMenu_profile'>`1+p View profile</button>" +
+				"<button class='tally' id='tallyMenu_startScreen'>`1+s View start screen</button>" +
+				"<button class='tally' id='tallyMenu_testNearbyMonster'>`1+m Test nearby monster</button>" +
 				"<hr>"+
-				"<button class='tally' id='tallyMenu_battleStart'>Start battle</button>" +
-				"<button class='tally' id='tallyMenu_battleEnd'>End battle</button>" +
-				"<button class='tally' id='tallyMenu_battleRumbleSmall'>small battle rumble</button>" +
-				"<button class='tally' id='tallyMenu_battleRumbleMedium'>medium battle rumble</button>" +
-				"<button class='tally' id='tallyMenu_battleRumbleLarge'>large battle rumble</button>" +
+				"<button class='tally' id='tallyMenu_battleStart'>`1+b Start battle</button>" +
+				"<button class='tally' id='tallyMenu_battleEnd'>`1+q End battle</button>" +
+				"<button class='tally' id='tallyMenu_battleRumbleSmall'>`1+r+0 small battle rumble</button>" +
+				"<button class='tally' id='tallyMenu_battleRumbleMedium'>`1+r+1 medium battle rumble</button>" +
+				"<button class='tally' id='tallyMenu_battleRumbleLarge'>`1+r+2 large battle rumble</button>" +
 				"<hr>"+
-				"<button class='tally' id='tallyMenu_explodePage'>Explode Page</button>" +
-				"<button class='tally' id='tallyMenu_randomThought'>Random thought</button>" +
-				"<button class='tally' id='tallyMenu_randomSkin'>Random skin</button>" +
+				"<button class='tally' id='tallyMenu_explodePage'>`1+e Explode Page</button>" +
+				"<button class='tally' id='tallyMenu_randomThought'>`1+t Random thought</button>" +
+				"<button class='tally' id='tallyMenu_randomSkin'>`1+w Random skin</button>" +
 				"</div>";
 
 			Thought.showString(str, false, true);
@@ -181,11 +181,10 @@ window.Tally = (function() {
 			window.open('https://tallygame.net/profile/' + tally_user.username);
 		});
 		$(document).on('click', '#tallyMenu_startScreen', function() {
-			window.open(chrome.extension.getURL('assets/pages/startScreen/startScreen.html'));
+			chrome.runtime.sendMessage({ 'action': 'openPage', 'url': chrome.extension.getURL('assets/pages/startScreen/startScreen.html') });
 		});
 		$(document).on('click', '#tallyMenu_testNearbyMonster', function() {
-			// launch one of the nearby monsters
-			Monster.test();
+			Monster.test(); // launch one of the nearby monsters
 		});
 		$(document).on('click', '#tallyMenu_battleStart', function() {
 			Battle.test();
@@ -213,9 +212,6 @@ window.Tally = (function() {
 		});
 	}
 
-
-
-
 	// PUBLIC
 	return {
 		moveEye: function(which, how, event) {
@@ -232,3 +228,19 @@ window.Tally = (function() {
 
 	};
 })();
+
+
+let k = "`+1";
+Mousetrap.bind(k + ' p', function() { window.open('https://tallygame.net/profile/' + tally_user.username); });
+Mousetrap.bind(k + ' s', function() {
+	chrome.runtime.sendMessage({ 'action': 'openPage', 'url': chrome.extension.getURL('assets/pages/startScreen/startScreen.html') });
+});
+Mousetrap.bind(k + ' m', function() { Monster.test(); });
+Mousetrap.bind(k + ' b', function() { Battle.test(); });
+Mousetrap.bind(k + ' 0', function() { BattleEffect.rumble("small"); });
+Mousetrap.bind(k + ' 1', function() { BattleEffect.rumble("medium"); });
+Mousetrap.bind(k + ' 2', function() { BattleEffect.rumble("large"); });
+Mousetrap.bind(k + ' q', function() { Battle.end(); });
+Mousetrap.bind(k + ' e', function() { Effect.explode(); });
+Mousetrap.bind(k + ' t', function() { Thought.random(); });
+Mousetrap.bind(k + ' w', function() { Skin.random(); });

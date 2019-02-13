@@ -32,7 +32,7 @@ Current version 0.1.1
 
 ## Development Versions
 
-  
+
 ### Version 0.1.4
 
 * Adds double click debug menu option
@@ -52,3 +52,9 @@ Current version 0.1.1
 ### Version 0.1.1
 
 * Development version from Spring 2018 Digital Studies "Humanities Startup" course
+
+
+
+## Software
+
+[Mousetrap](https://craig.is/killing/mice) by Craig Campbell

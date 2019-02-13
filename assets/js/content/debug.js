@@ -1,6 +1,5 @@
 "use strict";
 
-
 /*  DEBUGGER
  ******************************************************************************/
 
@@ -53,38 +52,3 @@ var Debug = (function() {
 		update: update
 	};
 })();
-
-
-// object to track pressed keys
-var keys = {
-	e: false,
-	m: false,
-	tilda: false
-};
-
-/**
- * 	If keydown detected
- */
-$(document.body).keydown(function(event) {
-	if (event.keyCode == 69) keys.e = true; // e
-	else if (event.keyCode == 77) keys.m = true; // m
-	else if (event.keyCode == 192) keys.tilda = true; // ~
-	// launch monster
-	// if (keys.m && keys.tilda)
-	// 	Monster.test();
-	// // explode page
-	// if (keys.e && keys.tilda)
-	// 	//console.log("EXPLODE");
-	// 	Effect.explode();
-
-	//console.log(event.keyCode,keys);
-});
-/**
- * 	Reset keys that are no longer pressed
- */
-$(document.body).keyup(function(event) {
-	if (event.keyCode == 69) keys.e = false;
-	else if (event.keyCode == 77) keys.m = false;
-	else if (event.keyCode == 192) keys.tilda = false;
-	//console.log(event.keyCode,keys);
-});

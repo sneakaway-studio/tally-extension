@@ -22,7 +22,8 @@ var Page = (function() {
 				language: Environment.getBrowserLanguage(),
 				platform: Environment.getPlatform(),
 				width: window.innerWidth || document.body.clientWidth,
-				height: window.innerHeight || document.body.clientHeight
+				height: window.innerHeight || document.body.clientHeight,
+				center: {x:0,y:0}
 			},
 			screen: {
 				width: screen.width,
@@ -44,6 +45,8 @@ var Page = (function() {
 			previousUrl: "",
 			url: document.location.href
 		};
+		data.browser.center.x = data.browser.width/2;
+		data.browser.center.y = data.browser.height/2;
 		// check page tags
 		data.tags = getPageTags(data);
 		//console.log("pageData",data);

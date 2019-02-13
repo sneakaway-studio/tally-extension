@@ -16,6 +16,19 @@ chrome.runtime.onMessage.addListener(
 			});
 		}
 
+		/*  PAGE MANAGEMENT
+		 ******************************************************************************/
+
+		// openPage 
+ 		else if (request.action == "openPage") {
+			if (request.url)
+				chrome.tabs.create({url: request.url });
+			sendResponse({
+				"action": request.action,
+				"data": {}
+			});
+ 		}
+
 
 		/*  USER MANAGEMENT
 		 ******************************************************************************/

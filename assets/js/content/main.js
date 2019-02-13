@@ -118,9 +118,10 @@ function checkToken() {
 		if (tally_meta.userTokenStatus == "expired" || tally_meta.userTokenStatus != "ok") {
 			if (MAIN_DEBUG) console.log(">>>>> tally_meta >>>>>> TOKEN STILL BROKEN, tally_meta.userTokenPrompts = "+ tally_meta.userTokenPrompts);
 			// don't bother them every time
-			if (tally_meta.userTokenPrompts % 5 == 0){
-				Thought.showString("Please <a href='" + tally_meta.website + "/dashboard' target='_blank'>visit your dashboard</a> to update your token", "sad");
-			}
+	//		if (tally_meta.userTokenPrompts % 5 == 0){
+				let msg = "Please <a href='" + tally_meta.website + "/dashboard' target='_blank'>visit your dashboard</a> to update your token";
+				Thought.showString(msg, "sad");
+	//		}
 			tally_meta.userTokenPrompts++;
 			saveMeta("checkToken()");
 		}

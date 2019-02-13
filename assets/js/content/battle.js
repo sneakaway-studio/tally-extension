@@ -32,18 +32,34 @@ var Battle = (function() {
 		if (_active) return;
 		active(true);
 
-		// get monster name
+		// set details
+		details.mid = mid;
 		details.monsterName = MonsterData.dataById[mid].name + " monster";
+		details.mostRecentAttack = "";
+		details.mostRecentDamage = "";
 
 		// setup page for effects
 		BattleEffect.setup();
 
-
 		// move tally into position
-
-
+		anime({
+			targets: '#tally_character_container',
+			left: "20%",
+			top: "30%",
+			elasticity: 1,
+			duration: 1000,
+		});
 
 		// add monster and move into position
+		$("#tally_wrapper").append("<div class='tally' id='tally_monster_container'>THE MONSTER</div>");
+
+		anime({
+			targets: '#tally_monster_container',
+			left: "70%",
+			top: "30%",
+			elasticity: 10,
+			duration: 1000,
+		});
 
 		// show console
 		BattleConsole.show();
