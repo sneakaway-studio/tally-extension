@@ -33,8 +33,10 @@ Current version 0.1.1
 ## Development Versions
 
 
+
 ### Version 0.1.4
 
+* Many bug fixes (sound, battles, monsters)
 * Adds double click debug menu option
 * Adds features to monster battle
 
