@@ -27,12 +27,25 @@ window.Skin = (function() {
 					back: "#1eaecd"
 				},
 			},
+
+
+			// REVISIT these
+			// https://www.visualcinnamon.com/2016/05/smooth-color-legend-d3-svg-gradient.html
+			// https://codepen.io/brenna/pen/mybQVx
+
 			"gradient": {
-				"gold": {
+				"redGold": {
 					"angle": 90,
 					"stops": {
 						"20%": "gold",
 						"90%": "red"
+					}
+				},
+				"blueGreen": {
+					"angle": 90,
+					"stops": {
+						"0%": "#7A5FFF",
+						"100%": "#01FF89"
 					}
 				},
 				"rainbow": {
@@ -88,7 +101,10 @@ window.Skin = (function() {
 				}
 			}
 		},
-		skinStage = 0;
+		skinStage = 0,
+		skinCat = "color",
+		skinColor = "magenta",
+		skinAnim;
 
 	// var skins = [
 	// 	"color-cyan",
@@ -107,14 +123,16 @@ window.Skin = (function() {
 	 */
 	function setStage(n) {
 		console.log("Skin.setStage(" + n + ")");
-		skinStage = n;
-		let stageColors = [
-			"color-magenta",
-			"color-yellow",
-			"color-orange",
-			"color-red"
-		];
-		update(stageColors[n]);
+		skinStage = n, skinCat = "color", skinColor, skinAnim;
+		if (skinStage == 1)
+			skinColor = "yellow";
+		else if (skinStage == 2)
+			skinColor = "orange";
+		else if (skinStage == 3)
+			skinColor = "red";
+		else // (skinStage == 0)
+			skinColor = "magenta";
+		update(skinCat, skinColor, skinAnim);
 	}
 
 
@@ -148,39 +166,47 @@ window.Skin = (function() {
 	/*
 	 *	Update Tally SVG
 	 */
-	function update(_skin) {
-		if (SKIN_DEBUG) console.log("👚👗 Skin.update()", _skin);
-		if (_skin != "" && prop(tally_game_status)) tally_game_status.skin = _skin;
+	function update(skinCat, skinColor, skinAnim) {
+		if (SKIN_DEBUG) console.log("👚👗 Skin.update()", skinCat);
+		if (skinCat != "" && prop(tally_game_status)) tally_game_status.skin = [skinCat, skinColor, skinAnim];
 		// save the skin status
 		saveGameStatus(tally_game_status);
 
-		let skin = _skin.split("-"),
-			obj = {},
+		let obj = {},
 			def = "",
 			frontFill = "",
 			backFill = "";
 
 		// if !skin
-		if (!prop(skins[skin[0]]) || skins[skin[0]] == "") {
-			skin[0] = "color";
-			skin[1] = "magenta";
+		if (!prop(skins[skinCat]) || skins[skinCat] == "") {
+			skinCat = "color";
+			skinColor = "magenta";
 		}
 		// get object reference
-		obj = skins[skin[0]][skin[1]];
-		console.log(skin, obj);
+		obj = skins[skinCat][skinColor];
+		console.log(skinCat, obj);
 
 		// if a solid color
-		if (skin[0] == "color") {
+		if (skinCat == "color") {
 			frontFill = obj.front;
 			backFill = obj.back;
 		}
 		// if a gradient
-		else if (skin[0] == "gradient") {
+		else if (skinCat == "gradient") {
+			// make a copy of the colors
+			var colors = Object.values(obj.stops);
 			// use linearGradient
 			def += '<linearGradient id="tallyGradient" x2="1" gradientTransform="rotate(' + obj.angle + ')"  >';
-			// loop through stops in the gradient
+			// loop through stops in the gradient once to get colors
 			for (const key in obj.stops) {
-				def += '<stop offset="' + key + '" stop-color="' + obj.stops[key] + '"/>';
+				def += '<stop offset="' + key + '" stop-color="' + obj.stops[key] + '">';
+				if (skinAnim) {
+					def += '<animate attributeName="stop-color" values="' + colors.join('; ') + '; ' + colors[0] + '" dur="2s" repeatCount="indefinite"></animate>';
+					// move last to first
+					var last = colors.pop();
+					colors.unshift(last);
+				}
+				def += '</stop>';
 			}
 			// close gradient
 			def += '</linearGradient>';
@@ -188,13 +214,13 @@ window.Skin = (function() {
 			backFill = "url(#tallyGradient)";
 		}
 		// PATTERN
-		else if (skin[0] == "pattern") {
+		else if (skinCat == "pattern") {
 			def = obj.str;
 			frontFill = "url(#tallyPattern)";
 			backFill = "url(#tallyPattern)";
 		}
 		// IMAGE
-		else if (skin[0] == "image") {
+		else if (skinCat == "image") {
 			def += '<pattern id="tallyPattern" patternUnits="userSpaceOnUse" width="100%" height="100%">';
 			def += '<image xlink:href="' + obj.url + '" x="-10" y="-10" width="100%" height="100%" />';
 			def += '</pattern>';
@@ -227,12 +253,14 @@ window.Skin = (function() {
 			update("gradient", "redGold", "animation");
 		else if (r < 0.7)
 			update("gradient", "blueGreen", "animation");
-		else if (r < 0.08)
-			update("image", "camoGrey");
+		// else if (r < 0.08)
+		// 	update("image", "camoGrey");
 		else if (r < 0.09)
 			update("pattern", "plaidYellow");
-		else if (r < 1)
-			update("image", "plaidRed");
+		// else if (r < 1)
+		// 	update("image", "plaidRed");
+		else
+			update("color", "magenta");
 	}
 
 

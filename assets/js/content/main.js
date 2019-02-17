@@ -26,7 +26,7 @@ $(function() {
 			// check if extension should be active on this page before proceeding
 			pageData.activeOnPage = shouldExtensionBeActiveOnPage();
 			if (pageData.activeOnPage)
-				startGame();
+				startGameOnPage();
 		})
 		.catch(function(error) {
 			if (MAIN_DEBUG) console.log('one or more promises have failed: ' + error);
@@ -61,10 +61,10 @@ function shouldExtensionBeActiveOnPage() {
 /**
  * Run Game
  */
-function startGame() {
+function startGameOnPage() {
 	// don't run if pageData failed
 	if (!pageData || pageData == undefined || !pageData.activeOnPage) return;
-	if (MAIN_DEBUG) console.log(">>>>> startGame() -> Starting Tally on this page");
+	if (MAIN_DEBUG) console.log(">>>>> startGameOnPage() -> Starting Tally on this page");
 	//    console.log(">>>>> pageData = "+ JSON.stringify(pageData));
 
 	Debug.add();
@@ -82,7 +82,7 @@ function startGame() {
 	// remove trackers that have been caught
 	Tracker.removeCaughtTrackers(pageData.trackers);
 	// check for  monsters on the page
-	Monster.check();
+	MonsterCheck.check();
 	// update debugger
 	Debug.update();
 }
@@ -94,13 +94,13 @@ function refreshApp() {
 	if (!pageData.activeOnPage) return;
 	pageData = Page.getData();
 	tally_game_status = getGameStatus();
-	Monster.check();
+	MonsterCheck.check();
 	Debug.update();
 }
 
 
 function checkToken() {
-	if (MAIN_DEBUG) console.log(">>>>> tally_meta = " + JSON.stringify(tally_meta));
+	//if (MAIN_DEBUG) console.log(">>>>> tally_meta = " + JSON.stringify(tally_meta));
 	if (pageData.url != tally_meta.website + "/dashboard") {
 		if (tally_meta.userTokenStatus == "expired") {
 			// $.growl({

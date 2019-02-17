@@ -87,10 +87,10 @@ var Sound = (function() {
 	function playMood(mood) {
 		if (!tally_options.playSounds || !prop(mood)) return;
 		if (mood == "award") mood = "happy";
-		console.log("Sound.playMood()",mood);
+		console.log("Sound.playMood()", mood);
 		let r = Math.ceil(Math.random() * moods[mood]);
 		let file = "tally/moods-v2/" + mood + "-" + r + "-2.mp3";
-		play(file,150);
+		play(file, 150);
 	}
 
 
@@ -98,19 +98,53 @@ var Sound = (function() {
 	/**
 	 *	Generic play function (called from others in this obj)
 	 */
-	function play(soundFile, delay = 0, volumeModifier = 0) {
+	function playOld(soundFile, delay = 0, volumeModifier = 0) {
 		//console.log("♪♪♪♪♪ Sound.play("+ soundFile +","+ delay +","+ volumeModifier +")");
 		// load/play sound
 		var audio = new Audio(chrome.extension.getURL("assets/sounds/" + soundFile));
+		audio.muted = true;
 		audio.pause();
 		audio.volume = (tally_options.soundVolume || 0.3) + volumeModifier;
 		if (delay > 0)
 			setTimeout(function() {
+				audio.muted = false;
 				audio.play();
 			}, delay);
 		else
 			audio.play();
 	}
+
+
+	/**
+	 *	Generic play function (called from others in this obj)
+	 */
+	function play(soundFile, delay = 0, volumeModifier = 0) {
+		console.log("♪♪♪♪♪ Sound.play(" + soundFile + "," + delay + "," + volumeModifier + ")");
+
+		// add source
+		var source = "<source id='sound_src' src=" + chrome.extension.getURL("assets/sounds/" + soundFile) + ">";
+		$('#tally_audio').append(source);
+
+		// create promise / attempt to play
+		var promise = document.querySelector('#tally_audio').play();
+		// if play failed
+		if (promise !== undefined) {
+			promise.then(_ => {
+				//console.log("Autoplay started!");
+			}).catch(error => {
+				//console.log("Autoplay prevented!");
+
+				document.querySelector('#tally_audio').pause();
+
+				// document.body.addEventListener("mousemove", function() {
+					document.querySelector('#tally_audio').play();
+				// });
+			});
+		}
+
+	}
+
+
 
 	// PUBLIC
 	return {
@@ -120,8 +154,8 @@ var Sound = (function() {
 		playCategory: function(category, index, delay) {
 			playCategory(category, index, delay);
 		},
-		playFile: function(file,delay,volume) {
-			play(file,delay,volume);
+		playFile: function(file, delay, volume) {
+			play(file, delay, volume);
 		},
 		playMood: function(mood) {
 			playMood(mood);

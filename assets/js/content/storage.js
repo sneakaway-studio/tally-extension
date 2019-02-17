@@ -92,11 +92,12 @@ const getNearbyMonstersPromise = new Promise(
 // GET LIST OF TRACKERS
 const getTrackerBlockListPromise = new Promise(
 	(resolve, reject) => {
+		//console.log("getTrackerBlockListPromise");
 		//if (!pageData.activeOnPage) return;
 		chrome.runtime.sendMessage({
 			'action': 'getTrackerBlockList'
 		}, function(response) {
-			//console.log('>>>>> getTrackerBlockList()',response.data);
+			console.log('>>>>> getTrackerBlockList()',response.data);
 			tally_trackers = response.data; // store data
 			resolve(response.data); // resolve promise
 		});

@@ -212,6 +212,20 @@ window.Tally = (function() {
 		});
 	}
 
+
+	var stats = {
+		"health":100,
+		"attack":100,
+		"stamina":100,
+		"accuracy":100,
+		"evasion":100,
+		"defense":100,
+	};
+
+
+
+
+
 	// PUBLIC
 	return {
 		moveEye: function(which, how, event) {

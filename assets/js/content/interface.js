@@ -23,6 +23,7 @@ $(function() {
           			"<div class='tally_award_explode_background-2'></div>"+
 
 					"<div class='tally' id='tally'></div>" +
+					"<audio class='tally' id='tally_audio'></audio>" +
 
 					"<div class='tally shadow-box-outer' id='battle-console'></div>" +
 			"</div>";

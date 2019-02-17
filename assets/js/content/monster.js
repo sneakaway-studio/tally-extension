@@ -6,6 +6,30 @@ var Monster = (function() {
 		currentMID = "",
 		secondsBeforeDelete = 300; // 60 seconds for testing
 
+
+
+
+
+
+
+
+	/**
+	 *	display a monster on the page
+	 */
+	function display() {
+
+
+
+
+	}
+
+
+
+
+
+
+
+
 	/**
 	 *	Test to make sure API is working
 	 */
@@ -33,78 +57,6 @@ var Monster = (function() {
 
 
 	/**
-	 *	Initial check function, refreshes nearby monsters from back end continues to next
-	 */
-	function check() {
-		// don't check if disabled
-		if (pageData.domain == "tallygame.net") {
-			// need to reset
-			return;
-		}
-		if (tally_options.gameMode === "disabled") return;
-		if (!pageData.activeOnPage) return;
-		checkNearbyMonsterTimes();
-	}
-
-	/**
-	 *	Make sure all monsters are nearby, deletes those that aren't
-	 */
-	function checkNearbyMonsterTimes() {
-		let now = Date.now(),
-			highestStage = 0;
-		// make sure tally_nearby_monsters exists
-		if (tally_nearby_monsters && objLength(tally_nearby_monsters) > 0) {
-			// loop through them
-			for (var mid in tally_nearby_monsters) {
-				// how long has it been since this monster was seen?
-				// if longer than 5 mins (300 secs) then delete
-				let seconds = ((now - tally_nearby_monsters[mid].updatedAt) / 1000);
-				if ((seconds) > secondsBeforeDelete) {
-					if (MONSTER_DEBUG) console.log("⊙⊙⊙⊙⊙ Monster.checkNearbyMonsterTimes() -> DELETING", MonsterData.dataById[mid].slug, "seconds", seconds);
-					delete tally_nearby_monsters[mid];
-				}
-				// skin should reflect highest stage
-				if (prop(tally_nearby_monsters[mid]) && tally_nearby_monsters[mid].stage > highestStage)
-					highestStage = tally_nearby_monsters[mid].stage;
-			}
-		}
-		saveNearbyMonsters();
-		// set the skin color
-		Skin.setStage(highestStage);
-		// continue
-		checkForTagMatches();
-	}
-
-	/**
-	 *	Check the page for a monster
-	 */
-	function checkForTagMatches() {
-		if (MONSTER_DEBUG) console.log('⊙⊙⊙⊙⊙ Monster.checkForTagMatches()', pageData.tags);
-		// loop through the tags on the page
-		for (var i = 0, l = pageData.tags.length; i < l; i++) {
-			// save reference
-			let tag = pageData.tags[i];
-			// if tag is in list
-			if (MonsterData.idsByTag[tag]) {
-				// save reference
-				let arr = MonsterData.idsByTag[tag];
-				// the monster id that will be picked
-				let mid = 0;
-				// if there is at least one match...
-				if (arr.length > 0) {
-					// pick random monster id from list, this will be the page monster
-					mid = arr[Math.floor(Math.random() * arr.length)];
-					if (MONSTER_DEBUG) console.log('!⊙⊙⊙⊙ Monster.checkForTagMatches() -> #' + tag, "has", arr.length, 'MATCH(ES)', arr, "randomly selecting...", MonsterData.dataById[mid].slug);
-					// we have identified a match, let's handle the monster
-					handleMatch(mid);
-					break;
-				}
-			}
-		}
-	}
-
-
-	/**
 	 *	Create a monster
 	 */
 	function create(_mid, _stage = 1) {
@@ -128,72 +80,7 @@ var Monster = (function() {
 		return monster;
 	}
 
-	/**
-	 *	A monster has been matched to page tags, handle it
-	 */
-	function handleMatch(mid) {
-		let launchMonster = false;
 
-		// if the monster id does not exist in nearby
-		if (!prop(tally_nearby_monsters[mid])) {
-			// add it
-			tally_nearby_monsters[mid] = create(mid);
-		}
-		// otherwise monster has been seen before
-		else {
-			// randomizer
-			let r = Math.random();
-			// what stage are we at with this monster?
-			if (tally_nearby_monsters[mid].stage == 0) {
-				// do nothing
-				Thought.showTrackerThought();
-			} else if (tally_nearby_monsters[mid].stage == 1) {
-				if (r < 0.2) {
-					// go back to normal stage
-					tally_nearby_monsters[mid].stage = 0;
-					Thought.showString("Want to give feedback? Click the survey button in the top-right menu.", "question");
-				} else if (r < 0.4) {
-					// show them a random thought
-					Thought.showTrackerThought();
-				} else if (r < 0.7) {
-					// show them a thought but don't change stage
-					Thought.showThought(Thought.getThought(["monster", "far", 0]), true);
-				} else {
-					// or prompt stage 2
-					tally_nearby_monsters[mid].stage = 2;
-					Thought.showThought(Thought.getThought(["monster", "close", 0]), true);
-				}
-			} else if (tally_nearby_monsters[mid].stage == 2) {
-				if (r < 0.2) {
-					// do nothing
-				} else if (r < 0.4) {
-					// do nothing
-					Thought.showTrackerThought();
-				} else if (r < 0.7) {
-					// show them a thought
-					Thought.showThought(Thought.getThought(["monster", "close", 0]), true);
-				} else {
-					// or prompt stage 3 - launch
-					tally_nearby_monsters[mid].stage = 3;
-					launchMonster = true;
-				}
-			}
-
-			//if (MONSTER_DEBUG) console.log('!!!!! Monster.handleMatch()', MonsterData.dataById[mid].slug, tally_nearby_monsters[mid]);
-		}
-		if (MONSTER_DEBUG) console.log('⊙⊙!⊙⊙ Monster.handleMatch()', MonsterData.dataById[mid].slug, "stage =", tally_nearby_monsters[mid].stage);
-		// set skin
-		Skin.setStage(tally_nearby_monsters[mid].stage);
-		// save monsters
-		saveNearbyMonsters();
-		// should we launch a monster?
-		if (launchMonster) {
-			currentMID = mid;
-			// show thought
-			Thought.showThought(Thought.getThought(["monster", "launch", 0]), true);
-			launch(mid);
-		}
-	}
 
 	/**
 	 *	Launch a product monster
@@ -295,17 +182,7 @@ var Monster = (function() {
 			// capture the monster
 			capture(_mid);
 		});
-		$(document.body).keydown(function(event) {
-			if (event.keyCode == 77) // key == e
-				keys.m = true;
-			else if (event.keyCode == 192) // key == tilda
-				keys.tilda = true;
-			if (keys.m && keys.tilda) {
-				console.log("m + tilda");
-				Monster.test();
-			}
-			//console.log(event.keyCode,keys);
-		});
+
 		// TESTING
 		//capture(_mid);
 	}
@@ -601,7 +478,9 @@ var Monster = (function() {
 
 	// PUBLIC
 	return {
-		check: check,
+		create: function(mid){
+			return create(mid);
+		},
 		current: getCurrent,
 		test: test
 	};
