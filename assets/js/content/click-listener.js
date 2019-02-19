@@ -5,7 +5,7 @@
 /*  CLICK LISTENER
  ******************************************************************************/
 
-let CLICK_DEBUG = false;
+let DEBUG = false;
 
 /**
  *	addMainClickEventListener() - adds click event listener for anything "mouse"
@@ -74,7 +74,7 @@ var clickEventHandler = function(eventData, target) {
 	// else if ( pageData.url == pageData.previousUrl) // THIS BREAKS ON FB
 	// 	exit = " -> url is not different";
 	if (exit !== "") {
-		if (CLICK_DEBUG) console.log("\n///// event => mouseup" + exit);
+		if (DEBUG) console.log("\n///// event => mouseup" + exit);
 		return;
 	}
 
@@ -106,7 +106,7 @@ var clickEventHandler = function(eventData, target) {
 		exit = " -> ignore [" + target.id + ", " + eventData.tag + "] node(s)";
 	}
 	if (exit !== "") {
-		if (CLICK_DEBUG) console.log("\n///// event => mouseup" + exit);
+		if (DEBUG) console.log("\n///// event => mouseup" + exit);
 		return;
 	}
 
@@ -117,7 +117,7 @@ var clickEventHandler = function(eventData, target) {
 	// for all clicks, buttons
 	if (eventData.action == "click" || eventData.action == "button") {
 		//console.log("eventData: "+ JSON.stringify(eventData));
-		if (CLICK_DEBUG) console.log("\n///// event => mouseup -> [" + eventData.action + "]");
+		if (DEBUG) console.log("\n///// event => mouseup -> [" + eventData.action + "]");
 
 		// update
 		Debug.update();

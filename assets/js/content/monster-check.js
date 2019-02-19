@@ -2,7 +2,7 @@
 
 var MonsterCheck = (function() {
 
-	let MONSTER_DEBUG = true,
+	let DEBUG = true,
 		currentMID = "",
 		secondsBeforeDelete = 300; // 60 seconds for testing
 
@@ -36,7 +36,7 @@ var MonsterCheck = (function() {
 				// if longer than 5 mins (300 secs) then delete
 				let seconds = ((now - tally_nearby_monsters[mid].updatedAt) / 1000);
 				if ((seconds) > secondsBeforeDelete) {
-					if (MONSTER_DEBUG) console.log("⊙⊙⊙⊙⊙ MonsterCheck.checkNearbyMonsterTimes() -> DELETING", MonsterData.dataById[mid].slug, "seconds", seconds);
+					if (DEBUG) console.log("⊙⊙⊙⊙⊙ MonsterCheck.checkNearbyMonsterTimes() -> DELETING", MonsterData.dataById[mid].slug, "seconds", seconds);
 					delete tally_nearby_monsters[mid];
 				}
 				// skin should reflect highest stage
@@ -55,7 +55,7 @@ var MonsterCheck = (function() {
 	 *	Check the page for a monster
 	 */
 	function checkForTagMatches() {
-		if (MONSTER_DEBUG) console.log('⊙⊙⊙⊙⊙ MonsterCheck.checkForTagMatches()', pageData.tags);
+		if (DEBUG) console.log('⊙⊙⊙⊙⊙ MonsterCheck.checkForTagMatches()', pageData.tags);
 		// loop through the tags on the page
 		for (var i = 0, l = pageData.tags.length; i < l; i++) {
 			// save reference
@@ -70,7 +70,7 @@ var MonsterCheck = (function() {
 				if (arr.length > 0) {
 					// pick random monster id from list, this will be the page monster
 					mid = arr[Math.floor(Math.random() * arr.length)];
-					if (MONSTER_DEBUG) console.log('!⊙⊙⊙⊙ MonsterCheck.checkForTagMatches() -> #' + tag, "has", arr.length, 'MATCH(ES)', arr, "randomly selecting...", MonsterData.dataById[mid].slug);
+					if (DEBUG) console.log('!⊙⊙⊙⊙ MonsterCheck.checkForTagMatches() -> #' + tag, "has", arr.length, 'MATCH(ES)', arr, "randomly selecting...", MonsterData.dataById[mid].slug);
 					// we have identified a match, let's handle the monster
 					handleMatch(mid);
 					break;
@@ -133,9 +133,9 @@ var MonsterCheck = (function() {
 				}
 			}
 
-			//if (MONSTER_DEBUG) console.log('!!!!! MonsterCheck.handleMatch()', MonsterData.dataById[mid].slug, tally_nearby_monsters[mid]);
+			//if (DEBUG) console.log('!!!!! MonsterCheck.handleMatch()', MonsterData.dataById[mid].slug, tally_nearby_monsters[mid]);
 		}
-		if (MONSTER_DEBUG) console.log('⊙⊙!⊙⊙ MonsterCheck.handleMatch()', MonsterData.dataById[mid].slug, "stage =", tally_nearby_monsters[mid].stage);
+		if (DEBUG) console.log('⊙⊙!⊙⊙ MonsterCheck.handleMatch()', MonsterData.dataById[mid].slug, "stage =", tally_nearby_monsters[mid].stage);
 		// set skin
 		Skin.setStage(tally_nearby_monsters[mid].stage);
 		// save monsters

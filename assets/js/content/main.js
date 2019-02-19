@@ -12,13 +12,13 @@ let pageData = Page.getData(),
 	tally_trackers = getTrackerBlockList();
 
 
-let MAIN_DEBUG = false;
+let DEBUG = false;
 
 $(function() {
 	Promise // after async functions then update
 		.all([getUserPromise, getOptionsPromise, getMetaPromise, getNearbyMonstersPromise, getTrackerBlockListPromise]) // , getLastBackgroundUpdatePromise
 		.then(function() {
-			if (MAIN_DEBUG) console.log('>>>>> init() Promise all data has loaded', tally_user, tally_options, tally_trackers);
+			if (DEBUG) console.log('>>>>> init() Promise all data has loaded', tally_user, tally_options, tally_trackers);
 
 			// check if we can update the token
 			Page.checkDashboardUpdateToken();
@@ -29,7 +29,7 @@ $(function() {
 				startGameOnPage();
 		})
 		.catch(function(error) {
-			if (MAIN_DEBUG) console.log('one or more promises have failed: ' + error);
+			if (DEBUG) console.log('one or more promises have failed: ' + error);
 		});
 });
 
@@ -40,15 +40,15 @@ $(function() {
 function shouldExtensionBeActiveOnPage() {
 	//console.log("shouldExtensionBeActiveOnPage()",tally_options);
 	if (!tally_meta.serverOnline) {
-		if (MAIN_DEBUG) console.log("!!!!! Connection to Tally server is down");
+		if (DEBUG) console.log("!!!!! Connection to Tally server is down");
 		return false;
 	} else if (prop(tally_options.disabledDomains) &&
 		(($.inArray(pageData.domain, tally_options.disabledDomains) >= 0) ||
 			($.inArray(pageData.subDomain, tally_options.disabledDomains) >= 0))) {
-		if (MAIN_DEBUG) console.log("!!!!! Tally is disabled on this domain");
+		if (DEBUG) console.log("!!!!! Tally is disabled on this domain");
 		return false;
 	} else if (pageData.contentType != "text/html") {
-		if (MAIN_DEBUG) console.log("!!!!! Tally is disabled on pages like " + pageData.contentType);
+		if (DEBUG) console.log("!!!!! Tally is disabled on pages like " + pageData.contentType);
 		return false;
 	} else {
 		//console.log("shouldExtensionBeActiveOnPage()", true);
@@ -64,7 +64,7 @@ function shouldExtensionBeActiveOnPage() {
 function startGameOnPage() {
 	// don't run if pageData failed
 	if (!pageData || pageData == undefined || !pageData.activeOnPage) return;
-	if (MAIN_DEBUG) console.log(">>>>> startGameOnPage() -> Starting Tally on this page");
+	if (DEBUG) console.log(">>>>> startGameOnPage() -> Starting Tally on this page");
 	//    console.log(">>>>> pageData = "+ JSON.stringify(pageData));
 
 	Debug.add();
@@ -100,7 +100,7 @@ function refreshApp() {
 
 
 function checkToken() {
-	//if (MAIN_DEBUG) console.log(">>>>> tally_meta = " + JSON.stringify(tally_meta));
+	//if (DEBUG) console.log(">>>>> tally_meta = " + JSON.stringify(tally_meta));
 	if (pageData.url != tally_meta.website + "/dashboard") {
 		if (tally_meta.userTokenStatus == "expired") {
 			// $.growl({
@@ -116,7 +116,7 @@ function checkToken() {
 		}
 		// if token not valid
 		if (tally_meta.userTokenStatus == "expired" || tally_meta.userTokenStatus != "ok") {
-			if (MAIN_DEBUG) console.log(">>>>> tally_meta >>>>>> TOKEN STILL BROKEN, tally_meta.userTokenPrompts = "+ tally_meta.userTokenPrompts);
+			if (DEBUG) console.log(">>>>> tally_meta >>>>>> TOKEN STILL BROKEN, tally_meta.userTokenPrompts = "+ tally_meta.userTokenPrompts);
 			// don't bother them every time
 	//		if (tally_meta.userTokenPrompts % 5 == 0){
 				let msg = "Please <a href='" + tally_meta.website + "/dashboard' target='_blank'>visit your dashboard</a> to update your token";
@@ -135,7 +135,7 @@ function checkToken() {
 // 	//console.log("promptUserRenewToken()",tally_options);
 //
 // 	if (!tally_meta.userTokenValid) {
-// 		if (MAIN_DEBUG) console.log("!!!!! userTokenValid is not valid");
+// 		if (DEBUG) console.log("!!!!! userTokenValid is not valid");
 // 		return true;
 // 	}
 // }

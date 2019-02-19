@@ -2,7 +2,7 @@
 
 var Monster = (function() {
 
-	let MONSTER_DEBUG = true,
+	let DEBUG = true,
 		currentMID = "",
 		secondsBeforeDelete = 300; // 60 seconds for testing
 
@@ -26,7 +26,7 @@ if (_mid == null || !tally_nearby_monsters[_mid])
 	_mid = test();
 
 
-		if (MONSTER_DEBUG) console.log('⊙⊙⊙!⊙ Monster.display()', _mid, tally_nearby_monsters[_mid]);
+		if (DEBUG) console.log('⊙⊙⊙!⊙ Monster.display()', _mid, tally_nearby_monsters[_mid]);
 
 		// reference to image file
 		var url = chrome.extension.getURL('assets/img/monsters/' + _mid + '-anim-sheet.png');
@@ -72,7 +72,7 @@ if (_mid == null || !tally_nearby_monsters[_mid])
 		tally_nearby_monsters[_mid] = create(_mid, _stage);
 		tally_nearby_monsters[_mid].captured = 0;
 		tally_nearby_monsters[_mid].missed = 0;
-		if (MONSTER_DEBUG) console.log("⊙⊙⊙⊙⊙ Monster.test()", MonsterData.dataById[_mid]);
+		if (DEBUG) console.log("⊙⊙⊙⊙⊙ Monster.test()", MonsterData.dataById[_mid]);
 		// save
 		saveNearbyMonsters();
 		// set the skin color
@@ -94,7 +94,7 @@ if (_mid == null || !tally_nearby_monsters[_mid])
 	 */
 	function create(_mid, _stage = 1) {
 		if (!prop(_mid) || !prop(_stage) || !prop(MonsterData.dataById[_mid])) return;
-		if (MONSTER_DEBUG) console.log('⊙!⊙⊙⊙ Monster.create()', _mid, _stage, MonsterData.dataById[_mid]);
+		if (DEBUG) console.log('⊙!⊙⊙⊙ Monster.create()', _mid, _stage, MonsterData.dataById[_mid]);
 		let monster = {
 			"totalCaptured": 0,
 			"captured": 0,
@@ -109,7 +109,7 @@ if (_mid == null || !tally_nearby_monsters[_mid])
 		// if it already exists then make it the number of captures +1
 		if (tally_user.monsters[_mid])
 			monster.totalCaptured = tally_user.monsters[_mid].captured;
-		//if (MONSTER_DEBUG) console.log('⊙!⊙⊙⊙ Monster.create()', _mid, monster,tally_user.monsters[_mid]);
+		//if (DEBUG) console.log('⊙!⊙⊙⊙ Monster.create()', _mid, monster,tally_user.monsters[_mid]);
 		return monster;
 	}
 
@@ -121,7 +121,7 @@ if (_mid == null || !tally_nearby_monsters[_mid])
 	function launch(mid) {
 		// don't launch them if game isn't running in full mode
 		if (tally_options.gameMode != "full") return;
-		if (MONSTER_DEBUG) console.log('⊙⊙⊙!⊙ Monster.launch()', mid, tally_nearby_monsters[mid]);
+		if (DEBUG) console.log('⊙⊙⊙!⊙ Monster.launch()', mid, tally_nearby_monsters[mid]);
 
 		// if they already have this one, add and increase the level
 //		if (tally_user.monsters[mid])
@@ -167,7 +167,7 @@ if (_mid == null || !tally_nearby_monsters[_mid])
 	 *	Save monster locally, push to background / server
 	 */
 	function saveAndPush(_mid) {
-		if (MONSTER_DEBUG) console.log('<{!}> Monster.saveAndPush()', _mid, tally_nearby_monsters[_mid]);
+		if (DEBUG) console.log('<{!}> Monster.saveAndPush()', _mid, tally_nearby_monsters[_mid]);
 		// add monsters to tally_user
 		if (tally_user.monsters[_mid]) {
 			tally_user.monsters[_mid].level = tally_nearby_monsters[_mid].level;

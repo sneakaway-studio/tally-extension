@@ -2,7 +2,7 @@
 
 window.Tally = (function() {
 
-	let TALLY_DEBUG = false;
+	let DEBUG = false;
 
 	// PRIVATE
 	var followCursor = false, // is eye following currently active? on page load, no
