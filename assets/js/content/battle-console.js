@@ -30,9 +30,10 @@ var BattleConsole = (function() {
 		// move it into position
 		anime({
 			targets: '#battle-console',
-			translateY: "-250px",
-			elasticity: 100,
+			top: "70%",
+			elasticity: 0,
 			duration: 1000,
+			easing: 'easeOutCubic'
 		});
 	}
 	// show the console
@@ -40,8 +41,10 @@ var BattleConsole = (function() {
 		//reset();
 		anime({
 			targets: '#battle-console',
-			translateY: "250px",
+			top: "130%",
+			elasticity: 0,
 			duration: 1000,
+			easing: 'easeOutCubic'
 		});
 
 	}

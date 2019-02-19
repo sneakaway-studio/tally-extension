@@ -18,6 +18,7 @@ var BattleEffect = (function() {
 	 *	Store the nodes, source code, for the battle rumble
 	 */
 	function setupRumble() {
+		return;
 		// display source code of web page in background
 		if (source == null) {
 			source = $("body").html();
@@ -72,7 +73,7 @@ var BattleEffect = (function() {
 		// play sound
 		Sound.playFile("explosions/explode.mp3", 0, soundDegrees[degreeIndex]);
 		// display background
-		$("#battle-background").text(source).removeClass("battle-background-clear");
+		//$("#battle-background").text(source).removeClass("battle-background-clear");
 		// rumble page elements
 		$(n).addClass(degree + '-rumble');
 		// after delay set back to normal

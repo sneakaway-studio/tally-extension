@@ -15,6 +15,12 @@ var Battle = (function() {
 			"mostRecentDamage": ""
 		};
 
+
+
+
+
+
+
 	function getDetails() {
 		return details;
 	}
@@ -32,6 +38,8 @@ var Battle = (function() {
 		if (_active) return;
 		active(true);
 
+		Sound.playCategory('powerups', 'powerup1');
+
 		// set details
 		details.mid = mid;
 		details.monsterName = MonsterData.dataById[mid].name + " monster";
@@ -44,21 +52,25 @@ var Battle = (function() {
 		// move tally into position
 		anime({
 			targets: '#tally_character_container',
-			left: "20%",
-			top: "30%",
-			elasticity: 1,
+			left: "25%",
+			top: "25%",
+			elasticity: 0,
 			duration: 1000,
+			easing: 'easeOutCubic'
 		});
+		Thought.showString("Let's keep this tracker from getting our data!", "danger");
 
-		// add monster and move into position
-		$("#tally_wrapper").append("<div class='tally' id='tally_monster_container'>THE MONSTER</div>");
 
+
+		Monster.display();
 		anime({
-			targets: '#tally_monster_container',
-			left: "70%",
-			top: "30%",
-			elasticity: 10,
+			targets: '.tally_monster_sprite_container',
+			left: "60%",
+			top: "10%",
+			opacity:1,
+			elasticity: 0,
 			duration: 1000,
+			easing: 'easeOutCubic'
 		});
 
 		// show console
@@ -67,6 +79,9 @@ var Battle = (function() {
 			BattleConsole.log("Battle started with " + details.monsterName + "!");
 			monsterTakeTurn();
 		}, 100);
+
+
+
 
 	}
 
@@ -116,6 +131,23 @@ var Battle = (function() {
 	function end() {
 		BattleConsole.hide();
 		_active = false;
+
+		// move tally back
+		anime({
+			targets: '#tally_character_container',
+			left: "0px",
+			top: "90%",
+			elasticity: 0,
+			duration: 1000,
+		});
+		Thought.hide();
+		anime({
+			targets: '.tally_monster_sprite_container',
+			top: "-500px",
+			opacity:1,
+			elasticity: 0,
+			duration: 1000,
+		});
 	}
 
 
