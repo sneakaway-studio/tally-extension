@@ -6,23 +6,53 @@
 var Cookie = (function() {
 	// PRIVATE
 
+	var types = [
+		"health", "manna"
+	];
 
-	// name
-		// health cookie
-		// manna cookie
+	function createNew() {
+		var obj = {
+			type: types[Math.floor(Math.random() * types.length)], //
+			duration: -1, // -1, 0, 2000
+			value: 0, // power of cookie,
+			effects: "", // what does it affect
+			icon: ""
+		};
+		if (obj.type == "health") {
+			obj.value = Math.random();
+			obj.effect = "hp";
+		} else if (obj.type == "manna") {
+			obj.value = Math.random();
+			obj.effect = "xp";
+		}
 
-	// _duration once/or time limit
-	// value = e.g. 200
-	// category
-		// health
-		// str
-		// df
-		// attacl
+		return obj;
+	}
 
 
-//	pickup()
-//  generate()
-//  use()
+
+
+	// add cookie to a page
+	function generate() {
+		var cookie = createNew();
+		// position
+
+	}
+
+	// user has clicked a cookie
+	function pickup() {
+
+	}
+
+	// use the cookie
+	function use() {
+
+	}
+
+
+
+
+
 
 
 	// PUBLIC
