@@ -11,7 +11,6 @@ $(function() {
 							"</div>" +
 						"</div>" +
 						"<div class='tally tally_award_wrapper'></div>" +
-						"<div class='tally' id='tally'></div>" +
 						"<audio class='tally' id='tally_audio' muted='muted'>"+
 							"<source class='tally' id='tally_audio_source' type='audio/mp3'>"+
 						"</audio>" +
@@ -30,9 +29,9 @@ $(function() {
 		console.log("this.fullScreenMode",this.fullScreenMode);
 
         if (this.fullScreenMode == true){
-            $("#tally").hide();
+            $("#tally_wrapper").hide();
         } else {
-            $("#tally").show();
+            $("#tally_wrapper").show();
         }
 	});
 

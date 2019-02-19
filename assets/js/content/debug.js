@@ -11,7 +11,7 @@ var Debug = (function() {
 		if (!prop(tally_options) || !tally_options.showDebugger) return;
 
 		let str = "<div id='tyd' class='tally draggable data-field grabbable'>" + "</div>";
-		$('#tally').append(str);
+		$('#tally_wrapper').append(str);
 		// make it draggable
 		$("#tyd").draggable({
 			axis: "y",

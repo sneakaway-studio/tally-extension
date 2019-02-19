@@ -13,14 +13,20 @@
 
 
 
+
+
+ /*  TALLY CHARACTER
+ ******************************************************************************/
+
+
 /* TALLY CHARACTER */
-#tally_character_container, #tally_thought_bubble {
+#tally_character, #tally_thought_bubble {
     position: absolute;
     z-index: 9999999999999;
 }
-#tally_character_container {
+#tally_character {
     font: 14px/ 20px Arial;
-    padding: 12px;
+    padding: 0;
     height: 222px;
     width: 223px;
     max-width: 100%;
@@ -38,16 +44,10 @@
     -moz-box-sizing: border-box;
     -webkit-box-sizing: border-box;
 }
-#tally_character_container button {
-    padding: 5px;
-    margin: 3px;
-    background: #111;
-    border: none;
-    box-shadow: none;
-    color: #fff;
-}
-#tally_character {
-    margin: 55px 0 0 30px;
+
+#tally_body {
+    position: absolute;
+    margin: 0;
     width: 193px;
     /* fix Tally's strange vertical position shift */
     box-sizing: border-box;
@@ -63,49 +63,6 @@ svg#tally-svg {
 }
 svg#tally-svg * {
     transition: all .9s;
-}
-/* TALLY THOUGHTS */
-#tally_thought_bubble {
-    width: 220px;
-    height: 80px;
-    bottom: 270px;
-    left: -500px;
-    opacity: 0;
-    display: flex;
-    padding: 0;
-}
-#tally_thought_bubble #tally_thought {
-    padding: 8px;
-    text-align: center;
-    margin: auto;
-    font: 12px/16px "Monaco", "Andale Mono", "Courier New", sans-serif;
-    color: #fff
-}
-#tally_thought_bubble #tally_thought .tally-replace {
-    color: #DE4929;
-}
-#tally_thought_bubble a {
-    color: white;
-    text-decoration: underline;
-}
-/* http://leaverou.github.io/bubbly/ */
-.tally_speech_bubble {
-    position: relative;
-    background: #252525;
-    border-radius: .4em;
-}
-.tally_speech_bubble:after {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    left: 70%;
-    width: 0;
-    height: 0;
-    border: 20px solid transparent;
-    border-top-color: #252525;
-    border-bottom: 0;
-    margin-left: -13px;
-    margin-bottom: -13px;
 }
 #tally_eyes {
     position: absolute;
@@ -190,4 +147,61 @@ svg#tally-svg * {
     100% {
         animation-timing-function: ease-out;
     }
+}
+
+
+
+
+ /*  TALLY THOUGHTS
+ ******************************************************************************/
+
+#tally_thought_bubble {
+    width: 220px;
+    height: 80px;
+    bottom: 270px;
+    left: -500px;
+    opacity: 0;
+    display: flex;
+    padding: 0;
+}
+#tally_thought_bubble #tally_thought {
+    padding: 8px;
+    text-align: center;
+    margin: auto;
+    font: 12px/16px "Monaco", "Andale Mono", "Courier New", sans-serif;
+    color: #fff
+}
+#tally_thought_bubble #tally_thought .tally-replace {
+    color: #DE4929;
+}
+#tally_thought_bubble a {
+    color: white;
+    text-decoration: underline;
+}
+/* http://leaverou.github.io/bubbly/ */
+.tally_speech_bubble {
+    position: relative;
+    background: #252525;
+    border-radius: .4em;
+}
+.tally_speech_bubble:after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 70%;
+    width: 0;
+    height: 0;
+    border: 20px solid transparent;
+    border-top-color: #252525;
+    border-bottom: 0;
+    margin-left: -13px;
+    margin-bottom: -13px;
+}
+#tally_character button {
+    padding: 0;
+    margin: 0;
+    background: #111;
+    border: none;
+    box-shadow: none;
+    color: #fff;
 }

@@ -51,7 +51,7 @@ var Battle = (function() {
 
 		// move tally into position
 		anime({
-			targets: '#tally_character_container',
+			targets: '#tally_character',
 			left: "25%",
 			top: "25%",
 			elasticity: 0,
@@ -134,7 +134,7 @@ var Battle = (function() {
 
 		// move tally back
 		anime({
-			targets: '#tally_character_container',
+			targets: '#tally_character',
 			left: "0px",
 			top: "90%",
 			elasticity: 0,

@@ -83,51 +83,46 @@ window.Tally = (function() {
 		//console.log("startTally()", tally_game_status.skin, Skin.skins);
 
 		let str =
-			"<div class='tally draggable' id='tally_character_container'>" +
-			"<div class='tally tally_speech_bubble' id='tally_thought_bubble'>" +
-			"<div class='tally' id='tally_thought'></div>" +
-			"</div>" +
-			"<div class='tally' id='tally_character'>" +
-
-			Skin.returnBasicSVG() +
-
-
-			"</div>" +
-			"<div class='tally' id='tally_eyes'>" +
-			"<span class='tally tally_lid'>" +
-			"<span class='tally tally_eye tally_eye_left'>" +
-			"<span class='tally tally_eye_pupil'></span></span></span>" +
-			"<span class='tally tally_lid'>" +
-			"<span class='tally tally_eye tally_eye_right'>" +
-			"<span class='tally tally_eye_pupil'></span></span></span>" +
-			"</div>" +
+			"<div class='tally draggable' id='tally_character'>" +
+				"<div class='tally tally_speech_bubble' id='tally_thought_bubble'>" +
+					"<div class='tally' id='tally_thought'></div>" +
+				"</div>" +
+				"<div class='tally' id='tally_body'>" +
+					Skin.returnBasicSVG() +
+				"</div>" +
+				"<div class='tally' id='tally_eyes'>" +
+					"<span class='tally tally_lid'>" +
+						"<span class='tally tally_eye tally_eye_left'>" +
+							"<span class='tally tally_eye_pupil'></span></span></span>" +
+					"<span class='tally tally_lid'>" +
+						"<span class='tally tally_eye tally_eye_right'>" +
+							"<span class='tally tally_eye_pupil'></span></span></span>" +
+				"</div>" +
 			"</div>";
-		$('#tally').append(str);
+		$('#tally_wrapper').append(str);
 
-		$("#tally_character_container").draggable({
+		$("#tally_character").draggable({
 			drag: function() {},
 			stop: function() {}
 		});
 
 
 
-		// TESTING
-		//Monster.test();
 
 
 
 
 		// HOVER
-		$(document).on('mouseenter mouseleave', '#tally_character_container', function() {
+		$(document).on('mouseenter mouseleave', '#tally_character', function() {
 			// works but don't need it yet
 			//tallyMenu();
 		});
 		// ONE CLICK
-		$(document).on('click', '#tally_character_container', function() {
+		$(document).on('click', '#tally_character', function() {
 			//
 		});
 		// DOUBLE CLICK
-		$(document).on('dblclick', '#tally_character_container', function() {
+		$(document).on('dblclick', '#tally_character', function() {
 			// show testing menu
 			tallyMenu();
 		});
@@ -184,7 +179,7 @@ window.Tally = (function() {
 			chrome.runtime.sendMessage({ 'action': 'openPage', 'url': chrome.extension.getURL('assets/pages/startScreen/startScreen.html') });
 		});
 		$(document).on('click', '#tallyMenu_testNearbyMonster', function() {
-			Monster.test(); // launch one of the nearby monsters
+			Monster.testLaunch(); // launch one of the nearby monsters
 		});
 		$(document).on('click', '#tallyMenu_battleStart', function() {
 			Battle.test();
@@ -249,7 +244,7 @@ Mousetrap.bind(k + ' p', function() { window.open('https://tallygame.net/profile
 Mousetrap.bind(k + ' s', function() {
 	chrome.runtime.sendMessage({ 'action': 'openPage', 'url': chrome.extension.getURL('assets/pages/startScreen/startScreen.html') });
 });
-Mousetrap.bind(k + ' m', function() { Monster.test(); });
+Mousetrap.bind(k + ' m', function() { Monster.testLaunch(); });
 Mousetrap.bind(k + ' b', function() { Battle.test(); });
 Mousetrap.bind(k + ' 0', function() { BattleEffect.rumble("small"); });
 Mousetrap.bind(k + ' 1', function() { BattleEffect.rumble("medium"); });
