@@ -1,4 +1,3 @@
-
 <!DOCTYPE HTML>
 <html>
 
@@ -17,57 +16,142 @@
         #container {
             width: 100%;
             height: 100%;
-        }
-
-        #testCanvas {
             background: #000;
-            background-image: url(https://news.nationalgeographic.com/content/dam/news/2018/05/17/you-can-train-your-cat/02-cat-training-NationalGeographic_1484324.ngsversion.1526587209178.adapt.1900.1.jpg);
-
         }
-        #box {
-            position:absolute; top:140px; left:140px;
-            width:20px; height:20px;
-            background-color:black;
+
+        #battleCanvas {
+            background: #000;
+            background-image: url("https://news.nationalgeographic.com/content/dam/news/2018/05/17/you-can-train-your-cat/02-cat-training-NationalGeographic_1484324.ngsversion.1526587209178.adapt.1900.1.jpg");
+        }
+
+        #battleProjectile {
+            position: absolute;
+            border-radius: 50%;
+            top: 140px;
+            left: 30%;
+            width: 20px;
+            height: 20px;
+            background-color: black;
             z-index: 20;
         }
     </style>
 </head>
 
 <body>
+    <button id="params_fuzzy_pink">fuzzy pink</button>
+    <button id="params_fuzzy_colorful">fuzzy colorful</button>
+    <button id="params_fuzzy_rainbow">fuzzy rainbow</button>
+    <button id="params_vector_pink">vector pink</button>
     <div id="container">
-        <div id="box"></div>
-        <canvas id="testCanvas"></canvas>
+
     </div>
-    <script src="https://a-jie.github.io/Proton/example/lib/stats.min.js"></script>
     <script src="https://a-jie.github.io/Proton/example/lib/TweenLite.min.js"></script>
     <script src="https://a-jie.github.io/Proton/build/proton.min.js"></script>
+    <script src="https://a-jie.github.io/Proton/example/lib/stats.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="../assets/libs/mousetrap.min.js"></script>
+    <script src="../assets/libs/anime.min.js"></script>
     <script>
-        var canvas;
-        var context;
-        var proton;
-        var renderer;
-        var emitter;
-        var stats;
-        var mouseObj;
-        var attractionForce;
+        $("#params_fuzzy_pink").on("click", function() {
+            updateParams(params_fuzzy_pink);
+        });
+        $("#params_fuzzy_colorful").on("click", function() {
+            updateParams(params_fuzzy_colorful);
+        });
 
-        main();
+        let params_fuzzy_pink = {
+            "type": "image",
+            "file": "particle.png",
+            "rate": new Proton.Rate(new Proton.Span(30, 50), new Proton.Span(.1, .1)),
+            "mass": new Proton.Mass(1),
+            "radius": new Proton.Radius(3, 40),
+            "color": new Proton.Color('#462795', '#F25132'),
+            "alpha": new Proton.Alpha(1, 1),
+            "life": new Proton.Life(1, .7),
+            "velocity": new Proton.Velocity(new Proton.Span(3, 5), new Proton.Span(0, 360), 'polar'),
+            "randomDrift": new Proton.RandomDrift(30, 0, .035),
+            "scale": new Proton.Scale(Proton.getSpan(1, 1.6), Proton.getSpan(0, .1)),
+        }
+        let params_vector_pink = {
+            "type": "circle",
+            "file": "particle.png",
+            "rate": new Proton.Rate(new Proton.Span(30, 50), new Proton.Span(.1, .1)),
+            "mass": new Proton.Mass(1),
+            "radius": new Proton.Radius(3, 40),
+            "color": new Proton.Color('#462795', '#F25132'),
+            "alpha": new Proton.Alpha(1, 1),
+            "life": new Proton.Life(1, .7),
+            "velocity": new Proton.Velocity(new Proton.Span(3, 5), new Proton.Span(0, 360), 'polar'),
+            "randomDrift": new Proton.RandomDrift(30, 0, .035),
+            "scale": new Proton.Scale(Proton.getSpan(1, 1.6), Proton.getSpan(0, .1)),
+        }
+        let params_fuzzy_colorful = {
+            "type": "image",
+            "file": "particle.png",
+            "rate": new Proton.Rate(new Proton.Span(30, 50), new Proton.Span(.1, .1)),
+            "mass": new Proton.Mass(1),
+            "radius": new Proton.Radius(3, 40),
+            "color": new Proton.Color('random'),
+            "alpha": new Proton.Alpha(1, .5),
+            "life": new Proton.Life(1, .7), // new Proton.Life(1, 3)
+            "velocity": new Proton.Velocity(new Proton.Span(-1, 1), new Proton.Span(0, 0), 'vector'),
+            "randomDrift": new Proton.RandomDrift(30, 0, .035),
+            "scale": new Proton.Scale(Proton.getSpan(1, 1.6), Proton.getSpan(0, .1)),
+        }
+        let params_fuzzy_rainbow = {
+            "type": "image",
+            "file": "particle.png",
+            "rate": new Proton.Rate(new Proton.Span(5, 10), new Proton.Span(.01, .015)),
+            "mass": new Proton.Mass(1),
+            "radius": new Proton.Radius(40),
+            "color": new Proton.Color('#4F1500', '#0029FF'),
+            "alpha": new Proton.Alpha(1, 0),
+            "life": new Proton.Life(1, 2), // new Proton.Life(1, 3)
+            "velocity": new Proton.V(new Proton.Span(1, 3), 65, 'polar'),
+            "randomDrift": new Proton.RandomDrift(30, 0, .035),
+            "scale": new Proton.Scale(3, 0.1)
+        }
 
-        function main() {
-            canvas = document.getElementById("testCanvas");
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
 
-            addStats();
-            loadImage();
 
-            mouseObj = {
-                x: canvas.width / 2,
-                y: canvas.height / 2
-            };
+        function updateParams(p) {
+            params = p;
+        }
 
+
+        var battleCanvas, proton, renderer, emitter, attractionForce, battleProjectilePos, projectileRunning, params, stats;
+
+
+        function restart() {
+            battleCanvas = null,
+            proton = null,
+            renderer = null,
+            emitter = null,
+            attractionForce = null,
+            battleProjectilePos = {
+                x: 0,
+                y: 0
+            },
+            projectileRunning = false,
+            params = {};
+            setupbattleCanvas();
+        }
+        restart();
+
+
+
+        /**
+         *    Setup the canvas, etc.
+         */
+        function setupbattleCanvas() {
+            // add to screen
+            let str = '<div class="tally" id="battleProjectile"></div><canvas class="tally" id="battleCanvas"></canvas>';
+            $("#container").html(str);
+            battleCanvas = document.getElementById("battleCanvas");
+            updatePositions();
             resize();
+            addStats();
+            updateParams(params_fuzzy_colorful);
         }
 
         function addStats() {
@@ -79,129 +163,221 @@
             document.body.appendChild(stats.domElement);
         }
 
-        function loadImage() {
-            var image = new Image()
-            image.onload = function (e) {
-                createProton(e.target);
-                tick();
-                canvas.addEventListener('mousedown', mouseDownHandler, false);
-            }
-            image.src = 'particle.png';
-        }
-
-        function createProton(image) {
-
-            proton = new Proton;
-            emitter = new Proton.Emitter();
-            emitter.rate = new Proton.Rate(new Proton.Span(30, 50), .1);
-
-            emitter.addInitialize(new Proton.Mass(1));
-            emitter.addInitialize(new Proton.Body(image));
-            //emitter.addInitialize(new Proton.P(new Proton.PointZone(canvas.width / 2, canvas.height / 2)));
-            emitter.addInitialize(new Proton.Life(1, 1.7));
-            emitter.addInitialize(new Proton.V(new Proton.Span(3, 5), new Proton.Span(0, 360), 'polar'));
-
-            emitter.addBehaviour(new Proton.Color('#462795', '#F25132'));
-            attractionForce = new Proton.Attraction(mouseObj, 10, 200);
-            emitter.addBehaviour(attractionForce);
-            emitter.addBehaviour(new Proton.Scale(Proton.getSpan(1, 1.6), Proton.getSpan(0, .1)));
-            emitter.addBehaviour(new Proton.Alpha(1, .2));
-
-            emitter.p.x = canvas.width / 2;
-            emitter.p.y = canvas.height / 2;
-            emitter.emit();
-            proton.addEmitter(emitter);
-
-            renderer = new Proton.WebGLRenderer(canvas);
-            renderer.blendFunc("SRC_ALPHA", "ONE");
-            proton.addRenderer(renderer);
-        }
-
         function resize() {
-            window.onresize = function () {
-                canvas.width = window.innerWidth;
-                canvas.height = window.innerHeight;
-
-                mouseObj.x = canvas.width / 2;
-                mouseObj.y = canvas.height / 2;
-                emitter.p.x = canvas.width / 2;
-                emitter.p.y = canvas.height / 2;
-
-                renderer.resize(canvas.width, canvas.height);
+            window.onresize = function() {
+                console.log("window.onresize")
+                updatePositions();
+                updateEmitterPos();
+                renderer.resize(battleCanvas.width, battleCanvas.height);
             }
         }
 
-        function mouseDownHandler(e) {
-
-move(e.offsetX,e.offsetY)
-return;
-
-            TweenLite.to(emitter.p, 1.5, {
-                x: e.offsetX,
-                y: e.offsetY,
-            });
-
-            TweenLite.to(mouseObj, 3.5, {
-                x: e.offsetX,
-                y: e.offsetY,
-            });
-
-            attractionForce.reset(mouseObj, 0, 200);
-            setTimeout(function () { attractionForce.reset(mouseObj, 10, 200); }, 500);
+        function updatePositions() {
+            battleCanvas.width = window.innerWidth;
+            battleCanvas.height = window.innerHeight;
+            battleProjectilePos.x = $("#battleProjectile").position().left;
+            battleProjectilePos.y = $("#battleProjectile").position().top;
         }
 
-        function move(_x,_y) {
-            TweenLite.to(emitter.p, 1.5, {
-                x: _x,
-                y: _y,
-            });
-
-            TweenLite.to(mouseObj, 3.5, {
-                x: _x,
-                y: _y,
-            });
-
-            attractionForce.reset(mouseObj, 0, 200);
-            setTimeout(function () { attractionForce.reset(mouseObj, 10, 200); }, 500);
+        function updateEmitterPos() {
+            emitter.p.x = $("#battleProjectile").position().left;
+            emitter.p.y = $("#battleProjectile").position().top;
         }
 
 
-        $(function () {
-            var pane = $('#container'),
-                box = $('#box'),
-                wh = pane.width() - box.width(),
-                wv = pane.height() - box.height(),
-                d = {},
-                x = 15;
 
-            function newh(v,a,b) {
-                var n = parseInt(v, 10) - (d[a] ? x : 0) + (d[b] ? x : 0);
-                return n < 0 ? 0 : n > wh ? wh : n;
-            } 
 
-            function newv(v,a,b) {
-                var n = parseInt(v, 10) - (d[a] ? x : 0) + (d[b] ? x : 0);
-                return n < 0 ? 0 : n > wv ? wv : n;
-            }
 
-            $(window).keydown(function(e) { d[e.which] = true; });
-            $(window).keyup(function(e) { d[e.which] = false; });
+        /**
+         *    Setup the canvas, etc.
+         */
+        Mousetrap.bind('a', function() {
+            // pick random parameters
+stop();
+            let r = Math.random();
+            if (r < .3)
+                updateParams(params_fuzzy_pink)
+            else if (r < .5)
+                updateParams(params_fuzzy_colorful)
+            else if (r < .8)
+                updateParams(params_fuzzy_rainbow)
+            else
+                updateParams(params_vector_pink)
 
-            setInterval(function() {
-                box.css({
-                    left: function(i,v) { return newh(v, 37, 39); },
-                    top: function(i,v) { return newv(v, 38, 40); }
-                });
-                wh = pane.width() - box.width();
-                wv = pane.height() - box.height();
-            }, 50);
+
+            sendProjectile();
         });
 
 
-        function tick() {
-            requestAnimationFrame(tick);
 
-            stats.begin();
+        function sendProjectile(type, ) {
+
+            var leftPos;
+
+            // fire projectile at monster
+            if ($("#battleProjectile").position().left < window.innerWidth / 2) {
+                leftPos = "70%";
+            }
+            // fire projectile at Tally
+            else {
+                leftPos = "30%";
+            }
+
+            // type
+
+            if (!projectileRunning) {
+                start();
+                projectileRunning = true;
+            }
+            if (emitter)
+                emitter.emit();
+
+            // move projectile
+            var projectileTargetAnimation = anime({
+                targets: '#battleProjectile',
+                left: leftPos,
+                elasticity: 0,
+                duration: 2000,
+                easing: 'easeOutCubic',
+                update: function(anim) {
+                    if (emitter) {
+                        move($("#battleProjectile").position().left, $("#battleProjectile").position().top);
+                    } else {
+                        console.log("NO EMITTER");
+                    }
+
+                }
+            });
+            // callback for when animation is finished
+            projectileTargetAnimation.finished.then(function() {
+                projectileRunning = false;
+                //clearCanvas();
+                if (emitter)
+                    emitter.stop();
+
+            });
+
+            console.log("battleProjectile position: ", $("#battleProjectile").position(), window.innerWidth / 2);
+        }
+
+
+
+        function clearCanvas() {
+            const context = battleCanvas.getContext('2d');
+            context.clearRect(0, 0, battleCanvas.width, battleCanvas.height);
+        }
+
+
+
+
+
+        function start() {
+            var image = new Image()
+            image.onload = function(e) {
+                createProton(e.target);
+                tick();
+            }
+            image.src = params.file;
+        }
+
+        function stop() {
+            if (emitter) {
+                emitter.stop();
+                emitter.removeAllParticles();
+                emitter.removeAllBehaviours();
+                emitter.destroy();
+                proton.removeEmitter(emitter);
+                proton.destroy();
+                proton = null;
+                emitter = null;
+                attractionForce = null;
+                renderer = null;
+            }
+        }
+
+
+
+
+
+
+
+        function createProton(image) {
+            console.log("createProton()", params);
+
+            proton = new Proton;
+            emitter = new Proton.Emitter();
+
+
+            // particles / second https://projects.jpeer.at/proton/Proton_Proton.Rate.html
+            emitter.rate = params.rate;
+            emitter.addInitialize(params.mass);
+            emitter.addInitialize(params.life);
+            emitter.addInitialize(params.radius);
+            if (params.type == "image") // image | circle
+                emitter.addInitialize(new Proton.Body(image));
+            emitter.addInitialize(params.velocity);
+            // https://projects.jpeer.at/proton/Proton_Proton.Color.html
+            emitter.addBehaviour(params.color);
+            emitter.addBehaviour(params.alpha);
+            emitter.addBehaviour(params.randomDrift);
+
+            attractionForce = new Proton.Attraction(battleProjectilePos, 10, 20);
+            emitter.addBehaviour(attractionForce);
+            emitter.addBehaviour(params.scale);
+
+
+            updateEmitterPos();
+            emitter.emit();
+            proton.addEmitter(emitter);
+            proton.addRenderer(createRenderer());
+
+            // TESTING
+            // battleCanvas.addEventListener('mousedown', mousedownHandler, false);
+            // window.addEventListener('mouseup', mouseupHandler, false);
+            //
+            // function mousedownHandler(e) {
+            //     console.log("MOUSE DOWN")
+            //     emitter.emit();
+            //     console.log(e);
+            //     move(e.offsetX, e.offsetY)
+            // }
+            //
+            // function mouseupHandler(e) {
+            //     console.log("MOUSE UP")
+            //     emitter.stop();
+            // }
+
+        }
+
+        function createRenderer() {
+            renderer = new Proton.WebGLRenderer(battleCanvas);
+            renderer.blendFunc("SRC_ALPHA", "ONE");
+            return renderer;
+        }
+
+
+
+        function move(_x, _y) {
+            TweenLite.to(emitter.p, 1.5, {
+                x: _x,
+                y: _y,
+            });
+            TweenLite.to(battleProjectilePos, 3.5, {
+                x: _x,
+                y: _y,
+            });
+            attractionForce.reset(battleProjectilePos, 0, 200);
+            setTimeout(function() {
+                if (attractionForce)
+                    attractionForce.reset(battleProjectilePos, 10, 200);
+            }, 1500);
+        }
+
+        function tick() {
+// if (!projectileRunning) return;
+        requestAnimationFrame(tick);
+                    stats.begin();
+
 
             if (proton) {
                 proton.update();
@@ -211,6 +387,13 @@ return;
             stats.end();
         }
     </script>
+
+
+
+
+
+
+
 </body>
 
 </html>

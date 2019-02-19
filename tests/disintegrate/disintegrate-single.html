@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+
+
+
+<!-- Custom styles for this template -->
+<style type="text/css">
+
+body {
+    background: #000;
+    background-image: url("https://news.nationalgeographic.com/content/dam/news/2018/05/17/you-can-train-your-cat/02-cat-training-NationalGeographic_1484324.ngsversion.1526587209178.adapt.1900.1.jpg");
+}
+.box {
+    position: absolute; top: 25%; left: 30%; z-index: 10;
+    width: 100px; height:100px; background: #41d728;
+};
+.box2 {
+    width: 100px; height:100px; background: #d32cf1;
+};
+
+
+    /* Generic click behavior */
+    [data-dis-container] {
+        animation: slideLeft500 0.5s ease-in paused;
+    }
+
+    [data-dis-type] {
+        animation: slideRight500 0.5s ease-in paused;
+    }
+
+    @keyframes slideLeft500 {
+        100% {
+            transform: translateX(-500px);
+        }
+    }
+
+    @keyframes slideRight500 {
+        100% {
+            transform: translateX(500px);
+        }
+    }
+
+    /* Start the animation we add a class */
+    .animate,
+    .animate [data-dis-type] {
+        /* Start the animation */
+        animation-play-state: running !important;
+        /* Make sure it doesn't show until we want it to */
+        animation-fill-mode: forwards !important;
+    }
+
+
+
+
+
+</style>
+</head>
+
+<body>
+
+
+    <button data-dis-type="self-contained" data-dis-id="myDisId" data-dis-particle-type="ExplodeToRightParticle" class="box">I'm a button</button>
+    <button data-dis-trigger-for="myDisId">Explode the button</button>
+
+
+
+
+
+
+
+
+<script type="text/javascript" src="https://zachsaucier.github.io/Disintegrate/html2canvas.min.js"></script>
+<script type="text/javascript" src="https://zachsaucier.github.io/Disintegrate/disintegrate.js"></script>
+
+<script type="text/javascript">
+    disintegrate.init();
+
+    if (document.querySelectorAll("[data-dis-trigger-for]")) {
+        // If you do anything with dises, you need to wait for them to all finish loading
+        window.addEventListener("disesLoaded", function() {
+            // Iterate through all elements with 'dis-trigger-for' attribute
+            document.querySelectorAll("[data-dis-trigger-for]").forEach(function(triggerEl) {
+
+                // Get the matching Disintegrate element
+                var el = document.querySelector("[data-dis-id = '" + triggerEl.dataset.disTriggerFor + "']");
+                if (el) {
+                    // Get the relevant Disintegrate object
+                    var disObj = disintegrate.getDisObj(el);
+
+                    // Apply our trigger
+                    triggerEl.addEventListener("click", function(e) {
+                        disObj.container.classList.add("animate");
+                    });
+
+                    // Reset the animation (for demo purposes)
+                    disObj.elem.addEventListener("disComplete", function(e) {
+                        disObj.container.classList.remove("animate");
+
+                        // Hack to reset the CSS animations
+                        // see https://stackoverflow.com/a/6303311/2065702 for more info
+                        resetCSSAnimation(disObj.container);
+                        resetCSSAnimation(disObj.elem);
+                    });
+
+                    function resetCSSAnimation(elem) {
+                        elem.style.animation = "none";
+                        setTimeout(function() {
+                            elem.style.animation = "";
+                        }, 10);
+                    }
+                }
+            });
+
+            var ExplodeToRightParticle = function() {
+                this.name = "ExplodeToRightParticle";
+                this.animationDuration = 500; // in ms
+
+                this.speed = {
+                    x: 10 + Math.random() * 6,
+                    y: -1.5 + Math.random() * 3
+                };
+                this.radius = 0 + Math.random() * 5;
+                this.life = 30 + Math.random() * 10;
+                this.remainingLife = this.life;
+
+                this.firstRun = true;
+                this.draw = ctx => {
+                    if (this.firstRun) {
+                        this.firstRun = false;
+                        this.startX += Math.random() * 20;
+                    }
+
+                    if (this.remainingLife > 0 &&
+                        this.radius > 0) {
+                        ctx.beginPath();
+                        ctx.arc(this.startX, this.startY, this.radius, 0, Math.PI * 2);
+                        ctx.fillStyle = "rgba(" + this.rgbArray[0] + ',' + this.rgbArray[1] + ',' + this.rgbArray[2] + ", 1)";
+                        ctx.fill();
+                        this.remainingLife--;
+                        this.radius -= 0.1;
+                        this.startX += this.speed.x;
+                        this.startY += this.speed.y;
+                    }
+                }
+            }
+            disintegrate.addParticleType(ExplodeToRightParticle);
+
+
+        });
+    }
+</script>

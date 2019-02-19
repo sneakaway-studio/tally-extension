@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="An example of some click effects that Disintegrate can create.">
+    <meta name="author" content="Zach Saucier">
+
+    <title>Self-contained effects demo - Disintegrate</title>
+
+    <!-- Base demo styles -->
+    <link rel="stylesheet" href="https://zachsaucier.github.io/Disintegrate/disintegrate-demo-styles.css">
+
+    <!-- Custom styles for this template -->
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+
+    <div class="middle-container title-section">
+        <h1>
+    <a href="https://github.com/ZachSaucier/Disintegrate/" title="Find this project on GitHub">
+      Disintegrate
+      <svg class="github" viewBox="0 0 33 33">
+        <title>GitHub</title>
+        <path d="M16.608.455C7.614.455.32 7.748.32 16.745c0 7.197 4.667 13.302 11.14 15.456.815.15 1.112-.353 1.112-.785 0-.386-.014-1.411-.022-2.77-4.531.984-5.487-2.184-5.487-2.184-.741-1.882-1.809-2.383-1.809-2.383-1.479-1.01.112-.99.112-.99 1.635.115 2.495 1.679 2.495 1.679 1.453 2.489 3.813 1.77 4.741 1.353.148-1.052.569-1.77 1.034-2.177-3.617-.411-7.42-1.809-7.42-8.051 0-1.778.635-3.233 1.677-4.371-.168-.412-.727-2.069.16-4.311 0 0 1.367-.438 4.479 1.67a15.602 15.602 0 0 1 4.078-.549 15.62 15.62 0 0 1 4.078.549c3.11-2.108 4.475-1.67 4.475-1.67.889 2.242.33 3.899.163 4.311C26.37 12.66 27 14.115 27 15.893c0 6.258-3.809 7.635-7.437 8.038.584.503 1.105 1.497 1.105 3.017 0 2.177-.02 3.934-.02 4.468 0 .436.294.943 1.12.784 6.468-2.159 11.131-8.26 11.131-15.455 0-8.997-7.294-16.29-16.291-16.29"></path>
+      </svg>
+    </a>
+  </h1>
+
+        <p><i>"to reduce to particles, fragments, or parts; break up or destroy the cohesion of"</i></p>
+    </div>
+
+    <div class="middle-container">
+        <h2>Self-contained demo - <a href="https://github.com/ZachSaucier/Disintegrate/blob/gh-pages/disintegrate-self-contained.html"><i>view source</i></a></h2>
+    </div>
+
+    <div class="grid">
+        <div class="grid-item">
+            <button data-dis-type="self-contained" class="clickable">Close</button>
+        </div>
+        <div class="grid-item">
+            <button data-dis-type="self-contained" data-dis-particle-type="ExplodeToRightParticle" class="clickable">Unlock</button>
+        </div>
+        <div class="grid-item">
+            <button data-dis-type="self-contained" data-dis-particle-type="HollowCircles" class="clickable">Okay</button>
+        </div>
+        <div class="grid-item">
+            <button data-dis-type="self-contained" class="clickable">Send</button>
+        </div>
+        <div class="grid-item">
+            <button data-dis-type="self-contained" data-dis-particle-type="ExplodingParticle" data-dis-reduction-factor="50" data-dis-color="[90, 169, 235]" class="clickable">Destroy</button>
+        </div>
+        <div class="grid-item">
+            <button data-dis-type="self-contained" class="clickable"><i>Get happy!!</i></button>
+        </div>
+    </div>
+
+
+
+</body>
+<script type="text/javascript" src="https://zachsaucier.github.io/Disintegrate/html2canvas.min.js"></script>
+<script type="text/javascript" src="https://zachsaucier.github.io/Disintegrate/disintegrate.js"></script>
+
+<script type="text/javascript">
+    disintegrate.init();
+
+    if (document.querySelector('[data-dis-type="self-contained"]')) {
+        // If you do anything with dises, you need to wait for them to
+        // all finish loading
+        window.addEventListener("disesLoaded", function() {
+            disintegrate.dises.forEach(function(disObj) {
+                if (disObj.elem.dataset.disType === "self-contained") {
+                    disObj.container.addEventListener("click", function(e) {
+                        disObj.container.classList.add("animate");
+                    });
+                    disObj.elem.addEventListener("disComplete", function(e) {
+                        disObj.container.classList.remove("animate");
+                        // Hack to reset the CSS animations
+                        // see https://stackoverflow.com/a/6303311/2065702 for more info
+                        resetCSSAnimation(disObj.container);
+                        resetCSSAnimation(disObj.elem);
+                    });
+
+                    function resetCSSAnimation(el) {
+                        el.style.animation = "none";
+                        setTimeout(function() {
+                            el.style.animation = "";
+                        }, 10);
+                    }
+                }
+            });
+
+
+            var ExplodeToRightParticle = function() {
+                this.name = "ExplodeToRightParticle";
+                this.animationDuration = 500; // in ms
+
+                this.speed = {
+                    x: 0 + Math.random() * 6,
+                    y: -1.5 + Math.random() * 3
+                };
+                this.radius = 0 + Math.random() * 5;
+                this.life = 30 + Math.random() * 10;
+                this.remainingLife = this.life;
+
+                this.firstRun = true;
+                this.draw = ctx => {
+                    if (this.firstRun) {
+                        this.firstRun = false;
+                        this.startX += Math.random() * 20;
+                    }
+
+                    if (this.remainingLife > 0 &&
+                        this.radius > 0) {
+                        ctx.beginPath();
+                        ctx.arc(this.startX, this.startY, this.radius, 0, Math.PI * 2);
+                        ctx.fillStyle = "rgba(" + this.rgbArray[0] + ',' + this.rgbArray[1] + ',' + this.rgbArray[2] + ", 1)";
+                        ctx.fill();
+                        this.remainingLife--;
+                        this.radius -= 0.1;
+                        this.startX += this.speed.x;
+                        this.startY += this.speed.y;
+                    }
+                }
+            }
+            disintegrate.addParticleType(ExplodeToRightParticle);
+
+
+            function genNormalizedVal() {
+                return ((Math.random() + Math.random() + Math.random() + Math.random() + Math.random() + Math.random() - 3)) / 3;
+            }
+
+            const EaseIn = power => t => Math.pow(t, power),
+                EaseOut = power => t => 1 - Math.abs(Math.pow(t - 1, power)),
+                EaseInOut = power => t => t < .5 ? EaseIn(power)(t * 2) / 2 : EaseOut(power)(t * 2 - 1) / 2 + 0.5;
+            var HollowCircles = function() {
+                this.name = "HollowCircles";
+                this.animationDuration = 1000; // in ms
+
+                this.widthScaler = Math.round(50 * genNormalizedVal()); // Normalized val between -50 and 50
+                this.numWaves = (genNormalizedVal() + 1 / 2) * 2 + 1;
+                this.xPosFunc = t => {
+                    return Math.sin(this.numWaves * Math.PI * t);
+                };
+
+                this.heightScaler = Math.round(65 * (genNormalizedVal() + 1) / 2) + 10; // Normalized val between 10 and 75
+                this.yPosFunc = t => {
+                    return t;
+                };
+
+                this.startRadius = 5 + Math.random() * 7;
+                this.sizeFunc = t => {
+                    return 1 - t;
+                };
+
+                this.opacityFactor = Math.round(((genNormalizedVal() + 1) / 2) * 3 + 1);
+                this.opacityFunc = t => {
+                    return 1 - EaseInOut(this.opacityFactor)(t);
+                };
+
+                this.firstRun = true;
+
+                this.draw = (ctx, percent) => {
+                    percent = percent >= 1 ? 1 : percent;
+
+                    if (this.firstRun) {
+                        this.firstRun = false;
+                        this.startY += Math.random() * 20;
+                    }
+
+                    let currX = this.startX + this.xPosFunc(percent) * this.widthScaler;
+                    let currY = this.startY - this.yPosFunc(percent) * this.heightScaler;
+                    let radius = this.startRadius * this.sizeFunc(percent);
+                    let currOpacity = this.opacityFunc(percent);
+
+                    ctx.beginPath();
+                    ctx.strokeStyle = "rgba(" + this.rgbArray[0] + ',' + this.rgbArray[1] + ',' + this.rgbArray[2] + ',' + currOpacity + ")";
+                    ctx.arc(currX, currY, radius, 0, Math.PI * 2);
+                    ctx.stroke();
+                };
+            };
+            disintegrate.addParticleType(HollowCircles);
+        });
+    }
+</script>
