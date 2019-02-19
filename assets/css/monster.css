@@ -1,31 +1,12 @@
 /*  GLOBAL
 ******************************************************************************/
 
-.tally_monster_sprite_container, .tally_monster_text_wrapper_top, .tally_monster_text_wrapper_bottom, .tally_monster_points_wrapper {
-    top: -700px;
-    left: -700px;
+.tally_monster_sprite_container {
+    top: -500px;
+    left: 60%;
     opacity: 0;
     position: absolute;
     z-index: 99999999999999;
-}
-/*  MONSTER SPRITE (WHEN IT LAUNCHES)
-******************************************************************************/
-
-svg.monster_path {
-    position: fixed;
-    top: 0;
-    left: 0;
-    /* make positive and opacity:1 to test */
-    z-index: -9999999999999;
-    opacity: 0;
-}
-svg.monster_path path {
-    fill: none;
-    stroke: none;
-    /* stroke: #900; */
-}
-.tally_monster_sprite_container {
-    position: absolute;
     height: 400px;
     width: 500px;
 }
@@ -33,33 +14,15 @@ svg.monster_path path {
     position: relative;
     display: inline-block;
     margin: 0 auto;
-    width: 500px;
-    height: 400px;
-    /* transform: scale(0.5); */
+    width: 100%;
+    height: 100%;
+    /* animation: monster_keyframes 0.4s steps(3) infinite; */
 }
 .tally_monster_sprite_inner {
     position: absolute;
-    left: 0;
-    top: 0;
-    height: 100%;
-    width: 100%;
+    left: 0; top: 0;
+    height: 100%; width: 100%;
     background: left center no-repeat;
-    animation: monster_keyframes 0.4s steps(3) infinite;
-}
-.tally_monster_sprite_wrapper {
-    margin: auto;
-    border: 2px solid red;
-    position: absolute;
-    width: 500px;
-    height: 400px;
-    background: url('') left center no-repeat;
-    transform: scale(0.5) !important;
-}
-.tally_monster_sprite {
-    position: relative;
-    display: inline-block;
-    width: 100%;
-    height: 100%;
     animation: monster_keyframes 0.4s steps(3) infinite;
 }
 @keyframes monster_keyframes {
@@ -67,8 +30,20 @@ svg.monster_path path {
         background-position: -1500px;
     }
 }
+
+
+
+
+
+
+
+
+
 /*  MONSTER AWARD
 ******************************************************************************/
+.tally_award_wrapper {
+    
+}
 .tally_award_background {
     width: 4000px;
     height: 750px;
