@@ -37,6 +37,7 @@ var MonsterAward = (function() {
 		tally_nearby_monsters[_mid].missed = 0;
 		tally_nearby_monsters[_mid].totalCaptured += 1;
 		// move monster and show award
+		addAwardHtml();
 		moveMonsterToAward(_mid);
 		showAward(_mid);
 		// save and push results to server
@@ -238,6 +239,85 @@ var MonsterAward = (function() {
 
 	}
 
+	function launchFrom(_mid, _pos) {
+		console.log("⊙⊙⊙⊙! Monster.launchFrom()", _mid, _pos, tally_nearby_monsters[_mid]);
+
+		let _duration = ((pageData.browser.width / 15) + 3800) /*+ (tally_nearby_monsters[_mid].level * 100)*/ , // animation duration
+			_direction = "normal", // default animation direction
+			_scale = pageData.browser.width > 1200 ? 0.65 : 0.5; // increase scale w/larger screens
+
+		// set direction of monster (default is normal, i.e. right)
+		if (prop(tally_nearby_monsters[_mid].facing)) {
+			// set direction left
+			if (tally_nearby_monsters[_mid].facing == -1)
+				_direction = "reverse";
+			// pick random
+			else if (tally_nearby_monsters[_mid].facing == 0) {
+				let r = Math.random();
+				if (r < 0.5)
+					_direction = "reverse";
+			}
+		}
+
+		// set start / end positions
+		// need to add some randomness here
+		let coords = {
+			speed: 1,
+			start: {
+				x: -300,
+				y: (pageData.browser.height * 0.25) + (Math.random() * (pageData.browser.height * 0.5))
+			},
+			end: {
+				x: pageData.browser.width + 300,
+				y: pageData.browser.height / 2 - 200
+			}
+		};
+		//console.log("coords", coords);
+
+		// add animation keyframes
+		addKeyFrames(
+			'leftToRight',
+			'0%{ left: ' + coords.start.x + 'px; top: ' + coords.start.y + 'px;}' +
+			'100%{ left: ' + coords.end.x + 'px; top: ' + coords.end.y + 'px;}'
+		);
+		// start animation
+		$('.tally_monster_sprite_container').css({
+			'animation-name': 'leftToRight',
+			'animation-duration': '4s',
+			'animation-iteration-count:': 1,
+			'-webkit-animation-iteration-count': ' 1',
+			'animation-direction': _direction,
+			'animation-fill-mode': 'forwards',
+			'display': 'block',
+			'opacity': 1
+		});
+		$('.tally_monster_sprite_container').css({
+			'transform': 'scale(' + _scale + ')'
+		});
+
+		// add event listener to check when done
+		$(".tally_monster_sprite_container")
+			.one("animationend webkitAnimationEnd oAnimationEnd MSAnimationEnd", function() {
+				console.log("animation done", tally_nearby_monsters[_mid]);
+				// code to execute after animation ends
+				if (prop(tally_nearby_monsters[_mid]) && tally_nearby_monsters[_mid].captured == 0)
+					MonsterAward.miss(_mid);
+			});
+
+		// add click handler
+		$(document).on('click', '.tally_monster_sprite', function() {
+			if (!prop(tally_nearby_monsters[_mid])) return;
+			// remove the click listener from the monster
+			$('.tally_monster_sprite').off("click");
+			// capture the monster
+			MonsterAward.capture(_mid);
+		});
+
+		// TESTING
+		//MonsterAward.capture(_mid);
+	}
+
+
 	/**
 	 *	Reset monster
 	 */
@@ -273,14 +353,14 @@ var MonsterAward = (function() {
 
 	// PUBLIC
 	return {
-		create: function(mid){
-			return create(mid);
+		miss:function(_mid){
+			miss(_mid);
 		},
-		display: function(mid){
-			return display(mid);
+		capture: function(_mid) {
+			capture(_mid);
 		},
-		current: getCurrent,
-		test: test,
-		testLaunch: testLaunch
+		launchFrom: function(_mid, _pos) {
+			launchFrom(_mid, _pos);
+		}
 	};
 }());

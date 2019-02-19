@@ -34,7 +34,7 @@ if (_mid == null || !tally_nearby_monsters[_mid])
 		$('.tally_monster_sprite_inner').css('background-image', 'url( ' + url + ')');
 
 		// let pos = "bottom";
-		// launchFrom(_mid, pos);
+		// MonsterAward.launchFrom(_mid, pos);
 
 		// temp: show growl
 		$.growl({
@@ -85,7 +85,7 @@ if (_mid == null || !tally_nearby_monsters[_mid])
 	function testLaunch(){
 		launch(test());
 		// testing
-		//capture(_mid);
+		//MonsterAward.capture(_mid);
 	}
 
 
@@ -132,7 +132,7 @@ if (_mid == null || !tally_nearby_monsters[_mid])
 		$('.tally_monster_sprite_inner').css('background-image', 'url( ' + url + ')');
 
 		let pos = "bottom";
-		launchFrom(mid, pos);
+		MonsterAward.launchFrom(mid, pos);
 
 		// temp: show growl
 		// $.growl({
@@ -142,83 +142,7 @@ if (_mid == null || !tally_nearby_monsters[_mid])
 
 	}
 
-	function launchFrom(_mid, _pos) {
-		console.log("⊙⊙⊙⊙! Monster.launchFrom()", _mid, _pos, tally_nearby_monsters[_mid]);
 
-		let _duration = ((pageData.browser.width / 15) + 3800) /*+ (tally_nearby_monsters[_mid].level * 100)*/ , // animation duration
-			_direction = "normal", // default animation direction
-			_scale = pageData.browser.width > 1200 ? 0.65 : 0.5; // increase scale w/larger screens
-
-		// set direction of monster (default is normal, i.e. right)
-		if (prop(tally_nearby_monsters[_mid].facing)) {
-			// set direction left
-			if (tally_nearby_monsters[_mid].facing == -1)
-				_direction = "reverse";
-			// pick random
-			else if (tally_nearby_monsters[_mid].facing == 0) {
-				let r = Math.random();
-				if (r < 0.5)
-					_direction = "reverse";
-			}
-		}
-
-		// set start / end positions
-		// need to add some randomness here
-		let coords = {
-			speed: 1,
-			start: {
-				x: -300,
-				y: (pageData.browser.height * 0.25) + (Math.random() * (pageData.browser.height * 0.5))
-			},
-			end: {
-				x: pageData.browser.width + 300,
-				y: pageData.browser.height / 2 - 200
-			}
-		};
-		//console.log("coords", coords);
-
-		// add animation keyframes
-		addKeyFrames(
-			'leftToRight',
-			'0%{ left: ' + coords.start.x + 'px; top: ' + coords.start.y + 'px;}' +
-			'100%{ left: ' + coords.end.x + 'px; top: ' + coords.end.y + 'px;}'
-		);
-		// start animation
-		$('.tally_monster_sprite_container').css({
-			'animation-name': 'leftToRight',
-			'animation-duration': '4s',
-			'animation-iteration-count:': 1,
-			'-webkit-animation-iteration-count': ' 1',
-			'animation-direction': _direction,
-			'animation-fill-mode': 'forwards',
-			'display': 'block',
-			'opacity': 1
-		});
-		$('.tally_monster_sprite_container').css({
-			'transform': 'scale(' + _scale + ')'
-		});
-
-		// add event listener to check when done
-		$(".tally_monster_sprite_container")
-			.one("animationend webkitAnimationEnd oAnimationEnd MSAnimationEnd", function() {
-				console.log("animation done", tally_nearby_monsters[_mid]);
-				// code to execute after animation ends
-				if (prop(tally_nearby_monsters[_mid]) && tally_nearby_monsters[_mid].captured == 0)
-					miss(_mid);
-			});
-
-		// add click handler
-		$(document).on('click', '.tally_monster_sprite', function() {
-			if (!prop(tally_nearby_monsters[_mid])) return;
-			// remove the click listener from the monster
-			$('.tally_monster_sprite').off("click");
-			// capture the monster
-			capture(_mid);
-		});
-
-		// TESTING
-		//capture(_mid);
-	}
 
 
 
@@ -308,6 +232,9 @@ if (_mid == null || !tally_nearby_monsters[_mid])
 		},
 		display: function(mid){
 			return display(mid);
+		},
+		saveAndPush: function(mid){
+			return saveAndPush(mid);
 		},
 		current: getCurrent,
 		test: test,
