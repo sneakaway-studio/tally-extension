@@ -21,12 +21,6 @@ var Sound = (function() {
 			"coin": [
 				"Pickup-coin1.wav",
 				"Pickup-coin2.wav"
-			],
-			"powerup": [
-				"powerup1.wav",
-				"powerup2.wav",
-				"powerup3.wav",
-				"powerup4.wav",
 			]
 		},
 		"awards": {
@@ -35,7 +29,13 @@ var Sound = (function() {
 		"monsters": {},
 		"songs": {},
 		"user": {
-			"click": "Pickup-coin2.wav"
+			"click": "Pickup-coin2.wav",
+		},
+		"powerups": {
+			"powerup1":"powerup1.wav",
+			"powerup2":"powerup2.wav",
+			"powerup3":"powerup3.wav",
+			"powerup4":"powerup4.wav",
 		}
 	};
 
@@ -96,7 +96,7 @@ var Sound = (function() {
 
 
 	/**
-	 *	Generic play function (called from others in this obj)
+	 *	(Old) Generic play function (called from others in this obj)
 	 */
 	function playOld(soundFile, delay = 0, volumeModifier = 0) {
 		//console.log("♪♪♪♪♪ Sound.play("+ soundFile +","+ delay +","+ volumeModifier +")");
@@ -110,9 +110,12 @@ var Sound = (function() {
 				audio.muted = false;
 				audio.play();
 			}, delay);
-		else
+		else{
 			audio.play();
+		}
 	}
+
+
 
 
 	/**
@@ -121,27 +124,28 @@ var Sound = (function() {
 	function play(soundFile, delay = 0, volumeModifier = 0) {
 		console.log("♪♪♪♪♪ Sound.play(" + soundFile + "," + delay + "," + volumeModifier + ")");
 
+		// reference to audio element
+		var audio = document.querySelector('#tally_audio');
 		// add source
-		var source = "<source id='sound_src' src=" + chrome.extension.getURL("assets/sounds/" + soundFile) + ">";
-		$('#tally_audio').append(source);
+		$('#tally_audio_source').attr("src",chrome.extension.getURL("assets/sounds/" + soundFile));
+		// set params
+		audio.volume = (tally_options.soundVolume || 0.3) + volumeModifier;
+		audio.muted = false;
+		audio.pause();
+		audio.load();
 
 		// create promise / attempt to play
-		var promise = document.querySelector('#tally_audio').play();
+		var promise = audio.play();
 		// if play failed
 		if (promise !== undefined) {
 			promise.then(_ => {
 				//console.log("Autoplay started!");
 			}).catch(error => {
 				//console.log("Autoplay prevented!");
-
-				document.querySelector('#tally_audio').pause();
-
-				// document.body.addEventListener("mousemove", function() {
-					document.querySelector('#tally_audio').play();
-				// });
+				audio.pause();
+				audio.play();
 			});
 		}
-
 	}
 
 
