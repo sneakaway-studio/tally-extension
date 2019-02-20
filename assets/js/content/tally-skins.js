@@ -122,7 +122,7 @@ window.Skin = (function() {
 	 *	Set the skin color based on the stage
 	 */
 	function setStage(n) {
-		console.log("Skin.setStage(" + n + ")");
+		if(DEBUG) console.log("Skin.setStage(" + n + ")");
 		skinStage = n, skinCat = "color", skinColor, skinAnim;
 		if (skinStage == 1)
 			skinColor = "yellow";
@@ -184,7 +184,7 @@ window.Skin = (function() {
 		}
 		// get object reference
 		obj = skins[skinCat][skinColor];
-		console.log(skinCat, obj);
+		if(DEBUG) console.log(skinCat, obj);
 
 		// if a solid color
 		if (skinCat == "color") {

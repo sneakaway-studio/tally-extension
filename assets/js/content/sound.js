@@ -2,42 +2,43 @@
 
 var Sound = (function() {
 	// PRIVATE
-	var sounds = {
-		"_tests": {
-			"blip": [
-				"Blip-select1.wav",
-				"Blip-select2.wav"
-			],
-			"bubble": [
-				"bubbles1.mp3"
-			],
-			"hit": [
-				"Hit-hurt1.wav",
-				"Hit-hurt2.wav"
-			],
-			"shoot": [
-				"Laser-shoot1.wav"
-			],
-			"coin": [
-				"Pickup-coin1.wav",
-				"Pickup-coin2.wav"
-			]
-		},
-		"awards": {
-			"monster": "Victory-3.mp3"
-		},
-		"monsters": {},
-		"songs": {},
-		"user": {
-			"click": "Pickup-coin2.wav",
-		},
-		"powerups": {
-			"powerup1":"powerup1.wav",
-			"powerup2":"powerup2.wav",
-			"powerup3":"powerup3.wav",
-			"powerup4":"powerup4.wav",
-		}
-	};
+	var DEBUG = false,
+		sounds = {
+			"_tests": {
+				"blip": [
+					"Blip-select1.wav",
+					"Blip-select2.wav"
+				],
+				"bubble": [
+					"bubbles1.mp3"
+				],
+				"hit": [
+					"Hit-hurt1.wav",
+					"Hit-hurt2.wav"
+				],
+				"shoot": [
+					"Laser-shoot1.wav"
+				],
+				"coin": [
+					"Pickup-coin1.wav",
+					"Pickup-coin2.wav"
+				]
+			},
+			"awards": {
+				"monster": "Victory-3.mp3"
+			},
+			"monsters": {},
+			"songs": {},
+			"user": {
+				"click": "Pickup-coin2.wav",
+			},
+			"powerups": {
+				"powerup1":"powerup1.wav",
+				"powerup2":"powerup2.wav",
+				"powerup3":"powerup3.wav",
+				"powerup4":"powerup4.wav",
+			}
+		};
 
 
 
@@ -59,7 +60,7 @@ var Sound = (function() {
 	 */
 	function playRandom(category, index, delay) {
 		if (!tally_options.playSounds) return;
-		//console.log("playRandom("+ category +","+ index +")");
+		//if(DEBUG) console.log("playRandom("+ category +","+ index +")");
 		var soundFile = "";
 		// if a specific category && index provided, then get that sound
 		if (prop(category) && prop(index))
@@ -87,7 +88,7 @@ var Sound = (function() {
 	function playMood(mood) {
 		if (!tally_options.playSounds || !prop(mood)) return;
 		if (mood == "award") mood = "happy";
-		console.log("Sound.playMood()", mood);
+		if(DEBUG) console.log("Sound.playMood()", mood);
 		let r = Math.ceil(Math.random() * moods[mood]);
 		let file = "tally/moods-v2/" + mood + "-" + r + "-2.mp3";
 		play(file, 150);
@@ -99,7 +100,7 @@ var Sound = (function() {
 	 *	(Old) Generic play function (called from others in this obj)
 	 */
 	function playOld(soundFile, delay = 0, volumeModifier = 0) {
-		//console.log("♪♪♪♪♪ Sound.play("+ soundFile +","+ delay +","+ volumeModifier +")");
+		//if(DEBUG) console.log("♪♪♪♪♪ Sound.play("+ soundFile +","+ delay +","+ volumeModifier +")");
 		// load/play sound
 		var audio = new Audio(chrome.extension.getURL("assets/sounds/" + soundFile));
 		audio.muted = true;
@@ -122,7 +123,7 @@ var Sound = (function() {
 	 *	Generic play function (called from others in this obj)
 	 */
 	function play(soundFile, delay = 0, volumeModifier = 0) {
-		console.log("♪♪♪♪♪ Sound.play(" + soundFile + "," + delay + "," + volumeModifier + ")");
+		if(DEBUG) console.log("♪♪♪♪♪ Sound.play(" + soundFile + "," + delay + "," + volumeModifier + ")");
 
 		// reference to audio element
 		var audio = document.querySelector('#tally_audio');
@@ -139,9 +140,9 @@ var Sound = (function() {
 		// if play failed
 		if (promise !== undefined) {
 			promise.then(_ => {
-				//console.log("Autoplay started!");
+				//if(DEBUG) console.log("Autoplay started!");
 			}).catch(error => {
-				//console.log("Autoplay prevented!");
+				//if(DEBUG) console.log("Autoplay prevented!");
 				audio.pause();
 				audio.play();
 			});

@@ -41,6 +41,13 @@ var objLength = function (obj) {
 	return Object.keys(obj).length;
 };
 
+/**
+ *	Return random index from array
+ */
+var randomArrayIndex = function (arr){
+    return Math.floor(Math.random() * arr.length);
+};
+
 
 /**
  *	Convert an array to an object with <key> as key
