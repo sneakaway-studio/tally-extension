@@ -8,7 +8,29 @@ var Monster = (function() {
 
 
 
-
+	/**
+	 *	Create a monster (and return its data)
+	 */
+	function create(_mid, _stage = 1) {
+		if (!prop(_mid) || !prop(_stage) || !prop(MonsterData.dataById[_mid])) return;
+		if (DEBUG) console.log('⊙!⊙⊙⊙ Monster.create()', "_mid="+_mid, "_stage="+_stage, MonsterData.dataById[_mid]);
+		let monster = {
+			"totalCaptured": 0,
+			"captured": 0,
+			"missed": 0,
+			"facing": MonsterData.dataById[_mid].facing,
+			"level": 1,
+			"mid": _mid,
+			"stage": _stage,
+			"slug": MonsterData.dataById[_mid].slug,
+			"updatedAt": Date.now()
+		};
+		// if it already exists then make it the number of captures +1
+		if (tally_user.monsters[_mid])
+			monster.totalCaptured = tally_user.monsters[_mid].captured;
+		//if (DEBUG) console.log('⊙!⊙⊙⊙ Monster.create()', _mid, monster,tally_user.monsters[_mid]);
+		return monster;
+	}
 
 
 
@@ -20,10 +42,12 @@ var Monster = (function() {
 		// don't launch them if game isn't running in full mode
 		if (tally_options.gameMode != "full") return;
 
-// testing
-if (_mid == null || !tally_nearby_monsters[_mid])
-	// add one
-	_mid = test();
+// // testing
+// if (_mid == null || !tally_nearby_monsters[_mid])
+// 	// add one
+// 	_mid = test();
+
+tally_nearby_monsters[_mid] = create(_mid,3);
 
 
 		if (DEBUG) console.log('⊙⊙⊙!⊙ Monster.display()', _mid, tally_nearby_monsters[_mid]);
@@ -89,29 +113,7 @@ if (_mid == null || !tally_nearby_monsters[_mid])
 	}
 
 
-	/**
-	 *	Create a monster
-	 */
-	function create(_mid, _stage = 1) {
-		if (!prop(_mid) || !prop(_stage) || !prop(MonsterData.dataById[_mid])) return;
-		if (DEBUG) console.log('⊙!⊙⊙⊙ Monster.create()', _mid, _stage, MonsterData.dataById[_mid]);
-		let monster = {
-			"totalCaptured": 0,
-			"captured": 0,
-			"missed": 0,
-			"facing": MonsterData.dataById[_mid].facing,
-			"level": 1,
-			"mid": _mid,
-			"stage": _stage,
-			"slug": MonsterData.dataById[_mid].slug,
-			"updatedAt": Date.now()
-		};
-		// if it already exists then make it the number of captures +1
-		if (tally_user.monsters[_mid])
-			monster.totalCaptured = tally_user.monsters[_mid].captured;
-		//if (DEBUG) console.log('⊙!⊙⊙⊙ Monster.create()', _mid, monster,tally_user.monsters[_mid]);
-		return monster;
-	}
+
 
 
 

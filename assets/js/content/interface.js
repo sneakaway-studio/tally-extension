@@ -16,7 +16,13 @@ $(function() {
 						"</audio>" +
 
 						"<div class='tally shadow-box-outer' id='battle-console'></div>" +
-				"</div>";
+						"<div class='tally' id='battle_projectile'></div>" +
+						"<div class='tally explosion_sprite_container' id='battle_explosion'>"+
+							"<div class='tally explosion_sprite'>" +
+								"<div class='tally explosion_sprite_inner'></div>" +
+							"</div>" +
+						"</div>" +
+					"</div>";
 		$('body').append(str);
 	}
 	addBaseHTML();

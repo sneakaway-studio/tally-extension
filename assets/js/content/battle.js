@@ -3,7 +3,7 @@
 /*  BATTLE
  ******************************************************************************/
 
-var Battle = (function() {
+window.Battle = (function() {
 	// PRIVATE
 
 	var _active = false,
@@ -14,38 +14,40 @@ var Battle = (function() {
 			"mostRecentAttack": "",
 			"mostRecentDamage": ""
 		};
+		function getDetails() {
+			return details;
+		}
+		// control state
+		function active(state) {
+			if (state != undefined && (state === true || state === false))
+				_active = state;
+			if (false) end();
+			return _active;
+		}
 
 
 
+// initiate battle
+// wait for user
 
 
-
-
-	function getDetails() {
-		return details;
+	function test() {
+		if (_active) return;
+		if (tally_nearby_monsters.length < 1) return;
+		let mid = randomObjKey(tally_nearby_monsters);
+		//start(mid);
+		start(224);
 	}
 
-	// control state
-	function active(state) {
-		if (state != undefined && (state === true || state === false))
-			_active = state;
-		if (false) end();
 
-		return _active;
-	}
+
 	// start battle
 	function start(mid) {
+		console.log("Battle.start()", mid);
 		if (_active) return;
 		active(true);
-
+		// intro sound
 		Sound.playCategory('powerups', 'powerup1');
-
-		// set details
-		details.mid = mid;
-		details.monsterName = MonsterData.dataById[mid].name + " monster";
-		details.mostRecentAttack = "";
-		details.mostRecentDamage = "";
-
 		// setup page for effects
 		BattleEffect.setup();
 
@@ -60,9 +62,15 @@ var Battle = (function() {
 		});
 		Thought.showString("Let's keep this tracker from getting our data!", "danger");
 
+		// set monster details
+		details.mid = mid;
+		details.monsterName = MonsterData.dataById[mid].name + " monster";
+		details.mostRecentAttack = "";
+		details.mostRecentDamage = "";
+		details.attacks = BattleAttack.returnRandomAttacks(3);
 
-
-		Monster.display();
+		// move monster into position
+		Monster.display(mid);
 		anime({
 			targets: '.tally_monster_sprite_container',
 			left: "60%",
@@ -77,52 +85,57 @@ var Battle = (function() {
 		BattleConsole.show();
 		setTimeout(function() {
 			BattleConsole.log("Battle started with " + details.monsterName + "!");
-			monsterTakeTurn();
+			monsterAttackTally();
 		}, 100);
-
-
-
-
 	}
 
-	function monsterTakeTurn() {
 
-		details.mostRecentAttack = "spambash attack";
-		details.mostRecentDamage = "24 health";
+		var randomDamages = [
+			"24 health",
+			"6 accuracy"
+		];
+		var randomDamages = [
+			"24 health",
+			"6 accuracy"
+		];
+
+
+	function monsterAttackTally(extraDelay=0) {
+
+		details.mostRecentAttack = randomObjKey(AttackData.data); //"spambash attack";
+		details.mostRecentDamage = randomArrayIndex(randomDamages);
 		// save as most recent attack
 
 		setTimeout(function() {
+			BattleAttack.fireProjectile("tally");
 			BattleConsole.log(details.monsterName + " used the " + details.mostRecentAttack + "!");
 			setTimeout(function() {
 				BattleConsole.log("Tally lost " + details.mostRecentDamage + ".");
 				setTimeout(function() {
-					BattleConsole.log("What will Tally do?");
+					BattleConsole.log("What will Tally do?","showBattleOptions");
 				}, _logDelay);
 			}, _logDelay);
-		}, _logDelay);
+		}, _logDelay + extraDelay);
 	}
 
-	function tallyTakeTurn() {
+	function tallyAttackMonster(extraDelay=0) {
+
+		details.mostRecentAttack = randomObjKey(AttackData.data); //"spambash attack";
+		details.mostRecentDamage = randomArrayIndex(randomDamages);
+
 		// show buttons
 		setTimeout(function() {
-			BattleConsole.log("Tally used the _____ attack!");
+			BattleAttack.fireProjectile("monster");
+			BattleConsole.log("Tally used the " + details.mostRecentAttack + "!");
 			setTimeout(function() {
-				BattleConsole.log(_monster + " monster received ______ in damages.");
-				monsterTakeTurn();
+				BattleConsole.log(details.monsterName + " lost " + randomArrayIndex(randomDamages) );
+				monsterAttackTally(1000);
 			}, _logDelay);
-		}, _logDelay);
+		}, _logDelay + extraDelay);
 	}
 
 
-	function test() {
-		if (!_active) {
-			start(681);
-			Skin.update("pattern", "plaidRed");
-		} else {
-			BattleConsole.log("Some more stuff for the console " + pageData.time);
-			Skin.random();
-		}
-	}
+
 
 
 
@@ -163,6 +176,12 @@ var Battle = (function() {
 		test: test,
 		active: function(state) {
 			return active(state);
+		},
+		monsterAttackTally: function(extraDelay) {
+			monsterAttackTally(extraDelay);
+		},
+		tallyAttackMonster: function(extraDelay) {
+			tallyAttackMonster(extraDelay);
 		},
 		details: details
 	};

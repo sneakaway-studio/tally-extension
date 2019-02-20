@@ -14,7 +14,6 @@ var MonsterCheck = (function() {
 	 *	Initial check function, refreshes nearby monsters from back end continues to next
 	 */
 	function check() {
-		console.log("MonsterCheck.check()");
 		// don't check if disabled
 		if (pageData.domain == "tallygame.net" ||
 			tally_options.gameMode === "disabled" ||
@@ -55,22 +54,22 @@ var MonsterCheck = (function() {
 	 *	Check the page for a monster
 	 */
 	function checkForTagMatches() {
-		if (DEBUG) console.log('⊙⊙⊙⊙⊙ MonsterCheck.checkForTagMatches()', pageData.tags);
+		//if (DEBUG) console.log('⊙⊙⊙⊙⊙ MonsterCheck.checkForTagMatches()', pageData.tags);
 		// loop through the tags on the page
 		for (var i = 0, l = pageData.tags.length; i < l; i++) {
 			// save reference
 			let tag = pageData.tags[i];
 			// if tag is in list
 			if (MonsterData.idsByTag[tag]) {
-				// save reference
+				// save reference to related monster ids
 				let arr = MonsterData.idsByTag[tag];
-				// the monster id that will be picked
-				let mid = 0;
 				// if there is at least one match...
 				if (arr.length > 0) {
 					// pick random monster id from list, this will be the page monster
-					mid = arr[Math.floor(Math.random() * arr.length)];
-					if (DEBUG) console.log('!⊙⊙⊙⊙ MonsterCheck.checkForTagMatches() -> #' + tag, "has", arr.length, 'MATCH(ES)', arr, "randomly selecting...", MonsterData.dataById[mid].slug);
+					let mid = arr[Math.floor(Math.random() * arr.length)];
+					if (DEBUG) console.log('!⊙⊙⊙⊙ MonsterCheck.checkForTagMatches() -> #' + tag,
+											"has", arr.length, 'MATCH(ES)', arr,
+											"randomly selecting...", MonsterData.dataById[mid].slug);
 					// we have identified a match, let's handle the monster
 					handleMatch(mid);
 					break;
@@ -86,9 +85,12 @@ var MonsterCheck = (function() {
 	 *	A monster has been matched to page tags, handle it
 	 */
 	function handleMatch(mid) {
+		//if (DEBUG) console.log('⊙⊙!⊙⊙ MonsterCheck.handleMatch()', MonsterData.dataById[mid].slug, "stage="+tally_nearby_monsters[mid].stage);
+
+		// will we launch the monster
 		let launchMonster = false;
 
-		// if the monster id does not exist in nearby
+		// if the monster id does not exist in nearby_monsters
 		if (!prop(tally_nearby_monsters[mid])) {
 			// add it
 			tally_nearby_monsters[mid] = Monster.create(mid);
@@ -102,15 +104,15 @@ var MonsterCheck = (function() {
 				// do nothing
 				Thought.showTrackerThought();
 			} else if (tally_nearby_monsters[mid].stage == 1) {
-				if (r < 0.2) {
+				if (r < 0.1) {
 					// go back to normal stage
 					tally_nearby_monsters[mid].stage = 0;
 					Thought.showString("Want to give feedback? Click the survey button in the top-right menu.", "question");
 				} else if (r < 0.4) {
-					// show them a random thought
+					// show them a random thought, but don't change stage
 					Thought.showTrackerThought();
 				} else if (r < 0.7) {
-					// show them a thought but don't change stage
+					// show them a random thought, but don't change stage
 					Thought.showThought(Thought.getThought(["monster", "far", 0]), true);
 				} else {
 					// or prompt stage 2
@@ -121,10 +123,10 @@ var MonsterCheck = (function() {
 				if (r < 0.2) {
 					// do nothing
 				} else if (r < 0.4) {
-					// do nothing
+					// show them a random thought, but don't change stage
 					Thought.showTrackerThought();
 				} else if (r < 0.7) {
-					// show them a thought
+					// show them a random thought, but don't change stage
 					Thought.showThought(Thought.getThought(["monster", "close", 0]), true);
 				} else {
 					// or prompt stage 3 - launch
@@ -135,7 +137,7 @@ var MonsterCheck = (function() {
 
 			//if (DEBUG) console.log('!!!!! MonsterCheck.handleMatch()', MonsterData.dataById[mid].slug, tally_nearby_monsters[mid]);
 		}
-		if (DEBUG) console.log('⊙⊙!⊙⊙ MonsterCheck.handleMatch()', MonsterData.dataById[mid].slug, "stage =", tally_nearby_monsters[mid].stage);
+		if (DEBUG) console.log('⊙⊙!⊙⊙ MonsterCheck.handleMatch()', MonsterData.dataById[mid].slug, "stage="+ tally_nearby_monsters[mid].stage);
 		// set skin
 		Skin.setStage(tally_nearby_monsters[mid].stage);
 		// save monsters

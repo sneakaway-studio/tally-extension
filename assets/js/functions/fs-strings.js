@@ -4,29 +4,6 @@
  ******************************************************************************/
 
 
-/**
- *	Typewriter effect
- */
-function typeWriter(ele, str, i, caller) {
-	//console.log(ele, str, i);
-	if (!document.getElementById(ele)) return;
-	if (i < str.length) {
-		document.getElementById(ele).innerHTML += str.charAt(i);
-		setTimeout(function() {
-			typeWriter(ele, str, ++i, caller);
-		}, 30);
-	}
- 	else {
-		if (caller == "BattleConsole") {
-			// add a little time at the end of each line
-			setTimeout(function() {
-				BattleConsole.active(false);
-				// text is done writing so color it
-				BattleConsole.colorText(ele);
-			}, 250);
-		}
-	}
-}
 
 
 /**

@@ -5,10 +5,11 @@
 
 var BattleConsole = (function() {
 	// PRIVATE
-	var stream, logId, _active, _queue;
+	var stream, logId, _active, _queue, _next;
 
 	// reset all vars
 	function reset() {
+		_next = "";
 		stream = "";
 		logId = 0;
 		_active = false;
@@ -38,7 +39,6 @@ var BattleConsole = (function() {
 	}
 	// show the console
 	function hide() {
-		//reset();
 		anime({
 			targets: '#battle-console',
 			top: "130%",
@@ -46,12 +46,7 @@ var BattleConsole = (function() {
 			duration: 1000,
 			easing: 'easeOutCubic'
 		});
-
 	}
-
-
-
-
 	// control state
 	function active(state) {
 		if (state != undefined && (state === true || state === false))
@@ -59,10 +54,12 @@ var BattleConsole = (function() {
 		return _active;
 	}
 	// log to the console
-	function log(str) {
+	function log(_str,next="") {
 		if (!Battle.active) return;
+		// add a "next" function
+		if (next) _next = next;
 		// add to end of _queue
-		_queue.push(str);
+		_queue.push(_str);
 		// start/make sure queueChecker is running
 		queueChecker();
 	}
@@ -88,17 +85,18 @@ var BattleConsole = (function() {
 	}
 
 	function writeNextInQueue(lineSpeed = 150) {
-		//console.log("writeNextInQueue() 1", str, _queue,_active);
+		console.log("writeNextInQueue()", _queue, _active);
 		// if currently active, stop
 		if (_active) return;
-		// set active
-		_active = true;
+		// set active state
+		active(true);
 		// remove first element in array
 		var str = _queue.shift();
-		//console.log("writeNextInQueue() 2", str, _queue,_active);
+		//if(DEBUG) console.log("writeNextInQueue()", str, _queue, _active);
 		// insert placeholder
-		logId++;
-		var ele = "<div class='tally tally_log_line'><span id='tally_log" + logId + "' class='tally_log_cursor'></span></div>";
+		var ele = "<div class='tally tally_log_line'>"+
+			  	  "<span id='tally_log" + (++logId) + "' class='tally_log_cursor'></span>"+
+				  "</div>";
 		$("#battle-console-stream").append(ele);
 		// make sure it exists first
 		if (!$('#battle-console-stream')[0]) return;
@@ -108,9 +106,79 @@ var BattleConsole = (function() {
 		}, 800);
 		// insert text
 		setTimeout(function() {
-			typeWriter("tally_log" + logId, str, 0, "BattleConsole");
+			typeWriter("tally_log" + logId, str, 0);
 		}, lineSpeed);
 		//console.log(stream);
+	}
+
+	function showBattleOptions(lineSpeed = 150) {
+		console.log("showBattleOptions() step 1", _active);
+		// if currently active, stop
+		if (_active) return;
+		// set active state
+		active(true);
+
+		var str = "<div class='battle-options-row'>"+
+					"<span class='battle-options'>tagstrike</span>"+
+					"<span class='battle-options'>spambash</span>"+
+					"<span class='battle-options'>popblock</span>"+
+					"<span class='battle-options-esc'>run [esc]</span></div>";
+
+
+		//console.log("showBattleOptions() step 2", str, _queue,_active);
+
+		// insert placeholder
+		var ele = "<div class='tally tally_log_line'>"+
+					  "<span id='tally_log" + (++logId) + "' class='tally_log_cursor'>"+
+					  	  str +
+					  "</span>"+
+				  "</div>";
+		$("#battle-console-stream").append(ele);
+		// make sure it exists first
+		if (!$('#battle-console-stream')[0]) return;
+		// scroll to new placeholder
+		$('#battle-console-stream').stop().animate({
+			scrollTop: $('#battle-console-stream')[0].scrollHeight
+		}, 800);
+		// release active state
+		active(false);
+	}
+
+	/**
+	 *	Typewriter effect
+	 */
+	function typeWriter(ele, str, i) {
+		//console.log(ele, str, i);
+		if (!document.getElementById(ele)) return;
+		if (i < str.length) {
+			document.getElementById(ele).innerHTML += str.charAt(i);
+			setTimeout(function() {
+				typeWriter(ele, str, ++i);
+			}, 30);
+		}
+	 	else {
+			BattleConsole.lineComplete(ele);
+		}
+	}
+
+	/**
+	 *	Called after each line is complete
+	 */
+	function lineComplete(ele){
+		// add a little time at the end of each line
+		setTimeout(function() {
+			active(false);
+			// text is done writing so color it
+			colorText(ele);
+			// if queue is empty and there is a next string
+			if (_queue.length < 1 && _next != ""){
+				if (_next == "showBattleOptions"){
+					//console.log(_next);
+					showBattleOptions();
+				}
+				_next = "";
+			}
+		}, 250);
 	}
 
 	function colorText(ele) {
@@ -133,12 +201,15 @@ var BattleConsole = (function() {
 	// PUBLIC
 	return {
 		show: show,
-		log: function(str) {
-			log(str);
-		},
 		hide: hide,
+		log: function(str,next) {
+			log(str,next);
+		},
 		active: function(state) {
 			return active(state);
+		},
+		lineComplete: function(ele) {
+			lineComplete(ele);
 		},
 		colorText: function(ele) {
 			colorText(ele);

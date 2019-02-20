@@ -2,6 +2,7 @@
 ******************************************************************************/
 
 .tally_monster_sprite_container {
+    box-sizing: border-box;
     top: -500px;
     left: 60%;
     opacity: 0;

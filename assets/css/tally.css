@@ -22,7 +22,7 @@
 /* TALLY CHARACTER */
 #tally_character, #tally_thought_bubble {
     position: absolute;
-    z-index: 9999999999999;
+    z-index: 2147483646;
 }
 #tally_character {
     font: 14px/ 20px Arial;

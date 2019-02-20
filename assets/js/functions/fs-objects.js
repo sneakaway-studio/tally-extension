@@ -45,7 +45,7 @@ var objLength = function (obj) {
  *	Return random index from array
  */
 var randomArrayIndex = function (arr){
-    return Math.floor(Math.random() * arr.length);
+    return arr[Math.floor(Math.random() * arr.length)];
 };
 
 
