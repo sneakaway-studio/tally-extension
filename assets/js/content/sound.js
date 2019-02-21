@@ -1,6 +1,6 @@
 "use strict";
 
-var Sound = (function() {
+window.Sound = (function() {
 	// PRIVATE
 	var DEBUG = false,
 		sounds = {
@@ -37,6 +37,10 @@ var Sound = (function() {
 				"powerup2":"powerup2.wav",
 				"powerup3":"powerup3.wav",
 				"powerup4":"powerup4.wav",
+				"powerup5":"powerup5.wav",
+				"powerup6":"powerup6.wav",
+				"powerup7":"powerup7.wav",
+				"powerup8":"powerup8.wav",
 			}
 		};
 
@@ -164,7 +168,7 @@ var Sound = (function() {
 		},
 		playMood: function(mood) {
 			playMood(mood);
-		}
-
+		},
+		sounds:sounds
 	};
 })();
