@@ -17,30 +17,36 @@
 
 
 #battle_projectile {
-    display: none;
-    width: 20px;
-    height: 20px;
-    position: absolute;
+    display: block;
+    opacity: 0;
+    width: 50px;
+    height: 50px;
+    position: fixed;
     top: 25%;
     left: 25%;
     border-radius: 50%;
     background-color: #d32cf1;
+    background: url("assets/img/number-ball.gif") center center no-repeat;
     z-index: 2147483647;
 }
 #battle_explosion {
-
+    /* display: block;
+    opacity: 0;
+    width: 250px;
+    height: 250px;
+    position: fixed; */
 }
 
 
 
 .explosion_sprite_container {
-    top: 200px;
-    left: 30%;
-    opacity: 1;
+    /* top: 200px;
+    left: 30%; */
+    opacity: 0;
     position: fixed;
     z-index: 99999999999999;
-    height: 200px;
-    width: 200px;
+    height: 250px;
+    width: 250px;
     /* background-color: #900; */
 }
 .explosion_sprite {
@@ -60,7 +66,7 @@
 }
 @keyframes explosion_keyframes {
     100% {
-        background-position: -1600px;
+        background-position: -2000px;
     }
 }
 

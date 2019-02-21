@@ -7,8 +7,8 @@ var BattleEffect = (function() {
 	// PRIVATE
 	let source, // page source for rumbles
 		nodes,  // node string for rumbles
-		n = "*"; // node elements for rumbles
-
+		n = "*", // node elements for rumbles
+		monsterPos, tallyPos;
 
 	function setup(){
 		setupRumble();
@@ -54,7 +54,7 @@ var BattleEffect = (function() {
 			//console.log(n);
 		}
 	}
-	function rumble(degree = "medium") {
+	function rumble(degree="medium", soundFile="explosions/explode.mp3") {
 		// make sure we are ready to rumble!
 		if (source == null || nodes == null)
 			setupRumble();
@@ -71,7 +71,7 @@ var BattleEffect = (function() {
 		if (degree == "large") degreeIndex = 2;
 
 		// play sound
-		Sound.playFile("explosions/explode.mp3", 0, soundDegrees[degreeIndex]);
+		Sound.playFile(soundFile, 0, soundDegrees[degreeIndex]);
 		// display background
 		//$("#battle-background").text(source).removeClass("battle-background-clear");
 		// rumble page elements
@@ -87,12 +87,136 @@ var BattleEffect = (function() {
 
 
 
+	/**
+	 *	Get center position of object
+	 */
+	function getCenterPosition(ele) {
+		let pos = {
+			"left": $(ele).offset().left + $(ele).width() / 2,
+			"top": $(ele).offset().top + $(ele).height() / 2
+		};
+		console.log("getCenterPosition()", ele, $(ele).offset(), pos, $(document).scrollTop());
+		return pos;
+	}
+	/**
+	 *	Set center position of object to new pos
+	 */
+	function setCenterPosition(ele, newPos) {
+		// show it
+		$(ele).css("opacity", 1);
+		// set left/top, adjust by width/height
+		$(ele).offset({"left": newPos.left - $(ele).width() / 2});
+		$(ele).offset({"top": newPos.top - $(ele).height() / 2});
+		console.log("setCenterPosition()", ele, newPos);
+	}
+
+
+
+	function fireProjectile(at,rumble=false) {
+		console.log("fireProjectile() > ", at);
+
+		let end, origin;
+
+		// update positions
+		if (monsterPos == null || tallyPos == null){
+			monsterPos = getCenterPosition(".tally_monster_sprite");
+			tallyPos = getCenterPosition("#tally_character");
+		}
+		//console.log(tallyPos, monsterPos);
+
+		// if firing from monster > Tally
+		if (at == "tally") {
+			origin = monsterPos;
+			end = tallyPos;
+		}
+		// else firing from Tally > monster
+		else {
+			origin = tallyPos;
+			end = monsterPos;
+		}
+		console.log("origin=",origin,"end=",end);
+
+		// set projectile to origin
+		setCenterPosition('#battle_projectile', origin);
+		// animate projectile
+		anime({
+			targets: '#battle_projectile',
+			left: [origin.left + "px", end.left + "px"],
+			top: [origin.top + "px", end.top + "px"],
+			scale: [0.5,1],
+			rotate: [0,350],
+			elasticity: 0,
+			duration: 1000,
+			easing: 'easeInOutSine',
+			// update: function(anim) {
+			// 	console.log(anim.progress, anim.animations[0].currentValue, anim.animations[1].currentValue);
+			// },
+			complete: function(anim) {
+				console.log(anim.progress, anim.animations[0].currentValue, anim.animations[1].currentValue);
+				// hide projectile
+				$('#battle_projectile').css("opacity", 0);
+				// show explosion
+				showExplosion(null);
+				if (rumble)
+					BattleEffect.rumble("medium");
+			}
+		});
+	}
+
+	let explosions = [
+		'clouds-blue-red-stroke.png',
+		'clouds-ltblue-blue-stroke.png',
+		'clouds-orange-red-stroke.png',
+		//'clouds-red-stroke.png',
+		'squares-green-pink.png',
+		'squares-green.png',
+		'squares-pink.png',
+		'squares-red-orange.png',
+		'squares-yellow-red-stroke.png',
+		'stars-pink.png',
+		'water-blue.png',
+	];
+
+	function showExplosion(pos,rumble=false) {
+		if (rumble)
+			rumble("medium","powerups/"+randomObjProperty(Sound.sounds.powerups));
+
+		// if no position received
+		if (pos == null)
+			pos = getCenterPosition('#battle_projectile');
+		// set position
+		setCenterPosition('.explosion_sprite_container', pos);
+
+		// reference to image file
+		var url = chrome.extension.getURL('assets/img/explosions/' + randomArrayIndex(explosions));
+		// set content
+		$('.explosion_sprite_inner').css('background-image', 'url("' + url + '")');
+
+		setTimeout(function() {
+			$('.explosion_sprite_container').css("opacity", 0);
+		}, 1500);
+
+	}
+
+
+
+
+
 
 	// PUBLIC
 	return {
         setup: setup,
-		rumble: function(degree) {
-			rumble(degree);
+		rumble: function(degree,soundFile) {
+			rumble(degree,soundFile);
 		},
+		fireProjectile: function(at,rumble) {
+			fireProjectile(at,rumble);
+		},
+		showExplosion: function(pos,rumble) {
+			showExplosion(pos,rumble);
+		},
+		getCenterPosition: function(ele){
+			return getCenterPosition(ele);
+		}
 	};
 })();

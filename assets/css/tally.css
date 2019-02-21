@@ -11,6 +11,15 @@
 
 
 
+ .tally_stats {
+     background: url("assets/img/tally-stats-test.png") center center no-repeat;
+     position: absolute;
+     z-index: 99999999999999;
+     width:163px;
+     height:46px;
+     top:240px;
+     left:30px;
+ }
 
 
 

@@ -60,14 +60,14 @@ tally_nearby_monsters[_mid] = create(_mid,3);
 		// let pos = "bottom";
 		// MonsterAward.launchFrom(_mid, pos);
 
-		// temp: show growl
-		$.growl({
-			title: "LAUNCHING MONSTER!!!",
-			message: "MONSTER: " + MonsterData.dataById[_mid].name + " [" + _mid + "] "
-		});
+		// // temp: show growl
+		// $.growl({
+		// 	title: "LAUNCHING MONSTER!!!",
+		// 	message: "MONSTER: " + MonsterData.dataById[_mid].name + " [" + _mid + "] "
+		// });
 
 		// set scale based on screen size
-		let _scale = pageData.browser.width > 1200 ? 0.75 : 0.65;
+		let _scale = pageData.browser.width > 1200 ? 0.8 : 0.7;
 		$('.tally_monster_sprite_container').css({
 			'transform': 'scale(' + _scale + ')'
 		});

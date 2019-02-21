@@ -33,7 +33,16 @@
 }
 
 
-
+.monster_stats {
+    background: url("assets/img/monster-stats-test.png") center center no-repeat;
+    position: absolute;
+    z-index: 99999999999999;
+    width:163px;
+    height:46px;
+    top:420px;
+    left:130px;
+    transform: scale(1.2);
+}
 
 
 

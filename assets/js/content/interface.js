@@ -9,6 +9,9 @@ $(function() {
 							"<div class='tally tally_monster_sprite'>" +
 								"<div class='tally tally_monster_sprite_inner'></div>" +
 							"</div>" +
+							"<div class='tally monster_stats'>" +
+								"<div class='tally'></div>" +
+							"</div>" +
 						"</div>" +
 						"<div class='tally tally_award_wrapper'></div>" +
 						"<audio class='tally' id='tally_audio' muted='muted'>"+
@@ -17,7 +20,7 @@ $(function() {
 
 						"<div class='tally shadow-box-outer' id='battle-console'></div>" +
 						"<div class='tally' id='battle_projectile'></div>" +
-						"<div class='tally explosion_sprite_container' id='battle_explosion'>"+
+						"<div class='tally explosion_sprite_container'>"+
 							"<div class='tally explosion_sprite'>" +
 								"<div class='tally explosion_sprite_inner'></div>" +
 							"</div>" +

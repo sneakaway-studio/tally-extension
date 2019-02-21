@@ -101,6 +101,9 @@ window.Tally = (function() {
 						"<span class='tally tally_eye tally_eye_right'>" +
 							"<span class='tally tally_eye_pupil'></span></span></span>" +
 				"</div>" +
+				"<div class='tally tally_stats'>" +
+					"<div class='tally'></div>" +
+				"</div>" +
 			"</div>";
 		$('#tally_wrapper').append(str);
 
@@ -257,13 +260,9 @@ Mousetrap.bind(k + ' e', function() { Effect.explode(); });
 Mousetrap.bind(k + ' t', function() { Thought.random(); });
 Mousetrap.bind(k + ' w', function() { Skin.random(); });
 Mousetrap.bind(k + ' 7', function() {
-	// BattleConsole.log("The monster attacked!");
-	// BattleAttack.fireProjectile("tally");
-	Battle.tallyAttackMonster();
+	Battle.monsterAttackTally();
 });
 Mousetrap.bind(k + ' 8', function() { BattleConsole.log("What will Tally do?","showBattleOptions"); });
 Mousetrap.bind(k + ' 9', function() {
-	// BattleConsole.log("Tally attacked!");
-	// BattleAttack.fireProjectile("monster");
-	Battle.monsterAttackTally();
+	Battle.tallyAttackMonster();
 });
