@@ -35,8 +35,32 @@ window.Battle = (function() {
 		if (_active) return;
 		if (tally_nearby_monsters.length < 1) return;
 		let mid = randomObjKey(tally_nearby_monsters);
-		start(mid);
-		//start(224);
+		//start(mid);
+		var r = Math.random();
+		if (r < .1)
+			start(6);
+		else if (r < .2)
+			start(63);
+		else if (r < .25)
+			start(86);
+		else if (r < .3)
+			start(89);
+		else if (r < .35)
+			start(110);
+		else if (r < .4)
+			start(224);
+		else if (r < .5)
+			start(283);
+		else if (r < .6)
+			start(594);
+		else if (r < .7)
+			start(632);
+		else if (r < .8)
+			start(637);
+		else if (r < .85)
+			start(653);
+		else if (r < 1)
+			start(681);
 	}
 
 
