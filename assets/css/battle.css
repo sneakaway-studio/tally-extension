@@ -26,7 +26,7 @@
     left: 25%;
     border-radius: 50%;
     background-color: #d32cf1;
-    background: url("assets/img/number-ball.gif") center center no-repeat;
+    background: url("chrome-extension://__MSG_@@extension_id__/assets/img/number-ball.gif") center center no-repeat;
     z-index: 2147483647;
 }
 #battle_explosion {

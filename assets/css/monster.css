@@ -34,7 +34,7 @@
 
 
 .monster_stats {
-    background: url("assets/img/monster-stats-test.png") center center no-repeat;
+    background: url('chrome-extension://__MSG_@@extension_id__/assets/img/monster-stats-test.png') center center no-repeat;
     position: absolute;
     z-index: 99999999999999;
     width:163px;

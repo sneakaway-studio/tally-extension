@@ -97,6 +97,7 @@
     "web_accessible_resources": [
         "*.svg","*.png",
         "*.jpg","*.JPG",
+        "*.gif","*.GIF",
         "/assets/sounds/*"
     ],
     "content_security_policy": "script-src 'self' https://ssl.google-analytics.com; object-src 'self'"

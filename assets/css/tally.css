@@ -12,7 +12,7 @@
 
 
  .tally_stats {
-     background: url("assets/img/tally-stats-test.png") center center no-repeat;
+     background: url("chrome-extension://__MSG_@@extension_id__/assets/img/tally-stats-test.png") center center no-repeat;
      position: absolute;
      z-index: 99999999999999;
      width:163px;
@@ -64,6 +64,7 @@
     -webkit-box-sizing: border-box;
 }
 svg#tally-svg {
+    background: none;
     width: 223px;
     height: 222px;
     position: absolute;
