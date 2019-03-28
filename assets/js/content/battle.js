@@ -109,6 +109,7 @@ window.Battle = (function() {
 		BattleConsole.show();
 		setTimeout(function() {
 			BattleConsole.log("Battle started with " + details.monsterName + "!");
+			// owen change to tally attack option first
 			monsterAttackTally();
 		}, 100);
 	}
