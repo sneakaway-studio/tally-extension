@@ -154,7 +154,7 @@ var BattleEffect = (function() {
 			complete: function(anim) {
 				console.log(anim.progress, anim.animations[0].currentValue, anim.animations[1].currentValue);
 				// hide projectile
-				$('#battle_projectile').css("opacity", 0);
+				$('#battle_projectile').css({"display":"none","opacity": 0});
 				// show explosion
 				showExplosion(null);
 				if (rumble)
