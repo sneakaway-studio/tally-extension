@@ -9,7 +9,12 @@ var BattleMath = (function() {
 
 
 	function updateHealth(attackObj) {
+		// get the latest stats
+		var tallyStats = Tally.stats();
+		// do stuff
 
+		// if you pass a stats object it will update
+		Tally.stats(tallyStats);
 	}
 
 	function updateAttack(attackObj) {

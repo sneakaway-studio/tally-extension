@@ -135,6 +135,7 @@ window.Sound = (function() {
 		$('#tally_audio_source').attr("src",chrome.extension.getURL("assets/sounds/" + soundFile));
 		// set params
 		audio.volume = (tally_options.soundVolume || 0.3) + volumeModifier;
+		if (audio.volume < 0) audio.volume = 0;
 		audio.muted = false;
 		audio.pause();
 		audio.load();

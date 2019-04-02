@@ -214,7 +214,7 @@ window.Tally = (function() {
 	}
 
 
-	var stats = {
+	var tallyResetStats = {
 		"health":100,
 		"attack":100,
 		"stamina":100,
@@ -223,12 +223,35 @@ window.Tally = (function() {
 		"defense":100,
 	};
 
+	var tallyStats = {
+		"health":100,
+		"attack":100,
+		"stamina":100,
+		"accuracy":100,
+		"evasion":100,
+		"defense":100,
+	};
 
+	function stats(_stats){
+		if (_stats && _stats.health){
+			// update stats
+			tallyStats = _stats;
+		}
+		return tallyStats;
+	}
+
+	function resetStatsForBattle (){
+		tallyStats = tallyResetStats;
+	}
 
 
 
 	// PUBLIC
 	return {
+		resetStatsForBattle: resetStatsForBattle,
+		stats: function(data){
+			return stats(data);
+		},
 		moveEye: function(which, how, event) {
 			moveEye(which, how, event);
 		},
@@ -250,19 +273,15 @@ Mousetrap.bind(k + ' p', function() { window.open('https://tallygame.net/profile
 Mousetrap.bind(k + ' s', function() {
 	chrome.runtime.sendMessage({ 'action': 'openPage', 'url': chrome.extension.getURL('assets/pages/startScreen/startScreen.html') });
 });
+Mousetrap.bind(k + ' t', function() { Thought.random(); });
+Mousetrap.bind(k + ' w', function() { Skin.random(); });
 Mousetrap.bind(k + ' m', function() { Monster.testLaunch(); });
 Mousetrap.bind(k + ' b', function() { Battle.test(); });
 Mousetrap.bind(k + ' 0', function() { BattleEffect.rumble("small"); });
 Mousetrap.bind(k + ' 1', function() { BattleEffect.rumble("medium"); });
 Mousetrap.bind(k + ' 2', function() { BattleEffect.rumble("large"); });
+Mousetrap.bind(k + ' 7', function() { Battle.monsterAttackTally(); });
+Mousetrap.bind(k + ' 8', function() { BattleConsole.log("What will Tally do?","showBattleOptions"); });
+Mousetrap.bind(k + ' 9', function() { Battle.tallyAttackMonster(); });
 Mousetrap.bind(k + ' q', function() { Battle.end(); });
 Mousetrap.bind(k + ' e', function() { Effect.explode(); });
-Mousetrap.bind(k + ' t', function() { Thought.random(); });
-Mousetrap.bind(k + ' w', function() { Skin.random(); });
-Mousetrap.bind(k + ' 7', function() {
-	Battle.monsterAttackTally();
-});
-Mousetrap.bind(k + ' 8', function() { BattleConsole.log("What will Tally do?","showBattleOptions"); });
-Mousetrap.bind(k + ' 9', function() {
-	Battle.tallyAttackMonster();
-});
