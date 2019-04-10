@@ -31,7 +31,7 @@ var BattleConsole = (function() {
 		// move it into position
 		anime({
 			targets: '#battle-console',
-			top: "70%",
+			top: "75%",
 			elasticity: 0,
 			duration: 1000,
 			easing: 'easeOutCubic'
@@ -85,7 +85,7 @@ var BattleConsole = (function() {
 	}
 
 	function writeNextInQueue(lineSpeed = 150) {
-		console.log("writeNextInQueue()", _queue, _active);
+		//if(DEBUG) console.log("writeNextInQueue()", _queue, _active);
 		// if currently active, stop
 		if (_active) return;
 		// set active state
@@ -112,17 +112,20 @@ var BattleConsole = (function() {
 	}
 
 	function showBattleOptions(lineSpeed = 150) {
-		console.log("showBattleOptions() step 1", _active);
+		//console.log("showBattleOptions() step 1", _active);
 		// if currently active, stop
 		if (_active) return;
 		// set active state
 		active(true);
 
-		var str = "<div class='battle-options-row'>"+
-					"<span class='battle-options'>tagstrike</span>"+
-					"<span class='battle-options'>spambash</span>"+
-					"<span class='battle-options'>popblock</span>"+
-					"<span class='battle-options-esc'>run [esc]</span></div>";
+		var tallyAttacks = Battle.details.tallyAttacks;
+
+		var str = "<div class='battle-options-row'>";
+		for(var key in tallyAttacks){
+			console.log(tallyAttacks[key]);
+			str += "<span class='battle-options'>"+ tallyAttacks[key].name +"</span>";
+		}
+		str += "<span class='battle-options-esc'>run [esc]</span></div>";
 
 
 		//console.log("showBattleOptions() step 2", str, _queue,_active);

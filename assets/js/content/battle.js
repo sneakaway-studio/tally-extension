@@ -11,12 +11,11 @@ window.Battle = (function() {
 		details = {
 			"mid": null,
 			"monsterName": "",
+			"tallyAttacks": getRandomAttacks(3),
+			"monsterAttacks": getRandomAttacks(4),
 			"mostRecentAttack": "",
 			"mostRecentDamage": ""
 		};
-		function getDetails() {
-			return details;
-		}
 		// control state
 		function active(state) {
 			if (state != undefined && (state === true || state === false))
@@ -37,37 +36,25 @@ window.Battle = (function() {
 		let mid = randomObjKey(tally_nearby_monsters);
 		//start(mid);
 		var r = Math.random();
-		if (r < 0.1)
-			start(6);
-		else if (r < 0.2)
-			start(63);
-		else if (r < 0.25)
-			start(86);
-		else if (r < 0.3)
-			start(89);
-		else if (r < 0.35)
-			start(110);
-		else if (r < 0.4)
-			start(224);
-		else if (r < 0.5)
-			start(283);
-		else if (r < 0.6)
-			start(594);
-		else if (r < 0.7)
-			start(632);
-		else if (r < 0.8)
-			start(637);
-		else if (r < 0.85)
-			start(653);
-		else if (r < 1)
-			start(681);
+			 if (r < 0.1) start(6);
+		else if (r < 0.2) start(63);
+		else if (r < 0.25) start(86);
+		else if (r < 0.3) start(89);
+		else if (r < 0.35) start(110);
+		else if (r < 0.4) start(224);
+		else if (r < 0.5) start(283);
+		else if (r < 0.6) start(594);
+		else if (r < 0.7) start(632);
+		else if (r < 0.8) start(637);
+		else if (r < 0.85) start(653);
+		else if (r < 1) start(681);
 	}
 
 
 
 	// start battle
 	function start(mid) {
-		console.log("Battle.start()", mid);
+		//console.log("Battle.start()", mid);
 		if (_active) return;
 		active(true);
 		// intro sound
@@ -78,7 +65,7 @@ window.Battle = (function() {
 		// move tally into position
 		anime({
 			targets: '#tally_character',
-			left: "25%",
+			left: "22%",
 			top: "25%",
 			elasticity: 0,
 			duration: 1000,
@@ -97,8 +84,8 @@ window.Battle = (function() {
 		Monster.display(mid);
 		anime({
 			targets: '.tally_monster_sprite_container',
-			left: "55%",
-			top: "8%",
+			left: "58%",
+			top: "18%",
 			opacity:1,
 			elasticity: 0,
 			duration: 1000,
@@ -109,8 +96,8 @@ window.Battle = (function() {
 		BattleConsole.show();
 		setTimeout(function() {
 			BattleConsole.log("Battle started with " + details.monsterName + "!");
-			// owen change to tally attack option first
-			monsterAttackTally();
+			// wait for tally to attack first ...
+			BattleConsole.log("What will Tally do?","showBattleOptions");
 		}, 100);
 	}
 
@@ -130,25 +117,33 @@ window.Battle = (function() {
 
 
 
-	function selectRandomAttack(){
-		var attack = randomObjKey(AttackData.data);
+	function getRandomAttacks(num){
+		var attack, attacks = {};
+		for(var i=0; i<num; i++){
+			attack = randomObjProperty(AttackData.data);
+			attacks[attack.name] = attack;
+		}
+		return attacks;
 	}
+
+
 
 
 
 	function monsterAttackTally(extraDelay=0) {
 
-		details.mostRecentAttack = selectRandomAttack;
+		details.mostRecentAttack = randomObjProperty(details.monsterAttacks);
 		details.mostRecentDamage = randomArrayIndex(randomDamageOutcomes);
+		//console.log("details",details);
 
 		setTimeout(function() {
 
 			// fire projectile at tally
 			if (details.mostRecentAttack.type == "attack"){
-				BattleEffect.fireProjectile("tally",true);
+				BattleEffect.fireProjectile("tally","small");
 			} else if (details.mostRecentAttack.type == "defense"){
 				// show explosion on monster
-				BattleEffect.showExplosion(BattleEffect.getCenterPosition(".tally_monster_sprite"),false);
+				BattleEffect.showExplosion(Core.getCenterPosition(".tally_monster_sprite"),false);
 			}
 
 			BattleConsole.log(details.monsterName + " used the " + details.mostRecentAttack.name + " " + details.mostRecentAttack.type + "!");
@@ -163,17 +158,17 @@ window.Battle = (function() {
 
 	function tallyAttackMonster(extraDelay=0) {
 
-		details.mostRecentAttack = selectRandomAttack;
+		details.mostRecentAttack = randomObjProperty(details.tallyAttacks);
 		details.mostRecentDamage = randomArrayIndex(randomDamageOutcomes);
 
 		// show buttons
 		setTimeout(function() {
 			// fire projectile at monster
 			if (details.mostRecentAttack.type == "attack"){
-				BattleEffect.fireProjectile("monster",true);
+				BattleEffect.fireProjectile("monster","small");
 			} else if (details.mostRecentAttack.type == "defense"){
 				// show explosion on Tally
-				BattleEffect.showExplosion(BattleEffect.getCenterPosition("#tally_character"),false);
+				BattleEffect.showExplosion(Core.getCenterPosition("#tally_character"),false);
 			}
 
 			BattleConsole.log("Tally used the " + details.mostRecentAttack.name + " " + details.mostRecentAttack.type + "!");
@@ -192,10 +187,11 @@ window.Battle = (function() {
 
 	// end battle
 	function end() {
-		BattleConsole.hide();
+		if (!_active) return;
 		_active = false;
-
-		// move tally back
+		// hide console
+		BattleConsole.hide();
+		// put tally back
 		anime({
 			targets: '#tally_character',
 			left: "0px",
@@ -204,10 +200,11 @@ window.Battle = (function() {
 			duration: 1000,
 		});
 		Thought.hide();
+		// hide monster
 		anime({
 			targets: '.tally_monster_sprite_container',
 			top: "-500px",
-			opacity:1,
+			opacity:0,
 			elasticity: 0,
 			duration: 1000,
 		});

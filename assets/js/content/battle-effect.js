@@ -6,11 +6,11 @@
 var BattleEffect = (function() {
 	// PRIVATE
 	let source, // page source for rumbles
-		nodes,  // node string for rumbles
+		nodes, // node string for rumbles
 		n = "*", // node elements for rumbles
 		monsterPos, tallyPos;
 
-	function setup(){
+	function setup() {
 		setupRumble();
 	}
 
@@ -48,13 +48,14 @@ var BattleEffect = (function() {
 			nodes = nodes.filter(function(el) {
 				return el != null;
 			});
-			console.log("final node count: " + nodes.length);
+			//console.log("final node count: " + nodes.length);
 			// format for selection
 			n = nodes.join(', ');
 			//console.log(n);
 		}
 	}
-	function rumble(degree="medium", soundFile="explosions/explode.mp3") {
+
+	function rumble(degree = "medium", soundFile = "explosions/explode.mp3") {
 		// make sure we are ready to rumble!
 		if (source == null || nodes == null)
 			setupRumble();
@@ -85,43 +86,16 @@ var BattleEffect = (function() {
 
 
 
-
-
-	/**
-	 *	Get center position of object
-	 */
-	function getCenterPosition(ele) {
-		let pos = {
-			"left": $(ele).offset().left + $(ele).width() / 2,
-			"top": $(ele).offset().top + $(ele).height() / 2
-		};
-		console.log("getCenterPosition()", ele, $(ele).offset(), pos, $(document).scrollTop());
-		return pos;
-	}
-	/**
-	 *	Set center position of object to new pos
-	 */
-	function setCenterPosition(ele, newPos) {
-		// show it
-		$(ele).css("opacity", 1);
-		// set left/top, adjust by width/height
-		$(ele).offset({"left": newPos.left - $(ele).width() / 2});
-		$(ele).offset({"top": newPos.top - $(ele).height() / 2});
-		console.log("setCenterPosition()", ele, newPos);
-	}
-
-
-
-	function fireProjectile(at,rumble=false) {
-		console.log("fireProjectile() > ", at);
+	function fireProjectile(at, rumble = "") {
+		console.log("fireProjectile() > ", at, rumble);
 
 		let end, origin;
 
 		// update positions
-		if (monsterPos == null || tallyPos == null){
-			monsterPos = getCenterPosition(".tally_monster_sprite");
-			tallyPos = getCenterPosition("#tally_character");
-		}
+		//if (monsterPos == null || tallyPos == null) {
+			monsterPos = Core.getCenterPosition(".tally_monster_sprite");
+			tallyPos = Core.getCenterPosition("#tally_character");
+		//}
 		//console.log(tallyPos, monsterPos);
 
 		// if firing from monster > Tally
@@ -134,17 +108,17 @@ var BattleEffect = (function() {
 			origin = tallyPos;
 			end = monsterPos;
 		}
-		console.log("origin=",origin,"end=",end);
-
-		// set projectile to origin
-		setCenterPosition('#battle_projectile', origin);
+		console.log("origin=", origin, "end=", end);
+		// set projectile to origin and show it
+		Core.setCenterPosition('#battle_projectile', origin);
+		Core.showElement('#battle_projectile');
 		// animate projectile
 		anime({
 			targets: '#battle_projectile',
 			left: [origin.left + "px", end.left + "px"],
 			top: [origin.top + "px", end.top + "px"],
-			scale: [0.5,1],
-			rotate: [0,350],
+			scale: [0.5, 1],
+			rotate: [0, 350],
 			elasticity: 0,
 			duration: 1000,
 			easing: 'easeInOutSine',
@@ -152,13 +126,12 @@ var BattleEffect = (function() {
 			// 	console.log(anim.progress, anim.animations[0].currentValue, anim.animations[1].currentValue);
 			// },
 			complete: function(anim) {
-				console.log(anim.progress, anim.animations[0].currentValue, anim.animations[1].currentValue);
-				// hide projectile
-				$('#battle_projectile').css({"display":"none","opacity": 0});
+				console.log("fireProjectile() complete", anim.progress, anim.animations[0].currentValue, anim.animations[1].currentValue);
+				Core.hideElement('#battle_projectile');
 				// show explosion
-				showExplosion(null);
-				if (rumble)
-					BattleEffect.rumble("medium");
+				showExplosion(end);
+				if (rumble != "")
+					BattleEffect.rumble(rumble);
 			}
 		});
 	}
@@ -177,23 +150,26 @@ var BattleEffect = (function() {
 		'water-blue.png',
 	];
 
-	function showExplosion(pos,rumble=false) {
+	function showExplosion(pos, rumble = false) {
+		console.log("showExplosion()", pos, rumble);
+
 		if (rumble)
-			rumble("medium","powerups/"+randomObjProperty(Sound.sounds.powerups));
+			rumble("medium", "powerups/" + randomObjProperty(Sound.sounds.powerups));
 
 		// if no position received
 		if (pos == null)
-			pos = getCenterPosition('#battle_projectile');
+			pos = Core.getCenterPosition('#battle_projectile');
 		// set position
-		setCenterPosition('.explosion_sprite_container', pos);
+		Core.setCenterPosition('#explosion_sprite_container', pos);
+		Core.showElement('#explosion_sprite_container');
 
 		// reference to image file
 		var url = chrome.extension.getURL('assets/img/explosions/' + randomArrayIndex(explosions));
 		// set content
-		$('.explosion_sprite_inner').css('background-image', 'url("' + url + '")');
+		$('#explosion_sprite_inner').css('background-image', 'url("' + url + '")');
 
 		setTimeout(function() {
-			$('.explosion_sprite_container').css("opacity", 0);
+			Core.hideElement('#explosion_sprite_container');
 		}, 1500);
 
 	}
@@ -205,18 +181,15 @@ var BattleEffect = (function() {
 
 	// PUBLIC
 	return {
-        setup: setup,
-		rumble: function(degree,soundFile) {
-			rumble(degree,soundFile);
+		setup: setup,
+		rumble: function(degree, soundFile) {
+			rumble(degree, soundFile);
 		},
-		fireProjectile: function(at,rumble) {
-			fireProjectile(at,rumble);
+		fireProjectile: function(at, rumble) {
+			fireProjectile(at, rumble);
 		},
-		showExplosion: function(pos,rumble) {
-			showExplosion(pos,rumble);
-		},
-		getCenterPosition: function(ele){
-			return getCenterPosition(ele);
+		showExplosion: function(pos, rumble) {
+			showExplosion(pos, rumble);
 		}
 	};
 })();

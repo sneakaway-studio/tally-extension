@@ -4,12 +4,12 @@
 .tally_monster_sprite_container {
     box-sizing: border-box;
     top: -500px;
-    left: 60%;
+    left: 55%;
     opacity: 0;
     position: fixed;
     z-index: 99999999999999;
-    height: 400px;
-    width: 500px;
+    height: 300px; /* formerly 400 */
+    width: 375px; /* formerly 500 */
 }
 .tally_monster_sprite {
     position: relative;
@@ -28,21 +28,12 @@
 }
 @keyframes monster_keyframes {
     100% {
-        background-position: -1500px;
+        background-position: -1125px; /* formerly 1500 */
     }
 }
 
 
-.monster_stats {
-    background: url('chrome-extension://__MSG_@@extension_id__/assets/img/monster-stats-test.png') center center no-repeat;
-    position: absolute;
-    z-index: 99999999999999;
-    width:163px;
-    height:46px;
-    top:420px;
-    left:130px;
-    transform: scale(1.2);
-}
+
 
 
 

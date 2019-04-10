@@ -1,7 +1,6 @@
 /*  BATTLE
 ******************************************************************************/
-/*  GLOBAL BOXES W/SHADOWS
-******************************************************************************/
+
 /* shadow box with background */
 .shadow-box-outer {
     box-sizing: border-box;
@@ -15,41 +14,25 @@
 /*  ATTACKS
 ******************************************************************************/
 
-
-#battle_projectile {
+#battle_projectile, #explosion_sprite_container {
     display: block;
-    opacity: 0;
+    top: -300px;
+    left: -300px;
+    z-index: 99999999999999;
+    position: fixed;
+}
+#battle_projectile {
     width: 50px;
     height: 50px;
-    position: fixed;
-        top: -300px;
-        left: -300px;
     border-radius: 50%;
     background-color: #d32cf1;
     background: url("chrome-extension://__MSG_@@extension_id__/assets/img/number-ball.gif") center center no-repeat;
-    z-index: 2147483647;
-}
-#battle_explosion {
-    /* display: block;
-    opacity: 0;
-    width: 250px;
-    height: 250px;
-    position: fixed; */
-}
 
-
-
-.explosion_sprite_container {
-    top: -300px;
-    left: -300px;
-    opacity: 0;
-    position: fixed;
-    z-index: 99999999999999;
-    height: 250px;
-    width: 250px;
-    /* background-color: #900; */
 }
-.explosion_sprite {
+#explosion_sprite_container {
+    height: 250px; width: 250px;
+}
+#explosion_sprite {
     position: relative;
     display: inline-block;
     margin: 0 auto;
@@ -57,7 +40,7 @@
     height: 100%;
     /* animation: monster_keyframes 0.4s steps(3) infinite; */
 }
-.explosion_sprite_inner {
+#explosion_sprite_inner {
     position: absolute;
     left: 0; top: 0;
     height: 100%; width: 100%;
@@ -71,6 +54,27 @@
 }
 
 
+.tally_stats, .monster_stats {
+    position: relative;
+    z-index: 99999999999999;
+    width:163px;
+    height:46px;
+    top:250px;
+    left:30px;
+}
+.tally_stats {
+    background: url("chrome-extension://__MSG_@@extension_id__/assets/img/tally-stats-test.png") center center no-repeat;
+}
+.monster_stats {
+    background: url('chrome-extension://__MSG_@@extension_id__/assets/img/monster-stats-test.png') center center no-repeat;
+    top:10px;
+    left:60px;
+}
+
+
+
+
+
 
 
 /*  CONSOLE
@@ -79,15 +83,15 @@
 #battle-console {
     display: none;
     position: fixed;
-    width: 40%;
+    width: 50%;
     margin-left: -20%;
-    left: 50%;
-    height: 115px;
+    left: 45%;
+    height: 135px;
 }
 #battle-console-inner {
     box-sizing: border-box;
     width: 100%;
-    height: 120px;
+    height: 140px;
     box-shadow: 5px 5px #41d728;
     border: 8px solid #d32cf1;
     background-color: #282c35;
@@ -97,7 +101,7 @@
     box-sizing: border-box !important;
     font: 0.9em/1.4em "Lucida Console", Monaco, monospace !important;
     padding: 10px 10px 0 10px !important;
-    height: 120px !important;
+    height: 140px !important;
     overflow: scroll !important;
 }
 .tally_log_line {
