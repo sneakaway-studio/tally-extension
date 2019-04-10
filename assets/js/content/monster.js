@@ -53,7 +53,7 @@ tally_nearby_monsters[_mid] = create(_mid,3);
 		if (DEBUG) console.log('⊙⊙⊙!⊙ Monster.display()', _mid, tally_nearby_monsters[_mid]);
 
 		// reference to image file
-		var url = chrome.extension.getURL('assets/img/monsters/' + _mid + '-anim-sheet.png');
+		var url = chrome.extension.getURL('assets/img/monsters-300h/' + _mid + '-anim-sheet.png');
 		// set content
 		$('.tally_monster_sprite_inner').css('background-image', 'url( ' + url + ')');
 
@@ -67,10 +67,11 @@ tally_nearby_monsters[_mid] = create(_mid,3);
 		// });
 
 		// set scale based on screen size
-		let _scale = pageData.browser.width > 1200 ? 0.8 : 0.7;
-		$('.tally_monster_sprite_container').css({
-			'transform': 'scale(' + _scale + ')'
-		});
+		// let _scale = pageData.browser.width > 1200 ? 0.8 : 0.7;
+		// $('.tally_monster_sprite_container').css({
+		// 	'transform': 'scale(' + _scale + ')'
+		// });
+		// ^ resize files instead
 		// face monster left
 		if (prop(tally_nearby_monsters[_mid].facing) && tally_nearby_monsters[_mid].facing == "1"){
 			$('.tally_monster_sprite_inner').css('transform', 'scaleX(-1)');
@@ -129,7 +130,7 @@ tally_nearby_monsters[_mid] = create(_mid,3);
 //		if (tally_user.monsters[mid])
 //			tally_nearby_monsters[mid].level = tally_user.monsters[mid].level + 1;
 		// reference to image file
-		var url = chrome.extension.getURL('assets/img/monsters/' + mid + '-anim-sheet.png');
+		var url = chrome.extension.getURL('assets/img/monsters-300h/' + mid + '-anim-sheet.png');
 		// set content
 		$('.tally_monster_sprite_inner').css('background-image', 'url( ' + url + ')');
 

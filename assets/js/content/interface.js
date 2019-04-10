@@ -20,9 +20,9 @@ $(function() {
 
 						"<div class='tally shadow-box-outer' id='battle-console'></div>" +
 						"<div class='tally' id='battle_projectile'></div>" +
-						"<div class='tally explosion_sprite_container'>"+
-							"<div class='tally explosion_sprite'>" +
-								"<div class='tally explosion_sprite_inner'></div>" +
+						"<div class='tally' id='explosion_sprite_container'>"+
+							"<div class='tally' id='explosion_sprite'>" +
+								"<div class='tally' id='explosion_sprite_inner'></div>" +
 							"</div>" +
 						"</div>" +
 					"</div>";

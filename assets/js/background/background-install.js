@@ -75,7 +75,8 @@ function createUser() {
 		"skins": ["color-magenta"],
 		"stats": {
 			"hp":0,"xp":0,"str":0,"df":0
-		}
+		},
+		"attacks":{}
 	};
 	return obj;
 }

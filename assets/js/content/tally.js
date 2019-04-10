@@ -284,4 +284,5 @@ Mousetrap.bind(k + ' 7', function() { Battle.monsterAttackTally(); });
 Mousetrap.bind(k + ' 8', function() { BattleConsole.log("What will Tally do?","showBattleOptions"); });
 Mousetrap.bind(k + ' 9', function() { Battle.tallyAttackMonster(); });
 Mousetrap.bind(k + ' q', function() { Battle.end(); });
+Mousetrap.bind('escape', function() { Battle.end(); });
 Mousetrap.bind(k + ' e', function() { Effect.explode(); });
