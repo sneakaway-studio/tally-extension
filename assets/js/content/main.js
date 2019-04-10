@@ -67,6 +67,7 @@ function startGameOnPage() {
 	if (MAIN_DEBUG) console.log(">>>>> startGameOnPage() -> Starting Tally on this page");
 	//    console.log(">>>>> pageData = "+ JSON.stringify(pageData));
 
+	insertStylesheets();
 	Debug.add();
 	Tally.start();
 	startTimeEvents();
@@ -189,5 +190,5 @@ function startTimeEvents() {
 				Debug.update();
 			}
 		}, 500)
-	}
+	};
 }

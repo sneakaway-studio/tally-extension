@@ -117,16 +117,18 @@ function removeSmallWords(arr) {
  *	Insert stylesheet for CSS3 animations
  *	credit: https://stackoverflow.com/a/43904152/441878
  */
-let sheets = document.styleSheets,
-	style = document.createElement('style'),
-	addKeyFrames = null;
-style.appendChild(document.createTextNode(""));
-document.head.appendChild(style);
-if (CSS && CSS.supports && CSS.supports('animation: name')) {
-	// we can safely assume that the browser supports unprefixed version.
-	addKeyFrames = function(name, frames) {
-		let sheet = sheets[sheets.length - 1];
-		sheet.insertRule(
-			"@keyframes " + name + "{" + frames + "}");
-	};
+function insertStylesheets(){
+	let sheets = document.styleSheets,
+		style = document.createElement('style'),
+		addKeyFrames = null;
+	style.appendChild(document.createTextNode(""));
+	document.head.appendChild(style);
+	if (CSS && CSS.supports && CSS.supports('animation: name')) {
+		// we can safely assume that the browser supports unprefixed version.
+		addKeyFrames = function(name, frames) {
+			let sheet = sheets[sheets.length - 1];
+			sheet.insertRule(
+				"@keyframes " + name + "{" + frames + "}");
+		};
+	}
 }
