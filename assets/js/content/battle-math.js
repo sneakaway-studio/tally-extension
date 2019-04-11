@@ -8,33 +8,61 @@ var BattleMath = (function() {
 
 
 
-	function updateHealth(attackObj) {
+	function updateHealth(attackObj,/*characterObj*/,/*otherCharaterObj*/) {
 		// get the latest stats
-		var tallyStats = Tally.stats();
+		var enemStats = otherCharacterObj.stats();
+		var charStats = characterObj.stats();
 		// do stuff
 
 		// if you pass a stats object it will update
 		Tally.stats(tallyStats);
 	}
-
-	function updateAttack(attackObj) {
-
+	function updateAttack(attackObj,/*characterObj*/,/*otherCharaterObj*/) {
+		var enemStats = otherCharacterObj.stats();
+		var charStats = characterObj.stats();
+		if(attackObj.selfAtk != NULL){
+			charStats.Attack = charStats.Attack * attackObj.selfAtk;
+		}
+		if(attackObj.oppAtk != NULL){
+			enemStats.Attack = enemStats.Attack * attackObj.selfAtk;
+		}
 	}
-
-	function updateStamina(attackObj) {
-
+	function updateStamina(attackObj,/*characterObj*/,/*otherCharacterObj*/) {
+		var enemStats = otherCharacterObj.stats();
+		var charStats = characterObj.stats();
+		if(attackObj.staminaCost != NULL){
+			charStats.Stamina = charStats.Stamina - attackObj.staminaCost;
+		}
 	}
-
-	function updateAccuracy(attackObj) {
-
+	function updateAccuracy(attackObj,/*characterObj*/,/*otherCharacterObj*/) {
+		var enemStats = otherCharacterObj.stats();
+		var charStats = characterObj.stats();
+		if(attackObj.selfAcc != NULL){
+			charStats.Accuracy = charStats.Accuracy * attackObj.selfAcc;
+		}
+		if(attackObj.oppAcc != NULL){
+			enemStats.Accuracy = enemStats.Accuracy * attackObj.oppAcc;
+		}
 	}
-
-	function updateEvasion(attackObj) {
-
+	function updateEvasion(attackObj,/*characterObj*/,/*otherCharacterObj*/) {
+		var enemStats = otherCharacterObj.stats();
+		var charStats = characterObj.stats();
+		if(attackObj.selfEva != NULL){
+			charStats.Evasion = charStats.Evasion * attackObj.selfEva;
+		}
+		if(attackObj.oppEva != NULL){
+			enemStats.Evasion = enemStats.Evasion * attackObj.oppEva;
+		}
 	}
-
-	function updateDefense(attackObj) {
-
+	function updateDefense(attackObj,/*characterObj*/,/*otherCharacterObj*/) {
+		var enemStats = otherCharacterObj.stats();
+		var charStats = characterObj.stats();
+		if(attackObj.selfDef != NULL){
+			charStats.Defense = charStats.Defense * attackObj.selfDef;
+		}
+		if(attackObj.oppDef != NULL){
+			enemStats.Attack = enemStats.Attack * attackObj.selfDef;
+		}
 	}
 
 
