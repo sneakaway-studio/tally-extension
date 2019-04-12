@@ -138,12 +138,12 @@ window.Battle = (function() {
 		if (prop(attack.selfDef)) {
 			// store string that is returned to be able to log it later
 			attackOutcomes.push(
-				updateDefense(attack, getStat(self), getStat(opp))
+				BattleMath.updateDefense(attack, getStat(self), getStat(opp))
 			);
 		}
 		if (prop(attack.oppEva)) {
 			attackOutcomes.push(
-				updateEvasion(attack, getStat(self), getStat(opp))
+				BattleMath.updateEvasion(attack, getStat(self), getStat(opp))
 			);
 		}
 		// Daniel, add more conditions...
