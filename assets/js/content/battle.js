@@ -102,6 +102,9 @@ window.Battle = (function() {
 	}
 
 
+
+
+
 	var randomDamageOutcomes = [
 		"24 health",
 		"17 health",
@@ -115,8 +118,6 @@ window.Battle = (function() {
 		"18 accuracy",
 	];
 
-
-
 	function getRandomAttacks(num) {
 		var attack, attacks = {};
 		for (var i = 0; i < num; i++) {
@@ -125,22 +126,30 @@ window.Battle = (function() {
 		}
 		return attacks;
 	}
-
-
 	/**
 	 * 	Generic Function for updating all stats
 	 */
 	function updateStats(attack, self, opp) {
 
+		// track the outcome(s) of the attack
+		let attackOutcomes = [];
+
 		// look for specific properties in attack to determine which function is called
 		if (prop(attack.selfDef)) {
-			updateDefense(attack, getStat(self), getStat(opp));
+			// store string that is returned to be able to log it later
+			attackOutcomes.push(
+				updateDefense(attack, getStat(self), getStat(opp))
+			);
 		}
 		if (prop(attack.oppEva)) {
-			updateEvasion(attack, getStat(self), getStat(opp));
+			attackOutcomes.push(
+				updateEvasion(attack, getStat(self), getStat(opp))
+			);
 		}
-		// Daniel, fill in...
+		// Daniel, add more conditions...
 
+
+		return attackOutcomes;
 	}
 	/**
 	 * 	Get stats of self or opponent
@@ -153,30 +162,48 @@ window.Battle = (function() {
 	}
 
 
+	function showAttackEffects(attack, self, opp) {
+		// fire projectile at tally
+		if (details.mostRecentAttack.type == "attack") {
+			BattleEffect.fireProjectile("tally", "small");
+		} else if (details.mostRecentAttack.type == "defense") {
+			// show explosion on monster
+			BattleEffect.showExplosion(Core.getCenterPosition(".tally_monster_sprite"), false);
+		}
+	}
+
+
+
+
 
 	function monsterAttackTally(extraDelay = 0) {
+		let self = "monster",
+			opp = "tally";
 
+		// choose random attack
 		details.mostRecentAttack = randomObjProperty(details.monsterAttacks);
 		details.mostRecentDamage = randomArrayIndex(randomDamageOutcomes);
 		//console.log("details",details);
 
+		// start timed events
 		setTimeout(function() {
-
-			// fire projectile at tally
-			if (details.mostRecentAttack.type == "attack") {
-				BattleEffect.fireProjectile("tally", "small");
-			} else if (details.mostRecentAttack.type == "defense") {
-				// show explosion on monster
-				BattleEffect.showExplosion(Core.getCenterPosition(".tally_monster_sprite"), false);
-			}
-			// do all battle math
-			updateStats("monster","tally");
-
-
+			// show effects
+			showAttackEffects(details.mostRecentAttack, self, opp);
+			// do battle math
+			let attackOutcomes = updateStats("monster", "tally");
+			console.log("attackOutcomes",attackOutcomes);
+			// log the attack
 			BattleConsole.log(details.monsterName + " used the " + details.mostRecentAttack.name + " " + details.mostRecentAttack.type + "!");
+			// wait
 			setTimeout(function() {
-				BattleConsole.log("Tally lost " + details.mostRecentDamage + ".");
+				// then log the attack outcomes
+				for (var i=0; i < attackOutcomes.length; i++){
+					details.mostRecentDamage = attackOutcomes[i];
+					BattleConsole.log("Tally lost " + details.mostRecentDamage + ".");
+				}
+				// wait
 				setTimeout(function() {
+					// turn control back to player
 					BattleConsole.log("What will Tally do?", "showBattleOptions");
 				}, _logDelay);
 			}, _logDelay);
@@ -184,6 +211,7 @@ window.Battle = (function() {
 	}
 
 	function tallyAttackMonster(extraDelay = 0) {
+		let self = "tally", opp = "monster";
 
 		details.mostRecentAttack = randomObjProperty(details.tallyAttacks);
 		details.mostRecentDamage = randomArrayIndex(randomDamageOutcomes);
@@ -198,7 +226,7 @@ window.Battle = (function() {
 				BattleEffect.showExplosion(Core.getCenterPosition("#tally_character"), false);
 			}
 			// do all battle math
-			updateStats("monster","tally");
+			updateStats("monster", "tally");
 
 			BattleConsole.log("Tally used the " + details.mostRecentAttack.name + " " + details.mostRecentAttack.type + "!");
 			setTimeout(function() {
