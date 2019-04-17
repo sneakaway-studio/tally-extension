@@ -57,13 +57,10 @@
 .tally_stats, .monster_stats {
     position: relative;
     z-index: 99999999999999;
-    width:163px;
-    height:46px;
+    width:220px;
+    height:80px;
     top:250px;
-    left:30px;
-}
-.tally_stats {
-    background: url("chrome-extension://__MSG_@@extension_id__/assets/img/tally-stats-test.png") center center no-repeat;
+    left:0px;
 }
 .monster_stats {
     background: url('chrome-extension://__MSG_@@extension_id__/assets/img/monster-stats-test.png') center center no-repeat;
@@ -75,6 +72,18 @@
 
 
 
+/*  STAT BARS
+******************************************************************************/
+
+.stat-bars { stroke-width:0; }
+.stat-bar-hp { fill:#27c70c; }
+.stat-bar-hp-bg { fill:#d32cf1; }
+.stat-bar-mp { fill:#28a2f9;  }
+.stat-bar-mp-bg { fill:#494949; }
+.stat-bar-xp { fill:#ff9900; }
+.stat-bar-xp-bg { fill:#494949; }
+.stat-circle-bg { fill:#282c35; }
+.stat-circle-text { fill:white; font: 14px Monaco, "Andale Mono", "Courier New", sans-serif; }
 
 
 /*  CONSOLE

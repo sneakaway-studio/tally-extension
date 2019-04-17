@@ -64,6 +64,7 @@
             "assets/js/content/battle.js",
             "assets/js/content/battle-math.js",
             "assets/js/content/battle-effect.js",
+            "assets/js/content/battle-stats.js",
             "assets/js/content/battle-attack.js",
             "assets/js/content/battle-console.js",
             "assets/js/content/tracker.js",

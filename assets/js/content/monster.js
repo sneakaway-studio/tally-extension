@@ -7,6 +7,23 @@ var Monster = (function() {
 		secondsBeforeDelete = 300; // 60 seconds for testing
 
 
+	var monsterStats = {
+		"health":100,
+		"attack":100,
+		"stamina":100,
+		"accuracy":100,
+		"evasion":100,
+		"defense":100,
+	};
+
+	function stats(_stats){
+		if (_stats && _stats.health){
+			// update stats
+			monsterStats = _stats;
+		}
+		return monsterStats;
+	}
+
 
 	/**
 	 *	Create a monster (and return its data)
@@ -22,6 +39,7 @@ var Monster = (function() {
 			"level": 1,
 			"mid": _mid,
 			"stage": _stage,
+			"stats": stats(),
 			"slug": MonsterData.dataById[_mid].slug,
 			"updatedAt": Date.now()
 		};
@@ -241,6 +259,9 @@ tally_nearby_monsters[_mid] = create(_mid,3);
 		},
 		current: getCurrent,
 		test: test,
-		testLaunch: testLaunch
+		testLaunch: testLaunch,
+		stats: function(data){
+			return stats(data);
+		},
 	};
 }());

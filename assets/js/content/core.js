@@ -6,6 +6,8 @@
 window.Core = (function() {
 	// PRIVATE
 
+
+
 	function showElement(ele) {
 		$(ele).css({
 			"display": "block",
@@ -60,6 +62,7 @@ window.Core = (function() {
 		},
 		setCenterPosition: function(ele, newPos) {
 			setCenterPosition(ele, newPos);
-		},
+		}
+
 	};
 })();

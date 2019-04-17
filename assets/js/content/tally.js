@@ -86,7 +86,7 @@ window.Tally = (function() {
 		//console.log("startTally()", tally_game_status.skin, Skin.skins);
 
 		let str =
-			"<div class='tally draggable' id='tally_character'>" +
+			"<div class='tally draggable' id='tally_character' style='transform:translate(400px,-300px);'>" +
 				"<div class='tally tally_speech_bubble' id='tally_thought_bubble'>" +
 					"<div class='tally' id='tally_thought'></div>" +
 				"</div>" +
@@ -102,7 +102,7 @@ window.Tally = (function() {
 							"<span class='tally tally_eye_pupil'></span></span></span>" +
 				"</div>" +
 				"<div class='tally tally_stats'>" +
-					"<div class='tally'></div>" +
+					BattleStats.initBars("tally") +
 				"</div>" +
 			"</div>";
 		$('#tally_wrapper').append(str);
@@ -111,7 +111,6 @@ window.Tally = (function() {
 			drag: function() {},
 			stop: function() {}
 		});
-
 
 
 
@@ -286,3 +285,8 @@ Mousetrap.bind(k + ' 9', function() { Battle.tallyAttackMonster(); });
 Mousetrap.bind(k + ' q', function() { Battle.end(); });
 Mousetrap.bind('escape', function() { Battle.end(); });
 Mousetrap.bind(k + ' e', function() { Effect.explode(); });
+
+
+Mousetrap.bind(k + ' z', function() { BattleStats.adjustBar("tally","hp"); });
+Mousetrap.bind(k + ' x', function() { BattleStats.adjustBar("tally","xp"); });
+Mousetrap.bind(k + ' c', function() { BattleStats.adjustBar("tally","mp"); });
