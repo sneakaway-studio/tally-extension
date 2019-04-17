@@ -3,7 +3,7 @@
 /*  BATTLE
  ******************************************************************************/
 
-var BattleAttack = (function() {
+window.BattleAttack = (function() {
 	// PRIVATE
 
 

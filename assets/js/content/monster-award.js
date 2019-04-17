@@ -1,6 +1,6 @@
 "use strict";
 
-var MonsterAward = (function() {
+window.MonsterAward = (function() {
 
 	let DEBUG = true,
 		currentMID = "",

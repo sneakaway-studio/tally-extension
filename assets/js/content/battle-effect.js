@@ -3,7 +3,7 @@
 /*  BATTLE EFFECT
  ******************************************************************************/
 
-var BattleEffect = (function() {
+window.BattleEffect = (function() {
 	// PRIVATE
 	let source, // page source for rumbles
 		nodes, // node string for rumbles

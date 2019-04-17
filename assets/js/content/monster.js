@@ -1,6 +1,6 @@
 "use strict";
 
-var Monster = (function() {
+window.Monster = (function() {
 
 	let DEBUG = true,
 		currentMID = "",

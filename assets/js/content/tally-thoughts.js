@@ -1,6 +1,6 @@
 "use strict";
 
-var Thought = (function() {
+window.Thought = (function() {
 	// PRIVATE
 
 	let thoughtOpen = false,

@@ -3,7 +3,7 @@
 /*  DEBUGGER
  ******************************************************************************/
 
-var Debug = (function() {
+window.Debug = (function() {
 	// PRIVATE
 
 	// add the debugger

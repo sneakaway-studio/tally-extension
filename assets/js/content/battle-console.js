@@ -3,7 +3,7 @@
 /*  (BATTLE) CONSOLE
  ******************************************************************************/
 
-var BattleConsole = (function() {
+window.BattleConsole = (function() {
 	// PRIVATE
 	var stream, logId, _active, _queue, _next;
 

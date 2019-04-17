@@ -3,7 +3,7 @@
 /*  COOKIE
  ******************************************************************************/
 
-var Cookie = (function() {
+window.Cookie = (function() {
 	// PRIVATE
 
 	var types = [

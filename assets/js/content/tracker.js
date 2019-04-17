@@ -1,6 +1,6 @@
 "use strict";
 
-var Tracker = (function() {
+window.Tracker = (function() {
 
 	let DEBUG = false;
 

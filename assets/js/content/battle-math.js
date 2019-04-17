@@ -3,7 +3,7 @@
 /*  (BATTLE) MATH
  ******************************************************************************/
 
-var BattleMath = (function() {
+window.BattleMath = (function() {
 	// PRIVATE VARS;
 
 // DANIEL:

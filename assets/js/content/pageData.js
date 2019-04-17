@@ -1,6 +1,6 @@
 "use strict";
 
-var Page = (function() {
+window.Page = (function() {
 	// PRIVATE
 
 
