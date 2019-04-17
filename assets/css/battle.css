@@ -75,15 +75,29 @@
 /*  STAT BARS
 ******************************************************************************/
 
-.stat-bars { stroke-width:0; }
+.stat-bars { stroke-width:0; transform:translate(30px); }
 .stat-bar-hp { fill:#27c70c; }
 .stat-bar-hp-bg { fill:#d32cf1; }
 .stat-bar-mp { fill:#28a2f9;  }
 .stat-bar-mp-bg { fill:#494949; }
 .stat-bar-xp { fill:#ff9900; }
 .stat-bar-xp-bg { fill:#494949; }
-.stat-circle-bg { fill:#282c35; }
-.stat-circle-text { fill:white; font: 14px Monaco, "Andale Mono", "Courier New", sans-serif; }
+.stat-bar-circle {
+    fill:#282c35;
+    stroke-width: 5px;
+    stroke:#d32cf1;
+    stroke-dasharray: 138;
+    stroke-dashoffset: 138; /* 2 * 3.14 * radius */
+    stroke-miterlimit: round;
+    transition: stroke-dashoffset 750ms linear;
+}
+/* .stat-bar-circle:hover {
+    stroke-dashoffset: 0;
+} */
+.stat-bar-circle-text { fill:white; font: 14px Monaco, "Andale Mono", "Courier New", sans-serif; }
+
+
+
 
 
 /*  CONSOLE

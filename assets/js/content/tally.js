@@ -287,6 +287,15 @@ Mousetrap.bind('escape', function() { Battle.end(); });
 Mousetrap.bind(k + ' e', function() { Effect.explode(); });
 
 
-Mousetrap.bind(k + ' z', function() { BattleStats.adjustBar("tally","hp"); });
-Mousetrap.bind(k + ' x', function() { BattleStats.adjustBar("tally","xp"); });
-Mousetrap.bind(k + ' c', function() { BattleStats.adjustBar("tally","mp"); });
+Mousetrap.bind(k + ' z', function() { BattleStats.adjustTallyBar("hp",Math.random()); });
+Mousetrap.bind(k + ' x', function() { BattleStats.adjustTallyBar("xp",Math.random()); });
+Mousetrap.bind(k + ' c', function() { BattleStats.adjustTallyBar("mp",Math.random()); });
+Mousetrap.bind(k + ' v', function() { BattleStats.adjustTallyCircle(Math.random()); });
+
+setInterval(function(){
+	BattleStats.adjustTallyBar("hp",Math.random());
+	BattleStats.adjustTallyBar("mp",Math.random());
+	BattleStats.adjustTallyBar("xp",Math.random());
+	BattleStats.adjustTallyCircle(Math.random());
+	BattleStats.adjustTallyCircleText(Math.random()*30);
+},3000);
