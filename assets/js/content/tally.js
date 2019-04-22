@@ -287,15 +287,18 @@ Mousetrap.bind('escape', function() { Battle.end(); });
 Mousetrap.bind(k + ' e', function() { Effect.explode(); });
 
 
-Mousetrap.bind(k + ' z', function() { BattleStats.adjustTallyBar("hp",Math.random()); });
-Mousetrap.bind(k + ' x', function() { BattleStats.adjustTallyBar("xp",Math.random()); });
-Mousetrap.bind(k + ' c', function() { BattleStats.adjustTallyBar("mp",Math.random()); });
-Mousetrap.bind(k + ' v', function() { BattleStats.adjustTallyCircle(Math.random()); });
+Mousetrap.bind(k + ' z', function() { BattleStats.adjustStatsBar("tally","hp",Math.random()); });
+Mousetrap.bind(k + ' x', function() { BattleStats.adjustStatsBar("tally","xp",Math.random()); });
+Mousetrap.bind(k + ' c', function() { BattleStats.adjustStatsBar("tally","mp",Math.random()); });
+Mousetrap.bind(k + ' v', function() { BattleStats.adjustStatsCircle("tally",Math.random()); });
 
 setInterval(function(){
-	BattleStats.adjustTallyBar("hp",Math.random());
-	BattleStats.adjustTallyBar("mp",Math.random());
-	BattleStats.adjustTallyBar("xp",Math.random());
-	BattleStats.adjustTallyCircle(Math.random());
-	BattleStats.adjustTallyCircleText(Math.random()*30);
+	BattleStats.adjustStatsBar("tally","hp",Math.random());
+	BattleStats.adjustStatsBar("tally","mp",Math.random());
+	BattleStats.adjustStatsBar("tally","xp",Math.random());
+	BattleStats.adjustStatsCircle("tally",Math.random());
+	//BattleStats.adjustStatsCircleText("tally",Math.random()*30);
+	BattleStats.adjustStatsBar("monster","hp",Math.random());
+	BattleStats.adjustStatsBar("monster","mp",Math.random());
+	BattleStats.adjustStatsCircle("monster",Math.random());
 },3000);

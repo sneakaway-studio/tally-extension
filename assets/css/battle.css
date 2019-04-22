@@ -63,8 +63,8 @@
     left:0px;
 }
 .monster_stats {
-    background: url('chrome-extension://__MSG_@@extension_id__/assets/img/monster-stats-test.png') center center no-repeat;
-    top:10px;
+    transform: translateX(25%);
+    top:0;
     left:0;
 }
 
@@ -74,6 +74,8 @@
 
 /*  STAT BARS
 ******************************************************************************/
+
+.stats-display { width:230;  }
 
 .stat-bars { stroke-width:0; transform:translateX(30px); }
 .stat-bar-hp { fill:#27c70c; }

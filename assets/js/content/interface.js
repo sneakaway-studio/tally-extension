@@ -4,20 +4,25 @@ $(function() {
 
 	function addBaseHTML() {
 		let str = "<div id='tally_wrapper' class='tally reset-this-root reset-this no-print'>" +
+
+						// effects
 						"<div class='tally' id='tally_click_visual'></div>" +
-						"<div class='tally tally_monster_sprite_container'>" +
-							"<div class='tally tally_monster_sprite'>" +
-								"<div class='tally tally_monster_sprite_inner'></div>" +
-							"</div>" +
-							"<div class='tally monster_stats'>" +
-								"<div class='tally'></div>" +
-							"</div>" +
-						"</div>" +
-						"<div class='tally tally_award_wrapper'></div>" +
 						"<audio class='tally' id='tally_audio' muted='muted'>"+
 							"<source class='tally' id='tally_audio_source' type='audio/mp3'>"+
 						"</audio>" +
 
+						// monster
+						"<div class='tally tally_monster_sprite_container'>" +
+							"<div class='tally tally_monster_sprite'>" +
+								"<div class='tally tally_monster_sprite_inner'></div>" +
+							"</div>" +
+							"<div class='tally monster_stats'></div>" +
+						"</div>" +
+
+						// award
+						"<div class='tally tally_award_wrapper'></div>" +
+
+						// battle
 						"<div class='tally shadow-box-outer' id='battle-console'></div>" +
 						"<div class='tally' id='battle_projectile'></div>" +
 						"<div class='tally' id='explosion_sprite_container'>"+
@@ -25,6 +30,7 @@ $(function() {
 								"<div class='tally' id='explosion_sprite_inner'></div>" +
 							"</div>" +
 						"</div>" +
+
 					"</div>";
 		$('body').append(str);
 	}

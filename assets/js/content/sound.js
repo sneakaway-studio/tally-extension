@@ -103,22 +103,22 @@ window.Sound = (function() {
 	/**
 	 *	(Old) Generic play function (called from others in this obj)
 	 */
-	function playOld(soundFile, delay = 0, volumeModifier = 0) {
-		//if(DEBUG) console.log("♪♪♪♪♪ Sound.play("+ soundFile +","+ delay +","+ volumeModifier +")");
-		// load/play sound
-		var audio = new Audio(chrome.extension.getURL("assets/sounds/" + soundFile));
-		audio.muted = true;
-		audio.pause();
-		audio.volume = (tally_options.soundVolume || 0.3) + volumeModifier;
-		if (delay > 0)
-			setTimeout(function() {
-				audio.muted = false;
-				audio.play();
-			}, delay);
-		else{
-			audio.play();
-		}
-	}
+	// function playOld(soundFile, delay = 0, volumeModifier = 0) {
+	// 	//if(DEBUG) console.log("♪♪♪♪♪ Sound.play("+ soundFile +","+ delay +","+ volumeModifier +")");
+	// 	// load/play sound
+	// 	var audio = new Audio(chrome.extension.getURL("assets/sounds/" + soundFile));
+	// 	audio.muted = true;
+	// 	audio.pause();
+	// 	audio.volume = (tally_options.soundVolume || 0.3) + volumeModifier;
+	// 	if (delay > 0)
+	// 		setTimeout(function() {
+	// 			audio.muted = false;
+	// 			audio.play();
+	// 		}, delay);
+	// 	else{
+	// 		audio.play();
+	// 	}
+	// }
 
 
 
@@ -148,8 +148,8 @@ window.Sound = (function() {
 				//if(DEBUG) console.log("Autoplay started!");
 			}).catch(error => {
 				//if(DEBUG) console.log("Autoplay prevented!");
-				audio.pause();
-				audio.play();
+				// audio.pause();
+				// audio.play();
 			});
 		}
 	}

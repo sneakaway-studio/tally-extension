@@ -11,19 +11,24 @@ window.BattleStats = (function() {
 
 
 
-
-	let tallyStatsBars = {
-		"hpbg": { "x":0, "y":0, "w":220, "h":20 },
-		"hp":   { "x":0, "y":0, "w":200, "h":20 },
-		"mpbg": { "x":0, "y":20, "w":170, "h":12 },
-		"mp":   { "x":0, "y":20, "w":150, "h":12 },
-		"xpbg": { "x":0, "y":32, "w":150, "h":12 },
-		"xp":   { "x":0, "y":32, "w":130, "h":12 },
+	/**
+	 * Starting point for stats svg coordinates
+	 */
+	let tallyStatsPoints = {
+		"hpbg": { "x":0, "y":0, "w":200, "h":20 },
+		"hp":   { "x":0, "y":0, "w":180, "h":20 },
+		"mpbg": { "x":0, "y":20, "w":150, "h":12 },
+		"mp":   { "x":0, "y":20, "w":130, "h":12 },
+		"xpbg": { "x":0, "y":32, "w":130, "h":12 },
+		"xp":   { "x":0, "y":32, "w":110, "h":12 },
 		"circle":{ "cx":26, "cy":34, "r":22, "text":0 },
 	};
+	let monsterStatsPoints = tallyStatsPoints;
 
-	// combine polygon points
-	function combinePoints({x = 0, y = 0, w = 0, h = 0} = {}) {
+	/**
+	 * 	Combine stat bar polygon points
+	 */
+	function combinePoints({ x = 0, y = 0, w = 0, h = 0 } = {}) {
 		let p1 = x + "," + y,
 			p2 = w + "," + y,
 			p3 = Math.ceil(w - (h / 3)) + "," + (h + y),
@@ -31,59 +36,69 @@ window.BattleStats = (function() {
 		return p1 + " " + p2 + " " + p3 + " " + p4;
 	}
 	// starting stats bar for tally or monster
-	function initBars(who, stats) {
-		let statsBars, str = '';
+	function returnDisplay(who) {
+		// get player's stats display coordinates
+		let statsDisplay = playerStatsDisplayCoords(who),
+			str = '';
 
-		// which stats to init
-		if (who == "tally")
-			statsBars = tallyStatsBars;
-		else if (who == "monster")
-			statsBars = monsterStatsBarPoints;
-
-		str += '<svg height="210" width="500" class="tally-stats">';
+		str += '<svg height="65" width="230" class="stats-display">';
 		str += '<g class="stat-bars">';
 		// hp
-		str += '<polygon points="' + combinePoints(statsBars.hpbg) + '" class="stat-bar-hp-bg" />' +
-			'<polygon points="' + combinePoints(statsBars.hp) + '" data-value="0" class="stat-bar-hp" />';
+		str += '<polygon points="' + combinePoints(statsDisplay.hpbg) + '" class="stat-bar-hp-bg" />' +
+			'<polygon points="' + combinePoints(statsDisplay.hp) + '" data-value="0" class="stat-bar-hp" />';
 		// mp
-		str += '<polygon points="' + combinePoints(statsBars.mpbg) + '" class="stat-bar-mp-bg" />' +
-			'<polygon points="' + combinePoints(statsBars.mp) + '" data-value="0" class="stat-bar-mp" />';
+		str += '<polygon points="' + combinePoints(statsDisplay.mpbg) + '" class="stat-bar-mp-bg" />' +
+			'<polygon points="' + combinePoints(statsDisplay.mp) + '" data-value="0" class="stat-bar-mp" />';
 		// xp (only for tally)
 		if (who == "tally") {
-			str += '<polygon points="' + combinePoints(statsBars.xpbg) + '" class="stat-bar-xp-bg" />';
-			str += '<polygon points="' + combinePoints(statsBars.xp) + '" data-value="0" class="stat-bar-xp" />';
+			str += '<polygon points="' + combinePoints(statsDisplay.xpbg) + '" class="stat-bar-xp-bg" />';
+			str += '<polygon points="' + combinePoints(statsDisplay.xp) + '" data-value="0" class="stat-bar-xp" />';
 		}
 		str += '</g>';
 
 		// circle
-		str += '<circle cx="' + statsBars.circle.cx + '" cy="' + statsBars.circle.cy +
-			'" r="' + statsBars.circle.r + '" data-value="0" class="stat-bar-circle" />';
-		str += '<text x="' + statsBars.circle.cx + '" y="' + statsBars.circle.cy +
-			'" dominant-baseline="middle" text-anchor="middle" class="stat-bar-circle-text">17</text>';
+		str += '<circle cx="' + statsDisplay.circle.cx + '" cy="' + statsDisplay.circle.cy +
+			'" r="' + statsDisplay.circle.r + '" data-value="0" class="stat-bar-circle" />';
+		str += '<text x="' + statsDisplay.circle.cx + '" y="' + statsDisplay.circle.cy +
+			'" dominant-baseline="middle" text-anchor="middle" class="stat-bar-circle-text">0</text>';
 		str += '</svg>';
 		return str;
 	}
 
-	function adjustTallyBar(bar,val) {
+
+
+
+
+
+	/**
+	 * 	Adjust stats bars for Tally
+	 */
+	function adjustStatsBar(who, bar, val) {
 		// clean value
-		val = NumberFunctions.round(val,2);
+		val = NumberFunctions.round(val, 2);
+		// get player's stats display coordinates
+		let statsDisplay = playerStatsDisplayCoords(who);
 		// save old bar
-		let oldBar = tallyStatsBars[bar];
+		let oldBar = statsDisplay[bar];
 		// save data-value
-		$('.stat-bar-'+bar).attr("data-value",val);
+		$('.' + who + '_stats .stat-bar-' + bar).attr("data-value", val);
 		// set new width
-		tallyStatsBars[bar].w = val * tallyStatsBars[bar+"bg"].w;
+		statsDisplay[bar].w = val * statsDisplay[bar + "bg"].w;
 		// log
-		//console.log("adjustTallyBar()",bar,val);
+		console.log("adjustStatsBar()",who,bar,val);
 		// animation
 		anime({
-			targets: '.stat-bar-'+bar,
+			targets: '.' + who + '_stats .stat-bar-' + bar,
 			points: [
 				{ value: combinePoints(oldBar) },
-				{ value: combinePoints(tallyStatsBars[bar]) },
+				{ value: combinePoints(statsDisplay[bar]) },
 			],
 			easing: 'easeOutQuad',
-			duration: 1000
+			duration: 1000,
+			complete: function() {
+				// save stats
+				playerStatsDisplayCoords(who, statsDisplay);
+			}
 		});
 	}
 	// testing
@@ -91,37 +106,40 @@ window.BattleStats = (function() {
 	//   var msg = "Handler for .mousemove() called at " + event.pageX + ", " + event.pageY;
 	//   let normalized = NumberFunctions.normalize(event.pageX,0,$(window).width());
 	//   console.log(normalized);
-	//  // adjustTallyBar("mp",normalized);
-	//  adjustTallyCircle(normalized);
+	//  // adjustStatsBar("tally","mp",normalized);
+	//  adjustStatsCircle(normalized);
 	// });
 
-
-
-
-
-
-
-
-
-	function adjustTallyCircle(val) {
+	/**
+	 * 	Adjust stats circle for Tally
+	 */
+	function adjustStatsCircle(who, val) {
 		// clean value
-		val = NumberFunctions.round(val,2);
+		val = NumberFunctions.round(val, 2);
+		// get player's stats display coordinates
+		let statsDisplay = playerStatsDisplayCoords(who);
 		// save old value
-		let oldCircle = tallyStatsBars.circle;
+		let oldCircle = statsDisplay.circle;
 		// save data-value
-		$('.stat-bar-circle').attr("data-value",val);
+		$('.' + who + '_stats .stat-bar-circle').attr("data-value", val);
 		// get circumference value
-		let circumference = NumberFunctions.map(val,0,1,138,0);
+		let circumference = NumberFunctions.map(val, 0, 1, 138, 0);
 		// Set the Offset
-		$('.stat-bar-circle').css({"strokeDashoffset": circumference });
+		$('.' + who + '_stats .stat-bar-circle').css({
+			"strokeDashoffset": circumference
+		});
 		// log
-		console.log("adjustTallyCircle()",val,circumference);
+		console.log("adjustStatsCircle()", who, val, circumference);
+		adjustStatsCircleText(who, val * 30);
 	}
-	function adjustTallyCircleText(val){
-		// save old value
-		let oldText = tallyStatsBars.circle.text;
 
-		var d = { val: oldText };
+	function adjustStatsCircleText(who, val) {
+		// get old value
+		let oldText = $('.' + who + '_stats .stat-bar-circle-text').html();
+		// create object to manipulate
+		var d = {
+			val: oldText
+		};
 		anime({
 			targets: d,
 			val: Math.ceil(val),
@@ -130,29 +148,48 @@ window.BattleStats = (function() {
 			easing: 'linear',
 			update: function() {
 				//console.log(d);
-				$('.stat-bar-circle-text').html(d.val);
+				$('.' + who + '_stats .stat-bar-circle-text').html(d.val);
+			},
+			complete: function() {
+				// save stats
+				//playerStatsDisplayCoords(who, statsDisplay);
 			}
 		});
 	}
 
 
 
+	/**
+	 * 	(save and) return player's stats display coordinates
+	 */
+	function playerStatsDisplayCoords(who, statsDisplay = null) {
+		if (who == "tally") {
+			if (statsDisplay !== null)
+				tallyStatsPoints = statsDisplay;
+			return tallyStatsPoints;
+		} else if (who == "monster") {
+			if (statsDisplay !== null)
+				monsterStatsPoints = statsDisplay;
+			return monsterStatsPoints;
+		}
+	}
+
+
+
+
 	// PUBLIC
 	return {
-		initBars: function(who, stats) {
-			return initBars(who, stats);
+		returnDisplay: function(who) {
+			return returnDisplay(who);
 		},
-		adjustTallyBar: function(bar,val){
-			adjustTallyBar(bar,val);
+		adjustStatsBar: function(who, bar, val) {
+			adjustStatsBar(who, bar, val);
 		},
-		adjustTallyCircle: function(val){
-			adjustTallyCircle(val);
+		adjustStatsCircle: function(who, val) {
+			adjustStatsCircle(who, val);
 		},
-		adjustTallyCircleText: function(val){
-			adjustTallyCircleText(val);
-		},
-		tallyStatsBar: function(){
-			return tallyStatsBar;
+		adjustStatsCircleText: function(who, val) {
+			adjustStatsCircleText(who, val);
 		}
 	};
 })();
