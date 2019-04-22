@@ -90,10 +90,17 @@ tally_nearby_monsters[_mid] = create(_mid,3);
 		// 	'transform': 'scale(' + _scale + ')'
 		// });
 		// ^ resize files instead
+
+
+
 		// face monster left
-		if (prop(tally_nearby_monsters[_mid].facing) && tally_nearby_monsters[_mid].facing == "1"){
+		if (prop(tally_nearby_monsters[_mid].facing) && tally_nearby_monsters[_mid].facing == "1")
 			$('.tally_monster_sprite_inner').css('transform', 'scaleX(-1)');
-		}
+		else // reset
+			$('.tally_monster_sprite_inner').css('transform', 'scaleX(1)');
+
+		// display stats
+		$('.monster_stats').html(BattleStats.returnDisplay("monster"));
 
 
 	}
@@ -252,7 +259,7 @@ tally_nearby_monsters[_mid] = create(_mid,3);
 			return create(mid);
 		},
 		display: function(mid){
-			return display(mid);
+			display(mid);
 		},
 		saveAndPush: function(mid){
 			return saveAndPush(mid);

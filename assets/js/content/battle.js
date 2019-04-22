@@ -58,7 +58,7 @@ window.Battle = (function() {
 		if (_active) return;
 		active(true);
 		// intro sound
-		Sound.playCategory('powerups', 'powerup1');
+		//Sound.playCategory('powerups', 'powerup1');
 		// setup page for effects
 		BattleEffect.setup();
 
@@ -93,7 +93,7 @@ window.Battle = (function() {
 		});
 
 		// show console
-		BattleConsole.show();
+		BattleConsole.display();
 		setTimeout(function() {
 			BattleConsole.log("Battle started with " + details.monsterName + "!");
 			// wait for tally to attack first ...

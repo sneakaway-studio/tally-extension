@@ -17,8 +17,8 @@ window.BattleConsole = (function() {
 	}
 
 
-	// show the console
-	function show() {
+	// display the console
+	function display() {
 		reset();
 		var str = "<div id='battle-console-inner' class='tally shadow-box-inner'>" +
 			"<div class='tally' id='battle-console-stream'></div>" +
@@ -37,7 +37,7 @@ window.BattleConsole = (function() {
 			easing: 'easeOutCubic'
 		});
 	}
-	// show the console
+	// hide the console
 	function hide() {
 		anime({
 			targets: '#battle-console',
@@ -203,7 +203,7 @@ window.BattleConsole = (function() {
 
 	// PUBLIC
 	return {
-		show: show,
+		display: display,
 		hide: hide,
 		log: function(str,next) {
 			log(str,next);
