@@ -86,7 +86,7 @@ window.Tally = (function() {
 		//console.log("startTally()", tally_game_status.skin, Skin.skins);
 
 		let str =
-			"<div class='tally draggable' id='tally_character' style='transform:translate(400px,-300px);'>" +
+			"<div class='tally draggable' id='tally_character' style='transform:translateY(-300px);'>" +
 				"<div class='tally tally_speech_bubble' id='tally_thought_bubble'>" +
 					"<div class='tally' id='tally_thought'></div>" +
 				"</div>" +
@@ -102,7 +102,7 @@ window.Tally = (function() {
 							"<span class='tally tally_eye_pupil'></span></span></span>" +
 				"</div>" +
 				"<div class='tally tally_stats'>" +
-					BattleStats.initBars("tally") +
+					BattleStats.returnDisplay("tally") +
 				"</div>" +
 			"</div>";
 		$('#tally_wrapper').append(str);
