@@ -63,6 +63,7 @@
             "assets/js/content/monster-award.js",
             "assets/js/content/monster.js",
             "assets/js/content/battle.js",
+            "assets/js/content/battle-test.js",
             "assets/js/content/battle-math.js",
             "assets/js/content/battle-effect.js",
             "assets/js/content/battle-stats.js",
