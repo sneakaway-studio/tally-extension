@@ -19,6 +19,11 @@ var BattleMath = (function() {
 		return change;
 	}
 	
+	function computeExp(selfStats, oppStats){
+		//Only once moster has been defeated
+		//Compute experience based on level
+	}
+	
 	function damageCalc(attackObj, selfStats, oppStats){
 		//Calculation
 	}
