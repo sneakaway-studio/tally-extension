@@ -19,15 +19,18 @@ var BattleMath = (function() {
 		return change;
 	}
 
-
+	function updateAllStats(attackObj, selfStats, oppStats){
+		//I think this will work better
+	}
 	function updateHealth(attackObj, selfStats, oppStats) {
 		// track changes
 		let change = {"val":0,"str":"health"};
-		tempRandomChangeVal(change); // Daniel, delete this once you get math working
+		// I don't understand this
+		
 		// do math and store in val
-
+		selfStats.health = selfStats.health * (oppStats.str * attackObj.damage)
 		// then apply value to stats
-
+		
 		// save stats
 
 		// return what happened so we can log it
@@ -39,11 +42,11 @@ var BattleMath = (function() {
 		let change = {"val":0,"str":"attack"};
 		tempRandomChangeVal(change); // Daniel, delete this once you get math working
 
-		if (prop(attackObj.selfAtk)) {
-			charStats.Attack = charStats.Attack * attackObj.selfAtk;
+		if (attackObj.selfAtk != NULL) {
+			selfStats.Attack = selfStats.Attack * attackObj.selfAtk;
 		}
 		if (attackObj.oppAtk != NULL) {
-			selfStats.Attack = selfStats.Attack * attackObj.selfAtk;
+			oppStats.Attack = oppStats.Attack * attackObj.oppAtk;
 		}
 
 		// return what happened so we can log it
@@ -56,7 +59,7 @@ var BattleMath = (function() {
 		tempRandomChangeVal(change); // Daniel, delete this once you get math working
 
 		if (attackObj.staminaCost != NULL) {
-			charStats.Stamina = charStats.Stamina - attackObj.staminaCost;
+			selfStats.Stamina = selfStats.Stamina - attackObj.staminaCost;
 		}
 
 		// return what happened so we can log it
@@ -69,10 +72,10 @@ var BattleMath = (function() {
 		tempRandomChangeVal(change); // Daniel, delete this once you get math working
 
 		if (attackObj.selfAcc != NULL) {
-			charStats.Accuracy = charStats.Accuracy * attackObj.selfAcc;
+			selfStats.Accuracy = selfStats.Accuracy * attackObj.selfAcc;
 		}
 		if (attackObj.oppAcc != NULL) {
-			selfStats.Accuracy = selfStats.Accuracy * attackObj.oppAcc;
+			oppStats.Accuracy = oppStats.Accuracy * attackObj.oppAcc;
 		}
 
 		// return what happened so we can log it
