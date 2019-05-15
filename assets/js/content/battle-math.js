@@ -25,7 +25,11 @@ var BattleMath = (function() {
 	}
 	
 	function damageCalc(attackObj, selfStats, oppStats){
-		//Calculation
+		var critical = 1;
+		if(Math.random < attackObj.crtChance){
+			critical = 2;
+		}
+		(((((2*/*level*/)/5)+2)*attackObj.damage*(selfStats.Attack/oppStats.Defense))/50)*critical;
 	}
 	
 	function willHit(attackObj, selfStats, oppStats){
