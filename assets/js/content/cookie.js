@@ -12,12 +12,12 @@ window.Cookie = (function() {
 		"health": {
 			"img": "cookie-dots.gif",
 			"value": Math.random(),
-			"affects": "hp",
+			"stat": "hp",
 		},
 		"stamina": {
 			"img": "cookie-waffle.gif",
 			"value": Math.random(),
-			"affects": "mp",
+			"stat": "mp",
 		}
 	};
 
@@ -51,7 +51,7 @@ window.Cookie = (function() {
 				"<img src='" + chrome.extension.getURL('assets/img/cookies/cookie-explosion.gif') +"'></div>";
 			$('.tally_cookie_wrapper').html(str);
 			Tally.updateStats({
-				"stat": cookie.affects,
+				"stat": cookie.stat,
 				"val": cookie.val
 			});
 		});

@@ -244,17 +244,17 @@ window.Tally = (function() {
 	}
 
 	function updateStats (data){
-		tallyStats[data.affects] += data.val;
+		tallyStats[data.stat] += data.val;
 
 		let r = Math.random();
-		if(r > .7)
+		if(r > 0.7)
 			Sound.playFile("powerups/Powerup9.wav");
-		else if(r > .3)
+		else if(r > 0.3)
 			Sound.playFile("powerups/Powerup10.wav");
 		else
 			Sound.playFile("powerups/Powerup16.wav");
 
-		Thought.show("Yay!");
+		Thought.show("Yay! You increased your "+ data.stat +"!");
 	}
 
 	// PUBLIC
