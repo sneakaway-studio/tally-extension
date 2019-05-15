@@ -28,6 +28,7 @@
 }
 .tally_cookie_inner{
     position: absolute;
+    cursor: pointer;
 }
 .tally_cookie_inner img{
     width: 100px;

@@ -86,7 +86,7 @@ window.Tally = (function() {
 		//console.log("startTally()", tally_game_status.skin, Skin.skins);
 
 		let str =
-			"<div class='tally draggable' id='tally_character' style='transform:translateY(-300px);'>" +
+			"<div class='tally draggable' id='tally_character'>" +// style='transform:translateY(-300px);'
 				"<div class='tally tally_speech_bubble' id='tally_thought_bubble'>" +
 					"<div class='tally' id='tally_thought'></div>" +
 				"</div>" +
@@ -243,13 +243,19 @@ window.Tally = (function() {
 		tallyStats = tallyResetStats;
 	}
 
-
+	function updateStats (data){
+		tallyStats[data.affects] += data.val;
+		Thought.show("Yay!");
+	}
 
 	// PUBLIC
 	return {
 		resetStatsForBattle: resetStatsForBattle,
 		stats: function(data){
 			return stats(data);
+		},
+		updateStats: function(data){
+			updateStats(data);
 		},
 		moveEye: function(which, how, event) {
 			moveEye(which, how, event);
@@ -292,13 +298,16 @@ Mousetrap.bind(k + ' x', function() { BattleStats.adjustStatsBar("tally","xp",Ma
 Mousetrap.bind(k + ' c', function() { BattleStats.adjustStatsBar("tally","mp",Math.random()); });
 Mousetrap.bind(k + ' v', function() { BattleStats.adjustStatsCircle("tally",Math.random()); });
 
-setInterval(function(){
-	BattleStats.adjustStatsBar("tally","hp",Math.random());
-	BattleStats.adjustStatsBar("tally","mp",Math.random());
-	BattleStats.adjustStatsBar("tally","xp",Math.random());
-	BattleStats.adjustStatsCircle("tally",Math.random());
-	//BattleStats.adjustStatsCircleText("tally",Math.random()*30);
-	BattleStats.adjustStatsBar("monster","hp",Math.random());
-	BattleStats.adjustStatsBar("monster","mp",Math.random());
-	BattleStats.adjustStatsCircle("monster",Math.random());
-},3000);
+
+Mousetrap.bind(k + ' v', function() { BattleTest.test(); });
+
+
+setInterval(function() {
+	BattleStats.adjustStatsBar("tally", "hp", Math.random());
+	BattleStats.adjustStatsBar("tally", "mp", Math.random());
+	BattleStats.adjustStatsCircle("tally", Math.random());
+
+	BattleStats.adjustStatsBar("monster", "hp", Math.random());
+	BattleStats.adjustStatsBar("monster", "mp", Math.random());
+	BattleStats.adjustStatsCircle("monster", Math.random());
+}, 3000);

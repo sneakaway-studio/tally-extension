@@ -42,11 +42,18 @@ window.Cookie = (function() {
 			y = Math.ceil(Math.random() * pageData.browser.height);
 		let css = "left:" + x + "px;top:" + y + "px;";
 		// html
-		let str = "<div class='tally_cookie_inner' style='" + css + "'>";
-		str += "<img src='" + chrome.extension.getURL('assets/img/cookies/'+cookie.img) + "'></div>";
+		let str = "<div class='tally_cookie_inner' style='" + css + "'>" +
+			"<img src='" + chrome.extension.getURL('assets/img/cookies/' + cookie.img) + "'></div>";
 		$('.tally_cookie_wrapper').html(str);
-		$(document).on("click",".tally_cookie_inner",function(){
+		$(document).on("click", ".tally_cookie_inner", function() {
 			console.log(cookie);
+			let str = "<div class='tally_cookie_inner' style='" + css + "'>" +
+				"<img src='" + chrome.extension.getURL('assets/img/cookies/cookie-explosion.gif') +"'></div>";
+			$('.tally_cookie_wrapper').html(str);
+			Tally.updateStats({
+				"stat": cookie.affects,
+				"val": cookie.val
+			});
 		});
 	}
 

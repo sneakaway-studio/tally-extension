@@ -21,6 +21,8 @@ $(function() {
 
 						// award
 						"<div class='tally tally_award_wrapper'></div>" +
+						// cokie
+						"<div class='tally tally_cookie_wrapper'></div>" +
 
 						// battle
 						"<div class='tally shadow-box-outer' id='battle-console'></div>" +
