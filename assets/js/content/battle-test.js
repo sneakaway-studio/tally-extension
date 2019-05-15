@@ -8,7 +8,7 @@ window.BattleTest = (function() {
 
 
 
-	function test1(){
+	function test(){
 		// run test
 	}
 
@@ -16,7 +16,7 @@ window.BattleTest = (function() {
 
 	// PUBLIC
 	return {
-		test1: test1,
+		test: test,
 
 	};
 })();

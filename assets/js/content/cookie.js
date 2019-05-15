@@ -38,8 +38,8 @@ window.Cookie = (function() {
 	// 3. add cookie to a page
 	function add() {
 		// position
-		let x = Math.ceil(Math.random() * pageData.browser.width),
-			y = Math.ceil(Math.random() * pageData.browser.height);
+		let x = Math.ceil(Math.random() * (pageData.browser.width-100)),
+			y = Math.ceil(Math.random() * (pageData.browser.height-100));
 		let css = "left:" + x + "px;top:" + y + "px;";
 		// html
 		let str = "<div class='tally_cookie_inner' style='" + css + "'>" +

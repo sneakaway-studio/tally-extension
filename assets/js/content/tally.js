@@ -245,6 +245,15 @@ window.Tally = (function() {
 
 	function updateStats (data){
 		tallyStats[data.affects] += data.val;
+
+		let r = Math.random();
+		if(r > .7)
+			Sound.playFile("powerups/Powerup9.wav");
+		else if(r > .3)
+			Sound.playFile("powerups/Powerup10.wav");
+		else
+			Sound.playFile("powerups/Powerup16.wav");
+
 		Thought.show("Yay!");
 	}
 

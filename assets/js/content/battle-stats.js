@@ -19,8 +19,8 @@ window.BattleStats = (function() {
 		"hp":   { "x":0, "y":0, "w":180, "h":20 },
 		"mpbg": { "x":0, "y":20, "w":150, "h":12 },
 		"mp":   { "x":0, "y":20, "w":130, "h":12 },
-		"xpbg": { "x":0, "y":32, "w":130, "h":12 },
-		"xp":   { "x":0, "y":32, "w":110, "h":12 },
+		// "xpbg": { "x":0, "y":32, "w":130, "h":12 },
+		// "xp":   { "x":0, "y":32, "w":110, "h":12 },
 		"circle":{ "cx":26, "cy":34, "r":22, "text":0 },
 	};
 	let monsterStatsPoints = tallyStatsPoints;
@@ -49,11 +49,11 @@ window.BattleStats = (function() {
 		// mp
 		str += '<polygon points="' + combinePoints(statsDisplay.mpbg) + '" class="stat-bar-mp-bg" />' +
 			'<polygon points="' + combinePoints(statsDisplay.mp) + '" data-value="0" class="stat-bar-mp" />';
-		// xp (only for tally)
-		if (who == "tally") {
-			str += '<polygon points="' + combinePoints(statsDisplay.xpbg) + '" class="stat-bar-xp-bg" />';
-			str += '<polygon points="' + combinePoints(statsDisplay.xp) + '" data-value="0" class="stat-bar-xp" />';
-		}
+		// // xp (only for tally)
+		// if (who == "tally") {
+		// 	str += '<polygon points="' + combinePoints(statsDisplay.xpbg) + '" class="stat-bar-xp-bg" />';
+		// 	str += '<polygon points="' + combinePoints(statsDisplay.xp) + '" data-value="0" class="stat-bar-xp" />';
+		// }
 		str += '</g>';
 
 		// circle
@@ -85,7 +85,7 @@ window.BattleStats = (function() {
 		// set new width
 		statsDisplay[bar].w = val * statsDisplay[bar + "bg"].w;
 		// log
-		console.log("adjustStatsBar()",who,bar,val);
+		//console.log("adjustStatsBar()",who,bar,val);
 		// animation
 		anime({
 			targets: '.' + who + '_stats .stat-bar-' + bar,
@@ -129,7 +129,7 @@ window.BattleStats = (function() {
 			"strokeDashoffset": circumference
 		});
 		// log
-		console.log("adjustStatsCircle()", who, val, circumference);
+		//console.log("adjustStatsCircle()", who, val, circumference);
 		adjustStatsCircleText(who, val * 30);
 	}
 

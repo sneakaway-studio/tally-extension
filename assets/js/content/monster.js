@@ -8,16 +8,16 @@ window.Monster = (function() {
 
 
 	var monsterStats = {
-		"health":100,
-		"attack":100,
-		"stamina":100,
-		"accuracy":100,
-		"evasion":100,
-		"defense":100,
+		"health": 100,
+		"attack": 100,
+		"stamina": 100,
+		"accuracy": 100,
+		"evasion": 100,
+		"defense": 100,
 	};
 
-	function stats(_stats){
-		if (_stats && _stats.health){
+	function stats(_stats) {
+		if (_stats && _stats.health) {
 			// update stats
 			monsterStats = _stats;
 		}
@@ -30,13 +30,13 @@ window.Monster = (function() {
 	 */
 	function create(_mid, _stage = 1) {
 		if (!prop(_mid) || !prop(_stage) || !prop(MonsterData.dataById[_mid])) return;
-		if (DEBUG) console.log('⊙!⊙⊙⊙ Monster.create()', "_mid="+_mid, "_stage="+_stage, MonsterData.dataById[_mid]);
+		if (DEBUG) console.log('⊙!⊙⊙⊙ Monster.create()', "_mid=" + _mid, "_stage=" + _stage, MonsterData.dataById[_mid]);
 		let monster = {
 			"totalCaptured": 0,
 			"captured": 0,
 			"missed": 0,
 			"facing": MonsterData.dataById[_mid].facing,
-			"level": 1,
+			"level": returnMonsterLevel(),
 			"mid": _mid,
 			"stage": _stage,
 			"stats": stats(),
@@ -51,6 +51,19 @@ window.Monster = (function() {
 	}
 
 
+	function returnMonsterLevel() {
+		let ul = tally_user.score.level,
+			factor = 0.5;
+		if (ul > 15) factor = 0.4;
+		if (ul > 30) factor = 0.2;
+		if (ul > 60) factor = 0.1;
+		let min = Math.floor(ul - (ul * factor)),
+			max = Math.ceil(ul + (ul * factor));
+		let r = Math.floor(Math.random() * (max - min) + min);
+		if (r < 2) r = 2;
+		return r;
+	}
+
 
 
 	/**
@@ -60,12 +73,12 @@ window.Monster = (function() {
 		// don't launch them if game isn't running in full mode
 		if (tally_options.gameMode != "full") return;
 
-// // testing
-// if (_mid == null || !tally_nearby_monsters[_mid])
-// 	// add one
-// 	_mid = test();
+		// // testing
+		// if (_mid == null || !tally_nearby_monsters[_mid])
+		// 	// add one
+		// 	_mid = test();
 
-tally_nearby_monsters[_mid] = create(_mid,3);
+		tally_nearby_monsters[_mid] = create(_mid, 3);
 
 
 		if (DEBUG) console.log('⊙⊙⊙!⊙ Monster.display()', _mid, tally_nearby_monsters[_mid]);
@@ -132,7 +145,7 @@ tally_nearby_monsters[_mid] = create(_mid,3);
 		return currentMID;
 	}
 
-	function testLaunch(){
+	function testLaunch() {
 		launch(test());
 		// testing
 		//MonsterAward.capture(_mid);
@@ -152,8 +165,8 @@ tally_nearby_monsters[_mid] = create(_mid,3);
 		if (DEBUG) console.log('⊙⊙⊙!⊙ Monster.launch()', mid, tally_nearby_monsters[mid]);
 
 		// if they already have this one, add and increase the level
-//		if (tally_user.monsters[mid])
-//			tally_nearby_monsters[mid].level = tally_user.monsters[mid].level + 1;
+		//		if (tally_user.monsters[mid])
+		//			tally_nearby_monsters[mid].level = tally_user.monsters[mid].level + 1;
 		// reference to image file
 		var url = chrome.extension.getURL('assets/img/monsters-300h/' + mid + '-anim-sheet.png');
 		// set content
@@ -174,7 +187,7 @@ tally_nearby_monsters[_mid] = create(_mid,3);
 
 
 
-	function generateMonsterValues(){
+	function generateMonsterValues() {
 
 		// generate a monsterLevel
 		// monsterLevel = tallyLevel + frequency + randomness
@@ -255,19 +268,19 @@ tally_nearby_monsters[_mid] = create(_mid,3);
 
 	// PUBLIC
 	return {
-		create: function(mid){
+		create: function(mid) {
 			return create(mid);
 		},
-		display: function(mid){
+		display: function(mid) {
 			display(mid);
 		},
-		saveAndPush: function(mid){
+		saveAndPush: function(mid) {
 			return saveAndPush(mid);
 		},
 		current: getCurrent,
 		test: test,
 		testLaunch: testLaunch,
-		stats: function(data){
+		stats: function(data) {
 			return stats(data);
 		},
 	};
