@@ -86,6 +86,8 @@ function startGameOnPage() {
 	MonsterCheck.check();
 	// update debugger
 	Debug.update();
+	// possibly add a cookie
+	Cookie.create();
 }
 
 /**

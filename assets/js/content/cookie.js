@@ -6,37 +6,48 @@
 window.Cookie = (function() {
 	// PRIVATE
 
-	var types = [
-		"health", "manna"
-	];
+	let cookie = {};
 
-	function createNew() {
-		var obj = {
-			type: types[Math.floor(Math.random() * types.length)], //
-			duration: -1, // -1, 0, 2000
-			value: 0, // power of cookie,
-			effects: "", // what does it affect
-			icon: ""
-		};
-		if (obj.type == "health") {
-			obj.value = Math.random();
-			obj.effect = "hp";
-		} else if (obj.type == "manna") {
-			obj.value = Math.random();
-			obj.effect = "xp";
+	var types = {
+		"health": {
+			"img": "cookie-dots.gif",
+			"value": Math.random(),
+			"affects": "hp",
+		},
+		"stamina": {
+			"img": "cookie-waffle.gif",
+			"value": Math.random(),
+			"affects": "mp",
 		}
+	};
 
-		return obj;
+	// 1. determine if we will generate a cookie on this page
+	function randomizer() {
+		let r = Math.random();
+		if (r > 0.5)
+			create();
+		else
+			return false;
 	}
-
-
-
-
-	// add cookie to a page
-	function generate() {
-		var cookie = createNew();
+	// 2. if so, then make a new one from list
+	function create() {
+		var obj = randomObjProperty(types);
+		cookie = obj;
+		add();
+	}
+	// 3. add cookie to a page
+	function add() {
 		// position
-
+		let x = Math.ceil(Math.random() * pageData.browser.width),
+			y = Math.ceil(Math.random() * pageData.browser.height);
+		let css = "left:" + x + "px;top:" + y + "px;";
+		// html
+		let str = "<div class='tally_cookie_inner' style='" + css + "'>";
+		str += "<img src='" + chrome.extension.getURL('assets/img/cookies/'+cookie.img) + "'></div>";
+		$('.tally_cookie_wrapper').html(str);
+		$(document).on("click",".tally_cookie_inner",function(){
+			console.log(cookie);
+		});
 	}
 
 	// user has clicked a cookie
@@ -57,6 +68,8 @@ window.Cookie = (function() {
 
 	// PUBLIC
 	return {
-
+		randomizer: randomizer,
+		create: create,
+		add: add,
 	};
 })();
