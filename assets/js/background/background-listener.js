@@ -19,7 +19,7 @@ chrome.runtime.onMessage.addListener(
 		/*  PAGE MANAGEMENT
 		 ******************************************************************************/
 
-		// openPage 
+		// openPage
  		else if (request.action == "openPage") {
 			if (request.url)
 				chrome.tabs.create({url: request.url });
@@ -333,7 +333,9 @@ function adjustScore(_score, scoreObj, n) {
 		}
 		// check to see if user level should be upgraded
 		for (var level in gameRules.levels) {
-			if (gameRules.levels[level].minScore) {}
+			if (gameRules.levels[level].minScore) {
+				
+			}
 		}
 	}
 	return _score;

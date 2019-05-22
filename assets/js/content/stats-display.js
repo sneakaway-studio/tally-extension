@@ -1,9 +1,9 @@
 "use strict";
 
-/*  BATTLE STATS
+/*  STATS DISPLAY
  ******************************************************************************/
 
-window.BattleStats = (function() {
+window.StatsDisplay = (function() {
 	// PRIVATE
 
 
@@ -177,6 +177,7 @@ window.BattleStats = (function() {
 
 
 
+
 	// PUBLIC
 	return {
 		returnDisplay: function(who) {
@@ -190,6 +191,6 @@ window.BattleStats = (function() {
 		},
 		adjustStatsCircleText: function(who, val) {
 			adjustStatsCircleText(who, val);
-		}
+		},
 	};
 })();

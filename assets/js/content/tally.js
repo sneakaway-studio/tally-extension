@@ -102,7 +102,7 @@ window.Tally = (function() {
 							"<span class='tally tally_eye_pupil'></span></span></span>" +
 				"</div>" +
 				"<div class='tally tally_stats'>" +
-					BattleStats.returnDisplay("tally") +
+					StatsDisplay.returnDisplay("tally") +
 				"</div>" +
 			"</div>";
 		$('#tally_wrapper').append(str);
@@ -302,21 +302,21 @@ Mousetrap.bind('escape', function() { Battle.end(); });
 Mousetrap.bind(k + ' e', function() { Effect.explode(); });
 
 
-Mousetrap.bind(k + ' z', function() { BattleStats.adjustStatsBar("tally","hp",Math.random()); });
-Mousetrap.bind(k + ' x', function() { BattleStats.adjustStatsBar("tally","xp",Math.random()); });
-Mousetrap.bind(k + ' c', function() { BattleStats.adjustStatsBar("tally","mp",Math.random()); });
-Mousetrap.bind(k + ' v', function() { BattleStats.adjustStatsCircle("tally",Math.random()); });
+Mousetrap.bind(k + ' z', function() { StatsDisplay.adjustStatsBar("tally","hp",Math.random()); });
+Mousetrap.bind(k + ' x', function() { StatsDisplay.adjustStatsBar("tally","xp",Math.random()); });
+Mousetrap.bind(k + ' c', function() { StatsDisplay.adjustStatsBar("tally","mp",Math.random()); });
+Mousetrap.bind(k + ' v', function() { StatsDisplay.adjustStatsCircle("tally",Math.random()); });
 
 
 Mousetrap.bind(k + ' v', function() { BattleTest.test(); });
 
 
 setInterval(function() {
-	BattleStats.adjustStatsBar("tally", "hp", Math.random());
-	BattleStats.adjustStatsBar("tally", "mp", Math.random());
-	BattleStats.adjustStatsCircle("tally", Math.random());
+	StatsDisplay.adjustStatsBar("tally", "hp", Math.random());
+	StatsDisplay.adjustStatsBar("tally", "mp", Math.random());
+	StatsDisplay.adjustStatsCircle("tally", Math.random());
 
-	BattleStats.adjustStatsBar("monster", "hp", Math.random());
-	BattleStats.adjustStatsBar("monster", "mp", Math.random());
-	BattleStats.adjustStatsCircle("monster", Math.random());
+	StatsDisplay.adjustStatsBar("monster", "hp", Math.random());
+	StatsDisplay.adjustStatsBar("monster", "mp", Math.random());
+	StatsDisplay.adjustStatsCircle("monster", Math.random());
 }, 3000);

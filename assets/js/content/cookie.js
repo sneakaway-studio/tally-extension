@@ -31,6 +31,8 @@ window.Cookie = (function() {
 	}
 	// 2. if so, then make a new one from list
 	function create() {
+		if (!pageData.activeOnPage || tally_options.gameMode !== "full") return;
+		//console.log("Cookie.create()",tally_options.gameMode);
 		var obj = randomObjProperty(types);
 		cookie = obj;
 		add();
@@ -58,8 +60,8 @@ window.Cookie = (function() {
 	}
 
 	// user has clicked a cookie
-	function pickup() {
-
+	function pickup(cookieObj) {
+		rechargeFromCookie(cookieObj)
 	}
 
 	// use the cookie

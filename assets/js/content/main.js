@@ -88,6 +88,8 @@ function startGameOnPage() {
 	Debug.update();
 	// possibly add a cookie
 	Cookie.create();
+	// check recharge status
+	StatsDisplay.rechargeSinceLastActive();
 }
 
 /**
