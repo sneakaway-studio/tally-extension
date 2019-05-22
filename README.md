@@ -57,6 +57,12 @@ Current version 0.1.1
 
 
 
-## Software
+## Dependencies
 
-[Mousetrap](https://craig.is/killing/mice) by Craig Campbell
+[Mousetrap.js](https://craig.is/killing/mice)
+[Moment.js](https://momentjs.com/)
+[Anime.js](https://animejs.com/)
+[CSShake](https://elrumordelaluz.github.io/csshake/)
+[jQuery](https://jquery.com/)
+[jQuery Growl](http://ksylvest.github.io/jquery-growl/)
+[Store2](https://www.npmjs.com/package/store2)

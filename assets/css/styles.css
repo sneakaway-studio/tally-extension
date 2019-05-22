@@ -25,6 +25,7 @@
 
 
 .tally_cookie_wrapper{
+    z-index: 9999999;
 }
 .tally_cookie_inner{
     position: absolute;

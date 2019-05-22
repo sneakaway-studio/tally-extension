@@ -69,6 +69,7 @@ function launchStartScreen() {
 function createUser() {
 	var obj = {
 		"username": "",
+		"lastActive": moment().format(),
 		"score": createScore(),
 		"achievements": createAchievements(),
 		"monsters": createMonsters(),
@@ -159,7 +160,7 @@ function createMeta() {
 	var manifestData = chrome.runtime.getManifest();
 	var obj = {
 		"version": manifestData.version, // set in manifest
-		"installedOn": returnDateISO(),
+		"installedOn": moment().format(),
 		"lastSyncedToServer": 0,
 		"lastSyncedResult": 0,
 		"userAuthenticated": 0,

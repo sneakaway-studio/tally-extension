@@ -64,9 +64,13 @@ function verifyToken(callback) {
 	}).done(result => {
 		//console.log("<{!}> verifyToken()", JSON.stringify(result));
 		let diff = null;
+		//console.log("result.tokenExpires",result.tokenExpires,moment().format(result.tokenExpires));
 		// check date on token
-		if (result.tokenExpires)
-			diff = returnDateDifferenceMinutes(result.tokenExpires);
+		if (result.tokenExpires){
+			//diff = returnDateDifferenceMinutes(result.tokenExpires);
+			// console.log("diff",diff,moment(result.tokenExpires).diff(moment()));
+			diff = FS_Date.difference(result.tokenExpires,"now");
+		}
 		// if diff is > 0 (in the future)
 		if (diff && diff > 0) {
 			console.log("<{!}> verifyToken() OK", diff, result.tokenExpires);
@@ -85,8 +89,9 @@ function verifyToken(callback) {
  *  Handle token status
  */
 function handleTokenStatus(_expires, _expiresDiff, _status, _valid) {
+	//console.log("handleTokenStatus()",_expires, _expiresDiff, _status, _valid);
 	let _tally_meta = store("tally_meta");
-	_tally_meta.userTokenExpires = _expires;
+	_tally_meta.userTokenExpires = moment().format(_expires);
 	_tally_meta.userTokenExpiresDiff = _expiresDiff;
 	_tally_meta.userTokenStatus = _status;
 	_tally_meta.userTokenValid = _valid;
@@ -180,7 +185,7 @@ function sendMonsterUpdate(data) {
  *  Refresh monsters from API server
  */
 function getMonstersFromServer() {
-	console.log("<{!}> getMonstersFromServer()");
+	//console.log("<{!}> getMonstersFromServer()");
 	let _tally_meta = store("tally_meta"),
 		_tally_user = store("tally_user"),
 		_tally_top_monsters = store("tally_top_monsters"),

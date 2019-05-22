@@ -8,25 +8,32 @@ window.Stats = (function() {
 
 
 
-	
-
-
-
-	function rechargeFromCookie(cookieObj){
+	function adjustLevel() {
 
 	}
 
-	function rechargeSinceLastActive(){
+
+
+	function rechargeFromCookie(cookieObj) {
+
+	}
+
+	function rechargeSinceLastActive() {
+		// console.log(moment(tally_user.lastActive).format());
+		// console.log("now", moment().format());
+		// console.log(FS_Date.moreThan("now", tally_user.lastActive, 10, "minutes"));
+		// console.log(FS_Date.moreThanOneHourAgo(tally_user.lastActive));
+
 		// if player hasn't been online for 1 hour then recharge
-		// if (){
-		//
-		// }
-		// update last active
-		tally_user.lastActive = returnDateISO();
-		store("tally_user", tally_user);
+		if (FS_Date.moreThanOneHourAgo(tally_user.lastActive)) {
+			// update stats
 
-		console.log(tally_user);
+			// tell them
 
+			// update last active
+			tally_user.lastActive = moment().format();
+			saveUser();
+		}
 	}
 
 
@@ -36,7 +43,7 @@ window.Stats = (function() {
 	return {
 
 		rechargeSinceLastActive: rechargeSinceLastActive,
-		rechargeFromCookie: function(cookieObj){
+		rechargeFromCookie: function(cookieObj) {
 			rechargeFromCookie(cookieObj);
 		}
 	};
