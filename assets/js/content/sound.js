@@ -27,20 +27,28 @@ window.Sound = (function() {
 			"awards": {
 				"monster": "Victory-3.mp3"
 			},
+			"jumps": {
+				"jump1-1": "Jump1-1.wav",
+				"jump1-2": "Jump1-2.wav",
+				"jump1-3": "Jump1-3.wav",
+			},
 			"monsters": {},
 			"songs": {},
 			"user": {
 				"click": "Pickup-coin2.wav",
 			},
 			"powerups": {
-				"powerup1":"powerup1.wav",
-				"powerup2":"powerup2.wav",
-				"powerup3":"powerup3.wav",
-				"powerup4":"powerup4.wav",
-				"powerup5":"powerup5.wav",
-				"powerup6":"powerup6.wav",
-				"powerup7":"powerup7.wav",
-				"powerup8":"powerup8.wav",
+				"powerup1": "powerup1.wav",
+				"powerup2": "powerup2.wav",
+				"powerup3": "powerup3.wav",
+				"powerup4": "powerup4.wav",
+				"powerup5": "powerup5.wav",
+				"powerup6": "powerup6.wav",
+				"powerup7": "powerup7.wav",
+				"powerup8": "powerup8.wav",
+				"powerup8": "powerup9.wav",
+				"powerup8": "powerup10.wav",
+				"powerup8": "powerup11.wav",
 			}
 		};
 
@@ -54,6 +62,15 @@ window.Sound = (function() {
 		question: 2,
 		sad: 1
 	};
+
+	function playRandomPowerup() {
+		Sound.playFile("powerups/" + randomObjProperty(sounds.powerups));
+	}
+
+	function playRandomJump() {
+		console.log("Sound.playRandomJump()");
+		Sound.playFile("jumps/" + randomObjProperty(sounds.jumps));
+	}
 
 
 	/**
@@ -92,7 +109,7 @@ window.Sound = (function() {
 	function playMood(mood) {
 		if (!tally_options.playSounds || !prop(mood)) return;
 		if (mood == "award") mood = "happy";
-		if(DEBUG) console.log("Sound.playMood()", mood);
+		if (DEBUG) console.log("Sound.playMood()", mood);
 		let r = Math.ceil(Math.random() * moods[mood]);
 		let file = "tally/moods-v2/" + mood + "-" + r + "-2.mp3";
 		play(file, 150);
@@ -127,12 +144,12 @@ window.Sound = (function() {
 	 *	Generic play function (called from others in this obj)
 	 */
 	function play(soundFile, delay = 0, volumeModifier = 0) {
-		if(DEBUG) console.log("♪♪♪♪♪ Sound.play(" + soundFile + "," + delay + "," + volumeModifier + ")");
+		if (DEBUG) console.log("♪♪♪♪♪ Sound.play(" + soundFile + "," + delay + "," + volumeModifier + ")");
 
 		// reference to audio element
 		var audio = document.querySelector('#tally_audio');
 		// add source
-		$('#tally_audio_source').attr("src",chrome.extension.getURL("assets/sounds/" + soundFile));
+		$('#tally_audio_source').attr("src", chrome.extension.getURL("assets/sounds/" + soundFile));
 		// set params
 		audio.volume = (tally_options.soundVolume || 0.3) + volumeModifier;
 		if (audio.volume < 0) audio.volume = 0;
@@ -161,6 +178,8 @@ window.Sound = (function() {
 		playRandom: function(category, index, delay) {
 			playRandom(category, index, delay);
 		},
+		playRandomPowerup: playRandomPowerup,
+		playRandomJump: playRandomJump,
 		playCategory: function(category, index, delay) {
 			playCategory(category, index, delay);
 		},
@@ -170,6 +189,6 @@ window.Sound = (function() {
 		playMood: function(mood) {
 			playMood(mood);
 		},
-		sounds:sounds
+		sounds: sounds
 	};
 })();
