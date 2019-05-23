@@ -7,22 +7,6 @@ window.Monster = (function() {
 		secondsBeforeDelete = 300; // 60 seconds for testing
 
 
-	var monsterStats = {
-		"health": 100,
-		"attack": 100,
-		"stamina": 100,
-		"accuracy": 100,
-		"evasion": 100,
-		"defense": 100,
-	};
-
-	function stats(_stats) {
-		if (_stats && _stats.health) {
-			// update stats
-			monsterStats = _stats;
-		}
-		return monsterStats;
-	}
 
 
 	/**
@@ -39,7 +23,7 @@ window.Monster = (function() {
 			"level": returnMonsterLevel(),
 			"mid": _mid,
 			"stage": _stage,
-			"stats": stats(),
+			"stats": Stats.monster(),
 			"slug": MonsterData.dataById[_mid].slug,
 			"updatedAt": Date.now()
 		};
@@ -195,8 +179,8 @@ window.Monster = (function() {
 		// 	7		+     (0)    +     +/- 1
 		// 	7		+     (4)   +     +/- 1
 
-		// generate the hp, str, df
-		// hp = monsterLevel * monster.hp;
+		// generate the health, str, df
+		// health = monsterLevel * monster.health;
 
 
 	}
@@ -280,8 +264,5 @@ window.Monster = (function() {
 		current: getCurrent,
 		test: test,
 		testLaunch: testLaunch,
-		stats: function(data) {
-			return stats(data);
-		},
 	};
 }());

@@ -89,7 +89,7 @@ function startGameOnPage() {
 	// possibly add a cookie
 	Cookie.create();
 	// check recharge status
-	Stats.rechargeSinceLastActive();
+	Stats.checkLastActive();
 }
 
 /**

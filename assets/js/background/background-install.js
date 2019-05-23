@@ -75,7 +75,12 @@ function createUser() {
 		"monsters": createMonsters(),
 		"skins": ["color-magenta"],
 		"stats": {
-			"hp":0,"xp":0,"str":0,"df":0
+			"health": 1.0,
+			"attack": 1.0,
+			"stamina": 1.0,
+			"accuracy": 1.0,
+			"evasion": 1.0,
+			"defense": 1.0,
 		},
 		"attacks":{}
 	};

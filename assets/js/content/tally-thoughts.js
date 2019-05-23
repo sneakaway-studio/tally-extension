@@ -135,7 +135,7 @@ window.Thought = (function() {
 		// make Tally look at user
 		Tally.stare();
 		// hide after appropriate reading period
-		//setTimeout(hide, duration);
+		setTimeout(hide, duration);
 	}
 
 	function hide() {

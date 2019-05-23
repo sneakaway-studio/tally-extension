@@ -78,12 +78,12 @@
 .stats-display { width:230;  }
 
 .stat-bars { stroke-width:0; transform:translateX(30px); }
-.stat-bar-hp { fill:#27c70c; }
-.stat-bar-hp-bg { fill:#d32cf1; }
-.stat-bar-mp { fill:#28a2f9;  }
-.stat-bar-mp-bg { fill:#494949; }
-.stat-bar-xp { fill:#ff9900; }
-.stat-bar-xp-bg { fill:#494949; }
+.stat-bar-health { fill:#27c70c; }
+.stat-bar-health-bg { fill:#d32cf1; }
+.stat-bar-stamina { fill:#28a2f9;  }
+.stat-bar-stamina-bg { fill:#494949; }
+.stat-bar-experience { fill:#ff9900; }
+.stat-bar-experience-bg { fill:#494949; }
 .stat-bar-circle {
     fill:#282c35;
     stroke-width: 5px;
@@ -143,13 +143,13 @@
 #battle-console-stream .text-tally {
     color: #fd5be9
 }
-#battle-console-stream .text-hp {
+#battle-console-stream .text-green {
     color: #83ff60
 }
-#battle-console-stream .text-mp {
+#battle-console-stream .text-blue {
     color: #6ebff9
 }
-#battle-console-stream .text-xp {
+#battle-console-stream .text-yellow {
     color: #fec875
 }
 /* blinking cursor */

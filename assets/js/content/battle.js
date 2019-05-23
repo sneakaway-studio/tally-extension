@@ -156,9 +156,9 @@ window.Battle = (function() {
 	 */
 	function getStat(who) {
 		if (who == "tally")
-			return Tally.stats();
+			return tally_user.stats; //Stats.tally();
 		else
-			return Monster.stats();
+			return Stats.monster();
 	}
 
 

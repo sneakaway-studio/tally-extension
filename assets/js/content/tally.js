@@ -136,7 +136,7 @@ window.Tally = (function() {
 
 
 
-
+		Stats.startTally();
 
 
 // Battle.test();
@@ -213,59 +213,12 @@ window.Tally = (function() {
 	}
 
 
-	var tallyResetStats = {
-		"health":100,
-		"attack":100,
-		"stamina":100,
-		"accuracy":100,
-		"evasion":100,
-		"defense":100,
-	};
 
-	var tallyStats = {
-		"health":100,
-		"attack":100,
-		"stamina":100,
-		"accuracy":100,
-		"evasion":100,
-		"defense":100,
-	};
 
-	function stats(_stats){
-		if (_stats && _stats.health){
-			// update stats
-			tallyStats = _stats;
-		}
-		return tallyStats;
-	}
 
-	function resetStatsForBattle (){
-		tallyStats = tallyResetStats;
-	}
-
-	function updateStats (data){
-		tallyStats[data.stat] += data.val;
-
-		let r = Math.random();
-		if(r > 0.7)
-			Sound.playFile("powerups/Powerup9.wav");
-		else if(r > 0.3)
-			Sound.playFile("powerups/Powerup10.wav");
-		else
-			Sound.playFile("powerups/Powerup16.wav");
-
-		Thought.show("Yay! You increased your "+ data.stat +"!");
-	}
 
 	// PUBLIC
 	return {
-		resetStatsForBattle: resetStatsForBattle,
-		stats: function(data){
-			return stats(data);
-		},
-		updateStats: function(data){
-			updateStats(data);
-		},
 		moveEye: function(which, how, event) {
 			moveEye(which, how, event);
 		},
@@ -302,21 +255,20 @@ Mousetrap.bind('escape', function() { Battle.end(); });
 Mousetrap.bind(k + ' e', function() { Effect.explode(); });
 
 
-Mousetrap.bind(k + ' z', function() { StatsDisplay.adjustStatsBar("tally","hp",Math.random()); });
-Mousetrap.bind(k + ' x', function() { StatsDisplay.adjustStatsBar("tally","xp",Math.random()); });
-Mousetrap.bind(k + ' c', function() { StatsDisplay.adjustStatsBar("tally","mp",Math.random()); });
-Mousetrap.bind(k + ' v', function() { StatsDisplay.adjustStatsCircle("tally",Math.random()); });
+Mousetrap.bind(k + ' z', function() { StatsDisplay.adjustStatsBar("tally","health",Math.random()); });
+Mousetrap.bind(k + ' x', function() { StatsDisplay.adjustStatsBar("tally","stamina",Math.random()); });
+Mousetrap.bind(k + ' v', function() { StatsDisplay.adjustStatsCircle("tally", Math.random()); });
 
 
 Mousetrap.bind(k + ' v', function() { BattleTest.test(); });
 
 
-setInterval(function() {
-	StatsDisplay.adjustStatsBar("tally", "hp", Math.random());
-	StatsDisplay.adjustStatsBar("tally", "mp", Math.random());
-	StatsDisplay.adjustStatsCircle("tally", Math.random());
-
-	StatsDisplay.adjustStatsBar("monster", "hp", Math.random());
-	StatsDisplay.adjustStatsBar("monster", "mp", Math.random());
-	StatsDisplay.adjustStatsCircle("monster", Math.random());
-}, 3000);
+// setInterval(function() {
+// 	StatsDisplay.adjustStatsBar("tally", "health", Math.random());
+// 	StatsDisplay.adjustStatsBar("tally", "stamina", Math.random());
+// 	StatsDisplay.adjustStatsCircle("tally", Math.random());
+//
+// 	StatsDisplay.adjustStatsBar("monster", "health", Math.random());
+// 	StatsDisplay.adjustStatsBar("monster", "stamina", Math.random());
+// 	StatsDisplay.adjustStatsCircle("monster", Math.random());
+// }, 3000);

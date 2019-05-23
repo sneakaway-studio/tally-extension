@@ -3,7 +3,7 @@
 /*  NUMBER FUNCTIONS
  ******************************************************************************/
 
-window.NumberFunctions = (function() {
+window.FS_Number = (function() {
 
 	// PUBLIC
 	return {

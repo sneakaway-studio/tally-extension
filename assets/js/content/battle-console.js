@@ -189,9 +189,9 @@ window.BattleConsole = (function() {
 		if (str == undefined) return;
 		//console.log(str);
 		str = str.replace("Tally", "<span class='text-tally'>Tally</span>");
-		str = str.replace(Battle.details.monsterName, "<span class='text-xp'>" + Battle.details.monsterName + "</span>");
-		str = str.replace(Battle.details.mostRecentAttack, "<span class='text-mp'>" + Battle.details.mostRecentAttack + "</span>");
-		str = str.replace(Battle.details.mostRecentDamage, "<span class='text-hp'>" + Battle.details.mostRecentDamage + "</span>");
+		str = str.replace(Battle.details.monsterName, "<span class='text-green'>" + Battle.details.monsterName + "</span>");
+		str = str.replace(Battle.details.mostRecentAttack, "<span class='text-yellow'>" + Battle.details.mostRecentAttack + "</span>");
+		str = str.replace(Battle.details.mostRecentDamage, "<span class='text-blue'>" + Battle.details.mostRecentDamage + "</span>");
 		$("#" + ele).html(str);
 	}
 

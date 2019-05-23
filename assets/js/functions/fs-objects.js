@@ -4,6 +4,24 @@
 ******************************************************************************/
 
 
+window.FS_Object = (function() {
+
+	// PUBLIC
+	return {
+        // use like FS_Object.lastKeyValue(gameRules.levels).level;
+		lastKeyValue: function(obj) {
+			return obj[Object.keys(obj)[Object.keys(obj).length - 1]];
+		},
+	};
+})();
+
+
+
+
+
+
+
+
 /**
  *	Make sure a property or method is:
  *	1. declared
