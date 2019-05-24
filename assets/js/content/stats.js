@@ -8,30 +8,23 @@ window.Stats = (function() {
 
 	var monsterStats = {
 		"health": 1.0,
-		"attack": 1.0,
 		"stamina": 1.0,
 		"accuracy": 1.0,
-		"evasion": 1.0,
+		"attack": 1.0,
 		"defense": 1.0,
+		"evasion": 1.0,
 	};
 
 	var tallyResetStats = {
 		"health": 1.0,
-		"attack": 1.0,
 		"stamina": 1.0,
 		"accuracy": 1.0,
-		"evasion": 1.0,
+		"attack": 1.0,
 		"defense": 1.0,
+		"evasion": 1.0,
 	};
 
-	// var tallyStats = {
-	// 	"health": 1.0,
-	// 	"attack": 1.0,
-	// 	"stamina": 1.0,
-	// 	"accuracy": 1.0,
-	// 	"evasion": 1.0,
-	// 	"defense": 1.0,
-	// };
+
 
 
 	function startTally() {
@@ -62,31 +55,61 @@ window.Stats = (function() {
 		monsterStats = tallyResetStats;
 	}
 
-	function update(data) {
-		console.log("Stats.update()", data);
-		tally_user.stats[data.stat] += data.val;
-		// move tally up
-		anime({
-			targets: '#tally_character',
-			translateY: "-230px",
-			elasticity: 0,
-			duration: 500,
-			easing: 'easeOutCubic',
-			complete: function(anim) {
-				// adjust stats display
-				StatsDisplay.adjustStatsBar("tally", data.stat, Math.random());
-				setTimeout(function() {
-					// tell them
-					Thought.show("Yay! You increased your " + data.stat + "!", "happy", true);
-				}, 500);
-				// move tally down
-				setTimeout(function() {
-					moveTallyBack();
-				}, 2000);
-			}
-		});
+	function update(statData) {
+		// update stat
+		tally_user.stats[statData.stat] = FS_Number.clamp(tally_user.stats[statData.stat] + statData.val, 0, 1);
+		// save user
+		saveUser();
+
+$('.tally_stats_full').html(StatsDisplay.returnFullBox("tally"));
+
+console.log("Stats.update()", statData, statData.stat, tally_user.stats);
+		if (tally_user.stats[statData.stat] >= 1){
+			Thought.show("Your " + statData.stat + " is topped-off!", "happy", true);
+		} else {
+			// // move tally up
+			// anime({
+			// 	targets: '#tally_character',
+			// 	translateY: "-230px",
+			// 	elasticity: 0,
+			// 	duration: 500,
+			// 	easing: 'easeOutCubic',
+			// 	complete: function(anim) {
+			// 		// adjust stats display
+			// 		StatsDisplay.adjustStatsBar("tally", statData.stat, tally_user.stats[statData.stat]);
+			// 		setTimeout(function() {
+			// 			// tell them
+			// 			Thought.show("Yay! You increased your " + statData.stat + "!", "happy", true);
+			// 		}, 500);
+			// 		// move tally down
+			// 		setTimeout(function() {
+			// 			moveTallyBack();
+			// 		}, 2000);
+			// 	}
+			// });
+
+
+			// adjust stats display
+			StatsDisplay.adjustStatsBar("tally", statData.stat, tally_user.stats[statData.stat]);
+			setTimeout(function() {
+				// tell them
+				Thought.show("Yay! You increased your " + statData.stat + "!", "happy", true);
+			}, 500);
+
+
+		}
 	}
 
+
+	//
+	// // only proceed if ...
+	// if (bar !== "health" || bar != "stamina") {
+	// 	if (oldBar.w < statsDisplay[bar])
+	// 		Sound.playRandomJumpReverse();
+	// 	else
+	// 		Sound.playRandomJump();
+	// 	return;
+	// }
 
 	function moveTallyBack() {
 		anime({
@@ -148,7 +171,7 @@ window.Stats = (function() {
 		update: function(data) {
 			update(data);
 		},
-
+		tallyResetStats: tallyResetStats,
 
 
 		checkLastActive: checkLastActive,

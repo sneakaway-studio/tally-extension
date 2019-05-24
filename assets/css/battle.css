@@ -1,19 +1,13 @@
 /*  BATTLE
 ******************************************************************************/
-
 /* shadow box with background */
 .shadow-box-outer {
     box-sizing: border-box;
     z-index: 9999999999999;
 }
-.shadow-box-inner {
-
-}
-
-
+.shadow-box-inner {}
 /*  ATTACKS
 ******************************************************************************/
-
 #battle_projectile, #explosion_sprite_container {
     display: block;
     top: -300px;
@@ -27,10 +21,10 @@
     border-radius: 50%;
     background-color: #d32cf1;
     background: url("chrome-extension://__MSG_@@extension_id__/assets/img/number-ball.gif") center center no-repeat;
-
 }
 #explosion_sprite_container {
-    height: 250px; width: 250px;
+    height: 250px;
+    width: 250px;
 }
 #explosion_sprite {
     position: relative;
@@ -42,8 +36,10 @@
 }
 #explosion_sprite_inner {
     position: absolute;
-    left: 0; top: 0;
-    height: 100%; width: 100%;
+    left: 0;
+    top: 0;
+    height: 100%;
+    width: 100%;
     background: left center no-repeat;
     animation: explosion_keyframes 0.6s steps(8) infinite;
 }
@@ -52,20 +48,37 @@
         background-position: -2000px;
     }
 }
-
-
-.tally_stats, .monster_stats {
+.tally_stats_wrapper, .monster_stats {
     position: relative;
-    z-index: 99999999999999;
-    width:230px;
-    height:65px;
-    top:240px;
-    left:0px;
+    width: 230px;
+    height: 65px;
+    top: 240px;
+    left: 0;
+}
+.tally_stats_bars {
+    position: absolute;
+    z-index: 2147483647;
+    top: 0px;
+    left: 0px;
+}
+.tally_stats_full {
+    display: hidden;
+    position: absolute;
+    z-index: 2147483630;
+    width: 120px;
+    padding: 8px;
+    padding-top: 14px;
+    top: 30px;
+    left: 38px;
+    background: #282c35;
+    color: #fff;
+    /* display: hidden; */
+    font: 12px/12px Monaco, "Andale Mono", "Courier New", sans-serif;
 }
 .monster_stats {
     transform: translateX(25%);
-    top:0;
-    left:0;
+    top: 0;
+    left: 0;
 }
 
 
@@ -75,19 +88,19 @@
 /*  STAT BARS
 ******************************************************************************/
 
-.stats-display { width:230;  }
+svg.stats-display { width:230;  }
 
-.stat-bars { stroke-width:0; transform:translateX(30px); }
-.stat-bar-health { fill:#27c70c; }
-.stat-bar-health-bg { fill:#d32cf1; }
-.stat-bar-stamina { fill:#28a2f9;  }
-.stat-bar-stamina-bg { fill:#494949; }
-.stat-bar-experience { fill:#ff9900; }
-.stat-bar-experience-bg { fill:#494949; }
-.stat-bar-circle {
-    fill:#282c35;
+svg.stats-display .stat-bars { stroke-width:0; transform:translateX(30px); }
+svg.stats-display .stat-bar-health { fill:#27c70c; }
+svg.stats-display .stat-bar-health-bg { fill:#494949; } /* #d32cf1 */
+svg.stats-display .stat-bar-stamina { fill:#28a2f9;  }
+svg.stats-display .stat-bar-stamina-bg { fill:#494949; }
+svg.stats-display .stat-bar-experience { fill:#ff9900; }
+svg.stats-display .stat-bar-experience-bg { fill:#494949; }
+svg.stats-display .stat-bar-circle {
+    fill: #282c35;
     stroke-width: 5px;
-    stroke:#d32cf1;
+    stroke: #d32cf1;
     stroke-dasharray: 138;
     stroke-dashoffset: 138; /* 2 * 3.14 * radius */
     stroke-miterlimit: round;
@@ -96,7 +109,7 @@
 /* .stat-bar-circle:hover {
     stroke-dashoffset: 0;
 } */
-.stat-bar-circle-text { fill:white; font: 14px Monaco, "Andale Mono", "Courier New", sans-serif; }
+svg.stats-display .stat-bar-circle-text { fill:white; font: 14px Monaco, "Andale Mono", "Courier New", sans-serif; }
 
 
 
@@ -104,7 +117,6 @@
 
 /*  CONSOLE
 ******************************************************************************/
-
 #battle-console {
     display: none;
     position: fixed;
@@ -129,29 +141,15 @@
     height: 140px !important;
     overflow: scroll !important;
 }
-.tally_log_line {
-    font: 0.9em/1.4em "Lucida Console", Monaco, monospace !important;
-}
+.tally_log_line { font: 0.9em/1.4em "Lucida Console", Monaco, monospace !important; }
 /* weird scrollbar issue */
-#battle-console-stream::-webkit-scrollbar {
-    background: rgba(0, 0, 0, 0);
-}
-#battle-console-stream::-webkit-scrollbar-corner {
-    background: rgba(0, 0, 0, 0);
-}
+#battle-console-stream::-webkit-scrollbar { background: rgba(0, 0, 0, 0); }
+#battle-console-stream::-webkit-scrollbar-corner { background: rgba(0, 0, 0, 0); }
 /* text colors */
-#battle-console-stream .text-tally {
-    color: #fd5be9
-}
-#battle-console-stream .text-green {
-    color: #83ff60
-}
-#battle-console-stream .text-blue {
-    color: #6ebff9
-}
-#battle-console-stream .text-yellow {
-    color: #fec875
-}
+#battle-console-stream .text-tally { color: #fd5be9; }
+#battle-console-stream .text-green { color: #83ff60; }
+#battle-console-stream .text-blue { color: #6ebff9; }
+#battle-console-stream .text-yellow { color: #fec875; }
 /* blinking cursor */
 #battle-console-stream:last-child:after {
     content: "";
@@ -193,69 +191,56 @@
     50% { opacity: 0.0; }
     100% { opacity: 1.0; }
 }
-
-
-
-
-
 /*  BATTLE OPTIONS
 ******************************************************************************/
-
 .battle-options-row {
-    margin-top:8px;
-    margin-bottom:8px;
+    margin-top: 8px;
+    margin-bottom: 8px;
 }
 .battle-options {
     width: 100%;
     box-shadow: 2px 2px #41d728;
-    padding:4px;
+    padding: 4px;
     background-color: #d32cf1;
     color: #eee0f7;
     font-size: 89%;
     margin-right: 10px;
 }
 .battle-options:hover {
-    cursor:pointer;
+    cursor: pointer;
     background-color: #6ebff9;
 }
 .battle-options-esc {
     width: 100%;
     box-shadow: 2px 2px #63b7ff;
-    padding:4px;
+    padding: 4px;
     background-color: #807d81;
     color: #eee0f7;
     font-size: 89%;
 }
 .battle-options-esc:hover {
-    cursor:pointer;
+    cursor: pointer;
     background-color: #6ebff9;
 }
-
-
-
-
-
-
 /*  BATTLE EFFECTS
 ******************************************************************************/
-
 #battle-background {
     font: 12px/16px Courier, monospace;
     position: absolute;
     display: block;
-    top: -5%; left:-5%;
+    top: -5%;
+    left: -5%;
     width: 120%;
     height: 400%;
     z-index: 20;
-    color: rgba(0,0,0,.5);
-    background-color: rgba(255,255,255,.1);
-
+    color: rgba(0, 0, 0, .5);
+    background-color: rgba(255, 255, 255, .1);
     /* color: rgba(255,255,255,.3);
     background-color: rgba(0,0,0,.1); */
 }
 .battle-background-clear {
     z-index: -100 !important;
-    display:none !important;
+    display: none !important;
 }
 
 @-webkit-keyframes large-rumble {

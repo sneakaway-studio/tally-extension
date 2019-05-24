@@ -86,7 +86,7 @@ window.Tally = (function() {
 		//console.log("startTally()", tally_game_status.skin, Skin.skins);
 
 		let str =
-			"<div class='tally draggable' id='tally_character'>" +// style='transform:translateY(-300px);'
+			"<div class='tally draggable' id='tally_character' style='transform:translate(400px,-400px);'>" +// style='transform:translateY(-300px);'
 				"<div class='tally tally_speech_bubble' id='tally_thought_bubble'>" +
 					"<div class='tally' id='tally_thought'></div>" +
 				"</div>" +
@@ -101,8 +101,13 @@ window.Tally = (function() {
 						"<span class='tally tally_eye tally_eye_right'>" +
 							"<span class='tally tally_eye_pupil'></span></span></span>" +
 				"</div>" +
-				"<div class='tally tally_stats'>" +
-					StatsDisplay.returnDisplay("tally") +
+				"<div class='tally tally_stats_wrapper'>" +
+					"<div class='tally tally_stats_bars'>" +
+						StatsDisplay.returnSVG("tally") +
+					"</div>" +
+					"<div class='tally tally_stats_full'>" +
+						StatsDisplay.returnFullBox("tally") +
+					"</div>" +
 				"</div>" +
 			"</div>";
 		$('#tally_wrapper').append(str);
@@ -111,6 +116,14 @@ window.Tally = (function() {
 			drag: function() {},
 			stop: function() {}
 		});
+
+		// $('.stats-display').on("mouseenter", function(e){
+		// 	console.log("hi")
+		// 	$('.tally_stats_full').css({"display":"block"});
+		// 	$('.tally_stats_full').html(StatsDisplay.returnFullBox("tally"));
+		// }).on("mouseleave", function(e){
+		// 	$('.tally_stats_full').css({"display":"hidden"});
+		// });
 
 
 

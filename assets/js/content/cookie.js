@@ -11,18 +11,33 @@ window.Cookie = (function() {
 
 	var types = {
 		"health": {
+			"name": "health",
 			"img": "cookie-dots.gif",
-			"value": Math.random(),
+			"val": FS_Number.round(Math.random()*0.2,2),
 			"stat": "health",
 		},
 		"stamina": {
+			"name": "stamina",
 			"img": "cookie-waffle.gif",
-			"value": Math.random(),
+			"val": FS_Number.round(Math.random()*0.2,2),
 			"stat": "stamina",
+		},
+		"fortune": {
+			"name": "fortune",
+			"img": "cookie-fortune.gif",
+			"val": FS_Number.round(FS_Number.randomPosNeg(0.2),2),
+			"stat": randomObjKey(Stats.tallyResetStats),
+		},
+		"bad": {
+			"name": "bad",
+			"img": "cookie-waffle.gif",
+			"val": -FS_Number.round(Math.random()*0.2,2),
+			"stat": randomObjKey(Stats.tallyResetStats),
 		}
 	};
-
-	// 1. determine if we will generate a cookie on this page
+	/**
+	 *	1. determine if we will generate a cookie on this page
+	 */
 	function randomizer() {
 		let r = Math.random();
 		if (r > 0.5)
@@ -30,16 +45,20 @@ window.Cookie = (function() {
 		else
 			return false;
 	}
-	// 2. if so, then make a new one from list
+	/**
+	 *	2. if so, then make a new one from list
+	 */
 	function create() {
 		if (!pageData.activeOnPage || tally_options.gameMode !== "full") return;
 		//console.log("Cookie.create()",tally_options.gameMode);
-		var obj = randomObjProperty(types);
-		cookie = obj;
+		cookie = randomObjProperty(types);
+		cookie = types.fortune;
 		//console.log(cookie)
 		add();
 	}
-	// 3. add cookie to a page
+	/**
+	 *	3. add cookie to a page
+	 */
 	function add() {
 		// position
 		let x = Math.ceil(Math.random() * (pageData.browser.width - 100)),
@@ -54,29 +73,29 @@ window.Cookie = (function() {
 			hover(cookie);
 		});
 		$(document).on("click", ".tally_cookie_inner", function() {
+			// remove cookie
 			let str = "<div class='tally_cookie_inner' style='" + css + "'>" +
 				"<img src='" + chrome.extension.getURL('assets/img/cookies/cookie-explosion.gif') + "'></div>";
 			$('.tally_cookie_wrapper').html(str);
 			collect();
 		});
 	}
-
-	function remove(){
-
-	}
-
-	// user hovers over cookie
+	/**
+	 * 	4. user hovers over cookie
+	 */
 	function hover(cookieObj) {
 		if (!hovered)
 			// tell them
-			Thought.showString("Oh, you found a " + cookieObj.stat + " cookie!", "happy", true);
+			Thought.showString("Oh, you found a " + cookieObj.name + " cookie!", "happy", true);
 		// only show hover message once
 		hovered = true;
 	}
 
-	// user clicks a cookie
+	/**
+	 *	5. user clicks a cookie
+	 */
 	function collect() {
-		console.log("Cookie.collect()",cookie);
+		console.log("Cookie.collect()", cookie);
 		// play sound
 		Sound.playRandomPowerup();
 		// delay then update stats
@@ -85,8 +104,6 @@ window.Cookie = (function() {
 			Stats.update(cookie);
 		}, 700);
 	}
-
-
 
 
 

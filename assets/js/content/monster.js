@@ -97,7 +97,7 @@ window.Monster = (function() {
 			$('.tally_monster_sprite_inner').css('transform', 'scaleX(1)');
 
 		// display stats
-		$('.monster_stats').html(StatsDisplay.returnDisplay("monster"));
+		$('.monster_stats').html(StatsDisplay.returnSVG("monster"));
 
 
 	}

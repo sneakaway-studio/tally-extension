@@ -20,5 +20,11 @@ window.FS_Number = (function() {
 		normalize: function(val, min=0, max=1) {
 			return (val - min) / (max - min);
 		},
+		randomPosNeg: function(val){
+			// either 1 or -1
+			let one = Math.round(Math.random()) * 2 - 1;
+			// use val to get random * 1 or -1
+			return (Math.random()*val) * one;
+		}
 	};
 })();

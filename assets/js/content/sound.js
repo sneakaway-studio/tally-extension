@@ -32,6 +32,11 @@ window.Sound = (function() {
 				"jump1-2": "Jump1-2.wav",
 				"jump1-3": "Jump1-3.wav",
 			},
+			"jumps-reverse": {
+				"jump1-1-reverse": "Jump1-1-reverse.wav",
+				"jump1-2-reverse": "Jump1-2-reverse.wav",
+				"jump1-3-reverse": "Jump1-3-reverse.wav",
+			},
 			"monsters": {},
 			"songs": {},
 			"user": {
@@ -46,9 +51,9 @@ window.Sound = (function() {
 				"powerup6": "powerup6.wav",
 				"powerup7": "powerup7.wav",
 				"powerup8": "powerup8.wav",
-				"powerup8": "powerup9.wav",
-				"powerup8": "powerup10.wav",
-				"powerup8": "powerup11.wav",
+				"powerup9": "powerup9.wav",
+				"powerup10": "powerup10.wav",
+				"powerup11": "powerup11.wav",
 			}
 		};
 
@@ -66,10 +71,11 @@ window.Sound = (function() {
 	function playRandomPowerup() {
 		Sound.playFile("powerups/" + randomObjProperty(sounds.powerups));
 	}
-
 	function playRandomJump() {
-		console.log("Sound.playRandomJump()");
 		Sound.playFile("jumps/" + randomObjProperty(sounds.jumps));
+	}
+	function playRandomJumpReverse() {
+		Sound.playFile("jumps-reverse/" + randomObjProperty(sounds["jumps-reverse"]));
 	}
 
 

@@ -76,11 +76,11 @@ function createUser() {
 		"skins": ["color-magenta"],
 		"stats": {
 			"health": 1.0,
-			"attack": 1.0,
 			"stamina": 1.0,
 			"accuracy": 1.0,
-			"evasion": 1.0,
+			"attack": 1.0,
 			"defense": 1.0,
+			"evasion": 1.0,
 		},
 		"attacks":{}
 	};
