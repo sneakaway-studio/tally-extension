@@ -29,19 +29,19 @@ window.StatsDisplay = (function() {
 			p4 = Math.ceil(x - (h / 3)) + "," + (h + y);
 		return p1 + " " + p2 + " " + p3 + " " + p4;
 	}
-	// starting stats bar for tally or monster
-	function returnSVG(who) {
+	// initial stats bar for tally or monster
+	function returnInitialSVG(who) {
 		// get player's stats SVG coordinates
 		let svgPoints = playerStatsSVGPoints(who),
 			str = '';
-		console.log("StatsDisplay.returnSVG()",who, svgPoints, svgPoints.health.val);
+		console.log("StatsDisplay.returnInitialSVG()",who, svgPoints, "health="+svgPoints.health.val, "stamina="+svgPoints.stamina.val);
 
 		str += '<svg height="65" width="230" class="stats-display">';
 		str += '<g class="stat-bars">';
 		str += '<polygon points="' + combineSVGPoints(svgPoints.healthbg) + '" class="stat-bar-health-bg" />';
 		str += '<polygon points="' + combineSVGPoints(svgPoints.health) + '" data-value="'+ svgPoints.health.val +'" class="stat-bar-health" />';
 		str += '<polygon points="' + combineSVGPoints(svgPoints.staminabg) + '" class="stat-bar-stamina-bg" />';
-		str += '<polygon points="' + combineSVGPoints(svgPoints.stamina) + '" data-value="0" class="stat-bar-stamina" />';
+		str += '<polygon points="' + combineSVGPoints(svgPoints.stamina) + '" data-value="'+ svgPoints.stamina.val +'" class="stat-bar-stamina" />';
 		str += '</g>';
 		str += '<circle cx="' + svgPoints.circle.cx + '" cy="' + svgPoints.circle.cy;
 		str += '" r="' + svgPoints.circle.r + '" data-value="0" class="stat-bar-circle" />';
@@ -50,31 +50,47 @@ window.StatsDisplay = (function() {
 		str += '</svg>';
 		return str;
 	}
-
 	/**
-	 * 	Return the full stats box that appears under the stats SVG
+	 * 	Return the full stats table that appears under the stats SVG
 	 */
-	function returnFullBox(who){
+	function returnFullTable(who, changed = "") {
 		let stats = playerStats(who),
-			str = "";
+			str = "",
+			blink = "";
 		str += "<div><table>";
-		for(var key in stats){
-			str += "<tr><td>" + key + "</td><td>" + JSON.stringify(stats[key]) + "</td></tr>";
+		for (var key in stats) {
+			blink = "";
+			if (changed == key) blink = " stat-blink";
+			str += "<tr class='text-" + key + blink + "'><td>" + key + "</td><td>" + JSON.stringify(stats[key]) + "</td></tr>";
 		}
 		str += "</table></div>";
 		return str;
 	}
 
+	function updateAllTallyStatsDisplay() {
+		console.log("StatsDisplay.updateAllTallyStatsDisplay()", tally_user.stats);
+		// bars, circle, table
+		adjustStatsBar("tally", "health", tally_user.stats.health);
+		adjustStatsBar("tally", "stamina", tally_user.stats.stamina);
+		adjustStatsCircle("tally", tally_user.score.level);
+		$('.tally_stats_table').html(returnFullTable("tally"));
+	}
 
-
+	function updateAllMonsterStatsDisplay() {
+		console.log("StatsDisplay.updateAllTallyStatsDisplay()", Monster.stats);
+		// bars, circle, table
+		adjustStatsBar("monster", "health", Monster.stats.health);
+		adjustStatsBar("monster", "stamina", Monster.stats.stamina);
+		adjustStatsCircle("monster", Monster.score.level);
+		$('.monster_stats_full').html(returnFullTable("monster"));
+	}
 
 	/**
 	 * 	Adjust stats bars for Tally *values are normalized*
 	 */
 	function adjustStatsBar(who, bar, val) {
-		console.log("adjustStatsBar()1", who, bar, val);
+		console.log("StatsDisplay.adjustStatsBar()1", who, bar, val);
 		if (bar != "health" && bar != "stamina") return;
-		console.log("adjustStatsBar()2", who, bar, val);
 		// clean value
 		val = FS_Number.round(val, 2);
 		// get player's stats display coordinates
@@ -85,13 +101,10 @@ window.StatsDisplay = (function() {
 		statsDisplay[bar].w = val * statsDisplay[bar + "bg"].w;
 		// set new value
 		statsDisplay[bar].val = val;
-		// we only have two bars
-		//if (bar !== "health" || bar != "stamina")
-			// save data-value
-			$('.' + who + '_stats .stat-bar-' + bar).attr("data-value", val);
-
+		// save data-value
+		$('.' + who + '_stats .stat-bar-' + bar).attr("data-value", val);
 		// log
-		console.log("adjustStatsBar()3", who, bar, val, oldBar, statsDisplay[bar]);
+		console.log("StatsDisplay.adjustStatsBar()2", who, bar, val, oldBar, statsDisplay[bar]);
 		// animation
 		anime({
 			targets: '.' + who + '_stats .stat-bar-' + bar,
@@ -103,11 +116,11 @@ window.StatsDisplay = (function() {
 			easing: 'easeOutQuad',
 			duration: 1000,
 			begin: function() {
-				// play sound
-				if (oldBar.w < statsDisplay[bar])
-					Sound.playRandomJumpReverse();
-				else
-					Sound.playRandomJump();
+				// // play sound
+				// if (oldBar.w < statsDisplay[bar])
+				// 	Sound.playRandomJump();
+				// else
+				// 	Sound.playRandomJumpReverse();
 			},
 			complete: function() {
 				// save stats
@@ -214,14 +227,13 @@ window.StatsDisplay = (function() {
 	}
 
 
-
 	// PUBLIC
 	return {
-		returnSVG: function(who) {
-			return returnSVG(who);
+		returnInitialSVG: function(who) {
+			return returnInitialSVG(who);
 		},
-		returnFullBox: function(who) {
-			return returnFullBox(who);
+		returnFullTable: function(who,changed) {
+			return returnFullTable(who,changed);
 		},
 		// showStatsFull: function(who){
 		// 	showStatsFull(who);
@@ -232,6 +244,8 @@ window.StatsDisplay = (function() {
 		adjustStatsCircle: function(who, val) {
 			adjustStatsCircle(who, val);
 		},
+		updateAllTallyStatsDisplay: updateAllTallyStatsDisplay,
+		updateAllMonsterStatsDisplay: updateAllMonsterStatsDisplay
 
 	};
 })();

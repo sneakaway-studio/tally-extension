@@ -27,12 +27,13 @@
 .tally_cookie_wrapper{
     z-index: 9999999;
 }
-.tally_cookie_inner{
+.tally_cookie_inner {
     position: absolute;
     cursor: pointer;
 }
 .tally_cookie_inner img{
     width: 100px;
+    cursor: pointer;
 }
 
 

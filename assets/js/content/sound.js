@@ -75,7 +75,7 @@ window.Sound = (function() {
 		Sound.playFile("jumps/" + randomObjProperty(sounds.jumps));
 	}
 	function playRandomJumpReverse() {
-		Sound.playFile("jumps-reverse/" + randomObjProperty(sounds["jumps-reverse"]));
+		Sound.playFile("jumps/" + randomObjProperty(sounds["jumps-reverse"]));
 	}
 
 
@@ -186,6 +186,7 @@ window.Sound = (function() {
 		},
 		playRandomPowerup: playRandomPowerup,
 		playRandomJump: playRandomJump,
+		playRandomJumpReverse:playRandomJumpReverse,
 		playCategory: function(category, index, delay) {
 			playCategory(category, index, delay);
 		},

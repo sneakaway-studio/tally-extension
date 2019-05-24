@@ -3,7 +3,21 @@
 /*  STRING FUNCTIONS
  ******************************************************************************/
 
+window.FS_String = (function() {
+	// PRIVATE
 
+
+	// PUBLIC
+	return {
+		// add a leading zero
+		pad: function(num, size) {
+			var s = num + "";
+			while (s.length < size) s = "0" + s;
+			return s;
+		}
+
+	};
+})();
 
 
 /**
@@ -117,7 +131,7 @@ function removeSmallWords(arr) {
  *	Insert stylesheet for CSS3 animations
  *	credit: https://stackoverflow.com/a/43904152/441878
  */
-function insertStylesheets(){
+function insertStylesheets() {
 	let sheets = document.styleSheets,
 		style = document.createElement('style'),
 		addKeyFrames = null;

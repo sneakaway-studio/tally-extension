@@ -61,15 +61,15 @@
     top: 0px;
     left: 0px;
 }
-.tally_stats_full {
-    display: hidden;
+.tally_stats_table {
+    /* display: none; */
     position: absolute;
     z-index: 2147483630;
-    width: 120px;
+    width: 105px;
     padding: 8px;
     padding-top: 14px;
     top: 30px;
-    left: 38px;
+    left: 42px;
     background: #282c35;
     color: #fff;
     /* display: hidden; */
@@ -82,7 +82,14 @@
 }
 
 
-
+.stat-blink {
+  animation: blinker .75s step-start infinite;
+}
+@keyframes blinker {
+  50% {
+    opacity: 0;
+  }
+}
 
 
 /*  STAT BARS
@@ -147,8 +154,8 @@ svg.stats-display .stat-bar-circle-text { fill:white; font: 14px Monaco, "Andale
 #battle-console-stream::-webkit-scrollbar-corner { background: rgba(0, 0, 0, 0); }
 /* text colors */
 #battle-console-stream .text-tally { color: #fd5be9; }
-#battle-console-stream .text-green { color: #83ff60; }
-#battle-console-stream .text-blue { color: #6ebff9; }
+#battle-console-stream .text-green, .text-health { color: #83ff60; }
+#battle-console-stream .text-blue, .text-stamina { color: #6ebff9; }
 #battle-console-stream .text-yellow { color: #fec875; }
 /* blinking cursor */
 #battle-console-stream:last-child:after {

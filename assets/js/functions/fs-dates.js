@@ -3,43 +3,60 @@
 /*  DATE FUNCTIONS *requires Moment.js*
  ******************************************************************************/
 
- window.FS_Date = (function() {
- 	// PRIVATE
-	function format(date){
+window.FS_Date = (function() {
+	// PRIVATE
+	function format(date) {
 		if (date == "now") date = moment();
 		else date = moment(date);
 		return date;
 	}
 
 
- 	// PUBLIC
- 	return {
+	// PUBLIC
+	return {
 		// what is the difference in milliseconds?
- 		difference: function(d1,d2){
- 			d1 = format(d1);
-	 		d2 = format(d2);
- 			return moment(d1).diff(moment(d2));
- 		},
+		difference: function(d1, d2) {
+			d1 = format(d1);
+			d2 = format(d2);
+			return moment(d1).diff(moment(d2));
+		},
+		diffSeconds: function(d1, d2) {
+			d1 = format(d1);
+			d2 = format(d2);
+			return Math.floor((d1.diff(moment(d2)) / 1000));
+		},
+		diffMinutes: function(d1, d2) {
+			d1 = format(d1);
+			d2 = format(d2);
+			return Math.floor((d1.diff(moment(d2)) / 1000 / 60));
+		},
+		diffHours: function(d1, d2) {
+			d1 = format(d1);
+			d2 = format(d2);
+			return Math.floor((d1.diff(moment(d2)) / 1000 / 60 / 60));
+		},
 		// is the difference between date1 and date2 more than "val" "period"?
-		moreThan: function(d1,d2,val,period){
- 			d1 = format(d1);
-	 		d2 = format(d2);
-			if (moment(d1).diff(moment(d2),period) > val)
+		moreThan: function(d1, d2, val, period) {
+			d1 = format(d1);
+			d2 = format(d2);
+			if (moment(d1).diff(moment(d2), period) > val)
 				return true;
 			return false;
 		},
-		moreThanOneHourAgo: function(d1){
- 			d1 = format(d1);
-			return (moment(moment()).diff(d1,"hour") > 1);
+		moreThanOneHourAgo: function(endtime) {
+			endtime = format(endtime);
+			let diff = moment().diff(endtime, "minutes");
+			// console.log("FS_Date.moreThanOneHourAgo()",endtime,diff);
+			return (diff > 3);
 		}
 
- 	};
- })();
+	};
+})();
 
 
 
- /*  DATE FUNCTIONS (OLD, VANILLA JS)
-  ******************************************************************************/
+/*  DATE FUNCTIONS (OLD, VANILLA JS)
+ ******************************************************************************/
 
 /**
  *	Return a date in ISO string

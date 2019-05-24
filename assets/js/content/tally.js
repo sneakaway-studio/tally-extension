@@ -102,29 +102,28 @@ window.Tally = (function() {
 							"<span class='tally tally_eye_pupil'></span></span></span>" +
 				"</div>" +
 				"<div class='tally tally_stats'>" +
-					"<div class='tally tally_stats_bars'>" +
-						StatsDisplay.returnSVG("tally") +
-					"</div>" +
-					"<div class='tally tally_stats_full'>" +
-						StatsDisplay.returnFullBox("tally") +
-					"</div>" +
+					"<div class='tally tally_stats_bars'></div>" +
+					"<div class='tally tally_stats_table'></div>" +
 				"</div>" +
 			"</div>";
 		$('#tally_wrapper').append(str);
+
+		// insert SVG, stats table
+		$('.tally_stats_bars').html(StatsDisplay.returnInitialSVG("tally"));
+		$('.tally_stats_table').html(StatsDisplay.returnFullTable("tally"));
 
 		$("#tally_character").draggable({
 			drag: function() {},
 			stop: function() {}
 		});
 
-		// $('.stats-display').on("mouseenter", function(e){
-		// 	console.log("hi")
-		// 	$('.tally_stats_full').css({"display":"block"});
-		// 	$('.tally_stats_full').html(StatsDisplay.returnFullBox("tally"));
-		// }).on("mouseleave", function(e){
-		// 	$('.tally_stats_full').css({"display":"hidden"});
-		// });
-
+		$('.tally_stats').on("mouseenter", function(e){
+			console.log("hi",$('.tally_stats_table').css("display"))
+			if ($('.tally_stats_table').css("display") == "none")
+				$('.tally_stats_table').css({"display":"block"});
+			else
+				$('.tally_stats_table').css({"display":"none"});
+		});
 
 
 
@@ -271,6 +270,9 @@ Mousetrap.bind(k + ' e', function() { Effect.explode(); });
 Mousetrap.bind(k + ' z', function() { StatsDisplay.adjustStatsBar("tally","health",Math.random()); });
 Mousetrap.bind(k + ' x', function() { StatsDisplay.adjustStatsBar("tally","stamina",Math.random()); });
 Mousetrap.bind(k + ' v', function() { StatsDisplay.adjustStatsCircle("tally", Math.random()); });
+Mousetrap.bind(k + ' r', function() { Stats.randomize(); });
+
+
 
 
 Mousetrap.bind(k + ' v', function() { BattleTest.test(); });

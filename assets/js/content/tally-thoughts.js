@@ -122,7 +122,7 @@ window.Thought = (function() {
 		if (str.length > 0)
 			lines = Math.ceil(str.length / 28);
 		// set duration based on number lines
-		let duration = lines * 1800;
+		let duration = lines * 1950;
 		// add text
 		$('#tally_thought').html(str);
 		// adjust size of the box

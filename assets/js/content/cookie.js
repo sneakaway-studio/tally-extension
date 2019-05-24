@@ -15,24 +15,28 @@ window.Cookie = (function() {
 			"img": "cookie-dots.gif",
 			"val": FS_Number.round(Math.random()*0.2,2),
 			"stat": "health",
+			"sound": "happy",
 		},
 		"stamina": {
 			"name": "stamina",
 			"img": "cookie-waffle.gif",
 			"val": FS_Number.round(Math.random()*0.2,2),
 			"stat": "stamina",
+			"sound": "happy",
 		},
 		"fortune": {
 			"name": "fortune",
 			"img": "cookie-fortune.gif",
 			"val": FS_Number.round(FS_Number.randomPosNeg(0.2),2),
-			"stat": randomObjKey(Stats.tallyResetStats),
+			"stat": randomObjKey(Stats.resetStats),
+			"sound": "cautious",
 		},
 		"bad": {
 			"name": "bad",
-			"img": "cookie-waffle.gif",
+			"img": "cookie-bad.gif",
 			"val": -FS_Number.round(Math.random()*0.2,2),
-			"stat": randomObjKey(Stats.tallyResetStats),
+			"stat": randomObjKey(Stats.resetStats),
+			"sound": "danger",
 		}
 	};
 	/**
@@ -52,7 +56,8 @@ window.Cookie = (function() {
 		if (!pageData.activeOnPage || tally_options.gameMode !== "full") return;
 		//console.log("Cookie.create()",tally_options.gameMode);
 		cookie = randomObjProperty(types);
-		cookie = types.fortune;
+		// testing
+		//cookie = types.fortune;
 		//console.log(cookie)
 		add();
 	}
@@ -69,7 +74,7 @@ window.Cookie = (function() {
 			"<img src='" + chrome.extension.getURL('assets/img/cookies/' + cookie.img) + "'></div>";
 		$('.tally_cookie_wrapper').html(str);
 
-		$(document).on("mouseover", ".tally_cookie_inner", function() {
+		$(document).on("mouseover", ".tally_cookie_inner img", function() {
 			hover(cookie);
 		});
 		$(document).on("click", ".tally_cookie_inner", function() {
@@ -77,16 +82,22 @@ window.Cookie = (function() {
 			let str = "<div class='tally_cookie_inner' style='" + css + "'>" +
 				"<img src='" + chrome.extension.getURL('assets/img/cookies/cookie-explosion.gif') + "'></div>";
 			$('.tally_cookie_wrapper').html(str);
+			setTimeout(function() {
+				// remove
+				$('.tally_cookie_wrapper').html("");
+			}, 500);
 			collect();
 		});
 	}
 	/**
 	 * 	4. user hovers over cookie
 	 */
-	function hover(cookieObj) {
-		if (!hovered)
+	function hover() {
+		console.log("Cookie.hover()", cookie);
+		if (!hovered){
 			// tell them
-			Thought.showString("Oh, you found a " + cookieObj.name + " cookie!", "happy", true);
+			Thought.showString("Oh, you found a " + cookie.name + " cookie!", cookie.sound, true);
+		}
 		// only show hover message once
 		hovered = true;
 	}
@@ -104,6 +115,7 @@ window.Cookie = (function() {
 			Stats.update(cookie);
 		}, 700);
 	}
+
 
 
 
