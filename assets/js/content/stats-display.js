@@ -11,7 +11,6 @@ window.StatsDisplay = (function() {
 	 * Starting point for stats svg coordinates
 	 */
 	let tallyStatsSVGPoints = {
-
 		"healthbg": { "val": 0, "x":0, "y":0, "w":200, "h":20 },
 		"health": { "val": 0, "x":0, "y":0, "w":0, "h":20 }, // start @ zero
 		"staminabg": { "val": 0, "x":0, "y":20, "w":170, "h":12 },
@@ -33,20 +32,20 @@ window.StatsDisplay = (function() {
 	// starting stats bar for tally or monster
 	function returnSVG(who) {
 		// get player's stats SVG coordinates
-		let statsDisplay = playerStatsSVGPoints(who),
+		let svgPoints = playerStatsSVGPoints(who),
 			str = '';
-		console.log("StatsDisplay.returnSVG()",who,statsDisplay,statsDisplay.health.val);
+		console.log("StatsDisplay.returnSVG()",who, svgPoints, svgPoints.health.val);
 
 		str += '<svg height="65" width="230" class="stats-display">';
 		str += '<g class="stat-bars">';
-		str += '<polygon points="' + combineSVGPoints(statsDisplay.healthbg) + '" class="stat-bar-health-bg" />';
-		str += '<polygon points="' + combineSVGPoints(statsDisplay.health) + '" data-value="'+ statsDisplay.health.val +'" class="stat-bar-health" />';
-		str += '<polygon points="' + combineSVGPoints(statsDisplay.staminabg) + '" class="stat-bar-stamina-bg" />';
-		str += '<polygon points="' + combineSVGPoints(statsDisplay.stamina) + '" data-value="0" class="stat-bar-stamina" />';
+		str += '<polygon points="' + combineSVGPoints(svgPoints.healthbg) + '" class="stat-bar-health-bg" />';
+		str += '<polygon points="' + combineSVGPoints(svgPoints.health) + '" data-value="'+ svgPoints.health.val +'" class="stat-bar-health" />';
+		str += '<polygon points="' + combineSVGPoints(svgPoints.staminabg) + '" class="stat-bar-stamina-bg" />';
+		str += '<polygon points="' + combineSVGPoints(svgPoints.stamina) + '" data-value="0" class="stat-bar-stamina" />';
 		str += '</g>';
-		str += '<circle cx="' + statsDisplay.circle.cx + '" cy="' + statsDisplay.circle.cy;
-		str += '" r="' + statsDisplay.circle.r + '" data-value="0" class="stat-bar-circle" />';
-		str += '<text x="' + statsDisplay.circle.cx + '" y="' + statsDisplay.circle.cy;
+		str += '<circle cx="' + svgPoints.circle.cx + '" cy="' + svgPoints.circle.cy;
+		str += '" r="' + svgPoints.circle.r + '" data-value="0" class="stat-bar-circle" />';
+		str += '<text x="' + svgPoints.circle.cx + '" y="' + svgPoints.circle.cy;
 		str += '" dominant-baseline="middle" text-anchor="middle" class="stat-bar-circle-text">0</text>';
 		str += '</svg>';
 		return str;

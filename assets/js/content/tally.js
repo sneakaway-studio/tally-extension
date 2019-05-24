@@ -101,7 +101,7 @@ window.Tally = (function() {
 						"<span class='tally tally_eye tally_eye_right'>" +
 							"<span class='tally tally_eye_pupil'></span></span></span>" +
 				"</div>" +
-				"<div class='tally tally_stats_wrapper'>" +
+				"<div class='tally tally_stats'>" +
 					"<div class='tally tally_stats_bars'>" +
 						StatsDisplay.returnSVG("tally") +
 					"</div>" +

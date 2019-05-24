@@ -57,7 +57,7 @@ window.Stats = (function() {
 
 	function update(statData) {
 		// update stat
-		tally_user.stats[statData.stat] = FS_Number.clamp(tally_user.stats[statData.stat] + statData.val, 0, 1);
+		tally_user.stats[statData.stat] = FS_Number.clamp(FS_Number.round(tally_user.stats[statData.stat] + statData.val,2), 0, 1);
 		// save user
 		saveUser();
 

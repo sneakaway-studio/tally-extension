@@ -48,7 +48,7 @@
         background-position: -2000px;
     }
 }
-.tally_stats_wrapper, .monster_stats {
+.tally_stats, .monster_stats {
     position: relative;
     width: 230px;
     height: 65px;
