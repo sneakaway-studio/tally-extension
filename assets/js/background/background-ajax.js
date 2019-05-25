@@ -131,13 +131,14 @@ function sendServerUpdate(data) {
 		data: JSON.stringify(data)
 	}).done(result => {
 		console.log("<{!}> sendServerUpdate() RESULT =", JSON.stringify(result));
-		// treat all server data as master
+		// treat all server data as master, store in local background user
 		if (result[0].username) _tally_user.username = result[0].username;
 		if (result[0].clicks) _tally_user.score.clicks = result[0].clicks;
 		if (result[0].likes) _tally_user.score.likes = result[0].likes;
 		if (result[0].pages) _tally_user.score.pages = result[0].pages;
 		if (result[0].score) _tally_user.score.score = result[0].score;
 		if (result[0].time) _tally_user.score.time = result[0].time;
+		if (result[0].cookies) _tally_user.cookies = result[0].cookies;
 		store("tally_user", _tally_user);
 	}).fail(error => {
 		console.error("<{!}> sendServerUpdate() RESULT =", JSON.stringify(error));
@@ -145,7 +146,6 @@ function sendServerUpdate(data) {
 		checkAPIServerStatus();
 	});
 }
-
 
 
 /**

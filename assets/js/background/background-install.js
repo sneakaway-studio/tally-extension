@@ -82,6 +82,7 @@ function createUser() {
 			"defense": 1.0,
 			"evasion": 1.0,
 		},
+		"cookies": {},
 		"attacks":{}
 	};
 	return obj;

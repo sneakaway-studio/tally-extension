@@ -109,6 +109,16 @@ window.Cookie = (function() {
 		console.log("Cookie.collect()", cookie);
 		// play sound
 		Sound.playRandomPowerup();
+
+
+		// create backgroundUpdate object
+		var backgroundUpdate = newBackgroundUpdate();
+		// store the data
+		backgroundUpdate.cookie = cookie;
+		// then push to the server
+		sendBackgroundUpdate(backgroundUpdate);
+
+
 		// delay then update stats
 		setTimeout(function() {
 			// update stats

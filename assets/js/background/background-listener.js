@@ -206,6 +206,9 @@ chrome.runtime.onMessage.addListener(
 			});
 		}
 
+
+
+
 		// sendBackgroundUpdate - receive and send score, event, page data to server
 		else if (request.action == "sendBackgroundUpdate") {
 			console.log(">>>>> BACKGROUND LISTENER: sendBackgroundUpdate", JSON.stringify(request.data));
@@ -290,6 +293,7 @@ function createServerUpdate(data) {
 		"score": data.scoreData.score || 0,
 		"time": data.pageData.time || 0,
 		"tags": data.pageData.tags || "",
+		"cookie": data.cookie || "",
 		"token": _tally_secret.token,
 		"url": data.pageData.url || "",
 		"domain": data.pageData.domain || "",
@@ -320,6 +324,9 @@ function createMonsterUpdate(data) {
 	return obj;
 }
 
+
+
+
 /**
  *  Adjust local score from score obj, saves it locally
  */
@@ -334,7 +341,7 @@ function adjustScore(_score, scoreObj, n) {
 		// check to see if user level should be upgraded
 		for (var level in gameRules.levels) {
 			if (gameRules.levels[level].minScore) {
-				
+
 			}
 		}
 	}

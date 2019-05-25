@@ -245,16 +245,17 @@ function newBackgroundUpdate() {
 			"action": "",
 			"text": ""
 		},
+		"cookie": null,
 		"userData": {
 			"token": "INSERT_IN_BACKGROUND",
 		}
 	};
-	//console.log("<{!}> newBackgroundUpdate() -> obj", obj);
+	console.log("<{!}> newBackgroundUpdate() -> obj", obj);
 	return obj;
 }
 
 /**
- *  Create new backgroundUpdate object
+ *  Create new newBackgroundMonsterUpdate object
  */
 function newBackgroundMonsterUpdate(mid) {
 	var obj = {
