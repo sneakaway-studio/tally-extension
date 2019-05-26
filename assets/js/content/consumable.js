@@ -13,6 +13,7 @@ window.Consumable = (function() {
 				"health": {
 					"name": "health",
 					"type":"cookie",
+					"ref":"a",
 					"img": "cookie-dots.gif",
 					"val": FS_Number.round(Math.random()*0.2,2),
 					"stat": "health",
@@ -21,6 +22,7 @@ window.Consumable = (function() {
 				"stamina": {
 					"name": "stamina",
 					"type":"cookie",
+					"ref":"a",
 					"img": "cookie-waffle.gif",
 					"val": FS_Number.round(Math.random()*0.2,2),
 					"stat": "stamina",
@@ -29,6 +31,7 @@ window.Consumable = (function() {
 				"fortune": {
 					"name": "fortune",
 					"type":"cookie",
+					"ref":"a",
 					"img": "cookie-fortune.gif",
 					"val": FS_Number.round(FS_Number.randomPosNeg(0.2),2),
 					"stat": randomObjKey(Stats.resetStats),
@@ -37,11 +40,23 @@ window.Consumable = (function() {
 				"bad": {
 					"name": "bad",
 					"type":"cookie",
+					"ref":"a",
 					"img": "cookie-bad.gif",
 					"val": -FS_Number.round(Math.random()*0.2,2),
 					"stat": randomObjKey(Stats.resetStats),
 					"sound": "danger",
 				}
+			},
+			"junk": {
+				"data": {
+					"name": "data",
+					"type":"junk",
+					"ref":"some",
+					"img": "junk-data.gif",
+					"val": -FS_Number.round(Math.random()*0.2,2),
+					"stat": "stamina",
+					"sound": "cautious",
+				},
 			}
 		};
 
@@ -87,7 +102,7 @@ window.Consumable = (function() {
 					y = Math.ceil(Math.random() * (pageData.browser.fullHeight - 100));
 				let css = "left:" + x + "px;top:" + y + "px;";
 				// html
-				let imgStr = chrome.extension.getURL('assets/img/consumables/' + consumables[i].type + "s/" + consumables[i].img);
+				let imgStr = chrome.extension.getURL('assets/img/consumables/' + consumables[i].type + "/" + consumables[i].img);
 				let ref = 'tally_consumable_'+ i;
 				let str = "<div data-consumable='"+ i +"' class='tally_consumable_inner "+ref+"' style='" + css + "'>"+
 						  "<img src='" + imgStr + "'></div>";
@@ -121,7 +136,7 @@ window.Consumable = (function() {
 		//console.log("Consumable.hover()", key, consumable);
 		if (!hovered){
 			// tell them
-			Thought.showString("Oh, you found a " + consumable.name + " " + consumable.type + "!", consumable.sound, true);
+			Thought.showString("Oh, you found " + consumable.ref + " " + consumable.name + " " + consumable.type + "!", consumable.sound, true);
 		}
 		// only show hover message once
 		hovered = true;

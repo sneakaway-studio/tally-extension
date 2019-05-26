@@ -62,7 +62,7 @@ window.Stats = (function() {
 		//console.log("Stats.update()",statData);
 		let upOrDown = 0;
 		// if stat is already full
-		if (tally_user.stats[statData.stat] >= 1) {
+		if (statData.val > 0 && tally_user.stats[statData.stat] >= 1) {
 			Thought.show("Your " + statData.stat + " is full!", "happy", true);
 			return;
 		}
