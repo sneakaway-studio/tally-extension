@@ -81,6 +81,7 @@
             "assets/js/content/tally-thoughts.js",
             "assets/js/content/tally-skins.js",
             "assets/js/content/consumable.js",
+            "assets/js/content/events.js",
             "assets/js/content/tally.js",
             "assets/js/content/main.js"
         ],

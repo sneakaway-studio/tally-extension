@@ -217,20 +217,3 @@ function getMonstersFromServer() {
 		checkAPIServerStatus();
 	});
 }
-
-
-
-
-
-
-
-// create timed functions
-var timedEvents = {
-	// check if user is online
-	// userOnlineInt: setInterval(function() {
-	// }, 5 * 1000),
-	// check if server online
-	serverOnlineInt: setInterval(function() {
-		checkAPIServerStatus();
-	}, 500 * 1000) //
-};

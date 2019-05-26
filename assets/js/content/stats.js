@@ -42,6 +42,7 @@ window.Stats = (function() {
 	function resetTallyStats() {
 		tally_user.stats = resetStats;
 		saveUser();
+		Sound.playRandomJump();
 		StatsDisplay.updateAllTallyStatsDisplay();
 	}
 	function resetMonsterStats() {
@@ -121,10 +122,12 @@ window.Stats = (function() {
 
 			// if player hasn't been online for n minutes then recharge
 			if (FS_Date.diffMinutes("now",tally_user.lastActive) > 0) {
-				// reset tally stats
-				resetTally();
-				// tell them
-				Thought.showString("You took a break from the internet to recharge!", "happy");
+				setTimeout(function(){
+					// reset tally stats
+					resetTallyStats();
+					// tell them
+					Thought.showString("You took a break from the internet to recharge!", "happy");
+				},700);
 			}
 			// update last active
 			tally_user.lastActive = moment().format();

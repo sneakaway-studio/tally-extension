@@ -65,10 +65,12 @@ window.Consumable = (function() {
 	 */
 	function randomizer() {
 		let r = Math.random();
-		if (r < 0.1)
+		if (r < 0.01)
+			create(3);
+		else if (r < 0.05)
 			create(2);
 		else if (r < 0.5)
-			create();
+			create(1);
 		else
 			return false;
 	}
@@ -77,7 +79,7 @@ window.Consumable = (function() {
 	 */
 	function create(num=1) {
 		try {
-			for (var i=0; i<=num; i++){
+			for (var i=0; i<num; i++){
 				if (!pageData.activeOnPage || tally_options.gameMode !== "full") return;
 				//console.log("Consumable.create() gameMode="+tally_options.gameMode);
 				consumables.push(randomObjProperty(types[randomObjKey(types)]));

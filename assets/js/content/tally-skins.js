@@ -167,10 +167,10 @@ window.Skin = (function() {
 	 *	Update Tally SVG
 	 */
 	function update(skinCat, skinColor, skinAnim) {
-		if (DEBUG) console.log("👚👗 Skin.update()", skinCat);
+		if (DEBUG) console.log("👚👗 Skin.update()", skinCat, skinColor, skinAnim);
 		if (skinCat != "" && prop(tally_game_status)) tally_game_status.skin = [skinCat, skinColor, skinAnim];
 		// save the skin status
-		saveGameStatus(tally_game_status);
+		saveGameStatus(tally_game_status,"Skin.update()");
 
 		let obj = {},
 			def = "",

@@ -190,7 +190,8 @@ function getGameStatus() {
 		tally_game_status = response.data;
 	});
 }
-function saveGameStatus(data) {
+function saveGameStatus(data,caller) {
+	//console.log("saveGameStatus()",data,caller)
 	tally_game_status = data;
 	chrome.runtime.sendMessage({
 		'action': 'saveGameStatus',

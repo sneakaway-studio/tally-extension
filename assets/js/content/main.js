@@ -67,20 +67,24 @@ function startGameOnPage() {
 	if (MAIN_DEBUG) console.log(">>>>> startGameOnPage() -> Starting Tally on this page");
 	//    console.log(">>>>> pageData = "+ JSON.stringify(pageData));
 
-	insertStylesheets();
-	Debug.add();
-	Tally.start();
-	startTimeEvents();
-	addMainClickEventListener();
-	//checkPageForMonsters(pageData.tags);
-
-	checkToken();
-	// if youtube
-	if (pageData.domain == "youtube.com")
-		// 	addMutationObserver();
-		addTitleChecker();
-
 	try {
+
+		// LOAD GAME
+
+		// add required CSS for game
+		insertStylesheets();
+		// add debugger
+		Debug.add();
+
+		Tally.start();
+		TallyEvents.startTimeEvents();
+		addMainClickEventListener();
+
+		checkToken();
+		// if youtube
+		if (pageData.domain == "youtube.com")
+			// 	addMutationObserver();
+			addTitleChecker();
 		// remove trackers that have been caught
 		Tracker.removeCaughtTrackers(pageData.trackers);
 		// check for monsters on the page
@@ -88,8 +92,8 @@ function startGameOnPage() {
 		// update debugger
 		Debug.update();
 		// possibly add a consumable
-		//Consumable.randomizer();
-		Consumable.create(); // testing
+		Consumable.randomizer();
+		//Consumable.create(); // testing
 		// check last active status
 		Stats.checkLastActive();
 	} catch (err) {
@@ -181,23 +185,4 @@ function addTitleChecker() {
 			//console.log("title is same", pageData.title, " to: ",title);
 		}
 	}, 10000);
-}
-
-
-
-/**
- * Timed functions
- */
-var timedEvents = {};
-
-function startTimeEvents() {
-	timedEvents = {
-		pageTimerInterval: setInterval(function() {
-			// if this page is visible
-			if (document.hasFocus()) {
-				pageData.time = pageData.time + 0.5;
-				Debug.update();
-			}
-		}, 500)
-	};
 }
