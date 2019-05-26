@@ -118,7 +118,7 @@ chrome.runtime.onMessage.addListener(
 			let data = store("tally_trackers") || {
 				"blocked": []
 			};
-			data.blocked = request.data
+			data.blocked = request.data;
 			store("tally_trackers", data);
 			sendResponse({
 				"action": request.action,
@@ -293,12 +293,13 @@ function createServerUpdate(data) {
 		"score": data.scoreData.score || 0,
 		"time": data.pageData.time || 0,
 		"tags": data.pageData.tags || "",
-		"cookie": data.cookie || "",
 		"token": _tally_secret.token,
 		"url": data.pageData.url || "",
 		"domain": data.pageData.domain || "",
 	};
-	//console.log("createServerUpdate()", obj);
+	if (data.consumable != null)
+		obj.consumable = data.consumable;
+	console.log("createServerUpdate()", obj);
 	return obj;
 }
 

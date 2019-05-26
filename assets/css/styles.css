@@ -24,14 +24,14 @@
 
 
 
-.tally_cookie_wrapper{
+.tally_consumable_wrapper{
     z-index: 9999999;
 }
-.tally_cookie_inner {
+.tally_consumable_inner {
     position: absolute;
     cursor: pointer;
 }
-.tally_cookie_inner img{
+.tally_consumable_inner img{
     width: 100px;
     cursor: pointer;
 }

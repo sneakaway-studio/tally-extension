@@ -245,7 +245,7 @@ function newBackgroundUpdate() {
 			"action": "",
 			"text": ""
 		},
-		"cookie": null,
+		"consumable": null,
 		"userData": {
 			"token": "INSERT_IN_BACKGROUND",
 		}

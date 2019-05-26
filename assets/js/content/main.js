@@ -86,8 +86,8 @@ function startGameOnPage() {
 	MonsterCheck.check();
 	// update debugger
 	Debug.update();
-	// possibly add a cookie
-	Cookie.create();
+	// possibly add a consumable
+	Consumable.create();
 	// check recharge status
 	Stats.checkLastActive();
 }

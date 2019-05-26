@@ -24,7 +24,7 @@
         "scripts": [
             "assets/libs/jquery-3.2.1.min.js",
 			"assets/libs/store2.min.js",
-            "assets/libs/moment.js", 
+            "assets/libs/moment.js",
             "assets/libs/hot-reload.js",
             "assets/data/game-rules.js",
             "assets/js/functions/fs-objects.js",
@@ -80,7 +80,7 @@
             "assets/js/content/click-listener.js",
             "assets/js/content/tally-thoughts.js",
             "assets/js/content/tally-skins.js",
-            "assets/js/content/cookie.js",
+            "assets/js/content/consumable.js",
             "assets/js/content/tally.js",
             "assets/js/content/main.js"
         ],

@@ -138,7 +138,7 @@ function sendServerUpdate(data) {
 		if (result[0].pages) _tally_user.score.pages = result[0].pages;
 		if (result[0].score) _tally_user.score.score = result[0].score;
 		if (result[0].time) _tally_user.score.time = result[0].time;
-		if (result[0].cookies) _tally_user.cookies = result[0].cookies;
+		if (result[0].consumable) _tally_user.consumable = result[0].consumable;
 		store("tally_user", _tally_user);
 	}).fail(error => {
 		console.error("<{!}> sendServerUpdate() RESULT =", JSON.stringify(error));
