@@ -59,7 +59,7 @@ window.Stats = (function() {
 	}
 
 	function update(statData) {
-		console.log("Stats.update()",statData);
+		//console.log("Stats.update()",statData);
 		let upOrDown = 0;
 		// if stat is already full
 		if (tally_user.stats[statData.stat] >= 1) {

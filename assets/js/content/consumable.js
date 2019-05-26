@@ -50,7 +50,9 @@ window.Consumable = (function() {
 	 */
 	function randomizer() {
 		let r = Math.random();
-		if (r > 0.5)
+		if (r < 0.1)
+			create(2);
+		else if (r < 0.5)
 			create();
 		else
 			return false;
@@ -58,45 +60,57 @@ window.Consumable = (function() {
 	/**
 	 *	2. if so, then make a new one from list
 	 */
-	function create() {
-		if (!pageData.activeOnPage || tally_options.gameMode !== "full") return;
-		console.log("Consumable.create()",tally_options.gameMode);
-		console.log(types[randomObjKey(types)]);
-		consumables.push(randomObjProperty(types[randomObjKey(types)]));
-		// testing
-		//consumables.push(types.fortune);
-		console.log(consumables);
-		add();
+	function create(num=1) {
+		try {
+			for (var i=0; i<=num; i++){
+				if (!pageData.activeOnPage || tally_options.gameMode !== "full") return;
+				//console.log("Consumable.create() gameMode="+tally_options.gameMode);
+				consumables.push(randomObjProperty(types[randomObjKey(types)]));
+				// testing
+				//consumables.push(types.cookie.fortune);
+			}
+			//console.log(consumables);
+			add();
+		} catch (err) {
+			console.error(error);
+		}
 	}
 	/**
 	 *	3. add consumable to a page
 	 */
 	function add() {
-		// loop through and add all consumables
-		for (var i=0; i<10; i++){
-			// new position
-			let x = Math.ceil(Math.random() * (pageData.browser.width - 100)),
-				y = Math.ceil(Math.random() * (pageData.browser.height - 100));
-			let css = "left:" + x + "px;top:" + y + "px;";
-			// html
-			let imgStr = chrome.extension.getURL('assets/img/consumables/' + consumables[i].type + "s/" + consumables[i].img);
-			let str = "<div class='tally_consumable_inner' style='" + css + "'><img data-consumable='"+ i +"' src='" + imgStr + "'></div>";
-			$('.tally_consumable_wrapper').html(str);
-			$(document).on("mouseover", ".tally_consumable_inner img", function() {
-				//console.log($(this))
-				hover($(this).attr("data-consumable"));
-			});
-			$(document).on("click", ".tally_consumable_inner img", function() {
-				// remove consumable
-				let imgStr = chrome.extension.getURL('assets/img/consumables/consumable-explosion.gif');
-				let str = "<div class='tally_consumable_inner' style='" + css + "'><img data-consumable='"+ i +"' src='" + imgStr + "'></div>";
-				$('.tally_consumable_wrapper').html(str);
-				setTimeout(function() {
-					// remove
-					$('.tally_consumable_wrapper').html("");
-				}, 500);
-				collect($(this).attr("data-consumable"));
-			});
+		try {
+			// loop through and add all consumables
+			for (var i=0; i<consumables.length; i++){
+				// new position
+				let x = Math.ceil(Math.random() * (pageData.browser.width - 100)),
+					y = Math.ceil(Math.random() * (pageData.browser.fullHeight - 100));
+				let css = "left:" + x + "px;top:" + y + "px;";
+				// html
+				let imgStr = chrome.extension.getURL('assets/img/consumables/' + consumables[i].type + "s/" + consumables[i].img);
+				let ref = 'tally_consumable_'+ i;
+				let str = "<div data-consumable='"+ i +"' class='tally_consumable_inner "+ref+"' style='" + css + "'>"+
+						  "<img src='" + imgStr + "'></div>";
+				$('.tally_consumable_wrapper').append(str);
+				// add listeners
+				$(document).on("mouseover", "."+ref, function() {
+					//console.log($(this));
+					hover($(this).attr("data-consumable"));
+				});
+				$(document).on("click", "."+ref, function() {
+					// Math.random so gif replays
+					let imgStr = chrome.extension.getURL('assets/img/consumables/consumable-explosion.gif?' + Math.random());
+					let str ="<img src='" + imgStr + "'>";
+					$("."+ref).html(str);
+					setTimeout(function() {
+						// remove
+						$("."+ref).remove();
+					}, 111500);
+					collect($(this).attr("data-consumable"));
+				});
+			}
+		} catch (err) {
+			console.error(error);
 		}
 	}
 	/**
@@ -104,7 +118,7 @@ window.Consumable = (function() {
 	 */
 	function hover(key) {
 		let consumable = consumables[key];
-		console.log("Consumable.hover()", key, consumable);
+		//console.log("Consumable.hover()", key, consumable);
 		if (!hovered){
 			// tell them
 			Thought.showString("Oh, you found a " + consumable.name + " " + consumable.type + "!", consumable.sound, true);
@@ -118,7 +132,7 @@ window.Consumable = (function() {
 	 */
 	function collect(key) {
 		let consumable = consumables[key];
-		console.log("Consumable.collect()", key, consumable);
+		//console.log("Consumable.collect()", key, consumable);
 		// play sound
 		Sound.playRandomPowerup();
 

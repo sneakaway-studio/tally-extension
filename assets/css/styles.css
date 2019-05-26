@@ -25,7 +25,7 @@
 
 
 .tally_consumable_wrapper{
-    z-index: 9999999;
+    z-index: 99999999999;
 }
 .tally_consumable_inner {
     position: absolute;

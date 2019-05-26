@@ -34,7 +34,7 @@ window.StatsDisplay = (function() {
 		// get player's stats SVG coordinates
 		let svgPoints = playerStatsSVGPoints(who),
 			str = '';
-		console.log("StatsDisplay.returnInitialSVG()",who, svgPoints, "health="+svgPoints.health.val, "stamina="+svgPoints.stamina.val);
+		//console.log("StatsDisplay.returnInitialSVG()",who, svgPoints, "health="+svgPoints.health.val, "stamina="+svgPoints.stamina.val);
 
 		str += '<svg height="65" width="230" class="stats-display">';
 		str += '<g class="stat-bars">';
@@ -68,7 +68,7 @@ window.StatsDisplay = (function() {
 	}
 
 	function updateAllTallyStatsDisplay() {
-		console.log("StatsDisplay.updateAllTallyStatsDisplay()", tally_user.stats);
+		//console.log("StatsDisplay.updateAllTallyStatsDisplay()", tally_user.stats);
 		// bars, circle, table
 		adjustStatsBar("tally", "health", tally_user.stats.health);
 		adjustStatsBar("tally", "stamina", tally_user.stats.stamina);
@@ -77,7 +77,7 @@ window.StatsDisplay = (function() {
 	}
 
 	function updateAllMonsterStatsDisplay() {
-		console.log("StatsDisplay.updateAllTallyStatsDisplay()", Monster.stats);
+		//console.log("StatsDisplay.updateAllTallyStatsDisplay()", Monster.stats);
 		// bars, circle, table
 		adjustStatsBar("monster", "health", Monster.stats.health);
 		adjustStatsBar("monster", "stamina", Monster.stats.stamina);
@@ -89,7 +89,7 @@ window.StatsDisplay = (function() {
 	 * 	Adjust stats bars for Tally *values are normalized*
 	 */
 	function adjustStatsBar(who, bar, val) {
-		console.log("StatsDisplay.adjustStatsBar()1", who, bar, val);
+		//console.log("StatsDisplay.adjustStatsBar()1", who, bar, val);
 		if (bar != "health" && bar != "stamina") return;
 		// clean value
 		val = FS_Number.round(val, 2);
@@ -104,7 +104,7 @@ window.StatsDisplay = (function() {
 		// save data-value
 		$('.' + who + '_stats .stat-bar-' + bar).attr("data-value", val);
 		// log
-		console.log("StatsDisplay.adjustStatsBar()2", who, bar, val, oldBar, statsDisplay[bar]);
+		//console.log("StatsDisplay.adjustStatsBar()2", who, bar, val, oldBar, statsDisplay[bar]);
 		// animation
 		anime({
 			targets: '.' + who + '_stats .stat-bar-' + bar,
@@ -115,13 +115,6 @@ window.StatsDisplay = (function() {
 			}],
 			easing: 'easeOutQuad',
 			duration: 1000,
-			begin: function() {
-				// // play sound
-				// if (oldBar.w < statsDisplay[bar])
-				// 	Sound.playRandomJump();
-				// else
-				// 	Sound.playRandomJumpReverse();
-			},
 			complete: function() {
 				// save stats
 				playerStatsSVGPoints(who, statsDisplay);

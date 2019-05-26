@@ -23,7 +23,8 @@ window.Page = (function() {
 				platform: Environment.getPlatform(),
 				width: window.innerWidth || document.body.clientWidth,
 				height: window.innerHeight || document.body.clientHeight,
-				center: {x:0,y:0}
+				center: {x:0,y:0},
+				fullHeight: document.body.scrollHeight
 			},
 			screen: {
 				width: screen.width,
@@ -49,7 +50,7 @@ window.Page = (function() {
 		data.browser.center.y = data.browser.height/2;
 		// check page tags
 		data.tags = getPageTags(data);
-		//console.log("pageData",data);
+		console.log("pageData",data);
 		return data;
 	}
 

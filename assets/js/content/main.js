@@ -80,16 +80,21 @@ function startGameOnPage() {
 		// 	addMutationObserver();
 		addTitleChecker();
 
-	// remove trackers that have been caught
-	Tracker.removeCaughtTrackers(pageData.trackers);
-	// check for  monsters on the page
-	MonsterCheck.check();
-	// update debugger
-	Debug.update();
-	// possibly add a consumable
-	Consumable.create();
-	// check recharge status
-	Stats.checkLastActive();
+	try {
+		// remove trackers that have been caught
+		Tracker.removeCaughtTrackers(pageData.trackers);
+		// check for monsters on the page
+		MonsterCheck.check();
+		// update debugger
+		Debug.update();
+		// possibly add a consumable
+		//Consumable.randomizer();
+		Consumable.create(); // testing
+		// check last active status
+		Stats.checkLastActive();
+	} catch (err) {
+		console.error(error);
+	}
 }
 
 /**
