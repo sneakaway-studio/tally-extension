@@ -3,7 +3,6 @@
 window.MonsterAward = (function() {
 
 	let DEBUG = true,
-		currentMID = "",
 		secondsBeforeDelete = 300; // 60 seconds for testing
 
 
@@ -344,12 +343,7 @@ window.MonsterAward = (function() {
 		});
 		Debug.update();
 	}
-	/**
-	 *	Return current monster MID
-	 */
-	function getCurrent() {
-		return currentMID;
-	}
+
 
 	// PUBLIC
 	return {

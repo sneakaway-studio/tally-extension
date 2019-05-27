@@ -69,13 +69,13 @@ window.Sound = (function() {
 	};
 
 	function playRandomPowerup() {
-		Sound.playFile("powerups/" + randomObjProperty(sounds.powerups));
+		Sound.playFile("powerups/" + FS_Object.randomObjProperty(sounds.powerups));
 	}
 	function playRandomJump() {
-		Sound.playFile("jumps/" + randomObjProperty(sounds.jumps));
+		Sound.playFile("jumps/" + FS_Object.randomObjProperty(sounds.jumps));
 	}
 	function playRandomJumpReverse() {
-		Sound.playFile("jumps/" + randomObjProperty(sounds["jumps-reverse"]));
+		Sound.playFile("jumps/" + FS_Object.randomObjProperty(sounds["jumps-reverse"]));
 	}
 
 
@@ -97,10 +97,10 @@ window.Sound = (function() {
 			// for array
 			//soundFile = category +"/"+ sounds[category][Math.floor((Math.random() * sounds[category].length))];
 			// random from obj
-			soundFile = category + "/" + randomObjProperty(sounds[category]);
+			soundFile = category + "/" + FS_Object.randomObjProperty(sounds[category]);
 		// else pick random category && index
 		else if (!prop(category) && !prop(index)) {
-			var categoryArr = randomObjProperty(sounds); // reference to array group in sounds
+			var categoryArr = FS_Object.randomObjProperty(sounds); // reference to array group in sounds
 			soundFile = category + "/" + categoryArr[Math.floor(Math.random() * categoryArr.length)];
 		}
 		play(soundFile, delay);

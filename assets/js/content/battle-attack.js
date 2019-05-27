@@ -12,7 +12,7 @@ window.BattleAttack = (function() {
 		let obj = {};
 		if (count > 1)
 			for (let i = 0; i < count; i++) {
-				let attack = randomObjProperty(AttackData.data);
+				let attack = FS_Object.randomObjProperty(AttackData.data);
 				obj[attack.name] = attack;
 			}
 		return obj;

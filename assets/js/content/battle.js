@@ -24,54 +24,54 @@ window.Battle = (function() {
 		return _active;
 	}
 
-
-
-	// initiate battle
-	// wait for user
-
-
+	/**
+	 *	Testing, generates its own mid and calls start()
+	 */
 	function test() {
 		if (_active) return;
 		if (tally_nearby_monsters.length < 1) return;
+		// use random ...
 		let mid = randomObjKey(tally_nearby_monsters);
-		//start(mid);
+		// or pick from some favorites...
 		var r = Math.random();
-		if (r < 0.1) start(6);
-		else if (r < 0.2) start(63);
-		else if (r < 0.25) start(86);
-		else if (r < 0.3) start(89);
-		else if (r < 0.35) start(110);
-		else if (r < 0.4) start(224);
-		else if (r < 0.5) start(283);
-		else if (r < 0.6) start(594);
-		else if (r < 0.7) start(632);
-		else if (r < 0.8) start(637);
-		else if (r < 0.85) start(653);
-		else if (r < 1) start(681);
+		if (r < 0.1) mid = 6;
+		else if (r < 0.2) mid = 63;
+		else if (r < 0.25) mid = 86;
+		else if (r < 0.3) mid = 89;
+		else if (r < 0.35) mid = 110;
+		else if (r < 0.4) mid = 224;
+		else if (r < 0.5) mid = 283;
+		else if (r < 0.6) mid = 594;
+		else if (r < 0.7) mid = 632;
+		else if (r < 0.8) mid = 637;
+		else if (r < 0.85) mid = 653;
+		else if (r < 1) mid = 681;
+		// move monster into position
+		Monster.display(mid);
+		start(63);
 	}
 
-
-
-	// start battle
+	/**
+	 *	Starts battle, moves into position *requires mid*
+	 */
 	function start(mid) {
 		//console.log("Battle.start()", mid);
 		if (_active) return;
 		active(true);
 		// intro sound
-		//Sound.playCategory('powerups', 'powerup1');
+		Sound.playCategory('powerups', 'powerup1');
 		// setup page for effects
 		BattleEffect.setup();
-
 		// move tally into position
 		anime({
 			targets: '#tally_character',
 			left: "22%",
-			top: "25%",
+			top: "21%",
 			elasticity: 0,
 			duration: 1000,
 			easing: 'easeOutCubic'
 		});
-		Thought.showString("Let's keep this tracker from getting our data!", "danger");
+		Thought.showThought(Thought.getThought(["battle", "start", 0]), true);
 
 		// set monster details
 		details.mid = mid;
@@ -79,21 +79,23 @@ window.Battle = (function() {
 		details.mostRecentAttack = "";
 		details.mostRecentDamage = "";
 		details.attacks = BattleAttack.returnRandomAttacks(3);
-
-		// move monster into position
-		Monster.display(mid);
+		// move monster into position and rescale
 		anime({
 			targets: '.tally_monster_sprite_container',
 			left: "58%",
-			top: "18%",
+			top: "25%",
 			opacity: 1,
+			scale: 1,
 			elasticity: 0,
 			duration: 1000,
 			easing: 'easeOutCubic'
 		});
-
+		// remove click, hover on monster
+		$(document).off("click", ".tally_monster_sprite_container");
+		$(document).off("mouseover", ".tally_monster_sprite_container");
 		// show console
 		BattleConsole.display();
+		// log intro message
 		setTimeout(function() {
 			BattleConsole.log("Battle started with " + details.monsterName + "!");
 			// wait for tally to attack first ...
@@ -121,7 +123,7 @@ window.Battle = (function() {
 	function getRandomAttacks(num) {
 		var attack, attacks = {};
 		for (var i = 0; i < num; i++) {
-			attack = randomObjProperty(AttackData.data);
+			attack = FS_Object.randomObjProperty(AttackData.data);
 			attacks[attack.name] = attack;
 		}
 		return attacks;
@@ -181,7 +183,7 @@ window.Battle = (function() {
 			opp = "tally";
 
 		// choose random attack
-		details.mostRecentAttack = randomObjProperty(details.monsterAttacks);
+		details.mostRecentAttack = FS_Object.randomObjProperty(details.monsterAttacks);
 		details.mostRecentDamage = randomArrayIndex(randomDamageOutcomes);
 		//console.log("details",details);
 
@@ -191,15 +193,16 @@ window.Battle = (function() {
 			showAttackEffects(details.mostRecentAttack, self, opp);
 			// do battle math
 			let attackOutcomes = updateStats("monster", "tally");
-			console.log("attackOutcomes",attackOutcomes);
+			console.log("attackOutcomes", attackOutcomes);
 			// log the attack
 			BattleConsole.log(details.monsterName + " used the " + details.mostRecentAttack.name + " " + details.mostRecentAttack.type + "!");
 			// wait
 			setTimeout(function() {
 				// then log the attack outcomes
-				for (var i=0; i < attackOutcomes.length; i++){
+				for (var i = 0; i < attackOutcomes.length; i++) {
 					details.mostRecentDamage = attackOutcomes[i];
 					BattleConsole.log("Tally lost " + details.mostRecentDamage + ".");
+					Thought.showThought(Thought.getThought(["battle", "start", 0]), true);
 				}
 				// wait
 				setTimeout(function() {
@@ -211,9 +214,10 @@ window.Battle = (function() {
 	}
 
 	function tallyAttackMonster(extraDelay = 0) {
-		let self = "tally", opp = "monster";
+		let self = "tally",
+			opp = "monster";
 
-		details.mostRecentAttack = randomObjProperty(details.tallyAttacks);
+		details.mostRecentAttack = FS_Object.randomObjProperty(details.tallyAttacks);
 		details.mostRecentDamage = randomArrayIndex(randomDamageOutcomes);
 
 		// show buttons

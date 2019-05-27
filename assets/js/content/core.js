@@ -7,14 +7,14 @@ window.Core = (function() {
 	// PRIVATE
 
 
-
+	// ele = string
 	function showElement(ele) {
 		$(ele).css({
 			"display": "block",
 			"opacity": 1
 		});
 	}
-
+	// ele = string
 	function hideElement(ele) {
 		$(ele).css({
 			"display": "none",
@@ -22,6 +22,14 @@ window.Core = (function() {
 		});
 	}
 
+	function setPosition(ele, pos) {
+		$(ele).css({
+			"left": pos.x + "px"
+		});
+		$(ele).css({
+			"top": pos.y + "px"
+		});
+	}
 
 	/**
 	 *	Get center position of object
@@ -39,13 +47,48 @@ window.Core = (function() {
 	 */
 	function setCenterPosition(ele, newPos) {
 		// set left/top, adjust by width/height
-		$(ele).offset({
-			"left": newPos.left - ($(ele).width() / 2)
-		});
-		$(ele).offset({
-			"top": newPos.top - ($(ele).height() / 2)
-		});
-		console.log("Core.setCenterPosition()", ele, $(ele).offset(), newPos);
+		let pos = {
+			"x": newPos.left - ($(ele).width() / 2),
+			"y": newPos.top - ($(ele).height() / 2)
+		};
+		setPosition(ele, pos);
+		//console.log("Core.setCenterPosition()", ele, $(ele).offset(), newPos);
+	}
+
+
+
+
+	function setRandomPosition(ele) {
+
+	}
+
+	function setRandomPositionFull(ele) {
+		let pos = returnRandomPositionFull(ele);
+		console.log("Core.setRandomPositionFull()", ele, pos);
+		setPosition(ele, pos);
+	}
+
+	/**
+	 *	Recursive function to generate safe x,y for consumables, monsters, etc.
+	 */
+	function returnRandomPositionFull(ele) {
+		let w = $(ele).width() || 100,
+			h = $(ele).height() || 100;
+		//console.log("returnRandomPositionFull()");
+		function gen() {
+			//console.log("returnRandomPositionFull() -> gen()");
+			let pos = {
+				"x": Math.ceil(Math.random() * (pageData.browser.width - w)) + (w / 2),
+				"y": Math.ceil(Math.random() * (pageData.browser.fullHeight - h)) + (h / 2)
+			};
+			// check to make sure it isn't behind Tally
+			if (pos.x < 200 && pos.y > (pageData.browser.fullHeight - 200))
+				// or try again
+				pos = gen();
+			else
+				return pos;
+		}
+		return gen();
 	}
 
 
@@ -62,6 +105,25 @@ window.Core = (function() {
 		},
 		setCenterPosition: function(ele, newPos) {
 			setCenterPosition(ele, newPos);
+		},
+		setRandomPosition: function(ele) {
+			setRandomPosition(ele);
+		},
+		setRandomPositionFull: function(ele) {
+			setRandomPositionFull(ele);
+		},
+		returnRandomPositionFull: function() {
+			return returnRandomPositionFull();
+		},
+		setElementAbsolute: function(ele) {
+			$(ele).css({
+				"position": "absolute"
+			});
+		},
+		setElementFixed: function(ele) {
+			$(ele).css({
+				"position": "fixed"
+			});
 		}
 
 	};

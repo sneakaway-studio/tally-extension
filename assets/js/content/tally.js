@@ -196,7 +196,7 @@ window.Tally = (function() {
 			chrome.runtime.sendMessage({ 'action': 'openPage', 'url': chrome.extension.getURL('assets/pages/startScreen/startScreen.html') });
 		});
 		$(document).on('click', '#tallyMenu_testNearbyMonster', function() {
-			Monster.testLaunch(); // launch one of the nearby monsters
+			Monster.test(); // launch one of the nearby monsters
 		});
 		$(document).on('click', '#tallyMenu_battleStart', function() {
 			Battle.test();
@@ -254,7 +254,7 @@ Mousetrap.bind(k + ' s', function() {
 });
 Mousetrap.bind(k + ' t', function() { Thought.random(); });
 Mousetrap.bind(k + ' w', function() { Skin.random(); });
-Mousetrap.bind(k + ' m', function() { Monster.testLaunch(); });
+Mousetrap.bind(k + ' m', function() { Monster.test(); });
 Mousetrap.bind(k + ' b', function() { Battle.test(); });
 Mousetrap.bind(k + ' 0', function() { BattleEffect.rumble("small"); });
 Mousetrap.bind(k + ' 1', function() { BattleEffect.rumble("medium"); });

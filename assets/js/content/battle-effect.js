@@ -93,7 +93,7 @@ window.BattleEffect = (function() {
 
 		// update positions
 		//if (monsterPos == null || tallyPos == null) {
-			monsterPos = Core.getCenterPosition(".tally_monster_sprite");
+			monsterPos = Core.getCenterPosition(".tally_monster_sprite_container");
 			tallyPos = Core.getCenterPosition("#tally_character");
 		//}
 		//console.log(tallyPos, monsterPos);
@@ -154,7 +154,7 @@ window.BattleEffect = (function() {
 		console.log("showExplosion()", pos, rumble);
 
 		if (rumble)
-			rumble("medium", "powerups/" + randomObjProperty(Sound.sounds.powerups));
+			rumble("medium", "powerups/" + FS_Object.randomObjProperty(Sound.sounds.powerups));
 
 		// if no position received
 		if (pos == null)

@@ -54,7 +54,7 @@ window.MonsterCheck = (function() {
 	 *	Check the page for a monster
 	 */
 	function checkForTagMatches() {
-		//if (DEBUG) console.log('⊙⊙⊙⊙⊙ MonsterCheck.checkForTagMatches()', pageData.tags);
+		if (DEBUG) console.log('⊙⊙⊙⊙⊙ MonsterCheck.checkForTagMatches()', pageData.tags);
 		// loop through the tags on the page
 		for (var i = 0, l = pageData.tags.length; i < l; i++) {
 			// save reference
@@ -78,17 +78,21 @@ window.MonsterCheck = (function() {
 		}
 	}
 
-
-
-
 	/**
-	 *	A monster has been matched to page tags, handle it
+	 *	A monster has been matched to page tags, either
+	 *	1. add it to tally_nearby_monsters
+	 *	2. or, if it is already "nearby", then determine if its stage will advance
 	 */
 	function handleMatch(mid) {
-		//if (DEBUG) console.log('⊙⊙!⊙⊙ MonsterCheck.handleMatch()', MonsterData.dataById[mid].slug, "stage="+tally_nearby_monsters[mid].stage);
+		if (DEBUG) console.log('⊙⊙!⊙⊙ MonsterCheck.handleMatch() mid='+ mid);
+		// if (mid && mid > 0 && tally_nearby_monsters && MonsterData.dataById[mid]){
+		// 	if (DEBUG) console.log(" ... "+
+		// 	//MonsterData.dataById[mid].slug,
+		// 	"stage="+tally_nearby_monsters[mid].stage);
+		// }
 
-		// will we launch the monster
-		let launchMonster = false;
+		// will we add the monster
+		let addMonster = false;
 
 		// if the monster id does not exist in nearby_monsters
 		if (!prop(tally_nearby_monsters[mid])) {
@@ -99,8 +103,15 @@ window.MonsterCheck = (function() {
 		else {
 			// randomizer
 			let r = Math.random();
+
+			// change to 1 to test
+			if (1){
+				// test
+				tally_nearby_monsters[mid].stage = 3;
+				addMonster = true;
+
 			// what stage are we at with this monster?
-			if (tally_nearby_monsters[mid].stage == 0) {
+			} else if (tally_nearby_monsters[mid].stage == 0) {
 				// do nothing
 				Thought.showTrackerThought();
 			} else if (tally_nearby_monsters[mid].stage == 1) {
@@ -109,10 +120,10 @@ window.MonsterCheck = (function() {
 					tally_nearby_monsters[mid].stage = 0;
 					Thought.showString("Want to give feedback? Click the survey button in the top-right menu.", "question");
 				} else if (r < 0.4) {
-					// show them a random thought, but don't change stage
+					// random thought, but don't change stage
 					Thought.showTrackerThought();
 				} else if (r < 0.7) {
-					// show them a random thought, but don't change stage
+					// random thought, but don't change stage
 					Thought.showThought(Thought.getThought(["monster", "far", 0]), true);
 				} else {
 					// or prompt stage 2
@@ -123,31 +134,29 @@ window.MonsterCheck = (function() {
 				if (r < 0.2) {
 					// do nothing
 				} else if (r < 0.4) {
-					// show them a random thought, but don't change stage
+					// random thought, but don't change stage
 					Thought.showTrackerThought();
 				} else if (r < 0.7) {
-					// show them a random thought, but don't change stage
+					// random thought, but don't change stage
 					Thought.showThought(Thought.getThought(["monster", "close", 0]), true);
 				} else {
-					// or prompt stage 3 - launch
+					// or prompt stage 3 - add
 					tally_nearby_monsters[mid].stage = 3;
-					launchMonster = true;
+					addMonster = true;
 				}
 			}
-
-			//if (DEBUG) console.log('!!!!! MonsterCheck.handleMatch()', MonsterData.dataById[mid].slug, tally_nearby_monsters[mid]);
+			// save to log after code above
+			if (DEBUG) console.log('⊙⊙!⊙⊙ MonsterCheck.handleMatch()', MonsterData.dataById[mid].slug, tally_nearby_monsters[mid]);
 		}
-		if (DEBUG) console.log('⊙⊙!⊙⊙ MonsterCheck.handleMatch()', MonsterData.dataById[mid].slug, "stage="+ tally_nearby_monsters[mid].stage);
 		// set skin
 		Skin.setStage(tally_nearby_monsters[mid].stage);
 		// save monsters
 		saveNearbyMonsters();
-		// should we launch a monster?
-		if (launchMonster) {
+		// should we add the monster?
+		if (addMonster) {
 			currentMID = mid;
-			// show thought
-			Thought.showThought(Thought.getThought(["monster", "launch", 0]), true);
-			Monster.launch(mid);
+			// add monster to page
+			Monster.add(mid);
 		}
 	}
 
@@ -173,20 +182,14 @@ window.MonsterCheck = (function() {
 			'action': 'saveNearbyMonsters',
 			'data': tally_nearby_monsters
 		}, function(response) {
-			//console.log('<<<<< > saveNearbyMonsters()',JSON.stringify(response));
+			//if (DEBUG) console.log('<<<<< > saveNearbyMonsters()',JSON.stringify(response));
 		});
 		Debug.update();
 	}
-	/**
-	 *	Return current monster MID
-	 */
-	function getCurrent() {
-		return currentMID;
-	}
+
 
 	// PUBLIC
 	return {
-		check: check,
-		current: getCurrent
+		check: check
 	};
 }());

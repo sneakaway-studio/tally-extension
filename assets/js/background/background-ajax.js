@@ -132,13 +132,13 @@ function sendServerUpdate(data) {
 	}).done(result => {
 		console.log("<{!}> sendServerUpdate() RESULT =", JSON.stringify(result));
 		// treat all server data as master, store in local background user
-		if (result[0].username) _tally_user.username = result[0].username;
-		if (result[0].clicks) _tally_user.score.clicks = result[0].clicks;
-		if (result[0].likes) _tally_user.score.likes = result[0].likes;
-		if (result[0].pages) _tally_user.score.pages = result[0].pages;
-		if (result[0].score) _tally_user.score.score = result[0].score;
-		if (result[0].time) _tally_user.score.time = result[0].time;
-		if (result[0].consumable) _tally_user.consumable = result[0].consumable;
+		if (result.username) _tally_user.username = result.username;
+		if (result.clicks) _tally_user.score.clicks = result.clicks;
+		if (result.likes) _tally_user.score.likes = result.likes;
+		if (result.pages) _tally_user.score.pages = result.pages;
+		if (result.score) _tally_user.score.score = result.score;
+		if (result.time) _tally_user.score.time = result.time;
+		if (result.consumables) _tally_user.consumables = result.consumables;
 		store("tally_user", _tally_user);
 	}).fail(error => {
 		console.error("<{!}> sendServerUpdate() RESULT =", JSON.stringify(error));
@@ -147,7 +147,7 @@ function sendServerUpdate(data) {
 	});
 }
 
-
+ 
 /**
  *  Send monster update to API server
  */

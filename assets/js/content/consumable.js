@@ -82,7 +82,7 @@ window.Consumable = (function() {
 			for (var i=0; i<num; i++){
 				if (!pageData.activeOnPage || tally_options.gameMode !== "full") return;
 				//console.log("Consumable.create() gameMode="+tally_options.gameMode);
-				consumables.push(randomObjProperty(types[randomObjKey(types)]));
+				consumables.push(FS_Object.randomObjProperty(types[randomObjKey(types)]));
 				// testing
 				//consumables.push(types.cookie.fortune);
 			}
@@ -99,10 +99,11 @@ window.Consumable = (function() {
 		try {
 			// loop through and add all consumables
 			for (var i=0; i<consumables.length; i++){
+				//console.log("Consumable.add()",i);
 				// new position
-				let x = Math.ceil(Math.random() * (pageData.browser.width - 100)),
-					y = Math.ceil(Math.random() * (pageData.browser.fullHeight - 100));
-				let css = "left:" + x + "px;top:" + y + "px;";
+				let randomPos = Core.returnRandomPositionFull();
+				let css = "left:" + randomPos.x + "px;top:" + randomPos.y + "px;";
+				//console.log(randomPos,css);
 				// html
 				let imgStr = chrome.extension.getURL('assets/img/consumables/' + consumables[i].type + "/" + consumables[i].img);
 				let ref = 'tally_consumable_'+ i;
@@ -122,7 +123,7 @@ window.Consumable = (function() {
 					setTimeout(function() {
 						// remove
 						$("."+ref).remove();
-					}, 111500);
+					}, 500);
 					collect($(this).attr("data-consumable"));
 				});
 			}

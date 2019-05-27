@@ -10,6 +10,7 @@
     z-index: 99999999999999;
     height: 300px; /* formerly 400 */
     width: 375px; /* formerly 500 */
+    cursor: pointer;
 }
 .tally_monster_sprite {
     position: relative;

@@ -92,14 +92,19 @@ function startGameOnPage() {
 		// update debugger
 		Debug.update();
 		// possibly add a consumable
-		Consumable.randomizer();
-		//Consumable.create(); // testing
+		//Consumable.randomizer();
+		Consumable.create(1); // testing
 		// check last active status
 		Stats.checkLastActive();
 	} catch (err) {
 		console.error(error);
 	}
 }
+
+// window.onerror = function(message, source, lineno, colno, error) {
+// 	console.error(message, source, lineno, colno, error);
+// };
+
 
 /**
  *	Refresh app

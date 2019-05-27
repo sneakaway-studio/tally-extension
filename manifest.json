@@ -62,7 +62,6 @@
             "assets/js/content/pageData.js",
             "assets/js/content/interface.js",
             "assets/js/content/monster-check.js",
-            "assets/js/content/monster-award.js",
             "assets/js/content/monster.js",
             "assets/js/content/stats.js",
             "assets/js/content/stats-display.js",
