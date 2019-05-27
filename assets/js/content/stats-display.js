@@ -17,7 +17,8 @@ window.StatsDisplay = (function() {
 		"stamina": { "val": 0, "x":0, "y":20, "w":0, "h":12 }, // start @ zero
 		"circle":{ "val": 0,"cx":26, "cy":34, "r":22, "text":0 },
 	};
-	let monsterStatsSVGPoints = tallyStatsSVGPoints;
+	// assign by value, not reference
+	let monsterStatsSVGPoints = Object.assign({}, tallyStatsSVGPoints);
 
 	/**
 	 * 	Combine stat bar polygon points
@@ -34,7 +35,7 @@ window.StatsDisplay = (function() {
 		// get player's stats SVG coordinates
 		let svgPoints = playerStatsSVGPoints(who),
 			str = '';
-		//console.log("StatsDisplay.returnInitialSVG()",who, svgPoints, "health="+svgPoints.health.val, "stamina="+svgPoints.stamina.val);
+		console.log("StatsDisplay.returnInitialSVG()",who, svgPoints, "health="+svgPoints.health.val, "stamina="+svgPoints.stamina.val);
 
 		str += '<svg height="65" width="230" class="stats-display">';
 		str += '<g class="stat-bars">';
@@ -77,11 +78,13 @@ window.StatsDisplay = (function() {
 	}
 
 	function updateAllMonsterStatsDisplay() {
-		//console.log("StatsDisplay.updateAllTallyStatsDisplay()", Monster.stats);
+		// get current monster
+		let monster = Monster.current();
+		console.log("StatsDisplay.updateAllMonsterStatsDisplay()", monster);
 		// bars, circle, table
-		adjustStatsBar("monster", "health", Monster.stats.health);
-		adjustStatsBar("monster", "stamina", Monster.stats.stamina);
-		adjustStatsCircle("monster", Monster.score.level);
+		adjustStatsBar("monster", "health", monster.stats.health);
+		adjustStatsBar("monster", "stamina", monster.stats.stamina);
+		adjustStatsCircle("monster", monster.level);
 		$('.monster_stats_full').html(returnFullTable("monster"));
 	}
 
@@ -195,6 +198,7 @@ window.StatsDisplay = (function() {
 	 * 	(save and) return player's stats display coordinates
 	 */
 	function playerStatsSVGPoints(who, statsDisplay = null) {
+		//console.log("playerStatsSVGPoints()",who, statsDisplay);
 		if (who == "tally") {
 			if (statsDisplay !== null)
 				tallyStatsSVGPoints = statsDisplay;

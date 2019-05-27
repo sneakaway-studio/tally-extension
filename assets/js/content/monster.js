@@ -10,7 +10,7 @@ window.Monster = (function() {
 	 */
 
 	let DEBUG = true,
-		currentMID = "",
+		currentMID = 0,
 		secondsBeforeDelete = 300; // 60 seconds for testing
 
 	/**
@@ -18,8 +18,8 @@ window.Monster = (function() {
 	 */
 	function create(_mid, _stage = 1) {
 		if (!prop(_mid) || !prop(_stage) || !prop(MonsterData.dataById[_mid])) return;
-		if (DEBUG) console.log('⊙!⊙⊙⊙ Monster.create()', "_mid=" + _mid, "_stage=" + _stage, MonsterData.dataById[_mid]);
-		let monster = {
+		if (DEBUG) console.log('⊙!⊙⊙⊙ Monster.create()1', "_mid=" + _mid, "_stage=" + _stage, MonsterData.dataById[_mid]);
+		tally_nearby_monsters[_mid] = {
 			"stage": _stage,
 			"level": returnMonsterLevel(),
 			"slug": MonsterData.dataById[_mid].slug,
@@ -29,14 +29,16 @@ window.Monster = (function() {
 			"captured": 0,
 			"missed": 0,
 			"facing": MonsterData.dataById[_mid].facing,
-			"stats": Stats.monster(),
+			"stats": Stats.resetMonsterStats(_mid),
 			"updatedAt": Date.now()
 		};
 		// if it already exists then make it the number of captures +1
 		if (tally_user.monsters[_mid])
-			monster.totalCaptured = tally_user.monsters[_mid].captured;
-		if (DEBUG) console.log('⊙!⊙⊙⊙ Monster.create()', _mid, monster, tally_user.monsters[_mid]);
-		return monster;
+			tally_nearby_monsters[_mid].totalCaptured = tally_user.monsters[_mid].captured;
+		if (DEBUG) console.log('⊙!⊙⊙⊙ Monster.create()2', _mid, tally_nearby_monsters[_mid], tally_user.monsters[_mid]);
+		// save
+		saveNearbyMonsters();
+		return tally_nearby_monsters[_mid];
 	}
 	/**
 	 *	Determine and return a monster's level
@@ -59,19 +61,19 @@ window.Monster = (function() {
 	 */
 	function add(_mid) {
 		if (!_mid || _mid <= 0) return;
-		let monster = tally_nearby_monsters[_mid];
-		if (DEBUG) console.log('⊙⊙⊙!⊙ Monster.add()', _mid, monster);
+		if (DEBUG) console.log('⊙⊙⊙!⊙ Monster.add()', _mid, tally_nearby_monsters[_mid]);
 		// don't show if game isn't running in full mode
 		if (tally_options.gameMode != "full") return;
+		// set currentMID
+		currentMID = _mid;
 		// display it on the page
-		display(monster);
+		display(tally_nearby_monsters[_mid]);
 	}
 	/**
 	 *	Display a monster on the page (call add() first)
 	 */
 	function display(monster) {
 		if (DEBUG) console.log('⊙⊙⊙⊙! Monster.display()', monster);
-		currentMID = monster.mid;
 		// show thought
 		Thought.showThought(Thought.getThought(["monster", "display", 0]), true);
 
@@ -101,40 +103,30 @@ window.Monster = (function() {
 		// add listeners
 		$(document).on("mouseover", ".tally_monster_sprite_container", function() {
 			let mid = Number($(this).attr('data-mid'));
+			//console.log(mid);
 			Thought.showThought(Thought.getThought(["battle", "choose", 0]), true);
-			console.log(mid);
 		});
 		$(document).on("click", ".tally_monster_sprite_container", function() {
 			let mid = Number($(this).attr('data-mid'));
+			//console.log(mid);
 			// launch battle
-			console.log(mid);
 			Battle.start(mid);
 		});
-
-		//MonsterAward.launchFrom(mid, pos);
-
-
-		// temp: show growl
-		$.growl({
-			title: "LAUNCHING MONSTER!!!",
-			message: "MONSTER: " + MonsterData.dataById[_mid].name + " [" + _mid + "] "
-		});
+		// // temp: show growl
+		// $.growl({
+		// 	title: "LAUNCHING MONSTER!!!",
+		// 	message: "MONSTER: " + MonsterData.dataById[_mid].name + " [" + _mid + "] "
+		// });
 
 
-
-
-
-
-		// face monster
+		// turn monster to face Tally
 		if (prop(tally_nearby_monsters[_mid].facing) && tally_nearby_monsters[_mid].facing == "1")
-			// left
-			$('.tally_monster_sprite_container').css('transform', 'scaleX(-1)');
+			$('.tally_monster_sprite_container').css('transform', 'scaleX(-1)'); // left
 		else
-			// reset (right)
-			$('.tally_monster_sprite_container').css('transform', 'scaleX(1)');
+			$('.tally_monster_sprite_container').css('transform', 'scaleX(1)'); // reset (right)
 
-		// display monster's stats
-		$('.monster_stats').html(StatsDisplay.returnInitialSVG("monster"));
+		// saveMonster
+		tally_nearby_monsters[monster.mid] = monster;
 	}
 
 
@@ -191,6 +183,8 @@ window.Monster = (function() {
 				"level": tally_nearby_monsters[_mid].level
 			};
 		}
+		// save monsters
+		saveNearbyMonsters();
 
 		// save user in background
 		saveUser();
@@ -216,13 +210,14 @@ window.Monster = (function() {
 		// 	delete tally_nearby_monsters[mid];
 		// reset them all
 		tally_nearby_monsters = {};
+		monster = {};
 		saveNearbyMonsters();
 		// set the skin color
 		Skin.setStage(0);
 	}
 
 	/**
-	 *	Save nearby monsters
+	 *	Save nearby monsters in background
 	 */
 	function saveNearbyMonsters() {
 		chrome.runtime.sendMessage({
@@ -243,12 +238,16 @@ window.Monster = (function() {
 		add: function(mid) {
 			add(mid);
 		},
-		current: function(){
+		currentMID: function(){
 			return currentMID;
+		},
+		current: function(){
+			return tally_nearby_monsters[currentMID];
 		},
 		saveAndPush: function(mid) {
 			return saveAndPush(mid);
 		},
+		saveNearbyMonsters: saveNearbyMonsters,
 		test: test,
 	};
 }());

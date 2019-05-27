@@ -47,7 +47,7 @@ window.Battle = (function() {
 		else if (r < 0.85) mid = 653;
 		else if (r < 1) mid = 681;
 		// move monster into position
-		Monster.display(mid);
+		Monster.display(tally_nearby_monsters[mid]);
 		start(63);
 	}
 
@@ -71,8 +71,10 @@ window.Battle = (function() {
 			duration: 1000,
 			easing: 'easeOutCubic'
 		});
-		Thought.showThought(Thought.getThought(["battle", "start", 0]), true);
-
+		// hide current thought
+		Thought.hide();
+		// change monster element back to fixed
+		Core.setElementFixed('.tally_monster_sprite_container');
 		// set monster details
 		details.mid = mid;
 		details.monsterName = MonsterData.dataById[mid].name + " monster";
@@ -83,13 +85,15 @@ window.Battle = (function() {
 		anime({
 			targets: '.tally_monster_sprite_container',
 			left: "58%",
-			top: "25%",
+			top: "16%",
 			opacity: 1,
 			scale: 1,
 			elasticity: 0,
 			duration: 1000,
 			easing: 'easeOutCubic'
 		});
+		// display monster's stats
+		$('.monster_stats').html(StatsDisplay.returnInitialSVG("monster"));
 		// remove click, hover on monster
 		$(document).off("click", ".tally_monster_sprite_container");
 		$(document).off("mouseover", ".tally_monster_sprite_container");
@@ -97,6 +101,10 @@ window.Battle = (function() {
 		BattleConsole.display();
 		// log intro message
 		setTimeout(function() {
+			Thought.showThought(Thought.getThought(["battle", "start", 0]), true);
+			// load stats for monster
+			StatsDisplay.updateAllMonsterStatsDisplay();
+			// log intro...
 			BattleConsole.log("Battle started with " + details.monsterName + "!");
 			// wait for tally to attack first ...
 			BattleConsole.log("What will Tally do?", "showBattleOptions");
@@ -157,10 +165,14 @@ window.Battle = (function() {
 	 * 	Get stats of self or opponent
 	 */
 	function getStat(who) {
+		console.log("getStat()",who);
+		let stats = {};
 		if (who == "tally")
-			return tally_user.stats; //Stats.tally();
+			stats = tally_user.stats; //Stats.tally();
 		else
-			return Stats.monster();
+			stats = Stats.monster();
+		console.log("getStat()",who,stats);
+		return stats;
 	}
 
 

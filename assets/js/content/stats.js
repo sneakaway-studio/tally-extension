@@ -6,15 +6,6 @@
 window.Stats = (function() {
 	// PRIVATE
 
-	var monsterStats = {
-		"health": 1.0,
-		"stamina": 1.0,
-		"accuracy": 1.0,
-		"attack": 1.0,
-		"defense": 1.0,
-		"evasion": 1.0,
-	};
-
 	var resetStats = {
 		"health": 1.0,
 		"stamina": 1.0,
@@ -23,9 +14,6 @@ window.Stats = (function() {
 		"defense": 1.0,
 		"evasion": 1.0,
 	};
-
-
-
 
 	function startTally() {
 		// // adjust stats display
@@ -45,9 +33,12 @@ window.Stats = (function() {
 		Sound.playRandomJump();
 		StatsDisplay.updateAllTallyStatsDisplay();
 	}
-	function resetMonsterStats() {
-		Monster.stats = resetStats;
-		StatsDisplay.updateAllTallyMonsterDisplay();
+	function resetMonsterStats(mid) {
+		// tally_nearby_monsters[mid].stats = resetStats;
+		// Monster.saveNearbyMonsters();
+		// Sound.playRandomJump();
+		// StatsDisplay.updateAllTallyMonsterDisplay();
+		return resetStats;
 	}
 
 
@@ -55,7 +46,7 @@ window.Stats = (function() {
 		for (var stat in tally_user.stats)
 			tally_user.stats[stat] = FS_Number.round(Math.random(),2);
 		saveUser();
-		Monster.stats = resetStats;
+		Monster.current().stats = resetStats;
 		StatsDisplay.updateAllTallyStatsDisplay();
 	}
 
@@ -140,37 +131,18 @@ window.Stats = (function() {
 
 
 
-
-
-		function monster(_stats) {
-			if (_stats && _stats.health) {
-				// update stats
-				monsterStats = _stats;
-			}
-			return monsterStats;
-		}
-
-
-
-
-
-
-
 	// PUBLIC
 	return {
 		startTally: startTally,
 		resetTallyStats: resetTallyStats,
-		resetMonsterStats: resetMonsterStats,
-		monster: function(data) {
-			return monster(data);
+		resetMonsterStats: function(){
+			return resetMonsterStats();
 		},
 		randomize: randomize,
 		update: function(data) {
 			update(data);
 		},
 		resetStats: resetStats,
-
-
 		checkLastActive: checkLastActive,
 
 	};
