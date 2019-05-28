@@ -60,9 +60,11 @@ window.StatsDisplay = (function() {
 			blink = "";
 		str += "<div><table>";
 		for (var key in stats) {
-			blink = "";
-			if (changed == key) blink = " stat-blink";
-			str += "<tr class='text-" + key + blink + "'><td>" + key + "</td><td>" + JSON.stringify(stats[key]) + "</td></tr>";
+			if (stats.hasOwnProperty(key)) {
+				blink = "";
+				if (changed == key) blink = " stat-blink";
+				str += "<tr class='text-" + key + blink + "'><td>" + key + "</td><td>" + JSON.stringify(stats[key]) + "</td></tr>";
+			}
 		}
 		str += "</table></div>";
 		return str;

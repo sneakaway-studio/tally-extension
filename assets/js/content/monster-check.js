@@ -31,16 +31,18 @@ window.MonsterCheck = (function() {
 		if (tally_nearby_monsters && objLength(tally_nearby_monsters) > 0) {
 			// loop through them
 			for (var mid in tally_nearby_monsters) {
-				// how long has it been since this monster was seen?
-				// if longer than 5 mins (300 secs) then delete
-				let seconds = ((now - tally_nearby_monsters[mid].updatedAt) / 1000);
-				if ((seconds) > secondsBeforeDelete) {
-					if (DEBUG) console.log("⊙⊙⊙⊙⊙ MonsterCheck.checkNearbyMonsterTimes() -> DELETING", MonsterData.dataById[mid].slug, "seconds", seconds);
-					delete tally_nearby_monsters[mid];
+				if (tally_nearby_monsters.hasOwnProperty(mid)) {
+					// how long has it been since this monster was seen?
+					// if longer than 5 mins (300 secs) then delete
+					let seconds = ((now - tally_nearby_monsters[mid].updatedAt) / 1000);
+					if ((seconds) > secondsBeforeDelete) {
+						if (DEBUG) console.log("👿 ⊙⊙⊙⊙⊙ MonsterCheck.checkNearbyMonsterTimes() -> DELETING", MonsterData.dataById[mid].slug, "seconds", seconds);
+						delete tally_nearby_monsters[mid];
+					}
+					// skin should reflect highest stage
+					if (prop(tally_nearby_monsters[mid]) && tally_nearby_monsters[mid].stage > highestStage)
+						highestStage = tally_nearby_monsters[mid].stage;
 				}
-				// skin should reflect highest stage
-				if (prop(tally_nearby_monsters[mid]) && tally_nearby_monsters[mid].stage > highestStage)
-					highestStage = tally_nearby_monsters[mid].stage;
 			}
 		}
 		saveNearbyMonsters();

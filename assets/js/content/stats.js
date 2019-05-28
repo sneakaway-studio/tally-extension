@@ -43,9 +43,12 @@ window.Stats = (function() {
 
 
 	function randomize() {
-		for (var stat in tally_user.stats)
-			tally_user.stats[stat] = FS_Number.round(Math.random(),2);
-		saveUser();
+		for (var stat in tally_user.stats){
+			if (tally_user.stats.hasOwnProperty(stat)) {
+				tally_user.stats[stat] = FS_Number.round(Math.random(),2);
+			}
+		}
+		TallyStorage.saveUser();
 		Monster.current().stats = resetStats;
 		StatsDisplay.updateAllTallyStatsDisplay();
 	}

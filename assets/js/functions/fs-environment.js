@@ -54,10 +54,12 @@ var Environment = (function() {
                 { s: 'Search Bot', r: /(nuhk|Googlebot|Yammybot|Openbot|Slurp|MSNBot|Ask Jeeves\/Teoma|ia_archiver)/ }
             ];
 		for (var id in clientStrings) {
-			var cs = clientStrings[id];
-			if (cs.r.test(nAgt)) {
-				os = cs.s;
-				break;
+			if (clientStrings.hasOwnProperty(id)) {
+				var cs = clientStrings[id];
+				if (cs.r.test(nAgt)) {
+					os = cs.s;
+					break;
+				}
 			}
 		}
 		// get osVersion

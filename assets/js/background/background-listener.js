@@ -350,8 +350,10 @@ function adjustScore(_score, scoreObj, n) {
 		}
 		// check to see if user level should be upgraded
 		for (var level in gameRules.levels) {
-			if (gameRules.levels[level].minScore) {
+			if (gameRules.hasOwnProperty(level)) {
+				if (gameRules.levels[level].minScore) {
 
+				}
 			}
 		}
 	}

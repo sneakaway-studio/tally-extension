@@ -121,9 +121,13 @@ window.BattleConsole = (function() {
 		var tallyAttacks = Battle.details.tallyAttacks;
 
 		var str = "<div class='battle-options-row'>";
-		for(var key in tallyAttacks){
-			console.log(tallyAttacks[key]);
-			str += "<span class='battle-options'>"+ tallyAttacks[key].name +"</span>";
+		for (var key in tallyAttacks) {
+			if (tallyAttacks.hasOwnProperty(key)) {
+			//console.log(tallyAttacks[key]);
+			str += "<span data-attack='" + tallyAttacks[key].name +
+				"' class='battle-options attack-" + tallyAttacks[key].name + "'>" +
+				tallyAttacks[key].name + "</span>";
+			}
 		}
 		str += "<span class='battle-options-esc'>run [esc]</span></div>";
 

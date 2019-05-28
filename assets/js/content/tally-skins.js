@@ -199,14 +199,16 @@ window.Skin = (function() {
 			def += '<linearGradient id="tallyGradient" x2="1" gradientTransform="rotate(' + obj.angle + ')"  >';
 			// loop through stops in the gradient once to get colors
 			for (const key in obj.stops) {
-				def += '<stop offset="' + key + '" stop-color="' + obj.stops[key] + '">';
-				if (skinAnim) {
-					def += '<animate attributeName="stop-color" values="' + colors.join('; ') + '; ' + colors[0] + '" dur="2s" repeatCount="indefinite"></animate>';
-					// move last to first
-					var last = colors.pop();
-					colors.unshift(last);
+				if (obj.stops.hasOwnProperty(key)) {
+					def += '<stop offset="' + key + '" stop-color="' + obj.stops[key] + '">';
+					if (skinAnim) {
+						def += '<animate attributeName="stop-color" values="' + colors.join('; ') + '; ' + colors[0] + '" dur="2s" repeatCount="indefinite"></animate>';
+						// move last to first
+						var last = colors.pop();
+						colors.unshift(last);
+					}
+					def += '</stop>';
 				}
-				def += '</stop>';
 			}
 			// close gradient
 			def += '</linearGradient>';
