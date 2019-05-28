@@ -182,6 +182,27 @@ const getLastBackgroundUpdatePromise = new Promise(
 );
 
 
+
+function getTutorialHistory() {
+	chrome.runtime.sendMessage({
+		'action': 'getTutorialHistory'
+	}, function(response) {
+		//console.log("<<<<< ",'> getTutorialHistory()',JSON.stringify(response));
+		tally_tutorial_history = response.data;
+	});
+}
+function saveTutorialHistory(data,caller) {
+	//console.log("saveTutorialHistory()",data,caller)
+	tally_tutorial_history = data;
+	chrome.runtime.sendMessage({
+		'action': 'saveTutorialHistory',
+		'data': tally_tutorial_history
+	}, function(response) {
+		//console.log("<<<<< ",'> saveTutorialHistory()',JSON.stringify(response));
+	});
+}
+
+
 function getGameStatus() {
 	chrome.runtime.sendMessage({
 		'action': 'getGameStatus'

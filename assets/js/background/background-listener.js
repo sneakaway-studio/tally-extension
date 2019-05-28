@@ -61,6 +61,15 @@ chrome.runtime.onMessage.addListener(
 		/*  GAME STATUS && MONSTER MANAGEMENT
 		 ******************************************************************************/
 
+		 // getTutorialHistory
+ 		else if (request.action == "getTutorialHistory") {
+ 			let data = store("tally_tutorial_history") || {};
+ 			sendResponse({
+ 				"action": request.action,
+ 				"data": store("tally_tutorial_history", data)
+ 			});
+ 		}
+
 		// getGameStatus
 		else if (request.action == "getGameStatus") {
 			let data = store("tally_game_status") || {};

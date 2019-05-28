@@ -9,8 +9,8 @@ let pageData = Page.getData(),
 	tally_game_status = getGameStatus(),
 	tally_nearby_monsters = {},
 	tally_top_monsters = getTopMonsters(),
-	tally_trackers = getTrackerBlockList();
-
+	tally_trackers = getTrackerBlockList(),
+	tally_tutorial_history = getTutorialHistory();
 
 let MAIN_DEBUG = false;
 
