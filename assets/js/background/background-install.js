@@ -195,7 +195,8 @@ function createTutorialHistory() {
 	return {
 		"awardFirstAttack": false,
 		"battleFirstMonster": false,
-		"viewProfilePage": false
+		"viewProfilePage": false,
+		"tutorialComplete": false
 	};
 }
 

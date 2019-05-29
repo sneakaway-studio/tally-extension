@@ -22,14 +22,36 @@ window.FS_Object = (function() {
 		return obj[keys[keys.length * Math.random() << 0]];
 	}
 
+	/**
+	 *	Return random index from array
+	 */
+	var randomArrayIndex = function(arr) {
+		return arr[Math.floor(Math.random() * arr.length)];
+	};
+
+	/**
+	 *	Is an object empty?
+	 */
+	function isEmpty(obj) {
+		for (var x in obj) { return false; }
+		return true;
+	}
+
+
 	// PUBLIC
 	return {
 		randomObjProperty: function(obj) {
 			return randomObjProperty(obj);
 		},
+		randomArrayIndex: function(arr) {
+			return randomArrayIndex(arr);
+		},
 		lastKeyValue: function(obj) {
 			return lastKeyValue(obj);
 		},
+		isEmpty: function(obj){
+			return isEmpty(obj);
+		}
 	};
 })();
 
@@ -71,12 +93,6 @@ var objLength = function(obj) {
 	return Object.keys(obj).length;
 };
 
-/**
- *	Return random index from array
- */
-var randomArrayIndex = function(arr) {
-	return arr[Math.floor(Math.random() * arr.length)];
-};
 
 
 /**

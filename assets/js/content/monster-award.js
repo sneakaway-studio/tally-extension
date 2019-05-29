@@ -326,23 +326,11 @@ window.MonsterAward = (function() {
 		// 	delete tally_nearby_monsters[mid];
 		// reset them all
 		tally_nearby_monsters = {};
-		saveNearbyMonsters();
+		TallyStorage.saveData("tally_nearby_monsters",tally_nearby_monsters);
 		// set the skin color
 		Skin.setStage(0);
 	}
 
-	/**
-	 *	Save nearby monsters
-	 */
-	function saveNearbyMonsters() {
-		chrome.runtime.sendMessage({
-			'action': 'saveNearbyMonsters',
-			'data': tally_nearby_monsters
-		}, function(response) {
-			//console.log('<<<<< > saveNearbyMonsters()',JSON.stringify(response));
-		});
-		Debug.update();
-	}
 
 
 	// PUBLIC

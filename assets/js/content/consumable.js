@@ -99,6 +99,7 @@ window.Consumable = (function() {
 		try {
 			// loop through and add all consumables
 			for (var i=0; i<consumables.length; i++){
+				/*jshint loopfunc: true */
 				//console.log("Consumable.add()",i);
 				// new position
 				let randomPos = Core.returnRandomPositionFull();

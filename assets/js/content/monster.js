@@ -18,7 +18,7 @@ window.Monster = (function() {
 	 */
 	function create(_mid, _stage = 1) {
 		if (!prop(_mid) || !prop(_stage) || !prop(MonsterData.dataById[_mid])) return;
-		if (DEBUG) console.log('⊙!⊙⊙⊙ Monster.create()1', "_mid=" + _mid, "_stage=" + _stage, MonsterData.dataById[_mid]);
+		if (DEBUG) console.log('👿 ⊙!⊙⊙⊙ Monster.create()1', "_mid=" + _mid, "_stage=" + _stage, MonsterData.dataById[_mid]);
 		tally_nearby_monsters[_mid] = {
 			"stage": _stage,
 			"level": returnMonsterLevel(),
@@ -35,9 +35,9 @@ window.Monster = (function() {
 		// if it already exists then make it the number of captures +1
 		if (tally_user.monsters[_mid])
 			tally_nearby_monsters[_mid].totalCaptured = tally_user.monsters[_mid].captured;
-		if (DEBUG) console.log('⊙!⊙⊙⊙ Monster.create()2', _mid, tally_nearby_monsters[_mid], tally_user.monsters[_mid]);
+		if (DEBUG) console.log('👿 ⊙!⊙⊙⊙ Monster.create()2', _mid, tally_nearby_monsters[_mid], tally_user.monsters[_mid]);
 		// save
-		saveNearbyMonsters();
+		TallyStorage.saveData("tally_nearby_monsters",tally_nearby_monsters);
 		return tally_nearby_monsters[_mid];
 	}
 	/**
@@ -61,7 +61,7 @@ window.Monster = (function() {
 	 */
 	function add(_mid) {
 		if (!_mid || _mid <= 0) return;
-		if (DEBUG) console.log('⊙⊙⊙!⊙ Monster.add()', _mid, tally_nearby_monsters[_mid]);
+		if (DEBUG) console.log('👿 ⊙⊙⊙!⊙ Monster.add()', _mid, tally_nearby_monsters[_mid]);
 		// don't show if game isn't running in full mode
 		if (tally_options.gameMode != "full") return;
 		// set currentMID
@@ -73,7 +73,7 @@ window.Monster = (function() {
 	 *	Display a monster on the page (call add() first)
 	 */
 	function display(monster) {
-		if (DEBUG) console.log('⊙⊙⊙⊙! Monster.display()', monster);
+		if (DEBUG) console.log('👿 ⊙⊙⊙⊙! Monster.display()', monster);
 		// show thought
 		Thought.showThought(Thought.getThought(["monster", "display", 0]), true);
 
@@ -98,7 +98,6 @@ window.Monster = (function() {
 		$('.tally_monster_sprite_container').css({
 			'transform': 'scale(' + _scale + ')'
 		});
-
 
 		// add listeners
 		$(document).on("mouseover", ".tally_monster_sprite_container", function() {
@@ -143,9 +142,9 @@ window.Monster = (function() {
 		tally_nearby_monsters[_mid] = create(_mid, _stage);
 		tally_nearby_monsters[_mid].captured = 0;
 		tally_nearby_monsters[_mid].missed = 0;
-		if (DEBUG) console.log("⊙⊙⊙⊙⊙ Monster.test()", MonsterData.dataById[_mid]);
+		if (DEBUG) console.log("👿 ⊙⊙⊙⊙⊙ Monster.test()", MonsterData.dataById[_mid]);
 		// save
-		saveNearbyMonsters();
+		TallyStorage.saveData("tally_nearby_monsters",tally_nearby_monsters);
 		// set the skin color
 		Skin.setStage(tally_nearby_monsters[_mid].stage);
 		Thought.showThought(Thought.getThought(["monster", "show", 0]), true);
@@ -174,7 +173,7 @@ window.Monster = (function() {
 	 *	Save monster locally, push to background / server
 	 */
 	function saveAndPush(_mid) {
-		if (DEBUG) console.log('<{!}> Monster.saveAndPush()', _mid, tally_nearby_monsters[_mid]);
+		if (DEBUG) console.log('👿 <{!}> Monster.saveAndPush()', _mid, tally_nearby_monsters[_mid]);
 		// add monsters to tally_user
 		if (tally_user.monsters[_mid]) {
 			tally_user.monsters[_mid].level = tally_nearby_monsters[_mid].level;
@@ -184,10 +183,10 @@ window.Monster = (function() {
 			};
 		}
 		// save monsters
-		saveNearbyMonsters();
+		TallyStorage.saveData("tally_nearby_monsters",tally_nearby_monsters);
 
 		// save user in background
-		saveUser();
+		TallyStorage.saveData(tally_user);
 		// create backgroundUpdate object
 		var backgroundMonsterUpdate = newBackgroundMonsterUpdate(_mid);
 		// store the nearby monster in it
@@ -211,22 +210,9 @@ window.Monster = (function() {
 		// reset them all
 		tally_nearby_monsters = {};
 		monster = {};
-		saveNearbyMonsters();
+		TallyStorage.saveData("tally_nearby_monsters",tally_nearby_monsters);
 		// set the skin color
 		Skin.setStage(0);
-	}
-
-	/**
-	 *	Save nearby monsters in background
-	 */
-	function saveNearbyMonsters() {
-		chrome.runtime.sendMessage({
-			'action': 'saveNearbyMonsters',
-			'data': tally_nearby_monsters
-		}, function(response) {
-			if (DEBUG) console.log('<<<<< > saveNearbyMonsters()', JSON.stringify(response));
-		});
-		Debug.update();
 	}
 
 
@@ -247,7 +233,6 @@ window.Monster = (function() {
 		saveAndPush: function(mid) {
 			return saveAndPush(mid);
 		},
-		saveNearbyMonsters: saveNearbyMonsters,
 		test: test,
 	};
 }());

@@ -29,13 +29,13 @@ window.Stats = (function() {
 
 	function resetTallyStats() {
 		tally_user.stats = resetStats;
-		saveUser();
+		TallyStorage.saveData(tally_user);
 		Sound.playRandomJump();
 		StatsDisplay.updateAllTallyStatsDisplay();
 	}
 	function resetMonsterStats(mid) {
 		// tally_nearby_monsters[mid].stats = resetStats;
-		// Monster.saveNearbyMonsters();
+		// TallyStorage.saveData("tally_nearby_monsters",tally_nearby_monsters);
 		// Sound.playRandomJump();
 		// StatsDisplay.updateAllTallyMonsterDisplay();
 		return resetStats;
@@ -48,13 +48,13 @@ window.Stats = (function() {
 				tally_user.stats[stat] = FS_Number.round(Math.random(),2);
 			}
 		}
-		TallyStorage.saveUser();
+		TallyStorage.saveData(tally_user);
 		Monster.current().stats = resetStats;
 		StatsDisplay.updateAllTallyStatsDisplay();
 	}
 
 	function update(statData) {
-		//console.log("Stats.update()",statData);
+		//console.log("📈 Stats.update()",statData);
 		let upOrDown = 0;
 		// if stat is already full
 		if (statData.val > 0 && tally_user.stats[statData.stat] >= 1) {
@@ -71,13 +71,13 @@ window.Stats = (function() {
 		// update stat
 		tally_user.stats[statData.stat] = newStat;
 		// save user
-		saveUser();
+		TallyStorage.saveData(tally_user);
 		// update stat display
 		$('.tally_stats_table').html(StatsDisplay.returnFullTable("tally",statData.stat));
 		// adjust stat bars
 		StatsDisplay.adjustStatsBar("tally", statData.stat, tally_user.stats[statData.stat]);
 		// test
-		//console.log("Stats.update()", statData, statData.stat, tally_user.stats);
+		//console.log("📈 Stats.update()", statData, statData.stat, tally_user.stats);
 		// if stat is full
 		if (tally_user.stats[statData.stat] >= 1) {
 			Thought.show("Your " + statData.stat + " is full!", "happy", true);
@@ -106,31 +106,7 @@ window.Stats = (function() {
 
 
 
-	function checkLastActive() {
-		try {
-			console.log("Stats.checkLastActive()", "00:00:00",
-				FS_String.pad(FS_Date.diffHours("now",tally_user.lastActive),2) +":"+
-				FS_String.pad(FS_Date.diffMinutes("now",tally_user.lastActive),2) +":"+
-				FS_String.pad(FS_Date.diffSeconds("now",tally_user.lastActive),2)
-			);
 
-			// if player hasn't been online for n minutes then recharge
-			if (FS_Date.diffMinutes("now",tally_user.lastActive) > 0) {
-				setTimeout(function(){
-					// reset tally stats
-					resetTallyStats();
-					// tell them
-					Thought.showString("You took a break from the internet to recharge!", "happy");
-				},700);
-			}
-			// update last active
-			tally_user.lastActive = moment().format();
-			saveUser();
-			console.log("checkLastActive()", moment().diff(moment(lastActive)));
-		} catch (err) {
-			console.error(error);
-		}
-	}
 
 
 
@@ -146,7 +122,6 @@ window.Stats = (function() {
 			update(data);
 		},
 		resetStats: resetStats,
-		checkLastActive: checkLastActive,
 
 	};
 })();

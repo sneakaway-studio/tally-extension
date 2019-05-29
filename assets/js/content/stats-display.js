@@ -35,7 +35,7 @@ window.StatsDisplay = (function() {
 		// get player's stats SVG coordinates
 		let svgPoints = playerStatsSVGPoints(who),
 			str = '';
-		console.log("StatsDisplay.returnInitialSVG()",who, svgPoints, "health="+svgPoints.health.val, "stamina="+svgPoints.stamina.val);
+		console.log("📈 StatsDisplay.returnInitialSVG()",who, svgPoints, "health="+svgPoints.health.val, "stamina="+svgPoints.stamina.val);
 
 		str += '<svg height="65" width="230" class="stats-display">';
 		str += '<g class="stat-bars">';
@@ -71,7 +71,7 @@ window.StatsDisplay = (function() {
 	}
 
 	function updateAllTallyStatsDisplay() {
-		//console.log("StatsDisplay.updateAllTallyStatsDisplay()", tally_user.stats);
+		//console.log("📈 StatsDisplay.updateAllTallyStatsDisplay()", tally_user.stats);
 		// bars, circle, table
 		adjustStatsBar("tally", "health", tally_user.stats.health);
 		adjustStatsBar("tally", "stamina", tally_user.stats.stamina);
@@ -82,7 +82,7 @@ window.StatsDisplay = (function() {
 	function updateAllMonsterStatsDisplay() {
 		// get current monster
 		let monster = Monster.current();
-		console.log("StatsDisplay.updateAllMonsterStatsDisplay()", monster);
+		console.log("📈 StatsDisplay.updateAllMonsterStatsDisplay()", monster);
 		// bars, circle, table
 		adjustStatsBar("monster", "health", monster.stats.health);
 		adjustStatsBar("monster", "stamina", monster.stats.stamina);
@@ -94,7 +94,7 @@ window.StatsDisplay = (function() {
 	 * 	Adjust stats bars for Tally *values are normalized*
 	 */
 	function adjustStatsBar(who, bar, val) {
-		//console.log("StatsDisplay.adjustStatsBar()1", who, bar, val);
+		//console.log("📈 StatsDisplay.adjustStatsBar()1", who, bar, val);
 		if (bar != "health" && bar != "stamina") return;
 		// clean value
 		val = FS_Number.round(val, 2);
@@ -109,7 +109,7 @@ window.StatsDisplay = (function() {
 		// save data-value
 		$('.' + who + '_stats .stat-bar-' + bar).attr("data-value", val);
 		// log
-		//console.log("StatsDisplay.adjustStatsBar()2", who, bar, val, oldBar, statsDisplay[bar]);
+		//console.log("📈 StatsDisplay.adjustStatsBar()2", who, bar, val, oldBar, statsDisplay[bar]);
 		// animation
 		anime({
 			targets: '.' + who + '_stats .stat-bar-' + bar,
@@ -148,7 +148,7 @@ window.StatsDisplay = (function() {
 		// normalize
 		let xpNormalized = (xpGoal - tally_user.score.score) / xpGoal;
 
-		//console.log("adjustStatsCircle() --> level =", level, "xpGoal =", xpGoal, tally_user.score.score, xpNormalized);
+		//console.log("📈 StatsDisplay.adjustStatsCircle() --> level =", level, "xpGoal =", xpGoal, tally_user.score.score, xpNormalized);
 
 		// get player's stats display coordinates
 		let statsDisplay = playerStatsSVGPoints(who);
@@ -163,7 +163,7 @@ window.StatsDisplay = (function() {
 			"strokeDashoffset": circumference
 		});
 		// log
-		//console.log("adjustStatsCircle()", who, level, circumference);
+		//console.log("📈 StatsDisplay.adjustStatsCircle()", who, level, circumference);
 		adjustStatsCircleText(who, level);
 	}
 	// test circle (set xpGoal = screen width)
@@ -200,7 +200,7 @@ window.StatsDisplay = (function() {
 	 * 	(save and) return player's stats display coordinates
 	 */
 	function playerStatsSVGPoints(who, statsDisplay = null) {
-		//console.log("playerStatsSVGPoints()",who, statsDisplay);
+		//console.log("📈 StatsDisplay.playerStatsSVGPoints()",who, statsDisplay);
 		if (who == "tally") {
 			if (statsDisplay !== null)
 				tallyStatsSVGPoints = statsDisplay;

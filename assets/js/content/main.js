@@ -1,22 +1,24 @@
 "use strict";
 
+console.log("%c   Hello, I'm Tally!", 'font-size:12px; background:url(http://localhost:5000/assets/img/tally-clear-20w.png) no-repeat;');
+
 // load objects
-let pageData = Page.getData(),
+let pageData = Page.getPageData(),
 	eventData = {},
 	tally_user = {},
 	tally_options = {},
 	tally_meta = {},
-	tally_game_status = getGameStatus(),
+	tally_game_status = {},
 	tally_nearby_monsters = {},
-	tally_top_monsters = getTopMonsters(),
-	tally_trackers = getTrackerBlockList(),
-	tally_tutorial_history = getTutorialHistory();
+	tally_top_monsters = TallyStorage.getData('tally_top_monsters'),
+	tally_trackers = {},
+	tally_tutorial_history = TallyStorage.getData('tally_tutorial_history');
 
 let MAIN_DEBUG = false;
 
 $(function() {
 	Promise // after async functions then update
-		.all([getUserPromise, getOptionsPromise, getMetaPromise, getNearbyMonstersPromise, getTrackerBlockListPromise]) // , getLastBackgroundUpdatePromise
+		.all([getUserPromise, getOptionsPromise, getMetaPromise, getNearbyMonstersPromise, getTrackerBlockListPromise, getGameStatusPromise]) // , getLastBackgroundUpdatePromise
 		.then(function() {
 			if (MAIN_DEBUG) console.log('>>>>> init() Promise all data has loaded', tally_user, tally_options, tally_trackers);
 
@@ -95,15 +97,28 @@ function startGameOnPage() {
 		//Consumable.randomizer();
 		Consumable.create(1); // testing
 		// check last active status
-		Stats.checkLastActive();
-	} catch (err) {
-		console.error(error);
+		TallyEvents.checkLastActive();
+		// check to see if there are any tutorial events to complete
+		TallyEvents.checkTutorialEvents();
+
+	} catch (error) {
+		throw error;
 	}
 }
 
-// window.onerror = function(message, source, lineno, colno, error) {
-// 	console.error(message, source, lineno, colno, error);
-// };
+window.onerror = function(message, source, lineno, colno, error) {
+	console.error(message, source, lineno, colno, error);
+};
+
+Promise.onPossiblyUnhandledRejection(function(error){
+    throw error;
+});
+
+
+
+
+
+
 
 
 /**
@@ -111,8 +126,8 @@ function startGameOnPage() {
  */
 function refreshApp() {
 	if (!pageData.activeOnPage) return;
-	pageData = Page.getData();
-	tally_game_status = getGameStatus();
+	pageData = Page.getPageData();
+	tally_game_status = TallyStorage.getData('tally_game_status');
 	MonsterCheck.check();
 	Debug.update();
 }
@@ -142,7 +157,7 @@ function checkToken() {
 				Thought.showString(msg, "sad");
 	//		}
 			tally_meta.userTokenPrompts++;
-			saveMeta("checkToken()");
+			TallyStorage.saveData(tally_meta,"checkToken()");
 		}
 	}
 }

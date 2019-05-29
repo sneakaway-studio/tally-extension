@@ -1,8 +1,55 @@
 "use strict";
 
-
-
 /*  BACKGROUND STORAGE
+ ******************************************************************************/
+
+window.TallyStorage = (function() {
+
+	/**
+	 *	Generic getData() function
+	 */
+	function getData(name, caller="") {
+		console.log("💾 TallyStorage.getData()", name, caller);
+		let msg = {
+			'action': 'getData',
+			'name': name
+		};
+		chrome.runtime.sendMessage(msg, function(response) {
+			//console.log("💾 <<<<< ", '> TallyStorage.getData()', name, JSON.stringify(response));
+			return response.data;
+		});
+	}
+	/**
+	 *	Generic saveData() function
+	 */
+	function saveData(name, data, caller="") {
+		console.log("💾 TallyStorage.saveData()", name, data, caller);
+		let msg = {
+			'action': 'saveData',
+			'name': name,
+			'data': data
+		};
+		chrome.runtime.sendMessage(msg, function(response) {
+			//console.log("💾 >>>>> ", '> TallyStorage.saveData()', name, JSON.stringify(response));
+			//return response.data;
+		});
+	}
+
+	// PUBLIC
+	return {
+		getData: function(name){
+			return getData(name);
+		},
+		saveData: function(name,data){
+			return saveData(name,data);
+		}
+	};
+})();
+
+
+
+
+/*  PROMISES
  ******************************************************************************/
 
 // USER
@@ -12,22 +59,12 @@ const getUserPromise = new Promise(
 		chrome.runtime.sendMessage({
 			'action': 'getUser'
 		}, function(response) {
-			//console.log('>>>>> getUserPromise()',JSON.stringify(response.data));
+			console.log('💾 >>>>> getUserPromise()',JSON.stringify(response.data));
 			tally_user = response.data; // store data
 			resolve(response.data); // resolve promise
 		});
 	}
 );
-
-function saveUser() {
-	chrome.runtime.sendMessage({
-		'action': 'saveUser',
-		'data': tally_user
-	}, function(response) {
-		//console.log("<<<<< saveUser()", tally_user, JSON.stringify(response));
-	});
-}
-
 // OPTIONS
 const getOptionsPromise = new Promise(
 	(resolve, reject) => {
@@ -35,21 +72,13 @@ const getOptionsPromise = new Promise(
 		chrome.runtime.sendMessage({
 			'action': 'getOptions'
 		}, function(response) {
-			//console.log('>>>>> getOptionsPromise()',response.data);
+			//console.log('💾 >>>>> getOptionsPromise()',response.data);
 			tally_options = response.data; // store data
 			resolve(response.data); // resolve promise
 		});
 	}
 );
 
-function saveOptions(calledFrom) {
-	chrome.runtime.sendMessage({
-		'action': 'saveOptions',
-		'data': tally_options
-	}, function(response) {
-		//console.log("<<<<< ",calledFrom,'> saveOptions()',JSON.stringify(response));
-	});
-}
 
 // GET TALLY_META
 const getMetaPromise = new Promise(
@@ -58,23 +87,12 @@ const getMetaPromise = new Promise(
 		chrome.runtime.sendMessage({
 			'action': 'getMeta'
 		}, function(response) {
-			//console.log('>>>>> getMetaPromise()',response.data);
+			//console.log('💾 >>>>> getMetaPromise()',response.data);
 			tally_meta = response.data; // store data
 			resolve(response.data); // resolve promise
 		});
 	}
 );
-
-function saveMeta(calledFrom) {
-	chrome.runtime.sendMessage({
-		'action': 'saveMeta',
-		'data': tally_meta
-	}, function(response) {
-		//console.log("<<<<< ",calledFrom,'> saveMeta()',JSON.stringify(response));
-	});
-}
-
-
 // GET NEARBY MONSTERS
 const getNearbyMonstersPromise = new Promise(
 	(resolve, reject) => {
@@ -82,27 +100,46 @@ const getNearbyMonstersPromise = new Promise(
 		chrome.runtime.sendMessage({
 			'action': 'getNearbyMonsters'
 		}, function(response) {
-			//console.log('>>>>> getNearbyMonsters()',response.data);
+			//console.log('💾 >>>>> getNearbyMonsters()',response.data);
 			tally_nearby_monsters = response.data; // store data
 			resolve(response.data); // resolve promise
 		});
 	}
 );
-
 // GET LIST OF TRACKERS
 const getTrackerBlockListPromise = new Promise(
 	(resolve, reject) => {
-		//console.log("getTrackerBlockListPromise");
+		//console.log("💾 getTrackerBlockListPromise");
 		//if (!pageData.activeOnPage) return;
 		chrome.runtime.sendMessage({
 			'action': 'getTrackerBlockList'
 		}, function(response) {
-			console.log('>>>>> getTrackerBlockList()',response.data);
+			//console.log('💾 >>>>> getTrackerBlockList()',response.data);
 			tally_trackers = response.data; // store data
 			resolve(response.data); // resolve promise
 		});
 	}
 );
+// GET GAME STATUS
+const getGameStatusPromise = new Promise(
+	(resolve, reject) => {
+		//console.log("💾 getGameStatusPromise");
+		//if (!pageData.activeOnPage) return;
+		chrome.runtime.sendMessage({
+			'action': 'getGameStatus'
+		}, function(response) {
+			//console.log('💾 >>>>> getGameStatus()',response.data);
+			tally_game_status = response.data; // store data
+			resolve(response.data); // resolve promise
+		});
+	}
+);
+
+
+
+
+
+
 // SAVE TRACKER BLOCK LIST
 function saveTrackerBlockList(data) {
 	//if (!pageData.activeOnPage) return;
@@ -110,7 +147,7 @@ function saveTrackerBlockList(data) {
 		'action': 'saveTrackerBlockList',
 		'data': data
 	}, function(response) {
-		console.log('<{!}> saveTrackerBlockList()', response);
+		//console.log('💾 <{!}> saveTrackerBlockList()', response);
 		Debug.update();
 	});
 }
@@ -121,9 +158,9 @@ function saveToken(data) {
 		'action': 'saveToken',
 		'data': data
 	}, function(response) {
-		console.log('<{!}> saveToken()', response);
+		console.log('💾 <{!}> saveToken()', response);
 		if (response.message == 1) {
-			console.log("grab it", data);
+			console.log("💾 grab it", data);
 			// $.growl({
 			// 	title: "TOKEN SAVED!",
 			// 	message: "User token updated!"
@@ -141,7 +178,7 @@ function sendBackgroundUpdate(data) {
 		'action': 'sendBackgroundUpdate',
 		'data': data
 	}, function(response) {
-		console.log('<{!}> sendBackgroundUpdate()', response);
+		console.log('💾 <{!}> sendBackgroundUpdate()', response);
 		tally_user = response.tally_user;
 		Debug.update();
 	});
@@ -154,7 +191,7 @@ function sendBackgroundMonsterUpdate(data) {
 		'action': 'sendBackgroundMonsterUpdate',
 		'data': data
 	}, function(response) {
-		console.log('<{!}> sendBackgroundMonsterUpdate()', response);
+		console.log('💾 <{!}> sendBackgroundMonsterUpdate()', response);
 //		tally_user = response.tally_user;
 		Debug.update();
 	});
@@ -169,7 +206,7 @@ const getLastBackgroundUpdatePromise = new Promise(
 		chrome.runtime.sendMessage({
 			'action': 'getLastBackgroundUpdate'
 		}, function(response) {
-			//console.log('>>>>> getLastBackgroundUpdatePromise()',response.data);
+			//console.log('💾 >>>>> getLastBackgroundUpdatePromise()',response.data);
 			let _lastBackgroundUpdate = {};
 			if (prop(response.data)) {
 				_lastBackgroundUpdate = response.data; // store data
@@ -183,62 +220,10 @@ const getLastBackgroundUpdatePromise = new Promise(
 
 
 
-function getTutorialHistory() {
-	chrome.runtime.sendMessage({
-		'action': 'getTutorialHistory'
-	}, function(response) {
-		//console.log("<<<<< ",'> getTutorialHistory()',JSON.stringify(response));
-		tally_tutorial_history = response.data;
-	});
-}
-function saveTutorialHistory(data,caller) {
-	//console.log("saveTutorialHistory()",data,caller)
-	tally_tutorial_history = data;
-	chrome.runtime.sendMessage({
-		'action': 'saveTutorialHistory',
-		'data': tally_tutorial_history
-	}, function(response) {
-		//console.log("<<<<< ",'> saveTutorialHistory()',JSON.stringify(response));
-	});
-}
 
 
-function getGameStatus() {
-	chrome.runtime.sendMessage({
-		'action': 'getGameStatus'
-	}, function(response) {
-		//console.log("<<<<< ",'> getGameStatus()',JSON.stringify(response));
-		tally_game_status = response.data;
-	});
-}
-function saveGameStatus(data,caller) {
-	//console.log("saveGameStatus()",data,caller)
-	tally_game_status = data;
-	chrome.runtime.sendMessage({
-		'action': 'saveGameStatus',
-		'data': tally_game_status
-	}, function(response) {
-		//console.log("<<<<< ",'> saveGameStatus()',JSON.stringify(response));
-	});
-}
 
 
-function getTopMonsters() {
-	chrome.runtime.sendMessage({
-		'action': 'getTopMonsters'
-	}, function(response) {
-		//console.log("<<<<< ",'> getTopMonsters()',JSON.stringify(response));
-		tally_top_monsters = response.data;
-	});
-}
-function getTrackerBlockList() {
-	chrome.runtime.sendMessage({
-		'action': 'getTrackerBlockList'
-	}, function(response) {
-		//console.log("<<<<< ",'> getTrackerBlockList()',JSON.stringify(response));
-		tally_trackers = response.data;
-	});
-}
 
 
 function setBadgeText(data) {
@@ -246,6 +231,6 @@ function setBadgeText(data) {
 		'action': 'setBadgeText',
 		'data': data
 	}, function(response) {
-		//console.log("<<<<< ",'> saveGameStatus()',JSON.stringify(response));
+		//console.log("💾 <<<<< ",'> saveGameStatus()',JSON.stringify(response));
 	});
 }

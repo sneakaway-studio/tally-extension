@@ -170,7 +170,7 @@ window.Skin = (function() {
 		if (DEBUG) console.log("👚👗 Skin.update()", skinCat, skinColor, skinAnim);
 		if (skinCat != "" && prop(tally_game_status)) tally_game_status.skin = [skinCat, skinColor, skinAnim];
 		// save the skin status
-		saveGameStatus(tally_game_status,"Skin.update()");
+		TallyStorage.saveData("tally_game_status",tally_game_status);
 
 		let obj = {},
 			def = "",
