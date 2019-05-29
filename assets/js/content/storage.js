@@ -2,6 +2,7 @@
 
 /*  BACKGROUND STORAGE
  ******************************************************************************/
+// load this script first in manifest so data is available
 
 window.TallyStorage = (function() {
 
@@ -9,7 +10,7 @@ window.TallyStorage = (function() {
 	 *	Generic getData() function
 	 */
 	function getData(name, caller="") {
-		console.log("💾 TallyStorage.getData()", name, caller);
+		//console.log("💾 TallyStorage.getData()", name, caller);
 		let msg = {
 			'action': 'getData',
 			'name': name
@@ -23,33 +24,85 @@ window.TallyStorage = (function() {
 	 *	Generic saveData() function
 	 */
 	function saveData(name, data, caller="") {
-		console.log("💾 TallyStorage.saveData()", name, data, caller);
 		let msg = {
 			'action': 'saveData',
 			'name': name,
 			'data': data
 		};
+		console.log("💾 TallyStorage.saveData()", msg, caller);
 		chrome.runtime.sendMessage(msg, function(response) {
-			//console.log("💾 >>>>> ", '> TallyStorage.saveData()', name, JSON.stringify(response));
+			console.log("💾 >>>>> ", '> TallyStorage.saveData()', name, JSON.stringify(response));
 			//return response.data;
 		});
 	}
 
 	// PUBLIC
 	return {
-		getData: function(name){
-			return getData(name);
+		getData: function(name,caller){
+			return getData(name,caller);
 		},
-		saveData: function(name,data){
-			return saveData(name,data);
+		saveData: function(name,data,caller){
+			return saveData(name,data,caller);
 		}
 	};
 })();
 
 
+/*  STARTUP PROMISES
+ ******************************************************************************/
+
+// arrays to hold all startupPromises, and their names
+const startupPromises = [],
+	startupPromiseNames = [
+		'tally_user',
+		'tally_options',
+		'tally_meta',
+		'tally_nearby_monsters',
+		'tally_trackers',
+		'tally_game_status',
+		'tally_tutorial_history',
+		'tally_top_monsters'
+	];
+
+function createStartupPromises(){
+	// loop through all startupPromisesNames and create Promises
+	for (let i = 0; i < startupPromiseNames.length; i++) {
+		let name = startupPromiseNames[i];
+		/*jshint loopfunc: true */
+		// add new promise
+		startupPromiseNames[i] = new Promise(
+			(resolve, reject) => {
+				//console.log('😂 >>>>> createStartupPromises()',name);
+				// call background
+				chrome.runtime.sendMessage({
+					'action': 'getData',
+					'name': name
+				}, function(response) {
+					console.log('😂 >>>>> createStartupPromises()', name, JSON.stringify(response.data));
+					// store data
+					window[startupPromiseNames[i]] = response.data;
+					// resolve promise
+					resolve(response.data);
+				});
+			}
+		);
+	}
+}
+createStartupPromises();
+
+// // testing
+// Promise // after async functions then update
+// 	.all(startupPromises)
+// 	.then(function(result) {
+// 		console.log('😂  testPromise all data has loaded', result);
+// 	})
+// 	.catch(function(error) {
+// 		console.log('😂 one or more promises have failed: ' + error);
+// 	});
 
 
-/*  PROMISES
+
+/*  STARTUP PROMISES (WHY DO I STILL NEED THESE?)
  ******************************************************************************/
 
 // USER
@@ -78,8 +131,6 @@ const getOptionsPromise = new Promise(
 		});
 	}
 );
-
-
 // GET TALLY_META
 const getMetaPromise = new Promise(
 	(resolve, reject) => {
@@ -137,20 +188,8 @@ const getGameStatusPromise = new Promise(
 
 
 
-
-
-
-// SAVE TRACKER BLOCK LIST
-function saveTrackerBlockList(data) {
-	//if (!pageData.activeOnPage) return;
-	chrome.runtime.sendMessage({
-		'action': 'saveTrackerBlockList',
-		'data': data
-	}, function(response) {
-		//console.log('💾 <{!}> saveTrackerBlockList()', response);
-		Debug.update();
-	});
-}
+/*  CUSTOM FUNCTIONS
+ ******************************************************************************/
 
 // SAVE TOKEN FROM DASHBOARD
 function saveToken(data) {
@@ -198,7 +237,6 @@ function sendBackgroundMonsterUpdate(data) {
 }
 
 
-
 // GET LAST BACKGROUND UPDATE
 const getLastBackgroundUpdatePromise = new Promise(
 	(resolve, reject) => {
@@ -217,13 +255,6 @@ const getLastBackgroundUpdatePromise = new Promise(
 		});
 	}
 );
-
-
-
-
-
-
-
 
 
 function setBadgeText(data) {

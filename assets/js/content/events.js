@@ -56,7 +56,7 @@ window.TallyEvents = (function() {
 			}
 			// update last active
 			tally_user.lastActive = moment().format();
-			TallyStorage.saveData(tally_user,"TallyEvents.checkLastActive()");
+			TallyStorage.saveData("tally_user",tally_user,"TallyEvents.checkLastActive()");
 			console.log("🕗 TallyEvents.checkLastActive()",tally_user.lastActive);
 		} catch (err) {
 			console.error(error);
@@ -81,7 +81,7 @@ window.TallyEvents = (function() {
 			console.log("🕗 TallyEvents.checkTutorialEvents() --> awardFirstAttack",attack);
 			// store and save
 			tally_user.attacks[attack.name] = attack;
-			TallyStorage.saveData(tally_user);
+			TallyStorage.saveData("tally_user",tally_user,"TallyEvents.checkTutorialEvents()");
 			// tell them
 			Thought.showString("You earned a "+ attack.name +" "+ attack.type +"!", "happy");
 			// set true

@@ -3,22 +3,22 @@
 console.log("%c   Hello, I'm Tally!", 'font-size:12px; background:url(http://localhost:5000/assets/img/tally-clear-20w.png) no-repeat;');
 
 // load objects
-let pageData = Page.getPageData(),
+let MAIN_DEBUG = false,
+	pageData = Page.getPageData(),
 	eventData = {},
 	tally_user = {},
 	tally_options = {},
 	tally_meta = {},
 	tally_game_status = {},
 	tally_nearby_monsters = {},
-	tally_top_monsters = TallyStorage.getData('tally_top_monsters'),
 	tally_trackers = {},
-	tally_tutorial_history = TallyStorage.getData('tally_tutorial_history');
+	tally_top_monsters = {},
+	tally_tutorial_history = {};
 
-let MAIN_DEBUG = false;
 
 $(function() {
-	Promise // after async functions then update
-		.all([getUserPromise, getOptionsPromise, getMetaPromise, getNearbyMonstersPromise, getTrackerBlockListPromise, getGameStatusPromise]) // , getLastBackgroundUpdatePromise
+	Promise
+		.all(startupPromises) // getLastBackgroundUpdatePromise
 		.then(function() {
 			if (MAIN_DEBUG) console.log('>>>>> init() Promise all data has loaded', tally_user, tally_options, tally_trackers);
 
