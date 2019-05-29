@@ -39,7 +39,7 @@ window.Core = (function() {
 			"left": $(ele).offset().left + $(ele).width() / 2,
 			"top": $(ele).offset().top + $(ele).height() / 2
 		};
-		console.log("Core.getCenterPosition()", ele, $(ele).offset(), pos, $(document).scrollTop());
+		console.log("⚙️ Core.getCenterPosition()", ele, $(ele).offset(), pos, $(document).scrollTop());
 		return pos;
 	}
 	/**
@@ -52,7 +52,7 @@ window.Core = (function() {
 			"y": newPos.top - ($(ele).height() / 2)
 		};
 		setPosition(ele, pos);
-		//console.log("Core.setCenterPosition()", ele, $(ele).offset(), newPos);
+		//console.log("⚙️ Core.setCenterPosition()", ele, $(ele).offset(), newPos);
 	}
 
 
@@ -64,7 +64,7 @@ window.Core = (function() {
 
 	function setRandomPositionFull(ele) {
 		let pos = returnRandomPositionFull(ele);
-		console.log("Core.setRandomPositionFull()", ele, pos);
+		console.log("⚙️ Core.setRandomPositionFull()", ele, pos);
 		setPosition(ele, pos);
 	}
 
@@ -74,9 +74,9 @@ window.Core = (function() {
 	function returnRandomPositionFull(ele) {
 		let w = $(ele).width() || 100,
 			h = $(ele).height() || 100;
-		//console.log("returnRandomPositionFull()");
+		//console.log("⚙️ Core.returnRandomPositionFull()");
 		function gen() {
-			//console.log("returnRandomPositionFull() -> gen()");
+			//console.log("⚙️ Core.returnRandomPositionFull() -> gen()");
 			let pos = {
 				"x": Math.ceil(Math.random() * (pageData.browser.width - w)) + (w / 2),
 				"y": Math.ceil(Math.random() * (pageData.browser.fullHeight - h)) + (h / 2)

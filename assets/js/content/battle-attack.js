@@ -26,7 +26,7 @@ window.BattleAttack = (function() {
 		}
 	}
 
- 
+
 
 
 	var randomDamageOutcomes = [
@@ -85,7 +85,7 @@ window.BattleAttack = (function() {
 			opp = "monster";
 
 		// Battle.details.mostRecentAttack = FS_Object.randomObjProperty(Battle.details.tallyAttacks);
-		Battle.details.mostRecentAttack =
+		Battle.details.mostRecentAttack = attack;
 		Battle.details.mostRecentDamage = FS_Object.randomArrayIndex(randomDamageOutcomes);
 
 		// show buttons

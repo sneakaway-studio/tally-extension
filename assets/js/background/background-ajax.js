@@ -8,7 +8,7 @@
 
 /**
  *  Check if API Server is online
- */
+ */ 
 function checkAPIServerStatus() {
 	let _tally_meta = store("tally_meta");
 	// time it
@@ -147,7 +147,7 @@ function sendServerUpdate(data) {
 	});
 }
 
- 
+
 /**
  *  Send monster update to API server
  */

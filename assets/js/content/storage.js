@@ -119,7 +119,7 @@ const getUserPromise = new Promise(
 		chrome.runtime.sendMessage({
 			'action': 'getUser'
 		}, function(response) {
-			console.log('💾 >>>>> getUserPromise()',JSON.stringify(response.data));
+			//console.log('💾 >>>>> getUserPromise()',JSON.stringify(response.data));
 			tally_user = response.data; // store data
 			resolve(response.data); // resolve promise
 		});

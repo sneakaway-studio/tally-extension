@@ -17,14 +17,13 @@ let MAIN_DEBUG = false,
 
 
 $(function() {
+	try {
 	Promise
 		.all(startupPromises) // getLastBackgroundUpdatePromise
 		.then(function() {
 			if (MAIN_DEBUG) console.log('>>>>> init() Promise all data has loaded', tally_user, tally_options, tally_trackers);
 
-			if (tally_user == null){
-				TallyStorage.launchStartScreen();
-			}
+
 
 			// check if we can update the token
 			Page.checkDashboardUpdateToken();
@@ -36,7 +35,12 @@ $(function() {
 		})
 		.catch(function(error) {
 			if (MAIN_DEBUG) console.log('one or more promises have failed: ' + error);
+
 		});
+		}
+		catch(err){
+				TallyStorage.launchStartScreen();
+		}
 });
 
 

@@ -87,7 +87,7 @@ window.BattleEffect = (function() {
 
 
 	function fireProjectile(at, rumble = "") {
-		console.log("fireProjectile() > ", at, rumble);
+		console.log("💥 BattleEffect.fireProjectile() > ", at, rumble);
 
 		let end, origin;
 
@@ -126,7 +126,7 @@ window.BattleEffect = (function() {
 			// 	console.log(anim.progress, anim.animations[0].currentValue, anim.animations[1].currentValue);
 			// },
 			complete: function(anim) {
-				console.log("fireProjectile() complete", anim.progress, anim.animations[0].currentValue, anim.animations[1].currentValue);
+				console.log("💥 BattleEffect.fireProjectile() complete", anim.progress, anim.animations[0].currentValue, anim.animations[1].currentValue);
 				Core.hideElement('#battle_projectile');
 				// show explosion
 				showExplosion(end);
@@ -151,7 +151,7 @@ window.BattleEffect = (function() {
 	];
 
 	function showExplosion(pos, rumble = false) {
-		console.log("showExplosion()", pos, rumble);
+		console.log("💥 BattleEffect.showExplosion()", pos, rumble);
 
 		if (rumble)
 			rumble("medium", "powerups/" + FS_Object.randomObjProperty(Sound.sounds.powerups));

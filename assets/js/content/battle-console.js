@@ -137,7 +137,7 @@ window.BattleConsole = (function() {
 		str += "<span class='battle-options-esc'>run [esc]</span></div>";
 
 
-		//console.log("showBattleOptions() step 2", str, _queue,_active);
+		//console.log("🖥️ BattleConsole.showBattleOptions() step 2", str, _queue,_active);
 
 		// insert placeholder
 		var ele = "<div class='tally tally_log_line'>" +
@@ -149,15 +149,16 @@ window.BattleConsole = (function() {
 			/*jshint loopfunc: true */
 			if (_attacks.hasOwnProperty(i)) {
 				let ref = ".attack-" + _attacks[i].name;
-				console.log("BattleConsole.showBattleOptions()", i, ref, _attacks[i]);
+				console.log("🖥️ BattleConsole.showBattleOptions()", i, ref, _attacks[i]);
 				$(document).on("mouseenter", ref, function() {
-					let attack = $(this).attr("data-attack");
-					//console.log(attack);
+					let attackName = $(this).attr("data-attack");
+					//console.log(attackName);
 				});
 				$(document).on("click", ref, function() {
-					let attack = $(this).attr("data-attack");
-					//console.log(attack);
-					BattleAttack.tallyAttackMonster(attack);
+					let attackName = $(this).attr("data-attack");
+					//console.log(attackName);
+
+					BattleAttack.tallyAttackMonster(tally_user.attacks[attackName]);
 				});
 			}
 		}
