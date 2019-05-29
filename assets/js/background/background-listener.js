@@ -26,7 +26,7 @@ chrome.runtime.onMessage.addListener(
 			sendResponse(resp);
 		}
 		if (request.action == "saveData" && request.name && request.data) {
-			//console.log("💾 <<<<< saveData", request.name, request.data);
+			console.log("💾 <<<<< saveData", request.name, request.data);
 			// save data
 			let success = 0;
 			if (store(request.name,request.data))
@@ -45,58 +45,24 @@ chrome.runtime.onMessage.addListener(
 
 
 
-		/*  PAGE MANAGEMENT
+		/*  MARKED FOR DELETION
 		 ******************************************************************************/
 
-		// openPage
- 		else if (request.action == "openPage") {
-			if (request.url)
-				chrome.tabs.create({url: request.url });
-			sendResponse({
-				"action": request.action,
-				"data": {}
-			});
- 		}
+		// // saveTrackerBlockList
+		// else if (request.action == "saveTrackerBlockList") {
+		// 	//console.log("saveTrackerBlockList()",request.data);
+		// 	let data = store("tally_trackers") || {
+		// 		"blocked": []
+		// 	};
+		// 	data.blocked = request.data;
+		// 	store("tally_trackers", data);
+		// 	sendResponse({
+		// 		"action": request.action,
+		// 		"message": 1
+		// 	});
+		// }
 
 
-		/*  USER MANAGEMENT
-		 ******************************************************************************/
-
-
-
-		// resetUser (same as creating a new one)
-		else if (request.action == "resetUser") {
-			store("tally_user", createUser());
-			sendResponse({
-				"action": request.action,
-				"message": 1
-			}); // send success response
-		}
-
-
-		/*  GAME STATUS && MONSTER MANAGEMENT
-		 ******************************************************************************/
-
-
-
-
-
-
-
-
-		// saveTrackerBlockList
-		else if (request.action == "saveTrackerBlockList") {
-			//console.log("saveTrackerBlockList()",request.data);
-			let data = store("tally_trackers") || {
-				"blocked": []
-			};
-			data.blocked = request.data;
-			store("tally_trackers", data);
-			sendResponse({
-				"action": request.action,
-				"message": 1
-			});
-		}
 
 		/*  OPTIONS MANAGEMENT (FROM POPUP)
 		 ******************************************************************************/
@@ -179,6 +145,17 @@ chrome.runtime.onMessage.addListener(
 		/*  CUSTOM FUNCTIONS
 		 ******************************************************************************/
 
+		 // launchStartScreen
+		 else if (request.action == "launchStartScreen") {
+			 launchStartScreen();
+			 sendResponse({
+				 "action": request.action,
+				 "message": 1
+			 });
+		 }
+
+
+
 		// setBadgeText
 		else if (request.action == "setBadgeText") {
 			setBadgeText(request.data);
@@ -188,6 +165,24 @@ chrome.runtime.onMessage.addListener(
 			});
 		}
 
+		// resetUser (same as creating a new one)
+		else if (request.action == "resetUser") {
+			store("tally_user", createUser());
+			sendResponse({
+				"action": request.action,
+				"message": 1
+			}); // send success response
+		}
+
+		// openPage
+ 		else if (request.action == "openPage") {
+			if (request.url)
+				chrome.tabs.create({url: request.url });
+			sendResponse({
+				"action": request.action,
+				"data": {}
+			});
+ 		}
 
 
 
