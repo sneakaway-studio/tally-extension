@@ -180,6 +180,11 @@ function sendBackgroundUpdate(data) {
 	}, function(response) {
 		console.log('💾 <{!}> sendBackgroundUpdate()', response);
 		tally_user = response.tally_user;
+
+		if (response.tally_user.levelUpdated){
+			Thought.showString("You just leveled up!", "happy");
+		}
+
 		Debug.update();
 	});
 }

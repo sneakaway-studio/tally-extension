@@ -29,7 +29,7 @@ window.Stats = (function() {
 
 	function resetTallyStats() {
 		tally_user.stats = resetStats;
-		TallyStorage.saveData(tally_user);
+		TallyStorage.saveData('tally_user',tally_user);
 		Sound.playRandomJump();
 		StatsDisplay.updateAllTallyStatsDisplay();
 	}
@@ -48,7 +48,7 @@ window.Stats = (function() {
 				tally_user.stats[stat] = FS_Number.round(Math.random(),2);
 			}
 		}
-		TallyStorage.saveData(tally_user);
+		TallyStorage.saveData('tally_user',tally_user);
 		Monster.current().stats = resetStats;
 		StatsDisplay.updateAllTallyStatsDisplay();
 	}
@@ -71,7 +71,7 @@ window.Stats = (function() {
 		// update stat
 		tally_user.stats[statData.stat] = newStat;
 		// save user
-		TallyStorage.saveData(tally_user);
+		TallyStorage.saveData('tally_user',tally_user);
 		// update stat display
 		$('.tally_stats_table').html(StatsDisplay.returnFullTable("tally",statData.stat));
 		// adjust stat bars

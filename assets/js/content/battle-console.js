@@ -118,15 +118,20 @@ window.BattleConsole = (function() {
 		// set active state
 		active(true);
 		// get list of attacks
-		var tallyAttacks = Battle.details.tallyAttacks;
+		var _attacks = {};
+		if (!FS_Object.isEmpty(tally_user.attacks))
+			_attacks = tally_user.attacks;
+		else {
+			return;
+		}
 
 		var str = "<div class='battle-options-row'>";
-		for (var key in tallyAttacks) {
-			if (tallyAttacks.hasOwnProperty(key)) {
-			//console.log(tallyAttacks[key]);
-			str += "<span data-attack='" + tallyAttacks[key].name +
-				"' class='battle-options attack-" + tallyAttacks[key].name + "'>" +
-				tallyAttacks[key].name + "</span>";
+		for (var key in _attacks) {
+			if (_attacks.hasOwnProperty(key)) {
+			//console.log(_attacks[key]);
+			str += "<span data-attack='" + _attacks[key].name +
+				"' class='battle-options attack-" + _attacks[key].name + "'>" +
+				_attacks[key].name + "</span>";
 			}
 		}
 		str += "<span class='battle-options-esc'>run [esc]</span></div>";
@@ -140,11 +145,11 @@ window.BattleConsole = (function() {
 		$("#battle-console-stream").append(ele);
 
 		// add hover, click listeners
-		for (var i in tallyAttacks) {
+		for (var i in _attacks) {
 			/*jshint loopfunc: true */
-			if (tallyAttacks.hasOwnProperty(i)) {
-				let ref = ".attack-" + tallyAttacks[i].name;
-				console.log("BattleConsole.showBattleOptions()", i, ref, tallyAttacks[i]);
+			if (_attacks.hasOwnProperty(i)) {
+				let ref = ".attack-" + _attacks[i].name;
+				console.log("BattleConsole.showBattleOptions()", i, ref, _attacks[i]);
 				$(document).on("mouseenter", ref, function() {
 					let attack = $(this).attr("data-attack");
 					//console.log(attack);

@@ -1,6 +1,6 @@
 "use strict";
 
-console.log("%c   Hello, I'm Tally!", 'font-size:12px; background:url(http://localhost:5000/assets/img/tally-clear-20w.png) no-repeat;');
+console.log("%c   Hello, I'm Tally!", Tally.tallyConsoleIcon);
 
 // load objects
 let pageData = Page.getPageData(),
@@ -157,7 +157,7 @@ function checkToken() {
 				Thought.showString(msg, "sad");
 	//		}
 			tally_meta.userTokenPrompts++;
-			TallyStorage.saveData(tally_meta,"checkToken()");
+			TallyStorage.saveData('tally_meta',tally_meta,"checkToken()");
 		}
 	}
 }

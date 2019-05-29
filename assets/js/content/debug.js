@@ -24,7 +24,7 @@ window.Debug = (function() {
 			},
 			stop: function() {
 				//console.log("draggable:stop");
-				//TallyStorage.saveData(tally_options,"tyd.draggable.stop");
+				//TallyStorage.saveData("tally_options",tally_options,"tyd.draggable.stop");
 			}
 		});
 	}

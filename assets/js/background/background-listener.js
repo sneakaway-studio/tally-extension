@@ -221,10 +221,16 @@ chrome.runtime.onMessage.addListener(
 
 			// store backgroundUpdate object
 			store("tally_last_background_update", request.data);
-
-			// save score updates to user and store
+			// save score updates to user
 			let _tally_user = store("tally_user");
+			// store score updates
 			_tally_user.score = adjustScore(_tally_user.score, request.data.scoreData);
+			// check for level up
+			let levelUpdated = checkLevel(_tally_user);
+			if (levelUpdated == true){
+				_tally_user.score.level ++;
+			}
+			// store user
 			store("tally_user", _tally_user);
 
 			// create new serverUpdate
@@ -236,7 +242,8 @@ chrome.runtime.onMessage.addListener(
 			sendResponse({
 				"action": request.action,
 				"message": 1,
-				"tally_user": _tally_user
+				"tally_user": _tally_user,
+				"levelUpdated": levelUpdated
 			});
 		}
 		// getLastBackgroundUpdate
@@ -341,21 +348,26 @@ function adjustScore(_score, scoreObj, n) {
 	for (var key in scoreObj) {
 		if (scoreObj.hasOwnProperty(key) && key != "meta") {
 			//console.log("adjustScore() --> ", key + " -> " + scoreObj[key]);
-
 			// adjust scores in user
 			_score[key] += scoreObj[key];
-		}
-		// check to see if user level should be upgraded
-		for (var level in gameRules.levels) {
-			if (gameRules.hasOwnProperty(level)) {
-				if (gameRules.levels[level].minScore) {
-
-				}
-			}
 		}
 	}
 	return _score;
 }
+
+/**
+ *  Check to see if user leveled up
+ */
+function checkLevel(_tally_user) {
+	//console.log("checkLevel()",_tally_user);
+	let nextLevel = gameRules.levels[_tally_user.score.level+1];
+	if (_tally_user.score >= nextLevel.xp){
+		return true;
+	}
+	return false;
+}
+
+
 
 function setBadgeText(_text) {
 	if (!_text || _text == '') return;

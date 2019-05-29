@@ -1,15 +1,15 @@
 "use strict";
 
+/*  TALLY
+ ******************************************************************************/
+
 window.Tally = (function() {
-
-	let DEBUG = false;
-
 	// PRIVATE
-	var followCursor = false, // is eye following currently active? on page load, no
-		tallyMenuOpen = false;
 
-
-
+	let DEBUG = false,
+		followCursor = false, // is eye following currently active? on page load, no
+		tallyMenuOpen = false,
+		tallyConsoleIcon = 'font-size:12px; background:url(http://localhost:5000/assets/img/tally-clear-20w.png) no-repeat;';
 
 
 	/*  TALLY EYES
@@ -67,8 +67,7 @@ window.Tally = (function() {
 	 *	Start Tally
 	 */
 	function start() {
-
-		console.log("%c   Tally.start()", 'font-size:12px; background:url(http://localhost:5000/assets/img/tally-clear-20w.png) no-repeat;');
+		//console.log("%c   Tally.start()", tallyConsoleIcon);
 
 
 		// only show Tally if game mode == full
@@ -85,7 +84,7 @@ window.Tally = (function() {
 			Tally.moveEye(".tally_eye_right", "mouse", event);
 		});
 
-		console.log("Tally.start()", tally_game_status.skin, Skin.skins);
+		console.log("%c   Tally.start()", tallyConsoleIcon, tally_game_status.skin, Skin.skins);
 
 		let str =
 			"<div class='tally draggable' id='tally_character'>" +// style='transform:translateY(-300px);'
@@ -243,7 +242,8 @@ window.Tally = (function() {
 			return followCursor;
 		},
 		stare: stare,
-		start: start
+		start: start,
+		tallyConsoleIcon: tallyConsoleIcon
 
 	};
 })();
