@@ -72,23 +72,19 @@ window.Core = (function() {
 	 *	Recursive function to generate safe x,y for consumables, monsters, etc.
 	 */
 	function returnRandomPositionFull(ele) {
-		let w = $(ele).width() || 100,
-			h = $(ele).height() || 100;
-		//console.log("⚙️ Core.returnRandomPositionFull()");
-		function gen() {
-			//console.log("⚙️ Core.returnRandomPositionFull() -> gen()");
+		try {
+			let w = $(ele).width() || 100,
+				h = $(ele).height() || 100;
 			let pos = {
 				"x": Math.ceil(Math.random() * (pageData.browser.width - w)) + (w / 2),
 				"y": Math.ceil(Math.random() * (pageData.browser.fullHeight - h)) + (h / 2)
 			};
-			// check to make sure it isn't behind Tally
-			if (pos.x < 200 && pos.y > (pageData.browser.fullHeight - 200))
-				// or try again
-				pos = gen();
-			else
-				return pos;
+			//console.log("⚙️ Core.returnRandomPositionFull()",w,h,pos);
+			return pos;
 		}
-		return gen();
+		catch(err){
+			console.error(err);
+		}
 	}
 
 
