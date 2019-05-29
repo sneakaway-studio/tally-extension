@@ -8,7 +8,7 @@ window.Page = (function() {
 	/**
 	 *	Get data about this page
 	 */
-	function getData() {
+	function getPageData() {
 
 		var url = document.location.href;
 		// only run on web pages
@@ -50,7 +50,7 @@ window.Page = (function() {
 		data.browser.center.y = data.browser.height/2;
 		// check page tags
 		data.tags = getPageTags(data);
-		console.log("pageData",data);
+		//console.log("pageData",data);
 		return data;
 	}
 
@@ -79,7 +79,7 @@ window.Page = (function() {
 
 	// PUBLIC
 	return {
-		getData: getData,
+		getPageData: getPageData,
 		checkDashboardUpdateToken: checkDashboardUpdateToken
 
 	};

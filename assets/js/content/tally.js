@@ -63,11 +63,13 @@ window.Tally = (function() {
 	 *****************************************************************************/
 
 
-
 	/**
 	 *	Start Tally
 	 */
 	function start() {
+
+		console.log("%c   Tally.start()", 'font-size:12px; background:url(http://localhost:5000/assets/img/tally-clear-20w.png) no-repeat;');
+
 
 		// only show Tally if game mode == full
 		if (prop(pageData) && !pageData.activeOnPage) return;
@@ -83,7 +85,7 @@ window.Tally = (function() {
 			Tally.moveEye(".tally_eye_right", "mouse", event);
 		});
 
-		//console.log("startTally()", tally_game_status.skin, Skin.skins);
+		console.log("Tally.start()", tally_game_status.skin, Skin.skins);
 
 		let str =
 			"<div class='tally draggable' id='tally_character'>" +// style='transform:translateY(-300px);'
@@ -259,9 +261,9 @@ Mousetrap.bind(k + ' b', function() { Battle.test(); });
 Mousetrap.bind(k + ' 0', function() { BattleEffect.rumble("small"); });
 Mousetrap.bind(k + ' 1', function() { BattleEffect.rumble("medium"); });
 Mousetrap.bind(k + ' 2', function() { BattleEffect.rumble("large"); });
-Mousetrap.bind(k + ' 7', function() { Battle.monsterAttackTally(); });
+Mousetrap.bind(k + ' 7', function() { BattleAttack.monsterAttackTally(); });
 Mousetrap.bind(k + ' 8', function() { BattleConsole.log("What will Tally do?","showBattleOptions"); });
-Mousetrap.bind(k + ' 9', function() { Battle.tallyAttackMonster(); });
+Mousetrap.bind(k + ' 9', function() { BattleAttack.tallyAttackMonster(); });
 Mousetrap.bind(k + ' q', function() { Battle.end(); });
 Mousetrap.bind('escape', function() { Battle.end(); });
 Mousetrap.bind(k + ' e', function() { Effect.explode(); });

@@ -6,127 +6,65 @@
 
 chrome.runtime.onMessage.addListener(
 	function(request, sender, sendResponse) {
-		//console.log(">>>>> BACKGROUND LISTENER: onMessage.request =",JSON.stringify(request));
+		//console.log(">>>>> BACKGROUND LISTENER: onMessage.request =",JSON.stringify(request), sender, sendResponse);
+		//console.log("💾 <<!>> chrome.runtime.onMessage.addListener",request);
 
-		if (request.action == "getData" && request.obj) {
-			sendResponse({
+
+		/*  GENERIC "GETTER" / "SETTER"
+		 ******************************************************************************/
+
+		if (request.action == "getData" && request.name) {
+			console.log("💾 >>>>> getData", request.name);
+			// build response
+			let resp = {
 				"action": request.action,
 				"message": 1,
-				"_data": _data
-			});
-		}
-
-		/*  PAGE MANAGEMENT
-		 ******************************************************************************/
-
-		// openPage
- 		else if (request.action == "openPage") {
-			if (request.url)
-				chrome.tabs.create({url: request.url });
-			sendResponse({
-				"action": request.action,
-				"data": {}
-			});
- 		}
-
-
-		/*  USER MANAGEMENT
-		 ******************************************************************************/
-
-		// getUser
-		else if (request.action == "getUser") {
-			sendResponse({
-				"action": request.action,
-				"data": store("tally_user")
-			});
-		}
-		// saveUser
-		else if (request.action == "saveUser") {
-			store("tally_user", request.data);
-			sendResponse({
-				"action": request.action,
-				"message": 1
-			});
-		}
-		// resetUser (same as creating a new one)
-		else if (request.action == "resetUser") {
-			store("tally_user", createUser());
-			sendResponse({
-				"action": request.action,
-				"message": 1
-			}); // send success response
-		}
-
-
-		/*  GAME STATUS && MONSTER MANAGEMENT
-		 ******************************************************************************/
-
-		// getGameStatus
-		else if (request.action == "getGameStatus") {
-			let data = store("tally_game_status") || {};
-			sendResponse({
-				"action": request.action,
-				"data": store("tally_game_status", data)
-			});
-		}
-		// saveGameStatus
-		else if (request.action == "saveGameStatus") {
-			console.log("saveGameStatus", request.data);
-			store("tally_game_status", request.data);
-			sendResponse({
-				"action": request.action,
-				"message": 1
-			});
-		}
-
-		// getTopMonsters
-		else if (request.action == "getTopMonsters") {
-			sendResponse({
-				"action": request.action,
-				"data": store("tally_top_monsters") || {}
-			});
-		}
-
-		// getNearbyMonsters
-		else if (request.action == "getNearbyMonsters") {
-			let data = store("tally_nearby_monsters") || {};
-			sendResponse({
-				"action": request.action,
-				"data": store("tally_nearby_monsters", data)
-			});
-		}
-		// saveNearbyMonsters
-		else if (request.action == "saveNearbyMonsters") {
-			//console.log("saveNearbyMonsters()",request.data);
-			store("tally_nearby_monsters", request.data);
-			sendResponse({
-				"action": request.action,
-				"message": 1
-			});
-		}
-		// getTrackerBlockList
-		else if (request.action == "getTrackerBlockList") {
-			let data = store("tally_trackers") || {};
-			sendResponse({
-				"action": request.action,
-				"data": data
-			});
-		}
-		// saveNearbyMonsters
-		else if (request.action == "saveTrackerBlockList") {
-			//console.log("saveTrackerBlockList()",request.data);
-			let data = store("tally_trackers") || {
-				"blocked": []
+				"data": store(request.name)
 			};
-			data.blocked = request.data;
-			store("tally_trackers", data);
+			console.log("💾 >>>>> getData", request.name,resp);
+			// send
+			sendResponse(resp);
+		}
+		if (request.action == "saveData" && request.name && request.data) {
+			console.log("💾 <<<<< saveData", request.name, request.data);
+			// save data
+			let success = 0;
+			if (store(request.name,request.data))
+				success = 1;
+			else
+				console.error("Could not save data", request);
+			// send response
 			sendResponse({
 				"action": request.action,
-				"message": 1
+				"message": success
 			});
 		}
 
-		/*  OPTIONS MANAGEMENT
+
+
+
+
+
+		/*  MARKED FOR DELETION
+		 ******************************************************************************/
+
+		// // saveTrackerBlockList
+		// else if (request.action == "saveTrackerBlockList") {
+		// 	//console.log("saveTrackerBlockList()",request.data);
+		// 	let data = store("tally_trackers") || {
+		// 		"blocked": []
+		// 	};
+		// 	data.blocked = request.data;
+		// 	store("tally_trackers", data);
+		// 	sendResponse({
+		// 		"action": request.action,
+		// 		"message": 1
+		// 	});
+		// }
+
+
+
+		/*  OPTIONS MANAGEMENT (FROM POPUP)
 		 ******************************************************************************/
 
 		// getOptions
@@ -154,24 +92,69 @@ chrome.runtime.onMessage.addListener(
 			}); // send success response
 		}
 
-		/*  META MANAGEMENT
+
+		/*  FOR PROMISES
 		 ******************************************************************************/
 
-		// getMeta
-		else if (request.action == "getMeta") {
-			sendResponse({
-				"action": request.action,
-				"data": store("tally_meta")
-			});
-		}
-		// saveMeta
-		else if (request.action == "saveMeta") {
-			store("tally_meta", request.data);
-			sendResponse({
-				"action": request.action,
-				"message": 1
-			});
-		}
+		 // getUser
+		 else if (request.action == "getUser") {
+			 sendResponse({
+				 "action": request.action,
+				 "data": store("tally_user")
+			 });
+		 }
+		 // getOptions
+		 else if (request.action == "getOptions") {
+			 sendResponse({
+				 "action": request.action,
+				 "data": store("tally_options")
+			 });
+		 }
+		 // getMeta
+		 else if (request.action == "getMeta") {
+			 sendResponse({
+				 "action": request.action,
+				 "data": store("tally_meta")
+			 });
+		 }
+		 // getNearbyMonsters
+		 else if (request.action == "getNearbyMonsters") {
+			 let data = store("tally_nearby_monsters") || {};
+			 sendResponse({
+				 "action": request.action,
+				 "data": store("tally_nearby_monsters", data)
+			 });
+		 }
+		 // getTrackerBlockList
+		 else if (request.action == "getTrackerBlockList") {
+			 let data = store("tally_trackers") || {};
+			 sendResponse({
+				 "action": request.action,
+				 "data": data
+			 });
+		 }
+		 // getGameStatus
+		 else if (request.action == "getGameStatus") {
+			 let data = store("tally_game_status") || {};
+			 sendResponse({
+				 "action": request.action,
+				 "data": data
+			 });
+		 }
+
+		/*  CUSTOM FUNCTIONS
+		 ******************************************************************************/
+
+		 // launchStartScreen
+		 else if (request.action == "launchStartScreen") {
+			 launchStartScreen();
+			 sendResponse({
+				 "action": request.action,
+				 "message": 1
+			 });
+		 }
+
+
 
 		// setBadgeText
 		else if (request.action == "setBadgeText") {
@@ -182,6 +165,24 @@ chrome.runtime.onMessage.addListener(
 			});
 		}
 
+		// resetUser (same as creating a new one)
+		else if (request.action == "resetUser") {
+			store("tally_user", createUser());
+			sendResponse({
+				"action": request.action,
+				"message": 1
+			}); // send success response
+		}
+
+		// openPage
+ 		else if (request.action == "openPage") {
+			if (request.url)
+				chrome.tabs.create({url: request.url });
+			sendResponse({
+				"action": request.action,
+				"data": {}
+			});
+ 		}
 
 
 
@@ -341,8 +342,10 @@ function adjustScore(_score, scoreObj, n) {
 		}
 		// check to see if user level should be upgraded
 		for (var level in gameRules.levels) {
-			if (gameRules.levels[level].minScore) {
+			if (gameRules.hasOwnProperty(level)) {
+				if (gameRules.levels[level].minScore) {
 
+				}
 			}
 		}
 	}

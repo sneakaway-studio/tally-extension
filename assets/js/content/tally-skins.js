@@ -170,7 +170,7 @@ window.Skin = (function() {
 		if (DEBUG) console.log("👚👗 Skin.update()", skinCat, skinColor, skinAnim);
 		if (skinCat != "" && prop(tally_game_status)) tally_game_status.skin = [skinCat, skinColor, skinAnim];
 		// save the skin status
-		saveGameStatus(tally_game_status,"Skin.update()");
+		TallyStorage.saveData("tally_game_status",tally_game_status);
 
 		let obj = {},
 			def = "",
@@ -199,14 +199,16 @@ window.Skin = (function() {
 			def += '<linearGradient id="tallyGradient" x2="1" gradientTransform="rotate(' + obj.angle + ')"  >';
 			// loop through stops in the gradient once to get colors
 			for (const key in obj.stops) {
-				def += '<stop offset="' + key + '" stop-color="' + obj.stops[key] + '">';
-				if (skinAnim) {
-					def += '<animate attributeName="stop-color" values="' + colors.join('; ') + '; ' + colors[0] + '" dur="2s" repeatCount="indefinite"></animate>';
-					// move last to first
-					var last = colors.pop();
-					colors.unshift(last);
+				if (obj.stops.hasOwnProperty(key)) {
+					def += '<stop offset="' + key + '" stop-color="' + obj.stops[key] + '">';
+					if (skinAnim) {
+						def += '<animate attributeName="stop-color" values="' + colors.join('; ') + '; ' + colors[0] + '" dur="2s" repeatCount="indefinite"></animate>';
+						// move last to first
+						var last = colors.pop();
+						colors.unshift(last);
+					}
+					def += '</stop>';
 				}
-				def += '</stop>';
 			}
 			// close gradient
 			def += '</linearGradient>';

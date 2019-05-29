@@ -54,7 +54,7 @@ window.BattleConsole = (function() {
 		return _active;
 	}
 	// log to the console
-	function log(_str,next="") {
+	function log(_str, next = "") {
 		if (!Battle.active) return;
 		// add a "next" function
 		if (next) _next = next;
@@ -94,9 +94,9 @@ window.BattleConsole = (function() {
 		var str = _queue.shift();
 		//if(DEBUG) console.log("writeNextInQueue()", str, _queue, _active);
 		// insert placeholder
-		var ele = "<div class='tally tally_log_line'>"+
-			  	  "<span id='tally_log" + (++logId) + "' class='tally_log_cursor'></span>"+
-				  "</div>";
+		var ele = "<div class='tally tally_log_line'>" +
+			"<span id='tally_log" + (++logId) + "' class='tally_log_cursor'></span>" +
+			"</div>";
 		$("#battle-console-stream").append(ele);
 		// make sure it exists first
 		if (!$('#battle-console-stream')[0]) return;
@@ -117,13 +117,17 @@ window.BattleConsole = (function() {
 		if (_active) return;
 		// set active state
 		active(true);
-
+		// get list of attacks
 		var tallyAttacks = Battle.details.tallyAttacks;
 
 		var str = "<div class='battle-options-row'>";
-		for(var key in tallyAttacks){
-			console.log(tallyAttacks[key]);
-			str += "<span class='battle-options'>"+ tallyAttacks[key].name +"</span>";
+		for (var key in tallyAttacks) {
+			if (tallyAttacks.hasOwnProperty(key)) {
+			//console.log(tallyAttacks[key]);
+			str += "<span data-attack='" + tallyAttacks[key].name +
+				"' class='battle-options attack-" + tallyAttacks[key].name + "'>" +
+				tallyAttacks[key].name + "</span>";
+			}
 		}
 		str += "<span class='battle-options-esc'>run [esc]</span></div>";
 
@@ -131,12 +135,27 @@ window.BattleConsole = (function() {
 		//console.log("showBattleOptions() step 2", str, _queue,_active);
 
 		// insert placeholder
-		var ele = "<div class='tally tally_log_line'>"+
-					  "<span id='tally_log" + (++logId) + "' class='tally_log_cursor'>"+
-					  	  str +
-					  "</span>"+
-				  "</div>";
+		var ele = "<div class='tally tally_log_line'>" +
+			"<span id='tally_log" + (++logId) + "' class='tally_log_cursor'>" + str + "</span>" + "</div>";
 		$("#battle-console-stream").append(ele);
+
+		// add hover, click listeners
+		for (var i in tallyAttacks) {
+			/*jshint loopfunc: true */
+			if (tallyAttacks.hasOwnProperty(i)) {
+				let ref = ".attack-" + tallyAttacks[i].name;
+				console.log("BattleConsole.showBattleOptions()", i, ref, tallyAttacks[i]);
+				$(document).on("mouseenter", ref, function() {
+					let attack = $(this).attr("data-attack");
+					//console.log(attack);
+				});
+				$(document).on("click", ref, function() {
+					let attack = $(this).attr("data-attack");
+					//console.log(attack);
+					BattleAttack.tallyAttackMonster(attack);
+				});
+			}
+		}
 		// make sure it exists first
 		if (!$('#battle-console-stream')[0]) return;
 		// scroll to new placeholder
@@ -158,8 +177,7 @@ window.BattleConsole = (function() {
 			setTimeout(function() {
 				typeWriter(ele, str, ++i);
 			}, 30);
-		}
-	 	else {
+		} else {
 			BattleConsole.lineComplete(ele);
 		}
 	}
@@ -167,15 +185,15 @@ window.BattleConsole = (function() {
 	/**
 	 *	Called after each line is complete
 	 */
-	function lineComplete(ele){
+	function lineComplete(ele) {
 		// add a little time at the end of each line
 		setTimeout(function() {
 			active(false);
 			// text is done writing so color it
 			colorText(ele);
 			// if queue is empty and there is a next string
-			if (_queue.length < 1 && _next != ""){
-				if (_next == "showBattleOptions"){
+			if (_queue.length < 1 && _next != "") {
+				if (_next == "showBattleOptions") {
 					//console.log(_next);
 					showBattleOptions();
 				}
@@ -205,8 +223,8 @@ window.BattleConsole = (function() {
 	return {
 		display: display,
 		hide: hide,
-		log: function(str,next) {
-			log(str,next);
+		log: function(str, next) {
+			log(str, next);
 		},
 		active: function(state) {
 			return active(state);

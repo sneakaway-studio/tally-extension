@@ -15,6 +15,7 @@ function createApp() {
 		store("tally_secret", createSecret());
 		store("tally_top_monsters", {});
 		store("tally_trackers", {"blocked":{}});
+		store("tally_tutorial_history", createTutorialHistory());
 
 		// these are empty the first time
 		// store("tally_domains", {});
@@ -190,8 +191,14 @@ function createMeta() {
 	return obj;
 }
 
-
-
+function createTutorialHistory() {
+	return {
+		"awardFirstAttack": false,
+		"battleFirstMonster": false,
+		"viewProfilePage": false,
+		"tutorialComplete": false
+	};
+}
 
 /**
  *  Create Secret object on installation

@@ -61,7 +61,7 @@ function isNewVersion() {
 		// update version
 		_tally_meta.version = manifestData.version;
 		store("tally_meta", _tally_meta);
-		return false; 
+		return false;
 	}
 }
 
@@ -80,7 +80,7 @@ function checkCurrentAPI() {
 /**
  *  Data reporting
  */
-function dataReport() {
+function dataReport() { 
 	try {
 		let tally_user = store("tally_user"),
 			tally_options = store("tally_options"),
