@@ -29,10 +29,16 @@ window.TallyStorage = (function() {
 			'name': name,
 			'data': data
 		};
-		console.log("💾 TallyStorage.saveData()", msg, caller);
+		//console.log("💾 TallyStorage.saveData()", msg, caller);
 		chrome.runtime.sendMessage(msg, function(response) {
-			console.log("💾 >>>>> ", '> TallyStorage.saveData()', name, JSON.stringify(response));
+			//console.log("💾 >>>>> ", '> TallyStorage.saveData()', name, JSON.stringify(response));
 			//return response.data;
+		});
+	}
+	// emergency only
+	function launchStartScreen(){
+		chrome.runtime.sendMessage({ 'action': 'launchStartScreen' }, function(response) {
+			return response.data;
 		});
 	}
 
@@ -43,7 +49,8 @@ window.TallyStorage = (function() {
 		},
 		saveData: function(name,data,caller){
 			return saveData(name,data,caller);
-		}
+		},
+		launchStartScreen:launchStartScreen
 	};
 })();
 
@@ -78,7 +85,7 @@ function createStartupPromises(){
 					'action': 'getData',
 					'name': name
 				}, function(response) {
-					console.log('😂 >>>>> createStartupPromises()', name, JSON.stringify(response.data));
+					//console.log('😂 >>>>> createStartupPromises()', name, JSON.stringify(response.data));
 					// store data
 					window[startupPromiseNames[i]] = response.data;
 					// resolve promise

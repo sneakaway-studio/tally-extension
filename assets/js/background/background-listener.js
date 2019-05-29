@@ -145,6 +145,17 @@ chrome.runtime.onMessage.addListener(
 		/*  CUSTOM FUNCTIONS
 		 ******************************************************************************/
 
+		 // launchStartScreen
+		 else if (request.action == "launchStartScreen") {
+			 launchStartScreen();
+			 sendResponse({
+				 "action": request.action,
+				 "message": 1
+			 });
+		 }
+
+
+
 		// setBadgeText
 		else if (request.action == "setBadgeText") {
 			setBadgeText(request.data);
