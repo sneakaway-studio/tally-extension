@@ -208,7 +208,7 @@ window.Monster = (function() {
 			// save user in background
 			TallyStorage.saveData('tally_user',tally_user);
 			// create backgroundUpdate object
-			var backgroundMonsterUpdate = newBackgroundMonsterUpdate(mid);
+			var backgroundMonsterUpdate = TallyStorage.newBackgroundMonsterUpdate(mid);
 			// store the nearby monster in it
 			backgroundMonsterUpdate.monsterData = tally_nearby_monsters[mid];
 			// then push to the server

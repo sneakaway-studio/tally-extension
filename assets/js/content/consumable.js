@@ -162,7 +162,7 @@ window.Consumable = (function() {
 
 
 			// create backgroundUpdate object
-			var backgroundUpdate = newBackgroundUpdate();
+			var backgroundUpdate = TallyStorage.newBackgroundUpdate();
 			// store the data
 			backgroundUpdate.consumable = consumable;
 			// then push to the server

@@ -77,7 +77,7 @@
             "assets/js/content/effect.js",
             "assets/js/content/sound.js",
             "assets/js/content/debug.js",
-            "assets/js/content/click-listener.js",
+            "assets/js/content/listeners.js",
             "assets/js/content/tally-thoughts.js",
             "assets/js/content/tally-skins.js",
             "assets/js/content/consumable.js",

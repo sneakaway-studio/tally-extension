@@ -54,6 +54,70 @@ window.TallyStorage = (function() {
 		}
 	}
 
+
+	/**
+	 *  Create new backgroundUpdate object
+	 */
+	function newBackgroundUpdate() {
+		try {
+			var obj = {
+				"pageData": {
+					"description": pageData.description,
+					"domain": pageData.domain,
+					"keywords": pageData.keywords,
+					"tags": pageData.tags,
+					"time": pageData.time,
+					"title": pageData.title,
+					"url": pageData.url
+				},
+				"scoreData": {
+					"clicks": 0,
+					// "domains": 0, // don't track this locally,
+					"level": 0,
+					"likes": 0,
+					"pages": 0,
+					"score": 0,
+					// "time": 0, // don't track this locally
+				},
+				"eventData": {
+					"action": "",
+					"text": ""
+				},
+				"consumable": null,
+				"userData": {
+					"token": "INSERT_IN_BACKGROUND",
+				}
+			};
+			console.log("<{!}> newBackgroundUpdate() -> obj", obj);
+			return obj;
+		} catch (err) {
+			console.error(err);
+		}
+	}
+
+	/**
+	 *  Create new newBackgroundMonsterUpdate object
+	 */
+	function newBackgroundMonsterUpdate(mid) {
+		try {
+			var obj = {
+				"pageData": {
+					"domain": pageData.domain,
+					"tags": pageData.tags,
+					"time": pageData.time,
+					"url": pageData.url
+				},
+				"userData": {
+					"token": "INSERT_IN_BACKGROUND",
+				}
+			};
+			//console.log("<{!}> newBackgroundMonsterUpdate() -> obj", obj);
+			return obj;
+		} catch (err) {
+			console.error(err);
+		}
+	}
+
 	// PUBLIC
 	return {
 		getData: function(name,caller){
@@ -62,7 +126,11 @@ window.TallyStorage = (function() {
 		saveData: function(name,data,caller){
 			return saveData(name,data,caller);
 		},
-		launchStartScreen:launchStartScreen
+		launchStartScreen:launchStartScreen,
+		newBackgroundUpdate:newBackgroundUpdate,
+		newBackgroundMonsterUpdate: function(mid){
+			return newBackgroundMonsterUpdate(mid);
+		}
 	};
 })();
 
@@ -260,7 +328,7 @@ function saveToken(data) {
 		});
 	} catch(err){
 		console.error(err);
-	}	
+	}
 }
 
 // SEND DATA TO BACKGROUND

@@ -30,16 +30,15 @@ window.MonsterCheck = (function() {
 	 */
 	function checkNearbyMonsterTimes() {
 		try {
-			if(DEBUG) console.log("👿 ⊙⊙⊙⊙⊙ MonsterCheck.checkNearbyMonsterTimes()1");
 			let now = Date.now(),
 				highestStage = 0,
 				deleteList = [];
 			// make sure tally_nearby_monsters exists
 			if (tally_nearby_monsters && objLength(tally_nearby_monsters) > 0) {
+				if(DEBUG) console.log("👿 ⊙⊙⊙⊙⊙ MonsterCheck.checkNearbyMonsterTimes() -> tally_nearby_monsters =",tally_nearby_monsters);
 				// loop through them
 				for (var mid in tally_nearby_monsters) {
 					if (tally_nearby_monsters.hasOwnProperty(mid)) {
-						if(DEBUG) console.log("👿 ⊙⊙⊙⊙⊙ MonsterCheck.checkNearbyMonsterTimes()2",mid);
 						// how long has it been since this monster was seen?
 						// if longer than 5 mins (300 secs) then delete
 						let seconds = ((now - tally_nearby_monsters[mid].updatedAt) / 1000);
@@ -72,7 +71,7 @@ window.MonsterCheck = (function() {
 	 */
 	function checkForTagMatches() {
 		try {
-			if (DEBUG) console.log('👿 ⊙⊙⊙⊙⊙ MonsterCheck.checkForTagMatches()', pageData.tags);
+			if (DEBUG) console.log('👿 ⊙⊙⊙⊙⊙ MonsterCheck.checkForTagMatches() -> pageData.tags =', pageData.tags);
 			// loop through the tags on the page
 			for (var i = 0, l = pageData.tags.length; i < l; i++) {
 				// save reference
@@ -85,10 +84,9 @@ window.MonsterCheck = (function() {
 					if (arr.length > 0) {
 						// pick random monster id from list, this will be the page monster
 						let randomMID = arr[Math.floor(Math.random() * arr.length)];
-						if (DEBUG) console.log('👿 ?⊙⊙⊙⊙ MonsterCheck.checkForTagMatches() #'+ tag +" has", arr.length, 'MATCH(ES)');
-						if (DEBUG) console.log('👿 ?⊙⊙⊙⊙ MonsterCheck.checkForTagMatches() ' + arr);
-						if (DEBUG) console.log('👿 ?⊙⊙⊙⊙ MonsterCheck.checkForTagMatches() randomly selecting...',randomMID);
-						if (DEBUG) console.log('👿 ?⊙⊙⊙⊙ MonsterCheck.checkForTagMatches() ', MonsterData.dataById[randomMID].slug);
+						if (DEBUG) console.log('👿 ?⊙⊙⊙⊙ MonsterCheck.checkForTagMatches() -> #'+ tag +" has",
+														arr.length, 'MATCH(ES) ('+ arr +') randomly selecting:',
+														MonsterData.dataById[randomMID].slug);
 						// we have identified a match, let's handle the monster
 						handleMatch(randomMID);
 						break;
@@ -107,10 +105,10 @@ window.MonsterCheck = (function() {
 	 */
 	function handleMatch(mid) {
 		try {
-			if (DEBUG) console.log('👿 ⊙⊙?⊙⊙ MonsterCheck.handleMatch() mid='+ mid);
+			//if (DEBUG) console.log('👿 ⊙⊙?⊙⊙ MonsterCheck.handleMatch() mid='+ mid);
 			// if (mid && mid > 0 && tally_nearby_monsters && MonsterData.dataById[mid]){
 			// 	if (DEBUG) console.log(" ... "+
-			// 	//MonsterData.dataById[mid].slug,
+			// 	MonsterData.dataById[mid].slug,
 			// 	"stage="+tally_nearby_monsters[mid].stage);
 			// }
 
@@ -169,7 +167,7 @@ window.MonsterCheck = (function() {
 					}
 				}
 				// save to log after code above
-				if (DEBUG) console.log('👿 ⊙⊙?⊙⊙ MonsterCheck.handleMatch()', MonsterData.dataById[mid].slug, tally_nearby_monsters[mid]);
+				if (DEBUG) console.log('👿 ⊙⊙?⊙⊙ MonsterCheck.handleMatch() -> monster =', MonsterData.dataById[mid].slug, tally_nearby_monsters[mid]);
 			}
 			// set skin
 			Skin.setStage(tally_nearby_monsters[mid].stage);
@@ -201,7 +199,7 @@ window.MonsterCheck = (function() {
 			Skin.setStage(0);
 		} catch (err) {
 			console.error(err);
-		}	
+		}
 	}
 
 
