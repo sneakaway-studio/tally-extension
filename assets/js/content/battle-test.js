@@ -9,7 +9,11 @@ window.BattleTest = (function() {
 
 
 	function test(){
-		// run test
+		try {
+			// run test
+		} catch (err) {
+			console.error(err);
+		}
 	}
 
 

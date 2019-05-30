@@ -69,13 +69,27 @@ window.Sound = (function() {
 	};
 
 	function playRandomPowerup() {
-		Sound.playFile("powerups/" + FS_Object.randomObjProperty(sounds.powerups));
+		try {
+			Sound.playFile("powerups/" + FS_Object.randomObjProperty(sounds.powerups));
+		} catch (err) {
+			console.error(err);
+		}
 	}
+
 	function playRandomJump() {
-		Sound.playFile("jumps/" + FS_Object.randomObjProperty(sounds.jumps));
+		try {
+			Sound.playFile("jumps/" + FS_Object.randomObjProperty(sounds.jumps));
+		} catch (err) {
+			console.error(err);
+		}
 	}
+
 	function playRandomJumpReverse() {
-		Sound.playFile("jumps/" + FS_Object.randomObjProperty(sounds["jumps-reverse"]));
+		try {
+			Sound.playFile("jumps/" + FS_Object.randomObjProperty(sounds["jumps-reverse"]));
+		} catch (err) {
+			console.error(err);
+		}
 	}
 
 
@@ -86,39 +100,51 @@ window.Sound = (function() {
 	 * @param  {integer} delay - Delay in milliseconds
 	 */
 	function playRandom(category, index, delay) {
-		if (!tally_options.playSounds) return;
-		//if(DEBUG) console.log("playRandom("+ category +","+ index +")");
-		var soundFile = "";
-		// if a specific category && index provided, then get that sound
-		if (prop(category) && prop(index))
-			soundFile = category + "/" + sounds[category][index];
-		// else pick random index from category
-		else if (prop(category) && !prop(index))
-			// for array
-			//soundFile = category +"/"+ sounds[category][Math.floor((Math.random() * sounds[category].length))];
-			// random from obj
-			soundFile = category + "/" + FS_Object.randomObjProperty(sounds[category]);
-		// else pick random category && index
-		else if (!prop(category) && !prop(index)) {
-			var categoryArr = FS_Object.randomObjProperty(sounds); // reference to array group in sounds
-			soundFile = category + "/" + categoryArr[Math.floor(Math.random() * categoryArr.length)];
+		try {
+			if (!tally_options.playSounds) return;
+			//if(DEBUG) console.log("playRandom("+ category +","+ index +")");
+			var soundFile = "";
+			// if a specific category && index provided, then get that sound
+			if (prop(category) && prop(index))
+				soundFile = category + "/" + sounds[category][index];
+			// else pick random index from category
+			else if (prop(category) && !prop(index))
+				// for array
+				//soundFile = category +"/"+ sounds[category][Math.floor((Math.random() * sounds[category].length))];
+				// random from obj
+				soundFile = category + "/" + FS_Object.randomObjProperty(sounds[category]);
+			// else pick random category && index
+			else if (!prop(category) && !prop(index)) {
+				var categoryArr = FS_Object.randomObjProperty(sounds); // reference to array group in sounds
+				soundFile = category + "/" + categoryArr[Math.floor(Math.random() * categoryArr.length)];
+			}
+			play(soundFile, delay);
+		} catch (err) {
+			console.error(err);
 		}
-		play(soundFile, delay);
 	}
 	// Sound.playCategory ("tally","general")
 	function playCategory(category, index, delay) {
-		if (!tally_options.playSounds) return;
-		let file = category + "/" + sounds[category][index];
-		play(file, delay);
+		try {
+			if (!tally_options.playSounds) return;
+			let file = category + "/" + sounds[category][index];
+			play(file, delay);
+		} catch (err) {
+			console.error(err);
+		}
 	}
 	// play a mood
 	function playMood(mood) {
-		if (!tally_options.playSounds || !prop(mood)) return;
-		if (mood == "award") mood = "happy";
-		if (DEBUG) console.log("Sound.playMood()", mood);
-		let r = Math.ceil(Math.random() * moods[mood]);
-		let file = "tally/moods-v2/" + mood + "-" + r + "-2.mp3";
-		play(file, 150);
+		try {
+			if (!tally_options.playSounds || !prop(mood)) return;
+			if (mood == "award") mood = "happy";
+			if (DEBUG) console.log("Sound.playMood()", mood);
+			let r = Math.ceil(Math.random() * moods[mood]);
+			let file = "tally/moods-v2/" + mood + "-" + r + "-2.mp3";
+			play(file, 150);
+		} catch (err) {
+			console.error(err);
+		}
 	}
 
 
@@ -127,6 +153,7 @@ window.Sound = (function() {
 	 *	(Old) Generic play function (called from others in this obj)
 	 */
 	// function playOld(soundFile, delay = 0, volumeModifier = 0) {
+	// try {
 	// 	//if(DEBUG) console.log("♪♪♪♪♪ Sound.play("+ soundFile +","+ delay +","+ volumeModifier +")");
 	// 	// load/play sound
 	// 	var audio = new Audio(chrome.extension.getURL("assets/sounds/" + soundFile));
@@ -150,30 +177,35 @@ window.Sound = (function() {
 	 *	Generic play function (called from others in this obj)
 	 */
 	function play(soundFile, delay = 0, volumeModifier = 0) {
-		if (DEBUG) console.log("♪♪♪♪♪ Sound.play(" + soundFile + "," + delay + "," + volumeModifier + ")");
+		try {
+			if (DEBUG) console.log("♪♪♪♪♪ Sound.play(" + soundFile + "," + delay + "," + volumeModifier + ")");
 
-		// reference to audio element
-		var audio = document.querySelector('#tally_audio');
-		// add source
-		$('#tally_audio_source').attr("src", chrome.extension.getURL("assets/sounds/" + soundFile));
-		// set params
-		audio.volume = (tally_options.soundVolume || 0.3) + volumeModifier;
-		if (audio.volume < 0) audio.volume = 0;
-		audio.muted = false;
-		audio.pause();
-		audio.load();
+			// reference to audio element
+			var audio = document.querySelector('#tally_audio');
+			// add source
+			$('#tally_audio_source').attr("src", chrome.extension.getURL("assets/sounds/" + soundFile));
+			// set params
+			audio.volume = (tally_options.soundVolume || 0.3) + volumeModifier;
+			if (audio.volume < 0) audio.volume = 0;
+			audio.muted = false;
+			audio.pause();
+			audio.load();
 
-		// create promise / attempt to play
-		var promise = audio.play();
-		// if play failed
-		if (promise !== undefined) {
-			promise.then(_ => {
-				//if(DEBUG) console.log("Autoplay started!");
-			}).catch(error => {
-				//if(DEBUG) console.log("Autoplay prevented!");
-				// audio.pause();
-				// audio.play();
-			});
+			// create promise / attempt to play
+			var promise = audio.play();
+			// if play failed
+			if (promise !== undefined) {
+				promise.then(_ => {
+					//if(DEBUG) console.log("Autoplay started!");
+				}).catch(err => {
+					//console.log(err);
+					//if(DEBUG) console.log("Autoplay prevented!");
+					// audio.pause();
+					// audio.play();
+				});
+			}
+		} catch (err) {
+			console.error(err);
 		}
 	}
 
@@ -186,7 +218,7 @@ window.Sound = (function() {
 		},
 		playRandomPowerup: playRandomPowerup,
 		playRandomJump: playRandomJump,
-		playRandomJumpReverse:playRandomJumpReverse,
+		playRandomJumpReverse: playRandomJumpReverse,
 		playCategory: function(category, index, delay) {
 			playCategory(category, index, delay);
 		},

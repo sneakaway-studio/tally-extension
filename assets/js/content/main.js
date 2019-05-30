@@ -3,7 +3,7 @@
 console.log("%c   Hello, I'm Tally!", Tally.tallyConsoleIcon);
 
 // load objects
-let MAIN_DEBUG = false,
+let MAIN_DEBUG = true,
 	pageData = Page.getPageData(),
 	eventData = {},
 	tally_user = {},
@@ -11,36 +11,46 @@ let MAIN_DEBUG = false,
 	tally_meta = {},
 	tally_game_status = {},
 	tally_nearby_monsters = {},
-	tally_trackers = {},
 	tally_top_monsters = {},
+	tally_trackers = {},
 	tally_tutorial_history = {};
 
 
 $(function() {
 	try {
-	Promise
-		.all(startupPromises) // getLastBackgroundUpdatePromise
-		.then(function() {
-			if (MAIN_DEBUG) console.log('>>>>> init() Promise all data has loaded', tally_user, tally_options, tally_trackers);
+		Promise
+			.all([getUserPromise, getOptionsPromise, getMetaPromise, getGameStatusPromise,
+		    getNearbyMonstersPromise, getTrackerBlockListPromise,
+		    getTopMonstersPromise, getTutorialHistoryPromise]) // getLastBackgroundUpdatePromise
+			.then(function() {
+				// if (MAIN_DEBUG) console.log('>>>>> init() Promise all data has loaded',
+				// 			tally_user, tally_options, tally_meta, tally_game_status, tally_trackers,
+				// 			tally_nearby_monsters, tally_top_monsters, tally_tutorial_history);
 
+				// check if we can update the token
+				Page.checkDashboardUpdateToken();
 
-
-			// check if we can update the token
-			Page.checkDashboardUpdateToken();
-
-			// check if extension should be active on this page before proceeding
-			pageData.activeOnPage = shouldExtensionBeActiveOnPage();
-			if (pageData.activeOnPage)
-				startGameOnPage();
-		})
-		.catch(function(error) {
-			if (MAIN_DEBUG) console.log('one or more promises have failed: ' + error);
-
-		});
-		}
-		catch(err){
-				TallyStorage.launchStartScreen();
-		}
+				// check if extension should be active on this page before proceeding
+				pageData.activeOnPage = shouldExtensionBeActiveOnPage();
+				if (pageData.activeOnPage)
+					startGameOnPage();
+			})
+			.catch(function(err) {
+				if (MAIN_DEBUG) console.error('one or more promises have failed: ' + err,
+					"\n tally_user =", tally_user,
+					"\n tally_options =", tally_options,
+					"\n tally_meta =", tally_meta,
+					"\n tally_game_status =", tally_game_status,
+					"\n tally_trackers =", tally_trackers,
+					"\n tally_nearby_monsters =", tally_nearby_monsters,
+					"\n tally_top_monsters =", tally_top_monsters,
+					"\n tally_tutorial_history =", tally_tutorial_history
+				);
+			});
+	} catch (err) {
+		console.error(err);
+		TallyStorage.launchStartScreen();
+	}
 });
 
 
@@ -48,21 +58,25 @@ $(function() {
  * Make sure Tally isn't disabled on this page|domain|subdomain
  */
 function shouldExtensionBeActiveOnPage() {
-	//console.log("shouldExtensionBeActiveOnPage()",tally_options);
-	if (!tally_meta.serverOnline) {
-		if (MAIN_DEBUG) console.log("!!!!! Connection to Tally server is down");
-		return false;
-	} else if (prop(tally_options.disabledDomains) &&
-		(($.inArray(pageData.domain, tally_options.disabledDomains) >= 0) ||
-			($.inArray(pageData.subDomain, tally_options.disabledDomains) >= 0))) {
-		if (MAIN_DEBUG) console.log("!!!!! Tally is disabled on this domain");
-		return false;
-	} else if (pageData.contentType != "text/html") {
-		if (MAIN_DEBUG) console.log("!!!!! Tally is disabled on pages like " + pageData.contentType);
-		return false;
-	} else {
-		//console.log("shouldExtensionBeActiveOnPage()", true);
-		return true;
+	try {
+		//console.log("shouldExtensionBeActiveOnPage()",tally_options);
+		if (!tally_meta.serverOnline) {
+			if (MAIN_DEBUG) console.log("!!!!! Connection to Tally server is down");
+			return false;
+		} else if (prop(tally_options.disabledDomains) &&
+			(($.inArray(pageData.domain, tally_options.disabledDomains) >= 0) ||
+				($.inArray(pageData.subDomain, tally_options.disabledDomains) >= 0))) {
+			if (MAIN_DEBUG) console.log("!!!!! Tally is disabled on this domain");
+			return false;
+		} else if (pageData.contentType != "text/html") {
+			if (MAIN_DEBUG) console.log("!!!!! Tally is disabled on pages like " + pageData.contentType);
+			return false;
+		} else {
+			//console.log("shouldExtensionBeActiveOnPage()", true);
+			return true;
+		}
+	} catch (err) {
+		console.error(err);
 	}
 }
 
@@ -78,7 +92,6 @@ function startGameOnPage() {
 	//    console.log(">>>>> pageData = "+ JSON.stringify(pageData));
 
 	try {
-
 		// LOAD GAME
 
 		// add required CSS for game
@@ -109,18 +122,18 @@ function startGameOnPage() {
 		// check to see if there are any tutorial events to complete
 		TallyEvents.checkTutorialEvents();
 
-	} catch (error) {
-		throw error;
+	} catch (err) {
+		console.error(err);
 	}
 }
 
-window.onerror = function(message, source, lineno, colno, error) {
-	console.error(message, source, lineno, colno, error);
-};
-
-Promise.onPossiblyUnhandledRejection(function(error){
-    throw error;
-});
+// window.onerror = function(message, source, lineno, colno, error) {
+// 	console.error(message, source, lineno, colno, error);
+// };
+//
+// Promise.onPossiblyUnhandledRejection(function(error){
+//     throw error;
+// });
 
 
 
@@ -133,40 +146,48 @@ Promise.onPossiblyUnhandledRejection(function(error){
  *	Refresh app
  */
 function refreshApp() {
-	if (!pageData.activeOnPage) return;
-	pageData = Page.getPageData();
-	tally_game_status = TallyStorage.getData('tally_game_status');
-	MonsterCheck.check();
-	Debug.update();
+	try {
+		if (!pageData.activeOnPage) return;
+		pageData = Page.getPageData();
+		tally_game_status = TallyStorage.getData('tally_game_status');
+		MonsterCheck.check();
+		Debug.update();
+	} catch (err) {
+		console.error(err);
+	}
 }
 
 
 function checkToken() {
-	//if (MAIN_DEBUG) console.log(">>>>> tally_meta = " + JSON.stringify(tally_meta));
-	if (pageData.url != tally_meta.website + "/dashboard") {
-		if (tally_meta.userTokenStatus == "expired") {
-			// $.growl({
-			// 	title: "YOUR TOKEN HAS EXPIRED",
-			// 	message: "Click here to get a new one"
-			// });
-		} else if (tally_meta.userTokenStatus != "ok") {
-			// $.growl({
-			// 	title: "YOU HAVE NO TOKEN",
-			// 	message: "<a href='" + tally_meta.website + "/dashboard' target='_blank'>Link your account to start playing Tally</a>"
-			// });
+	try {
+		//if (MAIN_DEBUG) console.log(">>>>> tally_meta = " + JSON.stringify(tally_meta));
+		if (pageData.url != tally_meta.website + "/dashboard") {
+			if (tally_meta.userTokenStatus == "expired") {
+				// $.growl({
+				// 	title: "YOUR TOKEN HAS EXPIRED",
+				// 	message: "Click here to get a new one"
+				// });
+			} else if (tally_meta.userTokenStatus != "ok") {
+				// $.growl({
+				// 	title: "YOU HAVE NO TOKEN",
+				// 	message: "<a href='" + tally_meta.website + "/dashboard' target='_blank'>Link your account to start playing Tally</a>"
+				// });
 
+			}
+			// if token not valid
+			if (tally_meta.userTokenStatus == "expired" || tally_meta.userTokenStatus != "ok") {
+				if (MAIN_DEBUG) console.log(">>>>> tally_meta >>>>>> TOKEN STILL BROKEN, tally_meta.userTokenPrompts = "+ tally_meta.userTokenPrompts);
+				// don't bother them every time
+		//		if (tally_meta.userTokenPrompts % 5 == 0){
+					let msg = "Please <a href='" + tally_meta.website + "/dashboard' target='_blank'>visit your dashboard</a> to update your token";
+					Thought.showString(msg, "sad");
+		//		}
+				tally_meta.userTokenPrompts++;
+				TallyStorage.saveData('tally_meta',tally_meta,"checkToken()");
+			}
 		}
-		// if token not valid
-		if (tally_meta.userTokenStatus == "expired" || tally_meta.userTokenStatus != "ok") {
-			if (MAIN_DEBUG) console.log(">>>>> tally_meta >>>>>> TOKEN STILL BROKEN, tally_meta.userTokenPrompts = "+ tally_meta.userTokenPrompts);
-			// don't bother them every time
-	//		if (tally_meta.userTokenPrompts % 5 == 0){
-				let msg = "Please <a href='" + tally_meta.website + "/dashboard' target='_blank'>visit your dashboard</a> to update your token";
-				Thought.showString(msg, "sad");
-	//		}
-			tally_meta.userTokenPrompts++;
-			TallyStorage.saveData('tally_meta',tally_meta,"checkToken()");
-		}
+	} catch (err) {
+		console.error(err);
 	}
 }
 

@@ -10,36 +10,48 @@ window.TallyStorage = (function() {
 	 *	Generic getData() function
 	 */
 	function getData(name, caller="") {
-		//console.log("💾 TallyStorage.getData()", name, caller);
-		let msg = {
-			'action': 'getData',
-			'name': name
-		};
-		chrome.runtime.sendMessage(msg, function(response) {
-			//console.log("💾 <<<<< ", '> TallyStorage.getData()', name, JSON.stringify(response));
-			return response.data;
-		});
+		try {
+			//console.log("💾 TallyStorage.getData()", name, caller);
+			let msg = {
+				'action': 'getData',
+				'name': name
+			};
+			chrome.runtime.sendMessage(msg, function(response) {
+				//console.log("💾 <<<<< ", '> TallyStorage.getData()', name, JSON.stringify(response));
+				return response.data;
+			});
+		} catch(err){
+			console.error(err);
+		}
 	}
 	/**
 	 *	Generic saveData() function
 	 */
 	function saveData(name, data, caller="") {
-		let msg = {
-			'action': 'saveData',
-			'name': name,
-			'data': data
-		};
-		//console.log("💾 TallyStorage.saveData()", msg, caller);
-		chrome.runtime.sendMessage(msg, function(response) {
-			//console.log("💾 >>>>> ", '> TallyStorage.saveData()', name, JSON.stringify(response));
-			//return response.data;
-		});
+		try {
+			let msg = {
+				'action': 'saveData',
+				'name': name,
+				'data': data
+			};
+			//console.log("💾 TallyStorage.saveData()", msg, caller);
+			chrome.runtime.sendMessage(msg, function(response) {
+				//console.log("💾 >>>>> ", '> TallyStorage.saveData()', name, JSON.stringify(response));
+				//return response.data;
+			});
+		} catch(err){
+			console.error(err);
+		}
 	}
 	// emergency only
 	function launchStartScreen(){
-		chrome.runtime.sendMessage({ 'action': 'launchStartScreen' }, function(response) {
-			return response.data;
-		});
+		try {
+			chrome.runtime.sendMessage({ 'action': 'launchStartScreen' }, function(response) {
+				return response.data;
+			});
+		} catch(err){
+			console.error(err);
+		}
 	}
 
 	// PUBLIC
@@ -72,30 +84,34 @@ const startupPromises = [],
 	];
 
 function createStartupPromises(){
-	// loop through all startupPromisesNames and create Promises
-	for (let i = 0; i < startupPromiseNames.length; i++) {
-		let name = startupPromiseNames[i];
-		/*jshint loopfunc: true */
-		// add new promise
-		startupPromiseNames[i] = new Promise(
-			(resolve, reject) => {
-				//console.log('😂 >>>>> createStartupPromises()',name);
-				// call background
-				chrome.runtime.sendMessage({
-					'action': 'getData',
-					'name': name
-				}, function(response) {
-					//console.log('😂 >>>>> createStartupPromises()', name, JSON.stringify(response.data));
-					// store data
-					window[startupPromiseNames[i]] = response.data;
-					// resolve promise
-					resolve(response.data);
-				});
-			}
-		);
+	try {
+		// loop through all startupPromisesNames and create Promises
+		for (let i = 0; i < startupPromiseNames.length; i++) {
+			let name = startupPromiseNames[i];
+			/*jshint loopfunc: true */
+			// add new promise
+			startupPromiseNames[i] = new Promise(
+				(resolve, reject) => {
+					//console.log('😂 >>>>> createStartupPromises()',name);
+					// call background
+					chrome.runtime.sendMessage({
+						'action': 'getData',
+						'name': name
+					}, function(response) {
+						//console.log('😂 >>>>> createStartupPromises()', name, JSON.stringify(response.data));
+						// store data
+						window[startupPromiseNames[i]] = response.data;
+						// resolve promise
+						resolve(response.data);
+					});
+				}
+			);
+		}
+	} catch(err){
+		console.error(err);
 	}
 }
-createStartupPromises();
+//createStartupPromises();
 
 // // testing
 // Promise // after async functions then update
@@ -103,8 +119,8 @@ createStartupPromises();
 // 	.then(function(result) {
 // 		console.log('😂  testPromise all data has loaded', result);
 // 	})
-// 	.catch(function(error) {
-// 		console.log('😂 one or more promises have failed: ' + error);
+// 	.catch(function(err) {
+// 		console.log('😂 one or more promises have failed: ' + err);
 // 	});
 
 
@@ -151,15 +167,16 @@ const getMetaPromise = new Promise(
 		});
 	}
 );
-// GET NEARBY MONSTERS
-const getNearbyMonstersPromise = new Promise(
+// GET GAME STATUS
+const getGameStatusPromise = new Promise(
 	(resolve, reject) => {
+		//console.log("💾 getGameStatusPromise");
 		//if (!pageData.activeOnPage) return;
 		chrome.runtime.sendMessage({
-			'action': 'getNearbyMonsters'
+			'action': 'getGameStatus'
 		}, function(response) {
-			//console.log('💾 >>>>> getNearbyMonsters()',response.data);
-			tally_nearby_monsters = response.data; // store data
+			//console.log('💾 >>>>> getGameStatus()',response.data);
+			tally_game_status = response.data; // store data
 			resolve(response.data); // resolve promise
 		});
 	}
@@ -178,16 +195,41 @@ const getTrackerBlockListPromise = new Promise(
 		});
 	}
 );
-// GET GAME STATUS
-const getGameStatusPromise = new Promise(
+// GET NEARBY MONSTERS
+const getNearbyMonstersPromise = new Promise(
 	(resolve, reject) => {
-		//console.log("💾 getGameStatusPromise");
 		//if (!pageData.activeOnPage) return;
 		chrome.runtime.sendMessage({
-			'action': 'getGameStatus'
+			'action': 'getNearbyMonsters'
 		}, function(response) {
-			//console.log('💾 >>>>> getGameStatus()',response.data);
-			tally_game_status = response.data; // store data
+			//console.log('💾 >>>>> getNearbyMonsters()',response.data);
+			tally_nearby_monsters = response.data; // store data
+			resolve(response.data); // resolve promise
+		});
+	}
+);
+// GET TOP MONSTERS
+const getTopMonstersPromise = new Promise(
+	(resolve, reject) => {
+		//console.log("💾 getTopMonstersPromise");
+		chrome.runtime.sendMessage({
+			'action': 'getTopMonstersPromise'
+		}, function(response) {
+			//console.log('💾 >>>>> getTopMonstersPromise()',response.data);
+			tally_top_monsters = response.data; // store data
+			resolve(response.data); // resolve promise
+		});
+	}
+);
+// GET TUTORIAL HISTORY
+const getTutorialHistoryPromise = new Promise(
+	(resolve, reject) => {
+		//console.log("💾 getTutorialHistoryPromise");
+		chrome.runtime.sendMessage({
+			'action': 'getTutorialHistoryPromise'
+		}, function(response) {
+			//console.log('💾 >>>>> getTutorialHistoryPromise()',response.data);
+			tally_tutorial_history = response.data; // store data
 			resolve(response.data); // resolve promise
 		});
 	}
@@ -200,52 +242,64 @@ const getGameStatusPromise = new Promise(
 
 // SAVE TOKEN FROM DASHBOARD
 function saveToken(data) {
-	chrome.runtime.sendMessage({
-		'action': 'saveToken',
-		'data': data
-	}, function(response) {
-		console.log('💾 <{!}> saveToken()', response);
-		if (response.message == 1) {
-			console.log("💾 grab it", data);
-			// $.growl({
-			// 	title: "TOKEN SAVED!",
-			// 	message: "User token updated!"
-			// });
+	try {
+		chrome.runtime.sendMessage({
+			'action': 'saveToken',
+			'data': data
+		}, function(response) {
+			console.log('💾 <{!}> saveToken()', response);
+			if (response.message == 1) {
+				console.log("💾 grab it", data);
+				// $.growl({
+				// 	title: "TOKEN SAVED!",
+				// 	message: "User token updated!"
+				// });
 
-			Thought.showString("Your user token has been updated!", "happy");
-		}
-	});
+				Thought.showString("Your user token has been updated!", "happy");
+			}
+		});
+	} catch(err){
+		console.error(err);
+	}	
 }
 
 // SEND DATA TO BACKGROUND
 function sendBackgroundUpdate(data) {
-	//if (!pageData.activeOnPage) return;
-	chrome.runtime.sendMessage({
-		'action': 'sendBackgroundUpdate',
-		'data': data
-	}, function(response) {
-		console.log('💾 <{!}> sendBackgroundUpdate()', response);
-		tally_user = response.tally_user;
+	try {
+		//if (!pageData.activeOnPage) return;
+		chrome.runtime.sendMessage({
+			'action': 'sendBackgroundUpdate',
+			'data': data
+		}, function(response) {
+			console.log('💾 <{!}> sendBackgroundUpdate()', response);
+			tally_user = response.tally_user;
 
-		if (response.tally_user.levelUpdated){
-			Thought.showString("You just leveled up!", "happy");
-		}
+			if (response.tally_user.levelUpdated){
+				Thought.showString("You just leveled up!", "happy");
+			}
 
-		Debug.update();
-	});
+			Debug.update();
+		});
+	} catch(err){
+		console.error(err);
+	}
 }
 
 // SEND MONSTER DATA TO BACKGROUND
 function sendBackgroundMonsterUpdate(data) {
-	//if (!pageData.activeOnPage) return;
-	chrome.runtime.sendMessage({
-		'action': 'sendBackgroundMonsterUpdate',
-		'data': data
-	}, function(response) {
-		console.log('💾 <{!}> sendBackgroundMonsterUpdate()', response);
-//		tally_user = response.tally_user;
-		Debug.update();
-	});
+	try {
+		//if (!pageData.activeOnPage) return;
+		chrome.runtime.sendMessage({
+			'action': 'sendBackgroundMonsterUpdate',
+			'data': data
+		}, function(response) {
+			console.log('💾 <{!}> sendBackgroundMonsterUpdate()', response);
+	//		tally_user = response.tally_user;
+			Debug.update();
+		});
+	} catch(err){
+		console.error(err);
+	}
 }
 
 
@@ -270,10 +324,14 @@ const getLastBackgroundUpdatePromise = new Promise(
 
 
 function setBadgeText(data) {
-	chrome.runtime.sendMessage({
-		'action': 'setBadgeText',
-		'data': data
-	}, function(response) {
-		//console.log("💾 <<<<< ",'> saveGameStatus()',JSON.stringify(response));
-	});
+	try {
+		chrome.runtime.sendMessage({
+			'action': 'setBadgeText',
+			'data': data
+		}, function(response) {
+			//console.log("💾 <<<<< ",'> saveGameStatus()',JSON.stringify(response));
+		});
+	} catch(err){
+		console.error(err);
+	}
 }

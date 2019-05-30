@@ -56,7 +56,8 @@ function getUser(callback) {
 
 function getOptions() {
 	chrome.runtime.sendMessage({
-		'action': 'getOptions'
+		'action': 'getData',
+		'name':'tally_options'
 	}, function(response) {
 		//console.log("getOptions()",JSON.stringify(response.data));
 		tally_options = response.data;
@@ -67,7 +68,7 @@ function getOptions() {
 		document.getElementById("disabledDomains").value = tally_options.disabledDomains.join("\n");
 		// debugging
 		document.getElementById("showDebugger").checked = tally_options.showDebugger;
-		document.getElementById("debuggerPosition").value = tally_options.debuggerPosition;
+		//document.getElementById("debuggerPosition").value = tally_options.debuggerPosition;
 	});
 }
 

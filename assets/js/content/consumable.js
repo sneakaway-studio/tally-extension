@@ -64,15 +64,19 @@ window.Consumable = (function() {
 	 *	1. determine if we will generate a consumable on this page
 	 */
 	function randomizer() {
-		let r = Math.random();
-		if (r < 0.01)
-			create(3);
-		else if (r < 0.05)
-			create(2);
-		else if (r < 0.5)
-			create(1);
-		else
-			return false;
+		try {
+			let r = Math.random();
+			if (r < 0.01)
+				create(3);
+			else if (r < 0.05)
+				create(2);
+			else if (r < 0.5)
+				create(1);
+			else
+				return false;
+		} catch (err) {
+			console.error(err);
+		}
 	}
 	/**
 	 *	2. if so, then make a new one from list
@@ -89,7 +93,7 @@ window.Consumable = (function() {
 			//console.log(consumables);
 			add();
 		} catch (err) {
-			console.error(error);
+			console.error(err);
 		}
 	}
 	/**
@@ -104,7 +108,7 @@ window.Consumable = (function() {
 				// new position
 				let randomPos = Core.returnRandomPositionFull();
 				let css = "left:" + randomPos.x + "px;top:" + randomPos.y + "px;";
-				//console.log(randomPos,css);
+				//console.log("Core.add()",randomPos,css);
 				// html
 				let imgStr = chrome.extension.getURL('assets/img/consumables/' + consumables[i].type + "/" + consumables[i].img);
 				let ref = 'tally_consumable_'+ i;
@@ -129,7 +133,7 @@ window.Consumable = (function() {
 				});
 			}
 		} catch (err) {
-			console.error(error);
+			console.error(err);
 		}
 	}
 	/**
@@ -150,25 +154,29 @@ window.Consumable = (function() {
 	 *	5. user clicks a consumable
 	 */
 	function collect(key) {
-		let consumable = consumables[key];
-		//console.log("Consumable.collect()", key, consumable);
-		// play sound
-		Sound.playRandomPowerup();
+		try {
+			let consumable = consumables[key];
+			//console.log("Consumable.collect()", key, consumable);
+			// play sound
+			Sound.playRandomPowerup();
 
 
-		// create backgroundUpdate object
-		var backgroundUpdate = newBackgroundUpdate();
-		// store the data
-		backgroundUpdate.consumable = consumable;
-		// then push to the server
-		sendBackgroundUpdate(backgroundUpdate);
+			// create backgroundUpdate object
+			var backgroundUpdate = newBackgroundUpdate();
+			// store the data
+			backgroundUpdate.consumable = consumable;
+			// then push to the server
+			sendBackgroundUpdate(backgroundUpdate);
 
 
-		// delay then update stats
-		setTimeout(function() {
-			// update stats
-			Stats.update(consumable);
-		}, 700);
+			// delay then update stats
+			setTimeout(function() {
+				// update stats
+				Stats.update(consumable);
+			}, 700);
+		} catch (err) {
+			console.error(err);
+		}
 	}
 
 

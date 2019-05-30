@@ -9,63 +9,91 @@ window.Core = (function() {
 
 	// ele = string
 	function showElement(ele) {
-		$(ele).css({
-			"display": "block",
-			"opacity": 1
-		});
+		try {
+			$(ele).css({
+				"display": "block",
+				"opacity": 1
+			});
+		} catch (err) {
+			console.error(err);
+		}
 	}
 	// ele = string
 	function hideElement(ele) {
-		$(ele).css({
-			"display": "none",
-			"opacity": 0
-		});
+		try {
+			$(ele).css({
+				"display": "none",
+				"opacity": 0
+			});
+		} catch (err) {
+			console.error(err);
+		}
 	}
 
 	function setPosition(ele, pos) {
-		$(ele).css({
-			"left": pos.x + "px"
-		});
-		$(ele).css({
-			"top": pos.y + "px"
-		});
+		try {
+			$(ele).css({
+				"left": pos.x + "px"
+			});
+			$(ele).css({
+				"top": pos.y + "px"
+			});
+		} catch (err) {
+			console.error(err);
+		}
 	}
 
 	/**
 	 *	Get center position of object
 	 */
 	function getCenterPosition(ele) {
-		let pos = {
-			"left": $(ele).offset().left + $(ele).width() / 2,
-			"top": $(ele).offset().top + $(ele).height() / 2
-		};
-		console.log("⚙️ Core.getCenterPosition()", ele, $(ele).offset(), pos, $(document).scrollTop());
-		return pos;
+		try {
+			let pos = {
+				"left": $(ele).offset().left + $(ele).width() / 2,
+				"top": $(ele).offset().top + $(ele).height() / 2
+			};
+			console.log("⚙️ Core.getCenterPosition()", ele, $(ele).offset(), pos, $(document).scrollTop());
+			return pos;
+		} catch (err) {
+			console.error(err);
+		}
 	}
 	/**
 	 *	Set center position of object to new pos
 	 */
 	function setCenterPosition(ele, newPos) {
-		// set left/top, adjust by width/height
-		let pos = {
-			"x": newPos.left - ($(ele).width() / 2),
-			"y": newPos.top - ($(ele).height() / 2)
-		};
-		setPosition(ele, pos);
-		//console.log("⚙️ Core.setCenterPosition()", ele, $(ele).offset(), newPos);
+		try {
+			// set left/top, adjust by width/height
+			let pos = {
+				"x": newPos.left - ($(ele).width() / 2),
+				"y": newPos.top - ($(ele).height() / 2)
+			};
+			setPosition(ele, pos);
+			//console.log("⚙️ Core.setCenterPosition()", ele, $(ele).offset(), newPos);
+		} catch (err) {
+			console.error(err);
+		}
 	}
 
 
 
 
 	function setRandomPosition(ele) {
+		try {
 
+		} catch (err) {
+			console.error(err);
+		}
 	}
 
 	function setRandomPositionFull(ele) {
-		let pos = returnRandomPositionFull(ele);
-		console.log("⚙️ Core.setRandomPositionFull()", ele, pos);
-		setPosition(ele, pos);
+		try {
+			let pos = returnRandomPositionFull(ele);
+			console.log("⚙️ Core.setRandomPositionFull()", ele, pos);
+			setPosition(ele, pos);
+		} catch (err) {
+			console.error(err);
+		}
 	}
 
 	/**
