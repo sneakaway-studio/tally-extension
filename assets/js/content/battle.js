@@ -148,7 +148,7 @@ window.Battle = (function() {
 			});
 		} catch (err) {
 			console.error(err);
-		}	
+		}
 	}
 
 

@@ -121,6 +121,21 @@ svg.stats-display .stat-bar-circle-text { fill:white; font: 14px Monaco, "Andale
 
 
 
+#battle-ground {
+    position: fixed;
+    top:70%;
+    text-align: center;
+    display: none;
+    width:105%;
+    min-width: 1400px;
+    height: auto;
+}
+#battle-ground svg {
+    margin: 0 auto;
+}
+
+
+
 
 /*  CONSOLE
 ******************************************************************************/

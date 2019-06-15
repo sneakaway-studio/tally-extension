@@ -26,6 +26,7 @@ $(function() {
 							"<div class='tally tally_consumable_wrapper'></div>" +
 
 							// battle
+							"<div class='tally' id='battle-ground'></div>" +
 							"<div class='tally shadow-box-outer' id='battle-console'></div>" +
 							"<div class='tally' id='battle_projectile'></div>" +
 							"<div class='tally' id='explosion_sprite_container'>"+
@@ -57,7 +58,7 @@ $(function() {
 	        }
 		} catch (err) {
 			console.error(err);
-		}	
+		}
 	});
 
 

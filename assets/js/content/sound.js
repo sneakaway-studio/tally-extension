@@ -178,6 +178,7 @@ window.Sound = (function() {
 	 */
 	function play(soundFile, delay = 0, volumeModifier = 0) {
 		try {
+			if (!pageData.activeOnPage || tally_options.gameMode !== "full") return;
 			if (DEBUG) console.log("♪♪♪♪♪ Sound.play(" + soundFile + "," + delay + "," + volumeModifier + ")");
 
 			// reference to audio element

@@ -176,7 +176,7 @@ window.BattleEffect = (function() {
 			Core.showElement('#explosion_sprite_container');
 
 			// reference to image file
-			var url = chrome.extension.getURL('assets/img/explosions/' + FS_Object.randomArrayIndex(explosions));
+			var url = chrome.extension.getURL('assets/img/battles/explosions/' + FS_Object.randomArrayIndex(explosions));
 			// set content
 			$('#explosion_sprite_inner').css('background-image', 'url("' + url + '")');
 

@@ -70,10 +70,11 @@ window.Monster = (function() {
 	 */
 	function add(mid) {
 		try {
+			// don't show if game isn't running in full mode
+			if (!pageData.activeOnPage || tally_options.gameMode !== "full") return;
+			// only proceed if mid is valid
 			if (!mid || mid <= 0) return;
 			if (DEBUG) console.log('👿 ⊙⊙⊙!⊙ Monster.add()', mid, tally_nearby_monsters[mid]);
-			// don't show if game isn't running in full mode
-			if (tally_options.gameMode != "full") return;
 			// set currentMID
 			currentMID = mid;
 			// display it on the page
