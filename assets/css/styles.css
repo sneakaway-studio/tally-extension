@@ -1,10 +1,14 @@
 
 
+.tally {
+    overflow-x: visible; /* fix for websites */
+}
 
 #tally, #tyd {
     position: absolute;
     display: block;
     z-index: 9999999999999;
+
 }
 
 #tyd {

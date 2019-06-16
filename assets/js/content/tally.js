@@ -23,7 +23,7 @@ window.Tally = (function() {
 				$('.tally_eye_pupil').addClass("tally_eye_pupil_active");
 			else
 				$('.tally_eye_pupil').removeClass("tally_eye_pupil_active");
-		} catch(err){
+		} catch (err) {
 			console.error(err);
 		}
 	}
@@ -52,7 +52,7 @@ window.Tally = (function() {
 			} else if (how == "stare") {
 				setFollowCursor(false);
 			}
-		} catch(err){
+		} catch (err) {
 			console.error(err);
 		}
 	}
@@ -64,7 +64,7 @@ window.Tally = (function() {
 			setTimeout(function() {
 				followCursor = true;
 			}, 400);
-		} catch(err){
+		} catch (err) {
 			console.error(err);
 		}
 	}
@@ -119,7 +119,7 @@ window.Tally = (function() {
 						"<div class='tally tally_stats_bars'></div>" +
 						"<div class='tally tally_stats_table'></div>" +
 					"</div>" +
-				"</div>";
+				"</div>";	
 			$('#tally_wrapper').append(str);
 
 			// insert SVG, stats table
@@ -131,12 +131,16 @@ window.Tally = (function() {
 				stop: function() {}
 			});
 
-			$('.tally_stats').on("mouseenter", function(e){
+			$('.tally_stats').on("mouseenter", function(e) {
 				//console.log("hi",$('.tally_stats_table').css("display"));
 				if ($('.tally_stats_table').css("display") == "none")
-					$('.tally_stats_table').css({"display":"block"});
+					$('.tally_stats_table').css({
+						"display": "block"
+					});
 				else
-					$('.tally_stats_table').css({"display":"none"});
+					$('.tally_stats_table').css({
+						"display": "none"
+					});
 			});
 
 
@@ -160,16 +164,57 @@ window.Tally = (function() {
 
 
 
+			// for domains that rewrite body, add listener to add Tally back if removed
+			if (pageData.domain == "baidu.com") {
+				onRemove(document.getElementById('tally_click_visual'), reloadIfRemoved);
+			}
+
 
 
 			Stats.startTally();
 
 
 			// Battle.test();
-		} catch(err){
+		} catch (err) {
 			console.error(err);
 		}
 	}
+
+
+
+	// listener to
+	function onRemove(element, onDetachCallback) {
+		const observer = new MutationObserver(function() {
+			function isDetached(el) {
+				if (el.parentNode === document) {
+					//console.log("false");
+					return false;
+				} else if (el.parentNode === null) {
+					//console.log("true");
+					return true;
+				} else {
+					//console.log("detached = " + isDetached(el.parentNode));
+					return isDetached(el.parentNode);
+				}
+			}
+			if (isDetached(element)) {
+				observer.disconnect();
+				onDetachCallback();
+			}
+		});
+
+		observer.observe(document, {
+			childList: true,
+			subtree: true
+		});
+	}
+	function reloadIfRemoved() {
+		// load everything again
+		Interface.addBaseHTML();
+		// start tally again
+		start();
+	}
+
 
 
 	/*  TALLY MENU
@@ -189,13 +234,13 @@ window.Tally = (function() {
 					"<button class='tally' id='tallyMenu_profile'>`1+p View profile</button>" +
 					"<button class='tally' id='tallyMenu_startScreen'>`1+s View start screen</button>" +
 					"<button class='tally' id='tallyMenu_testNearbyMonster'>`1+m Test nearby monster</button>" +
-					"<hr>"+
+					"<hr>" +
 					"<button class='tally' id='tallyMenu_battleStart'>`1+b Start battle</button>" +
 					"<button class='tally' id='tallyMenu_battleEnd'>`1+q End battle</button>" +
 					"<button class='tally' id='tallyMenu_battleRumbleSmall'>`1+r+0 small battle rumble</button>" +
 					"<button class='tally' id='tallyMenu_battleRumbleMedium'>`1+r+1 medium battle rumble</button>" +
 					"<button class='tally' id='tallyMenu_battleRumbleLarge'>`1+r+2 large battle rumble</button>" +
-					"<hr>"+
+					"<hr>" +
 					"<button class='tally' id='tallyMenu_explodePage'>`1+e Explode Page</button>" +
 					"<button class='tally' id='tallyMenu_randomThought'>`1+t Random thought</button>" +
 					"<button class='tally' id='tallyMenu_randomSkin'>`1+w Random skin</button>" +
@@ -211,7 +256,10 @@ window.Tally = (function() {
 				window.open('https://tallygame.net/profile/' + tally_user.username);
 			});
 			$(document).on('click', '#tallyMenu_startScreen', function() {
-				chrome.runtime.sendMessage({ 'action': 'openPage', 'url': chrome.extension.getURL('assets/pages/startScreen/startScreen.html') });
+				chrome.runtime.sendMessage({
+					'action': 'openPage',
+					'url': chrome.extension.getURL('assets/pages/startScreen/startScreen.html')
+				});
 			});
 			$(document).on('click', '#tallyMenu_testNearbyMonster', function() {
 				Monster.test(); // launch one of the nearby monsters
@@ -240,8 +288,8 @@ window.Tally = (function() {
 			$(document).on('click', '#tallyMenu_randomSkin', function() {
 				Skin.random();
 			});
-			
-		} catch(err){
+
+		} catch (err) {
 			console.error(err);
 		}
 	}
@@ -271,34 +319,75 @@ window.Tally = (function() {
 
 
 let k = "`+1";
-Mousetrap.bind(k + ' p', function() { window.open('https://tallygame.net/profile/' + tally_user.username); });
-Mousetrap.bind(k + ' s', function() {
-	chrome.runtime.sendMessage({ 'action': 'openPage', 'url': chrome.extension.getURL('assets/pages/startScreen/startScreen.html') });
+Mousetrap.bind(k + ' p', function() {
+	window.open('https://tallygame.net/profile/' + tally_user.username);
 });
-Mousetrap.bind(k + ' t', function() { Thought.random(); });
-Mousetrap.bind(k + ' w', function() { Skin.random(); });
-Mousetrap.bind(k + ' m', function() { Monster.test(); });
-Mousetrap.bind(k + ' b', function() { Battle.test(); });
-Mousetrap.bind(k + ' 0', function() { BattleEffect.rumble("small"); });
-Mousetrap.bind(k + ' 1', function() { BattleEffect.rumble("medium"); });
-Mousetrap.bind(k + ' 2', function() { BattleEffect.rumble("large"); });
-Mousetrap.bind(k + ' 7', function() { BattleAttack.monsterAttackTally(); });
-Mousetrap.bind(k + ' 8', function() { BattleConsole.log("What will Tally do?","showBattleOptions"); });
-Mousetrap.bind(k + ' 9', function() { BattleAttack.tallyAttackMonster(BattleAttack.returnRandomAttacks(1)); });
-Mousetrap.bind(k + ' q', function() { Battle.end(); });
-Mousetrap.bind('escape', function() { Battle.end(); });
-Mousetrap.bind(k + ' e', function() { Effect.explode(); });
+Mousetrap.bind(k + ' s', function() {
+	chrome.runtime.sendMessage({
+		'action': 'openPage',
+		'url': chrome.extension.getURL('assets/pages/startScreen/startScreen.html')
+	});
+});
+Mousetrap.bind(k + ' t', function() {
+	Thought.random();
+});
+Mousetrap.bind(k + ' w', function() {
+	Skin.random();
+});
+Mousetrap.bind(k + ' m', function() {
+	Monster.test();
+});
+Mousetrap.bind(k + ' b', function() {
+	Battle.test();
+});
+Mousetrap.bind(k + ' 0', function() {
+	BattleEffect.rumble("small");
+});
+Mousetrap.bind(k + ' 1', function() {
+	BattleEffect.rumble("medium");
+});
+Mousetrap.bind(k + ' 2', function() {
+	BattleEffect.rumble("large");
+});
+Mousetrap.bind(k + ' 7', function() {
+	BattleAttack.monsterAttackTally();
+});
+Mousetrap.bind(k + ' 8', function() {
+	BattleConsole.log("What will Tally do?", "showBattleOptions");
+});
+Mousetrap.bind(k + ' 9', function() {
+	BattleAttack.tallyAttackMonster(BattleAttack.returnRandomAttacks(1));
+});
+Mousetrap.bind(k + ' q', function() {
+	Battle.end();
+});
+Mousetrap.bind('escape', function() {
+	Battle.end();
+});
+Mousetrap.bind(k + ' e', function() {
+	Effect.explode();
+});
 
 
-Mousetrap.bind(k + ' z', function() { StatsDisplay.adjustStatsBar("tally","health",Math.random()); });
-Mousetrap.bind(k + ' x', function() { StatsDisplay.adjustStatsBar("tally","stamina",Math.random()); });
-Mousetrap.bind(k + ' v', function() { StatsDisplay.adjustStatsCircle("tally", Math.random()); });
-Mousetrap.bind(k + ' r', function() { Stats.randomize(); });
+Mousetrap.bind(k + ' z', function() {
+	StatsDisplay.adjustStatsBar("tally", "health", Math.random());
+});
+Mousetrap.bind(k + ' x', function() {
+	StatsDisplay.adjustStatsBar("tally", "stamina", Math.random());
+});
+Mousetrap.bind(k + ' v', function() {
+	StatsDisplay.adjustStatsCircle("tally", Math.random());
+});
+Mousetrap.bind(k + ' r', function() {
+	Stats.randomize();
+});
 
 
 
 
-Mousetrap.bind(k + ' v', function() { BattleTest.test(); });
+Mousetrap.bind(k + ' v', function() {
+	BattleTest.test();
+});
 
 
 // setInterval(function() {

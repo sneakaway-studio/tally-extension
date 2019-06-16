@@ -1,6 +1,12 @@
 "use strict";
 
-$(function() {
+/*  INTERFACE
+ ******************************************************************************/
+
+window.Interface = (function() {
+	// PRIVATE
+
+
 
 	function addBaseHTML() {
 		try {
@@ -41,7 +47,22 @@ $(function() {
 			console.error(err);
 		}
 	}
-	addBaseHTML();
+
+
+
+
+	// PUBLIC
+	return {
+		addBaseHTML:addBaseHTML
+
+	};
+})();
+
+
+
+$(function() {
+
+	Interface.addBaseHTML();
 
 
     // show/hide Tally in fullscreen mode

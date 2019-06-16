@@ -196,7 +196,7 @@ window.Thought = (function() {
 			if (str.indexOf("{{Monster.current}}") > -1) {
 				find = "Monster.current";
 				replace = MonsterData.dataById[Monster.current().mid].name;
-				//if (isVowel(replace[0])) replace = "n "+replace;
+				if (FS_String.isVowel(replace[0])) replace = "n "+replace;
 			}
 			if (str.indexOf("{{pageData.title}}") > -1) {
 				find = "pageData.title";

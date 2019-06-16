@@ -80,22 +80,22 @@ window.Skin = (function() {
 			// },
 			"image": {
 				"flowerRetro": {
-					"url": chrome.extension.getURL('assets/img/tally-skins/skin-pattern-flower-retro.png'),
+					"url": chrome.extension.getURL('assets/img/tally/tally/skins/skin-pattern-flower-retro.png'),
 					"w": 222,
 					"h": 198
 				},
 				"plaidRed": {
-					"url": chrome.extension.getURL('assets/img/tally-skins/skin-pattern-plaid-red.png'),
+					"url": chrome.extension.getURL('assets/img/tally/skins/skin-pattern-plaid-red.png'),
 					"w": 225,
 					"h": 225
 				},
 				"camoGrey": {
-					"url": chrome.extension.getURL('assets/img/tally-skins/skin-pattern-camo-grey.png'),
+					"url": chrome.extension.getURL('assets/img/tally/skins/skin-pattern-camo-grey.png'),
 					"w": 225,
 					"h": 225
 				},
 				"plaidYellow": {
-					"url": chrome.extension.getURL('assets/img/tally-skins/patterns/plaidYellow.png'),
+					"url": chrome.extension.getURL('assets/img/tally/skins/patterns/plaidYellow.png'),
 					"w": 311,
 					"h": 162
 				}

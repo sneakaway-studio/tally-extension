@@ -14,6 +14,9 @@ window.FS_String = (function() {
 			var s = num + "";
 			while (s.length < size) s = "0" + s;
 			return s;
+		},
+		isVowel: function(x) {
+			return /[aeiouAEIOU]/.test(x);
 		}
 
 	};
@@ -45,9 +48,7 @@ function cleanStringReturnTagArray(str = "") {
 	return arr;
 }
 
-function isVowel(x) {
-	return /[aeiouAEIOU]/.test(x);
-}
+
 
 function ucFirst(string) {
 	return string.charAt(0).toUpperCase() + string.slice(1);

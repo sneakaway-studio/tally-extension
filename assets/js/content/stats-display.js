@@ -67,12 +67,12 @@ window.StatsDisplay = (function() {
 			let stats = playerStats(who),
 				str = "",
 				blink = "";
-			str += "<div><table>";
+			str += "<div class='tally'><table class='tally'>";
 			for (var key in stats) {
 				if (stats.hasOwnProperty(key)) {
 					blink = "";
 					if (changed == key) blink = " stat-blink";
-					str += "<tr class='text-" + key + blink + "'><td>" + key + "</td><td>" + JSON.stringify(stats[key]) + "</td></tr>";
+					str += "<tr class='tally text-" + key + blink + "'><td>" + key + "</td><td>" + JSON.stringify(stats[key]) + "</td></tr>";
 				}
 			}
 			str += "</table></div>";
@@ -262,7 +262,7 @@ window.StatsDisplay = (function() {
 			return stats;
 		} catch (err) {
 			console.error(err);
-		}	
+		}
 	}
 
 

@@ -9,7 +9,9 @@ window.TallyListeners = (function() {
 	let DEBUG = false;
 
 	// "shim" for clicking on SVGs
-	SVGAnimatedString.prototype.indexOf = function () { return this.baseVal.indexOf.apply(this.baseVal, arguments); };
+	SVGAnimatedString.prototype.indexOf = function() {
+		return this.baseVal.indexOf.apply(this.baseVal, arguments);
+	};
 
 
 
@@ -58,6 +60,8 @@ window.TallyListeners = (function() {
 			console.error(err);
 		}
 	}
+
+
 
 
 
@@ -179,7 +183,7 @@ window.TallyListeners = (function() {
 				backgroundUpdate.scoreData.score += gameRules.clickScore[eventData.action];
 
 				// only allow points for clicking the first time (FB Like, etc.)
-						$(target).toggleClass("tally-clicked");
+				$(target).toggleClass("tally-clicked");
 				// temp off for testing
 
 				// send backgroundUpdate object to server via background
@@ -237,6 +241,6 @@ window.TallyListeners = (function() {
 
 	// PUBLIC
 	return {
-		addMainClickEventListener:addMainClickEventListener,
+		addMainClickEventListener: addMainClickEventListener,
 	};
 })();

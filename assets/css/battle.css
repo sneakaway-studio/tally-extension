@@ -6,6 +6,10 @@
     z-index: 9999999999999;
 }
 .shadow-box-inner {}
+
+
+
+
 /*  ATTACKS
 ******************************************************************************/
 #battle_projectile, #explosion_sprite_container {
@@ -20,7 +24,7 @@
     height: 50px;
     border-radius: 50%;
     background-color: #d32cf1;
-    background: url("chrome-extension://__MSG_@@extension_id__/assets/img/number-ball.gif") center center no-repeat;
+    background: url("chrome-extension://__MSG_@@extension_id__/assets/img/battles/number-ball.gif") center center no-repeat;
 }
 #explosion_sprite_container {
     height: 250px;
@@ -120,15 +124,21 @@ svg.stats-display .stat-bar-circle-text { fill:white; font: 14px Monaco, "Andale
 
 
 
+/*  GROUND
+******************************************************************************/
 
 #battle-ground {
     position: fixed;
-    top:70%;
+    z-index:9999999;
+    /* top:70%; */
+    bottom: 170px;
     text-align: center;
     display: none;
     width:105%;
-    min-width: 1400px;
+    min-width: 1600px;
     height: auto;
+    margin: 0 auto;
+    display: table-cell;
 }
 #battle-ground svg {
     margin: 0 auto;
@@ -221,6 +231,8 @@ svg.stats-display .stat-bar-circle-text { fill:white; font: 14px Monaco, "Andale
 }
 .battle-options {
     width: 100%;
+    box-sizing: border-box;
+    display:inline-block;
     box-shadow: 2px 2px #41d728;
     padding: 4px;
     background-color: #d32cf1;
