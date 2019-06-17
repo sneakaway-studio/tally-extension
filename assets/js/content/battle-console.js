@@ -226,15 +226,27 @@ window.BattleConsole = (function() {
 	 */
 	function typeWriter(ele, str, i) {
 		try {
-			//console.log(ele, str, i);
+			//if (DEBUG) console.log(ele, str, i);
 			if (!document.getElementById(ele)) return;
-			if (i < str.length) {
-				document.getElementById(ele).innerHTML += str.charAt(i);
-				setTimeout(function() {
-					typeWriter(ele, str, ++i);
-				}, 30);
-			} else {
+			if (i >= str.length) {
 				BattleConsole.lineComplete(ele);
+			} else {
+				// handle html in string
+				if (str.charAt(i) === "<") {
+					// capture it all
+					let code = str.match(/<span(.*?)<\/span>/g);
+					// remove from str
+					str = str.replace(/<span(.*?)<\/span>/g,'');
+					// display it all at once in page
+					$("#" + ele).html($("#" + ele).html() + code[0]);
+				}
+				// if there is still some left
+				if (i < str.length) {
+					$("#" + ele).html($("#" + ele).html() + str.charAt(i));
+					setTimeout(function() {
+						typeWriter(ele, str, ++i);
+					}, 20);
+				}
 			}
 		} catch (err) {
 			console.error(err);
@@ -254,7 +266,7 @@ window.BattleConsole = (function() {
 				// if queue is empty and there is a next string
 				if (_queue.length < 1 && _next != "") {
 					if (_next == "showBattleOptions") {
-						//console.log(_next);
+						//if (DEBUG) console.log(_next);
 						showBattleOptions();
 					}
 					_next = "";
@@ -269,11 +281,11 @@ window.BattleConsole = (function() {
 		try {
 			var str = $("#" + ele).html();
 			if (str == undefined) return;
-			//console.log(str);
+			//if (DEBUG) console.log(str);
 			str = str.replace("Tally", "<span class='text-tally'>Tally</span>");
 			str = str.replace(Battle.details.monsterName, "<span class='text-green'>" + Battle.details.monsterName + "</span>");
 			str = str.replace(Battle.details.mostRecentAttack.name, "<span class='text-yellow'>" + Battle.details.mostRecentAttack.name + "</span>");
-			str = str.replace(Battle.details.mostRecentDamage, "<span class='text-blue'>" + Battle.details.mostRecentDamage + "</span>");
+			//		str = str.replace(Battle.details.recentOutcomes, "<span class='text-blue'>" + Battle.details.recentOutcomes + "</span>");
 			$("#" + ele).html(str);
 		} catch (err) {
 			console.error(err);
