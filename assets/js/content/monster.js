@@ -100,7 +100,6 @@ window.Monster = (function() {
 			let pos = Core.returnRandomPositionFull();
 			let css = {
 				'position':'absolute',
-				'transform': 'scale(' + 0.5 + ')',
 				"display": "block",
 				"z-index": 99999999999,
 				"opacity": 1,
@@ -133,9 +132,9 @@ window.Monster = (function() {
 
 			// turn monster to face Tally
 			if (prop(tally_nearby_monsters[monster.mid].facing) && tally_nearby_monsters[monster.mid].facing == "1")
-				$('.tally_monster_sprite_container').css('transform', 'scaleX(-1)'); // left
+				$('.tally_monster_sprite_container').css('transform', 'scale(-.5,.5)'); // left
 			else
-				$('.tally_monster_sprite_container').css('transform', 'scaleX(1)'); // reset (right)
+				$('.tally_monster_sprite_container').css('transform', 'scale(.5,.5)'); // reset (right)
 
 			// saveMonster
 			tally_nearby_monsters[monster.mid] = monster;
@@ -171,24 +170,6 @@ window.Monster = (function() {
 		}
 	}
 
-
-	function generateMonsterValues() {
-
-		// generate a monsterLevel
-		// monsterLevel = tallyLevel + frequency + randomness
-		// 	7		+     (-2)    +     +/- Math.random() * (tallyLevel * .2 )
-		// 	7		+     (0)    +     +/- 1
-		// 	7		+     (4)   +     +/- 1
-
-		// generate the health, str, df
-		// health = monsterLevel * monster.health;
-
-
-	}
-
-
-
-
 	/**
 	 *	Save monster locally, push to background / server
 	 */
@@ -220,8 +201,6 @@ window.Monster = (function() {
 			console.error(err);
 		}
 	}
-
-
 
 
 	/**
