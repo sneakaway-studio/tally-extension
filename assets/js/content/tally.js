@@ -83,6 +83,9 @@ window.Tally = (function() {
 			//console.log("%c   Tally.start()", tallyConsoleIcon);
 
 
+Stats.reset("tally",tally_user.score.level);
+
+
 			// only show Tally if game mode == full
 			if (prop(pageData) && !pageData.activeOnPage) return;
 			if (!prop(tally_options) || !tally_options.showTally) return;
@@ -119,7 +122,7 @@ window.Tally = (function() {
 						"<div class='tally tally_stats_bars'></div>" +
 						"<div class='tally tally_stats_table'></div>" +
 					"</div>" +
-				"</div>";	
+				"</div>";
 			$('#tally_wrapper').append(str);
 
 			// insert SVG, stats table
@@ -350,13 +353,13 @@ Mousetrap.bind(k + ' 2', function() {
 	BattleEffect.rumble("large");
 });
 Mousetrap.bind(k + ' 7', function() {
-	BattleAttack.monsterAttackTally();
+
 });
 Mousetrap.bind(k + ' 8', function() {
 	BattleConsole.log("What will Tally do?", "showBattleOptions");
 });
 Mousetrap.bind(k + ' 9', function() {
-	BattleAttack.tallyAttackMonster(BattleAttack.returnRandomAttacks(1));
+
 });
 Mousetrap.bind(k + ' q', function() {
 	Battle.end();

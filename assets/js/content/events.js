@@ -85,8 +85,8 @@ window.TallyEvents = (function() {
 			if (!tally_tutorial_history.awardFirstAttack && tally_user.score.score > 15 &&
 				FS_Object.isEmpty(tally_user.attacks)
 			) {
-				// get attack
-				let attack = BattleAttack.returnRandomAttacks(1);
+				// get random attack
+				let attack = AttackData.returnRandomAttacks(1);
 				console.log("🕗 TallyEvents.checkTutorialEvents() --> awardFirstAttack", attack);
 				// store and save
 				tally_user.attacks[attack.name] = attack;

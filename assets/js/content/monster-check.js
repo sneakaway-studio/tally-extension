@@ -2,7 +2,7 @@
 
 window.MonsterCheck = (function() {
 
-	let DEBUG = true,
+	let DEBUG = false,
 		currentMID = "",
 		secondsBeforeDelete = 300; // 60 seconds for testing
 
@@ -84,7 +84,7 @@ window.MonsterCheck = (function() {
 					if (arr.length > 0) {
 						// pick random monster id from list, this will be the page monster
 						let randomMID = arr[Math.floor(Math.random() * arr.length)];
-						// return if not a number or not found in dataById 
+						// return if not a number or not found in dataById
 						if (isNaN(randomMID) || !prop(MonsterData.dataById[randomMID])) return;
 						if (DEBUG) console.log('👿 ?⊙⊙⊙⊙ MonsterCheck.checkForTagMatches() -> #'+ tag +" has",
 														arr.length, 'MATCH(ES) ('+ arr +') randomly selecting:',

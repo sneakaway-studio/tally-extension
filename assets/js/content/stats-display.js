@@ -6,6 +6,7 @@
 window.StatsDisplay = (function() {
 	// PRIVATE
 
+	let DEBUG = false;
 
 	/**
 	 * Starting point for stats svg coordinates
@@ -40,7 +41,7 @@ window.StatsDisplay = (function() {
 			// get player's stats SVG coordinates
 			let svgPoints = playerStatsSVGPoints(who),
 				str = '';
-			console.log("📈 StatsDisplay.returnInitialSVG()",who, svgPoints, "health="+svgPoints.health.val, "stamina="+svgPoints.stamina.val);
+			if (DEBUG) console.log("📈 StatsDisplay.returnInitialSVG()",who, svgPoints, "health="+svgPoints.health.val, "stamina="+svgPoints.stamina.val);
 
 			str += '<svg height="65" width="230" class="stats-display">';
 			str += '<g class="stat-bars">';
@@ -72,7 +73,9 @@ window.StatsDisplay = (function() {
 				if (stats.hasOwnProperty(key)) {
 					blink = "";
 					if (changed == key) blink = " stat-blink";
-					str += "<tr class='tally text-" + key + blink + "'><td>" + key + "</td><td>" + JSON.stringify(stats[key]) + "</td></tr>";
+					str += "<tr class='tally text-" + key + blink + "'>" +
+						"<td>" + key + "</td>" +
+						"<td class='stats-number-column'>" + FS_Number.round(stats[key],1) + "</td></tr>";
 				}
 			}
 			str += "</table></div>";
@@ -84,7 +87,7 @@ window.StatsDisplay = (function() {
 
 	function updateAllTallyStatsDisplay() {
 		try {
-			//console.log("📈 StatsDisplay.updateAllTallyStatsDisplay()", tally_user.stats);
+			//if (DEBUG) console.log("📈 StatsDisplay.updateAllTallyStatsDisplay()", tally_user.stats);
 			// bars, circle, table
 			adjustStatsBar("tally", "health", tally_user.stats.health);
 			adjustStatsBar("tally", "stamina", tally_user.stats.stamina);
@@ -99,12 +102,12 @@ window.StatsDisplay = (function() {
 		try {
 			// get current monster
 			let monster = Monster.current();
-			console.log("📈 StatsDisplay.updateAllMonsterStatsDisplay()", monster);
+			if (DEBUG) console.log("📈 StatsDisplay.updateAllMonsterStatsDisplay()", monster);
 			// bars, circle, table
 			adjustStatsBar("monster", "health", monster.stats.health);
 			adjustStatsBar("monster", "stamina", monster.stats.stamina);
 			adjustStatsCircle("monster", monster.level);
-			$('.monster_stats_full').html(returnFullTable("monster"));
+			$('.monster_stats_table').html(returnFullTable("monster"));
 		} catch (err) {
 			console.error(err);
 		}
@@ -115,7 +118,7 @@ window.StatsDisplay = (function() {
 	 */
 	function adjustStatsBar(who, bar, val) {
 		try {
-			//console.log("📈 StatsDisplay.adjustStatsBar()1", who, bar, val);
+			//if (DEBUG) console.log("📈 StatsDisplay.adjustStatsBar()1", who, bar, val);
 			if (bar != "health" && bar != "stamina") return;
 			// clean value
 			val = FS_Number.round(val, 2);
@@ -130,7 +133,7 @@ window.StatsDisplay = (function() {
 			// save data-value
 			$('.' + who + '_stats .stat-bar-' + bar).attr("data-value", val);
 			// log
-			//console.log("📈 StatsDisplay.adjustStatsBar()2", who, bar, val, oldBar, statsDisplay[bar]);
+			//if (DEBUG) console.log("📈 StatsDisplay.adjustStatsBar()2", who, bar, val, oldBar, statsDisplay[bar]);
 			// animation
 			anime({
 				targets: '.' + who + '_stats .stat-bar-' + bar,
@@ -154,7 +157,7 @@ window.StatsDisplay = (function() {
 	// $("body").mousemove(function(event) {
 	// 	var msg = "Handler for .mousemove() called at " + event.pageX + ", " + event.pageY;
 	// 	let normalized = FS_Number.normalize(event.pageX, 0, $(window).width());
-	// 	console.log(normalized);
+	// 	if (DEBUG) console.log(normalized);
 	// 	adjustStatsBar("tally","stamina",normalized);
 	// 	// adjustStatsCircle(normalized);
 	// });
@@ -173,7 +176,7 @@ window.StatsDisplay = (function() {
 			// normalize
 			let xpNormalized = (xpGoal - tally_user.score.score) / xpGoal;
 
-			//console.log("📈 StatsDisplay.adjustStatsCircle() --> level =", level, "xpGoal =", xpGoal, tally_user.score.score, xpNormalized);
+			//if (DEBUG) console.log("📈 StatsDisplay.adjustStatsCircle() --> level =", level, "xpGoal =", xpGoal, tally_user.score.score, xpNormalized);
 
 			// get player's stats display coordinates
 			let statsDisplay = playerStatsSVGPoints(who);
@@ -188,7 +191,7 @@ window.StatsDisplay = (function() {
 				"strokeDashoffset": circumference
 			});
 			// log
-			//console.log("📈 StatsDisplay.adjustStatsCircle()", who, level, circumference);
+			//if (DEBUG) console.log("📈 StatsDisplay.adjustStatsCircle()", who, level, circumference);
 			adjustStatsCircleText(who, level);
 		} catch (err) {
 			console.error(err);
@@ -196,7 +199,7 @@ window.StatsDisplay = (function() {
 	}
 	// test circle (set xpGoal = screen width)
 	// $(document).mousemove(function(event) {
-	// 	console.log(event.pageX, event.pageY);
+	// 	if (DEBUG) console.log(event.pageX, event.pageY);
 	// 	adjustStatsCircle("tally", event.pageX * 0.01);
 	// });
 
@@ -215,7 +218,7 @@ window.StatsDisplay = (function() {
 				round: 1,
 				easing: 'linear',
 				update: function() {
-					//console.log(d);
+					//if (DEBUG) console.log(d);
 					$('.' + who + '_stats .stat-bar-circle-text').html(d.val);
 				},
 				complete: function() {
@@ -233,7 +236,7 @@ window.StatsDisplay = (function() {
 	 */
 	function playerStatsSVGPoints(who, statsDisplay = null) {
 		try {
-			//console.log("📈 StatsDisplay.playerStatsSVGPoints()",who, statsDisplay);
+			//if (DEBUG) console.log("📈 StatsDisplay.playerStatsSVGPoints()",who, statsDisplay);
 			if (who == "tally") {
 				if (statsDisplay !== null)
 					tallyStatsSVGPoints = statsDisplay;
@@ -257,7 +260,7 @@ window.StatsDisplay = (function() {
 			if (who == "tally") {
 				stats = tally_user.stats;
 			} else if (who == "monster") {
-				stats = Monster.stats;
+				stats = Monster.current().stats;
 			}
 			return stats;
 		} catch (err) {

@@ -6,7 +6,7 @@
 window.Interface = (function() {
 	// PRIVATE
 
-
+	let DEBUG = false;
 
 	function addBaseHTML() {
 		try {
@@ -23,12 +23,15 @@ window.Interface = (function() {
 								"<div class='tally tally_monster_sprite'>" +
 									"<div class='tally tally_monster_sprite_inner'></div>" +
 								"</div>" +
-								"<div class='tally monster_stats'></div>" +
+								"<div class='tally monster_stats'>" +
+									"<div class='tally monster_stats_bars'></div>" +
+									"<div class='tally monster_stats_table'></div>" +
+								"</div>" +
 							"</div>" +
 
 							// award
 							"<div class='tally tally_award_wrapper'></div>" +
-							// cokie
+							// consumables
 							"<div class='tally tally_consumable_wrapper'></div>" +
 
 							// battle

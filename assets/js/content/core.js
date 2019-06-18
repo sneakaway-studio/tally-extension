@@ -6,6 +6,7 @@
 window.Core = (function() {
 	// PRIVATE
 
+	let DEBUG = false;
 
 	// ele = string
 	function showElement(ele) {
@@ -52,7 +53,7 @@ window.Core = (function() {
 				"left": $(ele).offset().left + $(ele).width() / 2,
 				"top": $(ele).offset().top + $(ele).height() / 2
 			};
-			console.log("⚙️ Core.getCenterPosition()", ele, $(ele).offset(), pos, $(document).scrollTop());
+			if (DEBUG) console.log("⚙️ Core.getCenterPosition()", ele, $(ele).offset(), pos, $(document).scrollTop());
 			return pos;
 		} catch (err) {
 			console.error(err);
@@ -69,7 +70,7 @@ window.Core = (function() {
 				"y": newPos.top - ($(ele).height() / 2)
 			};
 			setPosition(ele, pos);
-			//console.log("⚙️ Core.setCenterPosition()", ele, $(ele).offset(), newPos);
+			//if (DEBUG) console.log("⚙️ Core.setCenterPosition()", ele, $(ele).offset(), newPos);
 		} catch (err) {
 			console.error(err);
 		}
@@ -89,7 +90,7 @@ window.Core = (function() {
 	function setRandomPositionFull(ele) {
 		try {
 			let pos = returnRandomPositionFull(ele);
-			console.log("⚙️ Core.setRandomPositionFull()", ele, pos);
+			if (DEBUG) console.log("⚙️ Core.setRandomPositionFull()", ele, pos);
 			setPosition(ele, pos);
 		} catch (err) {
 			console.error(err);
@@ -101,16 +102,16 @@ window.Core = (function() {
 	 */
 	function returnRandomPositionFull(ele) {
 		try {
-			let w = $(ele).width() || 100,
-				h = $(ele).height() || 100;
+			let w = $(ele).width() || 200,
+				h = $(ele).height() || 200;
+			console.log("returnRandomPositionFull()", ele, $(ele).width(), $(ele).height())
 			let pos = {
-				"x": Math.ceil(Math.random() * (pageData.browser.width - w)) + (w / 2),
-				"y": Math.ceil(Math.random() * (pageData.browser.fullHeight - h)) + (h / 2)
+				"x": Math.ceil(Math.random() * (pageData.browser.width - w) + (w / 2)),
+				"y": Math.ceil(Math.random() * (pageData.browser.fullHeight - h) + (h / 2))
 			};
-			//console.log("⚙️ Core.returnRandomPositionFull()",w,h,pos);
+			//if (DEBUG) console.log("⚙️ Core.returnRandomPositionFull()",w,h,pos);
 			return pos;
-		}
-		catch(err){
+		} catch (err) {
 			console.error(err);
 		}
 	}
@@ -136,8 +137,8 @@ window.Core = (function() {
 		setRandomPositionFull: function(ele) {
 			setRandomPositionFull(ele);
 		},
-		returnRandomPositionFull: function() {
-			return returnRandomPositionFull();
+		returnRandomPositionFull: function(ele) {
+			return returnRandomPositionFull(ele);
 		},
 		setElementAbsolute: function(ele) {
 			$(ele).css({

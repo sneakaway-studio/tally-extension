@@ -106,7 +106,7 @@ window.Consumable = (function() {
 				/*jshint loopfunc: true */
 				//console.log("Consumable.add()",i);
 				// new position
-				let randomPos = Core.returnRandomPositionFull();
+				let randomPos = Core.returnRandomPositionFull('.tally_consumable_wrapper');
 				let css = "left:" + randomPos.x + "px;top:" + randomPos.y + "px;";
 				//console.log("Core.add()",randomPos,css);
 				// html
@@ -172,7 +172,7 @@ window.Consumable = (function() {
 			// delay then update stats
 			setTimeout(function() {
 				// update stats
-				Stats.update(consumable);
+				Stats.updateFromConsumable(consumable);
 			}, 700);
 		} catch (err) {
 			console.error(err);

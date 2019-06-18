@@ -6,13 +6,20 @@
 window.Battle = (function() {
 	// PRIVATE
 
-	var _active = false,
-		details = {
+	let DEBUG = false,
+		_active = false,
+		details = createNewBattleDetails();
+
+	function createNewBattleDetails() {
+		return {
 			"mid": null,
 			"monsterName": "",
-			"mostRecentAttack": {},
-			"mostRecentDamage": ""
+			"monsterAttacks": {},
+			"recentAttack": {},
+			"recentOutcomes": {}
 		};
+	}
+
 	// control state
 	function active(state) {
 		try {
@@ -84,10 +91,7 @@ window.Battle = (function() {
 			// set monster details
 			details.mid = mid;
 			details.monsterName = MonsterData.dataById[mid].name + " monster";
-			details.mostRecentAttack = {};
-			details.mostRecentDamage = 0;
-			// pick random attacks for monster
-			details.attacks = BattleAttack.returnRandomAttacks(3);
+			details.monsterAttacks = AttackData.returnRandomAttacks(3);
 			// move monster into position and rescale
 			anime({
 				targets: '.tally_monster_sprite_container',
@@ -99,8 +103,12 @@ window.Battle = (function() {
 				duration: 1000,
 				easing: 'easeOutCubic'
 			});
-			// display monster's stats
-			$('.monster_stats').html(StatsDisplay.returnInitialSVG("monster"));
+			// insert SVG, stats table
+			$('.monster_stats_bars').html(StatsDisplay.returnInitialSVG("monster"));
+			$('.monster_stats_table').html(StatsDisplay.returnFullTable("monster"));
+			// display stats
+			$('.monster_stats').css({"display":"block"});
+
 			// remove click, hover on monster
 			$(document).off("click", ".tally_monster_sprite_container");
 			$(document).off("mouseover", ".tally_monster_sprite_container");
@@ -121,6 +129,20 @@ window.Battle = (function() {
 		}
 	}
 
+
+	function final(){
+
+		// show battle completion message
+
+		// block tracker if they won
+
+		// save blocked list
+
+		
+
+
+		end();
+	}
 
 	// end battle
 	function end() {
@@ -146,6 +168,7 @@ window.Battle = (function() {
 				elasticity: 0,
 				duration: 1000,
 			});
+			$('.monster_stats').css({"display":"none"});
 		} catch (err) {
 			console.error(err);
 		}

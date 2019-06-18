@@ -5,7 +5,8 @@
 
 window.BattleEffect = (function() {
 	// PRIVATE
-	let source, // page source for rumbles
+	let DEBUG = false,
+		source, // page source for rumbles
 		nodes, // node string for rumbles
 		n = "*", // node elements for rumbles
 		monsterPos, tallyPos;
@@ -23,7 +24,7 @@ window.BattleEffect = (function() {
 			if (source == null) {
 				source = $("body").html();
 				source.replace(/[^<]/gi, '&lt;').replace(/[^>]/gi, '&gt;');
-				//console.log(source);
+				//if (DEBUG) console.log(source);
 			}
 			if (nodes == null) {
 				// all possible html5 nodes
@@ -32,7 +33,7 @@ window.BattleEffect = (function() {
 					'iframe', 'img', 'input', 'label', 'nav', 'ol', 'ul', 'li', 'option', 'p', 'pre', 'section', 'span',
 					'strong', 'sup', 'svg', 'table', 'tr', 'td', 'th', 'tbody', 'thead', 'template', 'textarea', 'text', 'u', 'video'
 				];
-				//console.log(nodes.join(", "));
+				//if (DEBUG) console.log(nodes.join(", "));
 				// add any exclusions
 				for (let i = 0, l = nodes.length; i < l; i++) {
 					//console.log(nodes.length, nodes[i], $(nodes[i]).height(), $(nodes[i]).length);
@@ -48,10 +49,10 @@ window.BattleEffect = (function() {
 				nodes = nodes.filter(function(el) {
 					return el != null;
 				});
-				//console.log("final node count: " + nodes.length);
+				//if (DEBUG) console.log("final node count: " + nodes.length);
 				// format for selection
 				n = nodes.join(', ');
-				//console.log(n);
+				//if (DEBUG) console.log(n);
 			}
 		} catch (err) {
 			console.error(err);
@@ -95,7 +96,7 @@ window.BattleEffect = (function() {
 
 	function fireProjectile(at, rumble = "") {
 		try {
-			console.log("💥 BattleEffect.fireProjectile() > ", at, rumble);
+			if (DEBUG) console.log("💥 BattleEffect.fireProjectile() > ", at, rumble);
 
 			let end, origin;
 
@@ -104,7 +105,7 @@ window.BattleEffect = (function() {
 				monsterPos = Core.getCenterPosition(".tally_monster_sprite_container");
 				tallyPos = Core.getCenterPosition("#tally_character");
 			//}
-			//console.log(tallyPos, monsterPos);
+			//if (DEBUG) console.log(tallyPos, monsterPos);
 
 			// if firing from monster > Tally
 			if (at == "tally") {
@@ -116,7 +117,7 @@ window.BattleEffect = (function() {
 				origin = tallyPos;
 				end = monsterPos;
 			}
-			console.log("origin=", origin, "end=", end);
+			if (DEBUG) console.log("origin=", origin, "end=", end);
 			// set projectile to origin and show it
 			Core.setCenterPosition('#battle_projectile', origin);
 			Core.showElement('#battle_projectile');
@@ -131,10 +132,10 @@ window.BattleEffect = (function() {
 				duration: 1000,
 				easing: 'easeInOutSine',
 				// update: function(anim) {
-				// 	console.log(anim.progress, anim.animations[0].currentValue, anim.animations[1].currentValue);
+				// 	if (DEBUG) console.log(anim.progress, anim.animations[0].currentValue, anim.animations[1].currentValue);
 				// },
 				complete: function(anim) {
-					console.log("💥 BattleEffect.fireProjectile() complete", anim.progress, anim.animations[0].currentValue, anim.animations[1].currentValue);
+					if (DEBUG) console.log("💥 BattleEffect.fireProjectile() complete", anim.progress, anim.animations[0].currentValue, anim.animations[1].currentValue);
 					Core.hideElement('#battle_projectile');
 					// show explosion
 					showExplosion(end);
@@ -163,7 +164,7 @@ window.BattleEffect = (function() {
 
 	function showExplosion(pos, rumble = false) {
 		try {
-			console.log("💥 BattleEffect.showExplosion()", pos, rumble);
+			if (DEBUG) console.log("💥 BattleEffect.showExplosion()", pos, rumble);
 
 			if (rumble)
 				rumble("medium", "powerups/" + FS_Object.randomObjProperty(Sound.sounds.powerups));

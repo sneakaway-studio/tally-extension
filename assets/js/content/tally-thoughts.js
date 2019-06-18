@@ -38,7 +38,7 @@ window.Thought = (function() {
 			let num = "none";
 			if (pageData.trackers.length > 0) num = "few";
 			if (pageData.trackers.length > 3) num = "lots";
-			console.log("💭 showTrackerThought()", num);
+			if (DEBUG) console.log("💭 showTrackerThought()", num);
 			showThought(getThought(["tracker", num, 0]), true);
 		} catch(err){
 			console.error(err);
@@ -189,7 +189,7 @@ window.Thought = (function() {
 	 */
 	function searchReplaceTemplateStr(str) {
 		try {
-			console.log("💭 Thought.searchReplaceTemplateStr()", str, Monster.current());
+			if (DEBUG) console.log("💭 Thought.searchReplaceTemplateStr()", str, Monster.current());
 			let find = "",
 				replace = "";
 			// check for any template replacement matches

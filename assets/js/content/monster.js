@@ -6,10 +6,10 @@ window.Monster = (function() {
 	 *	1. MonsterCheck determines which monsters are nearby and calls Monster.create(mid)
 	 *	2. MonsterCheck determines which monsters are advancing to new stages
 	 *	3. MonsterCheck calls Monster.show() if it reaches stage 3
-	 *	4.
+	 *	4. ...
 	 */
 
-	let DEBUG = true,
+	let DEBUG = false,
 		currentMID = 0,
 		secondsBeforeDelete = 300; // 60 seconds for testing
 
@@ -26,7 +26,6 @@ window.Monster = (function() {
 				"name": MonsterData.dataById[mid].name,
 				"slug": MonsterData.dataById[mid].slug,
 				"mid": mid,
-				"attacks": AttackData.returnMultipleAttacks(3),
 				"totalCaptured": 0,
 				"captured": 0,
 				"missed": 0,
@@ -58,6 +57,7 @@ window.Monster = (function() {
 			let min = Math.floor(userLevel - (userLevel * factor)),
 				max = Math.ceil(userLevel + (userLevel * factor));
 			let level = Math.floor(Math.random() * (max - min) + min);
+			//console.log("👿 Monster.returnMonsterLevel()",userLevel,min,max,level);
 			//if (r < 2) r = 2;
 			return level;
 		} catch (err) {
@@ -96,8 +96,15 @@ window.Monster = (function() {
 
 			// set monster image
 			$('.tally_monster_sprite_inner').css('background-image', 'url( ' + url + ')');
+
+			// turn monster to face Tally
+			if (prop(tally_nearby_monsters[monster.mid].facing) && tally_nearby_monsters[monster.mid].facing == "1")
+				$('.tally_monster_sprite_container').css('transform', 'scale(-.5,.5)'); // left
+			else
+				$('.tally_monster_sprite_container').css('transform', 'scale(.5,.5)'); // reset (right)
+
 			// get random position
-			let pos = Core.returnRandomPositionFull();
+			let pos = Core.returnRandomPositionFull('.tally_monster_sprite_container');
 			let css = {
 				'position':'absolute',
 				"display": "block",
@@ -123,18 +130,12 @@ window.Monster = (function() {
 				// launch battle
 				Battle.start(mid);
 			});
+
 			// // temp: show growl
 			// $.growl({
 			// 	title: "LAUNCHING MONSTER!!!",
 			// 	message: "MONSTER: " + MonsterData.dataById[mid].name + " [" + mid + "] "
 			// });
-
-
-			// turn monster to face Tally
-			if (prop(tally_nearby_monsters[monster.mid].facing) && tally_nearby_monsters[monster.mid].facing == "1")
-				$('.tally_monster_sprite_container').css('transform', 'scale(-.5,.5)'); // left
-			else
-				$('.tally_monster_sprite_container').css('transform', 'scale(.5,.5)'); // reset (right)
 
 			// saveMonster
 			tally_nearby_monsters[monster.mid] = monster;
