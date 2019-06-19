@@ -20,7 +20,7 @@ var AttackData = (function() {
 	function returnRandomAttacks(count) {
 		try {
             if (!count || count <= 0) return;
-			//if (DEBUG) console.log("💥 AttackData.returnRandomAttacks() --> count=" + count);
+			console.log("💥 AttackData.returnRandomAttacks() --> count=" + count);
 			let attack = {}, attacks = {};
             // return i atttacks
             for (let i = 0; i < count; i++) {

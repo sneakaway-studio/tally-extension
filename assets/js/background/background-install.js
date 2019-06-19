@@ -15,7 +15,9 @@ function createApp() {
 		store("tally_stats", {});
 		store("tally_secret", createSecret());
 		store("tally_top_monsters", {});
-		store("tally_trackers", {"blocked":{}});
+		store("tally_trackers", {
+			"blocked": {}
+		});
 		store("tally_tutorial_history", createTutorialHistory());
 
 		// these are empty the first time
@@ -82,7 +84,7 @@ function createUser() {
 			"monsters": {},
 			"skins": ["color-magenta"],
 			"consumables": {},
-			"attacks":{}
+			"attacks": {}
 		};
 		return obj;
 	} catch (err) {
@@ -95,7 +97,7 @@ function createScore() {
 		var obj = {
 			"clicks": 0,
 			"domains": 0,
-			"level": 0,
+			"level": 1,
 			"likes": 0,
 			"pages": 0,
 			"score": 0,
@@ -180,15 +182,15 @@ function createMeta() {
 			"userOnline": navigator.onLine,
 			"serverOnline": 0,
 			"serverOnlineTime": 0,
-			"currentAPI": "development", // or "development";
+			"currentAPI": "development", // "production" or "development";
 			"api": Config.production.api, // default to production
 			"website": Config.production.website,
 			"browser": Environment.getBrowserName()
 		};
 		// testing installation
-			// obj.currentAPI = "development";
-			// obj.api = Config.development.api;
-			// obj.website = Config.development.website;
+		// obj.currentAPI = "development";
+		// obj.api = Config.development.api;
+		// obj.website = Config.development.website;
 		return obj;
 	} catch (err) {
 		console.error(err);
@@ -199,6 +201,8 @@ function createTutorialHistory() {
 	try {
 		return {
 			"awardFirstAttack": false,
+			"awardSecondAttack": false,
+			"awardThirdAttack": false,
 			"battleFirstMonster": false,
 			"viewProfilePage": false,
 			"tutorialComplete": false

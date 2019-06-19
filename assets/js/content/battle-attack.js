@@ -70,7 +70,7 @@ window.BattleAttack = (function() {
 					if (attackOutcomes[i].affects == "self") {
 						str = Battle.details.monsterName;
 						attackOutcomes[i].affectsName = "monster";
-					} 
+					}
 				}
 
 				// add what happened to log text
@@ -203,13 +203,23 @@ window.BattleAttack = (function() {
 	/**
 	 *	Reward Tally with a new attack
 	 */
-	function rewardWithAttack(attack) {
+	function rewardAttack() {
 		try {
+			// get random attack
+			let attack = AttackData.returnAttack();
+			console.log("🕗 TallyEvents.checkTutorialEvents() --> awardFirstAttack", attack);
+
 			// make sure tally doesn't already have that attack
+			while (prop(tally_user.attacks[attack.name]))
+				// if so get a new one
+				attack = AttackData.returnAttack();
+
+			// store and save
+			tally_user.attacks[attack.name] = attack;
+			TallyStorage.saveData('tally_user',tally_user);
 
 			// tell user
-
-			// save tally_user
+			Thought.showString("You earned the " + attack.name + " " + attack.type + "!", "happy");
 		} catch (err) {
 			console.error(err);
 		}
@@ -220,6 +230,7 @@ window.BattleAttack = (function() {
 	return {
 		doAttack: function(attack, self, opp, extraDelay) {
 			doAttack(attack, self, opp, extraDelay);
-		}
+		},
+		rewardAttack: rewardAttack
 	};
 })();
