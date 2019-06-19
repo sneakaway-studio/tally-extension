@@ -113,7 +113,7 @@ window.StatsDisplay = (function() {
 	 */
 	function adjustStatsBar(who, bar, val) {
 		try {
-			//if (DEBUG) console.log("📈 StatsDisplay.adjustStatsBar()1", who, bar, val);
+			if (DEBUG) console.log("📈 StatsDisplay.adjustStatsBar()1", who, bar, val);
 			if (bar != "health" && bar != "stamina") return;
 			// clean value
 			val = FS_Number.round(val, 2);
@@ -128,7 +128,7 @@ window.StatsDisplay = (function() {
 			// save data-value
 			$('.' + who + '_stats .stat-bar-' + bar).attr("data-value", val);
 			// log
-			//if (DEBUG) console.log("📈 StatsDisplay.adjustStatsBar()2", who, bar, val, oldBar, statsDisplay[bar]);
+			if (DEBUG) console.log("📈 StatsDisplay.adjustStatsBar()2", who, bar, val, oldBar, statsDisplay[bar]);
 			// animation
 			anime({
 				targets: '.' + who + '_stats .stat-bar-' + bar,

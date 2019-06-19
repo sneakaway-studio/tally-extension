@@ -248,12 +248,12 @@ window.Thought = (function() {
 
 
 	//testing
-	$("body").mousemove(function(event) {
-		var msg = ".mousemove() " + event.pageX + ", " + event.pageY;
-		let normalized = FS_Number.normalize(event.pageX, 0, $(window).width());
-		if (DEBUG) console.log(normalized);
-		showString(msg);
-	});
+	// $("body").mousemove(function(event) {
+	// 	var msg = ".mousemove() " + event.pageX + ", " + event.pageY;
+	// 	let normalized = FS_Number.normalize(event.pageX, 0, $(window).width());
+	// 	if (DEBUG) console.log(normalized);
+	// 	showString(msg);
+	// });
 
 	/**
 	 *	Search and replace any template

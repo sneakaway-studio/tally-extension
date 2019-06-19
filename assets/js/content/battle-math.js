@@ -6,7 +6,7 @@
 window.BattleMath = (function() {
 	// PRIVATE VARS;
 
-	let DEBUG = true;
+	let DEBUG = false;
 
 	/**
 	 * 	Examine attack, do math, return [] of outcomes

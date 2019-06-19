@@ -47,6 +47,8 @@ window.BattleAttack = (function() {
 
 			// loop through attack outcomes and log, show explosion, etc.
 			for (let i = 0; i < attackOutcomes.length; i++) {
+				/*jshint loopfunc: true */
+
 				// if number is 0 skip this one
 				if (attackOutcomes[i].val == 0) continue;
 
@@ -97,17 +99,17 @@ window.BattleAttack = (function() {
 				}, _logDelay + 300);
 
 			}
-
-			// show thought?
+			// show thought from Tally commenting on the outcome of last attack
 			let r = Math.random();
 			if (r > 0.7) {
-				if (positiveOutcome == true)
-					Thought.showThought(Thought.getThought(["battle", "gained-stats", 0]), true);
-				else if (positiveOutcome == false)
-					Thought.showThought(Thought.getThought(["battle", "lost-stats", 0]), true);
+				// show log and change in stats after a moment
+				setTimeout(function() {
+					if (positiveOutcome == true)
+						Thought.showThought(Thought.getThought(["battle", "gained-stats", 0]), true);
+					else if (positiveOutcome == false)
+						Thought.showThought(Thought.getThought(["battle", "lost-stats", 0]), true);
+				}, _logDelay + 300);
 			}
-
-
 
 
 

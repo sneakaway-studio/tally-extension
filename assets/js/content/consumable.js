@@ -6,7 +6,8 @@
 window.Consumable = (function() {
 	// PRIVATE
 
-	let consumables = [],
+	let DEBUG = false,
+		consumables = [],
 		hovered = false,
 		types = {
 			"cookies": {
@@ -65,9 +66,6 @@ window.Consumable = (function() {
 	 */
 	function randomizer() {
 		try {
-
-		create(10);
-		return;	
 			let r = Math.random();
 			if (r < 0.01)
 				create(3);
@@ -88,12 +86,12 @@ window.Consumable = (function() {
 		try {
 			for (var i=0; i<num; i++){
 				if (!pageData.activeOnPage || tally_options.gameMode !== "full") return;
-				//console.log("Consumable.create() gameMode="+tally_options.gameMode);
+				//if (DEBUG) console.log("Consumable.create() gameMode="+tally_options.gameMode);
 				consumables.push(FS_Object.randomObjProperty(types[randomObjKey(types)]));
 				// testing
 				//consumables.push(types.cookie.fortune);
 			}
-			//console.log(consumables);
+			//if (DEBUG) console.log(consumables);
 			add();
 		} catch (err) {
 			console.error(err);
@@ -107,11 +105,11 @@ window.Consumable = (function() {
 			// loop through and add all consumables
 			for (var i=0; i<consumables.length; i++){
 				/*jshint loopfunc: true */
-				//console.log("Consumable.add()",i);
+				//if (DEBUG) console.log("Consumable.add()",i);
 				// new position
 				let randomPos = Core.returnRandomPositionFull('.tally_consumable_wrapper');
 				let css = "left:" + randomPos.x + "px;top:" + randomPos.y + "px;";
-				//console.log("Core.add()",randomPos,css);
+				//if (DEBUG) console.log("Core.add()",randomPos,css);
 				// html
 				let imgStr = chrome.extension.getURL('assets/img/consumables/' + consumables[i].type + "/" + consumables[i].img);
 				let ref = 'tally_consumable_'+ i;
@@ -120,7 +118,7 @@ window.Consumable = (function() {
 				$('.tally_consumable_wrapper').append(str);
 				// add listeners
 				$(document).on("mouseover", "."+ref, function() {
-					//console.log($(this));
+					//if (DEBUG) console.log($(this));
 					hover($(this).attr("data-consumable"));
 				});
 				$(document).on("click", "."+ref, function() {
@@ -144,7 +142,7 @@ window.Consumable = (function() {
 	 */
 	function hover(key) {
 		let consumable = consumables[key];
-		//console.log("Consumable.hover()", key, consumable);
+		//if (DEBUG) console.log("Consumable.hover()", key, consumable);
 		if (!hovered){
 			// tell them
 			Thought.showString("Oh, you found " + consumable.ref + " " + consumable.name + " " + consumable.type + "!", consumable.sound, true);
@@ -159,7 +157,7 @@ window.Consumable = (function() {
 	function collect(key) {
 		try {
 			let consumable = consumables[key];
-			//console.log("Consumable.collect()", key, consumable);
+			//if (DEBUG) console.log("Consumable.collect()", key, consumable);
 			// play sound
 			Sound.playRandomPowerup();
 

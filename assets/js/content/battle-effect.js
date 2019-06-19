@@ -101,11 +101,11 @@ window.BattleEffect = (function() {
 			let end, origin;
 
 			// update positions
-			//if (monsterPos == null || tallyPos == null) {
-				monsterPos = Core.getCenterPosition(".tally_monster_sprite_container");
-				tallyPos = Core.getCenterPosition("#tally_character");
-			//}
-			//if (DEBUG) console.log(tallyPos, monsterPos);
+			monsterPos = Core.getCenterPosition(".tally_monster_sprite_container");
+			tallyPos = Core.getCenterPosition("#tally_character");
+
+			if (DEBUG) console.log("💥 BattleEffect.fireProjectile()", tallyPos, monsterPos);
+
 
 			// if firing from monster > Tally
 			if (at == "tally") {

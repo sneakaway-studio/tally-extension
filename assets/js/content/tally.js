@@ -103,7 +103,7 @@ window.Tally = (function() {
 			//console.log("%c   Tally.start()", tallyConsoleIcon, tally_game_status.skin, Skin.skins);
 
 			let str =
-				"<div class='tally draggable' id='tally_character'>" +// style='transform:translateY(-300px);'
+				"<div class='tally draggable' id='tally_character'>" +// style='transform:translateY(-350px);'
 					"<div class='tally tally_speech_bubble' id='tally_thought_bubble'>" +
 						"<div class='tally' id='tally_thought'></div>" +
 					"</div>" +

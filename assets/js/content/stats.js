@@ -6,7 +6,7 @@
 window.Stats = (function() {
 	// PRIVATE
 
-	let DEBUG = true,
+	let DEBUG = false,
 		levelMultiplier = 9.5,
 		resetStatsAll = {
 			"accuracy": 0.91,
@@ -53,14 +53,33 @@ window.Stats = (function() {
 				}
 			}
 			// save if Tally
-			if (who == "tally") TallyStorage.saveData('tally_stats', allStats.tally);
-			// update display
-			StatsDisplay.updateDisplay(who);
+			if (who == "tally") {
+				save('tally');
+				// update display
+				StatsDisplay.updateDisplay('tally');
+			}
+			// only update monster if battle going on
+			else if (Battle.active())
+				// update display
+				StatsDisplay.updateDisplay('monster');
 			//console.log("📋 Stats.reset()", who, level, JSON.stringify(allStats[who]));
 		} catch (err) {
 			console.error(err);
 		}
 	}
+
+	/**
+	 * 	Save stats in background, saving tally only
+	 */
+	function save(who) {
+		try {
+			//if (DEBUG) console.log("📋 Stats.save()", who);
+			TallyStorage.saveData('tally_stats', allStats.tally);
+		} catch (err) {
+			console.error(err);
+		}
+	}
+
 
 	/**
 	 * 	Get stats of self or opponent
@@ -124,45 +143,44 @@ window.Stats = (function() {
 	/**
 	 *	Update stats when user clicks on consumable
 	 */
-	function updateFromConsumable(statData) {
+	function updateFromConsumable(consumable) {
 		try {
 			let who = "tally";
-			//console.log("📋 Stats.updateFromConsumable()",statData);
-			let upOrDown = 0;
+			console.log("📋 Stats.updateFromConsumable() 1",consumable);
+			// save original so we can make up or down sound
+			let originalStatVal = allStats[who][consumable.stat].val;
 			// if stat is already full
-			if (statData.val > 0 && allStats[who][statData.stat].normalized >= 1) {
-				Thought.showString("Your " + statData.stat + " is full!", "happy", true);
+			if (consumable.val > 0 && allStats[who][consumable.stat].val >= allStats[who][consumable.stat].max) {
+				Thought.showString("Your " + consumable.stat + " is full!", "happy", true);
 				return;
 			}
 			// else, add new stat
-			let newStat = FS_Number.round(allStats[who][statData.stat] + statData.val, 2);
-			newStat = FS_Number.clamp(newStat, 0, 1);
-			if (newStat > allStats[who][statData.stat])
-				upOrDown = 1;
-			else
-				upOrDown = -1;
-			// update stat
-			allStats[who][statData.stat] = newStat;
-			// save user
-			TallyStorage.saveData('tally_user', tally_user);
+			let change = allStats[who][consumable.stat].val * consumable.val;
+			setVal(who, consumable.stat, allStats[who][consumable.stat].val + change);
+			// save stats in background
+			save('tally');
+
 			// update stat display
-			$('.tally_stats_table').html(StatsDisplay.returnFullTable("tally", statData.stat));
+	//		$('.tally_stats_table').html(StatsDisplay.returnFullTable("tally", consumable.stat));
+
+StatsDisplay.updateDisplay('tally');
+
 			// adjust stat bars
-			StatsDisplay.adjustStatsBar("tally", statData.stat, allStats[who][statData.stat]);
+	//		StatsDisplay.adjustStatsBar("tally", consumable.stat, allStats[who][consumable.stat]);
 			// test
-			//console.log("📋 Stats.updateFromConsumable()", statData, statData.stat, allStats[who]);
+			console.log("📋 Stats.updateFromConsumable()", consumable, consumable.stat, allStats[who]);
 			// if stat is full
-			if (allStats[who][statData.stat] >= 1) {
-				Thought.showString("Your " + statData.stat + " is full!", "happy", true);
+			if (allStats[who][consumable.stat].val >= allStats[who][consumable.stat].max) {
+				Thought.showString("Your " + consumable.stat + " is full!", "happy", true);
 			} else {
 				setTimeout(function() {
 					// play sound
-					if (upOrDown > 0) {
+					if (originalStatVal < allStats[who][consumable.stat].val) {
 						Sound.playRandomJump();
-						Thought.showString("Yay! You increased your " + statData.stat + "!", "happy", true);
-					} else if (upOrDown < 0) {
+						Thought.showString("Yay! You increased your " + consumable.stat + "!", "happy", true);
+					} else if (originalStatVal > allStats[who][consumable.stat].val) {
 						Sound.playRandomJumpReverse();
-						Thought.showString("Dang, you lost some " + statData.stat + "!", "sad", true);
+						Thought.showString("Dang, you lost some " + consumable.stat + "!", "sad", true);
 					}
 				}, 500);
 

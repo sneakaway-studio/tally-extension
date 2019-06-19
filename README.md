@@ -36,7 +36,10 @@
 ### Version 0.2.0
 
 * Adds beginning of turn-based RPG battle system with console, explosions, etc.
-* Adds consumables
+* Adds consumables (cookies, data junk, etc.)
+* Adds new logging system to Tally Thoughts
+* Rewrite of Stats manager
+* Lots of small bug fixes and improvements
 
 ### Version 0.1.4
 

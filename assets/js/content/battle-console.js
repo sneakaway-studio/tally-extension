@@ -5,7 +5,7 @@
 
 window.BattleConsole = (function() {
 	// PRIVATE
-	let DEBUG = true,
+	let DEBUG = false,
 		stream, logId, _active, _queue, _next;
 
 	// reset all vars
