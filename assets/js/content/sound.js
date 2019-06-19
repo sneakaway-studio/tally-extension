@@ -58,6 +58,73 @@ window.Sound = (function() {
 		};
 
 
+	let musicPlaying = false,
+		musicAudio = {},
+		musicFile = "";
+
+	function changeMusic(file = "") {
+		try {
+			// update file
+			if (file != "") musicFile = file;
+			// if not already playing
+			if (!musicPlaying) startMusic();
+		} catch (err) {
+			console.error(err);
+		}
+	}
+
+	function startMusic() {
+		try {
+			console.log("♪ Sound.startMusic()", musicAudio.src);
+			if (!musicPlaying) {
+				// create
+				musicAudio = new Audio(chrome.extension.getURL("assets/sounds/music/" + musicFile));
+				musicAudio.addEventListener('ended', function() {
+					this.currentTime = 0;
+					if (!musicPlaying) this.pause();
+					else {
+						// update src
+						this.src = chrome.extension.getURL("assets/sounds/music/" + musicFile);
+						this.play();
+					}
+				}, false);
+				musicAudio.play();
+			} else {
+				// update src
+				musicAudio.src = chrome.extension.getURL("assets/sounds/music/" + musicFile);
+			}
+			musicPlaying = true;
+		} catch (err) {
+			console.error(err);
+		}
+	}
+
+	function endMusic() {
+		try {
+			console.log("♪ Sound.endMusic()");
+			musicAudio.pause();
+			musicAudio = {};
+			musicPlaying = false;
+		} catch (err) {
+			console.error(err);
+		}
+	}
+
+	//
+	// function loopMusic() {
+	// 	console.log("♪ Sound.loopMusic()",musicAudio.src)
+	// 	musicAudio.addEventListener('ended', function() {
+	// 		this.currentTime = 0;
+	// 		this.play();
+	// 	}, false);
+	// 	musicAudio.play();
+	// }
+	//
+	//
+
+
+
+
 
 	let moods = {
 		cautious: 3,
@@ -154,7 +221,7 @@ window.Sound = (function() {
 	 */
 	// function playOld(soundFile, delay = 0, volumeModifier = 0) {
 	// try {
-	// 	//if(DEBUG) console.log("♪♪♪♪♪ Sound.play("+ soundFile +","+ delay +","+ volumeModifier +")");
+	// 	//if(DEBUG) console.log("♪ Sound.play("+ soundFile +","+ delay +","+ volumeModifier +")");
 	// 	// load/play sound
 	// 	var audio = new Audio(chrome.extension.getURL("assets/sounds/" + soundFile));
 	// 	audio.muted = true;
@@ -214,6 +281,10 @@ window.Sound = (function() {
 
 	// PUBLIC
 	return {
+		changeMusic: function(file) {
+			changeMusic(file);
+		},
+		endMusic: endMusic,
 		playRandom: function(category, index, delay) {
 			playRandom(category, index, delay);
 		},

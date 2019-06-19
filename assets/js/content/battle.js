@@ -15,6 +15,7 @@ window.Battle = (function() {
 			"mid": null,
 			"monsterName": "",
 			"monsterAttacks": {},
+			"progress": 0, // track how long, intense, etc. the battle becomes
 			"recentAttack": {},
 			"recentOutcomes": {}
 		};
@@ -109,6 +110,10 @@ window.Battle = (function() {
 			// display stats
 			$('.monster_stats').css({"display":"block"});
 
+// play music
+Sound.changeMusic("battle1-c.wav");
+
+
 			// remove click, hover on monster
 			$(document).off("click", ".tally_monster_sprite_container");
 			$(document).off("mouseover", ".tally_monster_sprite_container");
@@ -147,6 +152,7 @@ window.Battle = (function() {
 	// end battle
 	function end() {
 		try {
+			console.log("💥 Battle.end()");
 			if (!_active) return;
 			_active = false;
 			// hide console
@@ -169,6 +175,8 @@ window.Battle = (function() {
 				duration: 1000,
 			});
 			$('.monster_stats').css({"display":"none"});
+			// stop music
+			Sound.endMusic();
 		} catch (err) {
 			console.error(err);
 		}

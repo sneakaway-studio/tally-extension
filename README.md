@@ -68,7 +68,7 @@ Tally is a browser extension that uses AI to transform the data advertisers coll
 
 ## Dependencies
 
-* Mousetrap.js](https://craig.is/killing/mice)
+* [Mousetrap.js](https://craig.is/killing/mice)
 * [Moment.js](https://momentjs.com/)
 * [Anime.js](https://animejs.com/)
 * [CSShake](https://elrumordelaluz.github.io/csshake/)

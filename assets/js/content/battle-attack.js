@@ -70,7 +70,7 @@ window.BattleAttack = (function() {
 					if (attackOutcomes[i].affects == "self") {
 						str = Battle.details.monsterName;
 						attackOutcomes[i].affectsName = "monster";
-					}
+					} 
 				}
 
 				// add what happened to log text
@@ -112,19 +112,31 @@ window.BattleAttack = (function() {
 			}
 
 
+			// ********** BATTLE PROGRESS ********** //
+
+			// is battle close to being over?
+			if (Stats.get("tally").health.val <= (Stats.get("tally").health.max / 2) ||
+				Stats.get("monster").health.val <= (Stats.get("monster").health.max / 2)
+			) {
+				Battle.progress = 2;
+			}
+			if (Battle.progress == 2) {
+				Sound.changeMusic('battle1-c-sharp.wav');
+				Thought.showString("Whoa, this is getting intense!", null, true);
+			}
 
 			// is battle over?
-			if (Stats.get("tally").health <= 0) {
+			if (Stats.get("tally").health.val <= 0) {
 				endBattle = true;
 				Thought.showString("Oh no, we are out of health...", "sad", true);
 				endBattleMessage = "We need to take a break from the internet and recharge!";
-			} else if (Stats.get("tally").stamina <= 0) {
+			} else if (Stats.get("tally").stamina.val <= 0) {
 				endBattle = true;
 				Thought.showString("Oh no, our stamina is depleted...", "sad", true);
 				endBattleMessage = "We lost this time but we'll fight these trackers another day!";
 			}
 
-			// if battle over
+			// is battle over?
 			if (endBattle) {
 				setTimeout(function() {
 					Thought.showString(endBattleMessage, "neutral", true);
@@ -133,7 +145,7 @@ window.BattleAttack = (function() {
 					}, _logDelay + 2000);
 				}, _logDelay + 2000);
 			}
-			// if battle not over
+			// else keep fighting!
 			else {
 				// decide who gets next turn...
 				if (selfStr == "tally") {
