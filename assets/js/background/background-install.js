@@ -200,10 +200,13 @@ function createMeta() {
 function createTutorialHistory() {
 	try {
 		return {
-			"awardFirstAttack": false,
-			"awardSecondAttack": false,
-			"awardThirdAttack": false,
-			"battleFirstMonster": false,
+			"award1stAttack": false,
+			"award2ndAttack": false,
+			"award3rdAttack": false,
+			"award4thAttack": false,
+			"battle1stMonster": false,
+			"battle2ndMonster": false,
+			"battle3rdMonster": false,
 			"viewProfilePage": false,
 			"tutorialComplete": false
 		};
