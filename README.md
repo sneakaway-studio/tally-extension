@@ -2,7 +2,7 @@
 
 ## Tally
 
-![Tally](https://github.com/sneakaway-studio/tally-extension-2018/blob/master/assets/img/tally/tally-clear-903w.png?raw=true "Optional Title")
+![Tally](https://tallygame.net/assets/img/tally-153w.png "Hi! I'm Tally.")
 
 Tally is a browser extension that uses AI to transform the data advertisers collect into a multiplayer game. Learn more at [tallygame.net](https://tallygame.net).
 
