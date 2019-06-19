@@ -20,6 +20,10 @@ window.BattleAttack = (function() {
 		try {
 			if (DEBUG) console.log("\n💥💥💥💥💥 ", selfStr + " 💥 " + oppStr);
 
+			let positiveOutcome = null,
+				endBattle = false,
+				endBattleMessage = "";
+
 			// set details for logging
 			outcomeDetails.selfName = "Tally";
 			outcomeDetails.oppName = Battle.details.monsterName;
@@ -72,7 +76,14 @@ window.BattleAttack = (function() {
 					str += " lost ";
 					// change value for log
 					attackOutcomes[i].val *= -1;
-				} else str += " gained ";
+					// determine what tally says
+					if (selfStr == "tally")
+						positiveOutcome = false;
+				} else {
+					str += " gained ";
+					if (selfStr == "tally")
+						positiveOutcome = true;
+				}
 
 				// add stat detail to log text
 				str += "<span class='text-blue'>" + attackOutcomes[i].val + " " + attackOutcomes[i].str + "</span>.";
@@ -81,33 +92,60 @@ window.BattleAttack = (function() {
 				setTimeout(function() {
 					// show log
 					BattleConsole.log(str);
-					// update stats displays
-					if (attackOutcomes[i].affectsName == "tally")
-						StatsDisplay.updateAllTallyStatsDisplay();
-					else
-						StatsDisplay.updateAllMonsterStatsDisplay();
+					// update stats display
+					StatsDisplay.updateDisplay(attackOutcomes[i].affectsName);
 				}, _logDelay + 300);
 
 			}
 
-
 			// show thought?
-			//Thought.showThought(Thought.getThought(["battle", "start", 0]), true);
+			let r = Math.random();
+			if (r > 0.7) {
+				if (positiveOutcome == true)
+					Thought.showThought(Thought.getThought(["battle", "gained-stats", 0]), true);
+				else if (positiveOutcome == false)
+					Thought.showThought(Thought.getThought(["battle", "lost-stats", 0]), true);
+			}
 
+
+
+
+
+			// is battle over?
+			if (Stats.get("tally").health <= 0) {
+				endBattle = true;
+				Thought.showString("Oh no, we are out of health...", "sad", true);
+				endBattleMessage = "We need to take a break from the internet and recharge!";
+			} else if (Stats.get("tally").stamina <= 0) {
+				endBattle = true;
+				Thought.showString("Oh no, our stamina is depleted...", "sad", true);
+				endBattleMessage = "We lost this time but we'll fight these trackers another day!";
+			}
+
+			// if battle over
+			if (endBattle) {
+				setTimeout(function() {
+					Thought.showString(endBattleMessage, "neutral", true);
+					setTimeout(function() {
+						Battle.end();
+					}, _logDelay + 2000);
+				}, _logDelay + 2000);
+			}
 			// if battle not over
-			if (!Battle.active) return;
-			// decide who gets next turn...
-			if (selfStr == "tally") {
-				// monster will attack back in a moment
-				setTimeout(function() {
-					doAttack(FS_Object.randomObjProperty(Battle.details.monsterAttacks), "monster", "tally");
-				}, _logDelay + 3000);
-			} else {
-				// prompt user to attack in a moment
-				setTimeout(function() {
-					// turn control back to player
-					BattleConsole.log("What will Tally do?", "showBattleOptions");
-				}, _logDelay + 500);
+			else {
+				// decide who gets next turn...
+				if (selfStr == "tally") {
+					// monster will attack back in a moment
+					setTimeout(function() {
+						doAttack(FS_Object.randomObjProperty(Battle.details.monsterAttacks), "monster", "tally");
+					}, _logDelay + 3500);
+				} else {
+					// prompt user to attack in a moment
+					setTimeout(function() {
+						// turn control back to player
+						BattleConsole.log("What will Tally do?", "showBattleOptions");
+					}, _logDelay + 500);
+				}
 			}
 		} catch (err) {
 			console.log(err);

@@ -16,15 +16,20 @@ window.FS_Number = (function() {
 		},
 		round: function(val, precision) {
 			try {
+				if (val == null || precision == null)
+					console.error("more numbers required!", val, precision);
 				var multiplier = Math.pow(10, precision || 0);
 				return Math.round(val * multiplier) / multiplier;
 			} catch (err) {
 				console.error(err);
 			}
 		},
-		clamp: function(val, min, max) {
+		clamp: function(val, min = 0, max = 1) {
 			try {
+				if (val == null || min === null || max == null)
+					console.error("more numbers required!", val, min, max);
 				return Math.min(Math.max(val, min), max);
+				// return Math.max(min, Math.min(val, max));
 			} catch (err) {
 				console.error(err);
 			}

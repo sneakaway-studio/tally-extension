@@ -104,7 +104,7 @@ window.Core = (function() {
 		try {
 			let w = $(ele).width() || 200,
 				h = $(ele).height() || 200;
-			console.log("returnRandomPositionFull()", ele, $(ele).width(), $(ele).height())
+			if (DEBUG) console.log("returnRandomPositionFull()", ele, $(ele).width(), $(ele).height())
 			let pos = {
 				"x": Math.ceil(Math.random() * (pageData.browser.width - w) + (w / 2)),
 				"y": Math.ceil(Math.random() * (pageData.browser.fullHeight - h) + (h / 2))

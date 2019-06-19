@@ -52,10 +52,12 @@ window.TallyEvents = (function() {
 				FS_String.pad(FS_Date.diffSeconds("now", tally_user.lastActive), 2)
 			);
 			// if player hasn't been online for n minutes then recharge
-			if (FS_Date.diffMinutes("now", tally_user.lastActive) > 0) {
+			if (FS_Date.diffMinutes("now", tally_user.lastActive) > 1) { // 0=testing
 				setTimeout(function() {
 					// reset tally stats
-					Stats.resetTallyStats();
+					Stats.reset("tally");
+					// play sound
+					Sound.playRandomJump();
 					// tell them
 					Thought.showString("You took a break from the internet to recharge!", "happy");
 				}, 700);

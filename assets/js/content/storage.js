@@ -276,6 +276,19 @@ const getNearbyMonstersPromise = new Promise(
 		});
 	}
 );
+// GET STATS
+const getStatsPromise = new Promise(
+	(resolve, reject) => {
+		//if (!pageData.activeOnPage) return;
+		chrome.runtime.sendMessage({
+			'action': 'getStats'
+		}, function(response) {
+			//console.log('💾 >>>>> getStats()',response.data);
+			Stats.overwrite("tally",response.data); // store data
+			resolve(response.data); // resolve promise
+		});
+	}
+);
 // GET TOP MONSTERS
 const getTopMonstersPromise = new Promise(
 	(resolve, reject) => {
@@ -343,6 +356,9 @@ function sendBackgroundUpdate(data) {
 			tally_user = response.tally_user;
 
 			if (response.tally_user.levelUpdated){
+				// update stats
+				Stats.reset("tally");
+				// tell user
 				Thought.showString("You just leveled up!", "happy");
 			}
 

@@ -53,7 +53,7 @@
     }
 }
 .tally_stats {
-    z-index: 2147483647;
+    z-index: 2147483645;
     position: relative;
     width: 230px;
     height: 65px;
@@ -61,7 +61,7 @@
     left: 0;
 }
 .monster_stats {
-    z-index: 2147483647;
+    z-index: 2147483645;
     position: relative;
     width: 230px;
     height: 65px;
@@ -71,23 +71,23 @@
 }
 .tally_stats_bars,.monster_stats_bars {
     position: absolute;
-    z-index: 2147483647;
+    z-index: 2147483645;
     top: 0px;
     left: 0px;
 }
-.tally_stats_table,.monster_stats_table {
+.tally_stats_table, .monster_stats_table {
     /* display: none; */
     position: absolute;
     z-index: 2147483630;
     width: 105px;
     padding: 8px;
-    padding-top: 14px;
+    padding-top: 18px;
     top: 30px;
     left: 42px;
     background: #282c35;
     color: #fff;
     /* display: hidden; */
-    font: 12px/12px Monaco, "Andale Mono", "Courier New", sans-serif;
+
 }
 /* .monster_stats {
     transform: translateX(25%);
@@ -95,8 +95,23 @@
     left: 0;
 } */
 
-.stats-number-column {
-    text-align: right;
+table.stats-table {
+    width: 100% !important;
+    font: 11px/12px Monaco, "Andale Mono", "Courier New", sans-serif !important;
+    border-collapse: separate !important;
+    border-spacing: 2px !important;
+    z-index: 2147483647 !important;
+}
+table.stats-table tr:hover {
+    cursor: crosshair;
+}
+table.stats-table tr td.stats-number-column {
+    width: 20% !important;
+    text-align: right !important;
+    line-height: 12px !important;
+}
+table.stats-table tr td.stats-number-column .divider {
+    padding: 0 1px 0 3px;
 }
 
 

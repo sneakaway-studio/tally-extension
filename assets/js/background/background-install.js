@@ -12,6 +12,7 @@ function createApp() {
 		store("tally_game_status", createGameStatus());
 		store("tally_nearby_monsters", {});
 		store("tally_meta", createMeta());
+		store("tally_stats", {});
 		store("tally_secret", createSecret());
 		store("tally_top_monsters", {});
 		store("tally_trackers", {"blocked":{}});
@@ -80,14 +81,6 @@ function createUser() {
 			"achievements": {},
 			"monsters": {},
 			"skins": ["color-magenta"],
-			"stats": {
-				"health": 1.0,
-				"stamina": 1.0,
-				"accuracy": 1.0,
-				"attack": 1.0,
-				"defense": 1.0,
-				"evasion": 1.0,
-			},
 			"consumables": {},
 			"attacks":{}
 		};
@@ -227,5 +220,5 @@ function createSecret() {
 		return obj;
 	} catch (err) {
 		console.error(err);
-	}		
+	}
 }

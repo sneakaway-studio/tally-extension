@@ -7,137 +7,152 @@ window.Stats = (function() {
 	// PRIVATE
 
 	let DEBUG = true,
+		levelMultiplier = 9.5,
 		resetStatsAll = {
+			"accuracy": 0.91,
+			"attack": 0.71,
+			"defense": 0.82,
+			"evasion": 0.69,
 			"health": 1.0,
-			"stamina": 0.89,
-			"accuracy": 0.88,
-			"attack": 0.83,
-			"defense": 0.81,
-			"evasion": 0.80,
+			"stamina": 0.64,
 		},
 		resetStatsSingle = {
-			"value": 0,
 			"max": 0,
-			"normalized": 1.0
+			"normalized": 1.0,
+			"val": 0,
 		},
+		// all stats are stored here
 		allStats = {
+			"monster": {},
 			"tally": {},
-			"monster": {}
 		};
 
-
-	// stats values are based on player level * 9.5
-	function reset(who, level) {
-		// for each resetStat
-		for (var stat in resetStatsAll) {
-			// if valid prop
-			if (resetStatsAll.hasOwnProperty(stat)) {
-				// copy single reset
-				allStats[who][stat] = Object.assign({}, resetStatsSingle);
-				// if monster then compute max using random
-
-				// compute max
-				allStats[who][stat].max = Math.random() * resetStatsAll[stat];
-			}
-		}
-		console.log("Stats.reset()",who,level,allStats[who]);
-	}
-
-	function resetTally() {
-		allStats.tally = Object.assign({}, resetStats);
-	}
-
-	function resetMonster() {
-		allStats.tally = Object.assign({}, resetStats);
-	}
-
-
-
-
-
-	function startTally() {
+	/**
+	 * 	Reset a player's stats - called when player levels up and for each new monster
+	 */
+	function reset(who) {
 		try {
-			// // adjust stats display
-			// StatsDisplay.adjustStatsBar("tally", "health", tally_user.stats.health);
-			// StatsDisplay.adjustStatsBar("tally", "stamina", tally_user.stats.stamina);
-			// StatsDisplay.adjustStatsCircle("tally", tally_user.score.level);
-
-			StatsDisplay.updateAllTallyStatsDisplay();
-		} catch (err) {
-			console.error(err);
-		}
-	}
-
-
-
-
-	function resetTallyStats() {
-		try {
-			tally_user.stats = resetStats;
-			TallyStorage.saveData('tally_user', tally_user);
-			Sound.playRandomJump();
-			StatsDisplay.updateAllTallyStatsDisplay();
-		} catch (err) {
-			console.error(err);
-		}
-	}
-
-	function resetMonsterStats(mid) {
-		try {
-			// tally_nearby_monsters[mid].stats = resetStats;
-			// TallyStorage.saveData("tally_nearby_monsters",tally_nearby_monsters);
-			// Sound.playRandomJump();
-			// StatsDisplay.updateAllTallyMonsterDisplay();
-			return resetStats;
-		} catch (err) {
-			console.error(err);
-		}
-	}
-
-
-	function randomize() {
-		try {
-			for (var stat in tally_user.stats) {
-				if (tally_user.stats.hasOwnProperty(stat)) {
-					tally_user.stats[stat] = FS_Number.round(Math.random(), 2);
+			// get level
+			let level = getLevel(who);
+			// for each resetStat
+			for (var stat in resetStatsAll) {
+				// if valid prop
+				if (resetStatsAll.hasOwnProperty(stat)) {
+					// copy single reset
+					allStats[who][stat] = Object.assign({}, resetStatsSingle);
+					// compute max
+					if (who == "monster") {
+						// if monster then compute max using random
+						allStats[who][stat].max = FS_Number.round((Math.random() * (level * (levelMultiplier * 0.35))) + (level * levelMultiplier), 0);
+					} else if (who == "tally") {
+						// stats values are based on player level * levelMultiplier * resetStatsAll values
+						allStats[who][stat].max = FS_Number.round((level * levelMultiplier * resetStatsAll[stat]), 0);
+					}
+					// set default value now based on max
+					allStats[who][stat].val = allStats[who][stat].max;
 				}
 			}
-			TallyStorage.saveData('tally_user', tally_user);
-			Monster.current().stats = resetStats;
-			StatsDisplay.updateAllTallyStatsDisplay();
+			// save if Tally
+			if (who == "tally") TallyStorage.saveData('tally_stats', allStats.tally);
+			// update display
+			StatsDisplay.updateDisplay(who);
+			//console.log("📋 Stats.reset()", who, level, JSON.stringify(allStats[who]));
 		} catch (err) {
 			console.error(err);
 		}
 	}
 
+	/**
+	 * 	Get stats of self or opponent
+	 */
+	function get(who, stat = "") {
+		try {
+			//if (DEBUG) console.log("📋 Stats.get()", who, stat, allStats[who]);
+			if (stat != "")
+				return allStats[who][stat];
+			return allStats[who];
+		} catch (err) {
+			console.error(err);
+		}
+	}
+
+
+	/**
+	 * 	Update individual stat value, clamp, and return
+	 */
+	function setVal(who, stat = "", val = null) {
+		try {
+			if (DEBUG) console.log("📋 Stats.setVal() #1", who, stat, val);
+			// should we update the stat by value?
+			if (stat != "" && val != null && val != 0) {
+				if (DEBUG) console.log("📋 Stats.setVal() #2", allStats[who][stat]);
+				// update value, clamp, and round
+				allStats[who][stat].val = FS_Number.clamp(FS_Number.round(val, 1), 0, allStats[who][stat].max);
+				if (DEBUG) console.log("📋 Stats.setVal() #3", allStats[who][stat]);
+				// then update normalized
+				allStats[who][stat].normalized = FS_Number.normalize(val, 0, allStats[who][stat].max);
+				if (DEBUG) console.log("📋 Stats.setVal() #4", allStats[who][stat]);
+			} else {
+				console.warn("📋 Stats.setVal() stat and val required!");
+			}
+			// return that value
+			return allStats[who][stat].val;
+		} catch (err) {
+			console.error(err);
+		}
+	}
+
+	/**
+	 *	For getting Tally stats from Storage
+	 */
+	function overwrite(who, stats) {
+		//if (DEBUG) console.log("📋 Stats.overwrite()", who, stats);
+		allStats[who] = stats;
+	}
+	/**
+	 *	Return the level of the player
+	 */
+	function getLevel(who) {
+		let level = 0;
+		if (who == "tally") level = tally_user.score.level;
+		else if (Monster.currentMID != 0) level = Monster.current().level;
+		else level = Monster.returnNewMonsterLevel(); // temp
+		//if (DEBUG) console.log("📋 Stats.getLevel()", who + " => " + level);
+		return level;
+	}
+
+	/**
+	 *	Update stats when user clicks on consumable
+	 */
 	function updateFromConsumable(statData) {
 		try {
+			let who = "tally";
 			//console.log("📋 Stats.updateFromConsumable()",statData);
 			let upOrDown = 0;
 			// if stat is already full
-			if (statData.val > 0 && tally_user.stats[statData.stat] >= 1) {
+			if (statData.val > 0 && allStats[who][statData.stat].normalized >= 1) {
 				Thought.show("Your " + statData.stat + " is full!", "happy", true);
 				return;
 			}
 			// else, add new stat
-			let newStat = FS_Number.round(tally_user.stats[statData.stat] + statData.val, 2);
+			let newStat = FS_Number.round(allStats[who][statData.stat] + statData.val, 2);
 			newStat = FS_Number.clamp(newStat, 0, 1);
-			if (newStat > tally_user.stats[statData.stat])
+			if (newStat > allStats[who][statData.stat])
 				upOrDown = 1;
 			else
 				upOrDown = -1;
 			// update stat
-			tally_user.stats[statData.stat] = newStat;
+			allStats[who][statData.stat] = newStat;
 			// save user
 			TallyStorage.saveData('tally_user', tally_user);
 			// update stat display
 			$('.tally_stats_table').html(StatsDisplay.returnFullTable("tally", statData.stat));
 			// adjust stat bars
-			StatsDisplay.adjustStatsBar("tally", statData.stat, tally_user.stats[statData.stat]);
+			StatsDisplay.adjustStatsBar("tally", statData.stat, allStats[who][statData.stat]);
 			// test
-			//console.log("📋 Stats.updateFromConsumable()", statData, statData.stat, tally_user.stats);
+			//console.log("📋 Stats.updateFromConsumable()", statData, statData.stat, allStats[who]);
 			// if stat is full
-			if (tally_user.stats[statData.stat] >= 1) {
+			if (allStats[who][statData.stat] >= 1) {
 				Thought.show("Your " + statData.stat + " is full!", "happy", true);
 			} else {
 				setTimeout(function() {
@@ -161,82 +176,28 @@ window.Stats = (function() {
 	}
 
 
-	/**
-	 * 	Get stats of self or opponent
-	 */
-	function getStat(who) {
-		try {
-			// reference to stats objects
-			let stats = {};
-			if (who == "tally")
-				stats = tally_user.stats;
-			else
-				stats = Monster.current().stats;
-			//if (DEBUG) console.log("📋 Stats.getStat()", who, stats);
-			return stats;
-		} catch (err) {
-			console.error(err);
-		}
-	}
-
-
-	function updateStat(who, statObj) {
-
-		try {} catch (err) {
-			console.error(err);
-		}
-	}
-	// update individual stat value, clamp, and return
-	function updateStatValue(who, stat, operator, val) {
-		try {
-			if (DEBUG) console.log("📋 Stats.updateStatValue()", who, stat, operator, val);
-			let stats = getStat(who);
-			if (operator == "-=")
-				stats[stat] -= val;
-			else
-				stats[stat] += val;
-			// clamp and round
-			if (DEBUG) console.log("📋 Stats.updateStatValue()", stats[stat]);
-			stats[stat] = FS_Number.clamp(FS_Number.round(stats[stat], 2));
-			if (DEBUG) console.log("📋 Stats.updateStatValue()", stats[stat]);
-			return stats[stat];
-		} catch (err) {
-			console.error(err);
-		}
-	}
-
-
 
 
 	// PUBLIC
 	return {
-
-		reset: function(who, level){
+		resetStatsAll: resetStatsAll,
+		reset: function(who, level) {
 			reset(who, level);
 		},
-
-
-
-		startTally: startTally,
-		resetTallyStats: resetTallyStats,
-		resetMonsterStats: function() {
-			return resetMonsterStats();
+		overwrite: function(who, stats) {
+			overwrite(who, stats);
 		},
-		randomize: randomize,
+		get: function(who, stat) {
+			return get(who, stat);
+		},
+		setVal: function(who, stat, val) {
+			return setVal(who, stat, val);
+		},
+		getLevel: function(who) {
+			return getLevel(who);
+		},
 		updateFromConsumable: function(data) {
 			updateFromConsumable(data);
-		},
-
-		getStat: function(who) {
-			return getStat(who);
-		},
-		updateStat: function(who, statObj) {
-			updateStat(who, statObj);
-		},
-		updateStatValue: function(who, stat, operator, val) {
-			return updateStatValue(who, stat, operator, val);
-		},
-		resetStats: resetStats,
-
+		}
 	};
 })();

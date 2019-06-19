@@ -82,8 +82,8 @@ window.Tally = (function() {
 		try {
 			//console.log("%c   Tally.start()", tallyConsoleIcon);
 
-
-Stats.reset("tally",tally_user.score.level);
+			// shouldn't need this now that it is handled by Storage / leveling up
+			// Stats.reset("tally");
 
 
 			// only show Tally if game mode == full
@@ -148,6 +148,8 @@ Stats.reset("tally",tally_user.score.level);
 
 
 
+			// display stats
+			StatsDisplay.updateDisplay("tally");
 
 
 			// HOVER
@@ -174,7 +176,6 @@ Stats.reset("tally",tally_user.score.level);
 
 
 
-			Stats.startTally();
 
 
 			// Battle.test();
@@ -382,7 +383,7 @@ Mousetrap.bind(k + ' v', function() {
 	StatsDisplay.adjustStatsCircle("tally", Math.random());
 });
 Mousetrap.bind(k + ' r', function() {
-	Stats.randomize();
+
 });
 
 

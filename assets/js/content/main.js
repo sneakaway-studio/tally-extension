@@ -29,7 +29,7 @@ window.TallyMain = (function() {
 		try {
 			Promise
 				.all([getUserPromise, getOptionsPromise, getMetaPromise, getGameStatusPromise,
-					getNearbyMonstersPromise, getTrackerBlockListPromise,
+					getNearbyMonstersPromise, getStatsPromise, getTrackerBlockListPromise,
 					getTopMonstersPromise, getTutorialHistoryPromise
 				]) // getLastBackgroundUpdatePromise
 				.then(function() {

@@ -117,8 +117,8 @@ window.Battle = (function() {
 			// log intro message
 			setTimeout(function() {
 				Thought.showThought(Thought.getThought(["battle", "start", 0]), true);
-				// load stats for monster
-				StatsDisplay.updateAllMonsterStatsDisplay();
+				// display stats
+				StatsDisplay.updateDisplay("monster");
 				// log intro...
 				BattleConsole.log("Battle started with " + details.monsterName + "!");
 				// wait for tally to attack first ...
@@ -138,7 +138,7 @@ window.Battle = (function() {
 
 		// save blocked list
 
-		
+
 
 
 		end();

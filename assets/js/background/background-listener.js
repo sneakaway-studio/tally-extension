@@ -101,61 +101,63 @@ chrome.runtime.onMessage.addListener(
 			 else if (request.action == "getUser") {
 				 sendResponse({
 					 "action": request.action,
-					 "data": store("tally_user")
+					 "data": store("tally_user") || {}
 				 });
 			 }
 			 // getOptions
 			 else if (request.action == "getOptions") {
 				 sendResponse({
 					 "action": request.action,
-					 "data": store("tally_options")
+					 "data": store("tally_options") || {}
 				 });
 			 }
 			 // getMeta
 			 else if (request.action == "getMeta") {
 				 sendResponse({
 					 "action": request.action,
-					 "data": store("tally_meta")
+					 "data": store("tally_meta") || {}
 				 });
 			 }
 			 // getGameStatus
 			 else if (request.action == "getGameStatus") {
-				 let data = store("tally_game_status") || {};
 				 sendResponse({
 					 "action": request.action,
-					 "data": data
+					 "data": store("tally_game_status") || {}
 				 });
 			 }
 			 // getTrackerBlockList
 			 else if (request.action == "getTrackerBlockList") {
-				 let data = store("tally_trackers") || {};
 				 sendResponse({
 					 "action": request.action,
-					 "data": data
+					 "data": store("tally_trackers") || {}
 				 });
 			 }
 			 // getNearbyMonsters
 			 else if (request.action == "getNearbyMonsters") {
-				 let data = store("tally_nearby_monsters") || {};
 				 sendResponse({
 					 "action": request.action,
-					 "data": store("tally_nearby_monsters", data)
+					 "data": store("tally_nearby_monsters") || {}
+				 });
+			 }
+			 // getStats
+			 else if (request.action == "getStats") {
+				 sendResponse({
+					 "action": request.action,
+					 "data": store("tally_stats") || {}
 				 });
 			 }
 			 // getTopMonstersPromise
 			 else if (request.action == "getTopMonstersPromise") {
-				 let data = store("tally_top_monsters") || {};
 				 sendResponse({
 					 "action": request.action,
-					 "data": data
+					 "data": store("tally_top_monsters") || {}
 				 });
 			 }
 			 // getTutorialHistoryPromise
 			 else if (request.action == "getTutorialHistoryPromise") {
-				 let data = store("tally_tutorial_history") || {};
 				 sendResponse({
 					 "action": request.action,
-					 "data": data
+					 "data": store("tally_tutorial_history") || {}
 				 });
 			 }
 
@@ -414,5 +416,5 @@ function setBadgeText(_text) {
 		});
 	} catch (err) {
 		console.error(err);
-	}		
+	}
 }

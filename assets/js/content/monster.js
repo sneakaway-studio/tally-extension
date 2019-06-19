@@ -22,7 +22,7 @@ window.Monster = (function() {
 			if (DEBUG) console.log('👿 ⊙!⊙⊙⊙ Monster.create()1', "mid=" + mid, "_stage=" + _stage, MonsterData.dataById[mid]);
 			tally_nearby_monsters[mid] = {
 				"stage": _stage,
-				"level": returnMonsterLevel(),
+				"level": returnNewMonsterLevel(),
 				"name": MonsterData.dataById[mid].name,
 				"slug": MonsterData.dataById[mid].slug,
 				"mid": mid,
@@ -30,9 +30,9 @@ window.Monster = (function() {
 				"captured": 0,
 				"missed": 0,
 				"facing": MonsterData.dataById[mid].facing,
-				"stats": Stats.resetMonsterStats(mid),
 				"updatedAt": Date.now()
 			};
+
 			// if it already exists then make it the number of captures +1
 			if (tally_user.monsters[mid])
 				tally_nearby_monsters[mid].totalCaptured = tally_user.monsters[mid].captured;
@@ -47,7 +47,7 @@ window.Monster = (function() {
 	/**
 	 *	Determine and return a monster's level
 	 */
-	function returnMonsterLevel() {
+	function returnNewMonsterLevel() {
 		try {
 			let userLevel = tally_user.score.level,
 				factor = 0.5;
@@ -57,7 +57,7 @@ window.Monster = (function() {
 			let min = Math.floor(userLevel - (userLevel * factor)),
 				max = Math.ceil(userLevel + (userLevel * factor));
 			let level = Math.floor(Math.random() * (max - min) + min);
-			//console.log("👿 Monster.returnMonsterLevel()",userLevel,min,max,level);
+			//console.log("👿 Monster.returnNewMonsterLevel()",userLevel,min,max,level);
 			//if (r < 2) r = 2;
 			return level;
 		} catch (err) {
@@ -77,6 +77,8 @@ window.Monster = (function() {
 			if (DEBUG) console.log('👿 ⊙⊙⊙!⊙ Monster.add()', mid, tally_nearby_monsters[mid]);
 			// set currentMID
 			currentMID = mid;
+			// reset / create new stats for monster
+			Stats.reset("monster");
 			// display it on the page
 			display(tally_nearby_monsters[mid]);
 		} catch (err) {
@@ -232,9 +234,7 @@ window.Monster = (function() {
 		add: function(mid) {
 			add(mid);
 		},
-		currentMID: function(){
-			return currentMID;
-		},
+		currentMID: currentMID,
 		current: function(){
 			return tally_nearby_monsters[currentMID];
 		},
@@ -242,5 +242,6 @@ window.Monster = (function() {
 			return saveAndPush(mid);
 		},
 		test: test,
+		returnNewMonsterLevel: returnNewMonsterLevel
 	};
 }());

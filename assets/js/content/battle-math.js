@@ -13,43 +13,41 @@ window.BattleMath = (function() {
 	 */
 	function returnAttackOutcomes(attack, selfStr, oppStr) {
 		try {
-			if (DEBUG) console.log("🔢 BattleMath.returnAttackOutcomes()", attack, selfStr + " 💥 " + oppStr);
-			if (DEBUG) console.log("🔢 BattleMath.returnAttackOutcomes()", tally_user.stats, Monster.current().stats);
-
 			// get stats
-			let self = Stats.getStat(selfStr),
-				opp = Stats.getStat(oppStr);
+			let self = Stats.get(selfStr),
+				opp = Stats.get(oppStr);
 			// track the outcome(s) of the attack to log them
 			let attackOutcomes = [];
 			// default outcome
 			let outcome = {};
 
+			if (DEBUG) console.log("🔢 BattleMath.returnAttackOutcomes()", attack, selfStr + " 💥 " + oppStr, self, opp);
 
 			// ************** HEALTH **************
 
 			// INCREASE SELF HEALTH
 			if (prop(attack.heal)) {
 				outcome = {
-					"val": FS_Number.round(self.health * attack.heal, 1),
+					"val": FS_Number.round(self.health.val * attack.heal, 1),
 					"str": "health",
 					"type": "heal",
 					"affects": "self"
 				};
-				self.health += outcome.val; // update stat
+				self.health.val = Stats.setVal(selfStr, outcome.str, self.health.val + outcome.val); // update stat value
 				attackOutcomes.push(outcome); // store outcome
-				if (DEBUG) console.log("🔢 BattleMath.returnAttackOutcomes() attack.heal -> outcome=", JSON.stringify(outcome) +", self=", self);
+				if (DEBUG) console.log("🔢 BattleMath.returnAttackOutcomes() attack.heal -> outcome=", JSON.stringify(outcome) + ", self=", self);
 			}
 			// DAMAGE OPP HEALTH
 			if (prop(attack.damage)) {
 				outcome = {
-					"val": -(FS_Number.round(self.health * damageCalc(attack, self, opp, selfStr, oppStr), 1)),
+					"val": -(FS_Number.round((opp.health.max * 0.2) * damageCalc(attack, self, opp, selfStr, oppStr), 1)),
 					"str": "health",
 					"type": "damage",
 					"affects": "opp"
 				};
-				opp.health += outcome.val; // update stat
+				opp.health.val = Stats.setVal(oppStr, outcome.str, opp.health.val + outcome.val); // update stat value
 				attackOutcomes.push(outcome); // store outcome
-				if (DEBUG) console.log("🔢 BattleMath.returnAttackOutcomes() attack.damage -> outcome=", JSON.stringify(outcome) +", opp=", opp);
+				if (DEBUG) console.log("🔢 BattleMath.returnAttackOutcomes() attack.damage -> outcome=", JSON.stringify(outcome) + ", opp=", opp);
 			}
 
 
@@ -58,26 +56,26 @@ window.BattleMath = (function() {
 			// INCREASE SELF ATTACK
 			if (prop(attack.selfAtk)) {
 				outcome = {
-					"val": FS_Number.round(self.attack * attack.selfAtk, 1),
+					"val": FS_Number.round(self.attack.val * attack.selfAtk, 1),
 					"str": "attack",
 					"type": "selfAtk",
 					"affects": "self"
 				};
-				self.attack += outcome.val; // update stat
+				self.attack.val = Stats.setVal(selfStr, outcome.str, self.attack.val + outcome.val); // update stat value
 				attackOutcomes.push(outcome); // store outcome
-				if (DEBUG) console.log("🔢 BattleMath.returnAttackOutcomes() attack.selfAtk -> outcome=", JSON.stringify(outcome) +", self=", self);
+				if (DEBUG) console.log("🔢 BattleMath.returnAttackOutcomes() attack.selfAtk -> outcome=", JSON.stringify(outcome) + ", self=", self);
 			}
 			// DAMAGE OPP ATTACK
 			if (prop(attack.oppAtk)) {
 				outcome = {
-					"val": -(FS_Number.round(opp.attack * attack.oppAtk, 1)),
+					"val": -(FS_Number.round(opp.attack.val * attack.oppAtk, 1)),
 					"str": "attack",
 					"type": "oppAtk",
 					"affects": "opp"
 				};
-				opp.attack += outcome.val; // update stat
+				opp.attack.val = Stats.setVal(oppStr, outcome.str, opp.attack.val + outcome.val); // update stat value
 				attackOutcomes.push(outcome); // store outcome
-				if (DEBUG) console.log("🔢 BattleMath.returnAttackOutcomes() attack.oppAtk -> outcome=", JSON.stringify(outcome) +", opp=", opp);
+				if (DEBUG) console.log("🔢 BattleMath.returnAttackOutcomes() attack.oppAtk -> outcome=", JSON.stringify(outcome) + ", opp=", opp);
 			}
 
 
@@ -86,26 +84,26 @@ window.BattleMath = (function() {
 			// INCREASE SELF ACCURACY
 			if (prop(attack.selfAcc)) {
 				outcome = {
-					"val": FS_Number.round(self.accuracy * attack.selfAcc, 1),
+					"val": FS_Number.round(self.accuracy.val * attack.selfAcc, 1),
 					"str": "accuracy",
 					"type": "selfAcc",
 					"affects": "self"
 				};
-				self.accuracy += outcome.val; // update stat
+				self.accuracy.val = Stats.setVal(selfStr, outcome.str, self.accuracy.val + outcome.val); // update stat value
 				attackOutcomes.push(outcome); // store outcome
-				if (DEBUG) console.log("🔢 BattleMath.returnAttackOutcomes() attack.selfAcc -> outcome=", JSON.stringify(outcome) +", self=", self);
+				if (DEBUG) console.log("🔢 BattleMath.returnAttackOutcomes() attack.selfAcc -> outcome=", JSON.stringify(outcome) + ", self=", self);
 			}
 			// DAMAGE OPP ACCURACY
 			if (prop(attack.oppAcc)) {
 				outcome = {
-					"val": -(FS_Number.round(opp.accuracy * attack.oppAcc, 1)),
+					"val": -(FS_Number.round(opp.accuracy.val * attack.oppAcc, 1)),
 					"str": "accuracy",
 					"type": "oppAcc",
 					"affects": "opp"
 				};
-				opp.accuracy = Stats.updateStatValue(oppStr, "accuracy", "+=", outcome.val); // update stat
+				opp.accuracy.val = Stats.setVal(oppStr, outcome.str, opp.accuracy.val + outcome.val); // update stat value
 				attackOutcomes.push(outcome); // store outcome
-				if (DEBUG) console.log("🔢 BattleMath.returnAttackOutcomes() attack.oppAcc -> outcome=", JSON.stringify(outcome) +", opp=", opp);
+				if (DEBUG) console.log("🔢 BattleMath.returnAttackOutcomes() attack.oppAcc -> outcome=", JSON.stringify(outcome) + ", opp=", opp);
 			}
 
 
@@ -114,26 +112,26 @@ window.BattleMath = (function() {
 			// INCREASE SELF EVASION
 			if (prop(attack.selfEva)) {
 				outcome = {
-					"val": FS_Number.round(self.evasion * attack.selfEva, 1),
+					"val": FS_Number.round(self.evasion.val * attack.selfEva, 1),
 					"str": "evasion",
 					"type": "selfEva",
 					"affects": "self"
 				};
-				self.evasion += outcome.val; // update stat
+				self.evasion.val = Stats.setVal(selfStr, outcome.str, self.evasion.val + outcome.val); // update stat value
 				attackOutcomes.push(outcome); // store outcome
-				if (DEBUG) console.log("🔢 BattleMath.returnAttackOutcomes() attack.selfEva -> outcome=", JSON.stringify(outcome) +", self=", self);
+				if (DEBUG) console.log("🔢 BattleMath.returnAttackOutcomes() attack.selfEva -> outcome=", JSON.stringify(outcome) + ", self=", self);
 			}
 			// DAMAGE OPP EVASION
 			if (prop(attack.oppEva)) {
 				outcome = {
-					"val": -(FS_Number.round(opp.evasion * attack.oppEva, 1)),
+					"val": -(FS_Number.round(opp.evasion.val * attack.oppEva, 1)),
 					"str": "evasion",
 					"type": "oppEva",
 					"affects": "opp"
 				};
-				opp.evasion += outcome.val; // update stat
+				opp.evasion.val = Stats.setVal(oppStr, outcome.str, opp.evasion.val + outcome.val); // update stat value
 				attackOutcomes.push(outcome); // store outcome
-				if (DEBUG) console.log("🔢 BattleMath.returnAttackOutcomes() attack.oppEva -> outcome=", JSON.stringify(outcome) +", opp=", opp);
+				if (DEBUG) console.log("🔢 BattleMath.returnAttackOutcomes() attack.oppEva -> outcome=", JSON.stringify(outcome) + ", opp=", opp);
 			}
 
 
@@ -142,26 +140,26 @@ window.BattleMath = (function() {
 			// INCREASE SELF DEFENSE
 			if (prop(attack.selfDef)) {
 				outcome = {
-					"val": FS_Number.round(self.defense * attack.selfDef, 1),
+					"val": FS_Number.round(self.defense.val * attack.selfDef, 1),
 					"str": "defense",
 					"type": "selfDef",
 					"affects": "self"
 				};
-				self.defense += outcome.val; // update stat
+				self.defense.val = Stats.setVal(selfStr, outcome.str, self.defense.val + outcome.val); // update stat value
 				attackOutcomes.push(outcome); // store outcome
-				if (DEBUG) console.log("🔢 BattleMath.returnAttackOutcomes() attack.selfDef -> outcome=", JSON.stringify(outcome) +", self=", self);
+				if (DEBUG) console.log("🔢 BattleMath.returnAttackOutcomes() attack.selfDef -> outcome=", JSON.stringify(outcome) + ", self=", self);
 			}
 			// DAMAGE OPP DEFENSE
 			if (prop(attack.oppDef)) {
 				outcome = {
-					"val": -(FS_Number.round(opp.defense * attack.selfDef, 1)),
+					"val": -(FS_Number.round(opp.defense.val * attack.selfDef, 1)),
 					"str": "defense",
 					"type": "oppDef",
 					"affects": "opp"
 				};
-				opp.defense += outcome.val; // update stat
+				opp.defense.val = Stats.setVal(oppStr, outcome.str, opp.defense.val + outcome.val); // update stat value
 				attackOutcomes.push(outcome); // store outcome
-				if (DEBUG) console.log("🔢 BattleMath.returnAttackOutcomes() attack.oppDef -> outcome=", JSON.stringify(outcome) +", opp=", opp);
+				if (DEBUG) console.log("🔢 BattleMath.returnAttackOutcomes() attack.oppDef -> outcome=", JSON.stringify(outcome) + ", opp=", opp);
 			}
 
 
@@ -171,18 +169,17 @@ window.BattleMath = (function() {
 			if (prop(attack.staminaCost)) {
 				outcome = {
 					// Daniel: stamina cost fix
-					"val": FS_Number.round((attack.staminaCost * 0.1), 1),
+					"val": -(attack.staminaCost),
 					"str": "stamina",
 					"type": "staminaCost",
 					"affects": "self"
 				};
-				self.stamina -= outcome.val; // update stat
+				self.stamina.val = Stats.setVal(selfStr, outcome.str, self.stamina.val + outcome.val); // update stat value
 				//attackOutcomes.push(outcome); // don't log
-				if (DEBUG) console.log("🔢 BattleMath.returnAttackOutcomes() attack.staminaCost -> outcome=", JSON.stringify(outcome) +", self=", self);
+				if (DEBUG) console.log("🔢 BattleMath.returnAttackOutcomes() attack.staminaCost -> outcome=", JSON.stringify(outcome) + ", self=", self);
 			}
 
-			if (DEBUG) console.log("🔢 BattleMath.returnAttackOutcomes() final stats = ", tally_user.stats, Monster.current().stats);
-
+			if (DEBUG) console.log("🔢 BattleMath.returnAttackOutcomes() final stats = " + self, opp);
 			// return data
 			return attackOutcomes;
 		} catch (err) {
@@ -208,14 +205,11 @@ window.BattleMath = (function() {
 			if (Math.random < attack.crtChance)
 				critical = 2;
 
-			// get level
-			let level = tally_user.score.level;
-			if (selfStr == "monster")
-				level = Monster.current().level;
+			let level = Stats.getLevel(oppStr);
 
 			// making this math more manageble
 			let levelMultiplier = (((2 * level) / 5) + 2);
-			let attackMultiplier = ((levelMultiplier * attack.damage * (self.attack / opp.defense)) / 50);
+			let attackMultiplier = ((levelMultiplier * attack.damage * (self.attack.val / opp.defense.val)) / 50);
 			//if (DEBUG) console.log("🔢 BattleMath.damageCalc()", attack, selfStr + " 💥 " + oppStr, level, levelMultiplier, attackMultiplier);
 			let result = attackMultiplier * critical;
 
@@ -228,7 +222,7 @@ window.BattleMath = (function() {
 	// presumably if we want attacks to ocassionally miss
 	function willHit(attack, self, opp) {
 		try {
-			var hitChance = attack.accuracy * (self.accuracy / opp.evasion);
+			var hitChance = attack.accuracy * (self.accuracy.val / opp.evasion.val);
 		} catch (err) {
 			console.error(err);
 		}

@@ -34,7 +34,7 @@ window.Consumable = (function() {
 					"ref":"a",
 					"img": "cookie-fortune.gif",
 					"val": FS_Number.round(FS_Number.randomPosNeg(0.2),2),
-					"stat": randomObjKey(Stats.resetStats),
+					"stat": randomObjKey(Stats.resetStatsAll),
 					"sound": "cautious",
 				},
 				"bad": {
@@ -43,7 +43,7 @@ window.Consumable = (function() {
 					"ref":"a",
 					"img": "cookie-bad.gif",
 					"val": -FS_Number.round(Math.random()*0.2,2),
-					"stat": randomObjKey(Stats.resetStats),
+					"stat": randomObjKey(Stats.resetStatsAll),
 					"sound": "danger",
 				}
 			},
