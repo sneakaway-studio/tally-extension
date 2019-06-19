@@ -94,7 +94,8 @@ window.StatsDisplay = (function() {
 		try {
 			let stats = Stats.get(who),
 				level = Stats.getLevel(who);
-			if (DEBUG) console.log("📈 StatsDisplay.updateDisplay()", who, stats, level);
+			console.log("📈 StatsDisplay.updateDisplay()", who, stats, level);
+			if (stats === {}) return;
 			// bars, circle, table
 			adjustStatsBar(who, "health", stats.health.normalized);
 			adjustStatsBar(who, "stamina", stats.stamina.normalized);

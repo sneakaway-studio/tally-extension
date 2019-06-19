@@ -71,6 +71,8 @@ window.TallyEvents = (function() {
 		}
 	}
 
+
+
 	/**
 	 *	Checks to see if any tutorial events should be executed
 	 */
@@ -87,14 +89,8 @@ window.TallyEvents = (function() {
 			if (!tally_tutorial_history.awardFirstAttack && tally_user.score.score > 15 &&
 				FS_Object.isEmpty(tally_user.attacks)
 			) {
-				// get random attack
-				let attack = AttackData.returnRandomAttacks(1);
-				console.log("🕗 TallyEvents.checkTutorialEvents() --> awardFirstAttack", attack);
-				// store and save
-				tally_user.attacks[attack.name] = attack;
-				TallyStorage.saveData('tally_user',tally_user);
-				// tell them
-				Thought.showString("You earned a " + attack.name + " " + attack.type + "!", "happy");
+				BattleAttack.rewardAttack();
+
 				// set true
 				tally_tutorial_history.awardFirstAttack = true;
 			} else {

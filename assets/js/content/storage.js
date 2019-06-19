@@ -284,7 +284,11 @@ const getStatsPromise = new Promise(
 			'action': 'getStats'
 		}, function(response) {
 			//console.log('💾 >>>>> getStats()',response.data);
-			Stats.overwrite("tally",response.data); // store data
+			// if stats is empty (game just installed)
+			if (FS_Object.isEmpty(response.data))
+				Stats.reset("tally");
+			else
+				Stats.overwrite("tally",response.data); // store data
 			resolve(response.data); // resolve promise
 		});
 	}

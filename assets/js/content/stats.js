@@ -27,6 +27,7 @@ window.Stats = (function() {
 			"tally": {},
 		};
 
+
 	/**
 	 * 	Reset a player's stats - called when player levels up and for each new monster
 	 */
@@ -146,7 +147,7 @@ window.Stats = (function() {
 	function updateFromConsumable(consumable) {
 		try {
 			let who = "tally";
-			console.log("📋 Stats.updateFromConsumable() 1",consumable);
+			console.log("📋 Stats.updateFromConsumable() 1", consumable);
 			// save original so we can make up or down sound
 			let originalStatVal = allStats[who][consumable.stat].val;
 			// if stat is already full
@@ -161,12 +162,12 @@ window.Stats = (function() {
 			save('tally');
 
 			// update stat display
-	//		$('.tally_stats_table').html(StatsDisplay.returnFullTable("tally", consumable.stat));
+			//		$('.tally_stats_table').html(StatsDisplay.returnFullTable("tally", consumable.stat));
 
-StatsDisplay.updateDisplay('tally');
+			StatsDisplay.updateDisplay('tally');
 
 			// adjust stat bars
-	//		StatsDisplay.adjustStatsBar("tally", consumable.stat, allStats[who][consumable.stat]);
+			//		StatsDisplay.adjustStatsBar("tally", consumable.stat, allStats[who][consumable.stat]);
 			// test
 			console.log("📋 Stats.updateFromConsumable()", consumable, consumable.stat, allStats[who]);
 			// if stat is full
