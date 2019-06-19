@@ -51,7 +51,10 @@ window.Core = (function() {
 		try {
 			let pos = {
 				"left": $(ele).offset().left + $(ele).width() / 2,
-				"top": $(ele).offset().top + $(ele).height() / 2
+				// old, didn't work if page was scrolled
+				// "top": $(ele).offset().top + $(ele).height() / 2
+				// new, takes scrolling into effect
+				"top": ($(ele).offset().top - $(window).scrollTop()) + ($(ele).height() / 2)
 			};
 			if (DEBUG) console.log("⚙️ Core.getCenterPosition()", ele, $(ele).offset(), pos, $(document).scrollTop());
 			return pos;
@@ -104,7 +107,7 @@ window.Core = (function() {
 		try {
 			let w = $(ele).width() || 200,
 				h = $(ele).height() || 200;
-			if (DEBUG) console.log("returnRandomPositionFull()", ele, $(ele).width(), $(ele).height())
+			if (DEBUG) console.log("returnRandomPositionFull()", ele, $(ele).width(), $(ele).height());
 			let pos = {
 				"x": Math.ceil(Math.random() * (pageData.browser.width - w) + (w / 2)),
 				"y": Math.ceil(Math.random() * (pageData.browser.fullHeight - h) + (h / 2))
