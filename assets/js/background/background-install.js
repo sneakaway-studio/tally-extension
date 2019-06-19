@@ -182,7 +182,7 @@ function createMeta() {
 			"userOnline": navigator.onLine,
 			"serverOnline": 0,
 			"serverOnlineTime": 0,
-			"currentAPI": "development", // "production" or "development";
+			"currentAPI": "production", // "production" or "development";
 			"api": Config.production.api, // default to production
 			"website": Config.production.website,
 			"browser": Environment.getBrowserName()
