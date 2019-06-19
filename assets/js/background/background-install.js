@@ -61,7 +61,7 @@ function launchStartScreen() {
  */
 // function launchRegistrationPage() {
 // 	chrome.tabs.create({
-// 		url: _tally_meta.website + "/signup"
+// 		url: _tally_meta.website + "/signin"
 // 	}, function(tab) {
 // 		console.log(">>>>> launchRegistrationPage() -> launching registration page", tab.url);
 // 	});
@@ -200,6 +200,8 @@ function createMeta() {
 function createTutorialHistory() {
 	try {
 		return {
+			"tokenAdded": false,
+			"tokenAddedMessage": false,
 			"award1stAttack": false,
 			"award2ndAttack": false,
 			"award3rdAttack": false,

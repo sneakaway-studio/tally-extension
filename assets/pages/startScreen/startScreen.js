@@ -13,7 +13,7 @@ function getMeta() {
 
 $(document).on('click','.launchRegistrationBtn',function(){
     chrome.tabs.create({
-        url: tally_meta.website + "/signup"
+        url: tally_meta.website + "/signin"
     }, function(tab) {
         console.log(">>>>> launching registration page", tab.url);
     });

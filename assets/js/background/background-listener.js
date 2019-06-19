@@ -216,6 +216,7 @@ chrome.runtime.onMessage.addListener(
 				let _tally_secret = store("tally_secret"),
 					message = 0;
 				if (_tally_secret.token != request.data.token) {
+					// save token and tokenExpires
 					_tally_secret.token = request.data.token;
 					_tally_secret.tokenExpires = request.data.tokenExpires;
 					store("tally_secret", _tally_secret);

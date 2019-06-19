@@ -9,7 +9,7 @@ window.TallyStorage = (function() {
 	/**
 	 *	Generic getData() function
 	 */
-	function getData(name, caller="") {
+	function getData(name, caller = "") {
 		try {
 			//console.log("💾 TallyStorage.getData()", name, caller);
 			let msg = {
@@ -20,14 +20,14 @@ window.TallyStorage = (function() {
 				//console.log("💾 <<<<< ", '> TallyStorage.getData()', name, JSON.stringify(response));
 				return response.data;
 			});
-		} catch(err){
+		} catch (err) {
 			console.error(err);
 		}
 	}
 	/**
 	 *	Generic saveData() function
 	 */
-	function saveData(name, data, caller="") {
+	function saveData(name, data, caller = "") {
 		try {
 			let msg = {
 				'action': 'saveData',
@@ -39,17 +39,19 @@ window.TallyStorage = (function() {
 				//console.log("💾 >>>>> ", '> TallyStorage.saveData()', name, JSON.stringify(response));
 				//return response.data;
 			});
-		} catch(err){
+		} catch (err) {
 			console.error(err);
 		}
 	}
 	// emergency only
-	function launchStartScreen(){
+	function launchStartScreen() {
 		try {
-			chrome.runtime.sendMessage({ 'action': 'launchStartScreen' }, function(response) {
+			chrome.runtime.sendMessage({
+				'action': 'launchStartScreen'
+			}, function(response) {
 				return response.data;
 			});
-		} catch(err){
+		} catch (err) {
 			console.error(err);
 		}
 	}
@@ -118,18 +120,71 @@ window.TallyStorage = (function() {
 		}
 	}
 
+	// SAVE TOKEN FROM DASHBOARD
+	function saveToken(data) {
+		try {
+			chrome.runtime.sendMessage({
+				'action': 'saveToken',
+				'data': data
+			}, function(response) {
+				console.log('💾 <{!}> TallyStorage.saveToken()', response);
+				if (response.message == 1) {
+					console.log("💾 <{!}> TallyStorage.saveToken() -> token has been saved", data);
+					// $.growl({
+					// 	title: "TOKEN SAVED!",
+					// 	message: "User token updated!"
+					// });
+
+					if (!tally_tutorial_history.tokenAdded) {
+						// mark as true and save
+						tally_tutorial_history.tokenAdded = true;
+						TallyStorage.saveData('tally_tutorial_history', tally_tutorial_history);
+						// reload page after token grabbed
+						location.reload();
+					} else if (!tally_tutorial_history.tokenAddedMessage) {
+
+
+
+							// mark as true and save
+							tally_tutorial_history.tokenAddedMessage = true;
+							TallyStorage.saveData('tally_tutorial_history', tally_tutorial_history);
+							// encourage them to explore
+							Thought.showString("Oh hi! I'm Tally!!!", "happy");
+							Thought.showString("Your token is now active and installed!", "happy");
+							Thought.showString("This is your dashboard.", "happy");
+							Thought.showString("You can edit your profile here.", "happy");
+							Thought.showString("Good to stay anonymous though, what with all the monsters around...", "cautious");
+							Thought.showString("Now, let's go find some trackers!", "happy");
+
+
+
+					} else {
+						// user has been here before
+						Thought.showString("Your user token has been updated!", "happy");
+						Thought.showString("Let's go get some trackers!", "happy");
+					}
+				}
+			});
+		} catch (err) {
+			console.error(err);
+		}
+	}
+
 	// PUBLIC
 	return {
-		getData: function(name,caller){
-			return getData(name,caller);
+		getData: function(name, caller) {
+			return getData(name, caller);
 		},
-		saveData: function(name,data,caller){
-			return saveData(name,data,caller);
+		saveData: function(name, data, caller) {
+			return saveData(name, data, caller);
 		},
-		launchStartScreen:launchStartScreen,
-		newBackgroundUpdate:newBackgroundUpdate,
-		newBackgroundMonsterUpdate: function(mid){
+		launchStartScreen: launchStartScreen,
+		newBackgroundUpdate: newBackgroundUpdate,
+		newBackgroundMonsterUpdate: function(mid) {
 			return newBackgroundMonsterUpdate(mid);
+		},
+		saveToken: function(data) {
+			saveToken(data);
 		}
 	};
 })();
@@ -151,7 +206,7 @@ const startupPromises = [],
 		'tally_top_monsters'
 	];
 
-function createStartupPromises(){
+function createStartupPromises() {
 	try {
 		// loop through all startupPromisesNames and create Promises
 		for (let i = 0; i < startupPromiseNames.length; i++) {
@@ -175,7 +230,7 @@ function createStartupPromises(){
 				}
 			);
 		}
-	} catch(err){
+	} catch (err) {
 		console.error(err);
 	}
 }
@@ -288,7 +343,7 @@ const getStatsPromise = new Promise(
 			if (FS_Object.isEmpty(response.data))
 				Stats.reset("tally");
 			else
-				Stats.overwrite("tally",response.data); // store data
+				Stats.overwrite("tally", response.data); // store data
 			resolve(response.data); // resolve promise
 		});
 	}
@@ -325,29 +380,6 @@ const getTutorialHistoryPromise = new Promise(
 /*  CUSTOM FUNCTIONS
  ******************************************************************************/
 
-// SAVE TOKEN FROM DASHBOARD
-function saveToken(data) {
-	try {
-		chrome.runtime.sendMessage({
-			'action': 'saveToken',
-			'data': data
-		}, function(response) {
-			console.log('💾 <{!}> saveToken()', response);
-			if (response.message == 1) {
-				console.log("💾 grab it", data);
-				// $.growl({
-				// 	title: "TOKEN SAVED!",
-				// 	message: "User token updated!"
-				// });
-
-				Thought.showString("Your user token has been updated!", "happy");
-			}
-		});
-	} catch(err){
-		console.error(err);
-	}
-}
-
 // SEND DATA TO BACKGROUND
 function sendBackgroundUpdate(data) {
 	try {
@@ -359,7 +391,7 @@ function sendBackgroundUpdate(data) {
 			console.log('💾 <{!}> sendBackgroundUpdate()', response);
 			tally_user = response.tally_user;
 
-			if (response.tally_user.levelUpdated){
+			if (response.tally_user.levelUpdated) {
 				// update stats
 				Stats.reset("tally");
 				// tell user
@@ -368,7 +400,7 @@ function sendBackgroundUpdate(data) {
 
 			Debug.update();
 		});
-	} catch(err){
+	} catch (err) {
 		console.error(err);
 	}
 }
@@ -382,10 +414,10 @@ function sendBackgroundMonsterUpdate(data) {
 			'data': data
 		}, function(response) {
 			console.log('💾 <{!}> sendBackgroundMonsterUpdate()', response);
-	//		tally_user = response.tally_user;
+			//		tally_user = response.tally_user;
 			Debug.update();
 		});
-	} catch(err){
+	} catch (err) {
 		console.error(err);
 	}
 }
@@ -419,7 +451,7 @@ function setBadgeText(data) {
 		}, function(response) {
 			//console.log("💾 <<<<< ",'> saveGameStatus()',JSON.stringify(response));
 		});
-	} catch(err){
+	} catch (err) {
 		console.error(err);
 	}
 }

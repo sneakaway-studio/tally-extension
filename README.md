@@ -32,8 +32,21 @@ Tally is a browser extension that uses AI to transform the data advertisers coll
 
 
 
+
+## Packaging
+
+1. Remove reference in manifest to `hot-reload.js`
+2. Remove image files not being used (e.g. `assets/img/monsters-400h/`)
+
+
+
 ## Development Versions
 
+
+### Version 0.2.1
+
+* Fixes various installation issues
+* Adds installation tutorial framework
 
 ### Version 0.2.0
 

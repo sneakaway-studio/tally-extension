@@ -75,7 +75,7 @@ window.Page = (function() {
 					tokenExpires: $("#tokenExpires").val()
 				};
 				//console.log(data);
-				saveToken(data);
+				TallyStorage.saveToken(data);
 			}
 		} catch (err) {
 			console.error(err);
@@ -224,5 +224,5 @@ function getTitle() {
 		return str;
 	} catch (err) {
 		console.error(err);
-	}	
+	}
 }

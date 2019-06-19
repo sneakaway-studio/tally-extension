@@ -83,8 +83,15 @@ window.TallyEvents = (function() {
 			if (!tally_tutorial_history || tally_tutorial_history.tutorialComplete === true) return;
 
 
+
+
+
+
+
 			// AWARD ATTACK - 1st
-			if (!tally_tutorial_history.award1stAttack && FS_Object.isEmpty(tally_user.attacks) ) {
+			if (!tally_tutorial_history.award1stAttack &&
+				FS_Object.isEmpty(tally_user.attacks) &&
+				tally_user.score.score > 3) {
 				BattleAttack.rewardAttack();
 				tally_tutorial_history.award1stAttack = true;
 			}
@@ -104,16 +111,20 @@ window.TallyEvents = (function() {
 				tally_tutorial_history.award4thAttack = true;
 			}
 
-			else {
+
+			// final check
+			if (!tally_tutorial_history.tutorialComplete) {
+				let allComplete = true;
 				// check to see if all have been completed
-				for (var t in tally_tutorial_history) {
-					if (tally_tutorial_history.hasOwnProperty(t)) {
+				for (var prop in tally_tutorial_history) {
+					if (tally_tutorial_history.hasOwnProperty(prop)) {
 						// mark them if so
-						if (tally_tutorial_history[t] === true)
-							tally_tutorial_history.tutorialComplete = true;
+						if (tally_tutorial_history[prop] !== true) allComplete = false;
 					}
 				}
+				if (allComplete) tally_tutorial_history.tutorialComplete = true;
 			}
+
 			// save after updates
 			TallyStorage.saveData('tally_tutorial_history', tally_tutorial_history);
 		} catch (err) {
