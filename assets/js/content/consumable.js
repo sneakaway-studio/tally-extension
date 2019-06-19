@@ -65,6 +65,9 @@ window.Consumable = (function() {
 	 */
 	function randomizer() {
 		try {
+
+		create(10);
+		return;	
 			let r = Math.random();
 			if (r < 0.01)
 				create(3);

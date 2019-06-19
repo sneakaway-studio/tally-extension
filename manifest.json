@@ -3,10 +3,8 @@
 
     "name": "Tally",
     "description": "The 2018 ///// cross browser ///// version",
-    "version": "0.1.4",
-    "author": "Owen Mundy, et al",
-
-
+    "version": "0.2.0",
+    "author": "Owen Mundy, Joelle Dietrick, and many more...",
 
     "icons": {
         "48": "assets/img/icons/tally_icon_48x48.png"
@@ -17,13 +15,13 @@
             "48": "assets/img/icons/tally_icon_48x48.png",
             "128": "assets/img/icons/tally_icon_128x128.png"
         },
-		"default_title": "Tally",
+        "default_title": "Tally",
         "default_popup": "assets/pages/popup/popup.html"
     },
     "background": {
         "scripts": [
             "assets/libs/jquery-3.2.1.min.js",
-			"assets/libs/store2.min.js",
+            "assets/libs/store2.min.js",
             "assets/libs/moment.js",
             "assets/libs/hot-reload.js",
             "assets/data/game-rules.js",
@@ -44,12 +42,12 @@
             "assets/libs/bluebird.min.js",
             "assets/js/content/storage.js",
             "assets/libs/jquery-3.2.1.min.js",
-			"assets/libs/jquery-ui.min.js",
-			"assets/libs/store2.min.js",
-			"assets/libs/jquery.growl.js",
+            "assets/libs/jquery-ui.min.js",
+            "assets/libs/store2.min.js",
+            "assets/libs/jquery.growl.js",
             "assets/libs/mousetrap.min.js",
             "assets/libs/moment.js",
-			"assets/libs/anime-alt.js",
+            "assets/libs/anime-alt.js",
             "assets/js/functions/fs-objects.js",
             "assets/js/functions/fs-numbers.js",
             "assets/js/functions/fs-strings.js",
@@ -85,16 +83,16 @@
             "assets/js/content/tally.js",
             "assets/js/content/main.js"
         ],
-		"css": [
-			"assets/css/reset.css",
-			"assets/libs/jquery-ui.min.css",
-			"assets/libs/jquery.growl.css",
-			"assets/libs/cssshake.min.css",
-			"assets/css/styles.css",
-			"assets/css/battle.css",
-			"assets/css/monster.css",
-			"assets/css/tally.css"
-		],
+        "css": [
+            "assets/css/reset.css",
+            "assets/libs/jquery-ui.min.css",
+            "assets/libs/jquery.growl.css",
+            "assets/libs/cssshake.min.css",
+            "assets/css/styles.css",
+            "assets/css/battle.css",
+            "assets/css/monster.css",
+            "assets/css/tally.css"
+        ],
         "run_at": "document_end"
     }],
     "permissions": [
@@ -102,12 +100,12 @@
         "activeTab",
         "storage",
         "management",
-		"https://www.google-analytics.com/"
+        "https://www.google-analytics.com/"
     ],
     "web_accessible_resources": [
-        "*.svg","*.png",
-        "*.jpg","*.JPG",
-        "*.gif","*.GIF",
+        "*.svg", "*.png",
+        "*.jpg", "*.JPG",
+        "*.gif", "*.GIF",
         "/assets/sounds/*"
     ],
     "content_security_policy": "script-src 'self' https://ssl.google-analytics.com; object-src 'self'"

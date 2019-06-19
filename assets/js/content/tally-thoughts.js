@@ -3,9 +3,10 @@
 window.Thought = (function() {
 	// PRIVATE
 
-	let thoughtOpen = false,
-		DEBUG = false;
-
+	let DEBUG = false,
+		thoughtOpen = false,
+		_active,
+		_queue = [];
 
 	/**
 	 *	Get a random fact (by domain)
@@ -14,7 +15,7 @@ window.Thought = (function() {
 		try {
 			let r = Math.floor(Math.random() * ThoughtData.facts[domain].length);
 			return ThoughtData.facts[domain][r];
-		} catch(err){
+		} catch (err) {
 			console.error(err);
 		}
 	}
@@ -28,7 +29,7 @@ window.Thought = (function() {
 			if (thoughtOpen) return; // if open, exit
 			Sound.playMood(sound);
 			show(fact.fact);
-		} catch(err){
+		} catch (err) {
 			console.error(err);
 		}
 	}
@@ -40,7 +41,7 @@ window.Thought = (function() {
 			if (pageData.trackers.length > 3) num = "lots";
 			if (DEBUG) console.log("💭 showTrackerThought()", num);
 			showThought(getThought(["tracker", num, 0]), true);
-		} catch(err){
+		} catch (err) {
 			console.error(err);
 		}
 	}
@@ -70,7 +71,7 @@ window.Thought = (function() {
 			}
 			// otherwise
 			else return false;
-		} catch(err){
+		} catch (err) {
 			console.error(err);
 		}
 	}
@@ -84,7 +85,7 @@ window.Thought = (function() {
 			if (thoughtOpen) return; // else if open, then exit
 			if (sound) Sound.playMood(thought.mood);
 			show(thought.text);
-		} catch(err){
+		} catch (err) {
 			console.error(err);
 		}
 	}
@@ -94,14 +95,14 @@ window.Thought = (function() {
 	/**
 	 *	Show the thought bubble [with text and sound]
 	 */
-	function showString(str, sound, ifOpenUpdate) {
+	function showString(str, sound, ifOpenUpdate = true) {
 		try {
 			if (DEBUG) console.log("💭 Thought.showString()", str, sound, ifOpenUpdate);
 			if (ifOpenUpdate) thoughtOpen = false; // true = update even if open
 			if (thoughtOpen) return; // if open, exit
 			if (sound) Sound.playMood(sound);
 			show(str);
-		} catch(err){
+		} catch (err) {
 			console.error(err);
 		}
 	}
@@ -112,7 +113,6 @@ window.Thought = (function() {
 
 			// Thought.showThought(Thought.getThought(["monster", "launch", 0]),true);
 			// return;
-
 
 			let r = Math.random();
 			if (r < 0.25)
@@ -127,22 +127,79 @@ window.Thought = (function() {
 			else
 				// show thought <string>, play sound
 				showString("this is just a string", "neutral", true);
-		} catch(err){
+		} catch (err) {
 			console.error(err);
 		}
 	}
 
 
+	// ********************* LOGGING / QUEUE SYTEM ********************* //
+
 	/**
-	 *	Show a thought string
+	 *	add a string to the queue
 	 */
 	function show(str) {
 		try {
 			if (DEBUG) console.log("💭 Thought.show()", str);
+			// add to end of _queue
+			_queue.push(str);
+			// start/make sure queueChecker is running
+			queueChecker();
+		} catch (err) {
+			console.error(err);
+		}
+	}
+	/**
+	 *	control state
+	 */
+	function active(state) {
+		try {
+			if (state != undefined && (state === true || state === false))
+				_active = state;
+			return _active;
+		} catch (err) {
+			console.error(err);
+		}
+	}
+	/**
+	 *	Check if there strings to show
+	 */
+	function queueChecker() {
+		try {
+			if (DEBUG) console.log("💭 Thought.queueChecker()", _queue, _active);
+			// if no items in _queue then stop
+			if (_queue.length < 1)
+				return;
+			// else, if not currently active then start a new one
+			if (!_active)
+				writeNextInQueue();
+			// if currently active, check again in a bit in case there are more
+			setTimeout(function() {
+				queueChecker();
+			}, 200);
+		} catch (err) {
+			console.error(err);
+		}
+	}
+	/**
+	 *	Show a thought string
+	 */
+	function writeNextInQueue(lineSpeed = 150) {
+		try {
+			if (DEBUG) console.log("💭 Thought.writeNextInQueue()", _queue, _active);
+			// if currently active, stop
+			if (_active) return;
+			// set active state true
+			active(true);
+			// set open
 			thoughtOpen = true;
 
+			// remove first element in array
+			var str = _queue.shift();
 			// replace any template strings
 			str = searchReplaceTemplateStr(str);
+
+			if (DEBUG) console.log("💭 Thought.writeNextInQueue()", str, _queue, _active);
 
 			// set number of lines based on str.length
 			let lines = 1;
@@ -164,25 +221,39 @@ window.Thought = (function() {
 			Tally.stare();
 			// hide after appropriate reading period
 			setTimeout(hide, duration);
-		} catch(err){
+		} catch (err) {
 			console.error(err);
 		}
 	}
 
+	/**
+	 * 	Hide after player has time to read it
+	 */
 	function hide() {
 		try {
 			//return; //testing
-			if (!thoughtOpen) return;
+			// if (!thoughtOpen) return;
 			$('#tally_thought_bubble').css({
 				'left': '-500px',
 				'display': 'none',
 				'opacity': 0
 			});
 			thoughtOpen = false;
-		} catch(err){
+			// release active state
+			active(false);
+		} catch (err) {
 			console.error(err);
 		}
 	}
+
+
+	//testing
+	$("body").mousemove(function(event) {
+		var msg = ".mousemove() " + event.pageX + ", " + event.pageY;
+		let normalized = FS_Number.normalize(event.pageX, 0, $(window).width());
+		if (DEBUG) console.log(normalized);
+		showString(msg);
+	});
 
 	/**
 	 *	Search and replace any template
@@ -196,7 +267,7 @@ window.Thought = (function() {
 			if (str.indexOf("{{Monster.current}}") > -1) {
 				find = "Monster.current";
 				replace = MonsterData.dataById[Monster.current().mid].name;
-				if (FS_String.isVowel(replace[0])) replace = "n "+replace;
+				if (FS_String.isVowel(replace[0])) replace = "n " + replace;
 			}
 			if (str.indexOf("{{pageData.title}}") > -1) {
 				find = "pageData.title";
@@ -211,7 +282,7 @@ window.Thought = (function() {
 				str = str.replace(new RegExp('\{\{(?:\\s+)?(' + find + ')(?:\\s+)?\}\}'), "<span class='tally-replace'>" + replace + "</span>");
 			// return string
 			return str;
-		} catch(err){
+		} catch (err) {
 			console.error(err);
 		}
 	}
@@ -233,9 +304,6 @@ window.Thought = (function() {
 		},
 		showString: function(str, sound, ifOpenUpdate) {
 			showString(str, sound, ifOpenUpdate);
-		},
-		show: function(str, sound) {
-			show(str, sound);
 		},
 		showTrackerThought: showTrackerThought,
 		random: random,

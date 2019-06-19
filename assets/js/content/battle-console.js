@@ -131,7 +131,7 @@ window.BattleConsole = (function() {
 			//if(DEBUG) console.log("writeNextInQueue()", _queue, _active);
 			// if currently active, stop
 			if (_active) return;
-			// set active state
+			// else set active true
 			active(true);
 			// remove first element in array
 			var str = _queue.shift();

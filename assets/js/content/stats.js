@@ -131,7 +131,7 @@ window.Stats = (function() {
 			let upOrDown = 0;
 			// if stat is already full
 			if (statData.val > 0 && allStats[who][statData.stat].normalized >= 1) {
-				Thought.show("Your " + statData.stat + " is full!", "happy", true);
+				Thought.showString("Your " + statData.stat + " is full!", "happy", true);
 				return;
 			}
 			// else, add new stat
@@ -153,16 +153,16 @@ window.Stats = (function() {
 			//console.log("📋 Stats.updateFromConsumable()", statData, statData.stat, allStats[who]);
 			// if stat is full
 			if (allStats[who][statData.stat] >= 1) {
-				Thought.show("Your " + statData.stat + " is full!", "happy", true);
+				Thought.showString("Your " + statData.stat + " is full!", "happy", true);
 			} else {
 				setTimeout(function() {
 					// play sound
 					if (upOrDown > 0) {
 						Sound.playRandomJump();
-						Thought.show("Yay! You increased your " + statData.stat + "!", "happy", true);
+						Thought.showString("Yay! You increased your " + statData.stat + "!", "happy", true);
 					} else if (upOrDown < 0) {
 						Sound.playRandomJumpReverse();
-						Thought.show("Dang, you lost some " + statData.stat + "!", "sad", true);
+						Thought.showString("Dang, you lost some " + statData.stat + "!", "sad", true);
 					}
 				}, 500);
 

@@ -1,11 +1,11 @@
 
 
-## Tally Chrome Extension README
-
-Current version 0.1.1
+## Tally Extension README
 
 
-### Chrome and Opera Installation
+
+
+### Chrome and Opera Development Installation
 
 1. Download and unzip the [extension](https://github.com/omprojects/tally-extension/archive/master.zip)
 2. In Chrome, go to ```chrome://extensions```
@@ -14,7 +14,7 @@ Current version 0.1.1
 5. Select the directory containing your unpacked extension.
 
 
-### Firefox Installation
+### Firefox Development Installation
 
 1. Open Firefox browser and navigate to ```about:debugging```
 2. Click the "Load Temporary Add-on" button.
@@ -33,6 +33,10 @@ Current version 0.1.1
 ## Development Versions
 
 
+### Version 0.2.0
+
+* Adds beginning of turn-based RPG battle system with console, explosions, etc.
+* Adds consumables
 
 ### Version 0.1.4
 
