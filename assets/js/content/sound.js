@@ -76,9 +76,17 @@ window.Sound = (function() {
 	function startMusic() {
 		try {
 			console.log("♪ Sound.startMusic()", musicAudio.src);
+
+
+
+
 			if (!musicPlaying) {
 				// create
 				musicAudio = new Audio(chrome.extension.getURL("assets/sounds/music/" + musicFile));
+				// set params
+				musicAudio.volume = tally_options.soundVolume || 0.3;
+				if (musicAudio.volume < 0) musicAudio.volume = 0;
+				// add listener to make sure loop happens
 				musicAudio.addEventListener('ended', function() {
 					this.currentTime = 0;
 					if (!musicPlaying) this.pause();
