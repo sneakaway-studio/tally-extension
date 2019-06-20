@@ -30,6 +30,8 @@
 
 .tally_consumable_wrapper{
     z-index: 99999999999;
+    width: 100px;
+    height: 100px;
 }
 .tally_consumable_inner {
     position: absolute;

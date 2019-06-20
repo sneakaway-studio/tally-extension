@@ -123,8 +123,7 @@ window.TallyMain = (function() {
 			// update debugger
 			Debug.update();
 			// possibly add a consumable
-			//Consumable.randomizer();
-			Consumable.create(1); // testing
+			Consumable.randomizer();
 			// check last active status
 			TallyEvents.checkLastActive();
 			// check to see if there are any tutorial events to complete

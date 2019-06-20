@@ -41,6 +41,9 @@ window.FS_Number = (function() {
 				console.error(err);
 			}
 		},
+		randomIntBetween: function(min, max) {
+			return Math.floor(Math.random() * (max - min + 1) + min);
+		},
 		randomPosNeg: function(val) {
 			try {
 				// either 1 or -1

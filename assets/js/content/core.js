@@ -103,16 +103,26 @@ window.Core = (function() {
 	/**
 	 *	Recursive function to generate safe x,y for consumables, monsters, etc.
 	 */
-	function returnRandomPositionFull(ele) {
+	function returnRandomPositionFull(ele, h, w, preference = "") {
 		try {
-			let w = $(ele).width() || 200,
+			// get dimensions of element if not zero
+			if ($(ele).width() !== 0) {
+				w = $(ele).width() || 200;
 				h = $(ele).height() || 200;
-			if (DEBUG) console.log("returnRandomPositionFull()", ele, $(ele).width(), $(ele).height());
+			}
+			if (DEBUG) console.log("⚙️ Core.returnRandomPositionFull()", ele, w + "," + h, pageData.browser.width, pageData.browser.fullHeight);
+			// position
 			let pos = {
-				"x": Math.ceil(Math.random() * (pageData.browser.width - w) + (w / 2)),
-				"y": Math.ceil(Math.random() * (pageData.browser.fullHeight - h) + (h / 2))
+				"x": Math.ceil(Math.random() * (pageData.browser.width - w)),
+				"y": Math.ceil(Math.random() * (pageData.browser.fullHeight - h))
 			};
-			//if (DEBUG) console.log("⚙️ Core.returnRandomPositionFull()",w,h,pos);
+			// include preferences for objects
+			if (preference === "below-the-fold")
+				pos.y = FS_Number.randomIntBetween(pageData.browser.fullHeight / 2, pageData.browser.fullHeight);
+			else if (preference === "above-the-fold")
+				pos.y = FS_Number.randomIntBetween(0, pageData.browser.fullHeight / 2);
+
+			if (DEBUG) console.log("⚙️ Core.returnRandomPositionFull()", w +","+ h, pos);
 			return pos;
 		} catch (err) {
 			console.error(err);
@@ -140,8 +150,8 @@ window.Core = (function() {
 		setRandomPositionFull: function(ele) {
 			setRandomPositionFull(ele);
 		},
-		returnRandomPositionFull: function(ele) {
-			return returnRandomPositionFull(ele);
+		returnRandomPositionFull: function(ele, h, w, preference) {
+			return returnRandomPositionFull(ele, h, w, preference);
 		},
 		setElementAbsolute: function(ele) {
 			$(ele).css({

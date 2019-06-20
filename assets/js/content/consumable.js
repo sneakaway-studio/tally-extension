@@ -13,37 +13,37 @@ window.Consumable = (function() {
 			"cookies": {
 				"health": {
 					"name": "health",
-					"type":"cookie",
-					"ref":"a",
+					"type": "cookie",
+					"ref": "a",
 					"img": "cookie-dots.gif",
-					"val": FS_Number.round(Math.random()*0.2,2),
+					"val": FS_Number.round(Math.random() * 0.2, 2),
 					"stat": "health",
 					"sound": "happy",
 				},
 				"stamina": {
 					"name": "stamina",
-					"type":"cookie",
-					"ref":"a",
+					"type": "cookie",
+					"ref": "a",
 					"img": "cookie-waffle.gif",
-					"val": FS_Number.round(Math.random()*0.2,2),
+					"val": FS_Number.round(Math.random() * 0.2, 2),
 					"stat": "stamina",
 					"sound": "happy",
 				},
 				"fortune": {
 					"name": "fortune",
-					"type":"cookie",
-					"ref":"a",
+					"type": "cookie",
+					"ref": "a",
 					"img": "cookie-fortune.gif",
-					"val": FS_Number.round(FS_Number.randomPosNeg(0.2),2),
+					"val": FS_Number.round(FS_Number.randomPosNeg(0.2), 2),
 					"stat": randomObjKey(Stats.resetStatsAll),
 					"sound": "cautious",
 				},
 				"bad": {
 					"name": "bad",
-					"type":"cookie",
-					"ref":"a",
+					"type": "cookie",
+					"ref": "a",
 					"img": "cookie-bad.gif",
-					"val": -FS_Number.round(Math.random()*0.2,2),
+					"val": -FS_Number.round(Math.random() * 0.2, 2),
 					"stat": randomObjKey(Stats.resetStatsAll),
 					"sound": "danger",
 				}
@@ -51,10 +51,10 @@ window.Consumable = (function() {
 			"junk": {
 				"data": {
 					"name": "data",
-					"type":"junk",
-					"ref":"some",
+					"type": "junk",
+					"ref": "some",
 					"img": "junk-data.gif",
-					"val": -FS_Number.round(Math.random()*0.2,2),
+					"val": -FS_Number.round(Math.random() * 0.2, 2),
 					"stat": "stamina",
 					"sound": "cautious",
 				},
@@ -67,14 +67,12 @@ window.Consumable = (function() {
 	function randomizer() {
 		try {
 			let r = Math.random();
-			if (r < 0.01)
-				create(3);
-			else if (r < 0.05)
-				create(2);
-			else if (r < 0.5)
-				create(1);
-			else
-				return false;
+			// testing
+			create(10);
+			if (r < 0.01) create(3);
+			else if (r < 0.05) create(2);
+			else if (r < 0.15) create(1);
+			else return false; // create none
 		} catch (err) {
 			console.error(err);
 		}
@@ -82,9 +80,9 @@ window.Consumable = (function() {
 	/**
 	 *	2. if so, then make a new one from list
 	 */
-	function create(num=1) {
+	function create(num = 1) {
 		try {
-			for (var i=0; i<num; i++){
+			for (var i = 0; i < num; i++) {
 				if (!pageData.activeOnPage || tally_options.gameMode !== "full") return;
 				//if (DEBUG) console.log("Consumable.create() gameMode="+tally_options.gameMode);
 				consumables.push(FS_Object.randomObjProperty(types[randomObjKey(types)]));
@@ -102,33 +100,39 @@ window.Consumable = (function() {
 	 */
 	function add() {
 		try {
+			let randomPos = [],
+				css = "",
+				imgStr = "",
+				ref = "",
+				str = "";
+
 			// loop through and add all consumables
-			for (var i=0; i<consumables.length; i++){
+			for (var i = 0; i < consumables.length; i++) {
 				/*jshint loopfunc: true */
 				//if (DEBUG) console.log("Consumable.add()",i);
 				// new position
-				let randomPos = Core.returnRandomPositionFull('.tally_consumable_wrapper');
-				let css = "left:" + randomPos.x + "px;top:" + randomPos.y + "px;";
+				randomPos = Core.returnRandomPositionFull('.tally_consumable_wrapper', 100, 100, "below-the-fold");
+				css = "left:" + randomPos.x + "px;top:" + randomPos.y + "px;";
 				//if (DEBUG) console.log("Core.add()",randomPos,css);
 				// html
-				let imgStr = chrome.extension.getURL('assets/img/consumables/' + consumables[i].type + "/" + consumables[i].img);
-				let ref = 'tally_consumable_'+ i;
-				let str = "<div data-consumable='"+ i +"' class='tally_consumable_inner "+ref+"' style='" + css + "'>"+
-						  "<img src='" + imgStr + "'></div>";
+				imgStr = chrome.extension.getURL('assets/img/consumables/' + consumables[i].type + "/" + consumables[i].img);
+				ref = 'tally_consumable_' + i;
+				str = "<div data-consumable='" + i + "' class='tally_consumable_inner " + ref + "' style='" + css + "'>" +
+					"<img src='" + imgStr + "'></div>";
 				$('.tally_consumable_wrapper').append(str);
 				// add listeners
-				$(document).on("mouseover", "."+ref, function() {
+				$(document).on("mouseover", "." + ref, function() {
 					//if (DEBUG) console.log($(this));
 					hover($(this).attr("data-consumable"));
 				});
-				$(document).on("click", "."+ref, function() {
+				$(document).on("click", "." + ref, function() {
 					// Math.random so gif replays
-					let imgStr = chrome.extension.getURL('assets/img/consumables/consumable-explosion.gif?' + Math.random());
-					let str ="<img src='" + imgStr + "'>";
-					$("."+ref).html(str);
+					let img = chrome.extension.getURL('assets/img/consumables/consumable-explosion.gif?' + Math.random());
+					let str = "<img src='" + img + "'>";
+					$("." + ref).html(str);
 					setTimeout(function() {
 						// remove
-						$("."+ref).remove();
+						$("." + ref).remove();
 					}, 500);
 					collect($(this).attr("data-consumable"));
 				});
@@ -143,7 +147,7 @@ window.Consumable = (function() {
 	function hover(key) {
 		let consumable = consumables[key];
 		//if (DEBUG) console.log("Consumable.hover()", key, consumable);
-		if (!hovered){
+		if (!hovered) {
 			// tell them
 			Thought.showString("Oh, you found " + consumable.ref + " " + consumable.name + " " + consumable.type + "!", consumable.sound, true);
 		}
