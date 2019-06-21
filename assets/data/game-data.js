@@ -2,8 +2,6 @@
 
 var GameData = (function() {
 
-	let daytime = ["9:00","17:00"],
-		nightime = ["22:00","6:00"];
 
 	let socialDomains = [
 		"facebook.com",
@@ -56,8 +54,6 @@ var GameData = (function() {
 	];
 
 	return {
-		daytime: daytime,
-		nightime: nightime,
 		socialDomains: socialDomains,
 		clickScore: clickScore,
 		levels: levels

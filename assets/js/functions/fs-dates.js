@@ -10,10 +10,45 @@ window.FS_Date = (function() {
 		else date = moment(date);
 		return date;
 	}
+	// 24 hour time format
+	let timeFormat24 = 'HH:mm:ss';
+	// now
+	let time = moment();
+	let workTime = [
+			moment("9:00", timeFormat24),
+			moment("17:00", timeFormat24)
+		],
+		nightTime = [
+			moment("22:00", timeFormat24),
+			moment("6:00", timeFormat24).add(1, 'day') // add one day for tomorrow morning
+		];
+
+	function isWeekDay() {
+		let weekDay = moment().isBetween(moment().isoWeekday(1), moment().isoWeekday(5), 'day', '[]');
+		//console.log("isWeekDay()", weekDay);
+		return weekDay;
+	}
 
 
 	// PUBLIC
 	return {
+		time: function() {
+			return time;
+		},
+		isWorkday: function() {
+			let ret = (moment().isBetween(workTime[0], workTime[1]) && isWeekDay());
+			//console.log("isWorkday", ret);
+			if (ret)
+				return true;
+			else return false;
+		},
+		isWeekDay: isWeekDay,
+		isNight: function() {
+			//console.log("isNight", time, moment().isBetween(nightTime[0], nightTime[1]));
+			if (moment().isBetween(nightTime[0], nightTime[1]))
+				return true;
+			else return false;
+		},
 		// what is the difference in milliseconds?
 		difference: function(d1, d2) {
 			d1 = format(d1);

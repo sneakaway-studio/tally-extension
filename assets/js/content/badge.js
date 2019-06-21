@@ -6,8 +6,8 @@
 window.Badge = (function() {
 	// PRIVATE
 
-	let DEBUG = true,
-	hovered = false,
+	let DEBUG = false,
+		hovered = false,
 		types = {
 
 			"stalker": {
@@ -15,8 +15,7 @@ window.Badge = (function() {
 				"type": "badge",
 				"ref": "a",
 				"img": "social-stalker.gif",
-				"val": -FS_Number.round(Math.random() * 0.2, 2),
-				"stat": "stamina",
+				"val": FS_Number.round(Math.random() * 10, 0),
 				"sound": "cautious",
 			},
 			"night owl": {
@@ -24,8 +23,7 @@ window.Badge = (function() {
 				"type": "badge",
 				"ref": "a",
 				"img": "worker-nightowl.gif",
-				"val": -FS_Number.round(Math.random() * 0.2, 2),
-				"stat": "stamina",
+				"val": FS_Number.round(Math.random() * 10, 0),
 				"sound": "happy",
 			}
 
@@ -43,29 +41,24 @@ window.Badge = (function() {
 				chosen = false;
 
 			// testing
+			//return create("stalker");
+			return create("night owl");
 
-			create("stalker", 1);
-			// create("night owl", 1);
-			return;
 			// SOCIAL DOMAINS
 			if (GameData.socialDomains.indexOf(pageData.domain) > -1) {
-				//console.log("social domain");
-				if (r < 0.2) return create("stalker", 1);
+				//if (DEBUG) console.log("social domain");
+				if (r < 0.01) return create("stalker");
 			}
-
 			// 9a-5p busy bee
-			if (FS_Date.isWorkday()) {
-				//console.log('9a-5p busy bee');
-				if (r < 0.1) return create("busy bee", 1);
+			else if (FS_Date.isWorkday()) {
+				//if (DEBUG) console.log('9a-5p busy bee');
+				//if (r < 0. 1) return create("busy bee");
 			}
 			// 10p–6a night owl
 			else if (FS_Date.isNight()) {
-				//console.log('10p–6a night owl')
-				// if (r < 0.1)
-				return create("night owl", 1);
+				//if (DEBUG) console.log('10p–6a night owl')
+				if (r < 0.01) return create("night owl");
 			}
-
-
 
 
 		} catch (err) {
@@ -75,13 +68,12 @@ window.Badge = (function() {
 	/**
 	 *	2. if so, then make a new one from list
 	 */
-	function create(name = "", num = 1) {
+	function create(name = "") {
 		try {
-			console.log("Badge.create()", name, num);
+			if (DEBUG) console.log("Badge.create()", name);
 
-			// if and name are set
-			if (name !== "")
-				add(types[name]);
+			// if name is set
+			if (name !== "") add(types[name]);
 
 		} catch (err) {
 			console.error(err);
@@ -96,7 +88,6 @@ window.Badge = (function() {
 			if (!prop(badge.name) && badge.name === "") return;
 
 			let randomPos = [],
-
 				imgStr = "",
 				id = "",
 				str = "";
@@ -107,7 +98,7 @@ window.Badge = (function() {
 			//if (DEBUG) console.log("Core.add()",randomPos,css);
 			// html
 			imgStr = chrome.extension.getURL('assets/img/badges/' + badge.img);
-			id = badge.name + '_badge';
+			id = badge.name.replace(" ","_") + '_badge';
 			str = "<div data-badge='" + badge.name + "' class='tally_badge_inner' id='" + id + "'>" +
 				"<img src='" + imgStr + "'></div>";
 			$('.tally_badge').html(str);
@@ -128,10 +119,11 @@ window.Badge = (function() {
 
 			// add listeners
 			$(document).on("mouseover", "#" + id, function() {
-				//if (DEBUG) console.log($(this));
+				if (DEBUG) console.log($(this));
 				hover($(this).attr("data-badge"));
 			});
 			$(document).on("click", "#" + id, function() {
+				if (DEBUG) console.log($(this));
 				// Math.random so gif replays
 				let img = chrome.extension.getURL('assets/img/consumables/consumable-explosion.gif?' + Math.random());
 				$(this).html("<img src='" + img + "'>");
