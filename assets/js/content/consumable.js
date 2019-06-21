@@ -10,7 +10,7 @@ window.Consumable = (function() {
 		consumables = [],
 		hovered = false,
 		types = {
-			"cookies": {
+			"cookie": {
 				"health": {
 					"name": "health",
 					"type": "cookie",
@@ -58,7 +58,7 @@ window.Consumable = (function() {
 					"stat": "stamina",
 					"sound": "cautious",
 				},
-			}
+			},
 		};
 
 	/**
@@ -66,13 +66,29 @@ window.Consumable = (function() {
 	 */
 	function randomizer() {
 		try {
-			let r = Math.random();
+			// don't display consumable if display is off
+			if (!pageData.activeOnPage || tally_options.gameMode !== "full") return;
+
+			let countR = Math.random(), // whether to create a consumable at all
+				r = Math.random(), // whether to create consumable of type
+				type = "", // default type
+				count = 1, // number to create
+				chosen = false;
+
 			// testing
-			create(10);
-			if (r < 0.01) create(3);
-			else if (r < 0.05) create(2);
-			else if (r < 0.15) create(1);
-			else return false; // create none
+			//create("cookie", "", 5);
+
+			// add three on one page every 1000 loads
+			if (countR < 0.001) count = 3;
+			// add two on one page every 200 loads
+			else if (countR < 0.005) count = 2;
+
+			// pick random from type
+			if (r < 0.05) create("cookie", "", count);
+			else if (r < 0.06) create("data", "", count);
+			// pick random type
+			else if (r < 0.07) create("", "", count);
+
 		} catch (err) {
 			console.error(err);
 		}
@@ -80,16 +96,30 @@ window.Consumable = (function() {
 	/**
 	 *	2. if so, then make a new one from list
 	 */
-	function create(num = 1) {
+	function create(type = "", name = "", num = 1) {
 		try {
+			// don't display if off
+			if (!pageData.activeOnPage || tally_options.gameMode !== "full" || type === "") return;
+			// store the consumable
+			let consumable = {};
 			for (var i = 0; i < num; i++) {
-				if (!pageData.activeOnPage || tally_options.gameMode !== "full") return;
-				//if (DEBUG) console.log("Consumable.create() gameMode="+tally_options.gameMode);
-				consumables.push(FS_Object.randomObjProperty(types[randomObjKey(types)]));
+
+				// if type and name are set, be specific
+				if (type !== "" && name !== "") consumable = types[type][name];
+				// if only type is set, get random from that type
+				else if (type !== "") consumable = FS_Object.randomObjProperty(types[type]);
+				// if nothing is set, get random
+				else consumable = FS_Object.randomObjProperty(types[randomObjKey(types)]);
+
+				// if a consumable was selected push it to array
+				if (consumable != {}) consumables.push(consumable);
+
+				if (DEBUG) console.log("Consumable.create()", type, i +"/"+ num, consumable);
+
 				// testing
 				//consumables.push(types.cookie.fortune);
 			}
-			//if (DEBUG) console.log(consumables);
+			if (DEBUG) console.log(consumables);
 			add();
 		} catch (err) {
 			console.error(err);
@@ -103,36 +133,38 @@ window.Consumable = (function() {
 			let randomPos = [],
 				css = "",
 				imgStr = "",
-				ref = "",
+				id = "",
 				str = "";
 
 			// loop through and add all consumables
 			for (var i = 0; i < consumables.length; i++) {
 				/*jshint loopfunc: true */
-				//if (DEBUG) console.log("Consumable.add()",i);
+				if (DEBUG) console.log("Consumable.add()", i, consumables[i]);
+
 				// new position
-				randomPos = Core.returnRandomPositionFull('.tally_consumable_wrapper', 100, 100, "below-the-fold");
+				randomPos = Core.returnRandomPositionFull('', 100, 100, "below-the-fold");
 				css = "left:" + randomPos.x + "px;top:" + randomPos.y + "px;";
-				//if (DEBUG) console.log("Core.add()",randomPos,css);
+				if (DEBUG) console.log("Core.add()", randomPos, css);
+
 				// html
 				imgStr = chrome.extension.getURL('assets/img/consumables/' + consumables[i].type + "/" + consumables[i].img);
-				ref = 'tally_consumable_' + i;
-				str = "<div data-consumable='" + i + "' class='tally_consumable_inner " + ref + "' style='" + css + "'>" +
+				id = 'tally_consumable_' + i;
+				str = "<div data-consumable='" + i + "' class='tally_consumable_inner' id='" + id + "' style='" + css + "'>" +
 					"<img src='" + imgStr + "'></div>";
 				$('.tally_consumable_wrapper').append(str);
+
 				// add listeners
-				$(document).on("mouseover", "." + ref, function() {
+				$(document).on("mouseover", "#" + id, function() {
 					//if (DEBUG) console.log($(this));
 					hover($(this).attr("data-consumable"));
 				});
-				$(document).on("click", "." + ref, function() {
+				$(document).on("click", "#" + id, function() {
 					// Math.random so gif replays
 					let img = chrome.extension.getURL('assets/img/consumables/consumable-explosion.gif?' + Math.random());
-					let str = "<img src='" + img + "'>";
-					$("." + ref).html(str);
+					$(this).html("<img src='" + img + "'>");
 					setTimeout(function() {
 						// remove
-						$("." + ref).remove();
+						$(this).remove();
 					}, 500);
 					collect($(this).attr("data-consumable"));
 				});
@@ -190,7 +222,9 @@ window.Consumable = (function() {
 	// PUBLIC
 	return {
 		randomizer: randomizer,
-		create: create,
+		create: function(type, name, num) {
+			create(type, name, num);
+		},
 		add: add,
 	};
 })();
