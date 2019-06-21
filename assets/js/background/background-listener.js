@@ -393,7 +393,7 @@ function adjustScore(_score, scoreObj, n) {
 function checkLevel(_tally_user) {
 	try {
 		//console.log("checkLevel()",_tally_user);
-		let nextLevel = gameRules.levels[_tally_user.score.level+1];
+		let nextLevel = GameData.levels[_tally_user.score.level+1];
 		if (_tally_user.score >= nextLevel.xp){
 			return true;
 		}

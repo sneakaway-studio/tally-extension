@@ -180,7 +180,7 @@ window.TallyListeners = (function() {
 				backgroundUpdate.eventData.action = eventData.action;
 				backgroundUpdate.eventData.text = eventData.text;
 				// add and update scores
-				backgroundUpdate.scoreData.score += gameRules.clickScore[eventData.action];
+				backgroundUpdate.scoreData.score += GameData.clickScore[eventData.action];
 
 				// only allow points for clicking the first time (FB Like, etc.)
 				$(target).toggleClass("tally-clicked");
@@ -196,7 +196,7 @@ window.TallyListeners = (function() {
 				// play sound
 				Sound.playCategory('user', 'click');
 				// show click visual
-				Effect.showClickVisualText(eventData, "+" + gameRules.clickScore[eventData.action]);
+				Effect.showClickVisualText(eventData, "+" + GameData.clickScore[eventData.action]);
 				// activate tally
 				// activateTally(eventData.action);
 

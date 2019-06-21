@@ -171,7 +171,7 @@ window.StatsDisplay = (function() {
 			if (who == "monster") return;
 
 			// xp required to advance to next level
-			let xpGoal = gameRules.levels[tally_user.score.level + 1].xp;
+			let xpGoal = GameData.levels[tally_user.score.level + 1].xp;
 			// normalize
 			let xpNormalized = (xpGoal - tally_user.score.score) / xpGoal;
 

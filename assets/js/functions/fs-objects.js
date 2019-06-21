@@ -8,7 +8,7 @@ window.FS_Object = (function() {
 
 	/**
 	 *	Return the value of the last key of an object
-	 *  use like FS_Object.lastKeyValue(gameRules.levels).level;
+	 *  use like FS_Object.lastKeyValue(GameData.levels).level;
 	 */
 	function lastKeyValue(obj) {
 		return obj[Object.keys(obj)[Object.keys(obj).length - 1]];
