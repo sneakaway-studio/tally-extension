@@ -73,30 +73,53 @@ window.Sound = (function() {
 		}
 	}
 
-	function startMusic() {
+	function startMusic(volumeModifier = .999) {
 		try {
-			console.log("♪ Sound.startMusic()", musicAudio.src);
+			console.log("♪ Sound.startMusic()");
+
+if (!musicPlaying) {
+
+
+			// reference to musicAudio element
+			musicAudio = document.querySelector('#tally_music');
+			// add source
+			$('#tally_music_source').attr("src", chrome.extension.getURL("assets/sounds/music/" + musicFile));
+			// set params
+			console.log("music 1",musicAudio.volume);
+			musicAudio.volume = FS_Number.clamp((tally_options.soundVolume || 0.3) + volumeModifier,0,1);
+			if (musicAudio.volume < 0) musicAudio.volume = 0;
+			musicAudio.muted = false;
+			musicAudio.pause();
+			musicAudio.load();
+			console.log("music 2",musicAudio.volume);
+
+			// create promise / attempt to play
+			var promise = musicAudio.play();
+			// if play failed
+			if (promise !== undefined) {
+				promise.then(_ => {
+					//if(DEBUG) console.log("Autoplay started!");
+				}).catch(err => {
+					//console.log(err);
+					//if(DEBUG) console.log("Autoplay prevented!");
+					// musicAudio.pause();
+					// musicAudio.play();
+				});
+			}
 
 
 
+				// // add listener to make sure loop happens
+				// musicAudio.addEventListener('ended', function() {
+				// 	this.currentTime = 0;
+				// 	if (!musicPlaying) this.pause();
+				// 	else {
+				// 		// update src
+				// 		this.src = chrome.extension.getURL("assets/sounds/music/" + musicFile);
+				// 		this.play();
+				// 	}
+				// }, false);
 
-			if (!musicPlaying) {
-				// create
-				musicAudio = new Audio(chrome.extension.getURL("assets/sounds/music/" + musicFile));
-				// set params
-				musicAudio.volume = tally_options.soundVolume || 0.3;
-				if (musicAudio.volume < 0) musicAudio.volume = 0;
-				// add listener to make sure loop happens
-				musicAudio.addEventListener('ended', function() {
-					this.currentTime = 0;
-					if (!musicPlaying) this.pause();
-					else {
-						// update src
-						this.src = chrome.extension.getURL("assets/sounds/music/" + musicFile);
-						this.play();
-					}
-				}, false);
-				musicAudio.play();
 			} else {
 				// update src
 				musicAudio.src = chrome.extension.getURL("assets/sounds/music/" + musicFile);

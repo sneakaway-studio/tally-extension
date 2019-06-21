@@ -121,7 +121,7 @@ window.BattleAttack = (function() {
 				Battle.progress = 2;
 			}
 			if (Battle.progress == 2) {
-				Sound.changeMusic('battle1-c-sharp.wav');
+				//Sound.changeMusic('battle1-c-sharp.wav');
 				Thought.showString("Whoa, this is getting intense!", null, true);
 			}
 

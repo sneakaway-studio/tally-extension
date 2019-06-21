@@ -42,7 +42,7 @@ window.Badge = (function() {
 
 			// testing
 			//return create("stalker");
-			return create("night owl");
+			//return create("night owl");
 
 			// SOCIAL DOMAINS
 			if (GameData.socialDomains.indexOf(pageData.domain) > -1) {

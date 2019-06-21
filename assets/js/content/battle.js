@@ -111,7 +111,7 @@ window.Battle = (function() {
 			$('.monster_stats').css({"display":"block"});
 
 // play music
-Sound.changeMusic("battle1-c.wav");
+Sound.changeMusic("tally-battle-music.wav");
 
 
 			// remove click, hover on monster
