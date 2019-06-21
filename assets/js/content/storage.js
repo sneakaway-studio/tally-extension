@@ -86,6 +86,7 @@ window.TallyStorage = (function() {
 					"text": ""
 				},
 				"consumable": null,
+				"badge": null,
 				"userData": {
 					"token": "INSERT_IN_BACKGROUND",
 				}

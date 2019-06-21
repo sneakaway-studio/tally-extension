@@ -84,6 +84,7 @@ function createUser() {
 			"monsters": {},
 			"skins": ["color-magenta"],
 			"consumables": {},
+			"badges": {},
 			"attacks": {}
 		};
 		return obj;

@@ -29,10 +29,10 @@ window.Interface = (function() {
 								"</div>" +
 							"</div>" +
 
-							// award
+							// award, consumables, and badges
 							"<div class='tally tally_award_wrapper'></div>" +
-							// consumables
 							"<div class='tally tally_consumable_wrapper'></div>" +
+							"<div class='tally tally_badge'></div>" +
 
 							// battle
 							"<div class='tally' id='battle-ground'></div>" +

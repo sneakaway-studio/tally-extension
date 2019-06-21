@@ -124,6 +124,8 @@ window.TallyMain = (function() {
 			Debug.update();
 			// possibly add a consumable
 			Consumable.randomizer();
+			// check for, and possibly add badge
+			Badge.randomizer();
 			// check last active status
 			TallyEvents.checkLastActive();
 			// check to see if there are any tutorial events to complete

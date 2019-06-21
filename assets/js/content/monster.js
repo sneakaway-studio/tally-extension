@@ -57,8 +57,8 @@ window.Monster = (function() {
 			let min = Math.floor(userLevel - (userLevel * factor)),
 				max = Math.ceil(userLevel + (userLevel * factor));
 			let level = Math.floor(Math.random() * (max - min) + min);
+			if (level < 1) level = 1;
 			//console.log("👿 Monster.returnNewMonsterLevel()",userLevel,min,max,level);
-			//if (r < 2) r = 2;
 			return level;
 		} catch (err) {
 			console.error(err);
@@ -124,7 +124,7 @@ window.Monster = (function() {
 			$(document).on("mouseover", ".tally_monster_sprite_container", function() {
 				let mid = Number($(this).attr('data-mid'));
 				//console.log(mid);
-				// show thought with sound but don't add to queue in case they click 
+				// show thought with sound but don't add to queue in case they click
 				Thought.showThought(Thought.getThought(["battle", "choose", 0]), true, false);
 			});
 			$(document).on("click", ".tally_monster_sprite_container", function() {

@@ -152,6 +152,7 @@ function sendServerUpdate(data) {
 			if (result.score) _tally_user.score.score = result.score;
 			if (result.time) _tally_user.score.time = result.time;
 			if (result.consumables) _tally_user.consumables = result.consumables;
+			if (result.badges) _tally_user.badges = result.badges;
 			store("tally_user", _tally_user);
 		}).fail(error => {
 			console.error("<{!}> sendServerUpdate() RESULT =", JSON.stringify(error));
@@ -239,5 +240,5 @@ function getMonstersFromServer() {
 		});
 	} catch (err) {
 		console.error(err);
-	}	
+	}
 }

@@ -43,6 +43,23 @@
 }
 
 
+.tally_badge {
+    z-index: 99999999999;
+    width: 100px;
+    height: 100px;
+    position: absolute;
+    top:-500px;
+    left:-500px;
+    cursor: pointer;
+}
+.tally_badge_inner img {
+    width: 100px;
+    height: 100px;
+    cursor: pointer;
+}
+
+
+
 
 
 

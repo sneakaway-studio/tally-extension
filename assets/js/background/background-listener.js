@@ -331,8 +331,8 @@ function createServerUpdate(data) {
 			"url": data.pageData.url || "",
 			"domain": data.pageData.domain || "",
 		};
-		if (data.consumable != null)
-			obj.consumable = data.consumable;
+		if (data.consumable != null) obj.consumable = data.consumable;
+		if (data.badge != null) obj.badge = data.badge;
 		console.log("createServerUpdate()", obj);
 		return obj;
 	} catch (err) {

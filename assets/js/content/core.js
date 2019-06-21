@@ -101,7 +101,7 @@ window.Core = (function() {
 	}
 
 	/**
-	 *	Recursive function to generate safe x,y for consumables, monsters, etc.
+	 *	Recursive function to generate safe x,y for consumables, badges, monsters, etc.
 	 */
 	function returnRandomPositionFull(ele, h, w, preference = "") {
 		try {
@@ -117,10 +117,10 @@ window.Core = (function() {
 				"y": Math.ceil(Math.random() * (pageData.browser.fullHeight - h))
 			};
 			// include preferences for objects
+			if (preference === "above-the-fold")
+				pos.y = FS_Number.randomIntBetween(0, pageData.browser.fullHeight / 2);
 			if (preference === "below-the-fold")
 				pos.y = FS_Number.randomIntBetween(pageData.browser.fullHeight / 2, pageData.browser.fullHeight);
-			else if (preference === "above-the-fold")
-				pos.y = FS_Number.randomIntBetween(0, pageData.browser.fullHeight / 2);
 
 			if (DEBUG) console.log("⚙️ Core.returnRandomPositionFull()", w +","+ h, pos);
 			return pos;

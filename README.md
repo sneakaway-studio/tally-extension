@@ -45,6 +45,9 @@ Tally is a browser extension that uses AI to transform the data advertisers coll
 
 ## Development Versions
 
+### Version 0.2.2
+
+* Adds badges
 
 ### Version 0.2.1
 
