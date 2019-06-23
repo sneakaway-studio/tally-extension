@@ -6,7 +6,7 @@
 window.Stats = (function() {
 	// PRIVATE
 
-	let DEBUG = false,
+	let DEBUG = true,
 		levelMultiplier = 9.5,
 		resetStatsAll = {
 			"accuracy": 0.91,
@@ -44,7 +44,7 @@ window.Stats = (function() {
 					// compute max
 					if (who == "monster") {
 						// if monster then compute max using random
-						allStats[who][stat].max = FS_Number.round((Math.random() * (level * (levelMultiplier * 0.35))) + (level * levelMultiplier), 0);
+						allStats[who][stat].max = FS_Number.round((Math.random() * (level * (levelMultiplier * -0.15))) + (level * levelMultiplier), 0);
 					} else if (who == "tally") {
 						// stats values are based on player level * levelMultiplier * resetStatsAll values
 						allStats[who][stat].max = FS_Number.round((level * levelMultiplier * resetStatsAll[stat]), 0);
@@ -102,15 +102,26 @@ window.Stats = (function() {
 	 */
 	function setVal(who, stat = "", val = null) {
 		try {
+			let newVal = 0,
+				normalized = 0;
 			if (DEBUG) console.log("📋 Stats.setVal() #1", who, stat, val);
 			// should we update the stat by value?
-			if (stat != "" && val != null && val != 0) {
+			if (stat != "" && val !== 0) {
 				if (DEBUG) console.log("📋 Stats.setVal() #2", allStats[who][stat]);
 				// update value, clamp, and round
-				allStats[who][stat].val = FS_Number.clamp(FS_Number.round(val, 1), 0, allStats[who][stat].max);
+				newVal = FS_Number.clamp(FS_Number.round(val, 1), 0, allStats[who][stat].max);
+				// make sure we end up w/ a number
+				if (isNaN(newVal)) newVal = 0;
+				allStats[who][stat].val = newVal;
+
 				if (DEBUG) console.log("📋 Stats.setVal() #3", allStats[who][stat]);
+
 				// then update normalized
-				allStats[who][stat].normalized = FS_Number.normalize(val, 0, allStats[who][stat].max);
+				normalized = FS_Number.normalize(newVal, 0, allStats[who][stat].max);
+				// make sure we end up w/ a number
+				if (isNaN(normalized)) normalized = 0;
+				allStats[who][stat].normalized = normalized;
+
 				if (DEBUG) console.log("📋 Stats.setVal() #4", allStats[who][stat]);
 			} else {
 				console.warn("📋 Stats.setVal() stat and val required!");
@@ -193,7 +204,6 @@ window.Stats = (function() {
 			console.error(err);
 		}
 	}
-
 
 
 

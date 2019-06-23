@@ -89,6 +89,7 @@ if (!musicPlaying) {
 			musicAudio.volume = FS_Number.clamp((tally_options.soundVolume || 0.3) + volumeModifier,0,1);
 			if (musicAudio.volume < 0) musicAudio.volume = 0;
 			musicAudio.muted = false;
+			musicAudio.loop = true;
 			musicAudio.pause();
 			musicAudio.load();
 			console.log("music 2",musicAudio.volume);
