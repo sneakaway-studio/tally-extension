@@ -2,7 +2,7 @@
     "manifest_version": 2,
 
     "name": "Tally",
-    "description": "The 2018 ///// cross browser ///// version",
+    "description": "Tally is a browser extension that transforms the data advertisers collect into a multiplayer game.",
     "version": "0.2.2",
     "author": "Owen Mundy, Joelle Dietrick, and many more...",
 

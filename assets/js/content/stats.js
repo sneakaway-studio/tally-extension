@@ -100,31 +100,27 @@ window.Stats = (function() {
 	/**
 	 * 	Update individual stat value, clamp, and return
 	 */
-	function setVal(who, stat = "", val = null) {
+	function setVal(who, stat = "", change = null) {
 		try {
 			let newVal = 0,
 				normalized = 0;
-			if (DEBUG) console.log("📋 Stats.setVal() #1", who, stat, val);
 			// should we update the stat by value?
-			if (stat != "" && val !== 0) {
-				if (DEBUG) console.log("📋 Stats.setVal() #2", allStats[who][stat]);
-				// update value, clamp, and round
-				newVal = FS_Number.clamp(FS_Number.round(val, 1), 0, allStats[who][stat].max);
-				// make sure we end up w/ a number
-				if (isNaN(newVal)) newVal = 0;
-				allStats[who][stat].val = newVal;
+			if (stat != "" && change !== 0) {
+				if (DEBUG) console.log("📋 Stats.setVal() #1", who, stat, change, allStats[who][stat]);
 
-				if (DEBUG) console.log("📋 Stats.setVal() #3", allStats[who][stat]);
+				// update value, clamp, and round
+				allStats[who][stat].val = FS_Number.clamp(FS_Number.round(change, 1), 1, allStats[who][stat].max);
+				// make sure we end up w/ a number
+				if (isNaN(allStats[who][stat].val)) allStats[who][stat].val = 0;
 
 				// then update normalized
-				normalized = FS_Number.normalize(newVal, 0, allStats[who][stat].max);
+				allStats[who][stat].normalized = FS_Number.normalize(allStats[who][stat].val, 1, allStats[who][stat].max);
 				// make sure we end up w/ a number
-				if (isNaN(normalized)) normalized = 0;
-				allStats[who][stat].normalized = normalized;
+				if (isNaN(allStats[who][stat].normalized)) allStats[who][stat].normalized = 0;
 
-				if (DEBUG) console.log("📋 Stats.setVal() #4", allStats[who][stat]);
+				if (DEBUG) console.log("📋 Stats.setVal() #2", who, stat, change, allStats[who][stat]);
 			} else {
-				console.warn("📋 Stats.setVal() stat and val required!");
+				console.warn("📋 Stats.setVal() stat (string) and change (value) required!");
 			}
 			// return that value
 			return allStats[who][stat].val;

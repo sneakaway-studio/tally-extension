@@ -6,7 +6,7 @@
 window.Consumable = (function() {
 	// PRIVATE
 
-	let DEBUG = false,
+	let DEBUG = true,
 		consumables = [],
 		hovered = false,
 		types = {
@@ -100,6 +100,8 @@ window.Consumable = (function() {
 		try {
 			// don't display if off
 			if (!pageData.activeOnPage || tally_options.gameMode !== "full" || type === "") return;
+			if (DEBUG) console.log("🍪 Consumable.create()", type, name, num);
+
 			// store the consumable
 			let consumable = {};
 			for (var i = 0; i < num; i++) {
@@ -114,12 +116,12 @@ window.Consumable = (function() {
 				// if a consumable was selected push it to array
 				if (consumable != {}) consumables.push(consumable);
 
-				if (DEBUG) console.log("Consumable.create()", type, i +"/"+ num, consumable);
+				if (DEBUG) console.log("🍪 Consumable.create()", type, i +"/"+ num, consumable);
 
 				// testing
 				//consumables.push(types.cookie.fortune);
 			}
-			if (DEBUG) console.log(consumables);
+			if (DEBUG) console.log("🍪 Consumable.create()", consumables);
 			add();
 		} catch (err) {
 			console.error(err);
@@ -139,12 +141,12 @@ window.Consumable = (function() {
 			// loop through and add all consumables
 			for (var i = 0; i < consumables.length; i++) {
 				/*jshint loopfunc: true */
-				if (DEBUG) console.log("Consumable.add()", i, consumables[i]);
+				if (DEBUG) console.log("🍪 Consumable.add()", i, consumables[i]);
 
 				// new position
 				randomPos = Core.returnRandomPositionFull('', 100, 100, "below-the-fold");
 				css = "left:" + randomPos.x + "px;top:" + randomPos.y + "px;";
-				if (DEBUG) console.log("Core.add()", randomPos, css);
+				if (DEBUG) console.log("🍪 Consumable.add()", randomPos, css);
 
 				// html
 				imgStr = chrome.extension.getURL('assets/img/consumables/' + consumables[i].type + "/" + consumables[i].img);
@@ -178,10 +180,12 @@ window.Consumable = (function() {
 	 */
 	function hover(key) {
 		let consumable = consumables[key];
-		//if (DEBUG) console.log("Consumable.hover()", key, consumable);
+		//if (DEBUG) console.log("🍪 Consumable.hover()", key, consumable);
 		if (!hovered) {
 			// tell them
 			Thought.showString("Oh, you found " + consumable.ref + " " + consumable.name + " " + consumable.type + "!", consumable.sound, true);
+			if (consumable.name == "fortune")
+				Thought.showString("Feeling lucky?", consumable.sound, true);
 		}
 		// only show hover message once
 		hovered = true;
@@ -193,7 +197,7 @@ window.Consumable = (function() {
 	function collect(key) {
 		try {
 			let consumable = consumables[key];
-			//if (DEBUG) console.log("Consumable.collect()", key, consumable);
+			//if (DEBUG) console.log("🍪 Consumable.collect()", key, consumable);
 			// play sound
 			Sound.playRandomPowerup();
 

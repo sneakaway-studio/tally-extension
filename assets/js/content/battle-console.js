@@ -6,12 +6,11 @@
 window.BattleConsole = (function() {
 	// PRIVATE
 	let DEBUG = false,
-		stream, logId, _active, _queue, _next;
+		logId, _active, _queue, _next;
 
 	// reset all vars
 	function reset() {
 		_next = "";
-		stream = "";
 		logId = 0;
 		_active = false;
 		_queue = [];
@@ -50,8 +49,8 @@ window.BattleConsole = (function() {
 				top: "65%",
 			}).add({
 				targets: '#battle-console',
-				top: "75%",
-			}, '-=600');
+				top: "73%",
+			}, '-=600'); // after .6 seconds
 		} catch (err) {
 			console.error(err);
 		}
@@ -151,7 +150,7 @@ window.BattleConsole = (function() {
 			setTimeout(function() {
 				typeWriter("tally_log" + logId, str, 0);
 			}, lineSpeed);
-			//if (DEBUG) console.log(stream);
+			if (DEBUG) console.log("🖥️ BattleConsole.writeNextInQueue() str=",str);
 		} catch (err) {
 			console.error(err);
 		}
@@ -159,23 +158,25 @@ window.BattleConsole = (function() {
 
 	function showBattleOptions(lineSpeed = 150) {
 		try {
-			//if (DEBUG) console.log("showBattleOptions() step 1", _active);
+			if (DEBUG) console.log("🖥️ BattleConsole.showBattleOptions() step 1", _active);
 			// if currently active, stop
 			if (_active) return;
 			// set active state
 			active(true);
 			// get list of attacks
 			var _attacks = {};
+				if (DEBUG) console.log("🖥️ BattleConsole.showBattleOptions() step 1.1", _active);
 			if (!FS_Object.isEmpty(tally_user.attacks))
 				_attacks = tally_user.attacks;
 			// return if no attacks available
 			else return;
+				if (DEBUG) console.log("🖥️ BattleConsole.showBattleOptions() step 1.2", _active);
 
 			// build options
 			var str = "<div class='battle-options-row'>";
 			for (var key in _attacks) {
 				if (_attacks.hasOwnProperty(key)) {
-					//if (DEBUG) console.log(_attacks[key]);
+					if (DEBUG) console.log("🖥️ BattleConsole.showBattleOptions() step 1.3",_attacks[key]);
 					str += "<span data-attack='" + _attacks[key].name +
 						"' class='battle-options attack-" + _attacks[key].name + "'>" +
 						_attacks[key].name + "</span>";
@@ -183,7 +184,7 @@ window.BattleConsole = (function() {
 			}
 			str += "<span class='battle-options-esc'>run [esc]</span></div>";
 
-			//if (DEBUG) console.log("🖥️ BattleConsole.showBattleOptions() step 2", str, _queue,_active);
+			if (DEBUG) console.log("🖥️ BattleConsole.showBattleOptions() step 2", str, _queue,_active);
 
 			// insert placeholder
 			var ele = "<div class='tally tally_log_line'>" +
@@ -296,7 +297,6 @@ window.BattleConsole = (function() {
 			str = str.replace("Tally", "<span class='text-tally'>Tally</span>");
 			str = str.replace(Battle.details.monsterName, "<span class='text-green'>" + Battle.details.monsterName + "</span>");
 			str = str.replace(Battle.details.recentAttack.name, "<span class='text-yellow'>" + Battle.details.recentAttack.name + "</span>");
-			//		str = str.replace(Battle.details.recentOutcomes, "<span class='text-blue'>" + Battle.details.recentOutcomes + "</span>");
 			$("#" + ele).html(str);
 		} catch (err) {
 			console.error(err);

@@ -8,6 +8,8 @@ window.Battle = (function() {
 
 	let DEBUG = false,
 		_active = false,
+		tallyBattleFloatingAnim = null,
+		monsterBattleFloatingAnim = null,
 		details = createNewBattleDetails();
 
 	function createNewBattleDetails() {
@@ -15,9 +17,9 @@ window.Battle = (function() {
 			"mid": null,
 			"monsterName": "",
 			"monsterAttacks": {},
-			"progress": 0, // track how long, intense, etc. the battle becomes
+			"progress": "start", // track how long, intense, etc. the battle becomes: "start","middle","end"
 			"recentAttack": {},
-			"recentOutcomes": {}
+			"attackInProgress": false
 		};
 	}
 
@@ -85,6 +87,21 @@ window.Battle = (function() {
 				duration: 1000,
 				easing: 'easeOutCubic'
 			});
+			// add floating animation
+			tallyBattleFloatingAnim = anime({
+				targets: "#tally_character_inner",
+				translateY: 5,
+				direction: 'alternate',
+				loop: true,
+				easing: 'easeInOutSine'
+			});
+			monsterBattleFloatingAnim = anime({
+				targets: ".tally_monster_sprite",
+				translateY: -5,
+				direction: 'alternate',
+				loop: true,
+				easing: 'easeInOutSine'
+			});
 			// hide current thought
 			Thought.hide();
 			// change monster element back to fixed
@@ -108,10 +125,12 @@ window.Battle = (function() {
 			$('.monster_stats_bars').html(StatsDisplay.returnInitialSVG("monster"));
 			$('.monster_stats_table').html(StatsDisplay.returnFullTable("monster"));
 			// display stats
-			$('.monster_stats').css({"display":"block"});
+			$('.monster_stats').css({
+				"display": "block"
+			});
 
-// play music
-Sound.changeMusic("tally-battle-music.wav");
+			// play music
+			Sound.changeMusic("tally-battle-music.wav");
 
 
 			// remove click, hover on monster
@@ -135,7 +154,7 @@ Sound.changeMusic("tally-battle-music.wav");
 	}
 
 
-	function final(){
+	function final() {
 
 		// show battle completion message
 
@@ -165,6 +184,9 @@ Sound.changeMusic("tally-battle-music.wav");
 				elasticity: 0,
 				duration: 1000,
 			});
+			// remove floating animations
+			anime.remove("#tally_character_inner");
+			anime.remove('.tally_monster_sprite_container');
 			Thought.hide();
 			// hide monster
 			anime({
@@ -174,7 +196,9 @@ Sound.changeMusic("tally-battle-music.wav");
 				elasticity: 0,
 				duration: 1000,
 			});
-			$('.monster_stats').css({"display":"none"});
+			$('.monster_stats').css({
+				"display": "none"
+			});
 			// stop music
 			Sound.endMusic();
 		} catch (err) {

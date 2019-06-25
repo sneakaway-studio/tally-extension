@@ -5,7 +5,7 @@
 
 window.BattleEffect = (function() {
 	// PRIVATE
-	let DEBUG = false,
+	let DEBUG = true,
 		source, // page source for rumbles
 		nodes, // node string for rumbles
 		n = "*", // node elements for rumbles
@@ -59,11 +59,10 @@ window.BattleEffect = (function() {
 		}
 	}
 
-	function rumble(degree = "medium", soundFile = "explosions/explode.mp3") {
+	function showRumble(degree = "medium", soundFile = "explosions/explode.mp3") {
 		try {
-			// make sure we are ready to rumble!
-			if (source == null || nodes == null)
-				setupRumble();
+			// are we are ready to rumble!?
+			if (source == null || nodes == null) setupRumble();
 
 			// add div
 			// if ($("#battle-background").length == 0)
@@ -94,55 +93,66 @@ window.BattleEffect = (function() {
 
 
 
-	function fireProjectile(at, rumble = "") {
+	function startAttackEffects(attack, selfStr, oppStr, rumbleSize = "small") {
 		try {
-			if (DEBUG) console.log("💥 BattleEffect.fireProjectile() > ", at, rumble);
+			if (DEBUG) console.log("🧨 BattleEffect.startAttackEffects() > ", attack, BattleAttack.getOutcomeDetails().outcomes, selfStr, oppStr, rumbleSize);
 
-			let end, origin;
+			// is an attack not in progress ATM?
+			if (!Battle.details.attackInProgress) return;
 
-			// update positions
-			monsterPos = Core.getCenterPosition(".tally_monster_sprite_container");
-			tallyPos = Core.getCenterPosition("#tally_character");
-
-			if (DEBUG) console.log("💥 BattleEffect.fireProjectile()", tallyPos, monsterPos);
-
-
+			// 1. get positions
+			let startPos, endPos;
 			// if firing from monster > Tally
-			if (at == "tally") {
-				origin = monsterPos;
-				end = tallyPos;
+			if (selfStr == "monster") {
+				startPos = Core.getCenterPosition(".tally_monster_sprite_container");
+				endPos = Core.getCenterPosition("#tally_character");
 			}
 			// else firing from Tally > monster
-			else {
-				origin = tallyPos;
-				end = monsterPos;
+			else if (selfStr == "tally") {
+				startPos = Core.getCenterPosition("#tally_character");
+				endPos = Core.getCenterPosition(".tally_monster_sprite_container");
 			}
-			if (DEBUG) console.log("origin=", origin, "end=", end);
-			// set projectile to origin and show it
-			Core.setCenterPosition('#battle_projectile', origin);
-			Core.showElement('#battle_projectile');
-			// animate projectile
-			anime({
-				targets: '#battle_projectile',
-				left: [origin.left + "px", end.left + "px"],
-				top: [origin.top + "px", end.top + "px"],
-				scale: [0.5, 1],
-				rotate: [0, 350],
-				elasticity: 0,
-				duration: 1000,
-				easing: 'easeInOutSine',
-				// update: function(anim) {
-				// 	if (DEBUG) console.log(anim.progress, anim.animations[0].currentValue, anim.animations[1].currentValue);
-				// },
-				complete: function(anim) {
-					if (DEBUG) console.log("💥 BattleEffect.fireProjectile() complete", anim.progress, anim.animations[0].currentValue, anim.animations[1].currentValue);
-					Core.hideElement('#battle_projectile');
-					// show explosion
-					showExplosion(end);
-					if (rumble != "")
-						BattleEffect.rumble(rumble);
-				}
-			});
+			if (DEBUG) console.log("🧨 BattleEffect.startAttackEffects() startPos=", startPos, ", endPos=", endPos);
+
+
+			// 2-1. show projectile?
+			if (attack.type === "attack") {
+
+				// set projectile to startPos and show it
+				Core.setCenterPosition('#battle_projectile', startPos);
+				Core.showElement('#battle_projectile');
+
+				// animate projectile
+				anime({
+					targets: '#battle_projectile',
+					left: [startPos.left + "px", endPos.left + "px"],
+					top: [startPos.top + "px", endPos.top + "px"],
+					scale: [0.5, 1],
+					rotate: [0, 350],
+					elasticity: 0,
+					duration: 1000,
+					easing: 'easeInOutSine',
+					// testing
+					// update: function(anim) {
+					// 	if (DEBUG) console.log(anim.progress, anim.animations[0].currentValue, anim.animations[1].currentValue);
+					// },
+					complete: function(anim) {
+						//if (DEBUG) console.log("🧨 BattleEffect.startAttackEffects() projectile done", anim.progress,
+						//	anim.animations[0].currentValue, anim.animations[1].currentValue);
+						// hide projectile
+						Core.hideElement('#battle_projectile');
+						// show explosion
+						showExplosion(attack, endPos, rumbleSize);
+						// pass control back to BattleAttack...
+						BattleAttack.handleAttackOutcomes(attack, selfStr, oppStr);
+						return;
+					}
+				});
+			}
+			// 2-2. or skip straight to handleAttackOutcomes()
+			else if (attack.type === "defense")
+				BattleAttack.handleAttackOutcomes(attack, selfStr, oppStr);
+
 		} catch (err) {
 			console.error(err);
 		}
@@ -162,18 +172,26 @@ window.BattleEffect = (function() {
 		'water-blue.png',
 	];
 
-	function showExplosion(pos, rumble = false) {
-		try {
-			if (DEBUG) console.log("💥 BattleEffect.showExplosion()", pos, rumble);
 
-			if (rumble)
-				rumble("medium", "powerups/" + FS_Object.randomObjProperty(Sound.sounds.powerups));
+
+	function showExplosion(attack, endPos, rumbleSize = "") {
+		try {
+			// make sure attack hit
+			if (BattleAttack.getOutcomeDetails().outcomes === "missed" ||
+				BattleAttack.getOutcomeDetails().outcomes === "noEffect" ||
+				BattleAttack.getOutcomeDetails().outcomes.length <= 0) return;
+
+			if (DEBUG) console.log("🧨 BattleEffect.showExplosion()", attack, BattleAttack.getOutcomeDetails().outcomes, endPos, rumbleSize);
+
+			// make sure attack was not a defense
+			if (rumbleSize !== "" && attack.type !== "defense")
+				showRumble("medium", "powerups/" + FS_Object.randomObjProperty(Sound.sounds.powerups));
 
 			// if no position received
-			if (pos == null)
-				pos = Core.getCenterPosition('#battle_projectile');
+			if (endPos == null)
+				endPos = Core.getCenterPosition('#battle_projectile');
 			// set position
-			Core.setCenterPosition('#explosion_sprite_container', pos);
+			Core.setCenterPosition('#explosion_sprite_container', endPos);
 			Core.showElement('#explosion_sprite_container');
 
 			// reference to image file
@@ -189,22 +207,67 @@ window.BattleEffect = (function() {
 		}
 	}
 
+	// set dir = 1 for tally, -1 for monster
+	function showAttackLurch(ele, dir = 1) {
 
+		var timeline = anime.timeline({
+			targets: ele,
+			easing: 'easeOutExpo',
+			duration: 250
+		});
+		timeline
+			.add({
+				translateX: 20 * dir,
+			})
+			.add({
+				translateX: 0,
+			});
+	}
 
+	function showDamage(ele,delay=0) {
 
+		var timeline = anime.timeline({
+			targets: ele,
+			easing: 'easeOutExpo',
+			duration: 50,
+			delay: delay
+		});
+		timeline
+			.add({
+				opacity: 1,
+			})
+			.add({
+				opacity: 0.15,
+			})
+			.add({
+				opacity: 1,
+			})
+			.add({
+				opacity: 0.15,
+			})
+			.add({
+				opacity: 1,
+			});
+	}
 
 
 	// PUBLIC
 	return {
 		setup: setup,
-		rumble: function(degree, soundFile) {
-			rumble(degree, soundFile);
+		showRumble: function(degree, soundFile) {
+			showRumble(degree, soundFile);
 		},
-		fireProjectile: function(at, rumble) {
-			fireProjectile(at, rumble);
+		startAttackEffects: function(attack, selfStr, oppStr, rumbleSize) {
+			startAttackEffects(attack, selfStr, oppStr, rumbleSize);
 		},
-		showExplosion: function(pos, rumble) {
-			showExplosion(pos, rumble);
+		showExplosion: function(attack, endPos, rumbleSize) {
+			showExplosion(attack, endPos, rumbleSize);
+		},
+		showAttackLurch: function(ele, dir) {
+			showAttackLurch(ele, dir);
+		},
+		showDamage: function(ele,delay) {
+			showDamage(ele,delay);
 		}
 	};
 })();

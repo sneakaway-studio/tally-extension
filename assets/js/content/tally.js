@@ -107,16 +107,18 @@ window.Tally = (function() {
 					"<div class='tally tally_speech_bubble' id='tally_thought_bubble'>" +
 						"<div class='tally' id='tally_thought'></div>" +
 					"</div>" +
-					"<div class='tally' id='tally_body'>" +
-						Skin.returnBasicSVG() +
-					"</div>" +
-					"<div class='tally' id='tally_eyes'>" +
-						"<span class='tally tally_lid'>" +
-							"<span class='tally tally_eye tally_eye_left'>" +
-								"<span class='tally tally_eye_pupil'></span></span></span>" +
-						"<span class='tally tally_lid'>" +
-							"<span class='tally tally_eye tally_eye_right'>" +
-								"<span class='tally tally_eye_pupil'></span></span></span>" +
+					"<div class='tally' id='tally_character_inner'>" +
+						"<div class='tally' id='tally_body'>" +
+							Skin.returnBasicSVG() +
+						"</div>" +
+						"<div class='tally' id='tally_eyes'>" +
+							"<span class='tally tally_lid'>" +
+								"<span class='tally tally_eye tally_eye_left'>" +
+									"<span class='tally tally_eye_pupil'></span></span></span>" +
+							"<span class='tally tally_lid'>" +
+								"<span class='tally tally_eye tally_eye_right'>" +
+									"<span class='tally tally_eye_pupil'></span></span></span>" +
+						"</div>" +
 					"</div>" +
 					"<div class='tally tally_stats'>" +
 						"<div class='tally tally_stats_bars'></div>" +
@@ -272,13 +274,13 @@ window.Tally = (function() {
 				Battle.test();
 			});
 			$(document).on('click', '#tallyMenu_battleRumbleSmall', function() {
-				BattleEffect.rumble("small");
+				BattleEffect.showRumble("small");
 			});
 			$(document).on('click', '#tallyMenu_battleRumbleMedium', function() {
-				BattleEffect.rumble("medium");
+				BattleEffect.showRumble("medium");
 			});
 			$(document).on('click', '#tallyMenu_battleRumbleLarge', function() {
-				BattleEffect.rumble("large");
+				BattleEffect.showRumble("large");
 			});
 			$(document).on('click', '#tallyMenu_battleEnd', function() {
 				Battle.end();
@@ -345,13 +347,13 @@ Mousetrap.bind(k + ' b', function() {
 	Battle.test();
 });
 Mousetrap.bind(k + ' 0', function() {
-	BattleEffect.rumble("small");
+	BattleEffect.showRumble("small");
 });
 Mousetrap.bind(k + ' 1', function() {
-	BattleEffect.rumble("medium");
+	BattleEffect.showRumble("medium");
 });
 Mousetrap.bind(k + ' 2', function() {
-	BattleEffect.rumble("large");
+	BattleEffect.showRumble("large");
 });
 Mousetrap.bind(k + ' 7', function() {
 
