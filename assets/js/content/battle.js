@@ -129,9 +129,8 @@ window.Battle = (function() {
 				"display": "block"
 			});
 
-			// play music
-			Sound.changeMusic("tally-battle-music.wav");
-
+			// play music (intro, then loop)
+			Sound.playBattleMusic();
 
 			// remove click, hover on monster
 			$(document).off("click", ".tally_monster_sprite_container");
@@ -200,7 +199,7 @@ window.Battle = (function() {
 				"display": "none"
 			});
 			// stop music
-			Sound.endMusic();
+			Sound.stopMusic();
 		} catch (err) {
 			console.error(err);
 		}

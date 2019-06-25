@@ -36,10 +36,9 @@ Tally is a browser extension that uses AI to transform the data advertisers coll
 ## Packaging
 
 1. Remove reference in manifest to `hot-reload.js`
-2. Remove image files not being used (e.g. `assets/img/monsters-400h/`)
-3. Change line in `changeMeta()` function in `assets/js/background/background-install.js` to `production`
-4. Zip only files needed for extension (`assets/`,`LICENSE`,`manifest.json`,`README.md`)
-5. Rename extension and upload to live server
+2. Change line in `changeMeta()` function in `assets/js/background/background-install.js` to `production`
+3. Zip only files needed for extension (`assets/`,`LICENSE`,`manifest.json`,`README.md`)
+4. Rename extension and upload to live server
 
 
 

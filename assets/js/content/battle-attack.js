@@ -109,81 +109,109 @@ window.BattleAttack = (function() {
 			// ATTACK RESULTED IN INCREASE OR DECREASE IN STATS
 			else if (outcomeDetails.outcomes.length > 0) {
 
+				// 2. get the name of the player to create attack outcome log
 
-				// 2. loop through attack outcomes and log, show explosion, etc.
+				let affectsStr = "tally",
+					affectsName = "Tally",
+					attackOutcomeLog = "",
+					gainedLostString = "",
+					htmlOpen = false;
+				// tally is default unless one of these are true
+				if (selfStr == "tally") {
+					if (outcomeDetails.outcomes[0].affects == "opp") {
+						affectsStr = "monster";
+						affectsName = Battle.details.monsterName;
+					}
+				} else if (selfStr == "monster") {
+					if (outcomeDetails.outcomes[0].affects == "self") {
+						affectsStr = "monster";
+						affectsName = Battle.details.monsterName;
+					}
+				}
+
+				// 3. loop through attack outcomes and add to attackOutcomeLog
 				for (let i = 0; i < outcomeDetails.outcomes.length; i++) {
 					/*jshint loopfunc: true */
 
 					if (DEBUG) console.log("💥 Battle.handleAttackOutcomes() -> outcomeDetails.outcomes[i]=", outcomeDetails.outcomes[i]);
 
-					// if number is 0 skip this one
+					// if number is 0 skip
 					if (outcomeDetails.outcomes[i].change == 0) continue;
 
-
-					// 3. create log
-
-					// add name to log text first
-					let str = "Tally";
-					outcomeDetails.outcomes[i].affectsName = "tally";
-					// tally is default unless one of these are true
-					if (selfStr == "tally") {
-						if (outcomeDetails.outcomes[i].affects == "opp") {
-							outcomeDetails.outcomes[i].affectsName = "monster";
-							str = Battle.details.monsterName;
-						}
-					} else if (selfStr == "monster") {
-						if (outcomeDetails.outcomes[i].affects == "self") {
-							outcomeDetails.outcomes[i].affectsName = "monster";
-							str = Battle.details.monsterName;
-						}
-					}
 					// was the stat decreased?
 					if (outcomeDetails.outcomes[i].change < 0) {
-						// change value for log
-						str += " lost <span class='text-blue'>" + (outcomeDetails.outcomes[i].change *= -1) + " " + outcomeDetails.outcomes[i].stat + "</span>.";
-						// determine what tally says
-						if (oppStr === "tally") {
-							positiveOutcomeTally = false;
-							// show lurch and damage from recieving attack
-							BattleEffect.showAttackLurch("#tally_character_inner", -1);
-							BattleEffect.showDamage("#tally_character_inner", 500);
-						} else if (oppStr === "monster") {
-							// show lurch and damage from recieving attack
-							BattleEffect.showAttackLurch(".tally_monster_sprite", 1);
-							BattleEffect.showDamage(".tally_monster_sprite", 500);
-						}
+						// if the first loop
+						if (gainedLostString === "") gainedLostString = "lost" + "<span class='text-blue'>";
+						// else all loops after
+						else attackOutcomeLog += ", ";
+
+						// add to log, changing value for display
+						attackOutcomeLog += (outcomeDetails.outcomes[i].change *= -1) + " " + outcomeDetails.outcomes[i].stat;
 					}
 					// or increased?
 					else if (outcomeDetails.outcomes[i].change > 0) {
-						str += " gained <span class='text-blue'>" + outcomeDetails.outcomes[i].change + " " + outcomeDetails.outcomes[i].stat + "</span>.";
+						// if the first loop
+						if (gainedLostString === "") gainedLostString = "gained" + "<span class='text-blue'>";
+						// else all loops after
+						else attackOutcomeLog += ", ";
+
+						// add to log
+						attackOutcomeLog += outcomeDetails.outcomes[i].change + " " + outcomeDetails.outcomes[i].stat;
+
+						// mark positive outcome
 						if (selfStr == "tally") positiveOutcomeTally = true;
 					} else {
 						// no change, continue to next outcome
 					}
 
-					// show log and change in stats after a moment
-					setTimeout(function() {
-						if (DEBUG) console.log("💥 Battle.handleAttackOutcomes() str=", str);
-						// show log
-						BattleConsole.log(str);
-						// update stats display for player who is affected
-						StatsDisplay.updateDisplay(outcomeDetails.outcomes[i].affectsName);
+					//if (DEBUG) console.log("attackOutcomeLog=", attackOutcomeLog);
 
-						// show thought from Tally commenting on the outcome of last attack
-						let r = Math.random();
-						if (r > 0.7) {
-							// show log and change in stats after a moment
-							setTimeout(function() {
-								if (positiveOutcomeTally == true)
-									Thought.showThought(Thought.getThought(["battle", "gained-stats", 0]), true);
-								else if (positiveOutcomeTally == false)
-									Thought.showThought(Thought.getThought(["battle", "lost-stats", 0]), true);
-							}, _logDelay + 300);
-						}
-					}, _logDelay + 300);
 				}
 
-				checkForEnd(selfStr, oppStr);
+				// close html
+				if (gainedLostString !== "") attackOutcomeLog += "</span>";
+
+				// determine what tally says
+				if (oppStr === "tally") {
+					positiveOutcomeTally = false;
+					// show lurch and damage from recieving attack
+					if (attack.type !== "defense") {
+						BattleEffect.showAttackLurch("#tally_character_inner", -1);
+						BattleEffect.showDamage("#tally_character_inner", 500);
+					}
+				} else if (oppStr === "monster") {
+					// show lurch and damage from recieving attack
+					if (attack.type !== "defense") {
+						BattleEffect.showAttackLurch(".tally_monster_sprite", 1);
+						BattleEffect.showDamage(".tally_monster_sprite", 500);
+					}
+				}
+
+				// put string together
+				let finalLog = affectsName + " " + gainedLostString + " " + attackOutcomeLog + "!";
+
+				// show log and change in stats after a moment
+				setTimeout(function() {
+					if (DEBUG) console.log("💥 Battle.handleAttackOutcomes() attackOutcomeLog=", finalLog);
+					// show log
+					BattleConsole.log(finalLog);
+					// update stats display for player who is affected
+					StatsDisplay.updateDisplay(affectsStr);
+
+					// show thought from Tally commenting on the outcome of last attack
+					let r = Math.random();
+					if (r > 0.7) {
+						// show log and change in stats after a moment
+						setTimeout(function() {
+							if (positiveOutcomeTally == true)
+								Thought.showThought(Thought.getThought(["battle", "gained-stats", 0]), true);
+							else if (positiveOutcomeTally == false)
+								Thought.showThought(Thought.getThought(["battle", "lost-stats", 0]), true);
+						}, _logDelay + 300);
+					}
+					// end check
+					checkForEnd(selfStr, oppStr);
+				}, _logDelay + 300);				
 			}
 		} catch (err) {
 			console.log(err);
@@ -214,7 +242,6 @@ window.BattleAttack = (function() {
 				Battle.details.progress = "middle";
 			}
 			if (Battle.details.progress === "middle") {
-				//Sound.changeMusic('battle1-c-sharp.wav');
 				Thought.showString("Whoa, this is getting intense!", null, true);
 			}
 
@@ -222,27 +249,35 @@ window.BattleAttack = (function() {
 
 			// did tally lose?
 			if (Stats.get("tally").health.val <= 0) {
+				Sound.stopMusic();
 				Thought.showString("Oh no, we are out of health...", "sad", true);
 				endBattle = true;
 				endBattleMessage = "We need to take a break from the internet and recharge!";
 				BattleConsole.log("Tally's health has been depleted. Tally loses.");
+				Sound.playFile("music/battle-defeat.wav", false, 0);
 			} else if (Stats.get("tally").stamina.val <= 0) {
+				Sound.stopMusic();
 				Thought.showString("Oh no, our stamina is all gone...", "sad", true);
 				endBattle = true;
 				endBattleMessage = "We lost this time but we'll fight these trackers another day!";
 				BattleConsole.log("Tally's stamina has been depleted. Tally loses.");
+				Sound.playFile("music/battle-defeat.wav", false, 0);
 			}
 			// did tally win?
 			else if (Stats.get("monster").health.val <= 0) {
+				Sound.stopMusic();
 				Thought.showString("Yay, the monster is out of health...", "happy", true);
 				endBattle = true;
 				endBattleMessage = "";
-				BattleConsole.log("The monster's health has been depleted. The " + Battle.details.monsterName + " loses.");
+				BattleConsole.log("The monster's health has been depleted. Tally wins!!!");
+				Sound.playFile("music/battle-victory.wav", false, 0);
 			} else if (Stats.get("monster").stamina.val <= 0) {
+				Sound.stopMusic();
 				Thought.showString("Awesome! The monster has no stamina left...", "happy", true);
 				endBattle = true;
 				endBattleMessage = "";
-				BattleConsole.log("The monster's stamina has been depleted. The " + Battle.details.monsterName + " loses.");
+				BattleConsole.log("The monster's stamina has been depleted. Tally wins!!!");
+				Sound.playFile("music/battle-victory.wav", false, 0);
 			}
 
 
@@ -287,7 +322,7 @@ window.BattleAttack = (function() {
 				// monster will attack back in a moment
 				setTimeout(function() {
 					doAttack(FS_Object.randomObjProperty(Battle.details.monsterAttacks), "monster", "tally");
-				}, _logDelay + 3500);
+				}, _logDelay + 2000);
 			} else {
 				// prompt user to attack in a moment
 				setTimeout(function() {

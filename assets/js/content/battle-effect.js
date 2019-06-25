@@ -100,17 +100,29 @@ window.BattleEffect = (function() {
 			// is an attack not in progress ATM?
 			if (!Battle.details.attackInProgress) return;
 
+			let addToDuration = 0;
+
 			// 1. get positions
 			let startPos, endPos;
 			// if firing from monster > Tally
 			if (selfStr == "monster") {
 				startPos = Core.getCenterPosition(".tally_monster_sprite_container");
 				endPos = Core.getCenterPosition("#tally_character");
+				if (BattleAttack.getOutcomeDetails().outcomes === "missed") {
+					// add to pos and time
+					endPos.left = -200;
+					addToDuration = 500;
+				}
 			}
 			// else firing from Tally > monster
 			else if (selfStr == "tally") {
 				startPos = Core.getCenterPosition("#tally_character");
 				endPos = Core.getCenterPosition(".tally_monster_sprite_container");
+				if (BattleAttack.getOutcomeDetails().outcomes === "missed") {
+					// add to pos and time
+					endPos.left = pageData.browser.width + 200;
+					addToDuration = 500;
+				}
 			}
 			if (DEBUG) console.log("🧨 BattleEffect.startAttackEffects() startPos=", startPos, ", endPos=", endPos);
 
@@ -130,7 +142,7 @@ window.BattleEffect = (function() {
 					scale: [0.5, 1],
 					rotate: [0, 350],
 					elasticity: 0,
-					duration: 1000,
+					duration: addToDuration + 1000,
 					easing: 'easeInOutSine',
 					// testing
 					// update: function(anim) {
@@ -159,17 +171,27 @@ window.BattleEffect = (function() {
 	}
 
 	let explosions = [
-		'clouds-blue-red-stroke.png',
-		'clouds-ltblue-blue-stroke.png',
-		'clouds-orange-red-stroke.png',
-		//'clouds-red-stroke.png',
-		'squares-green-pink.png',
-		'squares-green.png',
-		'squares-pink.png',
-		'squares-red-orange.png',
-		'squares-yellow-red-stroke.png',
-		'stars-pink.png',
-		'water-blue.png',
+		// 'clouds-blue-red-stroke.png',
+		// 'clouds-ltblue-blue-stroke.png',
+		// 'clouds-orange-red-stroke.png',
+		// 'squares-green-pink.png',
+		// 'squares-green.png',
+		// 'squares-pink.png',
+		// 'squares-red-orange.png',
+		// 'squares-yellow-red-stroke.png',
+		// 'stars-pink.png',
+		// 'water-blue.png',
+
+'defense-security-firewall.gif',
+'defense-network-packetshield.gif',
+'defense-computer.gif',
+'attack-social-clickstrike.gif',
+'attack-social-emailblitz.gif',
+'attack-cryptography-triangulate.gif',
+'attack-memory-memoryflare.gif',
+'attack-cryptography-cryptcracker.gif',
+'attack-computer.gif',
+
 	];
 
 
@@ -194,8 +216,13 @@ window.BattleEffect = (function() {
 			Core.setCenterPosition('#explosion_sprite_container', endPos);
 			Core.showElement('#explosion_sprite_container');
 
+			let file = "";
+			if (prop(attack["animation-name"]) && attack["animation-name"] !== "") file = attack["animation-name"];
+			// get random
+			else file = FS_Object.randomArrayIndex(explosions);
+
 			// reference to image file
-			var url = chrome.extension.getURL('assets/img/battles/explosions/' + FS_Object.randomArrayIndex(explosions));
+			var url = chrome.extension.getURL('assets/img/battles/explosions/' + file);
 			// set content
 			$('#explosion_sprite_inner').css('background-image', 'url("' + url + '")');
 
@@ -224,30 +251,35 @@ window.BattleEffect = (function() {
 			});
 	}
 
-	function showDamage(ele,delay=0) {
+	function showDamage(ele, delay = 0) {
 
-		var timeline = anime.timeline({
+		anime({
 			targets: ele,
 			easing: 'easeOutExpo',
-			duration: 50,
-			delay: delay
+			delay: delay,
+			opacity: [{
+					value: 1,
+					duration: 200,
+				},
+				{
+					value: 0.15,
+					duration: 200,
+				},
+				{
+					value: 1,
+					duration: 200,
+				},
+				{
+					value: 0.15,
+					duration: 200,
+				},
+				{
+					value: 1,
+					duration: 200,
+				}
+			],
 		});
-		timeline
-			.add({
-				opacity: 1,
-			})
-			.add({
-				opacity: 0.15,
-			})
-			.add({
-				opacity: 1,
-			})
-			.add({
-				opacity: 0.15,
-			})
-			.add({
-				opacity: 1,
-			});
+
 	}
 
 
@@ -266,8 +298,8 @@ window.BattleEffect = (function() {
 		showAttackLurch: function(ele, dir) {
 			showAttackLurch(ele, dir);
 		},
-		showDamage: function(ele,delay) {
-			showDamage(ele,delay);
+		showDamage: function(ele, delay) {
+			showDamage(ele, delay);
 		}
 	};
 })();

@@ -20,7 +20,7 @@ window.BattleMath = (function() {
 				"stat": "health",
 				"affectsStat": "oppHealth"
 			},
-			"selfAtt": {
+			"selfAtk": {
 				"change": 0,
 				"affects": "self",
 				"stat": "attack",
@@ -100,33 +100,31 @@ window.BattleMath = (function() {
 				attackOutcomes = [], // track the outcome(s) of the attack to log them
 				outcome = {}; // default outcome
 
-			if (DEBUG) console.log("🔢 BattleMath.returnAttackOutcomes()", selfStr + " 🧨 " + oppStr, attack,
-				"\n --> self=", JSON.stringify(self),
-				"\n --> opp=", JSON.stringify(opp));
+
+
+			// ************** STAMINA FIRST **************
+
+			// COMPUTE STAMINA COST FIRST
+			if (prop(attack.staminaCost)) {
+				stat = "stamina";
+				affectsStat = "staminaCost";
+				outcome = outcomeData[affectsStat];
+				outcome.change = -(FS_Number.round(self[stat].max * attack[affectsStat], 1));
+				self[stat].val = Stats.setVal(selfStr, outcome.stat, self[stat].val + outcome.change);
+				//attackOutcomes.push(outcome); // don't log stamina
+				// console.log("self[stat].val=" + self[stat].val, "attack[affectsStat]=" + attack[affectsStat],
+				// 	"self[stat].max * attack[affectsStat]=", (self[stat].max * attack[affectsStat]));
+				// logOutcome(affectsStat, outcome, "self", self);
+			}
 
 			// if not a defense, check to see if there is a miss
 			if (attack.type !== "defense" && didHit(attack, self, opp)) {
 				return "missed";
 			}
 
-
-
-			// ************** STAMINA FIRST **************
-
-			// COMPUTE STAMINA COST
-			if (prop(attack.staminaCost)) {
-				stat = "stamina";
-				affectsStat = "staminaCost";
-				outcome = outcomeData[affectsStat];
-				outcome.change = -(FS_Number.round(self[stat].val * attack[affectsStat], 1));
-
-console.log("self[stat].val="+self[stat].val,"attack[affectsStat]="+attack[affectsStat],"self[stat].val * attack[affectsStat]=",(self[stat].val * attack[affectsStat]))
-
-				self[stat].val = Stats.setVal(selfStr, outcome.stat, self[stat].val + outcome.change);
-				//attackOutcomes.push(outcome); // don't log stamina
-				logOutcome(affectsStat, outcome, "self", self);
-			}
-
+			if (DEBUG) console.log("🔢 BattleMath.returnAttackOutcomes()", selfStr + " 🧨 " + oppStr, attack,
+				"\n --> self=", JSON.stringify(self),
+				"\n --> opp=", JSON.stringify(opp));
 
 
 
@@ -137,7 +135,7 @@ console.log("self[stat].val="+self[stat].val,"attack[affectsStat]="+attack[affec
 				stat = "health";
 				affectsStat = "selfHealth";
 				outcome = outcomeData[affectsStat]; // get data
-				outcome.change = FS_Number.round(self[stat].val * attack[affectsStat], 1); // get change
+				outcome.change = FS_Number.round(self[stat].max * attack[affectsStat], 1); // get change
 				self[stat].val = Stats.setVal(selfStr, outcome.stat, self[stat].val + outcome.change); // set new val
 				attackOutcomes.push(outcome); // store outcome
 				logOutcome(affectsStat, outcome, "self", self); // log
@@ -147,8 +145,8 @@ console.log("self[stat].val="+self[stat].val,"attack[affectsStat]="+attack[affec
 				stat = "health";
 				affectsStat = "oppHealth";
 				outcome = outcomeData[affectsStat];
-				outcome.change = -(FS_Number.round(opp[stat].val * attack[affectsStat], 1));
-// console.log("outcome.change="+outcome.change,"opp[stat].val + outcome.change=",(opp[stat].val + outcome.change))
+				outcome.change = -(FS_Number.round(opp[stat].max * attack[affectsStat], 1));
+				// console.log("outcome.change="+outcome.change,"opp[stat].val + outcome.change=",(opp[stat].val + outcome.change))
 				opp[stat].val = Stats.setVal(oppStr, outcome.stat, opp[stat].val + outcome.change);
 				attackOutcomes.push(outcome);
 				logOutcome(affectsStat, outcome, "opp", opp);
@@ -163,7 +161,7 @@ console.log("self[stat].val="+self[stat].val,"attack[affectsStat]="+attack[affec
 				stat = "attack";
 				affectsStat = "selfAtk";
 				outcome = outcomeData[affectsStat];
-				outcome.change = FS_Number.round(self[stat].val * attack[affectsStat], 1);
+				outcome.change = FS_Number.round(self[stat].max * attack[affectsStat], 1);
 				//if (outcome.change != 0)
 				self[stat].val = Stats.setVal(selfStr, outcome.stat, self[stat].val + outcome.change);
 				attackOutcomes.push(outcome);
@@ -174,7 +172,7 @@ console.log("self[stat].val="+self[stat].val,"attack[affectsStat]="+attack[affec
 				stat = "attack";
 				affectsStat = "oppAtk";
 				outcome = outcomeData[affectsStat];
-				outcome.change = -(FS_Number.round(opp[stat].val * attack[affectsStat], 1));
+				outcome.change = -(FS_Number.round(opp[stat].max * attack[affectsStat], 1));
 				opp[stat].val = Stats.setVal(oppStr, outcome.stat, opp[stat].val + outcome.change);
 				attackOutcomes.push(outcome);
 				logOutcome(affectsStat, outcome, "opp", opp);
@@ -188,7 +186,7 @@ console.log("self[stat].val="+self[stat].val,"attack[affectsStat]="+attack[affec
 				stat = "accuracy";
 				affectsStat = "selfAcc";
 				outcome = outcomeData[affectsStat];
-				outcome.change = FS_Number.round(self[stat].val * attack[affectsStat], 1);
+				outcome.change = FS_Number.round(self[stat].max * attack[affectsStat], 1);
 				self[stat].val = Stats.setVal(selfStr, outcome.stat, self[stat].val + outcome.change);
 				attackOutcomes.push(outcome);
 				logOutcome(affectsStat, outcome, "self", self);
@@ -198,7 +196,7 @@ console.log("self[stat].val="+self[stat].val,"attack[affectsStat]="+attack[affec
 				stat = "accuracy";
 				affectsStat = "oppAcc";
 				outcome = outcomeData[affectsStat];
-				outcome.change = -(FS_Number.round(opp[stat].val * attack[affectsStat], 1));
+				outcome.change = -(FS_Number.round(opp[stat].max * attack[affectsStat], 1));
 				opp[stat].val = Stats.setVal(oppStr, outcome.stat, opp[stat].val + outcome.change);
 				attackOutcomes.push(outcome);
 				logOutcome(affectsStat, outcome, "opp", opp);
@@ -212,7 +210,7 @@ console.log("self[stat].val="+self[stat].val,"attack[affectsStat]="+attack[affec
 				stat = "evasion";
 				affectsStat = "selfEva";
 				outcome = outcomeData[affectsStat];
-				outcome.change = FS_Number.round(self[stat].val * attack[affectsStat], 1);
+				outcome.change = FS_Number.round(self[stat].max * attack[affectsStat], 1);
 				self[stat].val = Stats.setVal(selfStr, outcome.stat, self[stat].val + outcome.change);
 				attackOutcomes.push(outcome);
 				logOutcome(affectsStat, outcome, "self", self);
@@ -222,7 +220,7 @@ console.log("self[stat].val="+self[stat].val,"attack[affectsStat]="+attack[affec
 				stat = "evasion";
 				affectsStat = "oppEva";
 				outcome = outcomeData[affectsStat];
-				outcome.change = -(FS_Number.round(opp[stat].val * attack[affectsStat], 1));
+				outcome.change = -(FS_Number.round(opp[stat].max * attack[affectsStat], 1));
 				opp[stat].val = Stats.setVal(oppStr, outcome.stat, opp[stat].val + outcome.change);
 				attackOutcomes.push(outcome);
 				logOutcome(affectsStat, outcome, "opp", opp);
@@ -236,7 +234,7 @@ console.log("self[stat].val="+self[stat].val,"attack[affectsStat]="+attack[affec
 				stat = "defense";
 				affectsStat = "selfDef";
 				outcome = outcomeData[affectsStat];
-				outcome.change = FS_Number.round(self[stat].val * attack[affectsStat], 1);
+				outcome.change = FS_Number.round(self[stat].max * attack[affectsStat], 1);
 				self[stat].val = Stats.setVal(selfStr, outcome.stat, self[stat].val + outcome.change);
 				attackOutcomes.push(outcome);
 				logOutcome(affectsStat, outcome, "self", self);
@@ -246,7 +244,7 @@ console.log("self[stat].val="+self[stat].val,"attack[affectsStat]="+attack[affec
 				stat = "defense";
 				affectsStat = "oppDef";
 				outcome = outcomeData[affectsStat];
-				outcome.change = -(FS_Number.round(opp[stat].val * attack[affectsStat], 1));
+				outcome.change = -(FS_Number.round(opp[stat].max * attack[affectsStat], 1));
 				opp[stat].val = Stats.setVal(oppStr, outcome.stat, opp[stat].val + outcome.change);
 				attackOutcomes.push(outcome);
 				logOutcome(affectsStat, outcome, "opp", opp);
@@ -261,7 +259,7 @@ console.log("self[stat].val="+self[stat].val,"attack[affectsStat]="+attack[affec
 
 			// check to make sure there was an effect
 			for (let i = 0; i < attackOutcomes.length; i++) {
-				console.log("outcome",outcome);
+				//console.log("outcome", outcome);
 				// if change is not zero then there was an effect
 				if (outcome.change > 0 || outcome.change < 0) {
 					noEffect = false;
@@ -292,7 +290,9 @@ console.log("self[stat].val="+self[stat].val,"attack[affectsStat]="+attack[affec
 	function didHit(attack, self, opp) {
 		try {
 			let hitChance = attack.accuracy * (self.accuracy.val / opp.evasion.val);
-			if (DEBUG) console.log("🔢 BattleMath.didHit()", "hitChance=" + hitChance);
+			if (DEBUG) console.log("🔢 BattleMath.didHit()", "hitChance=" + hitChance, "attack.accuracy=" + attack.accuracy,
+				"self.accuracy.val=" + self.accuracy.val, "opp.evasion.val=" + opp.evasion.val,
+				"(self.accuracy.val / opp.evasion.val)=" + (self.accuracy.val / opp.evasion.val));
 			return (hitChance > 1);
 		} catch (err) {
 			console.error(err);

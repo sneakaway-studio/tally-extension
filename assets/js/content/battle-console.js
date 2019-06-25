@@ -127,7 +127,7 @@ window.BattleConsole = (function() {
 
 	function writeNextInQueue(lineSpeed = 150) {
 		try {
-			//if(DEBUG) console.log("writeNextInQueue()", _queue, _active);
+			//if(DEBUG) console.log("🖥️ BattleConsole.writeNextInQueue()", _queue, _active);
 			// if currently active, stop
 			if (_active) return;
 			// else set active true
@@ -150,7 +150,7 @@ window.BattleConsole = (function() {
 			setTimeout(function() {
 				typeWriter("tally_log" + logId, str, 0);
 			}, lineSpeed);
-			if (DEBUG) console.log("🖥️ BattleConsole.writeNextInQueue() str=",str);
+			if (DEBUG) console.log("🖥️ BattleConsole.writeNextInQueue() str=", str);
 		} catch (err) {
 			console.error(err);
 		}
@@ -165,18 +165,18 @@ window.BattleConsole = (function() {
 			active(true);
 			// get list of attacks
 			var _attacks = {};
-				if (DEBUG) console.log("🖥️ BattleConsole.showBattleOptions() step 1.1", _active);
+			if (DEBUG) console.log("🖥️ BattleConsole.showBattleOptions() step 1.1", _active);
 			if (!FS_Object.isEmpty(tally_user.attacks))
 				_attacks = tally_user.attacks;
 			// return if no attacks available
 			else return;
-				if (DEBUG) console.log("🖥️ BattleConsole.showBattleOptions() step 1.2", _active);
+			if (DEBUG) console.log("🖥️ BattleConsole.showBattleOptions() step 1.2", _active);
 
 			// build options
 			var str = "<div class='battle-options-row'>";
 			for (var key in _attacks) {
 				if (_attacks.hasOwnProperty(key)) {
-					if (DEBUG) console.log("🖥️ BattleConsole.showBattleOptions() step 1.3",_attacks[key]);
+					if (DEBUG) console.log("🖥️ BattleConsole.showBattleOptions() step 1.3", _attacks[key]);
 					str += "<span data-attack='" + _attacks[key].name +
 						"' class='battle-options attack-" + _attacks[key].name + "'>" +
 						_attacks[key].name + "</span>";
@@ -184,7 +184,7 @@ window.BattleConsole = (function() {
 			}
 			str += "<span class='battle-options-esc'>run [esc]</span></div>";
 
-			if (DEBUG) console.log("🖥️ BattleConsole.showBattleOptions() step 2", str, _queue,_active);
+			if (DEBUG) console.log("🖥️ BattleConsole.showBattleOptions() step 2", str, _queue, _active);
 
 			// insert placeholder
 			var ele = "<div class='tally tally_log_line'>" +
@@ -198,8 +198,8 @@ window.BattleConsole = (function() {
 					let ref = ".attack-" + _attacks[i].name;
 					if (DEBUG) console.log("🖥️ BattleConsole.showBattleOptions()", i, ref, _attacks[i]);
 					// $(document).on("mouseenter", ref, function() {
-					// // remove listener
-					//  $(document).off("mouseenter", ref);
+					// 	// remove listener
+					// 	$(document).off("mouseenter", ref);
 					// 	let attackName = $(this).attr("data-attack");
 					// 	//if (DEBUG) console.log(attackName);
 					// });
@@ -238,7 +238,7 @@ window.BattleConsole = (function() {
 	 */
 	function typeWriter(ele, str, i) {
 		try {
-			//if (DEBUG) console.log(ele, str, i);
+			if (DEBUG) console.log(ele, str, i);
 			if (!document.getElementById(ele)) return;
 			if (i >= str.length) {
 				BattleConsole.lineComplete(ele);
@@ -248,7 +248,7 @@ window.BattleConsole = (function() {
 					// capture it all
 					let code = str.match(/<span(.*?)<\/span>/g);
 					// remove from str
-					str = str.replace(/<span(.*?)<\/span>/g,'');
+					str = str.replace(/<span(.*?)<\/span>/g, '');
 					// display it all at once in page
 					$("#" + ele).html($("#" + ele).html() + code[0]);
 				}

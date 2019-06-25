@@ -45,7 +45,7 @@
     height: 100%;
     width: 100%;
     background: left center no-repeat;
-    animation: explosion_keyframes 0.6s steps(8) infinite;
+    /* animation: explosion_keyframes 0.6s steps(8) infinite; */
 }
 @keyframes explosion_keyframes {
     100% {
@@ -182,7 +182,7 @@ svg.stats-display .stat-bar-circle-text { fill:white; font: 14px Monaco, "Andale
     display: none;
     position: fixed;
     width: 40%;
-    min-width: 450px;
+    min-width: 500px;
     max-width: 600px;
     margin-left: -14%;
     left: 45%;

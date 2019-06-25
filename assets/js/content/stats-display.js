@@ -16,7 +16,7 @@ window.StatsDisplay = (function() {
 		"health": { "val": 0, "x":0, "y":0, "w":0, "h":20 }, // start @ zero
 		"staminabg": { "val": 0, "x":0, "y":20, "w":170, "h":12 },
 		"stamina": { "val": 0, "x":0, "y":20, "w":0, "h":12 }, // start @ zero
-		"circle": { "val": 0, "cx": 24, "cy": 27, "r": 22, "text": 0 },
+		"circle": { "val": 0, "cx": 24, "cy": 24, "r": 22, "text": 0 },
 	};
 	// assign by value, not reference
 	let monsterStatsSVGPoints = Object.assign({}, tallyStatsSVGPoints);
