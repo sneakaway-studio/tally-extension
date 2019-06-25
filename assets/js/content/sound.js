@@ -58,85 +58,84 @@ window.Sound = (function() {
 		};
 
 
-	let musicPlaying = false,
-		musicAudio = {},
+	let musicAudio = null,
 		musicFile = "";
 
-	function changeMusic(file = "") {
-		try {
-			// update file
-			if (file != "") musicFile = file;
-			// if not already playing
-			if (!musicPlaying) startMusic();
-		} catch (err) {
-			console.error(err);
-		}
+
+	function playBattleMusic() {
+		// play intro
+		playMusic("battle-intro.wav", false, 0);
+		// then call again so it switches to the loop
+		setTimeout(function() {
+			playMusic("battle-loop.wav", true, 0);
+		}, 500);
+
+
 	}
 
-	function startMusic(volumeModifier = .999) {
+	function playMusic(file, loop, volumeModifier = 0) {
 		try {
-			console.log("♪ Sound.startMusic()");
+			console.log("♪ Sound.startMusic()", file, volumeModifier);
 
-if (!musicPlaying) {
+			// if music isn't already playing then start it
+			if (musicFile === "") {
+				// save file
+				musicFile = file;
+				// get reference to musicAudio element and add source
+				musicAudio = document.querySelector('#tally_music');
+				$('#tally_music_source').attr("src", chrome.extension.getURL("assets/sounds/music/" + musicFile));
+				// set params
+				musicAudio.volume = FS_Number.clamp((tally_options.soundVolume || 0.3) + volumeModifier, 0, 1);
+				// some hacks for Chrome
+				musicAudio.muted = false;
+				musicAudio.loop = loop;
+				musicAudio.pause();
+				musicAudio.load();
 
-
-			// reference to musicAudio element
-			musicAudio = document.querySelector('#tally_music');
-			// add source
-			$('#tally_music_source').attr("src", chrome.extension.getURL("assets/sounds/music/" + musicFile));
-			// set params
-			console.log("music 1",musicAudio.volume);
-			musicAudio.volume = FS_Number.clamp((tally_options.soundVolume || 0.3) + volumeModifier,0,1);
-			if (musicAudio.volume < 0) musicAudio.volume = 0;
-			musicAudio.muted = false;
-			musicAudio.loop = true;
-			musicAudio.pause();
-			musicAudio.load();
-			console.log("music 2",musicAudio.volume);
-
-			// create promise / attempt to play
-			var promise = musicAudio.play();
-			// if play failed
-			if (promise !== undefined) {
-				promise.then(_ => {
-					//if(DEBUG) console.log("Autoplay started!");
-				}).catch(err => {
-					//console.log(err);
-					//if(DEBUG) console.log("Autoplay prevented!");
-					// musicAudio.pause();
-					// musicAudio.play();
-				});
-			}
+				// create promise / attempt to play
+				var promise = musicAudio.play();
+				// if play failed
+				if (promise !== undefined) {
+					promise.then(_ => {
+						//if(DEBUG) console.log("Autoplay started!");
+					}).catch(err => {
+						//console.log(err);
+						//if(DEBUG) console.log("Autoplay prevented!");
+						// musicAudio.pause();
+						// musicAudio.play();
+					});
+				}
 
 
-
-				// // add listener to make sure loop happens
-				// musicAudio.addEventListener('ended', function() {
-				// 	this.currentTime = 0;
-				// 	if (!musicPlaying) this.pause();
-				// 	else {
-				// 		// update src
-				// 		this.src = chrome.extension.getURL("assets/sounds/music/" + musicFile);
-				// 		this.play();
-				// 	}
-				// }, false);
+				// add listener to make sure loop happens
+				musicAudio.addEventListener('ended', function() {
+					this.currentTime = 0;
+					// start playing again using new music if it exists
+					musicAudio.pause();
+					musicAudio.load();
+					// only update src
+					$('#tally_music_source').attr("src", chrome.extension.getURL("assets/sounds/music/" + musicFile));
+					// create promise / attempt to play
+					musicAudio.play();
+				}, false);
 
 			} else {
-				// update src
-				musicAudio.src = chrome.extension.getURL("assets/sounds/music/" + musicFile);
+				// save file
+				musicFile = file;
+				// only update src
+				$('#tally_music_source').attr("src", chrome.extension.getURL("assets/sounds/music/" + musicFile));
 			}
-			musicPlaying = true;
+
 		} catch (err) {
 			console.error(err);
 		}
 	}
 
-	function endMusic() {
+	function stopMusic() {
 		try {
-			console.log("♪ Sound.endMusic()");
+			console.log("♪ Sound.stopMusic()");
 			musicAudio.pause();
-			musicAudio = {};
-			musicPlaying = false;
+			musicFile = "";
 		} catch (err) {
 			console.error(err);
 		}
@@ -313,10 +312,11 @@ if (!musicPlaying) {
 
 	// PUBLIC
 	return {
-		changeMusic: function(file) {
-			changeMusic(file);
+		playBattleMusic: playBattleMusic,
+		playMusic: function(file, loop, volumeModifier){
+			playMusic(file, loop, volumeModifier);
 		},
-		endMusic: endMusic,
+		stopMusic: stopMusic,
 		playRandom: function(category, index, delay) {
 			playRandom(category, index, delay);
 		},
