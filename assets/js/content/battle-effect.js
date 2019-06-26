@@ -134,6 +134,11 @@ window.BattleEffect = (function() {
 				Core.setCenterPosition('#battle_projectile', startPos);
 				Core.showElement('#battle_projectile');
 
+				// reference to image file
+				var url = chrome.extension.getURL('assets/img/battles/number-ball.gif');
+				// set content
+				$('#battle_projectile').css('background-image', 'url("' + url + '")');
+
 				// animate projectile
 				anime({
 					targets: '#battle_projectile',

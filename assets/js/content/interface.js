@@ -17,11 +17,11 @@ window.Interface = (function() {
 
 							// sound effects
 							"<audio class='tally' id='tally_audio' muted='muted'>"+
-								"<source class='tally' id='tally_audio_source' type='audio/mp3'>"+
+								"<source src='' class='tally' id='tally_audio_source' type='audio/mp3'>"+
 							"</audio>" +
 							// music
 							"<audio class='tally' id='tally_music' muted='muted'>"+
-								"<source class='tally' id='tally_music_source' type='audio/mp3'>"+
+								"<source src='' class='tally' id='tally_music_source' type='audio/mp3'>"+
 							"</audio>" +
 
 							// monster

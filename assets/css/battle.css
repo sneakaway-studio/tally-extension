@@ -24,7 +24,7 @@
     height: 50px;
     border-radius: 50%;
     background-color: #d32cf1;
-    background: url("chrome-extension://__MSG_@@extension_id__/assets/img/battles/number-ball.gif") center center no-repeat;
+    background: center center no-repeat;
 }
 #explosion_sprite_container {
     height: 250px;
@@ -202,7 +202,9 @@ svg.stats-display .stat-bar-circle-text { fill:white; font: 14px Monaco, "Andale
     font: 0.9em/1.4em "Lucida Console", Monaco, monospace !important;
     padding: 10px 10px 0 10px !important;
     height: 140px !important;
-    overflow: scroll !important;
+    overflow-y: scroll !important;
+    overflow-x: hidden !important;
+    scrollbar-width: none;
 }
 .tally_log_line { font: 0.9em/1.4em "Lucida Console", Monaco, monospace !important; }
 /* weird scrollbar issue */

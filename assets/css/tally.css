@@ -29,11 +29,6 @@
     bottom: -143px;
     position: fixed;
     opacity: 1;
-    /* bitmap method */
-    /* background-image:url('chrome-extension://__MSG_@@extension_id__/assets/img/tally/skins/skin-color-magenta.png');
-	background-repeat:no-repeat; */
-    /* testing
-	bottom: 100px;*/
     /* fix Tally's strange vertical position shift */
     box-sizing: border-box;
     -moz-box-sizing: border-box;

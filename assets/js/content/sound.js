@@ -75,7 +75,7 @@ window.Sound = (function() {
 
 	function playMusic(file, loop, volumeModifier = 0) {
 		try {
-			console.log("♪ Sound.startMusic()", file, volumeModifier);
+			console.log("♪ Sound.playMusic()", file, loop, volumeModifier);
 
 			// if music isn't already playing then start it
 			if (musicFile === "") {
@@ -92,31 +92,11 @@ window.Sound = (function() {
 				musicAudio.pause();
 				musicAudio.load();
 
-				// create promise / attempt to play
-				var promise = musicAudio.play();
-				// if play failed
-				if (promise !== undefined) {
-					promise.then(_ => {
-						//if(DEBUG) console.log("Autoplay started!");
-					}).catch(err => {
-						//console.log(err);
-						//if(DEBUG) console.log("Autoplay prevented!");
-						// musicAudio.pause();
-						// musicAudio.play();
-					});
-				}
-
+				startMusic();
 
 				// add listener to make sure loop happens
 				musicAudio.addEventListener('ended', function() {
-					this.currentTime = 0;
-					// start playing again using new music if it exists
-					musicAudio.pause();
-					musicAudio.load();
-					// only update src
-					$('#tally_music_source').attr("src", chrome.extension.getURL("assets/sounds/music/" + musicFile));
-					// create promise / attempt to play
-					musicAudio.play();
+					startMusic();
 				}, false);
 
 			} else {
@@ -124,6 +104,43 @@ window.Sound = (function() {
 				musicFile = file;
 				// only update src
 				$('#tally_music_source').attr("src", chrome.extension.getURL("assets/sounds/music/" + musicFile));
+			}
+
+		} catch (err) {
+			console.error(err);
+		}
+	}
+
+	function startMusic() {
+		try {
+			console.log("♪ Sound.startMusic()");
+
+			if (musicAudio !== null){
+				musicAudio.pause();
+				musicAudio.currentTime = 0;
+			}
+
+			// create promise / attempt to play
+			var soundPromise = musicAudio.play();
+			// if play failed
+			if (soundPromise !== undefined) {
+				soundPromise.then(_ => {
+					//if(DEBUG) console.log("Autoplay started!");
+					//Pause and reset the sound
+					// start playing again using new music if it exists
+					musicAudio.pause();
+					// musicAudio.currentTime = 0;
+					// only update src
+					$('#tally_music_source').attr("src", chrome.extension.getURL("assets/sounds/music/" + musicFile));
+					musicAudio.load();
+					// create promise / attempt to play
+					musicAudio.play();
+				}).catch(err => {
+					//console.log(err);
+					//if(DEBUG) console.log("Autoplay prevented!");
+					// musicAudio.pause();
+					// musicAudio.play();
+				});
 			}
 
 		} catch (err) {
@@ -313,7 +330,7 @@ window.Sound = (function() {
 	// PUBLIC
 	return {
 		playBattleMusic: playBattleMusic,
-		playMusic: function(file, loop, volumeModifier){
+		playMusic: function(file, loop, volumeModifier) {
 			playMusic(file, loop, volumeModifier);
 		},
 		stopMusic: stopMusic,
