@@ -101,3 +101,10 @@ Learn more at [tallygame.net](https://tallygame.net).
 * [jQuery](https://jquery.com/)
 * [jQuery Growl](http://ksylvest.github.io/jquery-growl/)
 * [Store2](https://www.npmjs.com/package/store2)
+
+
+# Notes on cross-browser compatibility
+
+* [Porting a Google Chrome extension](https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/Porting_a_Google_Chrome_extension)
+* [Mozilla > Chrome incompatibilities](https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/Chrome_incompatibilities)
+* [Mozilla > Browser support for JavaScript APIs](https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/Browser_support_for_JavaScript_APIs)

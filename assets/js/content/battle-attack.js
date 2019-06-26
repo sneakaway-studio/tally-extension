@@ -114,8 +114,7 @@ window.BattleAttack = (function() {
 				let affectsStr = "tally",
 					affectsName = "Tally",
 					attackOutcomeLog = "",
-					gainedLostString = "",
-					htmlOpen = false;
+					gainedLostString = "";
 				// tally is default unless one of these are true
 				if (selfStr == "tally") {
 					if (outcomeDetails.outcomes[0].affects == "opp") {
@@ -138,38 +137,39 @@ window.BattleAttack = (function() {
 					// if number is 0 skip
 					if (outcomeDetails.outcomes[i].change == 0) continue;
 
-					// was the stat decreased?
-					if (outcomeDetails.outcomes[i].change < 0) {
-						// if the first loop
-						if (gainedLostString === "") gainedLostString = "lost" + "<span class='text-blue'>";
-						// else all loops after
-						else attackOutcomeLog += ", ";
+					let flipStat = 1;
 
-						// add to log, changing value for display
-						attackOutcomeLog += (outcomeDetails.outcomes[i].change *= -1) + " " + outcomeDetails.outcomes[i].stat;
+					// was the stat decreased?
+					if (outcomeDetails.outcomes[i].change < 0){
+						// if the first loop
+						if (gainedLostString === "") gainedLostString = " lost ";
+						// change to positive value
+						flipStat = -1;
 					}
 					// or increased?
 					else if (outcomeDetails.outcomes[i].change > 0) {
 						// if the first loop
-						if (gainedLostString === "") gainedLostString = "gained" + "<span class='text-blue'>";
-						// else all loops after
-						else attackOutcomeLog += ", ";
-
-						// add to log
-						attackOutcomeLog += outcomeDetails.outcomes[i].change + " " + outcomeDetails.outcomes[i].stat;
-
+						if (gainedLostString === "") gainedLostString = " gained ";
 						// mark positive outcome
 						if (selfStr == "tally") positiveOutcomeTally = true;
-					} else {
-						// no change, continue to next outcome
+						// show positive value
+						flipStat = 1;
 					}
 
+					// if 2 outcomes and on 2nd outcome
+					if (outcomeDetails.outcomes.length === 2 && i === 1) attackOutcomeLog += " and ";
+					// if 3+ outcomes and on last outcome
+					else if (outcomeDetails.outcomes.length >= 3 && i === outcomeDetails.outcomes.length-1) attackOutcomeLog += " and ";
+					// if 3+ outcomes and before last outcome
+					else if (outcomeDetails.outcomes.length >= 3 && i < outcomeDetails.outcomes.length-1) attackOutcomeLog += ", ";
+
+					// add to log, changing value for display
+					attackOutcomeLog += "<span class='text-blue'>" + (outcomeDetails.outcomes[i].change *= flipStat);
+					attackOutcomeLog += " " + outcomeDetails.outcomes[i].stat + "</span>";
+
+
 					//if (DEBUG) console.log("attackOutcomeLog=", attackOutcomeLog);
-
 				}
-
-				// close html
-				if (gainedLostString !== "") attackOutcomeLog += "</span>";
 
 				// determine what tally says
 				if (oppStr === "tally") {
@@ -188,13 +188,13 @@ window.BattleAttack = (function() {
 				}
 
 				// put string together
-				let finalLog = affectsName + " " + gainedLostString + " " + attackOutcomeLog + "!";
+				attackOutcomeLog = affectsName + " " + gainedLostString + " " + attackOutcomeLog + "!";
 
 				// show log and change in stats after a moment
 				setTimeout(function() {
-					if (DEBUG) console.log("💥 Battle.handleAttackOutcomes() attackOutcomeLog=", finalLog);
+					if (DEBUG) console.log("💥 Battle.handleAttackOutcomes() attackOutcomeLog=", attackOutcomeLog);
 					// show log
-					BattleConsole.log(finalLog);
+					BattleConsole.log(attackOutcomeLog);
 					// update stats display for player who is affected
 					StatsDisplay.updateDisplay(affectsStr);
 
@@ -322,13 +322,13 @@ window.BattleAttack = (function() {
 				// monster will attack back in a moment
 				setTimeout(function() {
 					doAttack(FS_Object.randomObjProperty(Battle.details.monsterAttacks), "monster", "tally");
-				}, _logDelay + 2000);
+				}, _logDelay + 1000);
 			} else {
 				// prompt user to attack in a moment
 				setTimeout(function() {
 					// turn control back to player
 					BattleConsole.log("What will Tally do?", "showBattleOptions");
-				}, _logDelay + 500);
+				}, _logDelay + 200);
 			}
 		} catch (err) {
 			console.error(err);

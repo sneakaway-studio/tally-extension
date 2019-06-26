@@ -233,32 +233,78 @@ window.BattleConsole = (function() {
 		}
 	}
 
+
 	/**
 	 *	Typewriter effect
 	 */
 	function typeWriter(ele, str, i) {
 		try {
-			if (DEBUG) console.log(ele, str, i);
+			if (DEBUG) console.log("typeWriter()", ele, str, i);
 			if (!document.getElementById(ele)) return;
 			if (i >= str.length) {
 				BattleConsole.lineComplete(ele);
 			} else {
+				// OLD METHOD, DOESN'T SUPPORT MULTIPLE ELEMENTS, FOR REFERENCE
+
+				// // handle html in string
+				// if (str.charAt(i) === "<") {
+				// 	// capture it all
+				// 	let code = str.match(/<span(.*?)<\/span>/g);
+				// 	// remove from str
+				// 	str = str.replace(/<span(.*?)<\/span>/g, '');
+				// 	// display it all at once in page
+				// 	$("#" + ele).html($("#" + ele).html() + code[0]);
+				// }
+
 				// handle html in string
+				var htmlElementStr = "",
+					htmlElementFirstTagOpen = false,
+					htmlElementFirstTagClosed = false;
+				// if open character
 				if (str.charAt(i) === "<") {
-					// capture it all
-					let code = str.match(/<span(.*?)<\/span>/g);
-					// remove from str
-					str = str.replace(/<span(.*?)<\/span>/g, '');
-					// display it all at once in page
-					$("#" + ele).html($("#" + ele).html() + code[0]);
+					// then open first tag
+					htmlElementFirstTagOpen = true;
+
+					// loop until we get to closing tag
+					while (htmlElementFirstTagOpen === true) {
+						// add to html element, move to next
+						htmlElementStr += str.charAt(i++);
+						if (DEBUG) console.log("typeWriter() WHILE", i, htmlElementStr);
+						// check next element for closing tag
+						if (str.charAt(i) === ">") {
+							// should close the first element
+							if (!htmlElementFirstTagClosed)
+								htmlElementFirstTagClosed = true;
+							// or close the whole thing
+							else {
+								// stop loop
+								htmlElementFirstTagOpen = true;
+								// add next character
+								htmlElementStr += str.charAt(i);
+								// increase i to next character
+								i++;
+								// add to html
+								$("#" + ele).html($("#" + ele).html() + htmlElementStr);
+								// reset everything
+								htmlElementStr = "";
+								htmlElementFirstTagOpen = false;
+								htmlElementFirstTagClosed = false;
+							}
+						}
+						// emergency
+						if (i > 300) break;
+					}
 				}
 				// if there is still some left
 				if (i < str.length) {
+					// add current character
 					$("#" + ele).html($("#" + ele).html() + str.charAt(i));
 					setTimeout(function() {
+						// work on next character
 						typeWriter(ele, str, ++i);
 					}, 20);
 				}
+
 			}
 		} catch (err) {
 			console.error(err);
