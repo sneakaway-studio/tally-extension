@@ -140,7 +140,7 @@ window.BattleAttack = (function() {
 					let flipStat = 1;
 
 					// was the stat decreased?
-					if (outcomeDetails.outcomes[i].change < 0){
+					if (outcomeDetails.outcomes[i].change < 0) {
 						// if the first loop
 						if (gainedLostString === "") gainedLostString = " lost ";
 						// change to positive value
@@ -159,9 +159,9 @@ window.BattleAttack = (function() {
 					// if 2 outcomes and on 2nd outcome
 					if (outcomeDetails.outcomes.length === 2 && i === 1) attackOutcomeLog += " and ";
 					// if 3+ outcomes and on last outcome
-					else if (outcomeDetails.outcomes.length >= 3 && i === outcomeDetails.outcomes.length-1) attackOutcomeLog += " and ";
-					// if 3+ outcomes and before last outcome but after first 
-					else if (outcomeDetails.outcomes.length >= 3 && i > 0  && i < outcomeDetails.outcomes.length-1) attackOutcomeLog += ", ";
+					else if (outcomeDetails.outcomes.length >= 3 && i === outcomeDetails.outcomes.length - 1) attackOutcomeLog += " and ";
+					// if 3+ outcomes and before last outcome but after first
+					else if (outcomeDetails.outcomes.length >= 3 && i > 0 && i < outcomeDetails.outcomes.length - 1) attackOutcomeLog += ", ";
 
 					// add to log, changing value for display
 					attackOutcomeLog += "<span class='text-blue'>" + (outcomeDetails.outcomes[i].change *= flipStat);
@@ -340,15 +340,15 @@ window.BattleAttack = (function() {
 	/**
 	 *	Reward Tally with a new attack
 	 */
-	function rewardAttack() {
+	function rewardAttack(name = "", type = "") {
 		try {
 			// get random attack
-			let attack = AttackData.returnAttack();
+			let attack = AttackData.returnAttack(name, type);
 
 			// make sure tally doesn't already have that attack
 			while (prop(tally_user.attacks[attack.name]))
-				// if so get a new one
-				attack = AttackData.returnAttack();
+				// if so get a new one, passing name and type if set
+				attack = AttackData.returnAttack(name, type);
 
 			// store and save
 			tally_user.attacks[attack.name] = attack;
@@ -373,6 +373,8 @@ window.BattleAttack = (function() {
 		getOutcomeDetails: function() {
 			return getOutcomeDetails();
 		},
-		rewardAttack: rewardAttack
+		rewardAttack: function(name, type) {
+			return rewardAttack(name, type);
+		},
 	};
 })();

@@ -85,7 +85,7 @@ window.Consumable = (function() {
 
 			// pick random from type
 			if (r < 0.05) create("cookie", "", count);
-			else if (r < 0.06) create("data", "", count);
+			else if (r < 0.06) create("junk", "", count);
 			// pick random type
 			else if (r < 0.07) create("", "", count);
 
@@ -100,7 +100,7 @@ window.Consumable = (function() {
 		try {
 			// don't display if off
 			if (!pageData.activeOnPage || tally_options.gameMode !== "full" || type === "") return;
-			if (DEBUG) console.log("🍪 Consumable.create()", type, name, num);
+			if (DEBUG) console.log("🍪 Consumable.create()", "type=" + type, "name=" + name, "num=" + num);
 
 			// store the consumable
 			let consumable = {};
@@ -116,7 +116,7 @@ window.Consumable = (function() {
 				// if a consumable was selected push it to array
 				if (consumable != {}) consumables.push(consumable);
 
-				if (DEBUG) console.log("🍪 Consumable.create()", type, i +"/"+ num, consumable);
+				if (DEBUG) console.log("🍪 Consumable.create()", type, i + "/" + num, consumable);
 
 				// testing
 				//consumables.push(types.cookie.fortune);

@@ -112,6 +112,7 @@ window.Battle = (function() {
 			details.mid = mid;
 			details.monsterName = MonsterData.dataById[mid].name + " monster";
 			details.monsterAttacks = AttackData.returnRandomAttacks(3);
+			//console.log("details=",details);
 			// move monster into position and rescale
 			anime({
 				targets: '.tally_monster_sprite_container',

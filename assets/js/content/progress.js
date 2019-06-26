@@ -19,24 +19,28 @@ window.Progress = (function() {
 			if (!tally_progress.award1stAttack &&
 				FS_Object.isEmpty(tally_user.attacks) &&
 				tally_user.score.score > 3) {
-				BattleAttack.rewardAttack();
+				BattleAttack.rewardAttack("","attack"); 
 				tally_progress.award1stAttack = true;
 			}
 			// AWARD ATTACK - 2nd
 			if (!tally_progress.award2ndAttack && tally_user.score.score > 15) {
-				BattleAttack.rewardAttack();
+				BattleAttack.rewardAttack("","defense");
 				tally_progress.award2ndAttack = true;
 			}
 			// AWARD ATTACK - 3rd
 			if (!tally_progress.award3rdAttack && tally_progress.battle1stMonster) {
-				BattleAttack.rewardAttack();
+				BattleAttack.rewardAttack("","attack");
 				tally_progress.award3rdAttack = true;
 			}
 			// AWARD ATTACK - 4th
 			if (!tally_progress.award4thAttack && tally_user.score.score > 100) {
-				BattleAttack.rewardAttack();
+				BattleAttack.rewardAttack("","defense");
 				tally_progress.award4thAttack = true;
 			}
+
+
+// when tally reaches level n her capactity for using attacks in battle to n
+
 
 
 			// final check
