@@ -4,13 +4,14 @@
 
 ![Tally](https://tallygame.net/assets/img/tally-153w.png "Hi! I'm Tally.")
 
-Tally is a browser extension that uses AI to transform the data advertisers collect into a multiplayer game. Learn more at [tallygame.net](https://tallygame.net).
+Tally is a browser extension that uses AI to transform the data advertisers collect into a multiplayer game.
+Learn more at [tallygame.net](https://tallygame.net).
 
 
 ### Chrome and Opera Development Installation
 
 1. Download and unzip the [extension](https://github.com/omprojects/tally-extension/archive/master.zip)
-2. In Chrome, go to ```chrome://extensions```
+2. In Chrome, go to `chrome://extensions`
 3. Enable Developer mode by ticking the checkbox in the upper-right corner.
 4. Click on the "Load unpacked extension..." button.
 5. Select the directory containing your unpacked extension.
@@ -18,7 +19,7 @@ Tally is a browser extension that uses AI to transform the data advertisers coll
 
 ### Firefox Development Installation
 
-1. Open Firefox browser and navigate to ```about:debugging```
+1. Open Firefox browser and navigate to `about:debugging`
 2. Click the "Load Temporary Add-on" button.
 3. Select the directory containing your unpacked extension.
 4. Then select the manifest file.
@@ -44,14 +45,21 @@ Tally is a browser extension that uses AI to transform the data advertisers coll
 
 ## Development Versions
 
+### Version 0.2.3
+
+...
+
 ### Version 0.2.2
 
+* Adds nearly complete battle system
 * Adds badges
+* Adds more monsters and attacks
 
 ### Version 0.2.1
 
 * Fixes various installation issues
-* Adds installation tutorial framework
+* Adds installation progress framework
+* Adds more monsters and attacks
 
 ### Version 0.2.0
 

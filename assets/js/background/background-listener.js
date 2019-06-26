@@ -153,11 +153,11 @@ chrome.runtime.onMessage.addListener(
 					 "data": store("tally_top_monsters") || {}
 				 });
 			 }
-			 // getTutorialHistoryPromise
-			 else if (request.action == "getTutorialHistoryPromise") {
+			 // getProgressPromise
+			 else if (request.action == "getProgressPromise") {
 				 sendResponse({
 					 "action": request.action,
-					 "data": store("tally_tutorial_history") || {}
+					 "data": store("tally_progress") || {}
 				 });
 			 }
 

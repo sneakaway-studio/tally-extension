@@ -18,7 +18,7 @@ function createApp() {
 		store("tally_trackers", {
 			"blocked": {}
 		});
-		store("tally_tutorial_history", createTutorialHistory());
+		store("tally_progress", createProgress());
 
 		// these are empty the first time
 		// store("tally_domains", {});
@@ -198,7 +198,7 @@ function createMeta() {
 	}
 }
 
-function createTutorialHistory() {
+function createProgress() {
 	try {
 		return {
 			"tokenAdded": false,
@@ -211,7 +211,7 @@ function createTutorialHistory() {
 			"battle2ndMonster": false,
 			"battle3rdMonster": false,
 			"viewProfilePage": false,
-			"tutorialComplete": false
+			"progressComplete": false
 		};
 	} catch (err) {
 		console.error(err);

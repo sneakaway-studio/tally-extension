@@ -82,6 +82,8 @@
             "assets/js/content/badge.js",
             "assets/js/content/events.js",
             "assets/js/content/tally.js",
+            "assets/js/content/tutorial.js",
+            "assets/js/content/progress.js",
             "assets/js/content/main.js"
         ],
         "css": [

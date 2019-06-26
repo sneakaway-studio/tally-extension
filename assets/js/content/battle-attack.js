@@ -211,7 +211,7 @@ window.BattleAttack = (function() {
 					}
 					// end check
 					checkForEnd(selfStr, oppStr);
-				}, _logDelay + 300);				
+				}, _logDelay + 300);
 			}
 		} catch (err) {
 			console.log(err);
@@ -344,7 +344,6 @@ window.BattleAttack = (function() {
 		try {
 			// get random attack
 			let attack = AttackData.returnAttack();
-			console.log("🕗 TallyEvents.checkTutorialEvents() --> awardFirstAttack", attack);
 
 			// make sure tally doesn't already have that attack
 			while (prop(tally_user.attacks[attack.name]))

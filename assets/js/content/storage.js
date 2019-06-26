@@ -136,19 +136,19 @@ window.TallyStorage = (function() {
 					// 	message: "User token updated!"
 					// });
 
-					if (!tally_tutorial_history.tokenAdded) {
+					if (!tally_progress.tokenAdded) {
 						// mark as true and save
-						tally_tutorial_history.tokenAdded = true;
-						TallyStorage.saveData('tally_tutorial_history', tally_tutorial_history);
+						tally_progress.tokenAdded = true;
+						TallyStorage.saveData('tally_progress', tally_progress);
 						// reload page after token grabbed
 						location.reload();
-					} else if (!tally_tutorial_history.tokenAddedMessage) {
+					} else if (!tally_progress.tokenAddedMessage) {
 
 
 
 							// mark as true and save
-							tally_tutorial_history.tokenAddedMessage = true;
-							TallyStorage.saveData('tally_tutorial_history', tally_tutorial_history);
+							tally_progress.tokenAddedMessage = true;
+							TallyStorage.saveData('tally_progress', tally_progress);
 							// encourage them to explore
 							Thought.showString("Oh hi! I'm Tally!!!", "happy");
 							Thought.showString("Your token is now active and installed!", "happy");
@@ -203,7 +203,7 @@ const startupPromises = [],
 		'tally_nearby_monsters',
 		'tally_trackers',
 		'tally_game_status',
-		'tally_tutorial_history',
+		'tally_progress',
 		'tally_top_monsters'
 	];
 
@@ -363,14 +363,14 @@ const getTopMonstersPromise = new Promise(
 	}
 );
 // GET TUTORIAL HISTORY
-const getTutorialHistoryPromise = new Promise(
+const getProgressPromise = new Promise(
 	(resolve, reject) => {
-		//console.log("💾 getTutorialHistoryPromise");
+		//console.log("💾 getProgressPromise");
 		chrome.runtime.sendMessage({
-			'action': 'getTutorialHistoryPromise'
+			'action': 'getProgressPromise'
 		}, function(response) {
-			//console.log('💾 >>>>> getTutorialHistoryPromise()',response.data);
-			tally_tutorial_history = response.data; // store data
+			//console.log('💾 >>>>> getProgressPromise()',response.data);
+			tally_progress = response.data; // store data
 			resolve(response.data); // resolve promise
 		});
 	}

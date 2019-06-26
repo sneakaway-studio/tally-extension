@@ -10,7 +10,7 @@ let pageData = Page.getPageData(),
 	tally_nearby_monsters = {},
 	tally_top_monsters = {},
 	tally_trackers = {},
-	tally_tutorial_history = {};
+	tally_progress = {};
 
 window.TallyMain = (function() {
 	// PRIVATE
@@ -30,12 +30,12 @@ window.TallyMain = (function() {
 			Promise
 				.all([getUserPromise, getOptionsPromise, getMetaPromise, getGameStatusPromise,
 					getNearbyMonstersPromise, getStatsPromise, getTrackerBlockListPromise,
-					getTopMonstersPromise, getTutorialHistoryPromise
+					getTopMonstersPromise, getProgressPromise
 				]) // getLastBackgroundUpdatePromise
 				.then(function() {
 					// if (DEBUG) console.log('>>>>> init() Promise all data has loaded',
 					// 			tally_user, tally_options, tally_meta, tally_game_status, tally_trackers,
-					// 			tally_nearby_monsters, tally_top_monsters, tally_tutorial_history);
+					// 			tally_nearby_monsters, tally_top_monsters, tally_progress);
 
 					// check if we can update the token
 					Page.checkDashboardUpdateToken();
@@ -54,7 +54,7 @@ window.TallyMain = (function() {
 						"\n tally_trackers =", tally_trackers,
 						"\n tally_nearby_monsters =", tally_nearby_monsters,
 						"\n tally_top_monsters =", tally_top_monsters,
-						"\n tally_tutorial_history =", tally_tutorial_history
+						"\n tally_progress =", tally_progress
 					);
 				});
 		} catch (err) {
@@ -128,8 +128,8 @@ window.TallyMain = (function() {
 			Badge.randomizer();
 			// check last active status
 			TallyEvents.checkLastActive();
-			// check to see if there are any tutorial events to complete
-			TallyEvents.checkTutorialEvents();
+			// check to see if there are any progress complete
+			Progress.check();
 
 		} catch (err) {
 			console.error(err);
@@ -165,7 +165,7 @@ window.TallyMain = (function() {
 		tally_nearby_monsters = {};
 		tally_top_monsters = {};
 		tally_trackers = {};
-		tally_tutorial_history = {};
+		tally_progress = {};
 		start();
 	}
 
