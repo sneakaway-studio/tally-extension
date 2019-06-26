@@ -221,10 +221,10 @@ window.BattleEffect = (function() {
 			Core.setCenterPosition('#explosion_sprite_container', endPos);
 			Core.showElement('#explosion_sprite_container');
 
-			let file = "";
+			// default explosion
+			let file = "stars-pink.gif";
+			// unless attack has a specific one 
 			if (prop(attack["animation-name"]) && attack["animation-name"] !== "") file = attack["animation-name"];
-			// get random
-			else file = FS_Object.randomArrayIndex(explosions);
 
 			// reference to image file
 			var url = chrome.extension.getURL('assets/img/battles/explosions/' + file);

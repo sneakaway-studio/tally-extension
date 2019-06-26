@@ -27,8 +27,8 @@
     background: center center no-repeat;
 }
 #explosion_sprite_container {
-    height: 250px;
-    width: 250px;
+    height: 300px;
+    width: 300px;
 }
 #explosion_sprite {
     position: relative;
@@ -186,7 +186,7 @@ svg.stats-display .stat-bar-circle-text { fill:white; font: 14px Monaco, "Andale
     max-width: 600px;
     margin-left: -14%;
     left: 45%;
-    height: 155px;
+    height: 135px;
 }
 #battle-console-inner {
     box-sizing: border-box;
@@ -201,7 +201,7 @@ svg.stats-display .stat-bar-circle-text { fill:white; font: 14px Monaco, "Andale
     box-sizing: border-box !important;
     font: 0.9em/1.4em "Lucida Console", Monaco, monospace !important;
     padding: 10px 10px 0 10px !important;
-    height: 140px !important;
+    height: 120px !important;
     overflow-y: scroll !important;
     overflow-x: hidden !important;
     scrollbar-width: none;
