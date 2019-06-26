@@ -137,7 +137,7 @@ window.BattleConsole = (function() {
 			//if(DEBUG) console.log("writeNextInQueue()", str, _queue, _active);
 			// insert placeholder
 			var ele = "<div class='tally tally_log_line'>" +
-				"<span id='tally_log" + (++logId) + "' class='tally_log_cursor'></span>" +
+				"<span id='tally_log" + (++logId) + "' class='tally tally_log_cursor'></span>" +
 				"</div>";
 			$("#battle-console-stream").append(ele);
 			// make sure it exists first
@@ -173,22 +173,22 @@ window.BattleConsole = (function() {
 			if (DEBUG) console.log("🖥️ BattleConsole.showBattleOptions() step 1.2", _active);
 
 			// build options
-			var str = "<div class='battle-options-row'>";
+			var str = "<div class='tally battle-options-row'>";
 			for (var key in _attacks) {
 				if (_attacks.hasOwnProperty(key)) {
 					if (DEBUG) console.log("🖥️ BattleConsole.showBattleOptions() step 1.3", _attacks[key]);
 					str += "<span data-attack='" + _attacks[key].name +
-						"' class='battle-options attack-" + _attacks[key].name + "'>" +
+						"' class='tally battle-options attack-" + _attacks[key].name + "'>" +
 						_attacks[key].name + "</span>";
 				}
 			}
-			str += "<span class='battle-options-esc'>run [esc]</span></div>";
+			str += "<span class='tally battle-options-esc'>run [esc]</span></div>";
 
 			if (DEBUG) console.log("🖥️ BattleConsole.showBattleOptions() step 2", str, _queue, _active);
 
 			// insert placeholder
 			var ele = "<div class='tally tally_log_line'>" +
-				"<span id='tally_log" + (++logId) + "' class='tally_log_cursor'>" + str + "</span>" + "</div>";
+				"<span id='tally_log" + (++logId) + "' class='tally tally_log_cursor'>" + str + "</span>" + "</div>";
 			$("#battle-console-stream").append(ele);
 
 			// add hover, click listeners
@@ -340,9 +340,9 @@ window.BattleConsole = (function() {
 			var str = $("#" + ele).html();
 			if (str == undefined) return;
 			//if (DEBUG) console.log(str);
-			str = str.replace("Tally", "<span class='text-tally'>Tally</span>");
-			str = str.replace(Battle.details.monsterName, "<span class='text-green'>" + Battle.details.monsterName + "</span>");
-			str = str.replace(Battle.details.recentAttack.name, "<span class='text-yellow'>" + Battle.details.recentAttack.name + "</span>");
+			str = str.replace("Tally", "<span class='tally text-tally'>Tally</span>");
+			str = str.replace(Battle.details.monsterName, "<span class='tally text-green'>" + Battle.details.monsterName + "</span>");
+			str = str.replace(Battle.details.recentAttack.name, "<span class='tally text-yellow'>" + Battle.details.recentAttack.name + "</span>");
 			$("#" + ele).html(str);
 		} catch (err) {
 			console.error(err);

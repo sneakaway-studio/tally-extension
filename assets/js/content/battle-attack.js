@@ -160,8 +160,8 @@ window.BattleAttack = (function() {
 					if (outcomeDetails.outcomes.length === 2 && i === 1) attackOutcomeLog += " and ";
 					// if 3+ outcomes and on last outcome
 					else if (outcomeDetails.outcomes.length >= 3 && i === outcomeDetails.outcomes.length-1) attackOutcomeLog += " and ";
-					// if 3+ outcomes and before last outcome
-					else if (outcomeDetails.outcomes.length >= 3 && i < outcomeDetails.outcomes.length-1) attackOutcomeLog += ", ";
+					// if 3+ outcomes and before last outcome but after first 
+					else if (outcomeDetails.outcomes.length >= 3 && i > 0  && i < outcomeDetails.outcomes.length-1) attackOutcomeLog += ", ";
 
 					// add to log, changing value for display
 					attackOutcomeLog += "<span class='text-blue'>" + (outcomeDetails.outcomes[i].change *= flipStat);
