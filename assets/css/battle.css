@@ -273,9 +273,16 @@ svg.stats-display .stat-bar-circle-text { fill:white; font: 14px Monaco, "Andale
     font-size: 89%;
     margin-right: 10px;
 }
+.battle-options-defense {
+    box-shadow: 2px 2px #d32cf1;
+    background-color: #63b7ff;
+}
 .battle-options:hover {
     cursor: pointer;
     background-color: #6ebff9;
+}
+.battle-options-defense:hover {
+    background-color: #d32cf1;
 }
 .battle-options-esc {
     width: 100%;

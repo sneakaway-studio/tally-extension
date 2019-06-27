@@ -174,11 +174,14 @@ window.BattleConsole = (function() {
 
 			// build options
 			var str = "<div class='tally battle-options-row'>";
+			let defenseOption = "";
 			for (var key in _attacks) {
 				if (_attacks.hasOwnProperty(key)) {
 					if (DEBUG) console.log("🖥️ BattleConsole.showBattleOptions() step 1.3", _attacks[key]);
+					// if defense
+					defenseOption = _attacks[key].type === "defense" ? "battle-options-defense" : "";
 					str += "<span data-attack='" + _attacks[key].name +
-						"' class='tally battle-options attack-" + _attacks[key].name + "'>" +
+						"' class='tally battle-options " + defenseOption + " attack-" + _attacks[key].name + "'>" +
 						_attacks[key].name + "</span>";
 				}
 			}

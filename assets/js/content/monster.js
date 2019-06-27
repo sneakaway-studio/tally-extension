@@ -38,7 +38,7 @@ window.Monster = (function() {
 				tally_nearby_monsters[mid].totalCaptured = tally_user.monsters[mid].captured;
 			if (DEBUG) console.log('👿 ⊙!⊙⊙⊙ Monster.create()2', mid, tally_nearby_monsters[mid], tally_user.monsters[mid]);
 			// save
-			TallyStorage.saveData("tally_nearby_monsters",tally_nearby_monsters);
+			TallyStorage.saveData("tally_nearby_monsters", tally_nearby_monsters);
 			return tally_nearby_monsters[mid];
 		} catch (err) {
 			console.error(err);
@@ -93,9 +93,8 @@ window.Monster = (function() {
 			if (DEBUG) console.log('👿 ⊙⊙⊙⊙! Monster.display()', monster);
 			// show thought
 			Thought.showThought(Thought.getThought(["monster", "display", 0]), true);
-			// reference to image file
-			//var url = chrome.extension.getURL('assets/img/monsters-300h/' + monster.mid + '-anim-sheet.png');
-			var url = chrome.extension.getURL(tally_meta.website + '/assets/img/monsters-300h/' + monster.mid + '-anim-sheet.png');
+			// reference to image file (moved to server )
+			var url = chrome.extension.getURL(tally_meta.website + '/' + 'assets/img/monsters-300h/' + monster.mid + '-anim-sheet.png');
 
 			// set monster image
 			$('.tally_monster_sprite_inner').css('background-image', 'url( ' + url + ')');
@@ -109,7 +108,7 @@ window.Monster = (function() {
 			// get random position
 			let pos = Core.returnRandomPositionFull('.tally_monster_sprite_container');
 			let css = {
-				'position':'absolute',
+				'position': 'absolute',
 				"display": "block",
 				"z-index": 99999999999,
 				"opacity": 1,
@@ -119,7 +118,7 @@ window.Monster = (function() {
 			// display monster on page
 			$('.tally_monster_sprite_container').css(css);
 			// set data attribute
-			$('.tally_monster_sprite_container').attr('data-mid',monster.mid);
+			$('.tally_monster_sprite_container').attr('data-mid', monster.mid);
 
 			// add listeners
 			$(document).on("mouseover", ".tally_monster_sprite_container", function() {
@@ -165,7 +164,7 @@ window.Monster = (function() {
 			tally_nearby_monsters[mid].missed = 0;
 			if (DEBUG) console.log("👿 ⊙⊙⊙⊙⊙ Monster.test()", MonsterData.dataById[mid]);
 			// save
-			TallyStorage.saveData("tally_nearby_monsters",tally_nearby_monsters);
+			TallyStorage.saveData("tally_nearby_monsters", tally_nearby_monsters);
 			// set the skin color
 			Skin.setStage(tally_nearby_monsters[mid].stage);
 			Thought.showThought(Thought.getThought(["monster", "show", 0]), true);
@@ -190,10 +189,10 @@ window.Monster = (function() {
 				};
 			}
 			// save monsters
-			TallyStorage.saveData("tally_nearby_monsters",tally_nearby_monsters);
+			TallyStorage.saveData("tally_nearby_monsters", tally_nearby_monsters);
 
 			// save user in background
-			TallyStorage.saveData('tally_user',tally_user);
+			TallyStorage.saveData('tally_user', tally_user);
 			// create backgroundUpdate object
 			var backgroundMonsterUpdate = TallyStorage.newBackgroundMonsterUpdate(mid);
 			// store the nearby monster in it
@@ -219,7 +218,7 @@ window.Monster = (function() {
 			// reset them all
 			tally_nearby_monsters = {};
 			monster = {};
-			TallyStorage.saveData("tally_nearby_monsters",tally_nearby_monsters);
+			TallyStorage.saveData("tally_nearby_monsters", tally_nearby_monsters);
 			// set the skin color
 			Skin.setStage(0);
 		} catch (err) {
@@ -237,7 +236,7 @@ window.Monster = (function() {
 			add(mid);
 		},
 		currentMID: currentMID,
-		current: function(){
+		current: function() {
 			return tally_nearby_monsters[currentMID];
 		},
 		saveAndPush: function(mid) {
