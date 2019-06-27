@@ -5,7 +5,7 @@
 
 window.BattleEffect = (function() {
 	// PRIVATE
-	let DEBUG = true,
+	let DEBUG = false,
 		source, // page source for rumbles
 		nodes, // node string for rumbles
 		n = "*", // node elements for rumbles
@@ -223,7 +223,7 @@ window.BattleEffect = (function() {
 
 			// default explosion
 			let file = "stars-pink.gif";
-			// unless attack has a specific one 
+			// unless attack has a specific one
 			if (prop(attack["animation-name"]) && attack["animation-name"] !== "") file = attack["animation-name"];
 
 			// reference to image file

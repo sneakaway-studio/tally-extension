@@ -235,15 +235,49 @@ window.BattleAttack = (function() {
 
 			// 1. update battle progress
 
+
+
+
 			// is battle close to being over?
-			if (Stats.get("tally").health.val <= (Stats.get("tally").health.max / 2) ||
-				Stats.get("monster").health.val <= (Stats.get("monster").health.max / 2)
-			) {
-				Battle.details.progress = "middle";
-			}
-			if (Battle.details.progress === "middle") {
+			// if (Stats.get("tally").health.val <= (Stats.get("tally").health.max / 2) ||
+			// 	Stats.get("monster").health.val <= (Stats.get("monster").health.max / 2)
+			// ) {
+			// 	Battle.details.progress = "middle";
+			// }
+
+			// set Battle.details.progress == to lowest stat of tally | monster
+			Battle.details.progress = Math.min(
+				Stats.get("tally").health.normalized,
+				Stats.get("tally").stamina.normalized,
+				Stats.get("monster").health.normalized,
+				Stats.get("monster").stamina.normalized
+			);
+
+			if (Battle.details.progress > 0.9){
+				Thought.showString("What kind of algorithms are guiding this monster!?", null, true);
+			} else if (Battle.details.progress > 0.8){
+				Thought.showString("Not too shabby", null, true);
+			} else if (Battle.details.progress > 0.7){
+				Thought.showString("Fight for your right to be let alone!", null, true);
+			} else if (Battle.details.progress > 0.6){
+				Thought.showString("This monster won't get away so easily", null, true);
+			} else if (Battle.details.progress > 0.5){
+				Thought.showString("Keep going!", null, true);
+			} else if (Battle.details.progress > 0.4){
+				Thought.showString("This monster is tough!", null, true);
+			} else if (Battle.details.progress > 0.3){
 				Thought.showString("Whoa, this is getting intense!", null, true);
+			} else if (Battle.details.progress > 0.2){
+				Thought.showString("The battle is almost over!", null, true);
+			} else if (Battle.details.progress > 0.1){
+				Thought.showString("One more hit...", null, true);
+			} else {
+				Thought.showString("Finally!", null, true);
 			}
+
+
+
+
 
 			// 2. check for winner
 

@@ -9,7 +9,7 @@ window.Tally = (function() {
 	let DEBUG = false,
 		followCursor = false, // is eye following currently active? on page load, no
 		tallyMenuOpen = false,
-		tallyConsoleIcon = 'font-size:12px; background:url(http://localhost:5000/assets/img/tally-clear-20w.png) no-repeat;';
+		tallyConsoleIcon = 'font-size:12px; background:url(https://tallygame.net/assets/img/tally-clear-20w.png) no-repeat;';
 
 
 	/*  TALLY EYES

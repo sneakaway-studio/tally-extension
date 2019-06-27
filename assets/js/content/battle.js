@@ -17,7 +17,7 @@ window.Battle = (function() {
 			"mid": null,
 			"monsterName": "",
 			"monsterAttacks": {},
-			"progress": "start", // track how long, intense, etc. the battle becomes: "start","middle","end"
+			"progress": 1, // cues for battle progress, normalized 1=start, 0=end
 			"recentAttack": {},
 			"attackInProgress": false
 		};
@@ -165,8 +165,6 @@ window.Battle = (function() {
 		// save blocked list
 
 
-
-
 		end();
 	}
 
@@ -189,6 +187,8 @@ window.Battle = (function() {
 			// remove floating animations
 			anime.remove("#tally_character_inner");
 			anime.remove('.tally_monster_sprite_container');
+			// change skin back to magenta and hide thought if open
+			Skin.setStage(0);
 			Thought.hide();
 			// hide monster
 			anime({
