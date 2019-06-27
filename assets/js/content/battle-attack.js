@@ -233,47 +233,6 @@ window.BattleAttack = (function() {
 			let endBattle = false,
 				endBattleMessage = "";
 
-			// 1. update battle progress
-
-
-
-
-			// is battle close to being over?
-			// if (Stats.get("tally").health.val <= (Stats.get("tally").health.max / 2) ||
-			// 	Stats.get("monster").health.val <= (Stats.get("monster").health.max / 2)
-			// ) {
-			// 	Battle.details.progress = "middle";
-			// }
-
-			// set Battle.details.progress == to lowest stat of tally | monster
-			Battle.details.progress = Math.min(
-				Stats.get("tally").health.normalized,
-				Stats.get("tally").stamina.normalized,
-				Stats.get("monster").health.normalized,
-				Stats.get("monster").stamina.normalized
-			);
-
-			if (Battle.details.progress > 0.9){
-				Thought.showString("What kind of algorithms are guiding this monster!?", null, true);
-			} else if (Battle.details.progress > 0.8){
-				Thought.showString("Not too shabby", null, true);
-			} else if (Battle.details.progress > 0.7){
-				Thought.showString("Fight for your right to be let alone!", null, true);
-			} else if (Battle.details.progress > 0.6){
-				Thought.showString("This monster won't get away so easily", null, true);
-			} else if (Battle.details.progress > 0.5){
-				Thought.showString("Keep going!", null, true);
-			} else if (Battle.details.progress > 0.4){
-				Thought.showString("This monster is tough!", null, true);
-			} else if (Battle.details.progress > 0.3){
-				Thought.showString("Whoa, this is getting intense!", null, true);
-			} else if (Battle.details.progress > 0.2){
-				Thought.showString("The battle is almost over!", null, true);
-			} else if (Battle.details.progress > 0.1){
-				Thought.showString("One more hit...", null, true);
-			} else {
-				Thought.showString("Finally!", null, true);
-			}
 
 
 
@@ -312,6 +271,43 @@ window.BattleAttack = (function() {
 				endBattleMessage = "";
 				BattleConsole.log("The monster's stamina has been depleted. Tally wins!!!");
 				Sound.playFile("music/battle-victory.wav", false, 0);
+			} else {
+
+				// or update battle progress
+
+				// set Battle.details.progress == to lowest stat of tally | monster
+				Battle.details.progress = Math.min(
+					Stats.get("tally").health.normalized,
+					Stats.get("tally").stamina.normalized,
+					Stats.get("monster").health.normalized,
+					Stats.get("monster").stamina.normalized
+				);
+				let progressMessage = "";
+
+				if (Battle.details.progress > 0.9){
+					progressMessage = "What kind of algorithms are guiding this monster!?";
+				} else if (Battle.details.progress > 0.8){
+					progressMessage = "Not too shabby";
+				} else if (Battle.details.progress > 0.7){
+					progressMessage = "This monster won't get away so easily";
+				} else if (Battle.details.progress > 0.6){
+					progressMessage = "Fight for your right to be let alone!";
+				} else if (Battle.details.progress > 0.5){
+					progressMessage = "Keep going!";
+				} else if (Battle.details.progress > 0.4){
+					progressMessage = "This monster is tough!";
+				} else if (Battle.details.progress > 0.3){
+					progressMessage = "Whoa, this is getting intense!";
+				} else if (Battle.details.progress > 0.2){
+					progressMessage = "The battle is almost over!";
+				} else if (Battle.details.progress > 0.1){
+					progressMessage = "One more hit...";
+				} else {
+					progressMessage = "Finally!";
+				}
+				if (Battle.active())
+					Thought.showString(progressMessage, null, true);
+
 			}
 
 

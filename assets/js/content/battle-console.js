@@ -23,7 +23,7 @@ window.BattleConsole = (function() {
 			reset();
 
 			// display console
-			var str = "<div id='battle-console-inner' class='tally shadow-box-inner'>" +
+			var str = "<div class='tally shadow-box-inner' id='battle-console-inner'>" +
 				"<div class='tally' id='battle-console-stream'></div>" +
 				"</div>";
 			$("#battle-console").html(str);

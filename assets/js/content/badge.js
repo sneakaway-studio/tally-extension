@@ -99,7 +99,7 @@ window.Badge = (function() {
 			// html
 			imgStr = chrome.extension.getURL('assets/img/badges/' + badge.img);
 			id = badge.name.replace(" ","_") + '_badge';
-			str = "<div data-badge='" + badge.name + "' class='tally_badge_inner' id='" + id + "'>" +
+			str = "<div data-badge='" + badge.name + "' class='tally tally_badge_inner' id='" + id + "'>" +
 				"<img src='" + imgStr + "'></div>";
 			$('.tally_badge').html(str);
 			$('.tally_badge').css({
