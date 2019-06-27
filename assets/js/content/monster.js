@@ -94,7 +94,8 @@ window.Monster = (function() {
 			// show thought
 			Thought.showThought(Thought.getThought(["monster", "display", 0]), true);
 			// reference to image file
-			var url = chrome.extension.getURL('assets/img/monsters-300h/' + monster.mid + '-anim-sheet.png');
+			//var url = chrome.extension.getURL('assets/img/monsters-300h/' + monster.mid + '-anim-sheet.png');
+			var url = chrome.extension.getURL(tally_meta.website + '/assets/img/monsters-300h/' + monster.mid + '-anim-sheet.png');
 
 			// set monster image
 			$('.tally_monster_sprite_inner').css('background-image', 'url( ' + url + ')');
