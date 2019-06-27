@@ -75,7 +75,7 @@ window.TallyStorage = (function() {
 				"scoreData": {
 					"clicks": 0,
 					// "domains": 0, // don't track this locally,
-					"level": 0,
+					"level": tally_user.score.level,
 					"likes": 0,
 					"pages": 0,
 					"score": 0,
@@ -391,14 +391,6 @@ function sendBackgroundUpdate(data) {
 		}, function(response) {
 			console.log('💾 <{!}> sendBackgroundUpdate()', response);
 			tally_user = response.tally_user;
-
-			if (response.tally_user.levelUpdated) {
-				// update stats
-				Stats.reset("tally");
-				// tell user
-				Thought.showString("You just leveled up!", "happy");
-			}
-
 			Debug.update();
 		});
 	} catch (err) {

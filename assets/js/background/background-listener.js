@@ -22,7 +22,7 @@ chrome.runtime.onMessage.addListener(
 					"message": 1,
 					"data": store(request.name)
 				};
-				console.log("💾 >>>>> getData", request.name,resp);
+				console.log("💾 >>>>> getData", request.name, resp);
 				// send
 				sendResponse(resp);
 			}
@@ -30,7 +30,7 @@ chrome.runtime.onMessage.addListener(
 				console.log("💾 <<<<< saveData", request.name, request.data);
 				// save data
 				let success = 0;
-				if (store(request.name,request.data))
+				if (store(request.name, request.data))
 					success = 1;
 				else
 					console.error("Could not save data", request);
@@ -97,69 +97,69 @@ chrome.runtime.onMessage.addListener(
 			/*  FOR PROMISES
 			 ******************************************************************************/
 
-			 // getUser
-			 else if (request.action == "getUser") {
-				 sendResponse({
-					 "action": request.action,
-					 "data": store("tally_user") || {}
-				 });
-			 }
-			 // getOptions
-			 else if (request.action == "getOptions") {
-				 sendResponse({
-					 "action": request.action,
-					 "data": store("tally_options") || {}
-				 });
-			 }
-			 // getMeta
-			 else if (request.action == "getMeta") {
-				 sendResponse({
-					 "action": request.action,
-					 "data": store("tally_meta") || {}
-				 });
-			 }
-			 // getGameStatus
-			 else if (request.action == "getGameStatus") {
-				 sendResponse({
-					 "action": request.action,
-					 "data": store("tally_game_status") || {}
-				 });
-			 }
-			 // getTrackerBlockList
-			 else if (request.action == "getTrackerBlockList") {
-				 sendResponse({
-					 "action": request.action,
-					 "data": store("tally_trackers") || {}
-				 });
-			 }
-			 // getNearbyMonsters
-			 else if (request.action == "getNearbyMonsters") {
-				 sendResponse({
-					 "action": request.action,
-					 "data": store("tally_nearby_monsters") || {}
-				 });
-			 }
-			 // getStats
-			 else if (request.action == "getStats") {
-				 sendResponse({
-					 "action": request.action,
-					 "data": store("tally_stats") || {}
-				 });
-			 }
-			 // getTopMonstersPromise
-			 else if (request.action == "getTopMonstersPromise") {
-				 sendResponse({
-					 "action": request.action,
-					 "data": store("tally_top_monsters") || {}
-				 });
-			 }
-			 // getProgressPromise
-			 else if (request.action == "getProgressPromise") {
-				 sendResponse({
-					 "action": request.action,
-					 "data": store("tally_progress") || {}
-				 });
-			 }
+			// getUser
+			else if (request.action == "getUser") {
+				sendResponse({
+					"action": request.action,
+					"data": store("tally_user") || {}
+				});
+			}
+			// getOptions
+			else if (request.action == "getOptions") {
+				sendResponse({
+					"action": request.action,
+					"data": store("tally_options") || {}
+				});
+			}
+			// getMeta
+			else if (request.action == "getMeta") {
+				sendResponse({
+					"action": request.action,
+					"data": store("tally_meta") || {}
+				});
+			}
+			// getGameStatus
+			else if (request.action == "getGameStatus") {
+				sendResponse({
+					"action": request.action,
+					"data": store("tally_game_status") || {}
+				});
+			}
+			// getTrackerBlockList
+			else if (request.action == "getTrackerBlockList") {
+				sendResponse({
+					"action": request.action,
+					"data": store("tally_trackers") || {}
+				});
+			}
+			// getNearbyMonsters
+			else if (request.action == "getNearbyMonsters") {
+				sendResponse({
+					"action": request.action,
+					"data": store("tally_nearby_monsters") || {}
+				});
+			}
+			// getStats
+			else if (request.action == "getStats") {
+				sendResponse({
+					"action": request.action,
+					"data": store("tally_stats") || {}
+				});
+			}
+			// getTopMonstersPromise
+			else if (request.action == "getTopMonstersPromise") {
+				sendResponse({
+					"action": request.action,
+					"data": store("tally_top_monsters") || {}
+				});
+			}
+			// getProgressPromise
+			else if (request.action == "getProgressPromise") {
+				sendResponse({
+					"action": request.action,
+					"data": store("tally_progress") || {}
+				});
+			}
 
 
 
@@ -167,14 +167,14 @@ chrome.runtime.onMessage.addListener(
 			/*  CUSTOM FUNCTIONS
 			 ******************************************************************************/
 
-			 // launchStartScreen
-			 else if (request.action == "launchStartScreen") {
-				 launchStartScreen();
-				 sendResponse({
-					 "action": request.action,
-					 "message": 1
-				 });
-			 }
+			// launchStartScreen
+			else if (request.action == "launchStartScreen") {
+				launchStartScreen();
+				sendResponse({
+					"action": request.action,
+					"message": 1
+				});
+			}
 
 
 
@@ -197,14 +197,16 @@ chrome.runtime.onMessage.addListener(
 			}
 
 			// openPage
-	 		else if (request.action == "openPage") {
+			else if (request.action == "openPage") {
 				if (request.url)
-					chrome.tabs.create({url: request.url });
+					chrome.tabs.create({
+						url: request.url
+					});
 				sendResponse({
 					"action": request.action,
 					"data": {}
 				});
-	 		}
+			}
 
 
 
@@ -243,11 +245,6 @@ chrome.runtime.onMessage.addListener(
 				let _tally_user = store("tally_user");
 				// store score updates
 				_tally_user.score = adjustScore(_tally_user.score, request.data.scoreData);
-				// check for level up
-				let levelUpdated = checkLevel(_tally_user);
-				if (levelUpdated == true){
-					_tally_user.score.level ++;
-				}
 				// store user
 				store("tally_user", _tally_user);
 
@@ -260,8 +257,7 @@ chrome.runtime.onMessage.addListener(
 				sendResponse({
 					"action": request.action,
 					"message": 1,
-					"tally_user": _tally_user,
-					"levelUpdated": levelUpdated
+					"tally_user": _tally_user
 				});
 			}
 			// getLastBackgroundUpdate
@@ -319,9 +315,11 @@ chrome.runtime.onMessage.addListener(
  */
 function createServerUpdate(data) {
 	try {
-		let _tally_secret = store("tally_secret");
+		let _tally_secret = store("tally_secret"),
+			_tally_user = store("tally_user");
 		var obj = {
 			"clicks": data.scoreData.clicks || 0,
+			"level": _tally_user.score.level,
 			"likes": data.scoreData.likes || 0,
 			"pages": data.scoreData.pages || 0,
 			"score": data.scoreData.score || 0,
@@ -377,8 +375,10 @@ function adjustScore(_score, scoreObj, n) {
 		for (var key in scoreObj) {
 			if (scoreObj.hasOwnProperty(key) && key != "meta") {
 				//console.log("adjustScore() --> ", key + " -> " + scoreObj[key]);
-				// adjust scores in user
-				_score[key] += scoreObj[key];
+				// if not level
+				if (key !== "level")
+					// adjust scores in user
+					_score[key] += scoreObj[key];
 			}
 		}
 		return _score;
@@ -387,21 +387,6 @@ function adjustScore(_score, scoreObj, n) {
 	}
 }
 
-/**
- *  Check to see if user leveled up
- */
-function checkLevel(_tally_user) {
-	try {
-		//console.log("checkLevel()",_tally_user);
-		let nextLevel = GameData.levels[_tally_user.score.level+1];
-		if (_tally_user.score >= nextLevel.xp){
-			return true;
-		}
-		return false;
-	} catch (err) {
-		console.error(err);
-	}
-}
 
 
 

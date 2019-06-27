@@ -40,7 +40,7 @@ window.Stats = (function() {
 				// if valid prop
 				if (resetStatsAll.hasOwnProperty(stat)) {
 					// copy single reset
-					allStats[who][stat] = Object.assign({}, resetStatsSingle);
+					allStats[who][stat] = JSON.parse(JSON.stringify(resetStatsSingle));
 					// compute max
 					if (who == "monster") {
 						// if monster then compute max using random
@@ -109,12 +109,12 @@ window.Stats = (function() {
 				if (DEBUG) console.log("📋 Stats.setVal() #1", who, stat, change, allStats[who][stat]);
 
 				// update value, clamp, and round
-				allStats[who][stat].val = FS_Number.clamp(FS_Number.round(change, 1), 1, allStats[who][stat].max);
+				allStats[who][stat].val = FS_Number.clamp(FS_Number.round(change, 1), 0, allStats[who][stat].max);
 				// make sure we end up w/ a number
 				if (isNaN(allStats[who][stat].val)) allStats[who][stat].val = 0;
 
 				// then update normalized
-				allStats[who][stat].normalized = FS_Number.normalize(allStats[who][stat].val, 1, allStats[who][stat].max);
+				allStats[who][stat].normalized = FS_Number.normalize(allStats[who][stat].val, 0, allStats[who][stat].max);
 				// make sure we end up w/ a number
 				if (isNaN(allStats[who][stat].normalized)) allStats[who][stat].normalized = 0;
 

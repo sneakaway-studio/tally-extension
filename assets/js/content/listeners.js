@@ -193,15 +193,15 @@ window.TallyListeners = (function() {
 				 * 	5. Game responses
 				 */
 
+				// check progress
+ 				Progress.check();
 				// play sound
 				Sound.playCategory('user', 'click');
 				// show click visual
 				Effect.showClickVisualText(eventData, "+" + GameData.clickScore[eventData.action]);
-				// activate tally
-				// activateTally(eventData.action);
-
 				// update stats display
-				StatsDisplay.adjustStatsCircle("tally", tally_user.score.level);
+				// StatsDisplay.adjustStatsCircle("tally", tally_user.score.level);
+				StatsDisplay.updateDisplay("tally");
 			}
 			// disable click action in case they are editing text
 			else if (eventData.action == "textSelect") {

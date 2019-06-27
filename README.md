@@ -45,9 +45,18 @@ Learn more at [tallygame.net](https://tallygame.net).
 
 ## Development Versions
 
+### Version 0.2.4
+
+* Fixes leveling issues
+* Fixes battle stats display
+* Adds more monsters and attacks
+* Adds distinction in battle options for attack v. defense buttons
+
 ### Version 0.2.3
 
-...
+* Fixes many issues with battle math
+* Adds battle music
+* Adds more monsters and attacks
 
 ### Version 0.2.2
 

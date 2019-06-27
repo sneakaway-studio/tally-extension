@@ -6,20 +6,25 @@
 window.StatsDisplay = (function() {
 	// PRIVATE
 
-	let DEBUG = false;
+	let DEBUG = true;
 
 	/**
 	 * Starting point for stats svg coordinates
 	 */
-	let tallyStatsSVGPoints = {
-		"healthbg": { "val": 0, "x":0, "y":0, "w":200, "h":20 },
+	let defaultStatsSVGPoints = {
+		"healthbg": { "val": 1, "x":0, "y":0, "w":200, "h":20 },
 		"health": { "val": 0, "x":0, "y":0, "w":0, "h":20 }, // start @ zero
-		"staminabg": { "val": 0, "x":0, "y":20, "w":170, "h":12 },
+		"staminabg": { "val": 1, "x":0, "y":20, "w":170, "h":12 },
 		"stamina": { "val": 0, "x":0, "y":20, "w":0, "h":12 }, // start @ zero
-		"circle": { "val": 0, "cx": 24, "cy": 24, "r": 22, "text": 0 },
+		"circle": { "val": 0, "cx": 26, "cy": 24, "r": 22, "text": 0 },
 	};
-	// assign by value, not reference
-	let monsterStatsSVGPoints = Object.assign({}, tallyStatsSVGPoints);
+	// player stats SVG points
+	let statsPoints = {
+		// assign by value, not reference
+		"tally": JSON.parse(JSON.stringify(defaultStatsSVGPoints)),
+		"monster": JSON.parse(JSON.stringify(defaultStatsSVGPoints)),
+	};
+
 
 	/**
 	 * 	Combine stat bar polygon points
@@ -36,24 +41,26 @@ window.StatsDisplay = (function() {
 		}
 	}
 	// initial stats bar for tally or monster
-	function returnInitialSVG(who) {
+	function returnInitialSVG(who="") {
 		try {
+			// who is required
+			if (who === "") return console.warn("📈 StatsDisplay.returnInitialSVG() --> who is required!!", who);
+
 			// get player's stats SVG coordinates
-			let svgPoints = playerStatsSVGPoints(who),
-				str = '',
+			let str = '',
 				level = Stats.getLevel(who);
-			//if (DEBUG) console.log("📈 StatsDisplay.returnInitialSVG()", who, svgPoints, "health=" + svgPoints.health.val, "stamina=" + svgPoints.stamina.val);
+			if (DEBUG) console.log("📈 StatsDisplay.returnInitialSVG()", who, statsPoints[who], "health=" + statsPoints[who].health.val, "stamina=" + statsPoints[who].stamina.val);
 
 			str += '<svg height="49" width="230" class="stats-display">';
 			str += '<g class="stat-bars">';
-			str += '<polygon points="' + combineSVGPoints(svgPoints.healthbg) + '" class="stat-bar-health-bg" />';
-			str += '<polygon points="' + combineSVGPoints(svgPoints.health) + '" data-value="' + svgPoints.health.val + '" class="stat-bar-health" />';
-			str += '<polygon points="' + combineSVGPoints(svgPoints.staminabg) + '" class="stat-bar-stamina-bg" />';
-			str += '<polygon points="' + combineSVGPoints(svgPoints.stamina) + '" data-value="' + svgPoints.stamina.val + '" class="stat-bar-stamina" />';
+			str += '<polygon points="' + combineSVGPoints(statsPoints[who].healthbg) + '" class="stat-bar-health-bg" />';
+			str += '<polygon points="' + combineSVGPoints(statsPoints[who].health) + '" data-value="' + statsPoints[who].health.val + '" class="stat-bar-health" />';
+			str += '<polygon points="' + combineSVGPoints(statsPoints[who].staminabg) + '" class="stat-bar-stamina-bg" />';
+			str += '<polygon points="' + combineSVGPoints(statsPoints[who].stamina) + '" data-value="' + statsPoints[who].stamina.val + '" class="stat-bar-stamina" />';
 			str += '</g>';
-			str += '<circle cx="' + svgPoints.circle.cx + '" cy="' + svgPoints.circle.cy;
-			str += '" r="' + svgPoints.circle.r + '" data-value="0" class="stat-bar-circle" />';
-			str += '<text x="' + svgPoints.circle.cx + '" y="' + svgPoints.circle.cy;
+			str += '<circle cx="' + statsPoints[who].circle.cx + '" cy="' + statsPoints[who].circle.cy;
+			str += '" r="' + statsPoints[who].circle.r + '" data-value="0" class="stat-bar-circle" />';
+			str += '<text x="' + statsPoints[who].circle.cx + '" y="' + statsPoints[who].circle.cy;
 			str += '" dominant-baseline="middle" text-anchor="middle" class="stat-bar-circle-text ' + who + '-circle-text">' + level + '</text>';
 			str += '</svg>';
 			return str;
@@ -97,8 +104,8 @@ window.StatsDisplay = (function() {
 			console.log("📈 StatsDisplay.updateDisplay()", who, stats, level);
 			if (stats === {}) return;
 			// bars, circle, table
-			adjustStatsBar(who, "health", stats.health.normalized);
-			adjustStatsBar(who, "stamina", stats.stamina.normalized);
+			adjustStatsBar(who, "health");
+			adjustStatsBar(who, "stamina");
 			adjustStatsCircle(who, level);
 			$('.'+ who +'_stats_table').html(returnFullTable(who));
 		} catch (err) {
@@ -112,38 +119,71 @@ window.StatsDisplay = (function() {
 	/**
 	 * 	Adjust stats bars for Tally *values are normalized*
 	 */
-	function adjustStatsBar(who, bar, val) {
+	function adjustStatsBar(who="", bar="", val=null) {
 		try {
-			if (DEBUG) console.log("📈 StatsDisplay.adjustStatsBar()1", who, bar, val);
-			if (bar != "health" && bar != "stamina") return;
+			// who is required
+			if (who === "" || bar === "") return console.warn("📈 StatsDisplay.adjustStatsBar() --> who and bar required!!", who, bar);
+			// only update health | stamina bars
+			if (bar !== "health" && bar !== "stamina") return;
+
+			if (DEBUG) console.log("📈 StatsDisplay.adjustStatsBar()0", "who="+ who, "bar="+ bar, "val="+ val, "statsPoints[who][bar]="+JSON.stringify(statsPoints[who][bar]));
+
 			// clean value
-			val = FS_Number.round(val, 2);
-			// get player's stats display coordinates
-			let statsDisplay = playerStatsSVGPoints(who);
-			// save current bar coordinates (assign object by value (not reference))
-			let oldBar = Object.assign({}, statsDisplay[bar]);
+			let oldVal = FS_Number.normalize(statsPoints[who][bar].val, 0, 1);
+
+			// if (DEBUG) console.log("📈 StatsDisplay.adjustStatsBar()1", "who="+ who, "bar="+ bar, "oldVal="+ oldVal, "Stats.get(who)[bar]="+JSON.stringify(Stats.get(who)[bar]));
+
+			// save current bar coordinates (assign object by value not reference)
+			let oldBar = JSON.parse(JSON.stringify(statsPoints[who][bar]));
+			// get new (normalized) value
+			let newVal = Stats.get(who)[bar].normalized;
+			// for testing
+			if (val !== null && val > 0) newVal = val;
+			// get max value (pixels)
+			let valMax = statsPoints[who][bar + "bg"].w;
+
+			// if (DEBUG) console.log("📈 StatsDisplay.adjustStatsBar()2", "who="+ who, "bar="+ bar, "oldVal="+ oldVal, "newVal="+ newVal, "valMax="+ valMax, "oldBar="+ JSON.stringify(oldBar));
+
 			// set new width
-			statsDisplay[bar].w = val * statsDisplay[bar + "bg"].w;
+			statsPoints[who][bar].w = FS_Number.round(newVal * valMax, 2);
+
+			// if (DEBUG) console.log("📈 StatsDisplay.adjustStatsBar()3", "who="+ who, "bar="+ bar, "oldVal="+ oldVal, "statsPoints[who][bar].w="+ statsPoints[who][bar].w);
+
 			// set new value
-			statsDisplay[bar].val = val;
-			// save data-value
-			$('.' + who + '_stats .stat-bar-' + bar).attr("data-value", val);
-			// log
-			if (DEBUG) console.log("📈 StatsDisplay.adjustStatsBar()2", who, bar, val, oldBar, statsDisplay[bar]);
+			statsPoints[who][bar].val = newVal;
+
+
+			// if (DEBUG) console.log("📈 StatsDisplay.adjustStatsBar()5", "who="+ who, "bar="+ bar, "oldVal="+ oldVal, "oldBar="+ JSON.stringify(oldBar), "statsPoints[who][bar]="+ JSON.stringify(statsPoints[who][bar]));
+
+			// save new data-value
+			$('.' + who + '_stats .stat-bar-' + bar).attr("data-value", newVal);
+
+
+			// if (DEBUG) console.log("📈 StatsDisplay.adjustStatsBar()5", "combineSVGPoints(oldBar)"+ JSON.stringify(combineSVGPoints(oldBar)), "combineSVGPoints(statsPoints[who][bar])="+ JSON.stringify(combineSVGPoints(statsPoints[who][bar])));
+
+
+
 			// animation
 			anime({
 				targets: '.' + who + '_stats .stat-bar-' + bar,
 				points: [{
-					value: combineSVGPoints(oldBar)
+					value: [combineSVGPoints(oldBar)]
 				}, {
-					value: combineSVGPoints(statsDisplay[bar])
+					value: [combineSVGPoints(statsPoints[who][bar])]
 				}],
 				easing: 'easeOutQuad',
 				duration: 1000,
-				complete: function() {
-					// save stats
-					playerStatsSVGPoints(who, statsDisplay);
-				}
+				// update: function(anim) {
+				// 	for (let i=0; i<anim.animations.length; i++){
+				// 		if (who === "monster" && bar === "health")
+				// 			console.log("📈 StatsDisplay.adjustStatsBar()5",i, "anim="+ JSON.stringify(anim.animations[i].tweens) );
+				// 	}
+				//
+				// },
+				// complete: function(){
+				// 	// save
+				//
+				// }
 			});
 		} catch (err) {
 			console.error(err);
@@ -154,8 +194,10 @@ window.StatsDisplay = (function() {
 	// 	var msg = "Handler for .mousemove() called at " + event.pageX + ", " + event.pageY;
 	// 	let normalized = FS_Number.normalize(event.pageX, 0, $(window).width());
 	// 	if (DEBUG) console.log(normalized);
+	// 	adjustStatsBar("tally","health",normalized);
 	// 	adjustStatsBar("tally","stamina",normalized);
-	// 	// adjustStatsCircle(normalized);
+	// 	// let level = FS_Number.round(FS_Number.map(event.pageX, 0, $(window).width(), 0, FS_Object.lastKeyValue(GameData.levels).level),0);
+	// 	// adjustStatsCircle("tally", level, normalized);
 	// });
 
 
@@ -163,24 +205,48 @@ window.StatsDisplay = (function() {
 	 * 	Adjust stats circle for Tally
 	 *	*circle circumference is normalized so xp needs to be 0–1
 	 */
-	function adjustStatsCircle(who, level) {
+	function adjustStatsCircle(who, level, xpFactor=0) {
 		try {
+			// who is required
+			if (who === "") return console.warn("📈 StatsDisplay.adjustStatsCircle() --> who is required!!", who);
 			// show text
 			adjustStatsCircleText(who, level);
 			// don't show xp, just text for monster
 			if (who == "monster") return;
 
-			// xp required to advance to next level
-			let xpGoal = GameData.levels[tally_user.score.level + 1].xp;
+			if (DEBUG) console.log("📈 StatsDisplay.adjustStatsCircle() --> level="+ level);
+
+
+			let currentXP = tally_user.score.score;
+			//let currentXP = GameData.levels[level].xp * xpFactor; // testing
+
+
+			// xp required to reach current level
+			let xpPrevious = GameData.levels[level].xp;
+
+			// xp required to advance to next level : highest level
+			let xpGoal = GameData.levels[level + 1].xp ? GameData.levels[level + 1].xp : FS_Object.lastKeyValue(GameData.levels).level;
+
+			// xp
+			let xpRange = xpGoal-xpPrevious;
+			let xpDiff = xpPrevious-currentXP;
+
 			// normalize
-			let xpNormalized = (xpGoal - tally_user.score.score) / xpGoal;
+			//let xpNormalized = FS_Number.normalize((xpGoal - currentXP) / xpGoal,0,1);
+			let xpNormalized = -FS_Number.normalize((xpDiff / xpRange),0,1);
 
-			if (DEBUG) console.log("📈 StatsDisplay.adjustStatsCircle() --> level =", level, "xpGoal =", xpGoal, xpNormalized);
+// xpPrevious=24389 currentXP=25382 xpGoal=27000 xpNormalized=0.059925925925925924
 
-			// get player's stats display coordinates
-			let statsDisplay = playerStatsSVGPoints(who);
+// 27000 - 24389 = 2611 (range)
+// 27000 - 25382 = 1618 (what is left)
+// 1618/2611
+
+
+
+			if (DEBUG) console.log("📈 StatsDisplay.adjustStatsCircle() --> level="+ level, "xpPrevious="+ xpPrevious, "currentXP="+ currentXP, "xpGoal="+ xpGoal, "xpNormalized="+ xpNormalized);
+
 			// save old values
-			let oldCircle = statsDisplay.circle;
+			let oldCircle = statsPoints[who].circle;
 			// save data-value
 			$('.' + who + '_stats .stat-bar-circle').attr("data-value", xpNormalized);
 			// get circumference value
@@ -190,7 +256,7 @@ window.StatsDisplay = (function() {
 				"strokeDashoffset": circumference
 			});
 			// log
-			//if (DEBUG) console.log("📈 StatsDisplay.adjustStatsCircle()", who, level, circumference);
+			if (DEBUG) console.log("📈 StatsDisplay.adjustStatsCircle()", who, level, circumference);
 
 		} catch (err) {
 			console.error(err);
@@ -236,25 +302,6 @@ window.StatsDisplay = (function() {
 		}
 	}
 
-	/**
-	 * 	(save and) return player's stats display coordinates
-	 */
-	function playerStatsSVGPoints(who, statsDisplay = null) {
-		try {
-			//if (DEBUG) console.log("📈 StatsDisplay.playerStatsSVGPoints()",who, statsDisplay);
-			if (who == "tally") {
-				if (statsDisplay !== null)
-					tallyStatsSVGPoints = statsDisplay;
-				return tallyStatsSVGPoints;
-			} else if (who == "monster") {
-				if (statsDisplay !== null)
-					monsterStatsSVGPoints = statsDisplay;
-				return monsterStatsSVGPoints;
-			}
-		} catch (err) {
-			console.error(err);
-		}
-	}
 
 
 
@@ -270,8 +317,8 @@ window.StatsDisplay = (function() {
 		// showStatsFull: function(who){
 		// 	showStatsFull(who);
 		// },
-		adjustStatsBar: function(who, bar, val) {
-			adjustStatsBar(who, bar, val);
+		adjustStatsBar: function(who, bar) {
+			adjustStatsBar(who, bar);
 		},
 		adjustStatsCircle: function(who, val) {
 			adjustStatsCircle(who, val);

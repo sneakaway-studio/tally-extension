@@ -150,6 +150,7 @@ function sendServerUpdate(data) {
 			if (result.likes) _tally_user.score.likes = result.likes;
 			if (result.pages) _tally_user.score.pages = result.pages;
 			if (result.score) _tally_user.score.score = result.score;
+			if (result.level) _tally_user.score.level = result.level;
 			if (result.time) _tally_user.score.time = result.time;
 			if (result.consumables) _tally_user.consumables = result.consumables;
 			if (result.badges) _tally_user.badges = result.badges;

@@ -203,6 +203,7 @@ function createProgress() {
 		return {
 			"tokenAdded": false,
 			"tokenAddedMessage": false,
+			"atackLimit": 1,
 			"award1stAttack": false,
 			"award2ndAttack": false,
 			"award3rdAttack": false,
