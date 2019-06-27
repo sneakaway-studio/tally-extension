@@ -64,10 +64,12 @@ window.Sound = (function() {
 
 	function playBattleMusic() {
 		// play intro
-		playMusic("battle-intro.wav", false, 0);
+		//playMusic("battle-intro.wav", false, 0);
+		playMusic("intro-with-loop-6-27.mp3", false, 0);
 		// then call again so it switches to the loop
 		setTimeout(function() {
-			playMusic("battle-loop.wav", true, 0);
+			//playMusic("battle-loop.wav", true, 0);
+			playMusic("loop-6-27.mp3", true, 0);
 		}, 500);
 
 
