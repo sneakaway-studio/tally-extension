@@ -142,7 +142,7 @@ window.Battle = (function() {
 			BattleConsole.display();
 			// log intro message
 			setTimeout(function() {
-				Dialogue.showDialogue(Dialogue.getDialogue(["battle", "start", 0]), true);
+				Dialogue.show(DialogueData.get(["battle", "start", null]), true);
 				// display stats
 				StatsDisplay.updateDisplay("monster");
 				// log intro...

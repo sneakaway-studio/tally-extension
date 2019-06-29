@@ -141,17 +141,17 @@ window.MonsterCheck = (function() {
 					if (r < 0.1) {
 						// go back to normal stage
 						tally_nearby_monsters[mid].stage = 0;
-						Dialogue.showString("Want to give feedback? Click the survey button in the top-right menu.", "question");
+						Dialogue.showStr("Want to give feedback? Click the survey button in the top-right menu.", "question");
 					} else if (r < 0.4) {
 						// random dialogue, but don't change stage
 						Dialogue.showTrackerDialogue();
 					} else if (r < 0.7) {
 						// random dialogue, but don't change stage
-						Dialogue.showDialogue(Dialogue.getDialogue(["monster", "far", 0]), true);
+						Dialogue.show(DialogueData.get(["monster", "far", null]), true);
 					} else {
 						// or prompt stage 2
 						tally_nearby_monsters[mid].stage = 2;
-						Dialogue.showDialogue(Dialogue.getDialogue(["monster", "close", 0]), true);
+						Dialogue.show(DialogueData.get(["monster", "close", null]), true);
 					}
 				} else if (tally_nearby_monsters[mid].stage == 2) {
 					if (r < 0.2) {
@@ -161,7 +161,7 @@ window.MonsterCheck = (function() {
 						Dialogue.showTrackerDialogue();
 					} else if (r < 0.7) {
 						// random dialogue, but don't change stage
-						Dialogue.showDialogue(Dialogue.getDialogue(["monster", "close", 0]), true);
+						Dialogue.show(DialogueData.get(["monster", "close", null]), true);
 					} else {
 						// or prompt stage 3 - add
 						tally_nearby_monsters[mid].stage = 3;

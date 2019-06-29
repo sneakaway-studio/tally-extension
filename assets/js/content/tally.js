@@ -252,7 +252,7 @@ window.Tally = (function() {
 					"<button class='tally' id='tallyMenu_randomSkin'>`1+w Random skin</button>" +
 					"</div>";
 
-				Dialogue.showString(str, false, true);
+				Dialogue.showStr(str, false, true);
 
 				tallyMenuOpen = true;
 			}

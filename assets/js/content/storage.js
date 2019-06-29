@@ -150,19 +150,19 @@ window.TallyStorage = (function() {
 							tally_progress.tokenAddedMessage = true;
 							TallyStorage.saveData('tally_progress', tally_progress);
 							// encourage them to explore
-							Dialogue.showString("Oh hi! I'm Tally!!!", "happy");
-							Dialogue.showString("Your token is now active and installed!", "happy");
-							Dialogue.showString("This is your dashboard.", "happy");
-							Dialogue.showString("You can edit your profile here.", "happy");
-							Dialogue.showString("Good to stay anonymous though, what with all the monsters around...", "cautious");
-							Dialogue.showString("Now, let's go find some trackers!", "happy");
+							Dialogue.showStr("Oh hi! I'm Tally!!!", "happy");
+							Dialogue.showStr("Your token is now active and installed!", "happy");
+							Dialogue.showStr("This is your dashboard.", "happy");
+							Dialogue.showStr("You can edit your profile here.", "happy");
+							Dialogue.showStr("Good to stay anonymous though, what with all the monsters around...", "cautious");
+							Dialogue.showStr("Now, let's go find some trackers!", "happy");
 
 
 
 					} else {
 						// user has been here before
-						Dialogue.showString("Your user token has been updated!", "happy");
-						Dialogue.showString("Let's go get some trackers!", "happy");
+						Dialogue.showStr("Your user token has been updated!", "happy");
+						Dialogue.showStr("Let's go get some trackers!", "happy");
 					}
 				}
 			});

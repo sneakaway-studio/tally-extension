@@ -45,6 +45,11 @@ Learn more at [tallygame.net](https://tallygame.net).
 
 ## Development Versions
 
+### Version 0.2.5
+
+* improvements to dialogue system
+* Adds more monsters and attacks
+
 ### Version 0.2.4
 
 * Fixes leveling issues

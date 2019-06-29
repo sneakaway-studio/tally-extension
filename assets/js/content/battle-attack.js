@@ -204,9 +204,9 @@ window.BattleAttack = (function() {
 						// show log and change in stats after a moment
 						setTimeout(function() {
 							if (positiveOutcomeTally == true)
-								Dialogue.showDialogue(Dialogue.getDialogue(["battle", "gained-stats", 0]), true);
+								Dialogue.show(DialogueData.get(["battle", "gained-stats", null]), true);
 							else if (positiveOutcomeTally == false)
-								Dialogue.showDialogue(Dialogue.getDialogue(["battle", "lost-stats", 0]), true);
+								Dialogue.show(DialogueData.get(["battle", "lost-stats", null]), true);
 						}, _logDelay + 300);
 					}
 					// end check
@@ -243,14 +243,14 @@ window.BattleAttack = (function() {
 			// did tally lose?
 			if (Stats.get("tally").health.val <= 0) {
 				Sound.stopMusic();
-				Dialogue.showString("Oh no, we are out of health...", "sad", true);
+				Dialogue.show(DialogueData.get(["battle", "tally-health-gone", null]), "sad", true);
 				endBattle = true;
 				endBattleMessage = "We need to take a break from the internet and recharge!";
 				BattleConsole.log("Tally's health has been depleted. Tally loses.");
 				Sound.playFile("music/battle-defeat.wav", false, 0);
 			} else if (Stats.get("tally").stamina.val <= 0) {
 				Sound.stopMusic();
-				Dialogue.showString("Oh no, our stamina is all gone...", "sad", true);
+				Dialogue.show(DialogueData.get(["battle", "tally-stamina-gone", null]), "sad", true);
 				endBattle = true;
 				endBattleMessage = "We lost this time but we'll fight these trackers another day!";
 				BattleConsole.log("Tally's stamina has been depleted. Tally loses.");
@@ -259,14 +259,14 @@ window.BattleAttack = (function() {
 			// did tally win?
 			else if (Stats.get("monster").health.val <= 0) {
 				Sound.stopMusic();
-				Dialogue.showString("Yay, the monster is out of health...", "happy", true);
+				Dialogue.show(DialogueData.get(["battle", "monster-health-gone", null]), "happy", true);
 				endBattle = true;
 				endBattleMessage = "";
 				BattleConsole.log("The monster's health has been depleted. Tally wins!!!");
 				Sound.playFile("music/battle-victory.wav", false, 0);
 			} else if (Stats.get("monster").stamina.val <= 0) {
 				Sound.stopMusic();
-				Dialogue.showString("Awesome! The monster has no stamina left...", "happy", true);
+				Dialogue.show(DialogueData.get(["battle", "monster-stamina-gone", null]), "happy", true);
 				endBattle = true;
 				endBattleMessage = "";
 				BattleConsole.log("The monster's stamina has been depleted. Tally wins!!!");
@@ -285,28 +285,29 @@ window.BattleAttack = (function() {
 				let progressMessage = "";
 
 				if (Battle.details.progress > 0.9){
-					progressMessage = "What kind of algorithms are guiding this monster!?";
+					progressMessage = DialogueData.get(["battle", "progress9", null]);
 				} else if (Battle.details.progress > 0.8){
-					progressMessage = "Not too shabby";
+					progressMessage = DialogueData.get(["battle", "progress8", null]);
 				} else if (Battle.details.progress > 0.7){
-					progressMessage = "This monster won't get away so easily";
+					progressMessage = DialogueData.get(["battle", "progress7", null]);
 				} else if (Battle.details.progress > 0.6){
-					progressMessage = "Fight for your right to be let alone!";
+					progressMessage = DialogueData.get(["battle", "progress6", null]);
 				} else if (Battle.details.progress > 0.5){
-					progressMessage = "Keep going!";
+					progressMessage = DialogueData.get(["battle", "progress5", null]);
 				} else if (Battle.details.progress > 0.4){
-					progressMessage = "This monster is tough!";
+					progressMessage = DialogueData.get(["battle", "progress4", null]);
 				} else if (Battle.details.progress > 0.3){
-					progressMessage = "Whoa, this is getting intense!";
+					progressMessage = DialogueData.get(["battle", "progress3", null]);
 				} else if (Battle.details.progress > 0.2){
-					progressMessage = "The battle is almost over!";
+					progressMessage = DialogueData.get(["battle", "progress2", null]);
 				} else if (Battle.details.progress > 0.1){
-					progressMessage = "One more hit...";
+					progressMessage = DialogueData.get(["battle", "progress1", null]);
 				} else {
-					progressMessage = "Finally!";
+					progressMessage = DialogueData.get(["battle", "progress0", null]);
 				}
-				if (Battle.active())
-					Dialogue.showString(progressMessage, null, true);
+				// n% of the time show a thought
+				if (Battle.active() && Math.random() > 0.5)
+					Dialogue.show(progressMessage, null, true);
 
 			}
 
@@ -315,7 +316,7 @@ window.BattleAttack = (function() {
 			if (endBattle) {
 				setTimeout(function() {
 					// show final dialogue
-					Dialogue.showString(endBattleMessage, "neutral", true);
+					Dialogue.showStr(endBattleMessage, "neutral", true);
 					setTimeout(function() {
 						Battle.end();
 					}, _logDelay + 2000);
@@ -385,7 +386,7 @@ window.BattleAttack = (function() {
 			TallyStorage.saveData('tally_user', tally_user);
 
 			// tell user
-			Dialogue.showString("You earned the " + attack.name + " " + attack.type + "!", "happy");
+			Dialogue.showStr("You earned the " + attack.name + " " + attack.type + "!", "happy");
 		} catch (err) {
 			console.error(err);
 		}

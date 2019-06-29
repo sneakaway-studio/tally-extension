@@ -194,7 +194,7 @@ window.TallyMain = (function() {
 					// don't bother them every time
 					//		if (tally_meta.userTokenPrompts % 5 == 0){
 					let msg = "Please <a href='" + tally_meta.website + "/dashboard' target='_blank'>visit your dashboard</a> to update your token";
-					Dialogue.showString(msg, "sad");
+					Dialogue.showStr(msg, "sad");
 					//		}
 					tally_meta.userTokenPrompts++;
 					TallyStorage.saveData('tally_meta', tally_meta, "checkToken()");
