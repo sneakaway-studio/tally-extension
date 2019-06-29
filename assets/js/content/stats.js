@@ -159,7 +159,7 @@ window.Stats = (function() {
 			let originalStatVal = allStats[who][consumable.stat].val;
 			// if stat is already full
 			if (consumable.val > 0 && allStats[who][consumable.stat].val >= allStats[who][consumable.stat].max) {
-				Thought.showString("Your " + consumable.stat + " is full!", "happy", true);
+				Dialogue.showString("Your " + consumable.stat + " is full!", "happy", true);
 				return;
 			}
 			// else, add new stat
@@ -179,16 +179,16 @@ window.Stats = (function() {
 			console.log("📋 Stats.updateFromConsumable()", consumable, consumable.stat, allStats[who]);
 			// if stat is full
 			if (allStats[who][consumable.stat].val >= allStats[who][consumable.stat].max) {
-				Thought.showString("Your " + consumable.stat + " is full!", "happy", true);
+				Dialogue.showString("Your " + consumable.stat + " is full!", "happy", true);
 			} else {
 				setTimeout(function() {
 					// play sound
 					if (originalStatVal < allStats[who][consumable.stat].val) {
 						Sound.playRandomJump();
-						Thought.showString("Yay! You increased your " + consumable.stat + "!", "happy", true);
+						Dialogue.showString("Yay! You increased your " + consumable.stat + "!", "happy", true);
 					} else if (originalStatVal > allStats[who][consumable.stat].val) {
 						Sound.playRandomJumpReverse();
-						Thought.showString("Dang, you lost some " + consumable.stat + "!", "sad", true);
+						Dialogue.showString("Dang, you lost some " + consumable.stat + "!", "sad", true);
 					}
 				}, 500);
 

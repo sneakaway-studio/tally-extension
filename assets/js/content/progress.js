@@ -43,7 +43,7 @@ window.Progress = (function() {
 			if (tally_progress.atackLimit < GameData.attackLimits[tally_user.score.level]) {
 				tally_progress.atackLimit = GameData.attackLimits[tally_user.score.level];
 				// tell user
-				Thought.showString("You can now use " + tally_progress.atackLimit + " attacks in battle!", "happy");
+				Dialogue.showString("You can now use " + tally_progress.atackLimit + " attacks in battle!", "happy");
 			}
 
 			checkLevel();
@@ -102,7 +102,7 @@ window.Progress = (function() {
 				// update stats
 				Stats.reset("tally");
 				// tell user
-				Thought.showString("You just leveled up!", "happy");
+				Dialogue.showString("You just leveled up!", "happy");
 				// save after updates
 				TallyStorage.saveData('tally_user', tally_user);
 

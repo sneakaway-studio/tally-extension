@@ -136,32 +136,32 @@ window.MonsterCheck = (function() {
 				// what stage are we at with this monster?
 				} else if (tally_nearby_monsters[mid].stage == 0) {
 					// do nothing
-					Thought.showTrackerThought();
+					Dialogue.showTrackerDialogue();
 				} else if (tally_nearby_monsters[mid].stage == 1) {
 					if (r < 0.1) {
 						// go back to normal stage
 						tally_nearby_monsters[mid].stage = 0;
-						Thought.showString("Want to give feedback? Click the survey button in the top-right menu.", "question");
+						Dialogue.showString("Want to give feedback? Click the survey button in the top-right menu.", "question");
 					} else if (r < 0.4) {
-						// random thought, but don't change stage
-						Thought.showTrackerThought();
+						// random dialogue, but don't change stage
+						Dialogue.showTrackerDialogue();
 					} else if (r < 0.7) {
-						// random thought, but don't change stage
-						Thought.showThought(Thought.getThought(["monster", "far", 0]), true);
+						// random dialogue, but don't change stage
+						Dialogue.showDialogue(Dialogue.getDialogue(["monster", "far", 0]), true);
 					} else {
 						// or prompt stage 2
 						tally_nearby_monsters[mid].stage = 2;
-						Thought.showThought(Thought.getThought(["monster", "close", 0]), true);
+						Dialogue.showDialogue(Dialogue.getDialogue(["monster", "close", 0]), true);
 					}
 				} else if (tally_nearby_monsters[mid].stage == 2) {
 					if (r < 0.2) {
 						// do nothing
 					} else if (r < 0.4) {
-						// random thought, but don't change stage
-						Thought.showTrackerThought();
+						// random dialogue, but don't change stage
+						Dialogue.showTrackerDialogue();
 					} else if (r < 0.7) {
-						// random thought, but don't change stage
-						Thought.showThought(Thought.getThought(["monster", "close", 0]), true);
+						// random dialogue, but don't change stage
+						Dialogue.showDialogue(Dialogue.getDialogue(["monster", "close", 0]), true);
 					} else {
 						// or prompt stage 3 - add
 						tally_nearby_monsters[mid].stage = 3;

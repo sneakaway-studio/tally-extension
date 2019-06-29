@@ -121,7 +121,7 @@ window.BattleEffect = (function() {
 				if (BattleAttack.getOutcomeDetails().outcomes === "missed") {
 					// add to pos and time
 					endPos.left = pageData.browser.width + 200;
-					addToDuration = 500;
+					addToDuration = 1000;
 				}
 			}
 			if (DEBUG) console.log("🧨 BattleEffect.startAttackEffects() startPos=", startPos, ", endPos=", endPos);
@@ -147,8 +147,8 @@ window.BattleEffect = (function() {
 					scale: [0.5, 1],
 					rotate: [0, 350],
 					elasticity: 0,
-					duration: addToDuration + 1000,
-					easing: 'easeInOutSine',
+					duration: addToDuration + 500,
+					easing: 'linear',
 					// testing
 					// update: function(anim) {
 					// 	if (DEBUG) console.log(anim.progress, anim.animations[0].currentValue, anim.animations[1].currentValue);
@@ -156,10 +156,11 @@ window.BattleEffect = (function() {
 					complete: function(anim) {
 						//if (DEBUG) console.log("🧨 BattleEffect.startAttackEffects() projectile done", anim.progress,
 						//	anim.animations[0].currentValue, anim.animations[1].currentValue);
-						// hide projectile
-						Core.hideElement('#battle_projectile');
+
 						// show explosion
 						showExplosion(attack, endPos, rumbleSize);
+						// hide projectile
+						Core.hideElement('#battle_projectile');
 						// pass control back to BattleAttack...
 						BattleAttack.handleAttackOutcomes(attack, selfStr, oppStr);
 						return;

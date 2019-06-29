@@ -1,10 +1,10 @@
 "use strict";
 
-window.Thought = (function() {
+window.Dialogue = (function() {
 	// PRIVATE
 
-	let DEBUG = false,
-		thoughtOpen = false,
+	let DEBUG = true,
+		dialogueOpen = false,
 		_active,
 		_queue = [];
 
@@ -13,8 +13,8 @@ window.Thought = (function() {
 	 */
 	function getFact(domain) {
 		try {
-			let r = Math.floor(Math.random() * ThoughtData.facts[domain].length);
-			return ThoughtData.facts[domain][r];
+			let r = Math.floor(Math.random() * DialogueData.facts[domain].length);
+			return DialogueData.facts[domain][r];
 		} catch (err) {
 			console.error(err);
 		}
@@ -25,8 +25,8 @@ window.Thought = (function() {
 	function showFact(fact, sound, ifOpenUpdate) {
 		try {
 			if (DEBUG) console.log("💭 showFact()", fact, sound, ifOpenUpdate);
-			if (ifOpenUpdate) thoughtOpen = false; // override ifOpenUpdate = true
-			if (thoughtOpen) return; // if open, exit
+			if (ifOpenUpdate) dialogueOpen = false; // override ifOpenUpdate = true
+			if (dialogueOpen) return; // if open, exit
 			Sound.playMood(sound);
 			show(fact.fact);
 		} catch (err) {
@@ -34,28 +34,28 @@ window.Thought = (function() {
 		}
 	}
 
-	function showTrackerThought() {
+	function showTrackerDialogue() {
 		try {
 			let num = "none";
 			if (pageData.trackers.length > 0) num = "few";
 			if (pageData.trackers.length > 3) num = "lots";
-			if (DEBUG) console.log("💭 showTrackerThought()", num);
-			showThought(getThought(["tracker", num, 0]), true);
+			if (DEBUG) console.log("💭 showTrackerDialogue()", num);
+			showDialogue(getDialogue(["tracker", num, 0]), true);
 		} catch (err) {
 			console.error(err);
 		}
 	}
 
 	/**
-	 *	Return a thought
+	 *	Return a dialogue
 	 */
-	function getThought(arr) {
+	function getDialogue(arr) {
 		try {
 			// make sure it is an array
 			if (!Array.isArray(arr)) return;
 
 			// get category
-			let category = ThoughtData.data[arr[0]];
+			let category = DialogueData.data[arr[0]];
 
 			// if there is a subcategory then select random
 			if (arr[1]) {
@@ -76,15 +76,15 @@ window.Thought = (function() {
 		}
 	}
 	/**
-	 *	Show the thought bubble [with text and sound]
+	 *	Show the dialogue bubble [with text and sound]
 	 */
-	function showThought(thought, sound, ifOpenUpdate) {
+	function showDialogue(dialogue, sound, ifOpenUpdate) {
 		try {
-			if (DEBUG) console.log("💭 Thought.showThought()", thought, sound, ifOpenUpdate);
-			if (ifOpenUpdate) thoughtOpen = false; // override ifOpenUpdate = true
-			if (thoughtOpen) return; // else if open, then exit
-			if (sound) Sound.playMood(thought.mood);
-			show(thought.text);
+			if (DEBUG) console.log("💭 Dialogue.showDialogue()", dialogue, sound, ifOpenUpdate);
+			if (ifOpenUpdate) dialogueOpen = false; // override ifOpenUpdate = true
+			if (dialogueOpen) return; // else if open, then exit
+			if (sound) Sound.playMood(dialogue.mood);
+			show(dialogue.text);
 		} catch (err) {
 			console.error(err);
 		}
@@ -93,13 +93,13 @@ window.Thought = (function() {
 
 
 	/**
-	 *	Show the thought bubble [with text and sound]
+	 *	Show the dialogue bubble [with text and sound]
 	 */
 	function showString(str, sound, ifOpenUpdate = true) {
 		try {
-			if (DEBUG) console.log("💭 Thought.showString()", str, sound, ifOpenUpdate);
-			if (ifOpenUpdate) thoughtOpen = false; // true = update even if open
-			if (thoughtOpen) return; // if open, exit
+			if (DEBUG) console.log("💭 Dialogue.showString()", str, sound, ifOpenUpdate);
+			if (ifOpenUpdate) dialogueOpen = false; // true = update even if open
+			if (dialogueOpen) return; // if open, exit
 			if (sound) Sound.playMood(sound);
 			show(str);
 		} catch (err) {
@@ -111,21 +111,21 @@ window.Thought = (function() {
 		try {
 			// EXAMPLES
 
-			// Thought.showThought(Thought.getThought(["monster", "launch", 0]),true);
+			// Dialogue.showDialogue(Dialogue.getDialogue(["monster", "launch", 0]),true);
 			// return;
 
 			let r = Math.random();
 			if (r < 0.25)
-				// show thought from data, [category/subcategory/0], play sound
-				showThought(getThought(["random", "greeting", 0]), true);
+				// show dialogue from data, [category/subcategory/0], play sound
+				showDialogue(getDialogue(["random", "greeting", 0]), true);
 			else if (r < 0.5)
-				// show thought from data, [category/0/index], play sound
-				showThought(getThought(["onboarding", 0, "onboarding3"]), true);
+				// show dialogue from data, [category/0/index], play sound
+				showDialogue(getDialogue(["onboarding", 0, "onboarding3"]), true);
 			else if (r < 0.75)
-				// show thought from facts, trackers, play sound
+				// show dialogue from facts, trackers, play sound
 				showFact(getFact("trackers"), "neutral", true);
 			else
-				// show thought <string>, play sound
+				// show dialogue <string>, play sound
 				showString("this is just a string", "neutral", true);
 		} catch (err) {
 			console.error(err);
@@ -140,7 +140,7 @@ window.Thought = (function() {
 	 */
 	function show(str) {
 		try {
-			if (DEBUG) console.log("💭 Thought.show()", str);
+			if (DEBUG) console.log("💭 Dialogue.show()", str);
 			// add to end of _queue
 			_queue.push(str);
 			// start/make sure queueChecker is running
@@ -166,10 +166,9 @@ window.Thought = (function() {
 	 */
 	function queueChecker() {
 		try {
-			if (DEBUG) console.log("💭 Thought.queueChecker()", _queue, _active);
+			if (DEBUG) console.log("💭 Dialogue.queueChecker()", _queue, _active);
 			// if no items in _queue then stop
-			if (_queue.length < 1)
-				return;
+			if (_queue.length < 1) return;
 			// else, if not currently active then start a new one
 			if (!_active)
 				writeNextInQueue();
@@ -182,24 +181,31 @@ window.Thought = (function() {
 		}
 	}
 	/**
-	 *	Show a thought string
+	 *	Show a dialogue string
 	 */
 	function writeNextInQueue(lineSpeed = 150) {
 		try {
-			if (DEBUG) console.log("💭 Thought.writeNextInQueue()", _queue, _active);
+			if (DEBUG) console.log("💭 Dialogue.writeNextInQueue()", _queue, _active);
 			// if currently active, stop
 			if (_active) return;
 			// set active state true
 			active(true);
 			// set open
-			thoughtOpen = true;
+			dialogueOpen = true;
 
 			// remove first element in array
 			var str = _queue.shift();
+			// make sure there is text in the element
+			if (str === null || str === undefined || str === "") {
+				console.warn("💭 Dialogue.writeNextInQueue() element was empty", _queue);
+				return;
+			}
+
+
 			// replace any template strings
 			str = searchReplaceTemplateStr(str);
 
-			if (DEBUG) console.log("💭 Thought.writeNextInQueue()", str, _queue, _active);
+			if (DEBUG) console.log("💭 Dialogue.writeNextInQueue()", str, _queue, _active);
 
 			// set number of lines based on str.length
 			let lines = 1;
@@ -209,9 +215,9 @@ window.Thought = (function() {
 			// set duration based on number lines
 			let duration = lines * 1950;
 			// add text
-			$('#tally_thought').html(str);
+			$('#tally_dialogue').html(str);
 			// adjust size of the box
-			$('#tally_thought_bubble').css({
+			$('#tally_dialogue_bubble').css({
 				'display': 'flex',
 				'height': (lines * 12) + 26 + "px",
 				'left': '10px',
@@ -232,13 +238,13 @@ window.Thought = (function() {
 	function hide() {
 		try {
 			//return; //testing
-			// if (!thoughtOpen) return;
-			$('#tally_thought_bubble').css({
+			// if (!dialogueOpen) return;
+			$('#tally_dialogue_bubble').css({
 				'left': '-500px',
 				'display': 'none',
 				'opacity': 0
 			});
-			thoughtOpen = false;
+			dialogueOpen = false;
 			// release active state
 			active(false);
 		} catch (err) {
@@ -260,7 +266,7 @@ window.Thought = (function() {
 	 */
 	function searchReplaceTemplateStr(str) {
 		try {
-			if (DEBUG) console.log("💭 Thought.searchReplaceTemplateStr()", str, Monster.current());
+			if (DEBUG) console.log("💭 Dialogue.searchReplaceTemplateStr()", str, Monster.current());
 			let find = "",
 				replace = "";
 			// check for any template replacement matches
@@ -290,11 +296,11 @@ window.Thought = (function() {
 
 	// PUBLIC
 	return {
-		getThought: function(arr) {
-			return getThought(arr);
+		getDialogue: function(arr) {
+			return getDialogue(arr);
 		},
-		showThought: function(thought, sound, ifOpenUpdate) {
-			showThought(thought, sound, ifOpenUpdate);
+		showDialogue: function(dialogue, sound, ifOpenUpdate) {
+			showDialogue(dialogue, sound, ifOpenUpdate);
 		},
 		getFact: function(domain) {
 			return getFact(domain);
@@ -305,7 +311,7 @@ window.Thought = (function() {
 		showString: function(str, sound, ifOpenUpdate) {
 			showString(str, sound, ifOpenUpdate);
 		},
-		showTrackerThought: showTrackerThought,
+		showTrackerDialogue: showTrackerDialogue,
 		random: random,
 		hide: hide
 

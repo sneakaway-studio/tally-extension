@@ -59,7 +59,7 @@ window.TallyEvents = (function() {
 					// play sound
 					Sound.playRandomJump();
 					// tell them
-					Thought.showString("You took a break from the internet to recharge!", "happy");
+					Dialogue.showString("You took a break from the internet to recharge!", "happy");
 				}, 700);
 			}
 			// update last active

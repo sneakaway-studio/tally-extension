@@ -16,7 +16,7 @@
         "prop": false,
         "Tally": false,
         "Skin": false,
-        "Thought": false,
+        "Dialogue": false,
         "Debug": false
     },
     "-W117": true

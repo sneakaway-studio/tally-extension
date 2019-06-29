@@ -74,7 +74,7 @@ Learn more at [tallygame.net](https://tallygame.net).
 
 * Adds beginning of turn-based RPG battle system with console, explosions, etc.
 * Adds consumables (cookies, data junk, etc.)
-* Adds new logging system to Tally Thoughts
+* Adds new logging system to Tally Dialogues
 * Rewrite of Stats manager
 * Lots of small bug fixes and improvements
 

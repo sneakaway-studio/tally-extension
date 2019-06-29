@@ -1,6 +1,6 @@
 "use strict";
 
-var ThoughtData = (function() {
+var DialogueData = (function() {
 
 
 	var data =

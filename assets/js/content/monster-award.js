@@ -30,7 +30,7 @@ window.MonsterAward = (function() {
 	 */
 	function capture(_mid) {
 		// tell them they caught it
-		Thought.showThought(Thought.getThought(["monster", "captured", 0]), true, true);
+		Dialogue.showDialogue(Dialogue.getDialogue(["monster", "captured", 0]), true, true);
 		// set vars
 		tally_nearby_monsters[_mid].captured = 1;
 		tally_nearby_monsters[_mid].missed = 0;
@@ -82,7 +82,7 @@ window.MonsterAward = (function() {
 	function miss(_mid) {
 		console.log("!!!!! Monster.miss()", _mid, tally_nearby_monsters[_mid]);
 		// tell them they missed
-		Thought.showThought(Thought.getThought(["monster", "missed", 0]), true, true);
+		Dialogue.showDialogue(Dialogue.getDialogue(["monster", "missed", 0]), true, true);
 		// stop current animation
 		$('.tally_monster_sprite_container').css({
 			'animation-name': 'none',
@@ -110,7 +110,7 @@ window.MonsterAward = (function() {
 		$('.award_subtitle').html("You leveled up! <a href='https://tallygame.net/profile'> Check out your score</a>");
 		let additional_targets = '';
 		let victory_text = "YOU CONTAINED THE MONSTER!!!!!";
-		let fact = Thought.getFact("trackers");
+		let fact = Dialogue.getFact("trackers");
 		let box_text = "Did you know?";
 		let str = fact.fact || "";
 		if (fact.url && fact.source) str += " Source: <a href='" + fact.url + "' target='_blank'>" + fact.source + "</a>";

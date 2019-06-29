@@ -9,7 +9,7 @@ window.Tally = (function() {
 	let DEBUG = false,
 		followCursor = false, // is eye following currently active? on page load, no
 		tallyMenuOpen = false,
-		tallyConsoleIcon = 'font-size:12px; background:url(https://tallygame.net/assets/img/tally-clear-20w.png) no-repeat;';
+		tallyConsoleIcon = 'font-size:12px; background:url("'+ chrome.extension.getURL('assets/img/tally/tally-clear-20w.png') +'") no-repeat;';
 
 
 	/*  TALLY EYES
@@ -104,8 +104,8 @@ window.Tally = (function() {
 
 			let str =
 				"<div class='tally draggable' id='tally_character'>" +// style='transform:translateY(-350px);'
-					"<div class='tally tally_speech_bubble' id='tally_thought_bubble'>" +
-						"<div class='tally' id='tally_thought'></div>" +
+					"<div class='tally tally_speech_bubble' id='tally_dialogue_bubble'>" +
+						"<div class='tally' id='tally_dialogue'></div>" +
 					"</div>" +
 					"<div class='tally' id='tally_character_inner'>" +
 						"<div class='tally' id='tally_body'>" +
@@ -231,7 +231,7 @@ window.Tally = (function() {
 			//console.log(tallyMenuOpen)
 			if (tallyMenuOpen) {
 				// open so close
-				Thought.hide();
+				Dialogue.hide();
 				tallyMenuOpen = false;
 			} else {
 				// closed so open
@@ -248,11 +248,11 @@ window.Tally = (function() {
 					"<button class='tally' id='tallyMenu_battleRumbleLarge'>`1+r+2 large battle rumble</button>" +
 					"<hr>" +
 					"<button class='tally' id='tallyMenu_explodePage'>`1+e Explode Page</button>" +
-					"<button class='tally' id='tallyMenu_randomThought'>`1+t Random thought</button>" +
+					"<button class='tally' id='tallyMenu_randomDialogue'>`1+t Random dialogue</button>" +
 					"<button class='tally' id='tallyMenu_randomSkin'>`1+w Random skin</button>" +
 					"</div>";
 
-				Thought.showString(str, false, true);
+				Dialogue.showString(str, false, true);
 
 				tallyMenuOpen = true;
 			}
@@ -288,8 +288,8 @@ window.Tally = (function() {
 			$(document).on('click', '#tallyMenu_explodePage', function() {
 				Effect.explode();
 			});
-			$(document).on('click', '#tallyMenu_randomThought', function() {
-				Thought.random();
+			$(document).on('click', '#tallyMenu_randomDialogue', function() {
+				Dialogue.random();
 			});
 			$(document).on('click', '#tallyMenu_randomSkin', function() {
 				Skin.random();
@@ -335,7 +335,7 @@ Mousetrap.bind(k + ' s', function() {
 	});
 });
 Mousetrap.bind(k + ' t', function() {
-	Thought.random();
+	Dialogue.random();
 });
 Mousetrap.bind(k + ' w', function() {
 	Skin.random();

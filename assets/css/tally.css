@@ -15,7 +15,7 @@
 
 
 /* TALLY CHARACTER */
-#tally_character, #tally_thought_bubble {
+#tally_character, #tally_dialogue_bubble {
     position: absolute;
     z-index: 2147483646;
 }
@@ -147,7 +147,7 @@ svg#tally-svg * {
  /*  TALLY THOUGHTS
  ******************************************************************************/
 
-#tally_thought_bubble {
+#tally_dialogue_bubble {
     width: 220px;
     height: 80px;
     bottom: 270px;
@@ -156,17 +156,17 @@ svg#tally-svg * {
     display: flex;
     padding: 0;
 }
-#tally_thought_bubble #tally_thought {
+#tally_dialogue_bubble #tally_dialogue {
     padding: 8px;
     text-align: center;
     margin: auto;
     font: 12px/16px "Monaco", "Andale Mono", "Courier New", sans-serif;
     color: #fff
 }
-#tally_thought_bubble #tally_thought .tally-replace {
+#tally_dialogue_bubble #tally_dialogue .tally-replace {
     color: #DE4929;
 }
-#tally_thought_bubble a {
+#tally_dialogue_bubble a {
     color: white;
     text-decoration: underline;
 }

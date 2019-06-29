@@ -104,8 +104,8 @@ window.Battle = (function() {
 				loop: true,
 				easing: 'easeInOutSine'
 			});
-			// hide current thought
-			Thought.hide();
+			// hide current dialogue
+			Dialogue.hide();
 			// change monster element back to fixed
 			Core.setElementFixed('.tally_monster_sprite_container');
 			// set monster details
@@ -142,7 +142,7 @@ window.Battle = (function() {
 			BattleConsole.display();
 			// log intro message
 			setTimeout(function() {
-				Thought.showThought(Thought.getThought(["battle", "start", 0]), true);
+				Dialogue.showDialogue(Dialogue.getDialogue(["battle", "start", 0]), true);
 				// display stats
 				StatsDisplay.updateDisplay("monster");
 				// log intro...
@@ -171,8 +171,8 @@ window.Battle = (function() {
 	// end battle
 	function end() {
 		try {
-			console.log("💥 Battle.end()");
 			if (!_active) return;
+			console.log("💥 Battle.end()");
 			_active = false;
 			// hide console
 			BattleConsole.hide();
@@ -187,9 +187,9 @@ window.Battle = (function() {
 			// remove floating animations
 			anime.remove("#tally_character_inner");
 			anime.remove('.tally_monster_sprite_container');
-			// change skin back to magenta and hide thought if open
+			// change skin back to magenta and hide dialogue if open
 			Skin.setStage(0);
-			Thought.hide();
+			Dialogue.hide();
 			// hide monster
 			anime({
 				targets: '.tally_monster_sprite_container',

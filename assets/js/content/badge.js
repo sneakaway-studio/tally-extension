@@ -146,9 +146,9 @@ window.Badge = (function() {
 		//if (DEBUG) console.log("Badge.hover()", key, badge);
 		if (!hovered) {
 			// tell them
-			Thought.showString("Oh, you found " + badge.ref + " " + badge.name + " badge!", badge.sound, true);
+			Dialogue.showString("Oh, you found " + badge.ref + " " + badge.name + " badge!", badge.sound, true);
 		}
-		Thought.showString("Click to collect the badge!", badge.sound, true);
+		Dialogue.showString("Click to collect the badge!", badge.sound, true);
 		// only show hover message once
 		hovered = true;
 	}
