@@ -21,7 +21,7 @@ function checkAPIServerStatus() {
 			contentType: 'application/json', // type of data you are sending
 			dataType: 'json', // type of data you expect to receive
 		}).done(result => {
-			console.log("<{!}> checkAPIServerStatus() SERVER ONLINE", JSON.stringify(result));
+			console.log("📟 checkAPIServerStatus() SERVER ONLINE", JSON.stringify(result));
 			var ended = new Date().getTime();
 			_tally_meta.serverOnline = 1;
 			_tally_meta.userOnline = 1;
@@ -30,12 +30,12 @@ function checkAPIServerStatus() {
 			verifyToken();
 		}).fail(error => {
 			// server is not online, do not start game
-			console.error("<{!}> checkAPIServerStatus() SERVER IS NOT ONLINE, DO NOT START GAME", JSON.stringify(error));
+			console.error("📟 checkAPIServerStatus() SERVER IS NOT ONLINE, DO NOT START GAME", JSON.stringify(error));
 			_tally_meta.serverOnline = 0;
 			_tally_meta.userOnline = 0;
 			_tally_meta.serverOnlineTime = -1;
 		}).always(() => {
-			//console.log("<{!}> checkAPIServerStatus() ALWAYS");
+			//console.log("📟 checkAPIServerStatus() ALWAYS");
 			// save result
 			store("tally_meta", _tally_meta);
 		});
@@ -67,7 +67,7 @@ function verifyToken(callback) {
 				"token": _tally_secret.token
 			})
 		}).done(result => {
-			//console.log("<{!}> verifyToken()", JSON.stringify(result));
+			//console.log("📟 verifyToken()", JSON.stringify(result));
 			let diff = null;
 			//console.log("result.tokenExpires",result.tokenExpires,moment().format(result.tokenExpires));
 			// check date on token
@@ -78,14 +78,14 @@ function verifyToken(callback) {
 			}
 			// if diff is > 0 (in the future)
 			if (diff && diff > 0) {
-				console.log("<{!}> verifyToken() OK", diff, result.tokenExpires);
+				console.log("📟 verifyToken() OK", diff, result.tokenExpires);
 				handleTokenStatus(result.tokenExpires, diff, "ok", 1);
 			} else {
-				console.log("<{!}> verifyToken() EXPIRED", result.tokenExpires);
+				console.log("📟 verifyToken() EXPIRED", result.tokenExpires);
 				handleTokenStatus(result.tokenExpires, diff, "expired", 0);
 			}
 		}).fail(function(jqXHR, textStatus, errorThrown) {
-			console.log("<{!}> verifyToken() result =", jqXHR, textStatus, errorThrown);
+			console.log("📟 verifyToken() result =", jqXHR, textStatus, errorThrown);
 			handleTokenStatus(0, 0, "error", 0);
 		});
 	} catch (err) {
@@ -98,7 +98,7 @@ function verifyToken(callback) {
  */
 function handleTokenStatus(_expires, _expiresDiff, _status, _valid) {
 	try {
-		//console.log("handleTokenStatus()",_expires, _expiresDiff, _status, _valid);
+		//console.log("📟 handleTokenStatus()",_expires, _expiresDiff, _status, _valid);
 		let _tally_meta = store("tally_meta");
 		_tally_meta.userTokenExpires = moment().format(_expires);
 		_tally_meta.userTokenExpiresDiff = _expiresDiff;
@@ -109,17 +109,17 @@ function handleTokenStatus(_expires, _expiresDiff, _status, _valid) {
 		//dataReport();
 		// if userTokenStatus is ok
 		if (_tally_meta.userTokenStatus == "ok") {
-			console.log(">>>>> handleTokenStatus() -> everything is cool, start game");
+			console.log("🔑 handleTokenStatus() -> everything is cool, start game");
 			checkServerForDataOnStartApp();
 			// content script takes over
 		} else if (_tally_meta.userTokenStatus == "expired") {
-			console.log(">>>>> handleTokenStatus() -> TOKEN EXPIRED");
+			console.log("🔑 handleTokenStatus() -> TOKEN EXPIRED");
 			// prompts handled by content script
 		} else {
 			// tally_meta exists but there is no token or there is an error
 			// have we prompted them before?
 			// launch registration
-			console.log(">>>>> handleTokenStatus() -> NO TOKEN FOUND");
+			console.log("🔑 handleTokenStatus() -> NO TOKEN FOUND");
 			launchStartScreen();
 		}
 	} catch (err) {
@@ -132,9 +132,10 @@ function handleTokenStatus(_expires, _expiresDiff, _status, _valid) {
  */
 function sendServerUpdate(data) {
 	try {
-		console.log("<{!}> sendServerUpdate()", data);
+		console.log("📟 sendServerUpdate()", data);
 		let _tally_meta = store("tally_meta"),
-			_tally_user = store("tally_user");
+			_tally_user = store("tally_user"),
+			_tally_game_status = store("tally_game_status");
 		if (!_tally_meta.serverOnline || _tally_meta.userTokenStatus != "ok") return;
 		$.ajax({
 			type: "PUT",
@@ -143,7 +144,7 @@ function sendServerUpdate(data) {
 			dataType: 'json',
 			data: JSON.stringify(data)
 		}).done(result => {
-			console.log("<{!}> sendServerUpdate() RESULT =", JSON.stringify(result));
+			console.log("📟 sendServerUpdate() RESULT =", JSON.stringify(result));
 			// treat all server data as master, store in local background user
 			if (result.username) _tally_user.username = result.username;
 			if (result.clicks) _tally_user.score.clicks = result.clicks;
@@ -154,9 +155,15 @@ function sendServerUpdate(data) {
 			if (result.time) _tally_user.score.time = result.time;
 			if (result.consumables) _tally_user.consumables = result.consumables;
 			if (result.badges) _tally_user.badges = result.badges;
+			// store any flags from server
+			if (result.flags){
+				console.log("🚩 sendServerUpdate() FLAGS =", JSON.stringify(result.flags));
+				_tally_game_status.flags = result.flags;
+				store("tally_game_status", _tally_game_status);
+			}
 			store("tally_user", _tally_user);
 		}).fail(error => {
-			console.error("<{!}> sendServerUpdate() RESULT =", JSON.stringify(error));
+			console.error("📟 sendServerUpdate() RESULT =", JSON.stringify(error));
 			// server might not be reachable
 			checkAPIServerStatus();
 		});
@@ -171,7 +178,7 @@ function sendServerUpdate(data) {
  */
 function sendMonsterUpdate(data) {
 	try {
-		console.log("<{!}> sendMonsterUpdate()", data);
+		console.log("📟 sendMonsterUpdate()", data);
 		let _tally_meta = store("tally_meta"),
 			_tally_user = store("tally_user"),
 			_tally_top_monsters = store("tally_top_monsters");
@@ -183,19 +190,19 @@ function sendMonsterUpdate(data) {
 			dataType: 'json',
 			data: JSON.stringify(data)
 		}).done(result => {
-			//console.log("<{!}> sendMonsterUpdate() RESULT =", JSON.stringify(result));
+			//console.log("📟 sendMonsterUpdate() RESULT =", JSON.stringify(result));
 
 			// treat all server data as master
 			_tally_user.monsters = convertArrayToObject(result.userMonsters,"mid");
 			_tally_top_monsters = convertArrayToObject(result.topMonsters,"mid");
 
-			//console.log("<{!}> sendMonsterUpdate() RESULT =", JSON.stringify(_tally_user.monsters));
-			//console.log("<{!}> sendMonsterUpdate() RESULT =", JSON.stringify(_tally_top_monsters));
+			//console.log("📟 sendMonsterUpdate() RESULT =", JSON.stringify(_tally_user.monsters));
+			//console.log("📟 sendMonsterUpdate() RESULT =", JSON.stringify(_tally_top_monsters));
 
 			store("tally_user", _tally_user);
 			store("tally_top_monsters", _tally_top_monsters);
 		}).fail(error => {
-			console.error("<{!}> sendMonsterUpdate() RESULT =", JSON.stringify(error));
+			console.error("📟 sendMonsterUpdate() RESULT =", JSON.stringify(error));
 			// server might not be reachable
 			checkAPIServerStatus();
 		});
@@ -208,13 +215,13 @@ function sendMonsterUpdate(data) {
  */
 function getMonstersFromServer() {
 	try {
-		//console.log("<{!}> getMonstersFromServer()");
+		//console.log("📟 getMonstersFromServer()");
 		let _tally_meta = store("tally_meta"),
 			_tally_user = store("tally_user"),
 			_tally_top_monsters = store("tally_top_monsters"),
 			username = "";
 
-		console.log("<{!}> getMonstersFromServer()",_tally_meta,_tally_user);
+		console.log("📟 getMonstersFromServer()",_tally_meta,_tally_user);
 		if (!_tally_meta.serverOnline || _tally_meta.userTokenStatus != "ok") return;
 		if (prop(_tally_user.username) && _tally_user.username != "") username = _tally_user.username;
 		$.ajax({
@@ -223,19 +230,19 @@ function getMonstersFromServer() {
 			contentType: 'application/json',
 			dataType: 'json',
 		}).done(result => {
-			//console.log("<{!}> getMonstersFromServer() RESULT =", JSON.stringify(result));
+			//console.log("📟 getMonstersFromServer() RESULT =", JSON.stringify(result));
 
 			// treat all server data as master
 			_tally_user.monsters = convertArrayToObject(result.userMonsters,"mid");
 			_tally_top_monsters = convertArrayToObject(result.topMonsters,"mid");
 
-			//console.log("<{!}> getMonstersFromServer() RESULT =", JSON.stringify(_tally_user.monsters));
-			//console.log("<{!}> getMonstersFromServer() RESULT =", JSON.stringify(_tally_top_monsters));
+			//console.log("📟 getMonstersFromServer() RESULT =", JSON.stringify(_tally_user.monsters));
+			//console.log("📟 getMonstersFromServer() RESULT =", JSON.stringify(_tally_top_monsters));
 
 			store("tally_user", _tally_user);
 			store("tally_top_monsters", _tally_top_monsters);
 		}).fail(error => {
-			console.error("<{!}> getMonstersFromServer() RESULT =", JSON.stringify(error));
+			console.error("📟 getMonstersFromServer() RESULT =", JSON.stringify(error));
 			// server might not be reachable
 			checkAPIServerStatus();
 		});

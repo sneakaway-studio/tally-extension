@@ -91,7 +91,7 @@ window.TallyStorage = (function() {
 					"token": "INSERT_IN_BACKGROUND",
 				}
 			};
-			console.log("<{!}> newBackgroundUpdate() -> obj", obj);
+			console.log("💾 TallyStorage.newBackgroundUpdate() -> obj", obj);
 			return obj;
 		} catch (err) {
 			console.error(err);
@@ -114,7 +114,7 @@ window.TallyStorage = (function() {
 					"token": "INSERT_IN_BACKGROUND",
 				}
 			};
-			//console.log("<{!}> newBackgroundMonsterUpdate() -> obj", obj);
+			//console.log("💾 newBackgroundMonsterUpdate() -> obj", obj);
 			return obj;
 		} catch (err) {
 			console.error(err);
@@ -128,9 +128,9 @@ window.TallyStorage = (function() {
 				'action': 'saveToken',
 				'data': data
 			}, function(response) {
-				console.log('💾 <{!}> TallyStorage.saveToken()', response);
+				console.log('💾 TallyStorage.saveToken()', response);
 				if (response.message == 1) {
-					console.log("💾 <{!}> TallyStorage.saveToken() -> token has been saved", data);
+					console.log("💾 TallyStorage.saveToken() -> token has been saved", data);
 					// $.growl({
 					// 	title: "TOKEN SAVED!",
 					// 	message: "User token updated!"
@@ -389,7 +389,7 @@ function sendBackgroundUpdate(data) {
 			'action': 'sendBackgroundUpdate',
 			'data': data
 		}, function(response) {
-			console.log('💾 <{!}> sendBackgroundUpdate()', response);
+			console.log('💾 TallyStorage.sendBackgroundUpdate()', response);
 			tally_user = response.tally_user;
 			Debug.update();
 		});
@@ -406,7 +406,7 @@ function sendBackgroundMonsterUpdate(data) {
 			'action': 'sendBackgroundMonsterUpdate',
 			'data': data
 		}, function(response) {
-			console.log('💾 <{!}> sendBackgroundMonsterUpdate()', response);
+			console.log('💾 TallyStorage.sendBackgroundMonsterUpdate()', response);
 			//		tally_user = response.tally_user;
 			Debug.update();
 		});

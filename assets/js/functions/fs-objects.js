@@ -6,6 +6,11 @@
 
 window.FS_Object = (function() {
 
+	function prop(obj){
+		if (typeof obj !== 'undefined' && obj && obj !== null) return true;
+		else return false;
+	}
+
 	/**
 	 *	Return the value of the last key of an object
 	 *  use like FS_Object.lastKeyValue(GameData.levels).level;
@@ -40,6 +45,9 @@ window.FS_Object = (function() {
 
 	// PUBLIC
 	return {
+		prop: function(obj) {
+			return prop(obj);
+		},
 		randomObjProperty: function(obj) {
 			return randomObjProperty(obj);
 		},

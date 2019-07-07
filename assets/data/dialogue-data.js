@@ -2,7 +2,7 @@
 
 var DialogueData = (function() {
 
-	let DEBUG = true;
+	let DEBUG = false;
 
 	let facts =
 { advertising:

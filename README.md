@@ -36,8 +36,8 @@ Learn more at [tallygame.net](https://tallygame.net).
 
 ## Packaging
 
-1. Remove reference in manifest to `hot-reload.js`
-2. Change line in `changeMeta()` function in `assets/js/background/background-install.js` to `production`
+1. Remove (dev only) reference in manifest to `hot-reload.js`
+2. Comment `development` lines in `changeMeta()` function in `assets/js/background/background-install.js`
 3. Zip only files needed for extension (`assets/`,`LICENSE`,`manifest.json`,`README.md`)
 4. Rename extension and upload to live server
 
@@ -47,7 +47,7 @@ Learn more at [tallygame.net](https://tallygame.net).
 
 ### Version 0.2.5
 
-* improvements to dialogue system
+* Improvements to dialogue system
 * Adds more monsters and attacks
 
 ### Version 0.2.4

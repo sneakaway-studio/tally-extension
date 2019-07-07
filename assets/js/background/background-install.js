@@ -113,7 +113,8 @@ function createScore() {
 function createGameStatus() {
 	try {
 		var obj = {
-			"skin": "color-magenta"
+			"skin": "color-magenta",
+			"flags": null
 		};
 		return obj;
 	} catch (err) {

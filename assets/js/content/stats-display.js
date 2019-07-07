@@ -6,7 +6,7 @@
 window.StatsDisplay = (function() {
 	// PRIVATE
 
-	let DEBUG = true;
+	let DEBUG = false;
 
 	/**
 	 * Starting point for stats svg coordinates

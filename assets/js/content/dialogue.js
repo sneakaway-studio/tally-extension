@@ -3,7 +3,7 @@
 window.Dialogue = (function() {
 	// PRIVATE
 
-	let DEBUG = true,
+	let DEBUG = false,
 		dialogueBubbleOpen = false, // whether or not dialogue bubble currently open
 		_active,
 		_queue = []; // array of objects

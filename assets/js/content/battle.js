@@ -74,7 +74,7 @@ window.Battle = (function() {
 			//console.log("💥 Battle.start()", mid);
 			if (_active) return;
 			active(true);
-			// set 1st flag true
+			// update progress
 			tally_progress.battle1stMonster = true;
 			// intro sound
 			Sound.playCategory('powerups', 'powerup1');
