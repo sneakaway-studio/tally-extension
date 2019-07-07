@@ -148,7 +148,7 @@ window.Badge = (function() {
 			// tell them
 			Dialogue.showStr("Oh, you found " + badge.ref + " " + badge.name + " badge!", badge.sound, true);
 		}
-		Dialogue.showStr("Click to collect the badge!", badge.sound, true);
+		Dialogue.showStr("Click to collect the badge!", badge.sound, false);
 		// only show hover message once
 		hovered = true;
 	}

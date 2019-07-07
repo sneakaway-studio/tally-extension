@@ -185,7 +185,7 @@ window.Consumable = (function() {
 			// tell them
 			Dialogue.showStr("Oh, you found " + consumable.ref + " " + consumable.name + " " + consumable.type + "!", consumable.sound, true);
 			if (consumable.name == "fortune")
-				Dialogue.showStr("Feeling lucky?", consumable.sound, true);
+				Dialogue.showStr("Feeling lucky?", consumable.sound, false);
 		}
 		// only show hover message once
 		hovered = true;
