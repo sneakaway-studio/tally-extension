@@ -95,6 +95,7 @@ window.Monster = (function() {
 			Dialogue.show(DialogueData.get(["monster", "display", null]), true);
 			// reference to image file (moved to server )
 			var url = chrome.extension.getURL(tally_meta.website + '/' + 'assets/img/monsters-300h/' + monster.mid + '-anim-sheet.png');
+			//var url = chrome.extension.getURL('assets/img/472-master-3d-test.png');
 
 			// set monster image
 			$('.tally_monster_sprite_inner').css('background-image', 'url( ' + url + ')');
@@ -179,7 +180,7 @@ window.Monster = (function() {
 	 */
 	function saveAndPush(mid) {
 		try {
-			if (DEBUG) console.log('👿 <{!}> Monster.saveAndPush()', mid, tally_nearby_monsters[mid]);
+			if (DEBUG) console.log('👿 Monster.saveAndPush()', mid, tally_nearby_monsters[mid]);
 			// add monsters to tally_user
 			if (tally_user.monsters[mid]) {
 				tally_user.monsters[mid].level = tally_nearby_monsters[mid].level;
