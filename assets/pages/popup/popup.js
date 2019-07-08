@@ -13,18 +13,24 @@ let tally_options = {},
 
 
 // if user hasn't logged in then show login only
-function init(){
+function init() {
+	// show tally image
+	$('.container').css({
+		'background-image': 'url(' + chrome.runtime.getURL("assets/img/tally/tally-logo-clear-1600w.png") +')'
+	});
+
 	chrome.runtime.sendMessage({
 		'action': 'getMeta'
 	}, function(response) {
 		//console.log("getMeta()",JSON.stringify(response.data));
 		tally_meta = response.data;
-		if (tally_meta.userTokenStatus != "ok"){
+		if (tally_meta.userTokenStatus != "ok") {
 			// display only the login
-			let str = "<a href='"+ tally_meta.website + "/dashboard" + "' target='_blank'>Link your Tally account</a>";
-			$("#content").html(str);
+			let str = "<a href='" + tally_meta.website + "/dashboard" + "' target='_blank'>Link your Tally account</a>";
+			$(".content").html(str);
+		} else {
+			getOptions();
 		}
-		else { getOptions(); }
 	});
 
 }
@@ -43,6 +49,7 @@ function getUser(callback) {
 		//console.log("getUser()",JSON.stringify(response.data));
 		tally_user = response.data;
 
+		$("#level").html(tally_user.score.level);
 		$("#score").html(tally_user.score.score);
 		$("#likes").html(tally_user.score.likes);
 		$("#clicks").html(tally_user.score.clicks);
@@ -54,16 +61,39 @@ function getUser(callback) {
 	});
 }
 
+function getAttacks(callback) {
+	chrome.runtime.sendMessage({
+		'action': 'getUser'
+	}, function(response) {
+		//console.log("getAttacks()",JSON.stringify(response.data));
+		tally_user = response.data;
+
+
+
+		var str = "";
+		for (var prop in tally_user.attacks) {
+			if (tally_user.attacks.hasOwnProperty(prop)) {
+				str += "<button class='btn attacks-btn'>" + tally_user.attacks[prop].name + "</button>";
+			}
+		}
+		// console.log(str);
+		$(".attacksCloud").html(str);
+
+		if (callback) callback();
+	});
+}
+
+
 function getOptions() {
 	chrome.runtime.sendMessage({
 		'action': 'getData',
-		'name':'tally_options'
+		'name': 'tally_options'
 	}, function(response) {
 		//console.log("getOptions()",JSON.stringify(response.data));
 		tally_options = response.data;
 		// game
 		$("#gameMode").val(tally_options.gameMode);
-		$("#soundVolume").val(tally_options.soundVolume*100);
+		$("#soundVolume").val(tally_options.soundVolume * 100);
 		// privacy
 		document.getElementById("disabledDomains").value = tally_options.disabledDomains.join("\n");
 		// debugging
@@ -90,7 +120,7 @@ function saveOptions() {
 		'data': tally_options
 	}, function(response) {
 		//console.log(response);
-		showStatus('User options saved'); // display success message
+		showStatus('Options saved'); // display success message
 		// refresh current page (w/new settings)
 		chrome.tabs.query({
 			active: true,
@@ -169,7 +199,7 @@ $("input").mouseup(function() {
 $("select#gameMode").on('change', function() {
 	saveOptions("popup options");
 });
-$('#soundVolume').on('change', function(){
+$('#soundVolume').on('change', function() {
 	// play a sound to confirm new setting
 	var audio = new Audio(chrome.extension.getURL("assets/sounds/tally/tally-hello-q.mp3"));
 	audio.volume = $(this).val() / 100;
@@ -202,6 +232,9 @@ function openTab(btn, tabName) {
 	if (btn == "statusBtn") {
 		getUser();
 		getMeta();
+	}
+	if (btn == "attacksBtn") {
+		getAttacks();
 	}
 
 	//console.log(tabName)
@@ -236,13 +269,16 @@ function openTab(btn, tabName) {
  ******************************************************************************/
 
 // set default
-openTab("aboutBtn", "aboutTab");
+openTab("attacksBtn", "attacksTab");
 //openTab("statusBtn", "statusTab");
 //openTab("optionsBtn","optionsTab");
 
 // tab buttons
 document.getElementById("statusBtn").onclick = function() {
 	openTab("statusBtn", "statusTab");
+};
+document.getElementById("attacksBtn").onclick = function() {
+	openTab("attacksBtn", "attacksTab");
 };
 document.getElementById("optionsBtn").onclick = function() {
 	openTab("optionsBtn", "optionsTab");
@@ -262,7 +298,7 @@ $(document).on('click', '#updateTokenBtn', function() {
 	window.open(tally_meta.website + "/signin");
 });
 $(document).on('click', '#viewProfileBtn', function() {
-	window.open(tally_meta.website + "/profile/"+tally_user.username);
+	window.open(tally_meta.website + "/profile/" + tally_user.username);
 });
 $(document).on('click', '#editProfileBtn', function() {
 	window.open(tally_meta.website + "/dashboard");
