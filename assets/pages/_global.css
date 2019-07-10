@@ -1,7 +1,7 @@
 /************************************************************************/
 /******************************** GLOBAL ********************************/
 /************************************************************************/
-*:not(.fab) { font: 0.9em/1.4em "Lucida Console", Monaco, monospace !important; }
+*:not(.fab) { font: 0.85rem/1.4rem "Lucida Console", Monaco, monospace !important; }
 html, body { background: #461899; margin: 0; padding: 0; }
 .container {
     width: 420px; height: 400px;

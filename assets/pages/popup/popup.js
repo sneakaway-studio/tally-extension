@@ -168,12 +168,7 @@ function getMeta(callback) {
 
 // reset tally_user
 document.getElementById("opt_reset_user").onclick = function() {
-	chrome.runtime.sendMessage({
-		action: "resetUser"
-	}, function(response) {
-		//console.log(response); // display success message
-		showStatus("User has been reset");
-	});
+	window.open(tally_meta.website + "/dashboard");
 };
 // reset tally_options
 document.getElementById("opt_reset_options").onclick = function() {
