@@ -75,7 +75,7 @@ window.Stats = (function() {
 	function save(who) {
 		try {
 			//if (DEBUG) console.log("📋 Stats.save()", who);
-			TallyStorage.saveData('tally_stats', allStats.tally);
+			TallyStorage.saveData('tally_stats', allStats.tally, "📋 Stats.save()");
 		} catch (err) {
 			console.error(err);
 		}

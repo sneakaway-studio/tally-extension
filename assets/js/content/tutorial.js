@@ -42,7 +42,7 @@ window.Tutorial = (function() {
 				}
 			}
 			// save
-			TallyStorage.saveData('tally_progress', tally_progress);
+			TallyStorage.saveData('tally_progress', tally_progress, "Tutorial.reset()");
 		} catch (err) {
 			console.error(err);
 		}

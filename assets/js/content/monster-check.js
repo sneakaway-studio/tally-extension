@@ -16,8 +16,7 @@ window.MonsterCheck = (function() {
 	function check() {
 		try {
 			// don't check if disabled
-			if (pageData.domain == "tallygame.net" ||
-				tally_options.gameMode === "disabled" ||
+			if (pageData.domain == "tallygame.net" || tally_options.gameMode === "disabled" ||
 				!pageData.activeOnPage) return;
 			checkNearbyMonsterTimes();
 		} catch (err) {
@@ -56,7 +55,7 @@ window.MonsterCheck = (function() {
 			if (DEBUG)
 				if (deleteList.length > 0)
 					console.log("👿 ⊙⊙⊙⊙⊙ MonsterCheck.checkNearbyMonsterTimes() -> DELETING", deleteList);
-			TallyStorage.saveData("tally_nearby_monsters",tally_nearby_monsters);
+			TallyStorage.saveData("tally_nearby_monsters",tally_nearby_monsters,"👿 MonsterCheck.checkNearbyMonsterTimes()");
 			// set the skin color
 			Skin.setStage(highestStage);
 			// continue
@@ -174,7 +173,7 @@ window.MonsterCheck = (function() {
 			// set skin
 			Skin.setStage(tally_nearby_monsters[mid].stage);
 			// save monsters
-			TallyStorage.saveData("tally_nearby_monsters",tally_nearby_monsters);
+			TallyStorage.saveData("tally_nearby_monsters",tally_nearby_monsters,"👿 MonsterCheck.handleMatch()");
 			// should we add the monster?
 			if (addMonster) {
 				currentMID = mid;
@@ -196,7 +195,7 @@ window.MonsterCheck = (function() {
 			// 	delete tally_nearby_monsters[mid];
 			// reset them all
 			tally_nearby_monsters = {};
-			TallyStorage.saveData("tally_nearby_monsters",tally_nearby_monsters);
+			TallyStorage.saveData("tally_nearby_monsters",tally_nearby_monsters,"👿 MonsterCheck.reset()");
 			// set the skin color
 			Skin.setStage(0);
 		} catch (err) {

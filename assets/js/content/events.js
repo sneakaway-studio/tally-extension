@@ -29,11 +29,6 @@ window.TallyEvents = (function() {
 				// userOnlineInt: setInterval(function() {
 				// }, 5 * 1000),
 
-				// NOW HANDLED IN BACKGROUND...
-				// check if server online
-				// serverOnlineInt: setInterval(function() {
-				// 	checkAPIServerStatus();
-				// }, 500 * 1000)
 
 			};
 		} catch (err) {
@@ -64,7 +59,7 @@ window.TallyEvents = (function() {
 			}
 			// update last active
 			tally_user.lastActive = moment().format();
-			TallyStorage.saveData('tally_user', tally_user, "TallyEvents.checkLastActive()");
+			TallyStorage.saveData('tally_user', tally_user, "🕗 TallyEvents.checkLastActive()");
 			console.log("🕗 TallyEvents.checkLastActive()", tally_user.lastActive);
 		} catch (err) {
 			console.error(err);

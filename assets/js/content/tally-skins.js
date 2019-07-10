@@ -123,14 +123,14 @@ window.Skin = (function() {
 	 */
 	function setStage(n) {
 		try {
-			if(DEBUG) console.log("Skin.setStage(" + n + ")");
+			if (DEBUG) console.log("👚 Skin.setStage(" + n + ")");
 			skinStage = n;
 			skinCat = "color"; //, skinColor, skinAnim;
-			if (skinStage == 1)
+			if (skinStage === 1)
 				skinColor = "yellow";
-			else if (skinStage == 2)
+			else if (skinStage === 2)
 				skinColor = "orange";
-			else if (skinStage == 3)
+			else if (skinStage === 3)
 				skinColor = "red";
 			else // (skinStage == 0)
 				skinColor = "magenta";
@@ -177,12 +177,12 @@ window.Skin = (function() {
 	 */
 	function update(skinCat, skinColor, skinAnim) {
 		try {
-			if (DEBUG) console.log("👚👗 Skin.update()", skinCat, skinColor, skinAnim);
+			if (DEBUG) console.log("👚 Skin.update() skinCat = "+ skinCat +", skinColor = "+ skinColor +", skinAnim = "+ skinAnim);
 			if (skinCat != "" && prop(tally_game_status)) tally_game_status.skin = [skinCat, skinColor, skinAnim];
 			// save the skin status
-			TallyStorage.saveData("tally_game_status",tally_game_status);
+			TallyStorage.saveData("tally_game_status", tally_game_status, "👚 Skin.update()");
 
-			let obj = {},
+			let skinObj = {},
 				def = "",
 				frontFill = "",
 				backFill = "";
@@ -193,24 +193,24 @@ window.Skin = (function() {
 				skinColor = "magenta";
 			}
 			// get object reference
-			obj = skins[skinCat][skinColor];
-			if(DEBUG) console.log(skinCat, obj);
+			skinObj = skins[skinCat][skinColor];
+			if (DEBUG) console.log("👚 Skin.update() skinCat = "+ skinCat +", skinObj = "+ JSON.stringify(skinObj));
 
 			// if a solid color
 			if (skinCat == "color") {
-				frontFill = obj.front;
-				backFill = obj.back;
+				frontFill = skinObj.front;
+				backFill = skinObj.back;
 			}
 			// if a gradient
 			else if (skinCat == "gradient") {
 				// make a copy of the colors
-				var colors = Object.values(obj.stops);
+				var colors = Object.values(skinObj.stops);
 				// use linearGradient
-				def += '<linearGradient id="tallyGradient" x2="1" gradientTransform="rotate(' + obj.angle + ')"  >';
+				def += '<linearGradient id="tallyGradient" x2="1" gradientTransform="rotate(' + skinObj.angle + ')"  >';
 				// loop through stops in the gradient once to get colors
-				for (const key in obj.stops) {
-					if (obj.stops.hasOwnProperty(key)) {
-						def += '<stop offset="' + key + '" stop-color="' + obj.stops[key] + '">';
+				for (const key in skinObj.stops) {
+					if (skinObj.stops.hasOwnProperty(key)) {
+						def += '<stop offset="' + key + '" stop-color="' + skinObj.stops[key] + '">';
 						if (skinAnim) {
 							def += '<animate attributeName="stop-color" values="' + colors.join('; ') + '; ' + colors[0] + '" dur="2s" repeatCount="indefinite"></animate>';
 							// move last to first
@@ -227,22 +227,22 @@ window.Skin = (function() {
 			}
 			// PATTERN
 			else if (skinCat == "pattern") {
-				def = obj.str;
+				def = skinObj.str;
 				frontFill = "url(#tallyPattern)";
 				backFill = "url(#tallyPattern)";
 			}
 			// IMAGE
 			else if (skinCat == "image") {
 				def += '<pattern id="tallyPattern" patternUnits="userSpaceOnUse" width="100%" height="100%">';
-				def += '<image xlink:href="' + obj.url + '" x="-10" y="-10" width="100%" height="100%" />';
+				def += '<image xlink:href="' + skinObj.url + '" x="-10" y="-10" width="100%" height="100%" />';
 				def += '</pattern>';
 				frontFill = "url(#tallyPattern)";
 				backFill = "url(#tallyPattern)";
 			}
 			// otherwise default to magenta
 			else {
-				frontFill = obj.front;
-				backFill = obj.back;
+				frontFill = skinObj.front;
+				backFill = skinObj.back;
 			}
 
 			// set/reset defs
@@ -256,7 +256,7 @@ window.Skin = (function() {
 	}
 
 
-	function random(){
+	function random() {
 		try {
 			var r = Math.random();
 			if (r < 0.1)

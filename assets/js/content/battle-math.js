@@ -91,6 +91,10 @@ window.BattleMath = (function() {
 	 */
 	function returnAttackOutcomes(attack, selfStr, oppStr) {
 		try {
+			if (!prop(attack)) {
+				console.error("🔢 BattleMath.returnAttackOutcomes() attack is required!");
+				return;
+			}
 			// get stats
 			let self = Stats.get(selfStr),
 				opp = Stats.get(oppStr),

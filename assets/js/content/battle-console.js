@@ -5,7 +5,7 @@
 
 window.BattleConsole = (function() {
 	// PRIVATE
-	let DEBUG = false,
+	let DEBUG = true,
 		logId, _active, _queue, _next;
 
 	// reset all vars
@@ -211,7 +211,7 @@ window.BattleConsole = (function() {
 						$(document).off("click", ref);
 						// get attack name
 						let attackName = $(this).attr("data-attack");
-						//if (DEBUG) console.log(attackName);
+						if (DEBUG) console.log("🖥️ BattleConsole.showBattleOptions() attackName =", attackName, tally_user.attacks);
 						BattleAttack.doAttack(tally_user.attacks[attackName], "tally", "monster");
 					});
 				}
@@ -242,7 +242,7 @@ window.BattleConsole = (function() {
 	 */
 	function typeWriter(ele, str, i) {
 		try {
-			if (DEBUG) console.log("typeWriter()", ele, str, i);
+			//if (DEBUG) console.log("typeWriter()", ele, str, i);
 			if (!document.getElementById(ele)) return;
 			if (i >= str.length) {
 				BattleConsole.lineComplete(ele);
@@ -272,7 +272,7 @@ window.BattleConsole = (function() {
 					while (htmlElementFirstTagOpen === true) {
 						// add to html element, move to next
 						htmlElementStr += str.charAt(i++);
-						if (DEBUG) console.log("typeWriter() WHILE", i, htmlElementStr);
+						//if (DEBUG) console.log("typeWriter() WHILE", i, htmlElementStr);
 						// check next element for closing tag
 						if (str.charAt(i) === ">") {
 							// should close the first element
@@ -307,7 +307,6 @@ window.BattleConsole = (function() {
 						typeWriter(ele, str, ++i);
 					}, 20);
 				}
-
 			}
 		} catch (err) {
 			console.error(err);

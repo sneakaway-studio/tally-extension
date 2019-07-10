@@ -38,7 +38,7 @@ window.Monster = (function() {
 				tally_nearby_monsters[mid].totalCaptured = tally_user.monsters[mid].captured;
 			if (DEBUG) console.log('👿 ⊙!⊙⊙⊙ Monster.create()2', mid, tally_nearby_monsters[mid], tally_user.monsters[mid]);
 			// save
-			TallyStorage.saveData("tally_nearby_monsters", tally_nearby_monsters);
+			TallyStorage.saveData("tally_nearby_monsters", tally_nearby_monsters, "👿 Monster.create()");
 			return tally_nearby_monsters[mid];
 		} catch (err) {
 			console.error(err);
@@ -165,7 +165,7 @@ window.Monster = (function() {
 			tally_nearby_monsters[mid].missed = 0;
 			if (DEBUG) console.log("👿 ⊙⊙⊙⊙⊙ Monster.test()", MonsterData.dataById[mid]);
 			// save
-			TallyStorage.saveData("tally_nearby_monsters", tally_nearby_monsters);
+			TallyStorage.saveData("tally_nearby_monsters", tally_nearby_monsters, "👿 Monster.test()");
 			// set the skin color
 			Skin.setStage(tally_nearby_monsters[mid].stage);
 			Dialogue.show(DialogueData.get(["monster", "show", null]), true);
@@ -190,11 +190,11 @@ window.Monster = (function() {
 				};
 			}
 			// save monsters
-			TallyStorage.saveData("tally_nearby_monsters", tally_nearby_monsters);
+			TallyStorage.saveData("tally_nearby_monsters", tally_nearby_monsters, "👿 Monster.saveAndPush()");
 
 			// save user in background
-			TallyStorage.saveData('tally_user', tally_user);
-			// create backgroundUpdate object
+			TallyStorage.saveData('tally_user', tally_user, "👿 Monster.saveAndPush()");
+			// create object
 			var backgroundMonsterUpdate = TallyStorage.newBackgroundMonsterUpdate(mid);
 			// store the nearby monster in it
 			backgroundMonsterUpdate.monsterData = tally_nearby_monsters[mid];
@@ -219,7 +219,7 @@ window.Monster = (function() {
 			// reset them all
 			tally_nearby_monsters = {};
 			monster = {};
-			TallyStorage.saveData("tally_nearby_monsters", tally_nearby_monsters);
+			TallyStorage.saveData("tally_nearby_monsters", tally_nearby_monsters, "👿 Monster.reset()");
 			// set the skin color
 			Skin.setStage(0);
 		} catch (err) {
