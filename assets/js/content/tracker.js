@@ -9,12 +9,12 @@ window.Tracker = (function() {
 	 */
 	function removeCaughtTrackers(trackersOnPage) {
 		try {
-			if (DEBUG) console.log("🕷️ Tracker.removeCaughtTrackers()", tally_trackers, trackersOnPage);
-			if (tally_trackers.blocked.length < 1 || trackersOnPage.length < 1) return;
+			if (DEBUG) console.log("🕷️ Tracker.removeCaughtTrackers()", tally_user.trackers, trackersOnPage);
+			if (tally_user.trackers.blocked.length < 1 || trackersOnPage.length < 1) return;
 			// loop through trackers on page and check if each is in block list
 			for (let i = 0, l = trackersOnPage.length; i < l; i++) {
 				// if there is a match then block it
-				if (tally_trackers.blocked.hasOwnProperty(trackersOnPage[i])) {
+				if (tally_user.trackers.blocked.hasOwnProperty(trackersOnPage[i])) {
 					// reference to script element
 					var x = $("script[src*='" + trackersOnPage[i] + "']");
 

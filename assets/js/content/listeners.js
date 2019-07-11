@@ -34,7 +34,7 @@ window.TallyListeners = (function() {
 					// update
 					Debug.update();
 					// get data about the event
-					eventData = {
+					let eventData = {
 						action: null,
 						mouseX: e.clientX,
 						mouseY: e.clientY,
@@ -77,6 +77,8 @@ window.TallyListeners = (function() {
 			// console.log("clickEventHandler() > eventData",eventData,target);
 			//console.log("clickEventHandler() > target",target,target.className);
 
+			// for updating the background object later on
+			let scoreData = {};
 
 			/**
 			 * 	1. Determine if this is a node we want to ignore (tally interface links, etc.)
@@ -93,7 +95,7 @@ window.TallyListeners = (function() {
 			}
 
 			/**
-			 * 	2. Determine what kind of click it is
+			 * 	2. Determine what kind of click or "action" it is and store in eventData.action
 			 */
 
 			// Check if click target is an Anchor or if target's parent element is an Anchor.
@@ -134,9 +136,6 @@ window.TallyListeners = (function() {
 
 				// update
 				Debug.update();
-				// create backgroundUpdate object
-				var backgroundUpdate = TallyStorage.newBackgroundUpdate();
-
 
 				// more checking...
 
@@ -145,7 +144,7 @@ window.TallyListeners = (function() {
 					target.className.indexOf("ProfileTweet-actionCountForPresentation") > -1 /* Twitter */
 				) {
 					eventData.action = "like";
-					backgroundUpdate.scoreData.likes++;
+					scoreData.likes++;
 				}
 				// check if it is a stackoverflow
 				else if (target.className == "vote" || target.className == "vote-up-off") {
@@ -157,13 +156,10 @@ window.TallyListeners = (function() {
 					if (eventData.tag == "IMG") {
 						// update score
 						eventData.action = "image";
-						//backgroundUpdate.scoreData.images ++; // might remove
-
 						// also try to get alt tag
 						if ($(target).attr("alt") != "")
 							eventData.text = $(target).attr("alt");
 						else eventData.text = "IMG";
-
 					}
 				}
 
@@ -172,22 +168,20 @@ window.TallyListeners = (function() {
 				 */
 
 				// if we are this far it is a click
-				backgroundUpdate.scoreData.clicks++;
-				// store / reset page time
-				backgroundUpdate.pageData.time = pageData.time;
+				TallyStorage.addToBackgroundUpdate("scoreData", "clicks", 1);
+				// store time
+				TallyStorage.addToBackgroundUpdate("pageData", "time", pageData.time);
+				// reset page time
 				pageData.time = 0;
-				// store event strings
-				backgroundUpdate.eventData.action = eventData.action;
-				backgroundUpdate.eventData.text = eventData.text;
-				// add and update scores
-				backgroundUpdate.scoreData.score += GameData.clickScore[eventData.action];
+				// store event data
+				TallyStorage.addToBackgroundUpdate("eventData", eventData);
+				// add and update score
+				TallyStorage.addToBackgroundUpdate("scoreData", "score", GameData.clickScore[eventData.action]);
 
 				// only allow points for clicking the first time (FB Like, etc.)
 				$(target).toggleClass("tally-clicked");
-				// temp off for testing
 
-				// send backgroundUpdate object to server via background
-				sendBackgroundUpdate(backgroundUpdate);
+
 
 				/**
 				 * 	5. Game responses
@@ -200,7 +194,7 @@ window.TallyListeners = (function() {
 				// show click visual
 				Effect.showClickVisualText(eventData, "+" + GameData.clickScore[eventData.action]);
 				// update stats display
-				// StatsDisplay.adjustStatsCircle("tally", tally_user.score.level);
+				// StatsDisplay.adjustStatsCircle("tally", tally_user.level);
 				StatsDisplay.updateDisplay("tally");
 			}
 			// disable click action in case they are editing text

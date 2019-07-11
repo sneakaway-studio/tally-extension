@@ -49,27 +49,6 @@ window.Listener = (function() {
 
 
 
-
-
-				/*  MARKED FOR DELETION
-				 ******************************************************************************/
-
-				// // saveTrackerBlockList
-				// else if (request.action == "saveTrackerBlockList") {
-				// 	//console.log("saveTrackerBlockList()",request.data);
-				// 	let data = store("tally_trackers") || {
-				// 		"blocked": []
-				// 	};
-				// 	data.blocked = request.data;
-				// 	store("tally_trackers", data);
-				// 	sendResponse({
-				// 		"action": request.action,
-				// 		"message": 1
-				// 	});
-				// }
-
-
-
 				/*  OPTIONS MANAGEMENT (FROM POPUP)
 				 ******************************************************************************/
 
@@ -130,13 +109,6 @@ window.Listener = (function() {
 						"data": store("tally_game_status") || {}
 					});
 				}
-				// getTrackerBlockList
-				else if (request.action == "getTrackerBlockList") {
-					sendResponse({
-						"action": request.action,
-						"data": store("tally_trackers") || {}
-					});
-				}
 				// getNearbyMonsters
 				else if (request.action == "getNearbyMonsters") {
 					sendResponse({
@@ -158,13 +130,7 @@ window.Listener = (function() {
 						"data": store("tally_top_monsters") || {}
 					});
 				}
-				// getProgressPromise
-				else if (request.action == "getProgressPromise") {
-					sendResponse({
-						"action": request.action,
-						"data": store("tally_progress") || {}
-					});
-				}
+
 
 
 
@@ -245,30 +211,49 @@ window.Listener = (function() {
 
 
 
-				// sendBackgroundUpdate - receive and send score, event, page data to server
+				// sendBackgroundUpdate - receive and send score, event, page, etc. data to server
 				else if (request.action == "sendBackgroundUpdate") {
 					if (DEBUG) console.log("👂🏼 Listener.sendBackgroundUpdate", JSON.stringify(request.data));
 
-					// store backgroundUpdate object
+					// store update object
 					store("tally_last_background_update", request.data);
-					// save score updates to user
-					let _tally_user = store("tally_user");
-					// store score updates
-					_tally_user.score = adjustScore(_tally_user.score, request.data.scoreData);
-					// store user
-					store("tally_user", _tally_user);
 
-					// create new serverUpdate
-					var serverUpdate = createServerUpdate(request.data);
+					// add token
+					let _tally_meta = store("tally_meta"),
+						_tally_secret = store("tally_secret");
+					request.data.token = _tally_secret.token;
+
 					// (attempt to) send data to server, response to callback
-					Server.sendUpdate(serverUpdate);
-
-					// reply to contentscript with updated tally_user
-					sendResponse({
-						"action": request.action,
-						"message": 1,
-						"tally_user": _tally_user
+					$.ajax({
+						type: "PUT",
+						url: _tally_meta.api + "/user/extensionUpdate",
+						contentType: 'application/json',
+						dataType: 'json',
+						data: JSON.stringify(request.data)
+					}).done(result => {
+						console.log("📟 Server.sendUpdate() RESULT =", JSON.stringify(result));
+						// store result
+						store("tally_user",result);
+						// reply to contentscript with updated tally_user
+						sendResponse({
+							"action": request.action,
+							"message": 1,
+							"tally_user": result
+						});
+					}).fail(error => {
+						console.error("📟 Server.sendUpdate() RESULT =", JSON.stringify(error));
+						// server might not be reachable
+						Server.updateStatus();
+						sendResponse({
+							"action": request.action,
+							"message": 0
+						});
 					});
+
+
+
+					// required so chrome knows this is async
+					return true;
 				}
 				// getLastBackgroundUpdate
 				else if (request.action == "getLastBackgroundUpdate") {
@@ -288,7 +273,7 @@ window.Listener = (function() {
 				else if (request.action == "sendBackgroundMonsterUpdate") {
 					if (DEBUG) console.log("👂🏼 Listener.sendBackgroundMonsterUpdate", JSON.stringify(request.data));
 
-					// store backgroundUpdate object
+					// store update object
 					store("tally_last_monster_update", request.data);
 
 					// create new serverUpdate
@@ -324,36 +309,6 @@ window.Listener = (function() {
 		}
 	);
 
-
-	/**
-	 *  Create Server Update
-	 */
-	function createServerUpdate(data) {
-		try {
-			let _tally_secret = store("tally_secret"),
-				_tally_user = store("tally_user");
-			var obj = {
-				"clicks": data.scoreData.clicks || 0,
-				"level": _tally_user.score.level,
-				"likes": data.scoreData.likes || 0,
-				"pages": data.scoreData.pages || 0,
-				"score": data.scoreData.score || 0,
-				"time": data.pageData.time || 0,
-				"tags": data.pageData.tags || "",
-				"token": _tally_secret.token,
-				"url": data.pageData.url || "",
-				"domain": data.pageData.domain || "",
-			};
-			if (data.attack != null) obj.attack = data.attack;
-			if (data.consumable != null) obj.consumable = data.consumable;
-			if (data.badge != null) obj.badge = data.badge;
-			if (DEBUG) console.log("👂🏼 Listener.createServerUpdate()", obj);
-			return obj;
-		} catch (err) {
-			console.error(err);
-		}
-	}
-
 	/**
 	 *  Create Server *Monster* Update
 	 */
@@ -383,25 +338,7 @@ window.Listener = (function() {
 
 
 
-	/**
-	 *  Adjust local score from score obj, saves it locally
-	 */
-	function adjustScore(_score, scoreObj, n) {
-		try {
-			for (var key in scoreObj) {
-				if (scoreObj.hasOwnProperty(key) && key != "meta") {
-					//console.log("adjustScore() --> ", key + " -> " + scoreObj[key]);
-					// if not level
-					if (key !== "level")
-						// adjust scores in user
-						_score[key] += scoreObj[key];
-				}
-			}
-			return _score;
-		} catch (err) {
-			console.error(err);
-		}
-	}
+
 
 	/**
 	 *  Update badge text to show tracker number

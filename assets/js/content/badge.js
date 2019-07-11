@@ -18,7 +18,7 @@ window.Badge = (function() {
 				"val": FS_Number.round(Math.random() * 10, 0),
 				"sound": "cautious",
 			},
-			"night owl": {
+			"night-owl": {
 				"name": "night owl",
 				"type": "badge",
 				"ref": "a",
@@ -42,7 +42,7 @@ window.Badge = (function() {
 
 			// testing
 			//return create("stalker");
-			//return create("night owl");
+			//return create("night-owl");
 
 			// SOCIAL DOMAINS
 			if (GameData.socialDomains.indexOf(pageData.domain) > -1) {
@@ -57,7 +57,7 @@ window.Badge = (function() {
 			// 10p–6a night owl
 			else if (FS_Date.isNight()) {
 				//if (DEBUG) console.log('10p–6a night owl')
-				if (r < 0.01) return create("night owl");
+				if (r < 0.01) return create("night-owl");
 			}
 
 
@@ -68,12 +68,12 @@ window.Badge = (function() {
 	/**
 	 *	2. if so, then make a new one from list
 	 */
-	function create(name = "") {
+	function create(id = "") {
 		try {
-			if (DEBUG) console.log("Badge.create()", name);
+			if (DEBUG) console.log("Badge.create()", id);
 
-			// if name is set
-			if (name !== "") add(types[name]);
+			// if id is set
+			if (id !== "") add(types[id]);
 
 		} catch (err) {
 			console.error(err);
@@ -82,14 +82,15 @@ window.Badge = (function() {
 	/**
 	 *	3. add badge to a page
 	 */
-	function add(badge) {
+	function add(id) {
 		try {
-			if (DEBUG) console.log("Badge.add()", badge);
+			if (DEBUG) console.log("Badge.add()", id);
+			let badge = types[id];
 			if (!prop(badge.name) && badge.name === "") return;
 
 			let randomPos = [],
 				imgStr = "",
-				id = "",
+				idAttr = "",
 				str = "";
 
 			// new position
@@ -98,8 +99,8 @@ window.Badge = (function() {
 			//if (DEBUG) console.log("Core.add()",randomPos,css);
 			// html
 			imgStr = chrome.extension.getURL('assets/img/badges/' + badge.img);
-			id = badge.name.replace(" ","_") + '_badge';
-			str = "<div data-badge='" + badge.name + "' class='tally tally_badge_inner' id='" + id + "'>" +
+			idAttr = id + '_badge';
+			str = "<div data-badge='" + id + "' class='tally tally_badge_inner' id='" + idAttr + "'>" +
 				"<img src='" + imgStr + "'></div>";
 			$('.tally_badge').html(str);
 			$('.tally_badge').css({
@@ -141,9 +142,9 @@ window.Badge = (function() {
 	/**
 	 * 	4. user hovers over badge
 	 */
-	function hover(key) {
-		let badge = types[key];
-		//if (DEBUG) console.log("Badge.hover()", key, badge);
+	function hover(id) {
+		let badge = types[id];
+		//if (DEBUG) console.log("Badge.hover()", id, badge);
 		if (!hovered) {
 			// tell them
 			Dialogue.showStr("Oh, you found " + badge.ref + " " + badge.name + " badge!", badge.sound, true);
@@ -156,20 +157,14 @@ window.Badge = (function() {
 	/**
 	 *	5. user clicks a badge
 	 */
-	function collect(key) {
+	function collect(id) {
 		try {
-			let badge = types[key];
-			//if (DEBUG) console.log("Badge.collect()", key, badge);
+			let badge = types[id];
+			//if (DEBUG) console.log("Badge.collect()", id, badge);
 			// play sound
 			Sound.playRandomPowerup();
-
-			// create backgroundUpdate object
-			var backgroundUpdate = TallyStorage.newBackgroundUpdate();
-			// store the data
-			backgroundUpdate.badge = badge;
-			// then push to the server
-			sendBackgroundUpdate(backgroundUpdate);
-
+			// add to backgroundUpdate
+			TallyStorage.addToBackgroundUpdate("itemData", "badges", badge);
 		} catch (err) {
 			console.error(err);
 		}
@@ -181,8 +176,8 @@ window.Badge = (function() {
 	// PUBLIC
 	return {
 		randomizer: randomizer,
-		create: function(name) {
-			create(name);
+		create: function(id) {
+			create(id);
 		},
 		add: add,
 	};

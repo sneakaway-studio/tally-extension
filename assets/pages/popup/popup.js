@@ -49,7 +49,7 @@ function getUser(callback) {
 		//console.log("getUser()",JSON.stringify(response.data));
 		tally_user = response.data;
 
-		$("#level").html(tally_user.score.level);
+		$("#level").html(tally_user.level);
 		$("#score").html(tally_user.score.score);
 		$("#likes").html(tally_user.score.likes);
 		$("#clicks").html(tally_user.score.clicks);

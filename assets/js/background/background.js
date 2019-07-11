@@ -12,7 +12,7 @@ window.Background = (function() {
 			2. Install.launchStartScreen()
 		then (or if tally_meta exists)
 			3. Background.startApp()
-			4. Server.status()
+			4. Server.updateStatus()
 			5. Server.verifyToken()
 			6. content script takes over */
 
@@ -50,7 +50,7 @@ window.Background = (function() {
 			// set server/api production | development
 			setCurrentAPI();
 			// check the API status, if connected then check token
-			Server.status();
+			Server.updateStatus();
 		} catch (err) {
 			console.error(err);
 		}

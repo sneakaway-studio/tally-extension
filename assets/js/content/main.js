@@ -1,16 +1,13 @@
 "use strict";
 
-// load objects
+// load global objects
 let pageData = Page.getPageData(),
-	eventData = {},
 	tally_user = {},
 	tally_options = {},
 	tally_meta = {},
 	tally_game_status = {},
 	tally_nearby_monsters = {},
-	tally_top_monsters = {},
-	tally_trackers = {},
-	tally_progress = {};
+	tally_top_monsters = {};
 
 window.TallyMain = (function() {
 	// PRIVATE
@@ -22,28 +19,22 @@ window.TallyMain = (function() {
 	};
 
 	$(function() {
-		start();
+		syncWithBackground(start);
 	});
 
-	function start() {
+	function syncWithBackground(callback = null) {
 		try {
+			if (DEBUG) console.log('🧰 TallyMain.syncWithBackground()');
 			Promise
 				.all([getUserPromise, getOptionsPromise, getMetaPromise, getGameStatusPromise,
-					getNearbyMonstersPromise, getStatsPromise, getTrackerBlockListPromise,
-					getTopMonstersPromise, getProgressPromise
+					getNearbyMonstersPromise, getStatsPromise, getTopMonstersPromise
 				]) // getLastBackgroundUpdatePromise
 				.then(function() {
 					// if (DEBUG) console.log('>>>>> init() Promise all data has loaded',
-					// 			tally_user, tally_options, tally_meta, tally_game_status, tally_trackers,
-					// 			tally_nearby_monsters, tally_top_monsters, tally_progress);
+					// 			tally_user, tally_options, tally_meta, tally_game_status,
+					// 			tally_nearby_monsters, tally_top_monsters);
 
-					// check if we can update the token
-					Page.checkDashboardUpdateToken();
-
-					// check if extension should be active on this page before proceeding
-					pageData.activeOnPage = shouldExtensionBeActiveOnPage();
-					if (pageData.activeOnPage)
-						startGameOnPage();
+					if (callback) callback();
 				})
 				.catch(function(err) {
 					if (DEBUG) console.error('one or more promises have failed: ' + err,
@@ -51,10 +42,8 @@ window.TallyMain = (function() {
 						"\n tally_options =", tally_options,
 						"\n tally_meta =", tally_meta,
 						"\n tally_game_status =", tally_game_status,
-						"\n tally_trackers =", tally_trackers,
 						"\n tally_nearby_monsters =", tally_nearby_monsters,
 						"\n tally_top_monsters =", tally_top_monsters,
-						"\n tally_progress =", tally_progress
 					);
 				});
 		} catch (err) {
@@ -63,22 +52,44 @@ window.TallyMain = (function() {
 		}
 	}
 
+
+	function start() {
+		try {
+			if (DEBUG) console.log('🧰 TallyMain.start()');
+			// if we are on the dashboard there are a few flags we can find
+			Page.checkForFlags();
+
+			// check if extension should be active on this page before proceeding
+			pageData.activeOnPage = shouldExtensionBeActiveOnPage();
+			if (pageData.activeOnPage)
+				startGameOnPage();
+		} catch (err) {
+			console.error(err);
+			TallyStorage.launchStartScreen();
+		}
+	}
+
+
+
+
+
+
 	/**
 	 * Make sure Tally isn't disabled on this page|domain|subdomain
 	 */
 	function shouldExtensionBeActiveOnPage() {
 		try {
-			//console.log("shouldExtensionBeActiveOnPage()",tally_options);
+			if (DEBUG) console.log("🧰 TallyMain.shouldExtensionBeActiveOnPage()");
 			if (!tally_meta.serverOnline) {
-				if (DEBUG) console.log("!!!!! Connection to Tally server is down");
+				console.log("!!!!! Connection to Tally server is down");
 				return false;
 			} else if (prop(tally_options.disabledDomains) &&
 				(($.inArray(pageData.domain, tally_options.disabledDomains) >= 0) ||
 					($.inArray(pageData.subDomain, tally_options.disabledDomains) >= 0))) {
-				if (DEBUG) console.log("!!!!! Tally is disabled on this domain");
+				console.log("!!!!! Tally is disabled on this domain");
 				return false;
 			} else if (pageData.contentType != "text/html") {
-				if (DEBUG) console.log("!!!!! Tally is disabled on pages like " + pageData.contentType);
+				console.log("!!!!! Tally is disabled on pages like " + pageData.contentType);
 				return false;
 			} else {
 				//console.log("shouldExtensionBeActiveOnPage()", true);
@@ -117,7 +128,8 @@ window.TallyMain = (function() {
 				// 	addMutationObserver();
 				addTitleChecker();
 			// remove trackers that have been caught
-			Tracker.removeCaughtTrackers(pageData.trackers);
+// temp until I can add this to database			
+//			Tracker.removeCaughtTrackers(pageData.trackers);
 			// check for monsters on the page
 			MonsterCheck.check();
 			// update debugger
@@ -131,6 +143,11 @@ window.TallyMain = (function() {
 			// check to see if there are any progress complete
 			Progress.check();
 
+			// after 2 seconds update server
+			setTimeout(function(){
+				TallyStorage.sendBackgroundUpdate();
+			},2000);
+
 		} catch (err) {
 			console.error(err);
 		}
@@ -139,11 +156,15 @@ window.TallyMain = (function() {
 	/**
 	 *	Refresh app
 	 */
-	function refreshApp() {
+	function refreshApp(caller) {
 		try {
 			if (!pageData.activeOnPage) return;
+			if (DEBUG) console.log("🧰 TallyMain.refreshApp() caller = "+ caller);
+			// refresh pageData
 			pageData = Page.getPageData();
+			// refresh game status
 			tally_game_status = TallyStorage.getData('tally_game_status');
+			// check for monsters again
 			MonsterCheck.check();
 			Debug.update();
 		} catch (err) {
@@ -154,19 +175,16 @@ window.TallyMain = (function() {
 	/**
 	 *	May or may not need this
 	 */
-	function resetAppOnPage(){
+	function resetAppOnPage() {
 		// reset everything
 		pageData = Page.getPageData();
-		eventData = {};
 		tally_user = {};
 		tally_options = {};
 		tally_meta = {};
 		tally_game_status = {};
 		tally_nearby_monsters = {};
 		tally_top_monsters = {};
-		tally_trackers = {};
-		tally_progress = {};
-		start();
+		syncWithBackground(start);;
 	}
 
 	/**
@@ -197,7 +215,7 @@ window.TallyMain = (function() {
 					Dialogue.showStr(msg, "sad");
 					//		}
 					tally_meta.userTokenPrompts++;
-					TallyStorage.saveData('tally_meta', tally_meta, "checkToken()");
+					TallyStorage.saveData('tally_meta', tally_meta, "🧰 TallyMain.checkToken()");
 				}
 			}
 		} catch (err) {
@@ -227,7 +245,7 @@ window.TallyMain = (function() {
 		if (tally_options.gameMode === "disabled" || !pageData.activeOnPage) return;
 		new MutationObserver(function(mutations) {
 			console.log("title changed", mutations[0].target.nodeValue);
-			refreshApp();
+			refreshApp("TallyMain.addMutationObserver()");
 		}).observe(
 			document.querySelector('title'), {
 				subtree: true,
@@ -242,7 +260,7 @@ window.TallyMain = (function() {
 			let title = getTitle();
 			if (title != pageData.title) {
 				//console.log("title changed", pageData.title, " to: ",title);
-				refreshApp();
+				refreshApp("TallyMain.addTitleChecker()");
 			} else {
 				//console.log("title is same", pageData.title, " to: ",title);
 			}
@@ -251,6 +269,10 @@ window.TallyMain = (function() {
 
 	// PUBLIC
 	return {
-		start: start
+		syncWithBackground: function(callback) {
+			syncWithBackground(callback);
+		},
+		start: start,
+		startGameOnPage: startGameOnPage
 	};
 }());

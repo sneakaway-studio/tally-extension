@@ -200,16 +200,8 @@ window.Consumable = (function() {
 			//if (DEBUG) console.log("🍪 Consumable.collect()", key, consumable);
 			// play sound
 			Sound.playRandomPowerup();
-
-
-			// create backgroundUpdate object
-			var backgroundUpdate = TallyStorage.newBackgroundUpdate();
-			// store the data
-			backgroundUpdate.consumable = consumable;
-			// then push to the server
-			sendBackgroundUpdate(backgroundUpdate);
-
-
+			// add to backgroundUpdate
+			TallyStorage.addToBackgroundUpdate("itemData", "consumables", consumable);
 			// delay then update stats
 			setTimeout(function() {
 				// update stats

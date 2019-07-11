@@ -11,7 +11,7 @@ window.Server = (function() {
 	/**
 	 *  Check if API Server is online, save status
 	 */
-	function status() {
+	function updateStatus() {
 		try {
 			let _tally_meta = store("tally_meta"),
 				// time it
@@ -23,7 +23,7 @@ window.Server = (function() {
 				contentType: 'application/json', // type of data you are sending
 				dataType: 'json', // type of data you expect to receive
 			}).done(result => {
-				console.log("📟 Server.status() ONLINE", JSON.stringify(result));
+				console.log("📟 Server.updateStatus() ONLINE", JSON.stringify(result));
 				// save state
 				let endTime = new Date().getTime();
 				_tally_meta.serverOnline = 1;
@@ -33,13 +33,13 @@ window.Server = (function() {
 				verifyToken();
 			}).fail(error => {
 				// server is not online, do not start game
-				console.error("📟 Server.status() 😢 NOT ONLINE, DO NOT START GAME", JSON.stringify(error));
+				console.error("📟 Server.updateStatus() 😢 NOT ONLINE, DO NOT START GAME", JSON.stringify(error));
 				// save state
 				_tally_meta.serverOnline = 0;
 				_tally_meta.userOnline = 0;
 				_tally_meta.serverOnlineTime = -1;
 			}).always(() => {
-				//console.log("📟 Server.status() ALWAYS");
+				//console.log("📟 Server.updateStatus() ALWAYS");
 				// save result
 				store("tally_meta", _tally_meta);
 			});
@@ -137,51 +137,31 @@ window.Server = (function() {
 	/**
 	 *  Sync with server
 	 */
-	// function syncData(data) {
-	// 	try {
-	// 		console.log("📟 Server.syncData()", data);
-	// 		// get local objects to update them
-	// 		let _tally_meta = store("tally_meta"),
-	// 			_tally_user = store("tally_user"),
-	// 			_tally_game_status = store("tally_game_status");
-	// 		// only procede if the following allows
-	// 		if (!_tally_meta.serverOnline || _tally_meta.userTokenStatus != "ok") return;
-	// 		$.ajax({
-	// 			type: "PUT",
-	// 			url: _tally_meta.api + "/user/extensionUpdate",
-	// 			contentType: 'application/json',
-	// 			dataType: 'json',
-	// 			data: JSON.stringify(data)
-	// 		}).done(result => {
-	// 			console.log("📟 Server.syncData() RESULT =", JSON.stringify(result));
-	// 			// treat all server data as master, store in local background user
-	// 			if (result.username) _tally_user.username = result.username;
-	// 			if (result.clicks) _tally_user.score.clicks = result.clicks;
-	// 			if (result.likes) _tally_user.score.likes = result.likes;
-	// 			if (result.pages) _tally_user.score.pages = result.pages;
-	// 			if (result.score) _tally_user.score.score = result.score;
-	// 			if (result.level) _tally_user.score.level = result.level;
-	// 			if (result.time) _tally_user.score.time = result.time;
-	// 			if (result.attacks) _tally_user.attacks = result.attacks;
-	// 			if (result.consumables) _tally_user.consumables = result.consumables;
-	// 			if (result.badges) _tally_user.badges = result.badges;
-	// 			store("tally_user", _tally_user);
-	// 			// store any flags from server
-	// 			if (result.flags && result.flags.length > 0) {
-	// 				console.log("🚩 sendServerUpdate() FLAGS =", JSON.stringify(result.flags));
-	// 				// store
-	// 				_tally_game_status.flags = result.flags;
-	// 				store("tally_game_status", _tally_game_status);
-	// 			}
-	// 		}).fail(error => {
-	// 			console.error("📟 Server.syncData() RESULT =", JSON.stringify(error));
-	// 			// server might not be reachable
-	// 			status();
-	// 		});
-	// 	} catch (err) {
-	// 		console.error(err);
-	// 	}
-	// }
+	function syncData(data) {
+		try {
+			console.log("📟 Server.syncData()", data);
+			// get local objects to update them
+			let _tally_meta = store("tally_meta");
+			// only procede if the following allows
+			if (!_tally_meta.serverOnline || _tally_meta.userTokenStatus != "ok") return;
+			$.ajax({
+				type: "GET",
+				url: _tally_meta.api + "/user/extensionUpdate",
+				contentType: 'application/json',
+				dataType: 'json',
+				data: JSON.stringify(data)
+			}).done(result => {
+				console.log("📟 Server.syncData() RESULT =", JSON.stringify(result));
+				handleSync(result);
+			}).fail(error => {
+				console.error("📟 Server.syncData() RESULT =", JSON.stringify(error));
+				// server might not be reachable
+				updateStatus();
+			});
+		} catch (err) {
+			console.error(err);
+		}
+	}
 
 
 
@@ -192,9 +172,7 @@ window.Server = (function() {
 		try {
 			console.log("📟 Server.sendUpdate()", data);
 			// get local objects to update them
-			let _tally_meta = store("tally_meta"),
-				_tally_user = store("tally_user"),
-				_tally_game_status = store("tally_game_status");
+			let _tally_meta = store("tally_meta");
 			// only procede if the following allows
 			if (!_tally_meta.serverOnline || _tally_meta.userTokenStatus != "ok") return;
 			$.ajax({
@@ -205,32 +183,44 @@ window.Server = (function() {
 				data: JSON.stringify(data)
 			}).done(result => {
 				console.log("📟 Server.sendUpdate() RESULT =", JSON.stringify(result));
-				// treat all server data as master, store in local background user
-				if (result.username) _tally_user.username = result.username;
-				if (result.clicks) _tally_user.score.clicks = result.clicks;
-				if (result.likes) _tally_user.score.likes = result.likes;
-				if (result.pages) _tally_user.score.pages = result.pages;
-				if (result.score) _tally_user.score.score = result.score;
-				if (result.level) _tally_user.score.level = result.level;
-				if (result.time) _tally_user.score.time = result.time;
-				if (result.attacks) _tally_user.attacks = result.attacks;
-				if (result.consumables) _tally_user.consumables = result.consumables;
-				if (result.badges) _tally_user.badges = result.badges;
-				store("tally_user", _tally_user);
-				// store any flags from server
-				if (result.flags && result.flags.length > 0) {
-					console.log("📟 Server.sendUpdate() 🚩 =", JSON.stringify(result.flags));
-					// store
-					_tally_game_status.flags = result.flags;
-					store("tally_game_status", _tally_game_status);
-				}
+				// handleSync(result);
+				return result;
 			}).fail(error => {
 				console.error("📟 Server.sendUpdate() RESULT =", JSON.stringify(error));
 				// server might not be reachable
-				status();
+				updateStatus();
 			});
 		} catch (err) {
 			console.error(err);
+		}
+	}
+
+
+	function handleSync(result) {
+		// get local objects to update them
+		let _tally_user = store("tally_user"),
+			_tally_game_status = store("tally_game_status");
+
+		// treat all server data as master, store in tally_user
+		if (result.username) _tally_user.username = result.username;
+		if (result.admin) _tally_user.admin = result.admin;
+		if (result.level) _tally_user.level = result.level;
+		//
+		if (result.clicks) _tally_user.score.clicks = result.clicks;
+		if (result.likes) _tally_user.score.likes = result.likes;
+		if (result.pages) _tally_user.score.pages = result.pages;
+		if (result.score) _tally_user.score.score = result.score;
+		if (result.time) _tally_user.score.time = result.time;
+		if (result.attacks) _tally_user.attacks = result.attacks;
+		if (result.consumables) _tally_user.consumables = result.consumables;
+		if (result.badges) _tally_user.badges = result.badges;
+		store("tally_user", _tally_user);
+		// store any flags from server
+		if (result.flags && result.flags.length > 0) {
+			console.log("🚩 Server.handleSync() FLAGS =", JSON.stringify(result.flags));
+			// store
+			_tally_game_status.flags = result.flags;
+			store("tally_game_status", _tally_game_status);
 		}
 	}
 
@@ -266,7 +256,7 @@ window.Server = (function() {
 			}).fail(error => {
 				console.error("📟 Server.sendMonsterUpdate() RESULT =", JSON.stringify(error));
 				// server might not be reachable
-				status();
+				updateStatus();
 			});
 		} catch (err) {
 			console.error(err);
@@ -306,7 +296,7 @@ window.Server = (function() {
 			}).fail(error => {
 				console.error("📟 Server.getMonsters() RESULT =", JSON.stringify(error));
 				// server might not be reachable
-				status();
+				updateStatus();
 			});
 		} catch (err) {
 			console.error(err);
@@ -316,12 +306,12 @@ window.Server = (function() {
 
 	// PUBLIC
 	return {
-		status: status,
+		updateStatus: updateStatus,
 		verifyToken: function(callback) {
 			verifyToken(callback);
 		},
-		syncWithServer: function(data) {
-			syncWithServer(data);
+		syncData: function(data) {
+			syncData(data);
 		},
 		sendUpdate: function(data) {
 			sendUpdate(data);

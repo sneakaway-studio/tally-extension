@@ -31,7 +31,7 @@ window.Monster = (function() {
 				"missed": 0,
 				"facing": MonsterData.dataById[mid].facing,
 				"updatedAt": Date.now()
-			};
+			};  
 
 			// if it already exists then make it the number of captures +1
 			if (tally_user.monsters[mid])
@@ -49,7 +49,7 @@ window.Monster = (function() {
 	 */
 	function returnNewMonsterLevel() {
 		try {
-			let userLevel = tally_user.score.level,
+			let userLevel = tally_user.level,
 				factor = 0.5;
 			if (userLevel > 15) factor = 0.4;
 			if (userLevel > 30) factor = 0.2;

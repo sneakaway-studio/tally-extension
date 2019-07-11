@@ -31,29 +31,11 @@ window.Tutorial = (function() {
 		}
 	}
 
-	/**
-	 *	Reset tutorial
-	 */
-	function reset() {
-		try {
-			for (var t in tally_progress) {
-				if (tally_progress.hasOwnProperty(t)) {
-					tally_progress[t] = false;
-				}
-			}
-			// save
-			TallyStorage.saveData('tally_progress', tally_progress, "Tutorial.reset()");
-		} catch (err) {
-			console.error(err);
-		}
-	}
-
 
 
 	// PUBLIC
 	return {
 		check: check,
-		skip: skip,
-		reset: reset
+		skip: skip
 	};
 }());

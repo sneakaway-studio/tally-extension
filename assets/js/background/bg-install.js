@@ -21,10 +21,6 @@ window.Install = (function() {
 			store("tally_stats", {});
 			store("tally_secret", createSecret());
 			store("tally_top_monsters", {});
-			store("tally_trackers", {
-				"blocked": {}
-			});
-			store("tally_progress", createProgress());
 			store("tally_last_background_update", {});
 
 			// was this a reset?
@@ -91,38 +87,35 @@ window.Install = (function() {
 	function createUser() {
 		try {
 			var obj = {
-				"username": "",
-				"lastActive": moment().format(),
-				"score": createScore(),
 				"achievements": {},
-				"monsters": {},
-				"skins": ["color-magenta"],
-				"consumables": {},
+				"admin": 0,
+				"attacks": {},
 				"badges": {},
-				"attacks": {}
-			};
-			return obj;
-		} catch (err) {
-			console.error(err);
-		}
-	}
-	// Create Score object (separate function so we can reset)
-	function createScore() {
-		try {
-			var obj = {
-				"clicks": 0,
-				"domains": 0,
+				"consumables": {},
+				"lastActive": moment().format(),
 				"level": 1,
-				"likes": 0,
-				"pages": 0,
-				"score": 0,
-				"time": 0,
+				"monsters": {},
+				"progress": {},
+				"score": {
+					"clicks": 0,
+					"domains": 0,
+					"likes": 0,
+					"pages": 0,
+					"score": 0,
+					"time": 0,
+				},
+				"skins": ["color-magenta"],
+				"trackers": {
+					"blocked": {}
+				},
+				"username": "",
 			};
 			return obj;
 		} catch (err) {
 			console.error(err);
 		}
 	}
+
 	// Track status of current game
 	function createGameStatus() {
 		try {
@@ -209,27 +202,6 @@ window.Install = (function() {
 			obj.api = Config.development.api;
 			obj.website = Config.development.website;
 			return obj;
-		} catch (err) {
-			console.error(err);
-		}
-	}
-
-	function createProgress() {
-		try {
-			return {
-				"tokenAdded": false,
-				"tokenAddedMessage": false,
-				"attackLimit": 1,
-				"award1stAttack": false,
-				"award2ndAttack": false,
-				"award3rdAttack": false,
-				"award4thAttack": false,
-				"battle1stMonster": false,
-				"battle2ndMonster": false,
-				"battle3rdMonster": false,
-				"viewProfilePage": false,
-				"progressComplete": false
-			};
 		} catch (err) {
 			console.error(err);
 		}

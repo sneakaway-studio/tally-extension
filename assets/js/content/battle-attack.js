@@ -34,11 +34,16 @@ window.BattleAttack = (function() {
 			if (DEBUG) console.log("\n\n💥💥💥💥💥💥💥💥💥💥💥💥💥💥💥💥💥💥💥");
 			if (DEBUG) console.log("💥💥💥💥💥 ", selfStr + " 🧨 " + oppStr, "💥💥💥💥💥");
 			if (DEBUG) console.log("💥💥💥💥💥💥💥💥💥💥💥💥💥💥💥💥💥💥💥");
-			if (DEBUG) console.log("💥 Battle.doAttack()", attack, extraDelay);
+			if (DEBUG) console.log("💥 BattleAttack.doAttack()", attack, extraDelay);
+
+			if (!prop(attack)) {
+				console.error("🔢 BattleAttack.doAttack() attack is required!");
+				return;
+			}
 
 			// is an attack already in progress?
 			if (Battle.details.attackInProgress) {
-				if (DEBUG) console.warn("💥 Battle.doAttack() AN ATTACK IS ALREADY IN PROGRESS", Battle.details);
+				if (DEBUG) console.warn("💥 BattleAttack.doAttack() AN ATTACK IS ALREADY IN PROGRESS", Battle.details);
 				return;
 			}
 			// set attack in progress
@@ -86,7 +91,7 @@ window.BattleAttack = (function() {
 	 */
 	function handleAttackOutcomes(attack, selfStr, oppStr) {
 		try {
-			if (DEBUG) console.log("💥 Battle.handleAttackOutcomes()", attack, outcomeDetails.outcomes, selfStr, oppStr);
+			if (DEBUG) console.log("💥 BattleAttack.handleAttackOutcomes()", attack, outcomeDetails.outcomes, selfStr, oppStr);
 
 			// is an attack not in progress ATM?
 			if (!Battle.details.attackInProgress) return;
@@ -132,7 +137,7 @@ window.BattleAttack = (function() {
 				for (let i = 0; i < outcomeDetails.outcomes.length; i++) {
 					/*jshint loopfunc: true */
 
-					if (DEBUG) console.log("💥 Battle.handleAttackOutcomes() -> outcomeDetails.outcomes[i]=", outcomeDetails.outcomes[i]);
+					if (DEBUG) console.log("💥 BattleAttack.handleAttackOutcomes() -> outcomeDetails.outcomes[i]=", outcomeDetails.outcomes[i]);
 
 					// if number is 0 skip
 					if (outcomeDetails.outcomes[i].change == 0) continue;
@@ -192,7 +197,7 @@ window.BattleAttack = (function() {
 
 				// show log and change in stats after a moment
 				setTimeout(function() {
-					if (DEBUG) console.log("💥 Battle.handleAttackOutcomes() attackOutcomeLog=", attackOutcomeLog);
+					if (DEBUG) console.log("💥 BattleAttack.handleAttackOutcomes() attackOutcomeLog=", attackOutcomeLog);
 					// show log
 					BattleConsole.log(attackOutcomeLog);
 					// update stats display for player who is affected
@@ -225,17 +230,13 @@ window.BattleAttack = (function() {
 	 */
 	function checkForEnd(selfStr, oppStr) {
 		try {
-			if (DEBUG) console.log("💥 Battle.checkForEnd()");
+			if (DEBUG) console.log("💥 BattleAttack.checkForEnd()");
 
 			// is an attack not in progress ATM?
 			if (!Battle.details.attackInProgress) return;
 
 			let endBattle = false,
 				endBattleMessage = "";
-
-
-
-
 
 
 			// 2. check for winner
@@ -284,23 +285,23 @@ window.BattleAttack = (function() {
 				);
 				let progressMessage = "";
 
-				if (Battle.details.progress > 0.9){
+				if (Battle.details.progress > 0.9) {
 					progressMessage = DialogueData.get(["battle", "progress9", null]);
-				} else if (Battle.details.progress > 0.8){
+				} else if (Battle.details.progress > 0.8) {
 					progressMessage = DialogueData.get(["battle", "progress8", null]);
-				} else if (Battle.details.progress > 0.7){
+				} else if (Battle.details.progress > 0.7) {
 					progressMessage = DialogueData.get(["battle", "progress7", null]);
-				} else if (Battle.details.progress > 0.6){
+				} else if (Battle.details.progress > 0.6) {
 					progressMessage = DialogueData.get(["battle", "progress6", null]);
-				} else if (Battle.details.progress > 0.5){
+				} else if (Battle.details.progress > 0.5) {
 					progressMessage = DialogueData.get(["battle", "progress5", null]);
-				} else if (Battle.details.progress > 0.4){
+				} else if (Battle.details.progress > 0.4) {
 					progressMessage = DialogueData.get(["battle", "progress4", null]);
-				} else if (Battle.details.progress > 0.3){
+				} else if (Battle.details.progress > 0.3) {
 					progressMessage = DialogueData.get(["battle", "progress3", null]);
-				} else if (Battle.details.progress > 0.2){
+				} else if (Battle.details.progress > 0.2) {
 					progressMessage = DialogueData.get(["battle", "progress2", null]);
-				} else if (Battle.details.progress > 0.1){
+				} else if (Battle.details.progress > 0.1) {
 					progressMessage = DialogueData.get(["battle", "progress1", null]);
 				} else {
 					progressMessage = DialogueData.get(["battle", "progress0", null]);
@@ -308,9 +309,7 @@ window.BattleAttack = (function() {
 				// n% of the time show a thought
 				if (Battle.active() && Math.random() > 0.5)
 					Dialogue.show(progressMessage, null, true);
-
 			}
-
 
 			// 3. check if battle over
 			if (endBattle) {
@@ -373,6 +372,8 @@ window.BattleAttack = (function() {
 	 */
 	function rewardAttack(name = "", type = "") {
 		try {
+			if (DEBUG) console.log("💥 BattleAttack.rewardAttack() name=" + name + ", type=" + type);
+
 			// get random attack
 			let attack = AttackData.returnAttack(name, type);
 
@@ -380,10 +381,12 @@ window.BattleAttack = (function() {
 			while (prop(tally_user.attacks[attack.name]))
 				// if so get a new one, passing name and type if set
 				attack = AttackData.returnAttack(name, type);
+// ?
+// store and save
+// tally_user.attacks[attack.name] = attack;
+// TallyStorage.saveData('tally_user', tally_user, "💥 BattleAttack.rewardAttack()");
 
-			// store and save
-			tally_user.attacks[attack.name] = attack;
-			TallyStorage.saveData('tally_user', tally_user);
+			TallyStorage.addToBackgroundUpdate("itemData", "attacks", attack);
 
 			// tell user
 			Dialogue.showStr("You earned the " + attack.name + " " + attack.type + "!", "happy");

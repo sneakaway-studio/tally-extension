@@ -5,124 +5,140 @@ window.Progress = (function() {
 	let DEBUG = true;
 
 	/**
+	 *	Get value of an individual progress item
+	 */
+	function get(prop) {
+		console.log("🕹️ Progress.get()", tally_user.progress);
+		try {
+			if (FS_Object.prop(tally_user.progress) &&
+				FS_Object.prop(tally_user.progress[prop]) &&
+				FS_Object.prop(tally_user.progress[prop].val))
+				return tally_user.progress[prop].val;
+			else
+				return false;
+		} catch (err) {
+			console.error(err);
+		}
+	}
+
+
+	/**
 	 *	Checks to see if any progress events should be executed
 	 */
 	function check() {
 		try {
-			//console.log("🕹️ Progress.check()", tally_progress);
-			// return if done
-			if (!tally_progress || tally_progress.progressComplete === true) return;
+			console.log("🕹️ Progress.check()", tally_user.progress);
+			// return if not found
+			if (!tally_user.progress) return;
 
 
 			// check for flags from server
-			checkFlags();
+			//			checkFlags();
 
+
+
+			// "tokenAdded": false,
+			// "tokenAddedMessage": false,
+			// "attackLimit": 1,
+			// "award1stAttack": false,
+			// "award2ndAttack": false,
+			// "award3rdAttack": false,
+			// "award4thAttack": false,
+			// "battle1stMonster": false,
+			// "battle2ndMonster": false,
+			// "battle3rdMonster": false,
+			// "viewProfilePage": false,
+			// "progressComplete": false
 
 			// AWARD ATTACK - 1st
-			if (!tally_progress.award1stAttack &&
-				FS_Object.isEmpty(tally_user.attacks) &&
-				tally_user.score.score > 3) {
+			if (!get("award1stAttack") && tally_user.score.score > 3) {
 				BattleAttack.rewardAttack("", "attack");
-				tally_progress.award1stAttack = true;
+				update("award1stAttack", true);
 			}
 			// AWARD ATTACK - 2nd
-			if (!tally_progress.award2ndAttack && tally_user.score.score > 15) {
+			if (!get("award2ndAttack") && tally_user.score.score > 15) {
 				BattleAttack.rewardAttack("", "defense");
-				tally_progress.award2ndAttack = true;
+				update("award2ndAttack", true);
 			}
 			// AWARD ATTACK - 3rd
-			if (!tally_progress.award3rdAttack && tally_progress.battle1stMonster) {
+			if (!get("award3rdAttack") && get("battle1stMonster")) {
 				BattleAttack.rewardAttack("", "attack");
-				tally_progress.award3rdAttack = true;
+				update("award3rdAttack", true);
 			}
 			// AWARD ATTACK - 4th
-			if (!tally_progress.award4thAttack && tally_user.score.score > 100) {
+			if (!get("award4thAttack") && tally_user.score.score > 100) {
 				BattleAttack.rewardAttack("", "defense");
-				tally_progress.award4thAttack = true;
+				update("award4thAttack", true);
 			}
 
 
-			// if tally levels up her capactity for using attacks in battle increases
-			if (tally_progress.atackLimit < GameData.attackLimits[tally_user.score.level]) {
-				tally_progress.atackLimit = GameData.attackLimits[tally_user.score.level];
-				// tell user
-				Dialogue.showStr("You can now use " + tally_progress.atackLimit + " attacks in battle!", "happy");
+			// if tally levels up her attack capacity increases
+			if (get("attackLimit") < GameData.attackLimits[tally_user.level]) {
+				update("attackLimit", GameData.attackLimits[tally_user.level]);
+				Dialogue.showStr("You can now use " + get("attackLimit") + " attacks in battle!", "happy");
 			}
 
 
 
-			// final check
-			if (!tally_progress.progressComplete) {
-				let allComplete = true;
-				// check to see if all have been completed
-				for (var prop in tally_progress) {
-					if (tally_progress.hasOwnProperty(prop)) {
-						// mark them if so
-						if (tally_progress[prop] !== true) allComplete = false;
-					}
-				}
-				if (allComplete) tally_progress.progressComplete = true;
-			}
 
-			// save after updates
-			TallyStorage.saveData('tally_progress', tally_progress);
+
 
 		} catch (err) {
 			console.error(err);
 		}
-
 	}
 
 
-	function checkFlags(){
+	function checkFlags() {
 		//if (DEBUG) console.log("🕹️ Progress.checkFlags() 🚩", tally_game_status.flags);
 		// check game status for flags
 		if (FS_Object.prop(tally_game_status) && tally_game_status.flags.length > 0) {
 			for (let i = 0; i < tally_game_status.flags.length; i++) {
 				if (DEBUG) console.log("🕹️ Progress.checkFlags() 🚩", tally_game_status.flags[i]);
-				// address individual flags
-				if (tally_game_status.flags[i] === "levelUp"){
-					Stats.reset("tally"); // update stats, tell user
-					Dialogue.showStr("You just leveled up!", "happy");
+				// address individual flags...
+
+				if (tally_game_status.flags[i] === "levelUp") {
+					Stats.reset("tally"); // update stats
+					Dialogue.showStr("You just leveled up!", "happy"); // tell user
+					tally_game_status.flags.splice(i, 1); // remove flag once handled
+				}
+				if (tally_game_status.flags[i] === "newAttack") {
+
 					tally_game_status.flags.splice(i, 1); // remove flag once handled
 				}
 			}
 			// save after update
-			store('tally_game_status',tally_game_status);
+			store('tally_game_status', tally_game_status);
 		}
 	}
 
 
-
-
-
-
-
-
-
 	/**
-	 *	Reset progress
+	 *	Update progress on server
 	 */
-	function reset() {
+	function update(name, val) {
 		try {
-			for (var t in tally_progress) {
-				if (tally_progress.hasOwnProperty(t)) {
-					tally_progress[t] = false;
-				}
+			if (!prop(tally_user.progress[name]) || tally_user.progress[name] !== val) {
+				TallyStorage.addToBackgroundUpdate("itemData", "progress", {
+					"name": name,
+					"val": val
+				});
 			}
-			// save
-			TallyStorage.saveData('tally_progress', tally_progress);
 		} catch (err) {
 			console.error(err);
 		}
 	}
 
 
-
 	// PUBLIC
 	return {
+		get: function(prop) {
+			get(prop);
+		},
 		check: check,
 		checkFlags: checkFlags,
-		reset: reset
+		update: function(name, val) {
+			update(name, val);
+		},
 	};
 }());
