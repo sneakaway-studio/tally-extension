@@ -39,9 +39,9 @@ window.TallyEvents = (function() {
 	/**
 	 *	Checks for the last time user was active
 	 */
-	function checkLastActive() {
+	function checkLastActiveAndRecharge() {
 		try {
-			console.log("🕗 TallyEvents.checkLastActive()", "00:00:00",
+			console.log("🕗 TallyEvents.checkLastActiveAndRecharge()", "00:00:00",
 				FS_String.pad(FS_Date.diffHours("now", tally_user.lastActive), 2) + ":" +
 				FS_String.pad(FS_Date.diffMinutes("now", tally_user.lastActive), 2) + ":" +
 				FS_String.pad(FS_Date.diffSeconds("now", tally_user.lastActive), 2)
@@ -59,8 +59,8 @@ window.TallyEvents = (function() {
 			}
 			// update last active
 			tally_user.lastActive = moment().format();
-			TallyStorage.saveData('tally_user', tally_user, "🕗 TallyEvents.checkLastActive()");
-			console.log("🕗 TallyEvents.checkLastActive()", tally_user.lastActive);
+			TallyStorage.saveData('tally_user', tally_user, "🕗 TallyEvents.checkLastActiveAndRecharge()");
+			console.log("🕗 TallyEvents.checkLastActiveAndRecharge()", tally_user.lastActive);
 		} catch (err) {
 			console.error(err);
 		}
@@ -75,6 +75,6 @@ window.TallyEvents = (function() {
 	// PUBLIC
 	return {
 		startTimeEvents: startTimeEvents,
-		checkLastActive: checkLastActive
+		checkLastActiveAndRecharge: checkLastActiveAndRecharge
 	};
 })();

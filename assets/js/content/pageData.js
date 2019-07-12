@@ -181,11 +181,16 @@ window.Page = (function() {
 				previousUrl: "",
 				url: document.location.href
 			};
+			// add dimensions
 			data.browser.center.x = data.browser.width / 2;
 			data.browser.center.y = data.browser.height / 2;
 			// check page tags
 			data.tags = getPageTags(data);
 			//console.log("pageData",data);
+			// if youtube
+			if (data.domain == "youtube.com")
+				// 	addMutationObserver();
+				addTitleChecker();
 			// add it to the update for this page
 			storePageDataInBackgroundUpdate(data);
 			return data;
@@ -204,8 +209,40 @@ window.Page = (function() {
 			"time": data.time,
 			"title": data.title,
 			"url": data.url
-		}
+		};
 	}
+
+	/**
+	 *	MutationObserver to detect title element changes (e.g. youtube and other ajax sites)
+	 *	NOTE: This slows down the page
+	 */
+	function addMutationObserver() {
+		// if running
+		if (tally_options.gameMode === "disabled" || !pageData.activeOnPage) return;
+		new MutationObserver(function(mutations) {
+			console.log("title changed", mutations[0].target.nodeValue);
+			TallyMain.refreshApp("pageData.addMutationObserver()");
+		}).observe(
+			document.querySelector('title'), {
+				subtree: true,
+				characterData: true,
+				childList: true
+			}
+		);
+	}
+	// alternate observer, simply listens for title change
+	function addTitleChecker() {
+		let pageTitleInterval = setInterval(function() {
+			let title = getTitle();
+			if (title != pageData.title) {
+				//console.log("title changed", pageData.title, " to: ",title);
+				TallyMain.refreshApp("pageData.addTitleChecker()");
+			} else {
+				//console.log("title is same", pageData.title, " to: ",title);
+			}
+		}, 10000);
+	}
+
 
 
 	/**
@@ -244,7 +281,7 @@ window.Page = (function() {
 // sendBackgroundUpdate(backgroundUpdate);
 
 // get new stuff
-//		TallyMain.startGameOnPage();
+//		TallyMain. ???
 
 				}
 

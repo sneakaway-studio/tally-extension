@@ -61,7 +61,8 @@ window.TallyMain = (function() {
 	}
 
 	/**
-	 *	Perform all start checks
+	 *	Perform all start checks to make sure it is safe to run game
+	 *	then, add all required elements to DOM that should only be added once
 	 */
 	function performStartChecks() {
 		try {
@@ -72,9 +73,22 @@ window.TallyMain = (function() {
 			// do not procede if so
 			if (!pageData.activeOnPage) return;
 
-			// if we are on the dashboard there are a few flags we can find
-			Page.checkForFlags();
+			// first, remove trackers that have been caught
+			// temp until I can add this to database so game progress is saved
+			// Tracker.removeCaughtTrackers(pageData.trackers);
 
+			// add required CSS for game
+			FS_String.insertStylesheets();
+			// add debugger to page
+			Debug.add();
+			// add Tally character
+			Tally.addCharacter();
+			// add timed events listeners
+			TallyEvents.startTimeEvents();
+			// add main click listener
+			TallyListeners.addMainClickEventListener();
+			// check the token
+			checkTokenStatus(); // shouldn't this be done already ?
 
 			// start game on this page
 			startGameOnPage();
@@ -125,47 +139,33 @@ window.TallyMain = (function() {
 	}
 
 	/**
-	 * Run Game
+	 * 	Run game on this page, can be called as many times as necessary, getDataFromBackground() first
 	 */
 	function startGameOnPage() {
-		// don't run if pageData failed
-		if (!pageData || pageData == undefined || !pageData.activeOnPage) return;
-		console.log("%c   Hello, I'm Tally!", Tally.tallyConsoleIcon);
-		// if (DEBUG) console.log(">>>>> startGameOnPage() -> Starting Tally on this page");
-		// if (DEBUG) console.log(">>>>> pageData = "+ JSON.stringify(pageData));
-
 		try {
-			// LOAD GAME
+			// don't run if pageData failed
+			if (!pageData || pageData == undefined || !pageData.activeOnPage) return;
+			// welcome message for the curious
+			console.log("%c   Hello, I'm Tally!", Tally.tallyConsoleIcon);
+			// if (DEBUG) console.log(">>>>> startGameOnPage() -> Starting Tally on this page");
+			// if (DEBUG) console.log(">>>>> pageData = "+ JSON.stringify(pageData));
 
-			// add required CSS for game
-			insertStylesheets();
-			// add debugger
-			Debug.add();
+			// RUN ALL GAME METHODS
 
-			Tally.start();
-			TallyEvents.startTimeEvents();
-			TallyListeners.addMainClickEventListener();
-
-			checkToken();
-			// if youtube
-			if (pageData.domain == "youtube.com")
-				// 	addMutationObserver();
-				addTitleChecker();
-			// remove trackers that have been caught
-			// temp until I can add this to database
-			//			Tracker.removeCaughtTrackers(pageData.trackers);
-			// check for monsters on the page
-			MonsterCheck.check();
-			// update debugger
-			Debug.update();
+			// check last active status and potentially recharge
+			TallyEvents.checkLastActiveAndRecharge();
 			// possibly add a consumable
 			Consumable.randomizer();
 			// check for, and possibly add badge
 			Badge.randomizer();
-			// check last active status
-			TallyEvents.checkLastActive();
+			// check for monsters on the page
+			MonsterCheck.check();
 			// check to see if there are any progress complete
 			Progress.check();
+			// if we are on the dashboard there are a few flags we can find
+			Page.checkForFlags();
+			// update debugger
+			Debug.update();
 
 			// after 2 seconds update server
 			setTimeout(function() {
@@ -199,7 +199,7 @@ window.TallyMain = (function() {
 	/**
 	 *	May or may not need this
 	 */
-	function resetAppOnPage() {
+	function resetGameData() {
 		// reset everything
 		pageData = Page.getPageData();
 		tally_user = {};
@@ -214,32 +214,39 @@ window.TallyMain = (function() {
 	/**
 	 *	Make sure user's token is current
 	 */
-	function checkToken() {
+	function checkTokenStatus() {
 		try {
-			//if (DEBUG) console.log(">>>>> tally_meta = " + JSON.stringify(tally_meta));
-			if (pageData.url != tally_meta.website + "/dashboard") {
-				if (tally_meta.userTokenStatus == "expired") {
+			if (DEBUG) console.log("🧰 TallyMain.checkTokenStatus() tally_meta = " + JSON.stringify(tally_meta));
+			// if not on the dashboard
+			if (pageData.url !== tally_meta.website + "/dashboard") {
+
+				// an array of message prompts for new token
+				let msg = [
+					"Please <a href='" + tally_meta.website +
+					"/dashboard' target='_blank'>visit your dashboard</a> to update your token",
+					"<a href='" + tally_meta.website + "/dashboard' target='_blank'>Link your account to start playing Tally</a>"
+				];
+				// for debugging
+				if (tally_meta.userTokenStatus === "expired") {
 					// $.growl({
 					// 	title: "YOUR TOKEN HAS EXPIRED",
 					// 	message: "Click here to get a new one"
 					// });
-				} else if (tally_meta.userTokenStatus != "ok") {
+				} else if (tally_meta.userTokenStatus !== "ok") {
 					// $.growl({
 					// 	title: "YOU HAVE NO TOKEN",
-					// 	message: "<a href='" + tally_meta.website + "/dashboard' target='_blank'>Link your account to start playing Tally</a>"
+					// 	message: msg[FS_Object.randomArrayIndex(msg)]
 					// });
-
 				}
 				// if token not valid
-				if (tally_meta.userTokenStatus == "expired" || tally_meta.userTokenStatus != "ok") {
-					if (DEBUG) console.log(">>>>> tally_meta >>>>>> TOKEN STILL BROKEN, tally_meta.userTokenPrompts = " + tally_meta.userTokenPrompts);
+				if (tally_meta.userTokenStatus === "expired" || tally_meta.userTokenStatus !== "ok") {
+					if (DEBUG) console.log("🧰 TallyMain.checkTokenStatus() TOKEN (STILL) BROKEN " +
+						"tally_meta.userTokenPrompts = " + tally_meta.userTokenPrompts);
 					// don't bother them every time
-					//		if (tally_meta.userTokenPrompts % 5 == 0){
-					let msg = "Please <a href='" + tally_meta.website + "/dashboard' target='_blank'>visit your dashboard</a> to update your token";
-					Dialogue.showStr(msg, "sad");
-					//		}
-					tally_meta.userTokenPrompts++;
-					TallyStorage.saveData('tally_meta', tally_meta, "🧰 TallyMain.checkToken()");
+					if (tally_meta.userTokenPrompts++ < 10 || tally_meta.userTokenPrompts % 5 == 0) {
+						Dialogue.showStr(msg[FS_Object.randomArrayIndex(msg)], "sad");
+					}
+					TallyStorage.saveData('tally_meta', tally_meta, "🧰 TallyMain.checkTokenStatus()");
 				}
 			}
 		} catch (err) {
@@ -260,36 +267,7 @@ window.TallyMain = (function() {
 	// 	}
 	// }
 
-	/**
-	 *	MutationObserver to detect title element changes (e.g. youtube and other ajax sites)
-	 *	NOTE: This slows down the page
-	 */
-	function addMutationObserver() {
-		// if running
-		if (tally_options.gameMode === "disabled" || !pageData.activeOnPage) return;
-		new MutationObserver(function(mutations) {
-			console.log("title changed", mutations[0].target.nodeValue);
-			refreshApp("TallyMain.addMutationObserver()");
-		}).observe(
-			document.querySelector('title'), {
-				subtree: true,
-				characterData: true,
-				childList: true
-			}
-		);
-	}
 
-	function addTitleChecker() {
-		let pageTitleInterval = setInterval(function() {
-			let title = getTitle();
-			if (title != pageData.title) {
-				//console.log("title changed", pageData.title, " to: ",title);
-				refreshApp("TallyMain.addTitleChecker()");
-			} else {
-				//console.log("title is same", pageData.title, " to: ",title);
-			}
-		}, 10000);
-	}
 
 	// PUBLIC
 	return {

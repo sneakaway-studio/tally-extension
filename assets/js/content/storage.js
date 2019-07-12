@@ -10,17 +10,23 @@ window.TallyStorage = (function() {
 		// create "blank" background update obj for this page
 		backgroundUpdate = newBackgroundUpdate();
 
-
-	function newBackgroundUpdate(){
+	/**
+	 * 	create the backgroundUpdate obj, default to type="update"
+	 */
+	function newBackgroundUpdate(type = "update"){
 		let obj = {
+			// the type of update (e.g. "update" | "sync")
+			"updateType": type,
 			// all the individual props that can be updated, sent as arrays
 			"itemData": {
 				"achievements": [],
 				"attacks": [],
 				"badges": [],
 				"consumables": [],
+				"flags": [],
 				"monsters": [],
 				"progress": [],
+				"skins": [],
 				"trackers": [],
 			},
 			// SCORE
@@ -106,14 +112,14 @@ window.TallyStorage = (function() {
 				'data': backgroundUpdate
 			}, function(response) {
 				if (DEBUG) console.log('💾 TallyStorage.sendBackgroundUpdate() response =', response);
-				// update tally_user
+				// update tally_user in content
 				tally_user = response.tally_user;
 				// it is also possible one of the following is true and we need to reset a few other things
 				// 1. during development switching users for testing
 				// 2. a user resets their data but continues to play
 				Stats.reset("tally");
 				Debug.update();
-				// reset backgroundUpdate
+				// reset backgroundUpdate after sending
 				backgroundUpdate = newBackgroundUpdate();
 			});
 		} catch (err) {

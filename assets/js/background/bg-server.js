@@ -134,35 +134,6 @@ window.Server = (function() {
 		}
 	}
 
-	/**
-	 *  Sync with server
-	 */
-	function syncData(data) {
-		try {
-			console.log("📟 Server.syncData()", data);
-			// get local objects to update them
-			let _tally_meta = store("tally_meta");
-			// only procede if the following allows
-			if (!_tally_meta.serverOnline || _tally_meta.userTokenStatus != "ok") return;
-			$.ajax({
-				type: "GET",
-				url: _tally_meta.api + "/user/extensionUpdate",
-				contentType: 'application/json',
-				dataType: 'json',
-				data: JSON.stringify(data)
-			}).done(result => {
-				console.log("📟 Server.syncData() RESULT =", JSON.stringify(result));
-				handleSync(result);
-			}).fail(error => {
-				console.error("📟 Server.syncData() RESULT =", JSON.stringify(error));
-				// server might not be reachable
-				updateStatus();
-			});
-		} catch (err) {
-			console.error(err);
-		}
-	}
-
 
 
 	/**
@@ -309,9 +280,6 @@ window.Server = (function() {
 		updateStatus: updateStatus,
 		verifyToken: function(callback) {
 			verifyToken(callback);
-		},
-		syncData: function(data) {
-			syncData(data);
 		},
 		sendUpdate: function(data) {
 			sendUpdate(data);

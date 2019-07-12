@@ -252,7 +252,7 @@ window.Listener = (function() {
 
 
 
-					// required so chrome knows this is async
+					// required so chrome knows this is asynchronous
 					return true;
 				}
 				// getLastBackgroundUpdate
