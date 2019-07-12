@@ -248,9 +248,9 @@ window.Page = (function() {
 	/**
 	 *	If on dashboard page then check for flags
 	 */
-	function checkForFlags() {
+	function checkDashboardForFlags() {
 		try {
-			//console.log("🗒️ Page.checkForFlags()", pageData.url, tally_meta.website + "/dashboard");
+			//console.log("🗒️ Page.checkDashboardForFlags()", pageData.url, tally_meta.website + "/dashboard");
 
 			let tokenOnPage = false,
 				tokenData = {};
@@ -260,7 +260,7 @@ window.Page = (function() {
 
 				// if there is a token
 				if ($("#token").length) {
-					if (DEBUG) console.log("🗒️ Page.checkForFlags() TOKEN! 🔑", pageData.url, tally_meta.website + "/dashboard");
+					if (DEBUG) console.log("🗒️ Page.checkDashboardForFlags() TOKEN! 🔑", pageData.url, tally_meta.website + "/dashboard");
 					// grab new token
 					tokenData = {
 						token: $("#token").val(),
@@ -268,11 +268,11 @@ window.Page = (function() {
 					};
 					// for flag checking
 					tokenOnPage = true;
-					//console.log("🗒️ Page.checkForFlags() tokenData = " + tokenData);
+					//console.log("🗒️ Page.checkDashboardForFlags() tokenData = " + tokenData);
 					TallyStorage.saveToken(tokenData);
 
 
-					console.log("🗒️ Page.checkForFlags() SYNC WITH SERVER");
+					console.log("🗒️ Page.checkDashboardForFlags() SYNC WITH SERVER");
 
 
 // // create backgroundUpdate object
@@ -287,12 +287,12 @@ window.Page = (function() {
 
 				// if there are flags
 				if ($("#tallyFlags").length) {
-					if (DEBUG) console.log("🗒️ Page.checkForFlags() FLAGS! 🚩", $("#tallyFlags").html(), pageData.url, tally_meta.website);
+					if (DEBUG) console.log("🗒️ Page.checkDashboardForFlags() FLAGS! 🚩", $("#tallyFlags").html(), pageData.url, tally_meta.website);
 
 					let flags = JSON.parse($("#tallyFlags").html().trim());
 
 					for (let i = 0; i < flags.length; i++) {
-						console.log("🚩 Page.checkForFlags() FLAG = " + JSON.stringify(flags[i]));
+						console.log("🚩 Page.checkDashboardForFlags() FLAG = " + JSON.stringify(flags[i]));
 
 						// if resetUser
 						if (flags[i].name == "resetUser") {
@@ -316,7 +316,7 @@ window.Page = (function() {
 	// PUBLIC
 	return {
 		getPageData: getPageData,
-		checkForFlags: checkForFlags
+		checkDashboardForFlags: checkDashboardForFlags
 
 	};
 })();

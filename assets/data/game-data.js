@@ -133,10 +133,21 @@ var GameData = (function() {
 		{ "level":	100	, "xp":	1000000	 },
 	];
 
+
+	let flags = {
+		"levelUp": {
+			"name": "levelUp",
+			"dialogue": "You just leveled up!",
+			"mood": "happy",
+			"status": null  
+		}
+	};
+
 	return {
 		socialDomains: socialDomains,
 		clickScore: clickScore,
 		attackLimits: attackLimits,
-		levels: levels
+		levels: levels,
+		flags: flags
 	};
 })();

@@ -31,12 +31,6 @@ window.Progress = (function() {
 			// return if not found
 			if (!tally_user.progress) return;
 
-
-			// check for flags from server
-			//			checkFlags();
-
-
-
 			// "tokenAdded": false,
 			// "tokenAddedMessage": false,
 			// "attackLimit": 1,
@@ -89,28 +83,7 @@ window.Progress = (function() {
 	}
 
 
-	function checkFlags() {
-		//if (DEBUG) console.log("🕹️ Progress.checkFlags() 🚩", tally_game_status.flags);
-		// check game status for flags
-		if (FS_Object.prop(tally_game_status) && tally_game_status.flags.length > 0) {
-			for (let i = 0; i < tally_game_status.flags.length; i++) {
-				if (DEBUG) console.log("🕹️ Progress.checkFlags() 🚩", tally_game_status.flags[i]);
-				// address individual flags...
 
-				if (tally_game_status.flags[i] === "levelUp") {
-					Stats.reset("tally"); // update stats
-					Dialogue.showStr("You just leveled up!", "happy"); // tell user
-					tally_game_status.flags.splice(i, 1); // remove flag once handled
-				}
-				if (tally_game_status.flags[i] === "newAttack") {
-
-					tally_game_status.flags.splice(i, 1); // remove flag once handled
-				}
-			}
-			// save after update
-			store('tally_game_status', tally_game_status);
-		}
-	}
 
 
 	/**
@@ -136,7 +109,6 @@ window.Progress = (function() {
 			get(prop);
 		},
 		check: check,
-		checkFlags: checkFlags,
 		update: function(name, val) {
 			update(name, val);
 		},

@@ -169,8 +169,7 @@ window.Server = (function() {
 
 	function handleSync(result) {
 		// get local objects to update them
-		let _tally_user = store("tally_user"),
-			_tally_game_status = store("tally_game_status");
+		let _tally_user = store("tally_user");
 
 		// treat all server data as master, store in tally_user
 		if (result.username) _tally_user.username = result.username;
@@ -190,8 +189,7 @@ window.Server = (function() {
 		if (result.flags && result.flags.length > 0) {
 			console.log("🚩 Server.handleSync() FLAGS =", JSON.stringify(result.flags));
 			// store
-			_tally_game_status.flags = result.flags;
-			store("tally_game_status", _tally_game_status);
+// !!!! THIS SHOULD BE INSIDE backgroundUpdate now
 		}
 	}
 

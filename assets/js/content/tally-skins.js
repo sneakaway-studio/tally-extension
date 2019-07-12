@@ -102,9 +102,12 @@ window.Skin = (function() {
 			}
 		},
 		skinStage = 0,
-		skinCat = "color",
-		skinColor = "magenta",
-		skinAnim;
+		currentSkin = {
+			"type": "color",
+			"name": "magenta",
+			"anim": false
+		};
+
 
 	// var skins = [
 	// 	"color-cyan",
@@ -125,16 +128,16 @@ window.Skin = (function() {
 		try {
 			if (DEBUG) console.log("👚 Skin.setStage(" + n + ")");
 			skinStage = n;
-			skinCat = "color"; //, skinColor, skinAnim;
+			currentSkin.type = "color";
 			if (skinStage === 1)
-				skinColor = "yellow";
+				currentSkin.name = "yellow";
 			else if (skinStage === 2)
-				skinColor = "orange";
+				currentSkin.name = "orange";
 			else if (skinStage === 3)
-				skinColor = "red";
+				currentSkin.name = "red";
 			else // (skinStage == 0)
-				skinColor = "magenta";
-			update(skinCat, skinColor, skinAnim);
+				currentSkin.name = "magenta";
+			update(currentSkin);
 		} catch (err) {
 			console.error(err);
 		}
@@ -175,34 +178,31 @@ window.Skin = (function() {
 	/*
 	 *	Update Tally SVG
 	 */
-	function update(skinCat, skinColor, skinAnim) {
+	function update(currentSkin) {
 		try {
-			if (DEBUG) console.log("👚 Skin.update() skinCat = "+ skinCat +", skinColor = "+ skinColor +", skinAnim = "+ skinAnim);
-			if (skinCat != "" && prop(tally_game_status)) tally_game_status.skin = [skinCat, skinColor, skinAnim];
-			// save the skin status
-			TallyStorage.saveData("tally_game_status", tally_game_status, "👚 Skin.update()");
+			if (DEBUG) console.log("👚 Skin.update() currentSkin = "+ currentSkin);
 
 			let skinObj = {},
 				def = "",
 				frontFill = "",
 				backFill = "";
 
-			// if !skin
-			if (!prop(skins[skinCat]) || skins[skinCat] == "") {
-				skinCat = "color";
-				skinColor = "magenta";
+			// if !skin set default
+			if (!prop(skins[currentSkin.type]) || skins[currentSkin.type] == "") {
+				currentSkin.type = "color";
+				currentSkin.name = "magenta";
 			}
 			// get object reference
-			skinObj = skins[skinCat][skinColor];
-			if (DEBUG) console.log("👚 Skin.update() skinCat = "+ skinCat +", skinObj = "+ JSON.stringify(skinObj));
+			skinObj = skins[currentSkin.type][currentSkin.name];
+			if (DEBUG) console.log("👚 Skin.update() currentSkin.type = "+ currentSkin.type +", skinObj = "+ JSON.stringify(skinObj));
 
 			// if a solid color
-			if (skinCat == "color") {
+			if (currentSkin.type == "color") {
 				frontFill = skinObj.front;
 				backFill = skinObj.back;
 			}
 			// if a gradient
-			else if (skinCat == "gradient") {
+			else if (currentSkin.type == "gradient") {
 				// make a copy of the colors
 				var colors = Object.values(skinObj.stops);
 				// use linearGradient
@@ -211,7 +211,7 @@ window.Skin = (function() {
 				for (const key in skinObj.stops) {
 					if (skinObj.stops.hasOwnProperty(key)) {
 						def += '<stop offset="' + key + '" stop-color="' + skinObj.stops[key] + '">';
-						if (skinAnim) {
+						if (currentSkin.anim) {
 							def += '<animate attributeName="stop-color" values="' + colors.join('; ') + '; ' + colors[0] + '" dur="2s" repeatCount="indefinite"></animate>';
 							// move last to first
 							var last = colors.pop();
@@ -226,13 +226,13 @@ window.Skin = (function() {
 				backFill = "url(#tallyGradient)";
 			}
 			// PATTERN
-			else if (skinCat == "pattern") {
+			else if (currentSkin.type == "pattern") {
 				def = skinObj.str;
 				frontFill = "url(#tallyPattern)";
 				backFill = "url(#tallyPattern)";
 			}
 			// IMAGE
-			else if (skinCat == "image") {
+			else if (currentSkin.type == "image") {
 				def += '<pattern id="tallyPattern" patternUnits="userSpaceOnUse" width="100%" height="100%">';
 				def += '<image xlink:href="' + skinObj.url + '" x="-10" y="-10" width="100%" height="100%" />';
 				def += '</pattern>';
@@ -285,8 +285,8 @@ window.Skin = (function() {
 
 	// PUBLIC
 	return {
-		update: function(skinCat, skinColor, skinAnim) {
-			update(skinCat, skinColor, skinAnim);
+		update: function(obj) {
+			update(obj);
 		},
 		returnBasicSVG: function() {
 			return returnBasicSVG();

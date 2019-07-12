@@ -8,7 +8,6 @@ let pageData = Page.getPageData(),
 	// objects that only exist locally
 	tally_meta = {},
 	tally_options = {},
-	tally_game_status = {},
 	tally_nearby_monsters = {};
 
 window.TallyMain = (function() {
@@ -32,12 +31,12 @@ window.TallyMain = (function() {
 		try {
 			if (DEBUG) console.log('🧰 TallyMain.getDataFromBackground()');
 			Promise
-				.all([getUserPromise, getOptionsPromise, getMetaPromise, getGameStatusPromise,
+				.all([getUserPromise, getOptionsPromise, getMetaPromise,
 					getNearbyMonstersPromise, getStatsPromise, getTopMonstersPromise
 				]) // getLastBackgroundUpdatePromise
 				.then(function() {
 					// if (DEBUG) console.log('🧰 TallyMain.getDataFromBackground() -> all promises have resolved',
-					// 			tally_user, tally_options, tally_meta, tally_game_status,
+					// 			tally_user, tally_options, tally_meta,
 					// 			tally_nearby_monsters, tally_top_monsters);
 
 					if (callback) callback();
@@ -48,7 +47,6 @@ window.TallyMain = (function() {
 						"\n tally_user =", tally_user,
 						"\n tally_options =", tally_options,
 						"\n tally_meta =", tally_meta,
-						"\n tally_game_status =", tally_game_status,
 						"\n tally_nearby_monsters =", tally_nearby_monsters,
 						"\n tally_top_monsters =", tally_top_monsters
 					);
@@ -163,7 +161,9 @@ window.TallyMain = (function() {
 			// check to see if there are any progress complete
 			Progress.check();
 			// if we are on the dashboard there are a few flags we can find
-			Page.checkForFlags();
+			Page.checkDashboardForFlags();
+			// there are also other flags that may have come in from previous update
+			checkFlags();
 			// update debugger
 			Debug.update();
 
@@ -186,8 +186,6 @@ window.TallyMain = (function() {
 			if (DEBUG) console.log("🧰 TallyMain.refreshApp() caller = " + caller);
 			// refresh pageData
 			pageData = Page.getPageData();
-			// refresh game status
-			tally_game_status = TallyStorage.getData('tally_game_status');
 			// check for monsters again
 			MonsterCheck.check();
 			Debug.update();
@@ -205,7 +203,6 @@ window.TallyMain = (function() {
 		tally_user = {};
 		tally_options = {};
 		tally_meta = {};
-		tally_game_status = {};
 		tally_nearby_monsters = {};
 		tally_top_monsters = {};
 		getDataFromBackground(performStartChecks);
@@ -269,12 +266,59 @@ window.TallyMain = (function() {
 
 
 
+	/**
+	 *	Check for flags from server
+	 */
+	function checkFlags() {
+		try {
+			// are there flags?
+			if (!FS_Object.prop(tally_user.flags) || FS_Object.isEmpty(tally_user.flags)) return;
+			if (DEBUG) console.log("🕹️ Progress.checkFlags() 🚩", tally_user.flags);
+			// address individual flags...
+
+			// SERVER SAYS: we have leveled up!
+			if (FS_Object.prop(tally_user.flags.levelUp)) {
+				// make sure we have this flag in GameData
+				if (!FS_Object.prop(GameData.flags.levelUp))
+					return console.warn("Flag does not exist in GameData.");
+				// update stats
+				Stats.reset("tally");
+				// tell user
+				Dialogue.showStr(GameData.flags.levelUp.dialogue, GameData.flags.levelUp.mood);
+				// remove flag once handled
+				remove("levelUp");
+			}
+			// SERVER SAYS: we have received a new attack
+			// might do this locally instead
+			if (FS_Object.prop(tally_user.flags.newAttack)) {
+				// remove flag once handled
+			}
+
+		} catch (err) {
+			console.error(err);
+		}
+	}
+
+
+	function removeFlag(flag) {
+		// confirm it exists
+		if (FS_Object.prop(tally_user.flags[flag])) {
+			// remove it from tally_user
+			delete tally_user.flags[flag];
+			// then add to server update (will be pushed on next update)
+			TallyStorage.addToBackgroundUpdate("itemData", "flags", flag.name);
+		}
+	}
+
+
+
 	// PUBLIC
 	return {
 		getDataFromBackground: function(callback) {
 			getDataFromBackground(callback);
 		},
 		performStartChecks: performStartChecks,
-		startGameOnPage: startGameOnPage
+		startGameOnPage: startGameOnPage,
+		checkFlags: checkFlags
 	};
 }());

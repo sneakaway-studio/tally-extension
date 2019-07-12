@@ -8,7 +8,9 @@ window.TallyStorage = (function() {
 
 	let DEBUG = true,
 		// create "blank" background update obj for this page
-		backgroundUpdate = newBackgroundUpdate();
+		backgroundUpdate = newBackgroundUpdate(),
+		// track whether the current one has been edited
+		backgroundUpdateEdited = false;
 
 	/**
 	 * 	create the backgroundUpdate obj, default to type="update"
@@ -92,6 +94,9 @@ window.TallyStorage = (function() {
 				// set the value
 				backgroundUpdate[cat][prop] = val;
 			}
+			// mark backgroundUpdate in progres
+			backgroundUpdateEdited = true;
+			// save local edits (even though these will be overwritten)
 			TallyStorage.saveData("tally_user", tally_user);
 			console.log("💾 TallyStorage.addToBackgroundUpdate()", backgroundUpdate, cat, prop, val);
 		} catch (err) {
@@ -121,6 +126,8 @@ window.TallyStorage = (function() {
 				Debug.update();
 				// reset backgroundUpdate after sending
 				backgroundUpdate = newBackgroundUpdate();
+				// set it back to false
+				backgroundUpdateEdited = false;
 			});
 		} catch (err) {
 			console.error(err);
@@ -311,6 +318,7 @@ window.TallyStorage = (function() {
 		},
 		launchStartScreen: launchStartScreen,
 		backgroundUpdate: backgroundUpdate,
+		backgroundUpdateEdited: backgroundUpdateEdited,
 		addToBackgroundUpdate: function(cat, prop, val) {
 			addToBackgroundUpdate(cat, prop, val);
 		},
@@ -343,7 +351,6 @@ const startupPromises = [],
 		'tally_options',
 		'tally_meta',
 		'tally_nearby_monsters',
-		'tally_game_status',
 		'tally_top_monsters'
 	];
 
@@ -431,20 +438,6 @@ const getMetaPromise = new Promise(
 		});
 	}
 );
-// GET GAME STATUS
-const getGameStatusPromise = new Promise(
-	(resolve, reject) => {
-		//console.log("💾 getGameStatusPromise");
-		//if (!pageData.activeOnPage) return;
-		chrome.runtime.sendMessage({
-			'action': 'getGameStatus'
-		}, function(response) {
-			//console.log('💾 >>>>> getGameStatus()',response.data);
-			tally_game_status = response.data; // store data
-			resolve(response.data); // resolve promise
-		});
-	}
-);
 // GET NEARBY MONSTERS
 const getNearbyMonstersPromise = new Promise(
 	(resolve, reject) => {
@@ -523,7 +516,7 @@ function setBadgeText(data) {
 			'action': 'setBadgeText',
 			'data': data
 		}, function(response) {
-			//console.log("💾 <<<<< ",'> saveGameStatus()',JSON.stringify(response));
+			// ?
 		});
 	} catch (err) {
 		console.error(err);

@@ -102,13 +102,6 @@ window.Listener = (function() {
 						"data": store("tally_meta") || {}
 					});
 				}
-				// getGameStatus
-				else if (request.action == "getGameStatus") {
-					sendResponse({
-						"action": request.action,
-						"data": store("tally_game_status") || {}
-					});
-				}
 				// getNearbyMonsters
 				else if (request.action == "getNearbyMonsters") {
 					sendResponse({

@@ -15,7 +15,6 @@ window.Install = (function() {
 			// Create objects
 			store("tally_user", createUser());
 			store("tally_options", createOptions());
-			store("tally_game_status", createGameStatus());
 			store("tally_nearby_monsters", {});
 			store("tally_meta", createMeta());
 			store("tally_stats", {});
@@ -92,6 +91,8 @@ window.Install = (function() {
 				"attacks": {},
 				"badges": {},
 				"consumables": {},
+				"flags": {},
+				"confirmFlags": {},
 				"lastActive": moment().format(),
 				"level": 1,
 				"monsters": {},
@@ -109,20 +110,6 @@ window.Install = (function() {
 					"blocked": {}
 				},
 				"username": "",
-			};
-			return obj;
-		} catch (err) {
-			console.error(err);
-		}
-	}
-
-	// Track status of current game
-	function createGameStatus() {
-		try {
-			var obj = {
-				"skin": "color-magenta",
-				"flags": [],
-				"confirmFlags": []
 			};
 			return obj;
 		} catch (err) {
