@@ -1,97 +1,121 @@
 "use strict";
 
-// load global objects
+// all other scripts have loaded so safe to create global objects
 let pageData = Page.getPageData(),
+	// objects created on server, mirrored locally
 	tally_user = {},
-	tally_options = {},
+	tally_top_monsters = {},
+	// objects that only exist locally
 	tally_meta = {},
+	tally_options = {},
 	tally_game_status = {},
-	tally_nearby_monsters = {},
-	tally_top_monsters = {};
+	tally_nearby_monsters = {};
 
 window.TallyMain = (function() {
 	// PRIVATE
-
 	let DEBUG = true;
 
+	// global error handler
 	window.onerror = function(message, source, lineno, colno, error) {
 		console.error(message, source, lineno, colno, error);
 	};
 
 	$(function() {
-		syncWithBackground(start);
+		// begin by getting data from background, then performing start checks
+		getDataFromBackground(performStartChecks);
 	});
 
-	function syncWithBackground(callback = null) {
+	/**
+	 *	Get all data from background (can be called multiple times, w/ or w/o callback)
+	 */
+	function getDataFromBackground(callback = null) {
 		try {
-			if (DEBUG) console.log('🧰 TallyMain.syncWithBackground()');
+			if (DEBUG) console.log('🧰 TallyMain.getDataFromBackground()');
 			Promise
 				.all([getUserPromise, getOptionsPromise, getMetaPromise, getGameStatusPromise,
 					getNearbyMonstersPromise, getStatsPromise, getTopMonstersPromise
 				]) // getLastBackgroundUpdatePromise
 				.then(function() {
-					// if (DEBUG) console.log('>>>>> init() Promise all data has loaded',
+					// if (DEBUG) console.log('🧰 TallyMain.getDataFromBackground() -> all promises have resolved',
 					// 			tally_user, tally_options, tally_meta, tally_game_status,
 					// 			tally_nearby_monsters, tally_top_monsters);
 
 					if (callback) callback();
 				})
 				.catch(function(err) {
-					if (DEBUG) console.error('one or more promises have failed: ' + err,
+					if (DEBUG) console.error('🧰 TallyMain.getDataFromBackground() -> ' +
+						'one or more promises have failed: ' + err,
 						"\n tally_user =", tally_user,
 						"\n tally_options =", tally_options,
 						"\n tally_meta =", tally_meta,
 						"\n tally_game_status =", tally_game_status,
 						"\n tally_nearby_monsters =", tally_nearby_monsters,
-						"\n tally_top_monsters =", tally_top_monsters,
+						"\n tally_top_monsters =", tally_top_monsters
 					);
 				});
 		} catch (err) {
 			console.error(err);
+			// if for some reason there is error then prompt for new token
 			TallyStorage.launchStartScreen();
 		}
 	}
 
-
-	function start() {
+	/**
+	 *	Perform all start checks
+	 */
+	function performStartChecks() {
 		try {
-			if (DEBUG) console.log('🧰 TallyMain.start()');
-			// if we are on the dashboard there are a few flags we can find
-			Page.checkForFlags();
+			if (DEBUG) console.log('🧰 TallyMain.performStartChecks()');
 
 			// check if extension should be active on this page before proceeding
 			pageData.activeOnPage = shouldExtensionBeActiveOnPage();
-			if (pageData.activeOnPage)
-				startGameOnPage();
+			// do not procede if so
+			if (!pageData.activeOnPage) return;
+
+			// if we are on the dashboard there are a few flags we can find
+			Page.checkForFlags();
+
+
+			// start game on this page
+			startGameOnPage();
 		} catch (err) {
 			console.error(err);
+			// if for some reason there is error then prompt for new token
 			TallyStorage.launchStartScreen();
 		}
 	}
 
-
-
-
-
-
 	/**
-	 * Make sure Tally isn't disabled on this page|domain|subdomain
+	 * 	Make sure Tally isn't disabled on this page | domain | subdomain | etc
 	 */
 	function shouldExtensionBeActiveOnPage() {
 		try {
-			if (DEBUG) console.log("🧰 TallyMain.shouldExtensionBeActiveOnPage()");
+			if (true) console.log("🧰 TallyMain.shouldExtensionBeActiveOnPage()");
+			// do not start if ...
+			// the server is not online
 			if (!tally_meta.serverOnline) {
 				console.log("!!!!! Connection to Tally server is down");
 				return false;
-			} else if (prop(tally_options.disabledDomains) &&
+			}
+			// this is a disabled domain
+			else if (prop(tally_options.disabledDomains) &&
 				(($.inArray(pageData.domain, tally_options.disabledDomains) >= 0) ||
 					($.inArray(pageData.subDomain, tally_options.disabledDomains) >= 0))) {
 				console.log("!!!!! Tally is disabled on this domain");
 				return false;
-			} else if (pageData.contentType != "text/html") {
+			}
+			// this is not a web page (e.g. a PDF or image)
+			else if (pageData.contentType != "text/html") {
 				console.log("!!!!! Tally is disabled on pages like " + pageData.contentType);
 				return false;
-			} else {
+			}
+			// this is a file:// URI
+			else if (pageData.url.indexOf("file://") > -1) {
+				console.log("!!!!! Tally is disabled on file:// urls");
+				return false;
+			}
+			// otherwise it is safe
+			else {
 				//console.log("shouldExtensionBeActiveOnPage()", true);
 				return true;
 			}
@@ -128,8 +152,8 @@ window.TallyMain = (function() {
 				// 	addMutationObserver();
 				addTitleChecker();
 			// remove trackers that have been caught
-// temp until I can add this to database			
-//			Tracker.removeCaughtTrackers(pageData.trackers);
+			// temp until I can add this to database
+			//			Tracker.removeCaughtTrackers(pageData.trackers);
 			// check for monsters on the page
 			MonsterCheck.check();
 			// update debugger
@@ -144,9 +168,9 @@ window.TallyMain = (function() {
 			Progress.check();
 
 			// after 2 seconds update server
-			setTimeout(function(){
+			setTimeout(function() {
 				TallyStorage.sendBackgroundUpdate();
-			},2000);
+			}, 2000);
 
 		} catch (err) {
 			console.error(err);
@@ -159,7 +183,7 @@ window.TallyMain = (function() {
 	function refreshApp(caller) {
 		try {
 			if (!pageData.activeOnPage) return;
-			if (DEBUG) console.log("🧰 TallyMain.refreshApp() caller = "+ caller);
+			if (DEBUG) console.log("🧰 TallyMain.refreshApp() caller = " + caller);
 			// refresh pageData
 			pageData = Page.getPageData();
 			// refresh game status
@@ -184,7 +208,7 @@ window.TallyMain = (function() {
 		tally_game_status = {};
 		tally_nearby_monsters = {};
 		tally_top_monsters = {};
-		syncWithBackground(start);;
+		getDataFromBackground(performStartChecks);
 	}
 
 	/**
@@ -269,10 +293,10 @@ window.TallyMain = (function() {
 
 	// PUBLIC
 	return {
-		syncWithBackground: function(callback) {
-			syncWithBackground(callback);
+		getDataFromBackground: function(callback) {
+			getDataFromBackground(callback);
 		},
-		start: start,
+		performStartChecks: performStartChecks,
 		startGameOnPage: startGameOnPage
 	};
 }());
