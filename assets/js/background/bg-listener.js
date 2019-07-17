@@ -210,7 +210,7 @@ window.Listener = (function() {
 
 				// sendBackgroundUpdate - receive and send score, event, page, etc. data to server
 				else if (request.action == "sendBackgroundUpdate") {
-					if (DEBUG) console.log("👂🏼 Listener.sendBackgroundUpdate", JSON.stringify(request.data));
+					//if (DEBUG) console.log("👂🏼 Listener.sendBackgroundUpdate", JSON.stringify(request.data));
 
 					// store update object
 					store("tally_last_background_update", request.data);
@@ -228,7 +228,7 @@ window.Listener = (function() {
 						dataType: 'json',
 						data: JSON.stringify(request.data)
 					}).done(result => {
-						console.log("👂🏼 Listener.sendBackgroundUpdate() RESULT =", JSON.stringify(result));
+						//console.log("👂🏼 Listener.sendBackgroundUpdate() RESULT =", JSON.stringify(result));
 
 
 						// UPDATE ATTACK DATA

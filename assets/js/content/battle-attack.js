@@ -264,6 +264,11 @@ window.BattleAttack = (function() {
 				endBattle = true;
 				endBattleMessage = "";
 				BattleConsole.log("The monster's health has been depleted. Tally wins!!!");
+				BattleConsole.log("You now have blocked the [tracker name coming] from grabbing your data!!!");
+
+				// potentially award a new attack
+				if (get("award4thAttack")) randomRewardAttack();
+
 				Sound.playFile("music/battle-victory.wav", false, 0);
 			} else if (Stats.get("monster").stamina.val <= 0) {
 				Sound.stopMusic();
@@ -271,6 +276,7 @@ window.BattleAttack = (function() {
 				endBattle = true;
 				endBattleMessage = "";
 				BattleConsole.log("The monster's stamina has been depleted. Tally wins!!!");
+				BattleConsole.log("You now have blocked the [tracker name coming] from grabbing your data!!!");
 				Sound.playFile("music/battle-victory.wav", false, 0);
 			} else {
 
@@ -388,6 +394,19 @@ window.BattleAttack = (function() {
 
 			// tell user
 			Dialogue.showStr("You earned the " + attack.name + " " + attack.type + "!", "happy");
+		} catch (err) {
+			console.error(err);
+		}
+	}
+	/**
+	 *	(Possibly) reward Tally with a new attack
+	 */
+	function randomRewardAttack(){
+		try {
+			if (Math.random() > 0.2){
+				if (DEBUG) console.log("💥 BattleAttack.randomRewardAttack()");
+				rewardAttack();
+			}
 		} catch (err) {
 			console.error(err);
 		}
