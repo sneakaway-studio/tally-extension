@@ -9,7 +9,7 @@ window.Monster = (function() {
 	 *	4. ...
 	 */
 
-	let DEBUG = false,
+	let DEBUG = Debug.ALL.Monster,
 		currentMID = 0,
 		secondsBeforeDelete = 300; // 60 seconds for testing
 
@@ -38,7 +38,7 @@ window.Monster = (function() {
 				tally_nearby_monsters[mid].totalCaptured = tally_user.monsters[mid].captured;
 			if (DEBUG) console.log('👿 ⊙!⊙⊙⊙ Monster.create()2', mid, tally_nearby_monsters[mid], tally_user.monsters[mid]);
 			// save
-			TallyStorage.saveData("tally_nearby_monsters", tally_nearby_monsters);
+			TallyStorage.saveData("tally_nearby_monsters", tally_nearby_monsters, "👿 Monster.create()");
 			return tally_nearby_monsters[mid];
 		} catch (err) {
 			console.error(err);
@@ -49,7 +49,8 @@ window.Monster = (function() {
 	 */
 	function returnNewMonsterLevel() {
 		try {
-			let userLevel = tally_user.score.level,
+			if (DEBUG) console.log("👿 Monster.returnNewMonsterLevel()",tally_user);
+			let userLevel = tally_user.level,
 				factor = 0.5;
 			if (userLevel > 15) factor = 0.4;
 			if (userLevel > 30) factor = 0.2;
@@ -58,7 +59,7 @@ window.Monster = (function() {
 				max = Math.ceil(userLevel + (userLevel * factor));
 			let level = Math.floor(Math.random() * (max - min) + min);
 			if (level < 1) level = 1;
-			//console.log("👿 Monster.returnNewMonsterLevel()",userLevel,min,max,level);
+			//if (DEBUG) console.log("👿 Monster.returnNewMonsterLevel()",userLevel,min,max,level);
 			return level;
 		} catch (err) {
 			console.error(err);
@@ -124,13 +125,13 @@ window.Monster = (function() {
 			// add listeners
 			$(document).on("mouseover", ".tally_monster_sprite_container", function() {
 				let mid = Number($(this).attr('data-mid'));
-				//console.log(mid);
+				//if (DEBUG) console.log(mid);
 				// show dialogue with sound but don't add to queue in case they click
 				Dialogue.show(DialogueData.get(["battle", "choose", null]), true, false);
 			});
 			$(document).on("click", ".tally_monster_sprite_container", function() {
 				let mid = Number($(this).attr('data-mid'));
-				//console.log(mid);
+				//if (DEBUG) console.log(mid);
 				// launch battle
 				Battle.start(mid);
 			});
@@ -165,7 +166,7 @@ window.Monster = (function() {
 			tally_nearby_monsters[mid].missed = 0;
 			if (DEBUG) console.log("👿 ⊙⊙⊙⊙⊙ Monster.test()", MonsterData.dataById[mid]);
 			// save
-			TallyStorage.saveData("tally_nearby_monsters", tally_nearby_monsters);
+			TallyStorage.saveData("tally_nearby_monsters", tally_nearby_monsters, "👿 Monster.test()");
 			// set the skin color
 			Skin.setStage(tally_nearby_monsters[mid].stage);
 			Dialogue.show(DialogueData.get(["monster", "show", null]), true);
@@ -190,11 +191,11 @@ window.Monster = (function() {
 				};
 			}
 			// save monsters
-			TallyStorage.saveData("tally_nearby_monsters", tally_nearby_monsters);
+			TallyStorage.saveData("tally_nearby_monsters", tally_nearby_monsters, "👿 Monster.saveAndPush()");
 
 			// save user in background
-			TallyStorage.saveData('tally_user', tally_user);
-			// create backgroundUpdate object
+			TallyStorage.saveData('tally_user', tally_user, "👿 Monster.saveAndPush()");
+			// create object
 			var backgroundMonsterUpdate = TallyStorage.newBackgroundMonsterUpdate(mid);
 			// store the nearby monster in it
 			backgroundMonsterUpdate.monsterData = tally_nearby_monsters[mid];
@@ -219,7 +220,7 @@ window.Monster = (function() {
 			// reset them all
 			tally_nearby_monsters = {};
 			monster = {};
-			TallyStorage.saveData("tally_nearby_monsters", tally_nearby_monsters);
+			TallyStorage.saveData("tally_nearby_monsters", tally_nearby_monsters, "👿 Monster.reset()");
 			// set the skin color
 			Skin.setStage(0);
 		} catch (err) {

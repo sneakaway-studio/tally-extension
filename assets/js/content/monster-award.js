@@ -2,7 +2,7 @@
 
 window.MonsterAward = (function() {
 
-	let DEBUG = true,
+	let DEBUG = Debug.ALL.MonsterAward,
 		secondsBeforeDelete = 300; // 60 seconds for testing
 
 
@@ -324,7 +324,7 @@ window.MonsterAward = (function() {
 		// 	delete tally_nearby_monsters[mid];
 		// reset them all
 		tally_nearby_monsters = {};
-		TallyStorage.saveData("tally_nearby_monsters",tally_nearby_monsters);
+		TallyStorage.saveData("tally_nearby_monsters",tally_nearby_monsters, "MonsterAward.reset()");
 		// set the skin color
 		Skin.setStage(0);
 	}

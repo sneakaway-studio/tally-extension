@@ -5,8 +5,7 @@
 
 window.Stats = (function() {
 	// PRIVATE
-
-	let DEBUG = true,
+	let DEBUG = Debug.ALL.Stats,
 		levelMultiplier = 9.5,
 		resetStatsAll = {
 			"accuracy": 0.91,
@@ -75,7 +74,7 @@ window.Stats = (function() {
 	function save(who) {
 		try {
 			//if (DEBUG) console.log("📋 Stats.save()", who);
-			TallyStorage.saveData('tally_stats', allStats.tally);
+			TallyStorage.saveData('tally_stats', allStats.tally, "📋 Stats.save()");
 		} catch (err) {
 			console.error(err);
 		}
@@ -141,7 +140,7 @@ window.Stats = (function() {
 	 */
 	function getLevel(who) {
 		let level = 0;
-		if (who == "tally") level = tally_user.score.level;
+		if (who == "tally") level = tally_user.level;
 		else if (Monster.currentMID != 0) level = Monster.current().level;
 		else level = Monster.returnNewMonsterLevel(); // temp
 		//if (DEBUG) console.log("📋 Stats.getLevel()", who + " => " + level);

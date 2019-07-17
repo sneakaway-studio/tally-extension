@@ -1,8 +1,8 @@
 "use strict";
 
 window.Tutorial = (function() {
-
-	let DEBUG = false;
+	// PRIVATE
+	let DEBUG = Debug.ALL.Tutorial;
 
 	/**
 	 *	Checks to see if any tutorial events should be executed
@@ -31,29 +31,11 @@ window.Tutorial = (function() {
 		}
 	}
 
-	/**
-	 *	Reset tutorial
-	 */
-	function reset() {
-		try {
-			for (var t in tally_progress) {
-				if (tally_progress.hasOwnProperty(t)) {
-					tally_progress[t] = false;
-				}
-			}
-			// save
-			TallyStorage.saveData('tally_progress', tally_progress);
-		} catch (err) {
-			console.error(err);
-		}
-	}
-
 
 
 	// PUBLIC
 	return {
 		check: check,
-		skip: skip,
-		reset: reset
+		skip: skip
 	};
 }());

@@ -5,8 +5,7 @@
 
 window.Tally = (function() {
 	// PRIVATE
-
-	let DEBUG = false,
+	let DEBUG = Debug.ALL.Tally,
 		followCursor = false, // is eye following currently active? on page load, no
 		tallyMenuOpen = false,
 		tallyConsoleIcon = 'font-size:12px; background:url("'+ chrome.extension.getURL('assets/img/tally/tally-clear-20w.png') +'") no-repeat;';
@@ -76,15 +75,11 @@ window.Tally = (function() {
 
 
 	/**
-	 *	Start Tally
+	 *	Add Tally character
 	 */
-	function start() {
+	function addCharacter() {
 		try {
-			//console.log("%c   Tally.start()", tallyConsoleIcon);
-
-			// shouldn't need this now that it is handled by Storage / leveling up
-			// Stats.reset("tally");
-
+			//console.log("%c   Tally.addCharacter()", tallyConsoleIcon);
 
 			// only show Tally if game mode == full
 			if (prop(pageData) && !pageData.activeOnPage) return;
@@ -100,7 +95,7 @@ window.Tally = (function() {
 				Tally.moveEye(".tally_eye_right", "mouse", event);
 			});
 
-			//console.log("%c   Tally.start()", tallyConsoleIcon, tally_game_status.skin, Skin.skins);
+			//console.log("%c   Tally.addCharacter()", tallyConsoleIcon, Skin.skins);
 
 			let str =
 				"<div class='tally draggable' id='tally_character'>" +// style='transform:translateY(-350px);'
@@ -148,11 +143,8 @@ window.Tally = (function() {
 					});
 			});
 
-
-
 			// display stats
 			StatsDisplay.updateDisplay("tally");
-
 
 			// HOVER
 			$(document).on('mouseenter mouseleave', '#tally_character', function() {
@@ -169,26 +161,19 @@ window.Tally = (function() {
 				tallyMenu();
 			});
 
-
-
 			// for domains that rewrite body, add listener to add Tally back if removed
 			if (pageData.domain == "baidu.com") {
 				onRemove(document.getElementById('tally_click_visual'), reloadIfRemoved);
 			}
 
-
-
-
-
-			// Battle.test();
 		} catch (err) {
 			console.error(err);
 		}
 	}
 
-
-
-	// listener to
+	/**
+	 * listener to add Tally character if removed
+	 */
 	function onRemove(element, onDetachCallback) {
 		const observer = new MutationObserver(function() {
 			function isDetached(el) {
@@ -218,7 +203,7 @@ window.Tally = (function() {
 		// load everything again
 		Interface.addBaseHTML();
 		// start tally again
-		start();
+		addCharacter();
 	}
 
 
@@ -317,7 +302,7 @@ window.Tally = (function() {
 			return followCursor;
 		},
 		stare: stare,
-		start: start,
+		addCharacter: addCharacter,
 		tallyConsoleIcon: tallyConsoleIcon
 
 	};

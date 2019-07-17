@@ -12,6 +12,10 @@ var GameData = (function() {
 		"linkedin.com"
 	];
 
+	let domainKeywords = {
+		"facebook.com": "social,networks,facebook,like",
+	};
+
 	let clickScore = {
 		"click": 	1,
 		"like": 	2,
@@ -133,10 +137,21 @@ var GameData = (function() {
 		{ "level":	100	, "xp":	1000000	 },
 	];
 
+
+	let flags = {
+		"levelUp": {
+			"name": "levelUp",
+			"dialogue": "You just leveled up!",
+			"mood": "happy",
+			"status": null
+		}
+	};
+
 	return {
 		socialDomains: socialDomains,
 		clickScore: clickScore,
 		attackLimits: attackLimits,
-		levels: levels
+		levels: levels,
+		flags: flags
 	};
 })();

@@ -5,8 +5,7 @@
 
 window.Interface = (function() {
 	// PRIVATE
-
-	let DEBUG = false;
+	let DEBUG = Debug.ALL.Interface;
 
 	function addBaseHTML() {
 		try {

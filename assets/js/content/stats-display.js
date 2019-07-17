@@ -5,8 +5,7 @@
 
 window.StatsDisplay = (function() {
 	// PRIVATE
-
-	let DEBUG = false;
+	let DEBUG = Debug.ALL.StatsDisplay;
 
 	/**
 	 * Starting point for stats svg coordinates
@@ -101,7 +100,7 @@ window.StatsDisplay = (function() {
 		try {
 			let stats = Stats.get(who),
 				level = Stats.getLevel(who);
-			console.log("📈 StatsDisplay.updateDisplay()", who, stats, level);
+			if (DEBUG) console.log("📈 StatsDisplay.updateDisplay()", "who="+ who, "stats="+ stats, "level="+ level);
 			if (stats === {}) return;
 			// bars, circle, table
 			adjustStatsBar(who, "health");
@@ -176,7 +175,7 @@ window.StatsDisplay = (function() {
 				// update: function(anim) {
 				// 	for (let i=0; i<anim.animations.length; i++){
 				// 		if (who === "monster" && bar === "health")
-				// 			console.log("📈 StatsDisplay.adjustStatsBar()5",i, "anim="+ JSON.stringify(anim.animations[i].tweens) );
+				// 			if (DEBUG) console.log("📈 StatsDisplay.adjustStatsBar()5",i, "anim="+ JSON.stringify(anim.animations[i].tweens) );
 				// 	}
 				//
 				// },
@@ -206,6 +205,7 @@ window.StatsDisplay = (function() {
 	 *	*circle circumference is normalized so xp needs to be 0–1
 	 */
 	function adjustStatsCircle(who, level, xpFactor=0) {
+		if (DEBUG) console.log("📈 StatsDisplay.adjustStatsCircle() --> who="+ who, "level="+level, "xpFactor="+xpFactor);
 		try {
 			// who is required
 			if (who === "") return console.warn("📈 StatsDisplay.adjustStatsCircle() --> who is required!!", who);

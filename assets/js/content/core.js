@@ -6,7 +6,7 @@
 window.Core = (function() {
 	// PRIVATE
 
-	let DEBUG = false;
+	let DEBUG = Debug.ALL.Core;
 
 	// ele = string
 	function showElement(ele) {
@@ -56,7 +56,7 @@ window.Core = (function() {
 				// new, takes scrolling into effect
 				"top": ($(ele).offset().top - $(window).scrollTop()) + ($(ele).height() / 2)
 			};
-			if (DEBUG) console.log("⚙️ Core.getCenterPosition()", ele, $(ele).offset(), pos, $(document).scrollTop());
+			if (DEBUG) console.log("🔧 Core.getCenterPosition()", ele, $(ele).offset(), pos, $(document).scrollTop());
 			return pos;
 		} catch (err) {
 			console.error(err);
@@ -73,7 +73,7 @@ window.Core = (function() {
 				"y": newPos.top - ($(ele).height() / 2)
 			};
 			setPosition(ele, pos);
-			//if (DEBUG) console.log("⚙️ Core.setCenterPosition()", ele, $(ele).offset(), newPos);
+			//if (DEBUG) console.log("🔧 Core.setCenterPosition()", ele, $(ele).offset(), newPos);
 		} catch (err) {
 			console.error(err);
 		}
@@ -93,7 +93,7 @@ window.Core = (function() {
 	function setRandomPositionFull(ele) {
 		try {
 			let pos = returnRandomPositionFull(ele);
-			if (DEBUG) console.log("⚙️ Core.setRandomPositionFull()", ele, pos);
+			if (DEBUG) console.log("🔧 Core.setRandomPositionFull()", ele, pos);
 			setPosition(ele, pos);
 		} catch (err) {
 			console.error(err);
@@ -110,7 +110,7 @@ window.Core = (function() {
 				w = $(ele).width() || 200;
 				h = $(ele).height() || 200;
 			}
-			if (DEBUG) console.log("⚙️ Core.returnRandomPositionFull()", ele, w + "," + h, pageData.browser.width, pageData.browser.fullHeight);
+			if (DEBUG) console.log("🔧 Core.returnRandomPositionFull()", ele, w + "," + h, pageData.browser.width, pageData.browser.fullHeight);
 			// position
 			let pos = {
 				"x": Math.ceil(Math.random() * (pageData.browser.width - w)),
@@ -122,7 +122,7 @@ window.Core = (function() {
 			if (preference === "below-the-fold")
 				pos.y = FS_Number.randomIntBetween(pageData.browser.fullHeight / 2, pageData.browser.fullHeight);
 
-			if (DEBUG) console.log("⚙️ Core.returnRandomPositionFull()", w +","+ h, pos);
+			if (DEBUG) console.log("🔧 Core.returnRandomPositionFull()", w +","+ h, pos);
 			return pos;
 		} catch (err) {
 			console.error(err);

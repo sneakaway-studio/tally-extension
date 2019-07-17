@@ -17,6 +17,26 @@ window.FS_String = (function() {
 		},
 		isVowel: function(x) {
 			return /[aeiouAEIOU]/.test(x);
+		},
+
+		/**
+		 *	Insert stylesheet into a page, ensure it works for CSS3 animations
+		 *	credit: https://stackoverflow.com/a/43904152/441878
+		 */
+		insertStylesheets: function() {
+			let sheets = document.styleSheets,
+				style = document.createElement('style'),
+				addKeyFrames = null;
+			style.appendChild(document.createTextNode(""));
+			document.head.appendChild(style);
+			if (CSS && CSS.supports && CSS.supports('animation: name')) {
+				// we can safely assume that the browser supports unprefixed version.
+				addKeyFrames = function(name, frames) {
+					let sheet = sheets[sheets.length - 1];
+					sheet.insertRule(
+						"@keyframes " + name + "{" + frames + "}");
+				};
+			}
 		}
 
 	};
@@ -122,28 +142,4 @@ function removeSmallWords(arr) {
 			arr.splice(i, 1);
 	}
 	return arr;
-}
-
-
-
-
-
-/**
- *	Insert stylesheet for CSS3 animations
- *	credit: https://stackoverflow.com/a/43904152/441878
- */
-function insertStylesheets() {
-	let sheets = document.styleSheets,
-		style = document.createElement('style'),
-		addKeyFrames = null;
-	style.appendChild(document.createTextNode(""));
-	document.head.appendChild(style);
-	if (CSS && CSS.supports && CSS.supports('animation: name')) {
-		// we can safely assume that the browser supports unprefixed version.
-		addKeyFrames = function(name, frames) {
-			let sheet = sheets[sheets.length - 1];
-			sheet.insertRule(
-				"@keyframes " + name + "{" + frames + "}");
-		};
-	}
 }

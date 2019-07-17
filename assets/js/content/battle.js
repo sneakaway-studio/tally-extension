@@ -6,7 +6,7 @@
 window.Battle = (function() {
 	// PRIVATE
 
-	let DEBUG = false,
+	let DEBUG = Debug.ALL.Battle,
 		_active = false,
 		tallyBattleFloatingAnim = null,
 		monsterBattleFloatingAnim = null,
@@ -75,7 +75,7 @@ window.Battle = (function() {
 			if (_active) return;
 			active(true);
 			// update progress
-			tally_progress.battle1stMonster = true;
+			Progress.update("battle1stMonster",true);
 			// intro sound
 			Sound.playCategory('powerups', 'powerup1');
 			// setup page for effects

@@ -29,10 +29,10 @@
             "assets/js/functions/fs-dates.js",
             "assets/js/functions/fs-environment.js",
             "assets/js/background/config.js",
+            "assets/js/background/bg-install.js",
+            "assets/js/background/bg-server.js",
+            "assets/js/background/bg-listener.js",
             "assets/js/background/background.js",
-            "assets/js/background/background-install.js",
-            "assets/js/background/background-ajax.js",
-            "assets/js/background/background-listener.js",
             "assets/js/background/analytics.js"
         ]
     },
@@ -40,6 +40,7 @@
         "matches": ["<all_urls>"],
         "js": [
             "assets/libs/bluebird.min.js",
+            "assets/js/content/debug.js",
             "assets/js/content/storage.js",
             "assets/libs/jquery-3.2.1.min.js",
             "assets/libs/jquery-ui.min.js",
@@ -74,7 +75,6 @@
             "assets/js/content/tracker.js",
             "assets/js/content/effect.js",
             "assets/js/content/sound.js",
-            "assets/js/content/debug.js",
             "assets/js/content/listeners.js",
             "assets/js/content/dialogue.js",
             "assets/js/content/tally-skins.js",
@@ -109,6 +109,7 @@
         "*.svg", "*.png",
         "*.jpg", "*.JPG",
         "*.gif", "*.GIF",
+        "/assets/*",
         "/assets/sounds/*"
     ],
     "content_security_policy": "script-src 'self' https://ssl.google-analytics.com; object-src 'self'"
