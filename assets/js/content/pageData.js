@@ -48,7 +48,7 @@ window.PageData = (function() {
 		} catch (err) {
 			console.error(err);
 		}
-	} 
+	}
 
 	/**
 	 *	Get all "tags" on a page
@@ -238,23 +238,26 @@ window.PageData = (function() {
 	function checkDashboardForFlags() {
 		try {
 			if (DEBUG) console.log("🗒️ PageData.checkDashboardForFlags()", pageData.url, tally_meta.website + "/dashboard");
-
+			// was a token found on the page?
 			let tokenOnPage = false,
 				tokenData = {};
 
-			// if user is on dashboard then check for flags or new token
+			// if user is on dashboard...
 			if (pageData.url === tally_meta.website + "/dashboard") {
 
 				// if there is a token
 				if ($("#token").length) {
-					if (DEBUG) console.log("🗒️ PageData.checkDashboardForFlags() TOKEN! 🔑 tokenData = " + tokenData);
-					// grab new token
+					// for flag checking
+					tokenOnPage = true;
+					// grab the token data
 					tokenData = {
 						token: $("#token").val(),
 						tokenExpires: $("#tokenExpires").val()
 					};
-					// for flag checking
-					tokenOnPage = true;
+
+
+
+if (DEBUG) console.log("🗒️ PageData.checkDashboardForFlags() TOKEN! 🔑 tokenData = " + JSON.stringify(tokenData));
 					// save token
 					TallyStorage.saveToken(tokenData);
 
@@ -264,6 +267,11 @@ window.PageData = (function() {
 					// update progress
 					Progress.update("tokenAdded", true);
 				}
+
+
+
+
+
 
 				// if there are flags
 				if ($("#tallyFlags").length) {

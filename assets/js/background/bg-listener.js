@@ -184,15 +184,19 @@ window.Listener = (function() {
 
 				// saveToken
 				else if (request.action == "saveToken") {
+					// get current token data
 					let _tally_secret = store("tally_secret"),
+					// default return type is fail
 						message = 0;
+					// if they don't match
 					if (_tally_secret.token != request.data.token) {
-						// save token and tokenExpires
+						// save new token and tokenExpires
 						_tally_secret.token = request.data.token;
 						_tally_secret.tokenExpires = request.data.tokenExpires;
 						store("tally_secret", _tally_secret);
 						// (re)start app
 						Background.startApp();
+						// set response to success
 						message = 1;
 					}
 					sendResponse({

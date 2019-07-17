@@ -6,7 +6,7 @@ window.Progress = (function() {
 
 	let defaults = {
 		"tokenAdded": false,
-		"tokenAddedMessage": false,
+		"tokenAddedPlayWelcomeMessage": false,
 		"attackLimit": 1,
 		"award1stAttack": false,
 		"award2ndAttack": false,
@@ -112,7 +112,7 @@ window.Progress = (function() {
 	// PUBLIC
 	return {
 		get: function(prop) {
-			get(prop);
+			return get(prop);
 		},
 		update: function(name, val) {
 			update(name, val);

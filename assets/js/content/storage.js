@@ -134,11 +134,11 @@ window.TallyStorage = (function() {
 	/**
 	 *	Send backgroundUpdate
 	 */
-	function sendBackgroundUpdate() {
+	function sendBackgroundUpdate(force = false) {
 		console.log('💾 TallyStorage.sendBackgroundUpdate()', backgroundUpdate);
 		try {
 			// no need to send if not updated
-			if (backgroundUpdateInProgress === false) return;
+			if (!force && backgroundUpdateInProgress === false) return;
 			//if (!pageData.activeOnPage) return;
 			chrome.runtime.sendMessage({
 				'action': 'sendBackgroundUpdate',
@@ -182,24 +182,24 @@ window.TallyStorage = (function() {
 
 
 
-
-	/**
-	 *	Sync with API
-	 */
-	function syncWithServer() {
-		try {
-			//if (DEBUG) console.log("💾 < TallyStorage.syncWithServer()", name, caller);
-			let msg = {
-				'action': 'syncWithServer'
-			};
-			chrome.runtime.sendMessage(msg, function(response) {
-				if (DEBUG) console.log("💾 > TallyStorage.syncWithServer() RESPONSE =", JSON.stringify(response));
-				//TallyMain.sync(start);
-			});
-		} catch (err) {
-			console.error(err);
-		}
-	}
+	//
+	// /**
+	//  *	Sync with API
+	//  */
+	// function syncWithServer() {
+	// 	try {
+	// 		//if (DEBUG) console.log("💾 < TallyStorage.syncWithServer()", name, caller);
+	// 		let msg = {
+	// 			'action': 'syncWithServer'
+	// 		};
+	// 		chrome.runtime.sendMessage(msg, function(response) {
+	// 			if (DEBUG) console.log("💾 > TallyStorage.syncWithServer() RESPONSE =", JSON.stringify(response));
+	// 			//TallyMain.sync(start);
+	// 		});
+	// 	} catch (err) {
+	// 		console.error(err);
+	// 	}
+	// }
 
 	/**
 	 *	Generic getData() function
@@ -246,7 +246,7 @@ window.TallyStorage = (function() {
 	function saveTallyUser(cat, obj, caller = "") {
 		try {
 			if (DEBUG) console.log("💾 < TallyStorage.saveTallyUser()", cat, obj, caller);
-			// get latest from background ? NO would need to be async
+			// get latest from background ? NO IDT this is required
 			//tally_user = TallyStorage.getData("tally_user");
 			// save in content
 			tally_user[cat][obj.name] = obj;
@@ -324,40 +324,45 @@ window.TallyStorage = (function() {
 	// SAVE TOKEN FROM DASHBOARD
 	function saveToken(data) {
 		try {
-			if (DEBUG) console.log('💾 < TallyStorage.saveToken() DATA =', data);
+			if (DEBUG) console.log('💾 < TallyStorage.saveToken() TRYING TO SAVE NEW TOKEN... DATA =', data);
 			chrome.runtime.sendMessage({
 				'action': 'saveToken',
 				'data': data
 			}, function(response) {
 				if (DEBUG) console.log('💾 > TallyStorage.saveToken() RESPONSE =', response);
-				if (response.message == 1) {
-					if (DEBUG) console.log("💾 > TallyStorage.saveToken() -> token has been saved", data);
-					// $.growl({
-					// 	title: "TOKEN SAVED!",
-					// 	message: "User token updated!"
-					// });
 
+				// if the token was different and it was updated ...
+				if (response.message == 1) {
+
+					// 1. if this is the first time user is saving a token
 					if (!Progress.get("tokenAdded")) {
+						if (DEBUG) console.log("💾 > TallyStorage.saveToken() 1 -> NEW TOKEN WAS SAVED", data);
 						// mark as true and save
 						Progress.update("tokenAdded", true);
 						// reload page after token grabbed
 						location.reload();
-					} else if (!Progress.get("tokenAddedMessage")) {
+					}
+					// 2. after the page has refreshed
+					else if (!Progress.get("tokenAddedPlayWelcomeMessage")) {
+						if (DEBUG) console.log("💾 > TallyStorage.saveToken() 2 -> NEW TOKEN WAS SAVED", data);
 						// mark as true and save
-						Progress.update("tokenAddedMessage", true);
-						// encourage them to explore
+						Progress.update("tokenAddedPlayWelcomeMessage", true);
+						// introductions, then encourage them to explore
 						Dialogue.showStr("Oh hi! I'm Tally!!!", "happy");
-						Dialogue.showStr("Your token is now active and installed!", "happy");
+						Dialogue.showStr("Your account is now active and you are ready to play!", "happy");
 						Dialogue.showStr("This is your dashboard.", "happy");
 						Dialogue.showStr("You can edit your profile here.", "happy");
 						Dialogue.showStr("Good to stay anonymous though, what with all the monsters around...", "cautious");
 						Dialogue.showStr("Now, let's go find some trackers!", "happy");
-					} else {
-						// user has been here before
-						Dialogue.showStr("Your user token has been updated!", "happy");
+					}
+					// if user has been here before
+					else {
+						if (DEBUG) console.log("💾 > TallyStorage.saveToken() 3 -> NEW TOKEN WAS SAVED", data);
+						Dialogue.showStr("Your account has been updated!", "happy");
 						Dialogue.showStr("Let's go get some trackers!", "happy");
-						// // sync with API / background
-						TallyMain.sync();
+						// force a background update to confirm with API / background
+						// MAYBE DON'T NEED BECAUSE THIS ALL HAPPENS ON UPDATE
+						//sendBackgroundUpdate(true);
 					}
 				}
 			});
