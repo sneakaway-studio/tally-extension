@@ -180,12 +180,14 @@ window.BattleConsole = (function() {
 					if (DEBUG) console.log("🖥️ BattleConsole.showBattleOptions() step 1.3", _attacks[key]);
 					// if defense
 					defenseOption = _attacks[key].type === "defense" ? "battle-options-defense" : "";
-					str += "<span data-attack='" + _attacks[key].name +
+					str += "<span " +
+						" title='type=" + _attacks[key].type + ",category=" + _attacks[key].category + "' " +
+						" data-attack='" + _attacks[key].name +
 						"' class='tally battle-options " + defenseOption + " attack-" + _attacks[key].name + "'>" +
 						_attacks[key].name + "</span>";
 				}
 			}
-			str += "<span class='tally battle-options-esc'>run [esc]</span></div>";
+			str += "<span class='tally battle-options battle-options-esc'>run [esc]</span></div>";
 
 			if (DEBUG) console.log("🖥️ BattleConsole.showBattleOptions() step 2", str, _queue, _active);
 
@@ -207,12 +209,25 @@ window.BattleConsole = (function() {
 					// 	//if (DEBUG) console.log(attackName);
 					// });
 					$(document).on("click", ref, function() {
-						// remove listener
-						$(document).off("click", ref);
-						// get attack name
-						let attackName = $(this).attr("data-attack");
-						if (DEBUG) console.log("🖥️ BattleConsole.showBattleOptions() attackName =", attackName, tally_user.attacks);
-						BattleAttack.doAttack(tally_user.attacks[attackName], "tally", "monster");
+						console.log(Battle.details.attackInProgress)
+						// if user can't do attack yet but they clicked anyway
+						if (Battle.details.attackInProgress) {
+							let r = Math.random();
+							if (r < 0.33)
+								Dialogue.showStr("Hey, this is a turn based game. It's not your turn.", "neutral", true);
+							if (r < 0.66)
+								Dialogue.showStr("Slow down speed racer.", "neutral", true);
+							else
+								Dialogue.showStr("Wait your turn 😀", "neutral", true);
+							return;
+						} else {
+							// remove listener
+							$(document).off("click", ref);
+							// get attack name
+							let attackName = $(this).attr("data-attack");
+							if (DEBUG) console.log("🖥️ BattleConsole.showBattleOptions() attackName =", attackName, tally_user.attacks);
+							BattleAttack.doAttack(tally_user.attacks[attackName], "tally", "monster");
+						}
 					});
 				}
 			}

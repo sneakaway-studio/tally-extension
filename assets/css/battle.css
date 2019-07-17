@@ -256,22 +256,25 @@ svg.stats-display .stat-bar-circle-text { fill:white; font: 14px Monaco, "Andale
     50% { opacity: 0.0; }
     100% { opacity: 1.0; }
 }
+
+
+
 /*  BATTLE OPTIONS
 ******************************************************************************/
 .battle-options-row {
-    margin-top: 8px;
-    margin-bottom: 8px;
+    margin: 6px 0 0 0;
+    overflow: auto;
 }
 .battle-options {
-    width: 100%;
     /* box-sizing: border-box;
     display:inline-block; */
     box-shadow: 2px 2px #41d728;
-    padding: 4px;
+    padding: 2px 4px;
     background-color: #d32cf1;
     color: #eee0f7;
-    font-size: 89%;
-    margin-right: 10px;
+    font-size: 88%;
+    margin: 0 8px 8px 0;
+    float: left;
 }
 .battle-options-defense {
     box-shadow: 2px 2px #d32cf1;
@@ -285,17 +288,19 @@ svg.stats-display .stat-bar-circle-text { fill:white; font: 14px Monaco, "Andale
     background-color: #d32cf1;
 }
 .battle-options-esc {
-    width: 100%;
     box-shadow: 2px 2px #63b7ff;
-    padding: 4px;
     background-color: #807d81;
     color: #eee0f7;
-    font-size: 89%;
 }
 .battle-options-esc:hover {
     cursor: pointer;
     background-color: #6ebff9;
 }
+
+
+
+
+
 /*  BATTLE EFFECTS
 ******************************************************************************/
 #battle-background {
