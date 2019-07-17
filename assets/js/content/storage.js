@@ -6,69 +6,83 @@
 
 window.TallyStorage = (function() {
 
-	let DEBUG = true,
+	let DEBUG = Debug.ALL.TallyStorage,
 		// create "blank" background update obj for this page
-		backgroundUpdate = newBackgroundUpdate(),
+		backgroundUpdate = null,
 		// track whether the current one has been edited
-		backgroundUpdateEdited = false;
+		backgroundUpdateInProgress = false;
 
 	/**
 	 * 	create the backgroundUpdate obj, default to type="update"
 	 */
-	function newBackgroundUpdate(type = "update"){
-		let obj = {
-			// the type of update (e.g. "update" | "sync")
-			"updateType": type,
-			// all the individual props that can be updated, sent as arrays
-			"itemData": {
-				"achievements": [],
-				"attacks": [],
-				"badges": [],
-				"consumables": [],
-				"flags": [],
-				"monsters": [],
-				"progress": [],
-				"skins": [],
-				"trackers": [],
-			},
-			// SCORE
-			"scoreData": {
-				"clicks": 0,
-				// "domains": 0, // don't track this locally,
-				"likes": 0,
-				"pages": 0,
-				"score": 0
-			},
-			// PAGE
-			"pageData": {
-				"description": "", // pageData.description,
-				"domain": "", // pageData.domain,
-				"keywords": "", // pageData.keywords,
-				"tags": "", // pageData.tags,
-				"time": "", // pageData.time,
-				"title": "", // pageData.title,
-				"url": "", // pageData.url
-			},
-			// EVENTS
-			"eventData": {
-				"action": "",
-				"text": ""
-			},
-			"token": "INSERT_IN_BACKGROUND",
-		};
-		return obj;
+	function createBackgroundUpdate(type = "update") {
+		try {
+			//console.trace();
+			if (DEBUG) console.log("💾 TallyStorage.createBackgroundUpdate()", cat, prop, val, caller);
+			// if a backgroundUpdate is already in progress then return early
+			if (backgroundUpdateInProgress)
+				return console.warn("💾 TallyStorage.createBackgroundUpdate() backgroundUpdateInProgress=true");
+
+			let obj = {
+				// the type of update (e.g. "update" | "sync")
+				"updateType": type,
+				// all the individual props that can be updated, sent as arrays
+				"itemData": {
+					"achievements": [],
+					"attacks": [],
+					"badges": [],
+					"consumables": [],
+					"flags": [],
+					"monsters": [],
+					"progress": [],
+					"skins": [],
+					"trackers": [],
+				},
+				// SCORE
+				"scoreData": {
+					"clicks": 0,
+					// "domains": 0, // don't track this locally,
+					"likes": 0,
+					"pages": 0,
+					"score": 0
+				},
+				// PAGE
+				"pageData": {
+					"description": pageData.description,
+					"domain": pageData.domain,
+					"keywords": pageData.keywords,
+					"tags": pageData.tags,
+					"time": pageData.time,
+					"title": pageData.title,
+					"url": pageData.url
+				},
+				// EVENTS
+				"eventData": {
+					"action": "",
+					"text": ""
+				},
+				"token": "INSERT_IN_BACKGROUND",
+			};
+			return obj;
+		} catch (err) {
+			console.error(err);
+		}
 	}
 
 
 	/**
 	 *	Adds data to backgroundUpdate object (to be sent later)
 	 */
-	function addToBackgroundUpdate(cat = null, prop = null, val = null) {
+	function addToBackgroundUpdate(cat = null, prop = null, val = null, caller = "") {
 		try {
 			//console.trace();
-			//console.log("💾 TallyStorage.addToBackgroundUpdate()", backgroundUpdate, cat, prop, val);
+			if (DEBUG) console.log("💾 TallyStorage.addToBackgroundUpdate()", cat, prop, val, caller);
 			// everything is required
 			if (!FS_Object.prop(cat) || !FS_Object.prop(prop) || !FS_Object.prop(val)) return;
+			// make sure a background update exists
+			if (!FS_Object.prop(backgroundUpdate)) backgroundUpdate = createBackgroundUpdate("update");
+			// mark backgroundUpdate in progres
+			backgroundUpdateInProgress = true;
 
 			// if this is an item
 			if (cat === "itemData") {
@@ -94,11 +108,23 @@ window.TallyStorage = (function() {
 				// set the value
 				backgroundUpdate[cat][prop] = val;
 			}
-			// mark backgroundUpdate in progres
-			backgroundUpdateEdited = true;
 			// save local edits (even though these will be overwritten)
 			TallyStorage.saveData("tally_user", tally_user);
 			console.log("💾 TallyStorage.addToBackgroundUpdate()", backgroundUpdate, cat, prop, val);
+		} catch (err) {
+			console.error(err);
+		}
+	}
+
+
+	/**
+	 *	Check and send backgroundUpdate if it has been edited
+	 */
+	function checkSendBackgroundUpdate() {
+		try {
+			// no need to send if not updated
+			if (backgroundUpdateInProgress !== false)
+				sendBackgroundUpdate();
 		} catch (err) {
 			console.error(err);
 		}
@@ -111,12 +137,14 @@ window.TallyStorage = (function() {
 	function sendBackgroundUpdate() {
 		console.log('💾 TallyStorage.sendBackgroundUpdate()', backgroundUpdate);
 		try {
+			// no need to send if not updated
+			if (backgroundUpdateInProgress === false) return;
 			//if (!pageData.activeOnPage) return;
 			chrome.runtime.sendMessage({
 				'action': 'sendBackgroundUpdate',
 				'data': backgroundUpdate
 			}, function(response) {
-				if (DEBUG) console.log('💾 TallyStorage.sendBackgroundUpdate() response =', response);
+				if (DEBUG) console.log('💾 > TallyStorage.sendBackgroundUpdate() RESPONSE =', response);
 				// update tally_user in content
 				tally_user = response.tally_user;
 				// it is also possible one of the following is true and we need to reset a few other things
@@ -124,10 +152,10 @@ window.TallyStorage = (function() {
 				// 2. a user resets their data but continues to play
 				Stats.reset("tally");
 				Debug.update();
-				// reset backgroundUpdate after sending
-				backgroundUpdate = newBackgroundUpdate();
 				// set it back to false
-				backgroundUpdateEdited = false;
+				backgroundUpdateInProgress = false;
+				// reset backgroundUpdate after sending
+				backgroundUpdate = createBackgroundUpdate("update");
 			});
 		} catch (err) {
 			console.error(err);
@@ -142,7 +170,7 @@ window.TallyStorage = (function() {
 				'action': 'sendBackgroundMonsterUpdate',
 				'data': data
 			}, function(response) {
-				console.log('💾 TallyStorage.sendBackgroundMonsterUpdate()', response);
+				if (DEBUG) console.log('💾 > TallyStorage.sendBackgroundMonsterUpdate() RESPONSE =', response);
 				//		tally_user = response.tally_user;
 				Debug.update();
 			});
@@ -160,12 +188,12 @@ window.TallyStorage = (function() {
 	 */
 	function syncWithServer() {
 		try {
-			//console.log("💾 TallyStorage.syncWithServer()", name, caller);
+			//if (DEBUG) console.log("💾 < TallyStorage.syncWithServer()", name, caller);
 			let msg = {
 				'action': 'syncWithServer'
 			};
 			chrome.runtime.sendMessage(msg, function(response) {
-				console.log("💾 TallyStorage.syncWithServer()", name, JSON.stringify(response));
+				if (DEBUG) console.log("💾 > TallyStorage.syncWithServer() RESPONSE =", JSON.stringify(response));
 				//TallyMain.sync(start);
 			});
 		} catch (err) {
@@ -178,13 +206,13 @@ window.TallyStorage = (function() {
 	 */
 	function getData(name, caller = "") {
 		try {
-			//console.log("💾 > TallyStorage.getData()", name, caller);
+			if (DEBUG) console.log("💾 < TallyStorage.getData()", name, caller);
 			let msg = {
 				'action': 'getData',
 				'name': name
 			};
 			chrome.runtime.sendMessage(msg, function(response) {
-				console.log("💾 > TallyStorage.getData() RESPONSE", name, JSON.stringify(response));
+				if (DEBUG) console.log("💾 > TallyStorage.getData() RESPONSE =", name, JSON.stringify(response));
 				return response.data;
 			});
 		} catch (err) {
@@ -201,15 +229,43 @@ window.TallyStorage = (function() {
 				'name': name,
 				'data': data
 			};
-			//console.log("💾 < TallyStorage.saveData()", msg, caller);
+			if (DEBUG) console.log("💾 < TallyStorage.saveData()", msg, caller);
 			chrome.runtime.sendMessage(msg, function(response) {
-				console.log("💾 < TallyStorage.saveData() RESPONSE", name, caller, JSON.stringify(response));
+				if (DEBUG) console.log("💾 > TallyStorage.saveData() RESPONSE =", name, caller, JSON.stringify(response));
 				//return response.data;
 			});
 		} catch (err) {
 			console.error(err);
 		}
 	}
+
+
+	/**
+	 *	Save tally_user in content / background
+	 */
+	function saveTallyUser(cat, obj, caller = "") {
+		try {
+			if (DEBUG) console.log("💾 < TallyStorage.saveTallyUser()", cat, obj, caller);
+			// get latest from background ? NO would need to be async
+			//tally_user = TallyStorage.getData("tally_user");
+			// save in content
+			tally_user[cat][obj.name] = obj;
+			// save in background
+			let msg = {
+				'action': 'saveData',
+				'name': 'tally_user',
+				'data': tally_user
+			};
+			chrome.runtime.sendMessage(msg, function(response) {
+				if (DEBUG) console.log("💾 > TallyStorage.saveTallyUser() RESPONSE =", JSON.stringify(response));
+				// tally_user = response.data;
+			});
+		} catch (err) {
+			console.error(err);
+		}
+	}
+
+
 	// emergency only
 	function launchStartScreen() {
 		try {
@@ -225,12 +281,13 @@ window.TallyStorage = (function() {
 	// resetUser a.k.a. resetGame
 	function resetUser(tokenOnPage = false, tokenData = {}) {
 		try {
-			console.log("💾 TallyStorage.resetUser()", tokenOnPage, tokenData);
+			if (DEBUG) console.log("💾 < TallyStorage.resetUser()", tokenOnPage, tokenData);
 			chrome.runtime.sendMessage({
 				'action': 'resetUser',
 				'tokenOnPage': tokenOnPage,
 				'tokenData': tokenData
 			}, function(response) {
+				if (DEBUG) console.log("💾 > TallyStorage.resetUser() RESPONSE =", response);
 				return response.data;
 			});
 		} catch (err) {
@@ -257,7 +314,7 @@ window.TallyStorage = (function() {
 				"token": "INSERT_IN_BACKGROUND",
 
 			};
-			//console.log("💾 newBackgroundMonsterUpdate() -> obj", obj);
+			//if (DEBUG) console.log("💾 newBackgroundMonsterUpdate() -> obj", obj);
 			return obj;
 		} catch (err) {
 			console.error(err);
@@ -267,13 +324,14 @@ window.TallyStorage = (function() {
 	// SAVE TOKEN FROM DASHBOARD
 	function saveToken(data) {
 		try {
+			if (DEBUG) console.log('💾 < TallyStorage.saveToken() DATA =', data);
 			chrome.runtime.sendMessage({
 				'action': 'saveToken',
 				'data': data
 			}, function(response) {
-				console.log('💾 TallyStorage.saveToken()', response);
+				if (DEBUG) console.log('💾 > TallyStorage.saveToken() RESPONSE =', response);
 				if (response.message == 1) {
-					console.log("💾 TallyStorage.saveToken() -> token has been saved", data);
+					if (DEBUG) console.log("💾 > TallyStorage.saveToken() -> token has been saved", data);
 					// $.growl({
 					// 	title: "TOKEN SAVED!",
 					// 	message: "User token updated!"
@@ -316,12 +374,20 @@ window.TallyStorage = (function() {
 		saveData: function(name, data, caller) {
 			return saveData(name, data, caller);
 		},
-		launchStartScreen: launchStartScreen,
-		backgroundUpdate: backgroundUpdate,
-		backgroundUpdateEdited: backgroundUpdateEdited,
-		addToBackgroundUpdate: function(cat, prop, val) {
-			addToBackgroundUpdate(cat, prop, val);
+		saveTallyUser: function(cat, obj, caller) {
+			saveTallyUser(cat, obj, caller);
 		},
+		launchStartScreen: launchStartScreen,
+		// server
+		createBackgroundUpdate: function(type){
+			createBackgroundUpdate(type);
+		},
+		backgroundUpdate: backgroundUpdate,
+		backgroundUpdateInProgress: backgroundUpdateInProgress,
+		addToBackgroundUpdate: function(cat, prop, val, caller) {
+			addToBackgroundUpdate(cat, prop, val, caller);
+		},
+		checkSendBackgroundUpdate: checkSendBackgroundUpdate,
 		sendBackgroundUpdate: sendBackgroundUpdate,
 		newBackgroundMonsterUpdate: function(mid) {
 			return newBackgroundMonsterUpdate(mid);
@@ -363,13 +429,13 @@ function createStartupPromises() {
 			// add new promise
 			startupPromiseNames[i] = new Promise(
 				(resolve, reject) => {
-					//console.log('😂 >>>>> createStartupPromises()',name);
+					//if (DEBUG) console.log('😂 >>>>> createStartupPromises()',name);
 					// call background
 					chrome.runtime.sendMessage({
 						'action': 'getData',
 						'name': name
 					}, function(response) {
-						//console.log('😂 >>>>> createStartupPromises()', name, JSON.stringify(response.data));
+						//if (DEBUG) console.log('😂 >>>>> createStartupPromises()', name, JSON.stringify(response.data));
 						// store data
 						window[startupPromiseNames[i]] = response.data;
 						// resolve promise
@@ -406,7 +472,7 @@ const getUserPromise = new Promise(
 		chrome.runtime.sendMessage({
 			'action': 'getUser'
 		}, function(response) {
-			//console.log('💾 >>>>> getUserPromise()',JSON.stringify(response.data));
+			//if (DEBUG) console.log('💾 >>>>> getUserPromise()',JSON.stringify(response.data));
 			tally_user = response.data; // store data
 			resolve(response.data); // resolve promise
 		});
@@ -419,7 +485,7 @@ const getOptionsPromise = new Promise(
 		chrome.runtime.sendMessage({
 			'action': 'getOptions'
 		}, function(response) {
-			//console.log('💾 >>>>> getOptionsPromise()',response.data);
+			//if (DEBUG) console.log('💾 >>>>> getOptionsPromise()',response.data);
 			tally_options = response.data; // store data
 			resolve(response.data); // resolve promise
 		});
@@ -432,7 +498,7 @@ const getMetaPromise = new Promise(
 		chrome.runtime.sendMessage({
 			'action': 'getMeta'
 		}, function(response) {
-			//console.log('💾 >>>>> getMetaPromise()',response.data);
+			//if (DEBUG) console.log('💾 >>>>> getMetaPromise()',response.data);
 			tally_meta = response.data; // store data
 			resolve(response.data); // resolve promise
 		});
@@ -445,7 +511,7 @@ const getNearbyMonstersPromise = new Promise(
 		chrome.runtime.sendMessage({
 			'action': 'getNearbyMonsters'
 		}, function(response) {
-			//console.log('💾 >>>>> getNearbyMonsters()',response.data);
+			//if (DEBUG) console.log('💾 >>>>> getNearbyMonsters()',response.data);
 			tally_nearby_monsters = response.data; // store data
 			resolve(response.data); // resolve promise
 		});
@@ -458,7 +524,7 @@ const getStatsPromise = new Promise(
 		chrome.runtime.sendMessage({
 			'action': 'getStats'
 		}, function(response) {
-			//console.log('💾 >>>>> getStats()',response.data);
+			//if (DEBUG) console.log('💾 >>>>> getStats()',response.data);
 			// if stats is empty (game just installed)
 			if (FS_Object.isEmpty(response.data))
 				Stats.reset("tally");
@@ -471,11 +537,11 @@ const getStatsPromise = new Promise(
 // GET TOP MONSTERS
 const getTopMonstersPromise = new Promise(
 	(resolve, reject) => {
-		//console.log("💾 getTopMonstersPromise");
+		//if (DEBUG) console.log("💾 getTopMonstersPromise");
 		chrome.runtime.sendMessage({
 			'action': 'getTopMonstersPromise'
 		}, function(response) {
-			//console.log('💾 >>>>> getTopMonstersPromise()',response.data);
+			//if (DEBUG) console.log('💾 >>>>> getTopMonstersPromise()',response.data);
 			tally_top_monsters = response.data; // store data
 			resolve(response.data); // resolve promise
 		});
@@ -495,7 +561,7 @@ const getLastBackgroundUpdatePromise = new Promise(
 		chrome.runtime.sendMessage({
 			'action': 'getLastBackgroundUpdate'
 		}, function(response) {
-			//console.log('💾 >>>>> getLastBackgroundUpdatePromise()',response);
+			//if (DEBUG) console.log('💾 >>>>> getLastBackgroundUpdatePromise()',response);
 			let _lastBackgroundUpdate = {};
 			if (response.message === 1 && prop(response.data)) {
 				_lastBackgroundUpdate = response.data; // store data

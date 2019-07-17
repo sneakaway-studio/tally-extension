@@ -6,6 +6,54 @@
 window.Debug = (function() {
 	// PRIVATE
 
+	let ALL = {
+		"Badge": true,
+		// battles
+		"BattleAttack": false,
+		"BattleConsole": false,
+		"BattleEffect": false,
+		"BattleMath": false,
+		"BattleTest": false,
+		"Battle": false,
+
+		"Consumable": true,
+		"Core": true,
+		"Debug": true,
+		"Dialogue": false,
+		"Effect": true,
+		"TallyEvents": true,
+		"Interface": true,
+		"TallyListeners": true,
+		"TallyMain": true,
+		// monsters
+		"MonsterAward": false,
+		"MonsterCheck": false,
+		"Monster": false,
+
+		"Onboarding": true,
+		"PageData": true,
+		"Progress": true,
+		"Sound": false,
+		"StatsDisplay": false,
+		"Stats": true,
+		"Skin": false,
+		"Tally": true,
+		"Tracker": true,
+		"Tutorial": true
+	};
+
+	/**
+	 *	Set all the debug props to...
+	 */
+	function setAll(state) {
+		for (var key in ALL) {
+			if (ALL.hasOwnProperty(key)) {
+				ALL[key] = state;
+			}
+		}
+	}
+
+
 	// add the debugger
 	function add() {
 		try {
@@ -50,12 +98,16 @@ window.Debug = (function() {
 			$('#tyd').html(str);
 		} catch (err) {
 			console.error(err);
-		}	
+		}
 	}
 
 
 	// PUBLIC
 	return {
+		ALL: ALL,
+		setAll: function(state) {
+			setAll(state);
+		},
 		add: add,
 		update: update
 	};

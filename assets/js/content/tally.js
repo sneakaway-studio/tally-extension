@@ -5,8 +5,7 @@
 
 window.Tally = (function() {
 	// PRIVATE
-
-	let DEBUG = false,
+	let DEBUG = Debug.ALL.Tally,
 		followCursor = false, // is eye following currently active? on page load, no
 		tallyMenuOpen = false,
 		tallyConsoleIcon = 'font-size:12px; background:url("'+ chrome.extension.getURL('assets/img/tally/tally-clear-20w.png') +'") no-repeat;';

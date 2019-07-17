@@ -6,8 +6,8 @@
 window.BattleAttack = (function() {
 	// PRIVATE
 
-	let _logDelay = 1000,
-		DEBUG = true,
+	let DEBUG = Debug.ALL.BattleAttack,
+		_logDelay = 1000,
 		outcomeDetails = {
 			"selfName": "",
 			"oppName": "",
@@ -381,12 +381,10 @@ window.BattleAttack = (function() {
 			while (prop(tally_user.attacks[attack.name]))
 				// if so get a new one, passing name and type if set
 				attack = AttackData.returnAttack(name, type);
-// ?
-// store and save
-// tally_user.attacks[attack.name] = attack;
-// TallyStorage.saveData('tally_user', tally_user, "💥 BattleAttack.rewardAttack()");
 
-			TallyStorage.addToBackgroundUpdate("itemData", "attacks", attack);
+			// save in background and on server
+			TallyStorage.saveTallyUser("attacks", attack, "💥 BattleAttack.rewardAttack()");
+			TallyStorage.addToBackgroundUpdate("itemData", "attacks", attack, "💥 BattleAttack.rewardAttack()");
 
 			// tell user
 			Dialogue.showStr("You earned the " + attack.name + " " + attack.type + "!", "happy");

@@ -6,7 +6,7 @@
 window.BattleMath = (function() {
 	// PRIVATE VARS;
 
-	let DEBUG = true,
+	let DEBUG = Debug.ALL.BattleMath,
 		outcomeData = {
 			"selfHealth": {
 				"change": 0,

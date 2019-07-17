@@ -5,7 +5,7 @@
 
 window.BattleTest = (function() {
 	// PRIVATE
-
+	let DEBUG = Debug.ALL.BattleTest;
 
 
 	function test(){

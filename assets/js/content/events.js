@@ -4,11 +4,9 @@
  ******************************************************************************/
 
 window.TallyEvents = (function() {
-
-
 	// PRIVATE
-
-	let timedEvents = {};
+	let DEBUG = Debug.ALL.TallyEvents,
+		timedEvents = {};
 
 	/**
 	 * Timed functions

@@ -1,6 +1,8 @@
 "use strict";
 
 var Onboarding = (function() {
+	// PRIVATE
+	let DEBUG = Debug.ALL.Onboarding;
 
 	// check status of most recent
 	function check() {

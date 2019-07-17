@@ -4,7 +4,8 @@
  ******************************************************************************/
 
 window.Effect = (function() {
-
+	// PRIVATE
+	let DEBUG = Debug.ALL.Effect;
 
 	/**
 	 * 	Explode the page
@@ -104,7 +105,7 @@ window.Effect = (function() {
 			});
 		} catch (err) {
 			console.error(err);
-		}	
+		}
 	}
 
 

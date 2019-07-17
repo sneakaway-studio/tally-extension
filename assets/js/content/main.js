@@ -1,7 +1,7 @@
 "use strict";
 
 // all other scripts have loaded so safe to create global objects
-let pageData = Page.getPageData(),
+let pageData = PageData.getPageData(),
 	// objects created on server, mirrored locally
 	tally_user = {},
 	tally_top_monsters = {},
@@ -12,7 +12,7 @@ let pageData = Page.getPageData(),
 
 window.TallyMain = (function() {
 	// PRIVATE
-	let DEBUG = true;
+	let DEBUG = Debug.ALL.TallyMain;
 
 	// global error handler
 	window.onerror = function(message, source, lineno, colno, error) {
@@ -148,28 +148,32 @@ window.TallyMain = (function() {
 			// if (DEBUG) console.log(">>>>> startGameOnPage() -> Starting Tally on this page");
 			// if (DEBUG) console.log(">>>>> pageData = "+ JSON.stringify(pageData));
 
+			// on startGameOnPage, create new backgroundUpdate before anything new happens on page
+			TallyStorage.createBackgroundUpdate();
+
 			// RUN ALL GAME METHODS
 
 			// check last active status and potentially recharge
 			TallyEvents.checkLastActiveAndRecharge();
-			// possibly add a consumable
+			// check for, and possibly add a consumable
 			Consumable.randomizer();
 			// check for, and possibly add badge
 			Badge.randomizer();
-			// check for monsters on the page
+			// check for, and possibly add monsters on the page
 			MonsterCheck.check();
-			// check to see if there are any progress complete
+			// check for, and possibly complete any progress
 			Progress.check();
-			// if we are on the dashboard there are a few flags we can find
-			Page.checkDashboardForFlags();
-			// there are also other flags that may have come in from previous update
-			checkFlags();
+			// check for, and possibly execute and flags from dashboard
+			PageData.checkDashboardForFlags();
+			// check for, and possibly execute and flags from server (from previous update)
+			checkForServerFlags();
 			// update debugger
 			Debug.update();
 
-			// after 2 seconds update server
+			// UPDATE SERVER *ONLY* IF ANYTHING HAS CHANGED
 			setTimeout(function() {
-				TallyStorage.sendBackgroundUpdate();
+				// update will reset for any clicking afterwards...
+				TallyStorage.checkSendBackgroundUpdate();
 			}, 2000);
 
 		} catch (err) {
@@ -185,7 +189,7 @@ window.TallyMain = (function() {
 			if (!pageData.activeOnPage) return;
 			if (DEBUG) console.log("🧰 TallyMain.refreshApp() caller = " + caller);
 			// refresh pageData
-			pageData = Page.getPageData();
+			pageData = PageData.getPageData();
 			// check for monsters again
 			MonsterCheck.check();
 			Debug.update();
@@ -199,7 +203,7 @@ window.TallyMain = (function() {
 	 */
 	function resetGameData() {
 		// reset everything
-		pageData = Page.getPageData();
+		pageData = PageData.getPageData();
 		tally_user = {};
 		tally_options = {};
 		tally_meta = {};
@@ -269,11 +273,11 @@ window.TallyMain = (function() {
 	/**
 	 *	Check for flags from server
 	 */
-	function checkFlags() {
+	function checkForServerFlags() {
 		try {
 			// are there flags?
 			if (!FS_Object.prop(tally_user.flags) || FS_Object.isEmpty(tally_user.flags)) return;
-			if (DEBUG) console.log("🕹️ Progress.checkFlags() 🚩", tally_user.flags);
+			if (DEBUG) console.log("🧰 TallyMain.checkForServerFlags() 🚩", tally_user.flags);
 			// address individual flags...
 
 			// SERVER SAYS: we have leveled up!
@@ -300,13 +304,19 @@ window.TallyMain = (function() {
 	}
 
 
-	function removeFlag(flag) {
+	function removeFlag(name) {
 		// confirm it exists
-		if (FS_Object.prop(tally_user.flags[flag])) {
+		if (FS_Object.prop(tally_user.flags[name])) {
+			// get flag
+			let flag = tally_user.flags[name];
+			// mark as deleted
+			flag.status = "delete";
 			// remove it from tally_user
-			delete tally_user.flags[flag];
+			delete tally_user.flags[name];
+			// save in background
+			TallyStorage.saveData("tally_user", tally_user, "🧰 TallyMain.removeFlag()");
 			// then add to server update (will be pushed on next update)
-			TallyStorage.addToBackgroundUpdate("itemData", "flags", flag.name);
+			TallyStorage.addToBackgroundUpdate("itemData", "flags", flag, "🧰 TallyMain.removeFlag()");
 		}
 	}
 
@@ -319,6 +329,7 @@ window.TallyMain = (function() {
 		},
 		performStartChecks: performStartChecks,
 		startGameOnPage: startGameOnPage,
-		checkFlags: checkFlags
+		checkForServerFlags: checkForServerFlags,
+		refreshApp: refreshApp
 	};
 }());

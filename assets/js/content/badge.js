@@ -6,7 +6,7 @@
 window.Badge = (function() {
 	// PRIVATE
 
-	let DEBUG = false,
+	let DEBUG = Debug.ALL.Badge,
 		hovered = false,
 		types = {
 
@@ -46,17 +46,17 @@ window.Badge = (function() {
 
 			// SOCIAL DOMAINS
 			if (GameData.socialDomains.indexOf(pageData.domain) > -1) {
-				//if (DEBUG) console.log("social domain");
+				if (DEBUG) console.log("🎒 Badge.randomizer() type = social domain");
 				if (r < 0.01) return create("stalker");
 			}
 			// 9a-5p busy bee
 			else if (FS_Date.isWorkday()) {
-				//if (DEBUG) console.log('9a-5p busy bee');
+				if (DEBUG) console.log('🎒 Badge.randomizer() type = 9a-5p busy bee');
 				//if (r < 0. 1) return create("busy bee");
 			}
 			// 10p–6a night owl
 			else if (FS_Date.isNight()) {
-				//if (DEBUG) console.log('10p–6a night owl')
+				if (DEBUG) console.log('🎒 Badge.randomizer() type = 10p–6a night owl');
 				if (r < 0.01) return create("night-owl");
 			}
 
@@ -70,7 +70,7 @@ window.Badge = (function() {
 	 */
 	function create(id = "") {
 		try {
-			if (DEBUG) console.log("Badge.create()", id);
+			if (DEBUG) console.log("🎒 Badge.create()", id);
 
 			// if id is set
 			if (id !== "") add(types[id]);
@@ -84,7 +84,7 @@ window.Badge = (function() {
 	 */
 	function add(id) {
 		try {
-			if (DEBUG) console.log("Badge.add()", id);
+			if (DEBUG) console.log("🎒 Badge.add()", id);
 			let badge = types[id];
 			if (!prop(badge.name) && badge.name === "") return;
 
@@ -96,7 +96,6 @@ window.Badge = (function() {
 			// new position
 			randomPos = Core.returnRandomPositionFull('', 100, 100);
 
-			//if (DEBUG) console.log("Core.add()",randomPos,css);
 			// html
 			imgStr = chrome.extension.getURL('assets/img/badges/' + badge.img);
 			idAttr = id + '_badge';
@@ -120,11 +119,11 @@ window.Badge = (function() {
 
 			// add listeners
 			$(document).on("mouseover", "#" + id, function() {
-				if (DEBUG) console.log($(this));
+				if (DEBUG) console.log("🎒 Badge.add() mouseover", $(this));
 				hover($(this).attr("data-badge"));
 			});
 			$(document).on("click", "#" + id, function() {
-				if (DEBUG) console.log($(this));
+				if (DEBUG) console.log("🎒 Badge.add() click", $(this));
 				// Math.random so gif replays
 				let img = chrome.extension.getURL('assets/img/consumables/consumable-explosion.gif?' + Math.random());
 				$(this).html("<img src='" + img + "'>");
@@ -144,7 +143,7 @@ window.Badge = (function() {
 	 */
 	function hover(id) {
 		let badge = types[id];
-		//if (DEBUG) console.log("Badge.hover()", id, badge);
+		if (DEBUG) console.log("🎒 Badge.hover()", id, badge);
 		if (!hovered) {
 			// tell them
 			Dialogue.showStr("Oh, you found " + badge.ref + " " + badge.name + " badge!", badge.sound, true);
@@ -160,11 +159,12 @@ window.Badge = (function() {
 	function collect(id) {
 		try {
 			let badge = types[id];
-			//if (DEBUG) console.log("Badge.collect()", id, badge);
+			if (DEBUG) console.log("🎒 Badge.collect()", id, badge);
 			// play sound
 			Sound.playRandomPowerup();
-			// add to backgroundUpdate
-			TallyStorage.addToBackgroundUpdate("itemData", "badges", badge);
+			// save in background and on server
+			TallyStorage.saveTallyUser("badges", badge, "🎒 Badge.collect()");
+			TallyStorage.addToBackgroundUpdate("itemData", "badges", badge, "🎒 Badge.collect()");
 		} catch (err) {
 			console.error(err);
 		}

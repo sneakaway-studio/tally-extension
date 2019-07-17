@@ -2,8 +2,7 @@
 
 window.Skin = (function() {
 	// PRIVATE
-
-	let DEBUG = false;
+	let DEBUG = Debug.ALL.Skin;
 	let skins = {
 			"color": {
 				"magenta": {

@@ -1,26 +1,65 @@
 "use strict";
 
 window.Progress = (function() {
+	// PRIVATE
+	let DEBUG = Debug.ALL.Progress;
 
-	let DEBUG = true;
+	let defaults = {
+		"tokenAdded": false,
+		"tokenAddedMessage": false,
+		"attackLimit": 1,
+		"award1stAttack": false,
+		"award2ndAttack": false,
+		"award3rdAttack": false,
+		"award4thAttack": false,
+		"battle1stMonster": false,
+		"battle2ndMonster": false,
+		"battle3rdMonster": false,
+		"viewProfilePage": false,
+		"progressComplete": false
+	};
+
 
 	/**
 	 *	Get value of an individual progress item
 	 */
-	function get(prop) {
-		console.log("🕹️ Progress.get()", tally_user.progress);
+	function get(name) {
 		try {
+			// if value exists in tally_user && is true | >0 | !""
 			if (FS_Object.prop(tally_user.progress) &&
-				FS_Object.prop(tally_user.progress[prop]) &&
-				FS_Object.prop(tally_user.progress[prop].val))
-				return tally_user.progress[prop].val;
-			else
+				FS_Object.prop(tally_user.progress[name]) &&
+				FS_Object.prop(tally_user.progress[name].val)) {
+
+				console.log("🕹️ Progress.get()", tally_user.progress[name]);
+				return tally_user.progress[name].val;
+			} else {
+				console.log("🕹️ Progress.get() NOT FOUND");
 				return false;
+			}
 		} catch (err) {
 			console.error(err);
 		}
 	}
 
+	/**
+	 *	Update progress on server
+	 */
+	function update(name, val) {
+		try {
+			console.log("🕹️ Progress.update()", name, val);
+
+			// create progress object
+			let obj = {
+				"name": name,
+				"val": val
+			};
+			// save in background and on server
+			TallyStorage.saveTallyUser("progress", obj, "🕹️ Progress.update()");
+			TallyStorage.addToBackgroundUpdate("itemData", "progress", obj, "🕹️ Progress.update()");
+		} catch (err) {
+			console.error(err);
+		}
+	}
 
 	/**
 	 *	Checks to see if any progress events should be executed
@@ -31,18 +70,7 @@ window.Progress = (function() {
 			// return if not found
 			if (!tally_user.progress) return;
 
-			// "tokenAdded": false,
-			// "tokenAddedMessage": false,
-			// "attackLimit": 1,
-			// "award1stAttack": false,
-			// "award2ndAttack": false,
-			// "award3rdAttack": false,
-			// "award4thAttack": false,
-			// "battle1stMonster": false,
-			// "battle2ndMonster": false,
-			// "battle3rdMonster": false,
-			// "viewProfilePage": false,
-			// "progressComplete": false
+
 
 			// AWARD ATTACK - 1st
 			if (!get("award1stAttack") && tally_user.score.score > 3) {
@@ -74,33 +102,11 @@ window.Progress = (function() {
 
 
 
-
-
-
 		} catch (err) {
 			console.error(err);
 		}
 	}
 
-
-
-
-
-	/**
-	 *	Update progress on server
-	 */
-	function update(name, val) {
-		try {
-			if (!prop(tally_user.progress[name]) || tally_user.progress[name] !== val) {
-				TallyStorage.addToBackgroundUpdate("itemData", "progress", {
-					"name": name,
-					"val": val
-				});
-			}
-		} catch (err) {
-			console.error(err);
-		}
-	}
 
 
 	// PUBLIC
@@ -108,9 +114,9 @@ window.Progress = (function() {
 		get: function(prop) {
 			get(prop);
 		},
-		check: check,
 		update: function(name, val) {
 			update(name, val);
 		},
+		check: check,
 	};
 }());

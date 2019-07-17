@@ -5,8 +5,7 @@
 
 window.StatsDisplay = (function() {
 	// PRIVATE
-
-	let DEBUG = true;
+	let DEBUG = Debug.ALL.StatsDisplay;
 
 	/**
 	 * Starting point for stats svg coordinates
@@ -101,7 +100,7 @@ window.StatsDisplay = (function() {
 		try {
 			let stats = Stats.get(who),
 				level = Stats.getLevel(who);
-			console.log("📈 StatsDisplay.updateDisplay()", "who="+ who, "stats="+ stats, "level="+ level);
+			if (DEBUG) console.log("📈 StatsDisplay.updateDisplay()", "who="+ who, "stats="+ stats, "level="+ level);
 			if (stats === {}) return;
 			// bars, circle, table
 			adjustStatsBar(who, "health");
@@ -176,7 +175,7 @@ window.StatsDisplay = (function() {
 				// update: function(anim) {
 				// 	for (let i=0; i<anim.animations.length; i++){
 				// 		if (who === "monster" && bar === "health")
-				// 			console.log("📈 StatsDisplay.adjustStatsBar()5",i, "anim="+ JSON.stringify(anim.animations[i].tweens) );
+				// 			if (DEBUG) console.log("📈 StatsDisplay.adjustStatsBar()5",i, "anim="+ JSON.stringify(anim.animations[i].tweens) );
 				// 	}
 				//
 				// },

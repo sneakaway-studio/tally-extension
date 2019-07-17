@@ -6,7 +6,7 @@
 window.Consumable = (function() {
 	// PRIVATE
 
-	let DEBUG = true,
+	let DEBUG = Debug.ALL.Consumable,
 		consumables = [],
 		hovered = false,
 		types = {
@@ -200,8 +200,9 @@ window.Consumable = (function() {
 			//if (DEBUG) console.log("🍪 Consumable.collect()", key, consumable);
 			// play sound
 			Sound.playRandomPowerup();
-			// add to backgroundUpdate
-			TallyStorage.addToBackgroundUpdate("itemData", "consumables", consumable);
+			// save in background and on server
+			TallyStorage.saveTallyUser("consumables", consumable, "🍪 Consumables.collect()");
+			TallyStorage.addToBackgroundUpdate("itemData", "consumables", consumable, "🍪 Consumables.collect()");
 			// delay then update stats
 			setTimeout(function() {
 				// update stats

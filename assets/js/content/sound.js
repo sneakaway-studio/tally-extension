@@ -2,7 +2,7 @@
 
 window.Sound = (function() {
 	// PRIVATE
-	var DEBUG = false,
+	var DEBUG = Debug.ALL.Sound,
 		sounds = {
 			"_tests": {
 				"blip": [
@@ -77,7 +77,7 @@ window.Sound = (function() {
 
 	function playMusic(file, loop, volumeModifier = 0) {
 		try {
-			console.log("♪ Sound.playMusic()", file, loop, volumeModifier);
+			if (DEBUG) console.log("♪ Sound.playMusic()", file, loop, volumeModifier);
 
 			// if music isn't already playing then start it
 			if (musicFile === "") {
@@ -115,7 +115,7 @@ window.Sound = (function() {
 
 	function startMusic() {
 		try {
-			console.log("♪ Sound.startMusic()");
+			if (DEBUG) console.log("♪ Sound.startMusic()");
 
 			if (musicAudio !== null){
 				musicAudio.pause();
@@ -138,7 +138,7 @@ window.Sound = (function() {
 					// create promise / attempt to play
 					musicAudio.play();
 				}).catch(err => {
-					//console.log(err);
+					//if (DEBUG) console.log(err);
 					//if(DEBUG) console.log("Autoplay prevented!");
 					// musicAudio.pause();
 					// musicAudio.play();
@@ -152,7 +152,7 @@ window.Sound = (function() {
 
 	function stopMusic() {
 		try {
-			console.log("♪ Sound.stopMusic()");
+			if (DEBUG) console.log("♪ Sound.stopMusic()");
 			musicAudio.pause();
 			musicFile = "";
 		} catch (err) {
@@ -162,7 +162,7 @@ window.Sound = (function() {
 
 	//
 	// function loopMusic() {
-	// 	console.log("♪ Sound.loopMusic()",musicAudio.src)
+	// 	if (DEBUG) console.log("♪ Sound.loopMusic()",musicAudio.src)
 	// 	musicAudio.addEventListener('ended', function() {
 	// 		this.currentTime = 0;
 	// 		this.play();

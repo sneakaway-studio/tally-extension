@@ -1,9 +1,8 @@
 "use strict";
 
-window.Page = (function() {
+window.PageData = (function() {
 	// PRIVATE
-
-	let DEBUG = true;
+	let DEBUG = Debug.ALL.PageData;
 
 	function getDescription() {
 		try {
@@ -49,7 +48,7 @@ window.Page = (function() {
 		} catch (err) {
 			console.error(err);
 		}
-	}
+	} 
 
 	/**
 	 *	Get all "tags" on a page
@@ -149,37 +148,37 @@ window.Page = (function() {
 			var data = {
 				activeOnPage: false, // default
 				browser: {
-					name: Environment.getBrowserName(),
+					name: Environment.getBrowserName() || "",
 					cookieEnabled: navigator.cookieEnabled || "",
-					language: Environment.getBrowserLanguage(),
-					platform: Environment.getPlatform(),
+					language: Environment.getBrowserLanguage() || "",
+					platform: Environment.getPlatform() || "",
 					width: window.innerWidth || document.body.clientWidth,
 					height: window.innerHeight || document.body.clientHeight,
 					center: {
 						x: 0,
 						y: 0
 					},
-					fullHeight: document.body.scrollHeight
+					fullHeight: document.body.scrollHeight || 0
 				},
 				screen: {
-					width: screen.width,
-					height: screen.height
+					width: screen.width || 0,
+					height: screen.height || 0
 				},
-				contentType: window.document.contentType,
-				description: getDescription(),
-				domain: Environment.extractRootDomain(document.location.href),
-				h1: getH1(),
-				keywords: getKeywords(),
+				contentType: window.document.contentType || "",
+				description: getDescription() || "",
+				domain: Environment.extractRootDomain(document.location.href) || "",
+				h1: getH1() || "",
+				keywords: getKeywords() || "",
 				mouseX: 0,
 				mouseY: 0,
 				mouseupFired: false,
-				subDomain: Environment.extractSubDomain(document.location.href),
+				subDomain: Environment.extractSubDomain(document.location.href) || "",
 				tags: "",
 				time: 0,
-				title: getTitle(),
-				trackers: getTrackersOnPage(),
+				title: getTitle() || "",
+				trackers: getTrackersOnPage() || "",
 				previousUrl: "",
-				url: document.location.href
+				url: document.location.href || ""
 			};
 			// add dimensions
 			data.browser.center.x = data.browser.width / 2;
@@ -191,8 +190,6 @@ window.Page = (function() {
 			if (data.domain == "youtube.com")
 				// 	addMutationObserver();
 				addTitleChecker();
-			// add it to the update for this page
-			storePageDataInBackgroundUpdate(data);
 			return data;
 		} catch (err) {
 			console.error(err);
@@ -200,17 +197,7 @@ window.Page = (function() {
 	}
 
 
-	function storePageDataInBackgroundUpdate(data) {
-		TallyStorage.backgroundUpdate.pageData = {
-			"description": data.description,
-			"domain": data.domain,
-			"keywords": data.keywords,
-			"tags": data.tags,
-			"time": data.time,
-			"title": data.title,
-			"url": data.url
-		};
-	}
+
 
 	/**
 	 *	MutationObserver to detect title element changes (e.g. youtube and other ajax sites)
@@ -246,11 +233,11 @@ window.Page = (function() {
 
 
 	/**
-	 *	If on dashboard page then check for flags
+	 *	If on dashboard page then check for specific flags
 	 */
 	function checkDashboardForFlags() {
 		try {
-			//console.log("🗒️ Page.checkDashboardForFlags()", pageData.url, tally_meta.website + "/dashboard");
+			if (DEBUG) console.log("🗒️ PageData.checkDashboardForFlags()", pageData.url, tally_meta.website + "/dashboard");
 
 			let tokenOnPage = false,
 				tokenData = {};
@@ -260,7 +247,7 @@ window.Page = (function() {
 
 				// if there is a token
 				if ($("#token").length) {
-					if (DEBUG) console.log("🗒️ Page.checkDashboardForFlags() TOKEN! 🔑", pageData.url, tally_meta.website + "/dashboard");
+					if (DEBUG) console.log("🗒️ PageData.checkDashboardForFlags() TOKEN! 🔑 tokenData = " + tokenData);
 					// grab new token
 					tokenData = {
 						token: $("#token").val(),
@@ -268,31 +255,24 @@ window.Page = (function() {
 					};
 					// for flag checking
 					tokenOnPage = true;
-					//console.log("🗒️ Page.checkDashboardForFlags() tokenData = " + tokenData);
+					// save token
 					TallyStorage.saveToken(tokenData);
 
 
-					console.log("🗒️ Page.checkDashboardForFlags() SYNC WITH SERVER");
+					console.log("🗒️ PageData.checkDashboardForFlags() SYNC WITH SERVER");
 
-
-// // create backgroundUpdate object
-// var backgroundUpdate = TallyStorage.newBackgroundUpdate();
-// // then push to the server
-// sendBackgroundUpdate(backgroundUpdate);
-
-// get new stuff
-//		TallyMain. ???
-
+					// update progress
+					Progress.update("tokenAdded", true);
 				}
 
 				// if there are flags
 				if ($("#tallyFlags").length) {
-					if (DEBUG) console.log("🗒️ Page.checkDashboardForFlags() FLAGS! 🚩", $("#tallyFlags").html(), pageData.url, tally_meta.website);
+					if (DEBUG) console.log("🗒️ PageData.checkDashboardForFlags() FLAGS! 🚩", $("#tallyFlags").html(), pageData.url, tally_meta.website);
 
 					let flags = JSON.parse($("#tallyFlags").html().trim());
 
 					for (let i = 0; i < flags.length; i++) {
-						console.log("🚩 Page.checkDashboardForFlags() FLAG = " + JSON.stringify(flags[i]));
+						console.log("🚩 PageData.checkDashboardForFlags() FLAG = " + JSON.stringify(flags[i]));
 
 						// if resetUser
 						if (flags[i].name == "resetUser") {

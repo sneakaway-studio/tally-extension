@@ -5,8 +5,7 @@
 
 window.Stats = (function() {
 	// PRIVATE
-
-	let DEBUG = true,
+	let DEBUG = Debug.ALL.Stats,
 		levelMultiplier = 9.5,
 		resetStatsAll = {
 			"accuracy": 0.91,

@@ -2,7 +2,7 @@
 
 window.MonsterCheck = (function() {
 
-	let DEBUG = false,
+	let DEBUG = Debug.ALL.MonsterCheck,
 		currentMID = "",
 		secondsBeforeDelete = 300; // 60 seconds for testing
 

@@ -12,6 +12,10 @@ var GameData = (function() {
 		"linkedin.com"
 	];
 
+	let domainKeywords = {
+		"facebook.com": "social,networks,facebook,like",
+	};
+
 	let clickScore = {
 		"click": 	1,
 		"like": 	2,
@@ -139,7 +143,7 @@ var GameData = (function() {
 			"name": "levelUp",
 			"dialogue": "You just leveled up!",
 			"mood": "happy",
-			"status": null  
+			"status": null
 		}
 	};
 

@@ -6,7 +6,7 @@
 window.Battle = (function() {
 	// PRIVATE
 
-	let DEBUG = false,
+	let DEBUG = Debug.ALL.Battle,
 		_active = false,
 		tallyBattleFloatingAnim = null,
 		monsterBattleFloatingAnim = null,

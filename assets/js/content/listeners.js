@@ -5,8 +5,7 @@
 
 window.TallyListeners = (function() {
 	// PRIVATE
-
-	let DEBUG = false;
+	let DEBUG = Debug.ALL.TallyListeners;
 
 	// "shim" for clicking on SVGs
 	SVGAnimatedString.prototype.indexOf = function() {
@@ -74,8 +73,8 @@ window.TallyListeners = (function() {
 	var clickEventHandler = function(eventData, target) {
 		try {
 			//if (!pageData.activeOnPage || tally_options.gameMode === "disabled") return;
-			// console.log("clickEventHandler() > eventData",eventData,target);
-			//console.log("clickEventHandler() > target",target,target.className);
+			if (DEBUG) console.log("👂 TallyListeners.clickEventHandler() > eventData",eventData,target);
+			if (DEBUG) console.log("👂 TallyListeners.clickEventHandler() > target",target,target.className);
 
 			// for updating the background object later on
 			let scoreData = {};
@@ -90,7 +89,7 @@ window.TallyListeners = (function() {
 			// else if ( pageData.url == pageData.previousUrl) // THIS BREAKS ON FB
 			// 	exit = " -> url is not different";
 			if (exit !== "") {
-				if (DEBUG) console.log("\n///// event => mouseup" + exit);
+				if (DEBUG) console.log("👂 TallyListeners.clickEventHandler() > event => mouseup" + exit);
 				return;
 			}
 
@@ -121,7 +120,7 @@ window.TallyListeners = (function() {
 				exit = " -> ignore [" + target.id + ", " + eventData.tag + "] node(s)";
 			}
 			if (exit !== "") {
-				if (DEBUG) console.log("\n///// event => mouseup" + exit);
+				if (DEBUG) console.log("👂 TallyListeners.clickEventHandler() > event => mouseup" + exit);
 				return;
 			}
 
@@ -131,8 +130,8 @@ window.TallyListeners = (function() {
 
 			// for all clicks, buttons
 			if (eventData.action == "click" || eventData.action == "button") {
-				//console.log("eventData: "+ JSON.stringify(eventData));
-				if (DEBUG) console.log("\n///// event => mouseup -> [" + eventData.action + "]");
+				if (DEBUG) console.log("👂 TallyListeners.clickEventHandler() > eventData: "+ JSON.stringify(eventData));
+				if (DEBUG) console.log("👂 TallyListeners.clickEventHandler() > event => mouseup -> [" + eventData.action + "]");
 
 				// update
 				Debug.update();
@@ -168,25 +167,32 @@ window.TallyListeners = (function() {
 				 */
 
 				// if we are this far it is a click
-				TallyStorage.addToBackgroundUpdate("scoreData", "clicks", 1);
+				TallyStorage.addToBackgroundUpdate("scoreData", "clicks", 1, "👂 TallyListeners.clickEventHandler()");
 				// store time
-				TallyStorage.addToBackgroundUpdate("pageData", "time", pageData.time);
+				TallyStorage.addToBackgroundUpdate("pageData", "time", pageData.time, "👂 TallyListeners.clickEventHandler()");
 				// reset page time
 				pageData.time = 0;
 				// store event data
-				TallyStorage.addToBackgroundUpdate("eventData", eventData);
+				TallyStorage.addToBackgroundUpdate("eventData", eventData, null, "👂 TallyListeners.clickEventHandler()");
 				// add and update score
-				TallyStorage.addToBackgroundUpdate("scoreData", "score", GameData.clickScore[eventData.action]);
+				TallyStorage.addToBackgroundUpdate("scoreData", "score", GameData.clickScore[eventData.action], "👂 TallyListeners.clickEventHandler()");
 
-				// only allow points for clicking the first time (FB Like, etc.)
-				$(target).toggleClass("tally-clicked");
 
+				// when a user clicks one of the following happens
+				// 1) dynamic page (react, etc.) and the url didn't changed
+				// 2) dynamic page and url DID change
+				// 3) static page and they are using form elements, etc.
+				// 4) we are headed to a new page
+				// in any case, check, send, and reset update for every click
+				TallyStorage.checkSendBackgroundUpdate();
 
 
 				/**
 				 * 	5. Game responses
 				 */
 
+				// only allow points for clicking the first time (FB Like, etc.)
+ 				$(target).toggleClass("tally-clicked");
 				// check progress
  				Progress.check();
 				// play sound

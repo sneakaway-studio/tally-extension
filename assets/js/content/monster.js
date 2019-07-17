@@ -9,7 +9,7 @@ window.Monster = (function() {
 	 *	4. ...
 	 */
 
-	let DEBUG = false,
+	let DEBUG = Debug.ALL.Monster,
 		currentMID = 0,
 		secondsBeforeDelete = 300; // 60 seconds for testing
 
@@ -31,7 +31,7 @@ window.Monster = (function() {
 				"missed": 0,
 				"facing": MonsterData.dataById[mid].facing,
 				"updatedAt": Date.now()
-			};  
+			};
 
 			// if it already exists then make it the number of captures +1
 			if (tally_user.monsters[mid])
@@ -49,6 +49,7 @@ window.Monster = (function() {
 	 */
 	function returnNewMonsterLevel() {
 		try {
+			if (DEBUG) console.log("👿 Monster.returnNewMonsterLevel()",tally_user);
 			let userLevel = tally_user.level,
 				factor = 0.5;
 			if (userLevel > 15) factor = 0.4;
@@ -58,7 +59,7 @@ window.Monster = (function() {
 				max = Math.ceil(userLevel + (userLevel * factor));
 			let level = Math.floor(Math.random() * (max - min) + min);
 			if (level < 1) level = 1;
-			//console.log("👿 Monster.returnNewMonsterLevel()",userLevel,min,max,level);
+			//if (DEBUG) console.log("👿 Monster.returnNewMonsterLevel()",userLevel,min,max,level);
 			return level;
 		} catch (err) {
 			console.error(err);
@@ -124,13 +125,13 @@ window.Monster = (function() {
 			// add listeners
 			$(document).on("mouseover", ".tally_monster_sprite_container", function() {
 				let mid = Number($(this).attr('data-mid'));
-				//console.log(mid);
+				//if (DEBUG) console.log(mid);
 				// show dialogue with sound but don't add to queue in case they click
 				Dialogue.show(DialogueData.get(["battle", "choose", null]), true, false);
 			});
 			$(document).on("click", ".tally_monster_sprite_container", function() {
 				let mid = Number($(this).attr('data-mid'));
-				//console.log(mid);
+				//if (DEBUG) console.log(mid);
 				// launch battle
 				Battle.start(mid);
 			});

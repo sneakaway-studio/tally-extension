@@ -29,7 +29,7 @@ window.Install = (function() {
 				let _tally_secret = {
 					"token": existingToken.token,
 					"tokenExpires": existingToken.tokenExpires
-				}
+				};
 				store("tally_secret", _tally_secret);
 			}
 

@@ -2,7 +2,7 @@
 
 window.MonsterAward = (function() {
 
-	let DEBUG = true,
+	let DEBUG = Debug.ALL.MonsterAward,
 		secondsBeforeDelete = 300; // 60 seconds for testing
 
 

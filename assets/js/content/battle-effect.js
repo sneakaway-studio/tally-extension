@@ -5,7 +5,7 @@
 
 window.BattleEffect = (function() {
 	// PRIVATE
-	let DEBUG = false,
+	let DEBUG = Debug.ALL.BattleEffect,
 		source, // page source for rumbles
 		nodes, // node string for rumbles
 		n = "*", // node elements for rumbles

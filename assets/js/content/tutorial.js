@@ -1,8 +1,8 @@
 "use strict";
 
 window.Tutorial = (function() {
-
-	let DEBUG = false;
+	// PRIVATE
+	let DEBUG = Debug.ALL.Tutorial;
 
 	/**
 	 *	Checks to see if any tutorial events should be executed

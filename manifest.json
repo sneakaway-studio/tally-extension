@@ -40,6 +40,7 @@
         "matches": ["<all_urls>"],
         "js": [
             "assets/libs/bluebird.min.js",
+            "assets/js/content/debug.js",
             "assets/js/content/storage.js",
             "assets/libs/jquery-3.2.1.min.js",
             "assets/libs/jquery-ui.min.js",
@@ -74,7 +75,6 @@
             "assets/js/content/tracker.js",
             "assets/js/content/effect.js",
             "assets/js/content/sound.js",
-            "assets/js/content/debug.js",
             "assets/js/content/listeners.js",
             "assets/js/content/dialogue.js",
             "assets/js/content/tally-skins.js",
