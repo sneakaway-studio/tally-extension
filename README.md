@@ -45,6 +45,15 @@ Learn more at [tallygame.net](https://tallygame.net).
 
 ## Development Versions
 
+### Version 0.2.6
+
+* Rewrites backend updates to improve asynchronous communication w/ API
+* Creates a queueing system so many changes on ext. / API can be staged before sending to lower traffic / processing
+* Adds flags from / to ext. and server so message passing can happen more easily
+* Standardizes communication of "items" with server/database
+* Moves master to server so game progress is saved across installations
+* ^ This allows addition of "delete data" function on dashboard so players can delete / reset their data
+
 ### Version 0.2.5
 
 * Improvements to dialogue system

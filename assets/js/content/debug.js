@@ -9,21 +9,21 @@ window.Debug = (function() {
 	let ALL = {
 		"Badge": true,
 		// battles
-		"BattleAttack": false,
+		"BattleAttack": true,
 		"BattleConsole": false,
 		"BattleEffect": false,
-		"BattleMath": false,
-		"BattleTest": false,
-		"Battle": false,
+		"BattleMath": true,
+		"BattleTest": true,
+		"Battle": true,
 
 		"Consumable": true,
-		"Core": true,
+		"Core": false,
 		"Debug": true,
 		"Dialogue": false,
 		"Effect": true,
 		"TallyEvents": true,
 		"Interface": true,
-		"TallyListeners": true,
+		"TallyListeners": false,
 		"TallyMain": true,
 		// monsters
 		"MonsterAward": false,

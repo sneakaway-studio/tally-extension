@@ -116,7 +116,7 @@ window.BattleMath = (function() {
 				outcome.change = -(FS_Number.round(self[stat].max * attack[affectsStat], 1));
 				self[stat].val = Stats.setVal(selfStr, outcome.stat, self[stat].val + outcome.change);
 				//attackOutcomes.push(outcome); // don't log stamina
-				// console.log("self[stat].val=" + self[stat].val, "attack[affectsStat]=" + attack[affectsStat],
+				// if (!DEBUG) console.log("self[stat].val=" + self[stat].val, "attack[affectsStat]=" + attack[affectsStat],
 				// 	"self[stat].max * attack[affectsStat]=", (self[stat].max * attack[affectsStat]));
 				// logOutcome(affectsStat, outcome, "self", self);
 			}
@@ -127,8 +127,11 @@ window.BattleMath = (function() {
 			}
 
 			if (DEBUG) console.log("🔢 BattleMath.returnAttackOutcomes()", selfStr + " 🧨 " + oppStr, attack,
+				"\n --> self=", self,
 				"\n --> self=", JSON.stringify(self),
-				"\n --> opp=", JSON.stringify(opp));
+				"\n --> opp=", opp,
+				"\n --> opp=", JSON.stringify(opp)
+			);
 
 
 
@@ -293,6 +296,7 @@ window.BattleMath = (function() {
 	// if we want attacks to ocassionally miss
 	function didHit(attack, self, opp) {
 		try {
+			if (DEBUG) console.log("🔢 BattleMath.didHit()", "attack =", attack, "self =", self, "opp =", opp);
 			let hitChance = attack.accuracy * (self.accuracy.val / opp.evasion.val);
 			if (DEBUG) console.log("🔢 BattleMath.didHit()", "hitChance=" + hitChance, "attack.accuracy=" + attack.accuracy,
 				"self.accuracy.val=" + self.accuracy.val, "opp.evasion.val=" + opp.evasion.val,

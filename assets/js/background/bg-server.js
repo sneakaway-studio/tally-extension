@@ -167,6 +167,7 @@ window.Server = (function() {
 	}
 
 
+
 	function handleSync(result) {
 		// get local objects to update them
 		let _tally_user = store("tally_user");
@@ -189,7 +190,7 @@ window.Server = (function() {
 		if (result.flags && result.flags.length > 0) {
 			console.log("🚩 Server.handleSync() FLAGS =", JSON.stringify(result.flags));
 			// store
-// !!!! THIS SHOULD BE INSIDE backgroundUpdate now
+			// !!!! THIS SHOULD BE INSIDE backgroundUpdate now
 		}
 	}
 

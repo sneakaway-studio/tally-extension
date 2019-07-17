@@ -11,24 +11,29 @@ var AttackData = (function() {
     /**
      *  Return an attack of name or type or random
      */
-	function returnAttack(name = "",type = "") {
-		// if looking up specific one then get by key
-		if (name !== "" && prop(data[name]))
-			return data[name];
-		else if (type !== ""){
-            // get random
-            let attack = FS_Object.randomObjProperty(data);
-            if (DEBUG) console.log("💥 AttackData.returnAttack()", name, type, attack);
-            // loop until type met
-            while (attack.type !== type){
+	function returnAttack(name = "", type = "") {
+		try {
+            if (DEBUG) console.log("💥 AttackData.returnAttack()", name, type); 
+    		// if looking up specific one then get by key
+    		if (name !== "" && FS_Object.prop(data[name]))
+    			return data[name];
+    		else if (type !== ""){
+                // get random
+                let attack = FS_Object.randomObjProperty(data);
                 if (DEBUG) console.log("💥 AttackData.returnAttack()", name, type, attack);
-                // get new
-                attack = FS_Object.randomObjProperty(data);
-            }
-            return attack;
-		} else
-            // else return random
-			return FS_Object.randomObjProperty(data);
+                // loop until type met
+                while (attack.type !== type){
+                    if (DEBUG) console.log("💥 AttackData.returnAttack()", name, type, attack);
+                    // get new
+                    attack = FS_Object.randomObjProperty(data);
+                }
+                return attack;
+    		} else
+                // else return random
+    			return FS_Object.randomObjProperty(data);
+		} catch (err) {
+			console.error(err);
+		}
 	}
 
 	function returnRandomAttacks(count,types = []) {
