@@ -183,7 +183,7 @@ window.BattleConsole = (function() {
 					str += "<span " +
 						" title='type=" + _attacks[key].type + ",category=" + _attacks[key].category + "' " +
 						" data-attack='" + _attacks[key].name +
-						"' class='tally battle-options " + defenseOption + " attack-" + _attacks[key].name + "'>" +
+						"' class='tally battle-options battle-options-fire " + defenseOption + " attack-" + _attacks[key].name + "'>" +
 						_attacks[key].name + "</span>";
 				}
 			}
@@ -191,46 +191,42 @@ window.BattleConsole = (function() {
 
 			if (DEBUG) console.log("🖥️ BattleConsole.showBattleOptions() step 2", str, _queue, _active);
 
-			// insert placeholder
+			// insert button
 			var ele = "<div class='tally tally_log_line'>" +
 				"<span id='tally_log" + (++logId) + "' class='tally tally_log_cursor'>" + str + "</span>" + "</div>";
 			$("#battle-console-stream").append(ele);
 
-			// add hover, click listeners
-			for (var i in _attacks) {
-				/*jshint loopfunc: true */
-				if (_attacks.hasOwnProperty(i)) {
-					let ref = ".attack-" + _attacks[i].name;
-					if (DEBUG) console.log("🖥️ BattleConsole.showBattleOptions()", i, ref, _attacks[i]);
-					// $(document).on("mouseenter", ref, function() {
-					// 	// remove listener
-					// 	$(document).off("mouseenter", ref);
-					// 	let attackName = $(this).attr("data-attack");
-					// 	//if (DEBUG) console.log(attackName);
-					// });
-					$(document).on("click", ref, function() {
-						console.log(Battle.details);
-						// if user can't do attack yet but they clicked anyway
-						if (Battle.details.attackInProgress) {
-							let r = Math.random();
-							if (r < 0.2)
-								Dialogue.showStr("Hey, this is a turn based game. It's not your turn.", "neutral", true);
-							else if (r < 0.4)
-								Dialogue.showStr("Slow down speed racer.", "neutral", true);
-							else if (r < 0.6)
-								Dialogue.showStr("Wait your turn 😀", "neutral", true);
-							return;
-						} else {
-							// remove listener
-							$(document).off("click", ref);
-							// get attack name
-							let attackName = $(this).attr("data-attack");
-							if (DEBUG) console.log("🖥️ BattleConsole.showBattleOptions() attackName =", attackName, tally_user.attacks);
-							BattleAttack.doAttack(tally_user.attacks[attackName], "tally", "monster");
-						}
-					});
+			// add only one listener
+			$(document).on("mouseover", '.battle-options-fire', function() {
+				// remove listener
+				//$(document).off("mouseover", '.battle-options-fire');
+				let attackName = $(this).attr("data-attack");
+				if (DEBUG) console.log(attackName);
+			});
+			// add only one listener
+			$(document).on("click", '.battle-options-fire', function() {
+				console.log("🖥️ 🖥️ 🖥️ 🖥️ 🖥️ 🖥️ 🖥️ 🖥️  CLICK CALLED, attack =", $(this).attr("data-attack"), Battle.details);
+				// if user can't do attack yet but they clicked anyway
+				if (Battle.details.attackInProgress) {
+					let r = Math.random();
+					if (r < 0.2)
+						Dialogue.showStr("Hey, this is a turn based game. It's not your turn.", "neutral", true);
+					else if (r < 0.4)
+						Dialogue.showStr("Slow down speed racer.", "neutral", true);
+					else if (r < 0.6)
+						Dialogue.showStr("Wait your turn 😀", "neutral", true);
+					return;
+				} else {
+					// remove listener (from all)
+					$(document).off("click", '.battle-options-fire');
+					// get attack name
+					let attackName = $(this).attr("data-attack");
+					if (DEBUG) console.log("🖥️ BattleConsole.showBattleOptions() attackName =", attackName, tally_user.attacks);
+					BattleAttack.doAttack(tally_user.attacks[attackName], "tally", "monster");
 				}
-			}
+			});
+
+
 			// add "run" listener
 			$(document).on("click", '.battle-options-esc', function() {
 				// remove listener

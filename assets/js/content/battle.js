@@ -73,7 +73,7 @@ window.Battle = (function() {
 	 */
 	function start(mid) {
 		try {
-			//console.log("💥 Battle.start()", mid);
+			console.log("💥 Battle.start()", mid);
 			if (_active) return;
 			active(true);
 			if (!Progress.get("battle1stMonster")) {
@@ -114,6 +114,7 @@ window.Battle = (function() {
 			});
 			// hide current dialogue
 			Dialogue.hide();
+
 			// change monster element back to fixed
 			Core.setElementFixed('.tally_monster_sprite_container');
 			// set monster details

@@ -45,6 +45,10 @@ Learn more at [tallygame.net](https://tallygame.net).
 
 ## Development Versions
 
+### Version 0.2.7
+
+* Fixes issues with battle logic
+
 ### Version 0.2.6
 
 * Rewrites backend updates to improve asynchronous communication w/ API
