@@ -62,7 +62,7 @@ window.Stats = (function() {
 			else if (Battle.active())
 				// update display
 				StatsDisplay.updateDisplay('monster');
-			//console.log("📋 Stats.reset()", who, level, JSON.stringify(allStats[who]));
+			console.log("📋 Stats.reset()", who, level, JSON.stringify(allStats[who]));
 		} catch (err) {
 			console.error(err);
 		}

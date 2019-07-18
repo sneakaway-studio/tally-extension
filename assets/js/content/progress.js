@@ -7,16 +7,18 @@ window.Progress = (function() {
 	let defaults = {
 		"tokenAdded": false,
 		"tokenAddedPlayWelcomeMessage": false,
+		// attacks
 		"attackLimit": 1,
 		"award1stAttack": false,
 		"award2ndAttack": false,
 		"award3rdAttack": false,
 		"award4thAttack": false,
+		// battles
 		"battle1stMonster": false,
 		"battle2ndMonster": false,
 		"battle3rdMonster": false,
-		"viewProfilePage": false,
-		"progressComplete": false
+		// tutorial
+		"viewProfilePage": false
 	};
 
 

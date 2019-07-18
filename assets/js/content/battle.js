@@ -15,11 +15,13 @@ window.Battle = (function() {
 	function createNewBattleDetails() {
 		return {
 			"mid": null,
+			"level": 1,
 			"monsterName": "",
 			"monsterAttacks": {},
 			"progress": 1, // cues for battle progress, normalized 1=start, 0=end
 			"recentAttack": {},
-			"attackInProgress": false
+			"attackInProgress": false,
+			"winner": null
 		};
 	}
 
@@ -74,8 +76,14 @@ window.Battle = (function() {
 			//console.log("💥 Battle.start()", mid);
 			if (_active) return;
 			active(true);
-			// update progress
-			Progress.update("battle1stMonster",true);
+			if (!Progress.get("battle1stMonster")) {
+				// update progress
+				Progress.update("battle1stMonster", true);
+				// inform them about RPG battling
+				Dialogue.showStr("This game is like a classic RPG.", "neutral", true);
+				Dialogue.showStr("You and the monster must battle by taking turns lauching attacks or defenses.", "neutral", true);
+				Dialogue.showStr("You go first!", "happy", true);
+			}
 			// intro sound
 			Sound.playCategory('powerups', 'powerup1');
 			// setup page for effects
@@ -110,9 +118,10 @@ window.Battle = (function() {
 			Core.setElementFixed('.tally_monster_sprite_container');
 			// set monster details
 			details.mid = mid;
+			details.level = Monster.current().level; //Stats.getLevel("monster");
 			details.monsterName = MonsterData.dataById[mid].name + " monster";
 			details.monsterAttacks = AttackData.returnRandomAttacks(3);
-			//console.log("details=",details);
+			console.log("💥 Battle.start()", "details=", details, mid, tally_nearby_monsters[mid]);
 			// move monster into position and rescale
 			anime({
 				targets: '.tally_monster_sprite_container',
@@ -203,6 +212,22 @@ window.Battle = (function() {
 			});
 			// stop music
 			Sound.stopMusic();
+			// create monster update object
+			let monsterUpdate = {
+				"mid": details.mid,
+				"level": details.level,
+				"captured": 0,
+				"missed": 0,
+			};
+			// set winner
+			if (Battle.details.winner === "tally") {
+				monsterUpdate.captured = 1;
+			} else if (Battle.details.winner === "monster") {
+				monsterUpdate.missed = 1;
+			}
+			// update server
+			TallyStorage.addToBackgroundUpdate("itemData", "monsters", monsterUpdate);
+			TallyStorage.checkSendBackgroundUpdate();
 		} catch (err) {
 			console.error(err);
 		}

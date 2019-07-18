@@ -209,15 +209,15 @@ window.BattleConsole = (function() {
 					// 	//if (DEBUG) console.log(attackName);
 					// });
 					$(document).on("click", ref, function() {
-						console.log(Battle.details.attackInProgress)
+						console.log(Battle.details);
 						// if user can't do attack yet but they clicked anyway
 						if (Battle.details.attackInProgress) {
 							let r = Math.random();
-							if (r < 0.33)
+							if (r < 0.2)
 								Dialogue.showStr("Hey, this is a turn based game. It's not your turn.", "neutral", true);
-							if (r < 0.66)
+							else if (r < 0.4)
 								Dialogue.showStr("Slow down speed racer.", "neutral", true);
-							else
+							else if (r < 0.6)
 								Dialogue.showStr("Wait your turn 😀", "neutral", true);
 							return;
 						} else {
