@@ -27,8 +27,8 @@ window.Debug = (function() {
 		"TallyMain": true,
 		// monsters
 		"MonsterAward": false,
-		"MonsterCheck": false,
-		"Monster": false,
+		"MonsterCheck": true,
+		"Monster": true,
 
 		"Onboarding": true,
 		"PageData": true,

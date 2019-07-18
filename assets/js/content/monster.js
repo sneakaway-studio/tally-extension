@@ -71,8 +71,9 @@ window.Monster = (function() {
 	 */
 	function add(mid) {
 		try {
+		if (DEBUG) console.log('👿 ⊙⊙⊙!⊙ Monster.add()', mid, tally_nearby_monsters[mid]);
 			// don't show if game isn't running in full mode
-			if (!pageData.activeOnPage || tally_options.gameMode !== "full") return;
+			if (!pageData.activeOnPage || tally_options.gameMode === "disabled" || tally_options.gameMode === "stealth") return;
 			// only proceed if mid is valid
 			if (!mid || mid <= 0) return;
 			if (DEBUG) console.log('👿 ⊙⊙⊙!⊙ Monster.add()', mid, tally_nearby_monsters[mid]);

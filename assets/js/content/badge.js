@@ -35,7 +35,7 @@ window.Badge = (function() {
 	function randomizer() {
 		try {
 			// don't display badge if display is off
-			if (!pageData.activeOnPage || tally_options.gameMode !== "full") return;
+			if (!pageData.activeOnPage || tally_options.gameMode === "disabled" || tally_options.gameMode === "stealth") return;
 
 			let r = Math.random(), // whether to create badge of type
 				chosen = false;
@@ -48,6 +48,8 @@ window.Badge = (function() {
 			if (GameData.socialDomains.indexOf(pageData.domain) > -1) {
 				if (DEBUG) console.log("🎒 Badge.randomizer() type = social domain");
 				if (r < 0.01) return create("stalker");
+				// gameMode === testing
+				else if (tally_options.gameMode === "testing") return create("stalker");
 			}
 			// 9a-5p busy bee
 			else if (FS_Date.isWorkday()) {
@@ -58,6 +60,8 @@ window.Badge = (function() {
 			else if (FS_Date.isNight()) {
 				if (DEBUG) console.log('🎒 Badge.randomizer() type = 10p–6a night owl');
 				if (r < 0.01) return create("night-owl");
+				// gameMode === testing
+				else if (tally_options.gameMode === "testing") return create("night-owl");
 			}
 
 

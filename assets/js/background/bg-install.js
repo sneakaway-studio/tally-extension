@@ -125,7 +125,7 @@ window.Install = (function() {
 				"playSounds": true,
 				"soundVolume": 0.3,
 				"showAnimations": true,
-				"gameMode": "full",
+				"gameMode": "full", // "testing" | "full" | "stealth" | "disabled"
 				"disabledDomains": [
 					"drive.google.com",
 					"docs.google.com",
@@ -142,7 +142,7 @@ window.Install = (function() {
 
 	function setOptions(options) {
 		try {
-			if (options.gameMode == "full") {
+			if (options.gameMode == "testing" || options.gameMode == "full") {
 				options.showTally = true;
 				options.showClickVisuals = true;
 				options.playSounds = true;
@@ -213,6 +213,10 @@ window.Install = (function() {
 	// PUBLIC
 	return {
 		init: init,
+		createOptions: createOptions,
+		setOptions: function(obj){
+			return setOptions(obj);
+		},
 		launchStartScreen: launchStartScreen
 	};
 }());

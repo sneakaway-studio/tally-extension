@@ -35,14 +35,15 @@ window.TallyMain = (function() {
 					getNearbyMonstersPromise, getStatsPromise, getTopMonstersPromise
 				]) // getLastBackgroundUpdatePromise
 				.then(function() {
-					// if (DEBUG) console.log('🧰 TallyMain.getDataFromBackground() -> all promises have resolved',
-					// 			tally_user, tally_options, tally_meta,
-					// 			tally_nearby_monsters, tally_top_monsters);
+					if (DEBUG) console.log('🧰 TallyMain.getDataFromBackground() -> all promises have resolved',
+								tally_user, tally_options, tally_meta
+								// ,tally_nearby_monsters, tally_top_monsters
+							);
 
 					if (callback) callback();
 				})
 				.catch(function(err) {
-					if (DEBUG) console.error('🧰 TallyMain.getDataFromBackground() -> ' +
+					console.error('🧰 TallyMain.getDataFromBackground() -> ' +
 						'one or more promises have failed: ' + err,
 						"\n tally_user =", tally_user,
 						"\n tally_options =", tally_options,

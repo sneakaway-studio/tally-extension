@@ -67,16 +67,13 @@ window.Consumable = (function() {
 	function randomizer() {
 		try {
 			// don't display consumable if display is off
-			if (!pageData.activeOnPage || tally_options.gameMode !== "full") return;
+			if (!pageData.activeOnPage || tally_options.gameMode === "disabled" || tally_options.gameMode === "stealth") return;
 
 			let countR = Math.random(), // whether to create a consumable at all
 				r = Math.random(), // whether to create consumable of type
 				type = "", // default type
 				count = 1, // number to create
 				chosen = false;
-
-			// testing
-			//create("cookie", "", 5);
 
 			// add three on one page every 1000 loads
 			if (countR < 0.001) count = 3;
@@ -88,6 +85,8 @@ window.Consumable = (function() {
 			else if (r < 0.06) create("junk", "", count);
 			// pick random type
 			else if (r < 0.07) create("", "", count);
+			// gameMode === testing
+			else if (r < 0.4 && tally_options.gameMode === "testing") create("cookie", "", 1);
 
 		} catch (err) {
 			console.error(err);
@@ -99,7 +98,7 @@ window.Consumable = (function() {
 	function create(type = "", name = "", num = 1) {
 		try {
 			// don't display if off
-			if (!pageData.activeOnPage || tally_options.gameMode !== "full" || type === "") return;
+			if (!pageData.activeOnPage || tally_options.gameMode === "disabled" || tally_options.gameMode === "stealth" || type === "") return;
 			if (DEBUG) console.log("🍪 Consumable.create()", "type=" + type, "name=" + name, "num=" + num);
 
 			// store the consumable

@@ -72,7 +72,7 @@ window.TallyListeners = (function() {
 	 */
 	var clickEventHandler = function(eventData, target) {
 		try {
-			//if (!pageData.activeOnPage || tally_options.gameMode === "disabled") return;
+			if (!pageData.activeOnPage || tally_options.gameMode === "disabled") return;
 			if (DEBUG) console.log("👂 TallyListeners.clickEventHandler() > eventData",eventData,target);
 			if (DEBUG) console.log("👂 TallyListeners.clickEventHandler() > target",target,target.className);
 

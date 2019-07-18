@@ -61,7 +61,7 @@ window.Listener = (function() {
 				}
 				// saveOptions
 				else if (request.action == "saveOptions") {
-					let options = setOptions(request.data);
+					let options = Install.setOptions(request.data);
 					store("tally_options", options); // store in localStorage
 					sendResponse({
 						"action": request.action,
@@ -70,7 +70,7 @@ window.Listener = (function() {
 				}
 				// resetOptions (same as creating new options)
 				else if (request.action == "resetOptions") {
-					store("tally_options", createOptions());
+					store("tally_options", Install.createOptions());
 					sendResponse({
 						"action": request.action,
 						"message": 1

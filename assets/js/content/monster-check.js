@@ -16,8 +16,8 @@ window.MonsterCheck = (function() {
 	function check() {
 		try {
 			// don't check if disabled
-			if (pageData.domain == "tallygame.net" || tally_options.gameMode === "disabled" ||
-				!pageData.activeOnPage) return;
+			if (pageData.domain == "tallygame.net" || tally_options.gameMode === "disabled" || !pageData.activeOnPage)
+				return;
 			checkNearbyMonsterTimes();
 		} catch (err) {
 			console.error(err);
@@ -126,12 +126,11 @@ window.MonsterCheck = (function() {
 				// randomizer
 				let r = Math.random();
 
-				// change to 1 to test
-				if (1){
+				// gameMode === testing
+				if (tally_options.gameMode === "testing"){
 					// test
 					tally_nearby_monsters[mid].stage = 3;
 					addMonster = true;
-
 				// what stage are we at with this monster?
 				} else if (tally_nearby_monsters[mid].stage == 0) {
 					// do nothing
