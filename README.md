@@ -48,6 +48,7 @@ Learn more at [tallygame.net](https://tallygame.net).
 ### Version 0.2.7
 
 * Fixes issues with battle logic
+* Adds testing game mode
 
 ### Version 0.2.6
 

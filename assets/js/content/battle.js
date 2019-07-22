@@ -123,13 +123,20 @@ window.Battle = (function() {
 			details.monsterName = MonsterData.dataById[mid].name + " monster";
 			details.monsterAttacks = AttackData.returnRandomAttacks(3);
 			console.log("💥 Battle.start()", "details=", details, mid, tally_nearby_monsters[mid]);
-			// move monster into position and rescale
+			// rescale
+			let matrix = $('.tally_monster_sprite_flip').css('transform')
+				.replace('matrix(',"").replace(')',"").replace(' ',"").split(',');
+			// console.log("tally_nearby_monsters[mid]",tally_nearby_monsters[mid]);
+			// console.log("matrix",matrix);
+			$('.tally_monster_sprite_flip').css({
+				"transform": 'scale(' + matrix[0] * 2 + ',1)'
+			});
+			// move monster into position
 			anime({
 				targets: '.tally_monster_sprite_container',
 				left: "58%",
 				top: "14%",
 				opacity: 1,
-				scale: 1,
 				elasticity: 0,
 				duration: 1000,
 				easing: 'easeOutCubic'

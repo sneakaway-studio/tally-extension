@@ -12,6 +12,11 @@
     width: 375px; /* formerly 500 */
     cursor: pointer;
 }
+.tally_monster_sprite_flip {
+    box-sizing: border-box;
+    height: 300px;
+    width: 375px;
+}
 .tally_monster_sprite {
     position: relative;
     display: inline-block;

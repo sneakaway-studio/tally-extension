@@ -25,8 +25,10 @@ window.Interface = (function() {
 
 							// monster
 							"<div class='tally tally_monster_sprite_container'>" +
-								"<div class='tally tally_monster_sprite'>" +
-									"<div class='tally tally_monster_sprite_inner'></div>" +
+								"<div class='tally tally_monster_sprite_flip'>" +
+									"<div class='tally tally_monster_sprite'>" +
+										"<div class='tally tally_monster_sprite_inner'></div>" +
+									"</div>" +
 								"</div>" +
 								"<div class='tally monster_stats'>" +
 									"<div class='tally monster_stats_bars'></div>" +

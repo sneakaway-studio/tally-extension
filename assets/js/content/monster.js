@@ -104,9 +104,9 @@ window.Monster = (function() {
 
 			// turn monster to face Tally
 			if (prop(tally_nearby_monsters[monster.mid].facing) && tally_nearby_monsters[monster.mid].facing == "1")
-				$('.tally_monster_sprite_container').css('transform', 'scale(-.5,.5)'); // left
+				$('.tally_monster_sprite_flip').css('transform', 'scale(-.5,.5)'); // left
 			else
-				$('.tally_monster_sprite_container').css('transform', 'scale(.5,.5)'); // reset (right)
+				$('.tally_monster_sprite_flip').css('transform', 'scale(.5,.5)'); // reset (right)
 
 			// get random position
 			let pos = Core.returnRandomPositionFull('.tally_monster_sprite_container');
@@ -132,7 +132,7 @@ window.Monster = (function() {
 			});
 			$(document).on("click", ".tally_monster_sprite_container", function() {
 				let mid = Number($(this).attr('data-mid'));
-				//if (DEBUG) console.log(mid);
+				//console.log(mid);
 				// launch battle
 				Battle.start(mid);
 			});
