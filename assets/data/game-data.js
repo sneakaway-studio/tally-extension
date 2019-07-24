@@ -23,7 +23,7 @@ var GameData = (function() {
 		"image": 	5,
 		"submit": 	5,
 		"form": 	5,
-		"SO-vote": 	10,
+		"SO-vote": 	3,
 		"powerup": 	10,
 		"ultra": 	100,
 	};
