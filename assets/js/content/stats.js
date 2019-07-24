@@ -101,10 +101,11 @@ window.Stats = (function() {
 	 */
 	function setVal(who, stat = "", change = null) {
 		try {
+			console.log("📋 Stats.setVal()", who, stat, change);
 			let newVal = 0,
 				normalized = 0;
 			// should we update the stat by value?
-			if (stat != "" && change !== 0) {
+			if (stat != "") { // && change !== 0) {
 				if (DEBUG) console.log("📋 Stats.setVal() #1", who, stat, change, allStats[who][stat]);
 
 				// update value, clamp, and round
@@ -119,7 +120,7 @@ window.Stats = (function() {
 
 				if (DEBUG) console.log("📋 Stats.setVal() #2", who, stat, change, allStats[who][stat]);
 			} else {
-				console.warn("📋 Stats.setVal() stat (string) and change (value) required!");
+				console.warn("📋 Stats.setVal() stat (string) and change (value) required!", who, stat, change);
 			}
 			// return that value
 			return allStats[who][stat].val;
@@ -214,8 +215,8 @@ window.Stats = (function() {
 		get: function(who, stat) {
 			return get(who, stat);
 		},
-		setVal: function(who, stat, val) {
-			return setVal(who, stat, val);
+		setVal: function(who, stat, change) {
+			return setVal(who, stat, change);
 		},
 		getLevel: function(who) {
 			return getLevel(who);

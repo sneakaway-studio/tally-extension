@@ -166,8 +166,15 @@ window.BattleMath = (function() {
 				stat = "health";
 				affectsStat = "oppHealth";
 				outcome = outcomeData[affectsStat];
-				outcome.change = -(FS_Number.round(opp[stat].max * attack[affectsStat], 1));
-				// console.log("outcome.change="+outcome.change,"opp[stat].val + outcome.change=",(opp[stat].val + outcome.change))
+				outcome.change = -(FS_Number.round(opp[stat].max * attack[affectsStat], 3));
+				if (DEBUG) console.log(
+					"outcome.change ["+outcome.change + "] = -(FS_Number.round(" +
+					"opp[stat].max ["+ opp[stat].max +"] *",
+					"attack[affectsStat] ["+ attack[affectsStat] +"] , 1))"
+				);
+				if (DEBUG) console.log("opp[stat].val ["+ opp[stat].val +"] + outcome.change ["+ outcome.change +"] = " +
+					(opp[stat].val + outcome.change));
+
 				opp[stat].val = Stats.setVal(oppStr, outcome.stat, opp[stat].val + outcome.change);
 				attackOutcomes.push(outcome);
 				logOutcome(affectsStat, outcome, "opp", opp);
