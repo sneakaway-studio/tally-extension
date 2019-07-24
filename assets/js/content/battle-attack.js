@@ -356,6 +356,10 @@ window.BattleAttack = (function() {
 		BattleConsole.log(message);
 		// show tally excited
 		Dialogue.show(Dialogue.get(["battle", dialogue, null]), "happy", true);
+		// calculate and show award for beating the monster 
+		let increase = FS_Number.round(Battle.details.monsterLevel * 10);
+		TallyStorage.addToBackgroundUpdate("scoreData", "score", increase);
+		BattleConsole.log("You earned "+ increase +" points for beating this monster!!!");
 		// tell player they blocked tracker
 		BattleConsole.log("You now have blocked the [tracker name coming] from grabbing your data!!!");
 		// potentially award a new attack

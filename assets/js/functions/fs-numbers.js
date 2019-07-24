@@ -14,7 +14,7 @@ window.FS_Number = (function() {
 				console.error(err);
 			}
 		},
-		round: function(val, precision) {
+		round: function(val, precision =0) {
 			try {
 				if (val == null || precision == null)
 					console.error("more numbers required!", val, precision);
