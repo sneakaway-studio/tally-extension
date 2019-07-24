@@ -52,12 +52,13 @@ window.Monster = (function() {
 			if (DEBUG) console.log("👿 Monster.returnNewMonsterLevel()",tally_user);
 			let userLevel = tally_user.level,
 				factor = 0.5;
+			// use factor to keep the level different but near the user's level
 			if (userLevel > 15) factor = 0.4;
 			if (userLevel > 30) factor = 0.2;
 			if (userLevel > 60) factor = 0.1;
 			let min = Math.floor(userLevel - (userLevel * factor)),
 				max = Math.ceil(userLevel + (userLevel * factor));
-			let level = Math.floor(Math.random() * (max - min) + min);
+			let level = Math.floor(Math.random() * (max - min) + min) - 1;
 			if (level < 1) level = 1;
 			//if (DEBUG) console.log("👿 Monster.returnNewMonsterLevel()",userLevel,min,max,level);
 			return level;

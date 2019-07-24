@@ -122,8 +122,22 @@ window.BattleMath = (function() {
 			}
 
 			// if not a defense, check to see if there is a miss
-			if (attack.type !== "defense" && didHit(attack, self, opp)) {
+			if (attack.type !== "defense" && !didHit(attack, self, opp)) {
 				return "missed";
+			}
+			// was it a special attack?
+			else if (prop(attack.special)) {
+				console.log("🔢 BattleMath.returnAttackOutcomes() SPECIAL ATTACK !", attack.special);
+
+				// types...
+				if (attack.special === "opp-loses-1-turn") {
+					return "opp-loses-1-turn";
+				} else if (attack.special === "opp-loses-2-turns") {
+					return "opp-loses-2-turns";
+				} else if (attack.special === "opp-loses-3-turns") {
+					return "opp-loses-3-turns";
+				}
+
 			}
 
 			if (DEBUG) console.log("🔢 BattleMath.returnAttackOutcomes()", selfStr + " 🧨 " + oppStr, attack,
@@ -258,8 +272,6 @@ window.BattleMath = (function() {
 			}
 
 
-
-
 			if (DEBUG) console.log("🔢 BattleMath.returnAttackOutcomes() final stats = ", selfStr + " 🧨 " + oppStr, attack,
 				"\n --> self=", JSON.stringify(self),
 				"\n --> opp=", JSON.stringify(opp));
@@ -298,10 +310,10 @@ window.BattleMath = (function() {
 		try {
 			if (DEBUG) console.log("🔢 BattleMath.didHit()", "attack =", attack, "self =", self, "opp =", opp);
 			let hitChance = attack.accuracy * (self.accuracy.val / opp.evasion.val);
-			if (DEBUG) console.log("🔢 BattleMath.didHit()", "hitChance=" + hitChance, "attack.accuracy=" + attack.accuracy,
-				"self.accuracy.val=" + self.accuracy.val, "opp.evasion.val=" + opp.evasion.val,
-				"(self.accuracy.val / opp.evasion.val)=" + (self.accuracy.val / opp.evasion.val));
-			return (hitChance > 0.8);
+			if (DEBUG) console.log("🔢 BattleMath.didHit()",
+				"hitChance [" + hitChance + "] = attack.accuracy [" + attack.accuracy + "] * ",
+				"(self.accuracy.val [" + self.accuracy.val + "] / opp.evasion.val [" + opp.evasion.val + "])");
+			return (hitChance > 0.7);
 		} catch (err) {
 			console.error(err);
 		}

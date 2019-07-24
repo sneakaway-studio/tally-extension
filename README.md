@@ -49,13 +49,16 @@ Learn more at [tallygame.net](https://tallygame.net).
 
 ### Version 0.2.8
 
-* Fixes monster sprite flip bug
+* Fixes monster sprite flip and monster level bugs
 * Automates data importing
+* Adds special attacks "lose a turn"
+* Adds more monsters and attacks
 
 ### Version 0.2.7
 
 * Fixes issues with battle logic
 * Adds testing game mode
+* Adds more monsters and attacks
 
 ### Version 0.2.6
 

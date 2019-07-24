@@ -48,9 +48,6 @@ window.BattleAttack = (function() {
 			}
 			// set attack in progress
 			else Battle.details.attackInProgress = true;
-
-			// save attack
-			Battle.details.recentAttack = attack;
 			// set details for logging
 			outcomeDetails = {
 				"selfName": "Tally",
@@ -62,6 +59,13 @@ window.BattleAttack = (function() {
 				outcomeDetails.selfName = Battle.details.monsterName;
 				outcomeDetails.oppName = "Tally";
 			}
+
+			// save attack details
+			Battle.details.recentAttack = attack;
+			Battle.details.selfName = outcomeDetails.selfName;
+			Battle.details.selfStr = selfStr;
+			Battle.details.oppName = outcomeDetails.oppName;
+			Battle.details.oppStr = oppStr;
 
 			// 1. show lurch from launching attack
 			if (selfStr == "tally")
@@ -87,7 +91,7 @@ window.BattleAttack = (function() {
 	}
 
 	/**
-	 *	Perform the attack
+	 *	Handle attack outcomes
 	 */
 	function handleAttackOutcomes(attack, selfStr, oppStr) {
 		try {
@@ -110,6 +114,28 @@ window.BattleAttack = (function() {
 			else if (outcomeDetails.outcomes === "noEffect") {
 				// go to next turn...
 				nextAttackPrompt(selfStr, "The attack <span class='text-blue'>had no effect</span>.");
+			}
+			// SPECIAL ATTACK: opp-loses-1-turn
+			else if (outcomeDetails.outcomes === "opp-loses-1-turn") {
+				if (DEBUG) console.log("💥 BattleAttack.handleAttackOutcomes()", outcomeDetails.outcomes, selfStr, oppStr);
+				// take away turns
+				takeAwayTurns(oppStr, 1);
+				// tell user
+				BattleConsole.log(outcomeDetails.oppName + " lost a turn!");
+				// let nextAttackPrompt() skip to opponents next turn...
+				nextAttackPrompt(selfStr, "");
+				return;
+			}
+			// SPECIAL ATTACK: opp-loses-2-turns
+			else if (outcomeDetails.outcomes === "opp-loses-2-turns") {
+				if (DEBUG) console.log("💥 BattleAttack.handleAttackOutcomes()", outcomeDetails.outcomes, selfStr, oppStr);
+				// take away turns
+				takeAwayTurns(oppStr, 2);
+				// tell user
+				BattleConsole.log(outcomeDetails.oppName + " lost two turns!");
+				// let nextAttackPrompt() skip to opponents next turn...
+				nextAttackPrompt(selfStr, "");
+				return;
 			}
 			// ATTACK RESULTED IN INCREASE OR DECREASE IN STATS
 			else if (outcomeDetails.outcomes.length > 0) {
@@ -222,6 +248,7 @@ window.BattleAttack = (function() {
 			console.log(err);
 		}
 	}
+
 
 
 
@@ -345,30 +372,79 @@ window.BattleAttack = (function() {
 
 
 
+	function resetTurns(who) {
+		if (DEBUG) console.log("💥 BattleAttack.resetTurns()", who, JSON.stringify(Battle.details));
+		// take away a turn
+		Battle.details[who + "LostTurns"] = 0;
+	}
+
+	function takeAwayTurns(who, turns) {
+		// take away a turn
+		if (who === "tally") Battle.details.tallyLostTurns -= turns;
+		else if (who === "monster") Battle.details.monsterLostTurns -= turns;
+		if (DEBUG) console.log("💥 BattleAttack.takeAwayTurns()", who, turns,
+			"Battle.details.tallyLostTurns=" + Battle.details.tallyLostTurns,
+			"Battle.details.monsterLostTurns=" + Battle.details.monsterLostTurns
+		);
+	}
+
+
+	function updatePlayerDetails(selfStr) {
+		if (selfStr !== "tally" && selfStr !== "monster") return console.warn("selfStr should be either tally or monster!");
+		// set all the details
+		Battle.details.selfStr = selfStr;
+		if (selfStr === "tally") {
+			Battle.details.oppName = Battle.details.monsterName;
+			Battle.details.oppStr = "monster";
+			Battle.details.selfName = "Tally";
+		} else if (selfStr === "monster") {
+			Battle.details.oppName = "Tally";
+			Battle.details.oppStr = "tally";
+			Battle.details.selfName = Battle.details.monsterName;
+		}
+	}
+
 
 	/**
 	 * 	Determine and prompt who gets next attack
+	 * 	selfStr == the player that just had a turn
 	 */
 	function nextAttackPrompt(selfStr, message = "") {
 		try {
-			// allow a new attack to happen
-			Battle.details.attackInProgress = false;
+			updatePlayerDetails(selfStr);
 
-			// show log
-			if (message !== "") BattleConsole.log(message);
+			// if the player about to receive the turn doesn't get a turn
+			if (Battle.details[Battle.details.oppStr + "LostTurns"] < 0) {
+				if (DEBUG) console.log("💥 " + Battle.details.oppStr + " DOESN'T GET A TURN!!!", selfStr, message,
+					"Battle.details.tallyLostTurns=" + Battle.details.tallyLostTurns,
+					"Battle.details.monsterLostTurns=" + Battle.details.monsterLostTurns
+				);
+				// increment their lost turns
+				Battle.details[Battle.details.oppStr + "LostTurns"]++;
+				// advance to next turn
 
-			// decide who gets next turn...
-			if (selfStr == "tally") {
-				// monster will attack back in a moment
-				setTimeout(function() {
-					doAttack(FS_Object.randomObjProperty(Battle.details.monsterAttacks), "monster", "tally");
-				}, _logDelay + 1000);
+				nextAttackPrompt(Battle.details.oppStr, Battle.details.selfName + " will take another turn!");
+
 			} else {
-				// prompt user to attack in a moment
-				setTimeout(function() {
-					// turn control back to player
-					BattleConsole.log("What will Tally do?", "showBattleOptions");
-				}, _logDelay + 200);
+				// allow a new attack to happen
+				Battle.details.attackInProgress = false;
+
+				// show log
+				if (message !== "") BattleConsole.log(message);
+
+				// decide who gets next turn...
+				if (selfStr == "tally") {
+					// monster will attack back in a moment
+					setTimeout(function() {
+						doAttack(FS_Object.randomObjProperty(Battle.details.monsterAttacks), "monster", "tally");
+					}, _logDelay + 1000);
+				} else {
+					// prompt user to attack in a moment
+					setTimeout(function() {
+						// give control back to player
+						BattleConsole.log("What will Tally do?", "showBattleOptions");
+					}, _logDelay + 200);
+				}
 			}
 		} catch (err) {
 			console.error(err);
@@ -405,9 +481,9 @@ window.BattleAttack = (function() {
 	/**
 	 *	(Possibly) reward Tally with a new attack
 	 */
-	function randomRewardAttack(){
+	function randomRewardAttack() {
 		try {
-			if (Math.random() > 0.2){
+			if (Math.random() > 0.2) {
 				if (DEBUG) console.log("💥 BattleAttack.randomRewardAttack()");
 				rewardAttack();
 			}

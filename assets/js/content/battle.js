@@ -20,8 +20,12 @@ window.Battle = (function() {
 			"monsterLevel": 1,
 			"monsterLostTurns": 0,
 			"monsterName": "",
+			"oppName": "",
+			"oppStr": "",
 			"progress": 1, // cues for battle progress, normalized 1=start, 0=end
 			"recentAttack": {},
+			"selfName": "",
+			"selfStr": "",
 			"tallyLostTurns": 0,
 			"winner": null
 		};
@@ -80,6 +84,7 @@ window.Battle = (function() {
 			active(true);
 			// set currentMID
 			Monster.currentMID = mid;
+			// check progress
 			if (!Progress.get("battle1stMonster")) {
 				// update progress
 				Progress.update("battle1stMonster", true);

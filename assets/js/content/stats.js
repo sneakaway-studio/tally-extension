@@ -43,7 +43,7 @@ window.Stats = (function() {
 					// compute max
 					if (who == "monster") {
 						// if monster then compute max using random
-						allStats[who][stat].max = FS_Number.round((Math.random() * (level * (levelMultiplier * -0.15))) + (level * levelMultiplier), 0);
+						allStats[who][stat].max = FS_Number.round((Math.random() * (level * (levelMultiplier * -0.25))) + (level * levelMultiplier), 0);
 					} else if (who == "tally") {
 						// stats values are based on player level * levelMultiplier * resetStatsAll values
 						allStats[who][stat].max = FS_Number.round((level * levelMultiplier * resetStatsAll[stat]), 0);
