@@ -17,16 +17,16 @@ window.Dialogue = (function() {
 		try {
 			// EXAMPLES
 
-			// Dialogue.show(DialogueData.get(["monster", "launch", null]),true);
+			// Dialogue.show(get(["monster", "launch", null]),true);
 			// return;
 
 			let r = Math.random();
 			if (r < 0.25)
 				// show dialogue from data, ["category", "subcategory", 0], play sound, always add
-				show(DialogueData.get(["random", "greeting", null]), true, true);
+				show(get(["random", "greeting", null]), true, true);
 			else if (r < 0.5)
 				// show dialogue from data, [category/0/index], play sound
-				show(DialogueData.get(["onboarding", null, "onboarding3"]), true);
+				show(get(["onboarding", null, "onboarding3"]), true);
 			else if (r < 0.75)
 				// show dialogue from facts, trackers, play sound
 				show(getFact("trackers", false), "neutral", true);
@@ -47,7 +47,7 @@ window.Dialogue = (function() {
 			if (pageData.trackers.length > 0) subcategory = "few";
 			if (pageData.trackers.length > 3) subcategory = "lots";
 			if (DEBUG) console.log("💭 Dialogue.showTrackerDialogue() subcategory=" + subcategory);
-			show(DialogueData.get(["tracker", subcategory, null]), true);
+			show(get(["tracker", subcategory, null]), true);
 		} catch (err) {
 			console.error(err);
 		}
@@ -250,6 +250,75 @@ window.Dialogue = (function() {
 	}
 
 
+
+
+
+
+	/**
+	 *	Get a random fact (by domain)
+	 */
+	function getFact(domain, includeSource = true) {
+		try {
+			let fact = FS_Object.randomArrayIndex(Facts.data[domain]);
+			// get fact
+			let str = fact.fact;
+			// should we include source?
+			if (includeSource) {
+				if (fact.url && fact.source)
+					str += " Source: <a href='" + fact.url + "' target='_blank'>" + fact.source + "</a>";
+				if (fact.year)
+					str += " (" + fact.year + ")";
+			}
+			return str;
+		} catch (err) {
+			console.error(err);
+		}
+	}
+
+	/**
+	 *	Return a dialogue, arr = ["category", "subcategory", "index"]
+	 */
+	function get(arr) {
+		try {
+			// make sure it is an array
+			if (!Array.isArray(arr)) return;
+			// category is required
+			if (!prop(arr[0])) return;
+
+			if (DEBUG) console.log("💭 Dialogue.get() arr=" + JSON.stringify(arr));
+
+
+			// get category
+			let category, categoryStr, subcategoryStr;
+			categoryStr = arr[0];
+			category = DialogueData.data[categoryStr];
+
+			if (DEBUG) console.log("💭 Dialogue.get()", "categoryStr=" + categoryStr + ", category=" + JSON.stringify(category));
+
+			// if there is a subcategory, then select random
+			if (prop(arr[1])) {
+				subcategoryStr = arr[1];
+				if (DEBUG) console.log("💭 Dialogue.get()", "subcategoryStr=" + subcategoryStr);
+				// if prop doesn't exist in Dialogue then don't show anything
+				if (!prop(category[subcategoryStr]) || category[subcategoryStr].length < 1) return;
+				// otherwise get a random one
+				let r = Math.floor(Math.random() * category[subcategoryStr].length);
+				if (DEBUG) console.log("💭 Dialogue.get()", "subcategoryStr=" + subcategoryStr + ", category[subcategoryStr]=" + JSON.stringify(category[subcategoryStr]));
+				return category[subcategoryStr][r];
+			}
+			// if there is no subcategory, then get by index
+			else if (arr[2]) {
+				let index = arr[2];
+				return category[index];
+			}
+			// otherwise
+			else return false;
+		} catch (err) {
+			console.error(err);
+		}
+	}
+
+
 	// PUBLIC
 	return {
 		show: function(dialogue, playSound, addIfDialogueInProcess) {
@@ -260,7 +329,13 @@ window.Dialogue = (function() {
 		},
 		showTrackerDialogue: showTrackerDialogue,
 		random: random,
-		hide: hide
+		hide: hide,
+		getFact: function(domain, includeSource) {
+			return getFact(domain, includeSource);
+		},
+		get: function(arr) {
+			return get(arr);
+		},
 
 	};
 })();

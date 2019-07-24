@@ -63,7 +63,6 @@
             "assets/data/disconnect-tracking-services.js",
             "assets/data/game-data.js",
             "assets/data/facts.js",
-            "assets/data/dialogue.js",
             "assets/data/dialogue-data.js",
             "assets/data/monsters-by-tag.js",
             "assets/data/monsters-by-id.js",

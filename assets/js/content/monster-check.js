@@ -145,11 +145,11 @@ window.MonsterCheck = (function() {
 						Dialogue.showTrackerDialogue();
 					} else if (r < 0.7) {
 						// random dialogue, but don't change stage
-						Dialogue.show(DialogueData.get(["monster", "far", null]), true);
+						Dialogue.show(Dialogue.get(["monster", "far", null]), true);
 					} else {
 						// or prompt stage 2
 						tally_nearby_monsters[mid].stage = 2;
-						Dialogue.show(DialogueData.get(["monster", "close", null]), true);
+						Dialogue.show(Dialogue.get(["monster", "close", null]), true);
 					}
 				} else if (tally_nearby_monsters[mid].stage == 2) {
 					if (r < 0.2) {
@@ -159,7 +159,7 @@ window.MonsterCheck = (function() {
 						Dialogue.showTrackerDialogue();
 					} else if (r < 0.7) {
 						// random dialogue, but don't change stage
-						Dialogue.show(DialogueData.get(["monster", "close", null]), true);
+						Dialogue.show(Dialogue.get(["monster", "close", null]), true);
 					} else {
 						// or prompt stage 3 - add
 						tally_nearby_monsters[mid].stage = 3;

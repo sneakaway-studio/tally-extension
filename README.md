@@ -50,7 +50,7 @@ Learn more at [tallygame.net](https://tallygame.net).
 ### Version 0.2.8
 
 * Fixes monster sprite flip bug
-
+* Automates data importing
 
 ### Version 0.2.7
 
