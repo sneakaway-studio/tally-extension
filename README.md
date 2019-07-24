@@ -45,6 +45,13 @@ Learn more at [tallygame.net](https://tallygame.net).
 
 ## Development Versions
 
+
+
+### Version 0.2.8
+
+* Fixes monster sprite flip bug
+
+
 ### Version 0.2.7
 
 * Fixes issues with battle logic

@@ -265,32 +265,39 @@ svg.stats-display .stat-bar-circle-text { fill:white; font: 14px Monaco, "Andale
     margin: 6px 0 0 0;
     overflow: auto;
 }
+.battle-options-row .defenseCharacter {
+    font-size: 1.15rem;
+    padding-right: 2px;
+    vertical-align: middle;
+}
+
 .battle-options {
     /* box-sizing: border-box;
     display:inline-block; */
-    box-shadow: 2px 2px #41d728;
     padding: 2px 4px;
-    background-color: #d32cf1;
     color: #eee0f7;
     font-size: 88%;
     margin: 0 8px 8px 0;
     float: left;
-}
-.battle-options-defense {
-    box-shadow: 2px 2px #d32cf1;
-    background-color: #63b7ff;
+    background-color: #d32cf1;
+    box-shadow: 2px 2px #41d728;
 }
 .battle-options:hover {
     cursor: pointer;
-    background-color: #6ebff9;
+    background-color: #41d728;
+}
+
+.battle-options-defense {
+    background-color: #63b7ff;
+    box-shadow: 2px 2px #fec875;
 }
 .battle-options-defense:hover {
-    background-color: #d32cf1;
+    background-color: #fec875;
 }
+
 .battle-options-esc {
-    box-shadow: 2px 2px #63b7ff;
     background-color: #807d81;
-    color: #eee0f7;
+    box-shadow: 2px 2px #63b7ff;
 }
 .battle-options-esc:hover {
     cursor: pointer;

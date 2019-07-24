@@ -174,17 +174,26 @@ window.BattleConsole = (function() {
 
 			// build options
 			var str = "<div class='tally battle-options-row'>";
-			let defenseOption = "";
 			for (var key in _attacks) {
 				if (_attacks.hasOwnProperty(key)) {
 					if (DEBUG) console.log("🖥️ BattleConsole.showBattleOptions() step 1.3", _attacks[key]);
+
+					let defenseOption = "",
+						defenseCharacter = "",
+						attackCharacter = "";
 					// if defense
-					defenseOption = _attacks[key].type === "defense" ? "battle-options-defense" : "";
+					if (_attacks[key].type === "defense"){
+						defenseOption = "battle-options-defense";
+						defenseCharacter = "<span class='defenseCharacter'>&larrb;</span>";
+					} else if (_attacks[key].type === "attack"){
+						defenseCharacter = "<span class='defenseCharacter'>&#8674;</span>";
+					}
+
 					str += "<span " +
 						" title='type=" + _attacks[key].type + ",category=" + _attacks[key].category + "' " +
 						" data-attack='" + _attacks[key].name +
 						"' class='tally battle-options battle-options-fire " + defenseOption + " attack-" + _attacks[key].name + "'>" +
-						_attacks[key].name + "</span>";
+						defenseCharacter + _attacks[key].name + attackCharacter + "</span>";
 				}
 			}
 			str += "<span class='tally battle-options battle-options-esc'>run [esc]</span></div>";

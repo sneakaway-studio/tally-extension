@@ -301,7 +301,7 @@ window.BattleMath = (function() {
 			if (DEBUG) console.log("🔢 BattleMath.didHit()", "hitChance=" + hitChance, "attack.accuracy=" + attack.accuracy,
 				"self.accuracy.val=" + self.accuracy.val, "opp.evasion.val=" + opp.evasion.val,
 				"(self.accuracy.val / opp.evasion.val)=" + (self.accuracy.val / opp.evasion.val));
-			return (hitChance > 0.9);
+			return (hitChance > 0.8);
 		} catch (err) {
 			console.error(err);
 		}

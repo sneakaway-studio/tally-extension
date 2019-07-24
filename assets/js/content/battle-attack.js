@@ -249,7 +249,7 @@ window.BattleAttack = (function() {
 				endBattle = true;
 				endBattleMessage = "We need to take a break from the internet and recharge!";
 				BattleConsole.log("Tally's health has been depleted. Tally loses.");
-				Sound.playFile("music/battle-defeat.wav", false, 0);
+				Sound.playFile("music/tally-battle-7-18/defeat.mp3", false, 0);
 			} else if (Stats.get("tally").stamina.val <= 0) {
 				Battle.details.winner = "monster";
 				Sound.stopMusic();
@@ -257,7 +257,7 @@ window.BattleAttack = (function() {
 				endBattle = true;
 				endBattleMessage = "We lost this time but we'll fight these trackers another day!";
 				BattleConsole.log("Tally's stamina has been depleted. Tally loses.");
-				Sound.playFile("music/battle-defeat.wav", false, 0);
+				Sound.playFile("music/tally-battle-7-18/defeat.mp3", false, 0);
 			}
 			// did tally win?
 			else if (Stats.get("monster").health.val <= 0) {
@@ -270,7 +270,7 @@ window.BattleAttack = (function() {
 				BattleConsole.log("You now have blocked the [tracker name coming] from grabbing your data!!!");
 				// potentially award a new attack
 				if (get("award4thAttack")) randomRewardAttack();
-				Sound.playFile("music/battle-victory.wav", false, 0);
+				Sound.playFile("music/tally-battle-7-18/victory.mp3", false, 0);
 			} else if (Stats.get("monster").stamina.val <= 0) {
 				Battle.details.winner = "tally";
 				Sound.stopMusic();
@@ -281,7 +281,7 @@ window.BattleAttack = (function() {
 				BattleConsole.log("You now have blocked the [tracker name coming] from grabbing your data!!!");
 				// potentially award a new attack
 				if (Progress.get("award4thAttack")) randomRewardAttack();
-				Sound.playFile("music/battle-victory.wav", false, 0);
+				Sound.playFile("music/tally-battle-7-18/victory.mp3", false, 0);
 			} else {
 
 				// or update battle progress

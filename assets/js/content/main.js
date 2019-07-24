@@ -224,8 +224,7 @@ window.TallyMain = (function() {
 
 				// an array of message prompts for new token
 				let msg = [
-					"Please <a href='" + tally_meta.website +
-					"/dashboard' target='_blank'>visit your dashboard</a> to update your token",
+					"Please <a href='" + tally_meta.website + "/dashboard' target='_blank'>visit your dashboard</a> to relink your account",
 					"<a href='" + tally_meta.website + "/dashboard' target='_blank'>Link your account to start playing Tally</a>"
 				];
 				// for debugging

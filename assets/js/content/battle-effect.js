@@ -95,7 +95,8 @@ window.BattleEffect = (function() {
 
 	function startAttackEffects(attack, selfStr, oppStr, rumbleSize = "small") {
 		try {
-			if (DEBUG) console.log("🧨 BattleEffect.startAttackEffects() > ", attack, BattleAttack.getOutcomeDetails().outcomes, selfStr, oppStr, rumbleSize);
+			if (DEBUG) console.log("🧨 BattleEffect.startAttackEffects() > ", attack,
+				BattleAttack.getOutcomeDetails().outcomes, selfStr, oppStr, rumbleSize);
 
 			// is an attack not in progress ATM?
 			if (!Battle.details.attackInProgress) return;
@@ -105,7 +106,9 @@ window.BattleEffect = (function() {
 			// 1. get positions
 			let startPos, endPos;
 			// if firing from monster > Tally
-			if (selfStr == "monster") {
+			if ((attack.type === "attack" && selfStr == "monster") ||
+				(attack.type === "defense" && selfStr == "tally")
+			) {
 				startPos = Core.getCenterPosition(".tally_monster_sprite_container");
 				endPos = Core.getCenterPosition("#tally_character");
 				if (BattleAttack.getOutcomeDetails().outcomes === "missed") {
@@ -115,7 +118,9 @@ window.BattleEffect = (function() {
 				}
 			}
 			// else firing from Tally > monster
-			else if (selfStr == "tally") {
+			else if ((attack.type === "attack" && selfStr == "tally") ||
+				(attack.type === "defense" && selfStr == "monster")
+			) {
 				startPos = Core.getCenterPosition("#tally_character");
 				endPos = Core.getCenterPosition(".tally_monster_sprite_container");
 				if (BattleAttack.getOutcomeDetails().outcomes === "missed") {
@@ -167,9 +172,13 @@ window.BattleEffect = (function() {
 					}
 				});
 			}
-			// 2-2. or skip straight to handleAttackOutcomes()
-			else if (attack.type === "defense")
+			// 2-2. or show a defense animation
+			else if (attack.type === "defense") {
+				// show defnese
+				showExplosion(attack, endPos, rumbleSize);
+				// then pass control back to BattleAttack...
 				BattleAttack.handleAttackOutcomes(attack, selfStr, oppStr);
+			}
 
 		} catch (err) {
 			console.error(err);
@@ -188,15 +197,15 @@ window.BattleEffect = (function() {
 		// 'stars-pink.png',
 		// 'water-blue.png',
 
-'defense-security-firewall.gif',
-'defense-network-packetshield.gif',
-'defense-computer.gif',
-'attack-social-clickstrike.gif',
-'attack-social-emailblitz.gif',
-'attack-cryptography-triangulate.gif',
-'attack-memory-memoryflare.gif',
-'attack-cryptography-cryptcracker.gif',
-'attack-computer.gif',
+		'defense-security-firewall.gif',
+		'defense-network-packetshield.gif',
+		'defense-computer.gif',
+		'attack-social-clickstrike.gif',
+		'attack-social-emailblitz.gif',
+		'attack-cryptography-triangulate.gif',
+		'attack-memory-memoryflare.gif',
+		'attack-cryptography-cryptcracker.gif',
+		'attack-computer.gif',
 
 	];
 
@@ -224,17 +233,21 @@ window.BattleEffect = (function() {
 
 			// default explosion
 			let file = "stars-pink.gif";
+			if (attack.type === "defense") file = "stars-orange.gif";
 			// unless attack has a specific one
 			if (prop(attack["animation-name"]) && attack["animation-name"] !== "") file = attack["animation-name"];
 
 			// reference to image file
-			var url = chrome.extension.getURL('assets/img/battles/explosions/' + file);
+			var url = chrome.extension.getURL('assets/img/battles/explosions/' + file + "?a=" + Math.random());
+			console.log(url)
+			// set content to none to reset GIF
+			$('#explosion_sprite_inner').css('background-image', 'none');
 			// set content
 			$('#explosion_sprite_inner').css('background-image', 'url("' + url + '")');
 
 			setTimeout(function() {
 				Core.hideElement('#explosion_sprite_container');
-			}, 1500);
+			}, 2500);
 		} catch (err) {
 			console.error(err);
 		}
