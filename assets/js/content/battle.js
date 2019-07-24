@@ -14,13 +14,15 @@ window.Battle = (function() {
 
 	function createNewBattleDetails() {
 		return {
+			"attackInProgress": false,
 			"mid": null,
-			"level": 1,
-			"monsterName": "",
 			"monsterAttacks": {},
+			"monsterLevel": 1,
+			"monsterLostTurns": 0,
+			"monsterName": "",
 			"progress": 1, // cues for battle progress, normalized 1=start, 0=end
 			"recentAttack": {},
-			"attackInProgress": false,
+			"tallyLostTurns": 0,
 			"winner": null
 		};
 	}
@@ -76,6 +78,8 @@ window.Battle = (function() {
 			console.log("💥 Battle.start()", mid);
 			if (_active) return;
 			active(true);
+			// set currentMID
+			Monster.currentMID = mid;
 			if (!Progress.get("battle1stMonster")) {
 				// update progress
 				Progress.update("battle1stMonster", true);
@@ -119,7 +123,7 @@ window.Battle = (function() {
 			Core.setElementFixed('.tally_monster_sprite_container');
 			// set monster details
 			details.mid = mid;
-			details.level = Monster.current().level; //Stats.getLevel("monster");
+			details.monsterLevel = Monster.current().level; //Stats.getLevel("monster");
 			details.monsterName = MonsterData.dataById[mid].name + " monster";
 			details.monsterAttacks = AttackData.returnRandomAttacks(3);
 			console.log("💥 Battle.start()", "details=", details, mid, tally_nearby_monsters[mid]);
@@ -223,7 +227,7 @@ window.Battle = (function() {
 			// create monster update object
 			let monsterUpdate = {
 				"mid": details.mid,
-				"level": details.level,
+				"level": details.monsterLevel,
 				"captured": 0,
 				"missed": 0,
 			};

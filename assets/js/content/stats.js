@@ -136,12 +136,12 @@ window.Stats = (function() {
 		allStats[who] = stats;
 	}
 	/**
-	 *	Return the level of the player
+	 *	Return the level of the player or monster
 	 */
 	function getLevel(who) {
 		let level = 0;
 		if (who == "tally") level = tally_user.level;
-		else if (Monster.currentMID != 0) level = Monster.current().level;
+		else if (Monster.currentMID !== 0) level = Monster.current().level;
 		else level = Monster.returnNewMonsterLevel(); // temp
 		//if (DEBUG) console.log("📋 Stats.getLevel()", who + " => " + level);
 		return level;
