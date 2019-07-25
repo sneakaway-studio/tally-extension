@@ -96,8 +96,8 @@ window.Progress = (function() {
 			}
 
 			// if tally levels up her attack capacity increases
-			if (get("attackLimit") < GameData.attackLimits[FS_Number.clamp(tally_user.level,0,5)]) {
-				update("attackLimit", GameData.attackLimits[FS_Number.clamp(tally_user.level,0,5)]);
+			if (get("attackLimit") < GameData.attackLimits[FS_Number.clamp(tally_user.level,0,4)]) {
+				update("attackLimit", GameData.attackLimits[FS_Number.clamp(tally_user.level,0,4)]);
 				Dialogue.showStr("You can now use " + get("attackLimit") + " attacks in battle!", "happy");
 			}
 

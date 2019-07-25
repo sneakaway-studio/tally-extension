@@ -29,7 +29,7 @@ var GameData = (function() {
 	};
 
 
-	let attackLimits = [0,1,2,3,4];
+	let attackLimits = [0,1,2,3,4,5];
 
 	// added 0 even though new installs default to level=1
 	// in order to make array work elsewhere intuitive (e.g. level = array[n])

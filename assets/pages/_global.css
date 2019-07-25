@@ -2,9 +2,9 @@
 /******************************** GLOBAL ********************************/
 /************************************************************************/
 *:not(.fab) { font: 0.85rem/1.4rem "Lucida Console", Monaco, monospace !important; }
-html, body { background: #461899; margin: 0; padding: 0; }
+html, body { background: #461899; margin: 0; padding: 0; box-sizing: border-box; }
 .container {
-    width: 420px; height: 400px;
+    width: 460px; height: 400px;
     background-repeat: no-repeat;
     background-position: 15px 10px;
     background-size: 200px 62px;

@@ -9,14 +9,23 @@
 
 let tally_options = {},
 	tally_user = {},
-	tally_meta = {};
+	tally_meta = {},
+	attacksMax = 0,
+	attacksSelected = 0,
+	backgroundUpdate = createBackgroundUpdate();
 
+
+// make sure everything is saved when user closes window
+$(window).on("beforeunload", function() {
+	saveOptions();
+	saveUser();
+});
 
 // if user hasn't logged in then show login only
 function init() {
 	// show tally image
 	$('.container').css({
-		'background-image': 'url(' + chrome.runtime.getURL("assets/img/tally/tally-logo-clear-1600w.png") +')'
+		'background-image': 'url(' + chrome.runtime.getURL("assets/img/tally/tally-logo-clear-1600w.png") + ')'
 	});
 
 	chrome.runtime.sendMessage({
@@ -32,15 +41,13 @@ function init() {
 			getOptions();
 		}
 	});
-
 }
-
-
-
-
-
-
+// on load
 document.addEventListener('DOMContentLoaded', init);
+
+
+
+/******************** FUNCTIONS ********************/
 
 function getUser(callback) {
 	chrome.runtime.sendMessage({
@@ -48,7 +55,6 @@ function getUser(callback) {
 	}, function(response) {
 		//console.log("getUser()",JSON.stringify(response.data));
 		tally_user = response.data;
-
 		$("#level").html(tally_user.level);
 		$("#score").html(tally_user.score.score);
 		$("#likes").html(tally_user.score.likes);
@@ -56,7 +62,7 @@ function getUser(callback) {
 		$("#pages").html(tally_user.score.pages);
 		$("#time").html(tally_user.score.time);
 		$("#monsters").html(objLength(tally_user.monsters));
-
+		// do a callback if exists
 		if (callback) callback();
 	});
 }
@@ -67,19 +73,148 @@ function getAttacks(callback) {
 	}, function(response) {
 		//console.log("getAttacks()",JSON.stringify(response.data));
 		tally_user = response.data;
-
-
-
+		// set limits
+		attacksMax = tally_user.progress.attackLimit.val;
+		attacksSelected = 0;
+		// alert(attacksSelected + "," + attacksMax);
+		// start string
 		var str = "";
-		for (var prop in tally_user.attacks) {
-			if (tally_user.attacks.hasOwnProperty(prop)) {
-				str += "<button class='btn attacks-btn'>" + tally_user.attacks[prop].name + "</button>";
+		// for each attack
+		for (var name in tally_user.attacks) {
+			if (tally_user.attacks.hasOwnProperty(name)) {
+				let checked = "";
+				// if below limit and it should be shown as selected
+				if (attacksSelected < attacksMax && tally_user.attacks[name].selected === 1) {
+					checked = " checked ";
+					// track # of selected
+					attacksSelected++;
+				}
+				// show defense vs. attack
+				let defenseOption = "",
+					defenseCharacter = "",
+					attackCharacter = "";
+				// if defense
+				if (tally_user.attacks[name].type === "defense"){
+					defenseOption = "battle-options-defense";
+					defenseCharacter = "<span class='defenseCharacter'>&larrb;</span>";
+				} else if (tally_user.attacks[name].type === "attack"){
+					defenseCharacter = "<span class='defenseCharacter'>&#8674;</span>";
+				}
+				str += "<li>";
+				str += '<input type="checkbox" id="' + name + '" name="attacks" ' + checked + ' />';
+				str += '<label class="btn attackBtn" title="' +
+					name + " " + tally_user.attacks[name].type + '" for="' + name + '">' +
+					defenseCharacter + name + '</label>';
+				str += "</li>";
 			}
 		}
 		// console.log(str);
 		$(".attacksCloud").html(str);
+		// update display
+		updateSelectedCheckboxesDisplay();
 
+		// add listener for buttons
+		$('input[type="checkbox"]').change(function() {
+			// update totals
+			updateSelectedCheckboxes();
+			// get attack name
+			let name = $(this).attr("id");
+			// do not allow selection of more than limit
+			if (attacksSelected > attacksMax) {
+				// tell user
+				showStatus('You can only use ' + attacksMax + ' attacks in battle. Level up to earn more!'); // display success message
+				// set back to false
+				$("#" + name).prop('checked', false);
+				// update totals
+				updateSelectedCheckboxes();
+				return;
+			}
+			// set attack selected
+			if (this.checked) tally_user.attacks[name].selected = 1;
+			else tally_user.attacks[name].selected = 0;
+
+			// save user
+			saveUser();
+			saveAttacks();
+			// update display
+			updateSelectedCheckboxesDisplay();
+		});
 		if (callback) callback();
+	});
+}
+
+function updateSelectedCheckboxes() {
+	var checkedBoxes = document.querySelectorAll('input[type=checkbox]:checked');
+	attacksSelected = checkedBoxes.length;
+	attacksMax = tally_user.progress.attackLimit.val;
+	// alert(JSON.stringify(checkedBoxes));
+	// alert(attacksSelected +"/"+ attacksMax);
+}
+
+function updateSelectedCheckboxesDisplay() {
+	$("#attacksSelected").html(attacksSelected);
+	$("#attacksMax").html(attacksMax);
+}
+
+function saveAttacks() {
+	// get all check boxes
+	var checkBoxes = document.querySelectorAll('input[type=checkbox]');
+	// alert(JSON.stringify(checkBoxes))
+	// array of attacks to save on server
+	let attacks = [];
+
+	for (var i = 0; i < checkBoxes.length; i++) {
+		// get name
+		let name = $(checkBoxes[i]).attr("id");
+		// double check this is a value
+		if (name && tally_user.attacks[name] && $("#" + name)) {
+			// double check selected status in data
+			tally_user.attacks[name].selected = $("#" + name).prop('checked');
+			//alert(name + "," + JSON.stringify(checkBoxes[i]));
+			attacks.push(tally_user.attacks[name]);
+		}
+	}
+	backgroundUpdate.itemData.attacks = attacks;
+	sendBackgroundUpdate();
+	alert(JSON.stringify(attacks));
+}
+
+
+function createBackgroundUpdate() {
+	return {
+		// the type of update (e.g. "update" | "sync")
+		"updateType": "update",
+		// all the individual props that can be updated, sent as arrays
+		"itemData": {
+			"achievements": [],
+			"attacks": [],
+			"badges": [],
+			"consumables": [],
+			"flags": [],
+			"monsters": [],
+			"progress": [],
+			"skins": [],
+			"trackers": [],
+		},
+		"scoreData": {},
+		"pageData": {},
+		"eventData": {},
+		"token": "INSERT_IN_BACKGROUND",
+	};
+}
+
+
+function sendBackgroundUpdate() {
+
+	chrome.runtime.sendMessage({
+		'action': 'sendBackgroundUpdate',
+		'data': backgroundUpdate
+	}, function(response) {
+		console.log('💾 > sendBackgroundUpdate() RESPONSE =', response);
+		// update tally_user in content
+		tally_user = response.tally_user;
+		// reset
+		backgroundUpdate = createBackgroundUpdate();
 	});
 }
 
@@ -99,6 +234,32 @@ function getOptions() {
 		// debugging
 		document.getElementById("showDebugger").checked = tally_options.showDebugger;
 		//document.getElementById("debuggerPosition").value = tally_options.debuggerPosition;
+	});
+}
+
+function saveUser() {
+
+	console.log("saveUser()", tally_user);
+
+	// saveOptions in background.js
+	chrome.runtime.sendMessage({
+		'action': 'saveData',
+		'name': 'tally_user',
+		'data': tally_user
+	}, function(response) {
+		console.log(response);
+		showStatus('Settings saved'); // display success message
+		// // refresh current page (w/new settings)
+		// chrome.tabs.query({
+		// 	active: true,
+		// 	currentWindow: true
+		// }, function(arrayOfTabs) {
+		// 	//console.log("query again")
+		// 	var code = 'window.location.reload(1);';
+		// 	chrome.tabs.executeScript(arrayOfTabs[0].id, {
+		// 		code: code
+		// 	});
+		// });
 	});
 }
 

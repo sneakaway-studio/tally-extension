@@ -47,6 +47,10 @@ Learn more at [tallygame.net](https://tallygame.net).
 
 
 
+### Version 0.2.9
+
+* Adds attack manager to browser_action
+
 ### Version 0.2.8
 
 * Fixes monster sprite flip and monster level bugs
