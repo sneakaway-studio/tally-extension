@@ -53,7 +53,11 @@ window.Sound = (function() {
 				"powerup8": "powerup8.wav",
 				"powerup9": "powerup9.wav",
 				"powerup10": "powerup10.wav",
-				"powerup11": "powerup11.wav",
+			},
+			"tally": {
+				"sad-hurt-1":"sad-hurt-1.wav",
+				"sad-hurt-2":"sad-hurt-2.wav",
+				"sad-hurt-3":"sad-hurt-3.wav",
 			}
 		};
 

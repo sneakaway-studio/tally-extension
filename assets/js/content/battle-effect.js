@@ -222,7 +222,15 @@ window.BattleEffect = (function() {
 
 			// make sure attack was not a defense
 			if (rumbleSize !== "" && attack.type !== "defense")
-				showRumble("medium", "powerups/" + FS_Object.randomObjProperty(Sound.sounds.powerups));
+				showRumble("medium");
+
+			if (attack.sound){
+				Sound.playFile("attacks/" + attack.sound);	
+			} else {
+				// play random
+				Sound.playFile("powerups/" + FS_Object.randomObjProperty(Sound.sounds.powerups));
+			}
+
 
 			// if no position received
 			if (endPos == null)
