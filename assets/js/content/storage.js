@@ -41,7 +41,6 @@ window.TallyStorage = (function() {
 				// SCORE
 				"scoreData": {
 					"clicks": 0,
-					// "domains": 0, // don't track this locally,
 					"likes": 0,
 					"pages": 0,
 					"score": 0

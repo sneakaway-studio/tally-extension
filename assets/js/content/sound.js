@@ -66,7 +66,7 @@ window.Sound = (function() {
 		musicFile = "",
 		battleMusicDir = "tally-battle-6-27/";
 
-	battleMusicDir = "tally-battle-7-18/";
+	battleMusicDir = "tally-battle-7-25/";
 
 	function playBattleMusic() {
 		// play intro

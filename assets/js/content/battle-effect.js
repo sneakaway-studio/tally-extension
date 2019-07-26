@@ -225,7 +225,8 @@ window.BattleEffect = (function() {
 				showRumble("medium");
 
 			if (attack.sound){
-				Sound.playFile("attacks/" + attack.sound);	
+				// play specific
+				Sound.playFile("attacks/" + attack.sound);
 			} else {
 				// play random
 				Sound.playFile("powerups/" + FS_Object.randomObjProperty(Sound.sounds.powerups));

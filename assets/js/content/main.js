@@ -103,7 +103,7 @@ window.TallyMain = (function() {
 	 */
 	function shouldExtensionBeActiveOnPage() {
 		try {
-			if (true) console.log("🧰 TallyMain.shouldExtensionBeActiveOnPage()");
+			if (DEBUG) console.log("🧰 TallyMain.shouldExtensionBeActiveOnPage()");
 			// do not start if ...
 			// the server is not online
 			if (!tally_meta.serverOnline) {
@@ -224,7 +224,7 @@ window.TallyMain = (function() {
 
 				// an array of message prompts for new token
 				let msg = [
-					"Please <a href='" + tally_meta.website + "/dashboard' target='_blank'>visit your dashboard</a> to relink your account",
+					"Please <a href='" + tally_meta.website + "/dashboard' target='_blank'>visit your dashboard</a> to reconnect your account",
 					"<a href='" + tally_meta.website + "/dashboard' target='_blank'>Link your account to start playing Tally</a>"
 				];
 				// for debugging
@@ -255,18 +255,6 @@ window.TallyMain = (function() {
 		}
 	}
 
-
-	// /**
-	//  * Prompt user to renew token?
-	//  */
-	// function promptUserRenewToken() {
-	// 	//console.log("promptUserRenewToken()",tally_options);
-	//
-	// 	if (!tally_meta.userTokenValid) {
-	// 		if (DEBUG) console.log("!!!!! userTokenValid is not valid");
-	// 		return true;
-	// 	}
-	// }
 
 
 

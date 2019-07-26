@@ -26,12 +26,10 @@ const reload = () => {
 		active: true,
 		currentWindow: true
 	}, tabs => {
-        if (!document.location.href.contains("docs.google.com")){
-            if (tabs[0]) {
-                chrome.tabs.reload(tabs[0].id);
-            }
-            chrome.runtime.reload();
-        }
+		if (tabs[0]) {
+			chrome.tabs.reload(tabs[0].id);
+		}
+		chrome.runtime.reload();
 	});
 };
 
@@ -41,13 +39,15 @@ const watchChanges = (dir, lastTimestamp) => {
 			// retry after 1s
 			setTimeout(() => watchChanges(dir, timestamp), 1000);
 		} else {
-			reload();
+			if (!document.location.href.contains("docs.google.com")) {
+				reload();
+			}
 		}
 	});
 };
 
 chrome.management.getSelf(self => {
-    //console.log(self);
+	//console.log(self);
 	if (self.installType === 'development') {
 		chrome.runtime.getPackageDirectoryEntry(dir => watchChanges(dir));
 	}

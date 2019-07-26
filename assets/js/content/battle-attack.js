@@ -365,7 +365,7 @@ window.BattleAttack = (function() {
 		// potentially award a new attack
 		if (Progress.get("award4thAttack")) randomRewardAttack();
 		// play win sound
-		Sound.playFile("music/tally-battle-7-18/victory.mp3", false, 0);
+		Sound.playFile("music/tally-battle-7-25/victory.mp3", false, 0);
 	}
 
 	function monsterWins(message,dialogue) {
@@ -376,7 +376,7 @@ window.BattleAttack = (function() {
 		// show tally sad
 		Dialogue.show(Dialogue.get(["battle", dialogue, null]), "sad", true);
 		// play lose sound
-		Sound.playFile("music/tally-battle-7-18/defeat.mp3", false, 0);
+		Sound.playFile("music/tally-battle-7-25/defeat.mp3", false, 0);
 	}
 
 
