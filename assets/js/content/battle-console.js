@@ -177,21 +177,25 @@ window.BattleConsole = (function() {
 			for (var key in _attacks) {
 				if (_attacks.hasOwnProperty(key)) {
 					if (DEBUG) console.log("🖥️ BattleConsole.showBattleOptions() step 1.3", _attacks[key]);
+					// only show selected ones
+					if (!_attacks[key].selected) continue;
 
 					let defenseOption = "",
 						defenseCharacter = "",
 						attackCharacter = "";
 					// if defense
-					if (_attacks[key].type === "defense"){
+					if (_attacks[key].type === "defense") {
 						defenseOption = "battle-options-defense";
 						defenseCharacter = "<span class='defenseCharacter'>&larrb;</span>";
-					} else if (_attacks[key].type === "attack"){
+					} else if (_attacks[key].type === "attack") {
 						defenseCharacter = "<span class='defenseCharacter'>&#8674;</span>";
 					}
 
+					let title = _attacks[key].name + " [" + _attacks[key].category + " " + _attacks[key].type + "] ";
+					if (_attacks[key].description) title += _attacks[key].description;
+
 					str += "<span " +
-						" title='type=" + _attacks[key].type + ",category=" + _attacks[key].category + "' " +
-						" data-attack='" + _attacks[key].name +
+						" title='" + title + "' data-attack='" + _attacks[key].name +
 						"' class='tally battle-options battle-options-fire " + defenseOption + " attack-" + _attacks[key].name + "'>" +
 						defenseCharacter + _attacks[key].name + attackCharacter + "</span>";
 				}
