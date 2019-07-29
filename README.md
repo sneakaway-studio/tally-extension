@@ -50,6 +50,8 @@ Learn more at [tallygame.net](https://tallygame.net).
 ### Version 0.2.9
 
 * Adds attack manager to browser_action
+* Adds new attacks and monsters
+* Adds custom attack sounds 
 
 ### Version 0.2.8
 

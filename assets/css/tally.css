@@ -39,6 +39,8 @@
     position: absolute;
     margin: 0;
     width: 193px;
+    height: 222px;
+    width: 223px;
     /* fix Tally's strange vertical position shift */
     box-sizing: border-box;
     -moz-box-sizing: border-box;

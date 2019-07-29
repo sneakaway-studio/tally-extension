@@ -39,7 +39,7 @@ const watchChanges = (dir, lastTimestamp) => {
 			// retry after 1s
 			setTimeout(() => watchChanges(dir, timestamp), 1000);
 		} else {
-			if (!document.location.href.contains("docs.google.com")) {
+			if (!document.location.href.includes("docs.google.com")) {
 				reload();
 			}
 		}
