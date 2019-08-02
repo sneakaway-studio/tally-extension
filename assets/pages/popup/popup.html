@@ -2,223 +2,213 @@
 <html>
 
 <head>
-<meta charset="UTF-8">
-<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.9/css/all.css">
-<link rel="stylesheet" type="text/css" href="../_global.css">
-<link rel="stylesheet" type="text/css" href="./popup.css">
+	<meta charset="UTF-8">
+	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.9/css/all.css">
+	<link rel="stylesheet" type="text/css" href="../_global.css">
+	<link rel="stylesheet" type="text/css" href="./popup.css">
 </head>
 
 <body>
 
-<div class="container">
+	<div class="container">
 
 
 
-	<div class="header">
-		<button id="opt_close" class="closeBtn"> X </button>
-		<div id="status"></div>
-	</div>
-
-
-
-
-	<div class="content">
-
-		<div class="tab-button-group">
-			<button class="tab-button" id="statusBtn">My Tally</button>
-			<button class="tab-button active" id="attacksBtn">Attacks</button>
-			<button class="tab-button" id="optionsBtn">Options</button>
-			<button class="tab-button" id="aboutBtn">About</button>
-			<button class="tab-button" id="debuggingBtn">Debugging</button>
+		<div class="header">
+			<button id="opt_close" class="closeBtn"> X </button>
+			<div id="status"></div>
 		</div>
 
 
 
 
-		<div id="statusTab" class="tab">
+		<div class="content">
+
+			<div class="tab-button-group">
+				<button class="tab-button" id="statusBtn">My Tally</button>
+				<button class="tab-button active" id="itemsBtn">Items</button>
+				<button class="tab-button" id="optionsBtn">Options</button>
+				<button class="tab-button" id="aboutBtn">About</button>
+				<button class="tab-button" id="debuggingBtn">Debugging</button>
+			</div>
 
 
-			<button class="btn" id="viewProfileBtn">view profile</button>
-			<button class="btn" id="editProfileBtn">edit profile</button>
-			<button class="btn" id="viewLeaderboardsBtn">view leaderboards</button>
 
-			<div class="tabSection">
-				<h3>Score</h3>
-				<table>
-					<tr>
-						<td>Level</td>
-						<td><span class="data-field" id="level"></span></td>
-					</tr>
-					<tr>
-						<td>Score</td>
-						<td><span class="data-field" id="score"></span></td>
-					</tr>
-					<tr>
-						<td>Clicks</td>
-						<td><span class="data-field" id="clicks"></span></td>
-					</tr>
-					<tr>
-						<td>Likes</td>
-						<td><span class="data-field" id="likes"></span></td>
-					</tr>
-					<tr>
-						<td>Pages</td>
-						<td><span class="data-field" id="pages"></span></td>
-					</tr>
-					<tr>
-						<td>Time</td>
-						<td><span class="data-field" id="time"></span> seconds</td>
-					</tr>
-					<tr>
-						<td>Monsters</td>
-						<td><span class="data-field" id="monsters"></span></td>
-					</tr>
-				</table>
+
+			<div id="statusTab" class="tab">
+
+				<div class="tabSection">
+					<h3>Score</h3>
+					<table>
+						<tr>
+							<td>Level</td>
+							<td><span class="data-field" id="level"></span></td>
+						</tr>
+						<tr>
+							<td>Score</td>
+							<td><span class="data-field" id="score"></span></td>
+						</tr>
+						<tr>
+							<td>Clicks</td>
+							<td><span class="data-field" id="clicks"></span></td>
+						</tr>
+						<tr>
+							<td>Likes</td>
+							<td><span class="data-field" id="likes"></span></td>
+						</tr>
+						<tr>
+							<td>Pages</td>
+							<td><span class="data-field" id="pages"></span></td>
+						</tr>
+						<tr>
+							<td>Time</td>
+							<td><span class="data-field" id="time"></span> (total time playing)</td>
+						</tr>
+						<tr>
+							<td>Monsters</td>
+							<td><span class="data-field" id="monsters"></span></td>
+						</tr>
+					</table>
+
+				</div>
+
+				<div class="tabSection">
+					<h3>Game</h3>
+
+					<table>
+						<tr>
+							<td>Version</td>
+							<td><span class="data-field" id="version"></td>
+						</tr>
+						<tr>
+							<td>Installed on</td>
+							<td><span class="data-field" id="installedOn"></td>
+						</tr>
+					</table>
+
+				</div>
+
 
 			</div>
 
 
-			<div class="tabSection">
-				<h3>Connection</h3>
-				<table>
-					<tr>
-						<td>User logged-in</td>
-						<td><span class="data-field" id="authStatus"></span></td>
-					</tr>
-					<tr>
-						<td>User has valid token</td>
-						<td><span class="data-field" id="tokenStatus"></span></td>
-					</tr>
-					<tr>
-						<td>Token expires</td>
-						<td><span class="data-field" id="tokenExpires" style="text-align:left;"></span></td>
-					</tr>
-					<tr>
-						<td>Game server online</td>
-						<td><span class="data-field" id="serverStatus"></span></td>
-					</tr>
-					<tr>
-						<td><button class="btn" id="updateTokenBtn">update token</button></td>
-						<td></td>
-					</tr>
-				</table>
-			</div>
 
-			<div class="tabSection">
-				<h3>Game</h3>
 
-				<table>
-					<tr>
-						<td>Version</td>
-						<td><span class="data-field" id="version"></td>
-					</tr>
-					<tr>
-						<td>Installed on</td>
-						<td><span class="data-field" id="installedOn"></td>
-					</tr>
-				</table>
-
+			<div id="itemsTab" class="tab" style="display:none">
+				<div class="tabSection">
+					<h3>Attacks <span id="attacksSelected"></span>/<span id="attacksMax"></span></h3>
+					<ul class="attacksCloud"> </ul>
+				</div>
+				<div class="tabSection">
+					<h3>Skins</h3>
+					<div id="skinThumbs"></div>
+				</div>
 			</div>
 
 
-		</div>
+
+			<div id="optionsTab" class="tab" style="display:none">
+
+				<div class="tabSection">
+					<h3>Game</h3>
+
+					<label for="gameMode">Game mode</label>
+					<select class="option-dropdown" id="gameMode">
+						<option value="testing">Testing - Everything on every page!!!</option>
+						<option value="full">Full – All the feels!</option>
+						<option value="stealth">Stealth – Visuals and sounds off</option>
+						<option value="disabled">Disabled</option>
+					</select>
+					<br>
+
+					<label for="soundVolume">Volume</label>
+					<input type="range" min="0" max="100" value="50" class="slider" id="soundVolume">
+					<br>
+
+				</div>
 
 
+				<div class="tabSection">
+					<h3>Privacy</h3>
 
-
-		<div id="attacksTab" class="tab" style="display:none">
-
-			<div class="tabSection">
-				<h3>Attacks <span id="attacksSelected"></span>/<span id="attacksMax"></span></h3>
-
-				<ul class="attacksCloud">
-
-				</ul>
-
-			</div>
-
-		</div>
-
-
-
-		<div id="optionsTab" class="tab" style="display:none">
-
-			<!-- <div class="tabSection">
-			<h3>Skins</h3>
-
-			<p>These are the skins you have been awarded</p>
-			<div id="skinThumbs"></div>
-		</div> -->
-
-
-			<div class="tabSection">
-				<h3>Game</h3>
-
-				<label for="gameMode">Game mode</label>
-				<select class="option-dropdown" id="gameMode">
-					<option value="testing">Testing - Everything on every page!!!</option>
-					<option value="full">Full – All the feels!</option>
-					<option value="stealth">Stealth – Visuals and sounds off</option>
-					<option value="disabled">Disabled</option>
-				</select>
-				<br>
-
-				<label for="soundVolume">Volume</label>
-				<input type="range" min="0" max="100" value="50" class="slider" id="soundVolume">
-				<br>
+					<label for="disabledDomains">Disabled domains</label><br>
+					<textarea class="option-textarea" id="disabledDomains" rows="4" cols="40"></textarea>
+				</div>
 
 			</div>
 
 
-			<div class="tabSection">
-				<h3>Privacy</h3>
 
-				<label for="disabledDomains">Disabled domains</label><br>
-				<textarea class="option-textarea" id="disabledDomains" rows="4" cols="40"></textarea>
+
+
+			<div id="aboutTab" class="tab" style="display:none">
+
+				<div class="tabSection">
+					<p>Tally is a multiplayer web-based game that identifies hidden data-trackers in your browser.</p>
+
+					<p>Learn more at <a href="https://tallygame.net" target="_blank">tallygame.net</a></p>
+
+					<p>
+						<button class="btn" id="viewProfileBtn">profile</button>
+						<button class="btn" id="editProfileBtn">edit profile</button>
+						<button class="btn" id="viewLeaderboardsBtn">leaderboards</button>
+					</p>
+					<p>
+						<button class="btn" id="viewPrivacyPolicyBtn">privacy policy</button>
+						<button class="btn" id="testerSurveyBtn">beta tester survey</button>
+						<button class="btn" id="gameTrailerBtn">game trailer</button>
+					</p>
+
+					<a href="https://twitter.com/tally_game" target="_blank"><i class="fab fa-twitter"></i></a>
+					<a href="https://www.instagram.com/tallygameofficial" target="_blank"><i class="fab fa-instagram"></i></a>
+					<a href="https://www.facebook.com/tallygame/" target="_blank"><i class="fab fa-facebook"></i></a>
+				</div>
+
 			</div>
 
-		</div>
 
 
+			<div id="debuggingTab" class="tab">
 
+				<div class="tabSection">
+					<h2>Debugging</h2>
 
-
-		<div id="aboutTab" class="tab" style="display:none">
-
-			<div class="tabSection">
-				<p>Tally is a multiplayer web-based game that identifies hidden data-trackers in your browser.</p>
-
-				<p>Learn more at <a href="https://tallygame.net" target="_blank">tallygame.net</a></p>
-
-				<p><button class="btn" id="testerSurveyBtn">Beta Tester Feedback Survey</button></p>
-				<p><button class="btn" id="gameTrailerBtn">Game Trailer Video</button></p>
-
-
-				<a href="https://twitter.com/tally_game" target="_blank"><i class="fab fa-twitter"></i></a>
-				<a href="https://www.instagram.com/tallygameofficial" target="_blank"><i class="fab fa-instagram"></i></a>
-				<a href="https://www.facebook.com/tallygame/" target="_blank"><i class="fab fa-facebook"></i></a>
-			</div>
-
-		</div>
-
-
-
-		<div id="debuggingTab" class="tab">
-
-			<div class="tabSection">
-				<h2>Debugging</h2>
-
-				<label for="showDebugger">Show debugger</label>
-				<input class="option-radio-btn" id="showDebugger" value="true" type="checkbox">
-				<br>
-				<!--
+					<label for="showDebugger">Show debugger</label>
+					<input class="option-radio-btn" id="showDebugger" value="true" type="checkbox">
+					<br>
+					<!--
 			<label for="debuggerPosition">Debugger position</label>
 			<input id="debuggerPosition" type="input">
 			<br>
 -->
-			</div>
+				</div>
 
-			<!--
+
+
+				<div class="tabSection">
+					<h3>Connection</h3>
+					<table>
+						<tr>
+							<td>User logged-in</td>
+							<td><span class="data-field" id="authStatus"></span></td>
+						</tr>
+						<tr>
+							<td>User has valid token</td>
+							<td><span class="data-field" id="tokenStatus"></span></td>
+						</tr>
+						<tr>
+							<td>Token expires</td>
+							<td><span class="data-field" id="tokenExpires" style="text-align:left;"></span></td>
+						</tr>
+						<tr>
+							<td>Game server online</td>
+							<td><span class="data-field" id="serverStatus"></span></td>
+						</tr>
+					</table>
+				</div>
+
+
+				<!--
 
 		<div class="tabSection">
 			<h3>Tests</h3>
@@ -245,25 +235,26 @@
 		</div>
 -->
 
-			<div class="tabSection">
-				<h3>Resets</h3>
+				<div class="tabSection">
+					<h3>Resets</h3>
 
-				<p><button class="btn" id="opt_reset_user">Delete player data / reset game</button>
-					<span id="opt_reset_user_status" class="status"></span></p>
+					<p><button class="btn" id="opt_reset_user">Delete player data / reset game</button>
+						<span id="opt_reset_user_status" class="status"></span></p>
 
-				<p><button class="btn" id="opt_reset_options">Reset options to defaults</button>
-					<span id="opt_reset_options_status" class="status"></span></p>
+					<p><button class="btn" id="opt_reset_options">Reset options to defaults</button>
+						<span id="opt_reset_options_status" class="status"></span></p>
+				</div>
+
 			</div>
+
 
 		</div>
 
-
 	</div>
-
-</div>
-<script src="../../libs/jquery-3.2.1.min.js"></script>
-<script src="../../js/functions/fs-objects.js"></script>
-<script src="./popup.js"></script>
+	<script src="../../libs/jquery-3.2.1.min.js"></script>
+	<script src="../../libs/moment.js"></script>
+	<script src="../../js/functions/fs-objects.js"></script>
+	<script src="./popup.js"></script>
 </body>
 
 </html>

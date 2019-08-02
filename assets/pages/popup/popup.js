@@ -60,10 +60,12 @@ function getUser(callback) {
 		$("#likes").html(tally_user.score.likes);
 		$("#clicks").html(tally_user.score.clicks);
 		$("#pages").html(tally_user.score.pages);
-		$("#time").html(tally_user.score.time);
+		$("#time").html(moment.utc(tally_user.score.time*1000).format('HH:mm:ss'));
 		$("#monsters").html(objLength(tally_user.monsters));
 		// do a callback if exists
-		if (callback) callback();
+		if (callback)
+			for(var i in callback)
+				callback[i]();
 	});
 }
 
@@ -176,7 +178,7 @@ function saveAttacks() {
 	}
 	backgroundUpdate.itemData.attacks = attacks;
 	sendBackgroundUpdate();
-	alert(JSON.stringify(attacks));
+	// alert(JSON.stringify(attacks));
 }
 
 
@@ -383,14 +385,17 @@ function openTab(btn, tabName) {
 	// update options from background
 	if (btn == "optionsBtn") {
 		getOptions();
-		//getUser(updateTabSkins);
 	}
 	if (btn == "statusBtn") {
 		getUser();
 		getMeta();
 	}
-	if (btn == "attacksBtn") {
+	if (btn == "itemsBtn") {
 		getAttacks();
+	}
+	if (btn == "debuggingBtn") {
+		getUser([updateSkins]);
+		getMeta();
 	}
 
 	//console.log(tabName)
@@ -407,17 +412,17 @@ function openTab(btn, tabName) {
 	document.getElementById(btn).classList.add("active");
 }
 
-// MARKED FOR DELETION
-// function updateTabSkins() {
-// 	let str = "";
-// 	for (var key in tally_user.skins) {
-// 		str += "<span class='skinThumb'><a href='#'>";
-// 		str += "<img src='";
-// 		str += chrome.extension.getURL('assets/img/tally/skins/skin-' + tally_user.skins[key] + ".png");
-// 		str += "'></a></span>";
-// 	}
-// 	$("#skinThumbs").html(str);
-// }
+
+function updateSkins() {
+	let str = "";
+	for (var key in tally_user.skins) {
+		str += "<span class='skinThumb'><a href='#'>";
+		str += "<img src='";
+		str += chrome.extension.getURL('assets/img/tally/skins/skin-' + tally_user.skins[key] + ".png");
+		str += "'></a></span>";
+	}
+	$("#skinThumbs").html(str);
+}
 
 
 
@@ -425,7 +430,7 @@ function openTab(btn, tabName) {
  ******************************************************************************/
 
 // set default
-openTab("attacksBtn", "attacksTab");
+openTab("itemsBtn", "itemsTab");
 //openTab("statusBtn", "statusTab");
 //openTab("optionsBtn","optionsTab");
 
@@ -433,8 +438,8 @@ openTab("attacksBtn", "attacksTab");
 document.getElementById("statusBtn").onclick = function() {
 	openTab("statusBtn", "statusTab");
 };
-document.getElementById("attacksBtn").onclick = function() {
-	openTab("attacksBtn", "attacksTab");
+document.getElementById("itemsBtn").onclick = function() {
+	openTab("itemsBtn", "itemsTab");
 };
 document.getElementById("optionsBtn").onclick = function() {
 	openTab("optionsBtn", "optionsTab");
@@ -445,11 +450,13 @@ document.getElementById("aboutBtn").onclick = function() {
 document.getElementById("debuggingBtn").onclick = function() {
 	openTab("debuggingBtn", "debuggingTab");
 };
+
 // close the popup window
 document.getElementById("opt_close").onclick = function() {
 	window.close();
 };
 
+// external links
 $(document).on('click', '#updateTokenBtn', function() {
 	window.open(tally_meta.website + "/signin");
 });
@@ -462,7 +469,9 @@ $(document).on('click', '#editProfileBtn', function() {
 $(document).on('click', '#viewLeaderboardsBtn', function() {
 	window.open(tally_meta.website + "/leaderboards");
 });
-
+$(document).on('click', '#viewPrivacyPolicyBtn', function() {
+	window.open(tally_meta.website + "/privacy");
+});
 
 $(document).on('click', '#testerSurveyBtn', function() {
 	window.open("https://docs.google.com/forms/d/e/1FAIpQLSeGx8zsF4aMQZH1eM0SzOvcpXijt8Bem1pzg4eni9eK8Jr-Lg/viewform");

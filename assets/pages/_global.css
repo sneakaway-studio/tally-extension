@@ -37,7 +37,7 @@ div.tab {
     padding: 10px 15px;
     overflow: auto;
 }
-div.tabSection { float: none; margin: 10px 0; }
+div.tabSection { float: none; margin: 10px 0 25px 0; clear: both; }
 
 
 
