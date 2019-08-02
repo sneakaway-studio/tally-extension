@@ -304,7 +304,13 @@ svg.stats-display .stat-bar-circle-text { fill:white; font: 14px Monaco, "Andale
     background-color: #6ebff9;
 }
 
-
+.attack-icon {
+    display: inline-block;
+    width: 17px; height: 17px;
+    padding: 1px 2px 1px 0;
+    vertical-align: middle;
+    background-size: cover;
+}
 
 
 

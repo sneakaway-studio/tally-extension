@@ -180,24 +180,26 @@ window.BattleConsole = (function() {
 					// only show selected ones
 					if (!_attacks[key].selected) continue;
 
-					let defenseOption = "",
-						defenseCharacter = "",
-						attackCharacter = "";
+					let defenseOption = "";
 					// if defense
 					if (_attacks[key].type === "defense") {
 						defenseOption = "battle-options-defense";
-						defenseCharacter = "<span class='defenseCharacter'>&larrb;</span>";
+						// icon = "<span class='icon'>&larrb;</span>"; // arrow
+						// type = "battles/shield-256sq.png"; // arrow
 					} else if (_attacks[key].type === "attack") {
-						defenseCharacter = "<span class='defenseCharacter'>&#8674;</span>";
+						// icon = "<span class='icon'>&#8674;</span>";// arrow
+						// type = "battles/sword-256sq.png"; // arrow
 					}
 
 					let title = _attacks[key].name + " [" + _attacks[key].category + " " + _attacks[key].type + "] ";
 					if (_attacks[key].description) title += _attacks[key].description;
 
 					str += "<span " +
-						" title='" + title + "' data-attack='" + _attacks[key].name +
-						"' class='tally battle-options battle-options-fire " + defenseOption + " attack-" + _attacks[key].name + "'>" +
-						defenseCharacter + _attacks[key].name + attackCharacter + "</span>";
+						" title='" + title + "' " +
+						" data-attack='" + _attacks[key].name + "' " +
+						" class='tally battle-options battle-options-fire " + defenseOption + " attack-" + _attacks[key].name + "'>" +
+						"<span class='tally attack-icon attack-icon-" + _attacks[key].type + "' ></span>" +
+						_attacks[key].name + "</span>";
 				}
 			}
 			str += "<span class='tally battle-options battle-options-esc'>run [esc]</span></div>";
@@ -208,6 +210,13 @@ window.BattleConsole = (function() {
 			var ele = "<div class='tally tally_log_line'>" +
 				"<span id='tally_log" + (++logId) + "' class='tally tally_log_cursor'>" + str + "</span>" + "</div>";
 			$("#battle-console-stream").append(ele);
+			// add icons
+			$(".attack-icon-attack").css({
+				"background-image": 'url('+chrome.extension.getURL('assets/img/battles/sword-256sq.png') +')'
+			});
+			$(".attack-icon-defense").css({
+				"background-image": 'url('+chrome.extension.getURL('assets/img/battles/shield-256sq.png') +')'
+			});
 
 			// add only one listener
 			$(document).on("mouseover", '.battle-options-fire', function() {
