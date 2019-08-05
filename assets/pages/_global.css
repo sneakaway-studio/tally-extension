@@ -59,11 +59,7 @@ div.tabSection { float: none; margin: 10px 0 25px 0; clear: both; }
     font-size: 93%;
 }
 .btn:hover, .btn:active { background: #6ebff9; border: none;text-shadow: 0; }
-.attacks-btn {
-    margin-right: 7px;
-    margin-bottom: 7px;
-    float: left;
-}
+
 
 .closeBtn {
     background: #9cc;

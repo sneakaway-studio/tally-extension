@@ -82,38 +82,60 @@ function getAttacks(callback) {
 		// start string
 		var str = "";
 		// for each attack
-		for (var name in tally_user.attacks) {
-			if (tally_user.attacks.hasOwnProperty(name)) {
+		for (var key in tally_user.attacks) {
+			if (tally_user.attacks.hasOwnProperty(key)) {
 				let checked = "";
 				// if below limit and it should be shown as selected
-				if (attacksSelected < attacksMax && tally_user.attacks[name].selected === 1) {
+				if (attacksSelected < attacksMax && tally_user.attacks[key].selected === 1) {
 					checked = " checked ";
 					// track # of selected
 					attacksSelected++;
 				}
 				// show defense vs. attack
-				let defenseOption = "",
-					defenseCharacter = "",
-					attackCharacter = "";
+				let defenseOption = "";
+
+
+
+
 				// if defense
-				if (tally_user.attacks[name].type === "defense"){
+				if (tally_user.attacks[key].type === "defense"){
 					defenseOption = "battle-options-defense";
-					defenseCharacter = "<span class='defenseCharacter'>&larrb;</span>";
-				} else if (tally_user.attacks[name].type === "attack"){
-					defenseCharacter = "<span class='defenseCharacter'>&#8674;</span>";
 				}
+				let title = tally_user.attacks[key].name + " [" + tally_user.attacks[key].category + " " + tally_user.attacks[key].type + "] ";
+				if (tally_user.attacks[key].description) title += tally_user.attacks[key].description;
+
 				str += "<li>";
-				str += '<input type="checkbox" id="' + name + '" name="attacks" ' + checked + ' />';
-				str += '<label class="btn attackBtn" title="' +
-					name + " " + tally_user.attacks[name].type + '" for="' + name + '">' +
-					defenseCharacter + name + '</label>';
+				str += '<input type="checkbox" id="' + key + '" name="attacks" ' + checked + ' />';
+				str += "<label " +
+					" for='" + key + "'" +
+					" title='" + title + "' " +
+					" data-attack='" + tally_user.attacks[key].name + "' " +
+					" class='tally battle-options battle-options-fire " + defenseOption + " attack-" + tally_user.attacks[key].name + "'>" +
+					"<span class='tally attack-icon attack-icon-" + tally_user.attacks[key].type + "' ></span>" +
+					key + '</label>';
 				str += "</li>";
+
 			}
 		}
+
+
+
+
+
+
+
 		// console.log(str);
 		$(".attacksCloud").html(str);
 		// update display
 		updateSelectedCheckboxesDisplay();
+
+		// add icons
+		$(".attack-icon-attack").css({
+			"background-image": 'url('+chrome.extension.getURL('../../assets/img/battles/sword-pixel-13sq.png') +')'
+		});
+		$(".attack-icon-defense").css({
+			"background-image": 'url('+chrome.extension.getURL('../../assets/img/battles/shield-pixel-13sq.png') +')'
+		});
 
 		// add listener for buttons
 		$('input[type="checkbox"]').change(function() {

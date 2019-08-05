@@ -184,11 +184,6 @@ window.BattleConsole = (function() {
 					// if defense
 					if (_attacks[key].type === "defense") {
 						defenseOption = "battle-options-defense";
-						// icon = "<span class='icon'>&larrb;</span>"; // arrow
-						// type = "battles/shield-256sq.png"; // arrow
-					} else if (_attacks[key].type === "attack") {
-						// icon = "<span class='icon'>&#8674;</span>";// arrow
-						// type = "battles/sword-256sq.png"; // arrow
 					}
 
 					let title = _attacks[key].name + " [" + _attacks[key].category + " " + _attacks[key].type + "] ";
@@ -212,10 +207,10 @@ window.BattleConsole = (function() {
 			$("#battle-console-stream").append(ele);
 			// add icons
 			$(".attack-icon-attack").css({
-				"background-image": 'url('+chrome.extension.getURL('assets/img/battles/sword-256sq.png') +')'
+				"background-image": 'url('+chrome.extension.getURL('assets/img/battles/sword-pixel-13sq.png') +')'
 			});
 			$(".attack-icon-defense").css({
-				"background-image": 'url('+chrome.extension.getURL('assets/img/battles/shield-256sq.png') +')'
+				"background-image": 'url('+chrome.extension.getURL('assets/img/battles/shield-pixel-13sq.png') +')'
 			});
 
 			// add only one listener

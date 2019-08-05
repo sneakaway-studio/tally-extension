@@ -182,8 +182,8 @@ svg.stats-display .stat-bar-circle-text { fill:white; font: 14px Monaco, "Andale
     display: none;
     position: fixed;
     width: 40%;
-    min-width: 500px;
-    max-width: 600px;
+    min-width: 520px;
+    max-width: 650px;
     margin-left: -14%;
     left: 45%;
     height: 135px;
@@ -265,11 +265,7 @@ svg.stats-display .stat-bar-circle-text { fill:white; font: 14px Monaco, "Andale
     margin: 6px 0 0 0;
     overflow: auto;
 }
-.battle-options-row .defenseCharacter {
-    font-size: 1.15rem;
-    padding-right: 2px;
-    vertical-align: middle;
-}
+
 
 .battle-options {
     /* box-sizing: border-box;
@@ -279,29 +275,30 @@ svg.stats-display .stat-bar-circle-text { fill:white; font: 14px Monaco, "Andale
     font-size: 88%;
     margin: 0 8px 8px 0;
     float: left;
-    background-color: #d32cf1;
-    box-shadow: 2px 2px #41d728;
+    background-color: #d243ec;
+    box-shadow: 2px 2px #ec8d28;
 }
 .battle-options:hover {
     cursor: pointer;
-    background-color: #41d728;
+    background-color: #cb79da;
 }
 
 .battle-options-defense {
-    background-color: #63b7ff;
-    box-shadow: 2px 2px #fec875;
+    background-color: #189aed;
+    box-shadow: 2px 2px #6ece41;
 }
 .battle-options-defense:hover {
-    background-color: #fec875;
+    background-color: #4eaae5;
 }
 
 .battle-options-esc {
-    background-color: #807d81;
-    box-shadow: 2px 2px #63b7ff;
+    background-color: #8f96a2;
+    box-shadow: 2px 2px #5b636f;
+    margin: 0 8px 0 0;
 }
 .battle-options-esc:hover {
     cursor: pointer;
-    background-color: #6ebff9;
+    background-color: #747d8b;
 }
 
 .attack-icon {
@@ -309,7 +306,7 @@ svg.stats-display .stat-bar-circle-text { fill:white; font: 14px Monaco, "Andale
     width: 17px; height: 17px;
     padding: 1px 2px 1px 0;
     vertical-align: middle;
-    background-size: cover;
+    background-repeat: no-repeat;
 }
 
 

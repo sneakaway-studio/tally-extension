@@ -90,7 +90,7 @@ window.Badge = (function() {
 		try {
 			if (DEBUG) console.log("🎒 Badge.add()", id);
 			let badge = types[id];
-			if (!prop(badge.name) && badge.name === "") return;
+			if (!prop(badge) || !prop(badge.name) || badge.name === "") return;
 
 			let randomPos = [],
 				imgStr = "",

@@ -11,33 +11,76 @@ ul.attacksCloud {
 ul.attacksCloud li {
     float: left;
     display: inline-block;
-    margin: 0 10px 10px 0;
 }
 .attacksCloud label {
     cursor: pointer;
-    background: #aaa;
+    background: #8f96a2;
 }
 .attacksCloud input[type="checkbox"] {
     display: none;
 }
 .attacksCloud input[type="checkbox"]:checked + label {
-    background: #d32cf1;
+    background: #d243ec;
+}
+.attacksCloud input[type="checkbox"]:checked + label.battle-options-defense {
+    background: #189aed;
 }
 
 
 
-/*
 
-.attacksCloud label, .attacksCloud input {
+.battle-options {
+    /* box-sizing: border-box;
+    display:inline-block; */
+    padding: 2px 4px;
+    color: #eee0f7;
+    font-size: 88%;
+    margin: 0 8px 8px 0;
+    float: left;
+    background-color: #d243ec;
+    box-shadow: 2px 2px #ec8d28;
+}
+.battle-options:hover {
+    cursor: pointer;
+    background-color: #cb79da;
+}
+
+.battle-options-defense {
+    background-color: #189aed;
+    box-shadow: 2px 2px #6ece41;
+}
+.battle-options-defense:hover {
+    background-color: #4eaae5;
+}
+
+.battle-options-esc {
+    background-color: #8f96a2;
+    box-shadow: 2px 2px #5b636f;
+    margin: 0 8px 0 0;
+}
+.battle-options-esc:hover {
+    cursor: pointer;
+    background-color: #747d8b;
+}
+
+.attack-icon {
     display: inline-block;
+    width: 17px; height: 17px;
+    /* padding: 1px 2px 1px 0; */
+    vertical-align: middle;
+    background-repeat: no-repeat;
 }
 
 
 
-.attacksCloud label.selected {
-    background: red;
-}
-.attacksCloud label:hover {} */
+
+
+
+
+
+
+
+
 /*
 .box {
     text-align: left;
