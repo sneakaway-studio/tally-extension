@@ -19,6 +19,7 @@ window.Debug = (function() {
 		"Consumable": true,
 		"Core": false,
 		"Debug": true,
+		"Demo": true,
 		"Dialogue": false,
 		"Effect": true,
 		"TallyEvents": true,

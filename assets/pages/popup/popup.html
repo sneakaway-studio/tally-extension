@@ -25,17 +25,25 @@
 		<div class="content">
 
 			<div class="tab-button-group">
-				<button class="tab-button" id="statusBtn">My Tally</button>
+				<button class="tab-button" id="statusBtn">Stats</button>
 				<button class="tab-button active" id="itemsBtn">Items</button>
 				<button class="tab-button" id="optionsBtn">Options</button>
 				<button class="tab-button" id="aboutBtn">About</button>
-				<button class="tab-button" id="debuggingBtn">Debugging</button>
+				<button class="tab-button hideUnlessAdmin" id="debuggingBtn">Debugging</button>
 			</div>
 
 
 
 
 			<div id="statusTab" class="tab">
+
+				<div class="tabSection">
+					<button class="btn" id="viewProfileBtn">profile</button>
+					<button class="btn" id="editProfileBtn">edit profile</button>
+					<button class="btn" id="viewLeaderboardsBtn">leaderboards</button>
+				</div>
+
+
 
 				<div class="tabSection">
 					<h3>Score</h3>
@@ -114,7 +122,8 @@
 
 					<label for="gameMode">Game mode</label>
 					<select class="option-dropdown" id="gameMode">
-						<option value="testing">Testing - Everything on every page!!!</option>
+						<option value="demo" class="hideUnlessAdmin">Demo mode - For galleries</option>
+						<option value="testing" class="hideUnlessAdmin">Testing - Everything on every page!!!</option>
 						<option value="full">Full – All the feels!</option>
 						<option value="stealth">Stealth – Visuals and sounds off</option>
 						<option value="disabled">Disabled</option>
@@ -135,6 +144,11 @@
 					<textarea class="option-textarea" id="disabledDomains" rows="4" cols="40"></textarea>
 				</div>
 
+				<div class="tabSection">
+					<p><button class="btn" id="opt_reset_options">Reset options to defaults</button>
+						<span id="opt_reset_options_status" class="status"></span></p>
+				</div>
+
 			</div>
 
 
@@ -148,11 +162,6 @@
 
 					<p>Learn more at <a href="https://tallygame.net" target="_blank">tallygame.net</a></p>
 
-					<p>
-						<button class="btn" id="viewProfileBtn">profile</button>
-						<button class="btn" id="editProfileBtn">edit profile</button>
-						<button class="btn" id="viewLeaderboardsBtn">leaderboards</button>
-					</p>
 					<p>
 						<button class="btn" id="viewPrivacyPolicyBtn">privacy policy</button>
 						<button class="btn" id="testerSurveyBtn">beta tester survey</button>
@@ -207,6 +216,13 @@
 					</table>
 				</div>
 
+				<div class="tabSection">
+					<h3>Resets</h3>
+
+					<p><button class="btn" id="opt_reset_user">Delete player data / reset game</button>
+						<span id="opt_reset_user_status" class="status"></span></p>
+				</div>
+
 
 				<!--
 
@@ -235,15 +251,7 @@
 		</div>
 -->
 
-				<div class="tabSection">
-					<h3>Resets</h3>
 
-					<p><button class="btn" id="opt_reset_user">Delete player data / reset game</button>
-						<span id="opt_reset_user_status" class="status"></span></p>
-
-					<p><button class="btn" id="opt_reset_options">Reset options to defaults</button>
-						<span id="opt_reset_options_status" class="status"></span></p>
-				</div>
 
 			</div>
 

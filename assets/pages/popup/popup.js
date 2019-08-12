@@ -38,6 +38,8 @@ function init() {
 			let str = "<a href='" + tally_meta.website + "/dashboard" + "' target='_blank'>Link your Tally account</a>";
 			$(".content").html(str);
 		} else {
+			if (tally_user.admin > 0)
+				$(".hideUnlessAdmin").css({'display':'block'});
 			getOptions();
 		}
 	});

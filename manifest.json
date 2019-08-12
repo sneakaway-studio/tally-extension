@@ -94,6 +94,7 @@
             "assets/js/content/tally.js",
             "assets/js/content/tutorial.js",
             "assets/js/content/progress.js",
+            "assets/js/content/demo.js",
             "assets/js/content/main.js"
         ],
         "css": [

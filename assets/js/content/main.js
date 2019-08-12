@@ -88,6 +88,8 @@ window.TallyMain = (function() {
 			TallyListeners.addMainClickEventListener();
 			// check the token
 			checkTokenStatus(); // shouldn't this be done already ?
+			// are we running in demo mode?
+			Demo.start();
 
 			// start game on this page
 			startGameOnPage();

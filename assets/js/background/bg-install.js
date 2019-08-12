@@ -125,7 +125,7 @@ window.Install = (function() {
 				"playSounds": true,
 				"soundVolume": 0.3,
 				"showAnimations": true,
-				"gameMode": "full", // "testing" | "full" | "stealth" | "disabled"
+				"gameMode": "full", // "demo" | "testing" | "full" | "stealth" | "disabled"
 				"disabledDomains": [
 					"drive.google.com",
 					"docs.google.com",
@@ -142,16 +142,16 @@ window.Install = (function() {
 
 	function setOptions(options) {
 		try {
-			if (options.gameMode == "testing" || options.gameMode == "full") {
-				options.showTally = true;
-				options.showClickVisuals = true;
-				options.playSounds = true;
-				options.showAnimations = true;
-			} else if (options.gameMode == "stealth" || options.gameMode == "disabled") {
+			if (options.gameMode == "stealth" || options.gameMode == "disabled") {
 				options.showTally = false;
 				options.showClickVisuals = false;
 				options.playSounds = false;
 				options.showAnimations = false;
+			} else {
+				options.showTally = true;
+				options.showClickVisuals = true;
+				options.playSounds = true;
+				options.showAnimations = true;
 			}
 			return options;
 		} catch (err) {
