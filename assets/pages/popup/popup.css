@@ -20,7 +20,7 @@ ul.attacksCloud li {
     display: none;
 }
 .attacksCloud input[type="checkbox"]:checked + label {
-    background: #d243ec;
+    background: #f58b1a;
 }
 .attacksCloud input[type="checkbox"]:checked + label.battle-options-defense {
     background: #189aed;
@@ -37,12 +37,12 @@ ul.attacksCloud li {
     font-size: 88%;
     margin: 0 8px 8px 0;
     float: left;
-    background-color: #d243ec;
-    box-shadow: 2px 2px #ec8d28;
+    background-color: #f58b1a;
+    box-shadow: 2px 2px #df4a3b;
 }
 .battle-options:hover {
     cursor: pointer;
-    background-color: #cb79da;
+    background-color: #d69b6b;
 }
 
 .battle-options-defense {
@@ -56,12 +56,13 @@ ul.attacksCloud li {
 .battle-options-esc {
     background-color: #8f96a2;
     box-shadow: 2px 2px #5b636f;
-    margin: 0 8px 0 0;
+    margin: 0 0 8px 0;
 }
 .battle-options-esc:hover {
     cursor: pointer;
     background-color: #747d8b;
 }
+
 
 .attack-icon {
     display: inline-block;

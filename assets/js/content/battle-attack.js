@@ -80,7 +80,7 @@ window.BattleAttack = (function() {
 			StatsDisplay.updateDisplay(selfStr);
 
 			// 4. log the attack
-			BattleConsole.log(outcomeDetails.selfName + " used the " + attack.name + " " + attack.type + "!");
+			BattleConsole.log(outcomeDetails.selfName + " used the <span class='text-" + attack.type + "'>" + attack.name + " " + attack.type + "</span>!");
 
 			// 5. start attack effects
 			BattleEffect.startAttackEffects(attack, selfStr, oppStr, "small");
@@ -356,7 +356,7 @@ window.BattleAttack = (function() {
 		BattleConsole.log(message);
 		// show tally excited
 		Dialogue.show(Dialogue.get(["battle", dialogue, null]), "happy", true);
-		// calculate and show award for beating the monster 
+		// calculate and show award for beating the monster
 		let increase = FS_Number.round(Battle.details.monsterLevel * 10);
 		TallyStorage.addToBackgroundUpdate("scoreData", "score", increase);
 		BattleConsole.log("You earned "+ increase +" points for beating this monster!!!");

@@ -23,7 +23,7 @@
     width: 50px;
     height: 50px;
     border-radius: 50%;
-    background-color: #d32cf1;
+    background-color: #d243ec;
     background: center center no-repeat;
 }
 #explosion_sprite_container {
@@ -131,16 +131,16 @@ table.stats-table tr td.stats-number-column .divider {
 svg.stats-display { width:230;  }
 
 svg.stats-display .stat-bars { stroke-width:0; transform:translateX(30px); }
-svg.stats-display .stat-bar-health { fill:#27c70c; }
-svg.stats-display .stat-bar-health-bg { fill:#494949; } /* #d32cf1 */
-svg.stats-display .stat-bar-stamina { fill:#28a2f9;  }
+svg.stats-display .stat-bar-health { fill:#6ece41; }
+svg.stats-display .stat-bar-health-bg { fill:#494949; }
+svg.stats-display .stat-bar-stamina { fill:#189aed;  }
 svg.stats-display .stat-bar-stamina-bg { fill:#494949; }
 svg.stats-display .stat-bar-experience { fill:#ff9900; }
 svg.stats-display .stat-bar-experience-bg { fill:#494949; }
 svg.stats-display .stat-bar-circle {
-    fill: #282c35;
+    fill: #272c34;
     stroke-width: 5px;
-    stroke: #d32cf1;
+    stroke: #d243ec;
     stroke-dasharray: 138;
     stroke-dashoffset: 138; /* 2 * 3.14 * radius */
     stroke-miterlimit: round;
@@ -192,29 +192,35 @@ svg.stats-display .stat-bar-circle-text { fill:white; font: 14px Monaco, "Andale
     box-sizing: border-box;
     width: 100%;
     height: 140px;
-    box-shadow: 5px 5px #41d728;
-    border: 8px solid #d32cf1;
-    background-color: #282c35;
-    color: #abaeb2;
+    box-shadow: 5px 5px #6ece41;
+    border: 8px solid #d243ec;
+    background-color: #272c34;
+    color: #8f96a2;
 }
 #battle-console-stream {
     box-sizing: border-box !important;
     font: 0.9em/1.4em "Lucida Console", Monaco, monospace !important;
-    padding: 10px 10px 0 10px !important;
+    padding: 10px 0px 0 10px !important;
     height: 120px !important;
     overflow-y: scroll !important;
     overflow-x: hidden !important;
     scrollbar-width: none;
 }
-.tally_log_line { font: 0.9em/1.4em "Lucida Console", Monaco, monospace !important; }
+.tally_log_line { font: 0.9em/1.4em "Lucida Console", Monaco, monospace !important; width:100% }
 /* weird scrollbar issue */
 #battle-console-stream::-webkit-scrollbar { background: rgba(0, 0, 0, 0); }
 #battle-console-stream::-webkit-scrollbar-corner { background: rgba(0, 0, 0, 0); }
 /* text colors */
-#battle-console-stream .text-tally { color: #fd5be9; }
-#battle-console-stream .text-green, .text-health { color: #83ff60; }
-#battle-console-stream .text-blue, .text-stamina { color: #6ebff9; }
-#battle-console-stream .text-yellow { color: #fec875; }
+#battle-console-stream .text-green, .text-health { color: #6ece41; }
+#battle-console-stream .text-ltblue { color: #18c8d8; }
+#battle-console-stream .text-blue, .text-defense { color: #189aed; }
+#battle-console-stream .text-purple, .text-tally { color: #fd5be9; }
+#battle-console-stream .text-yellow { color: #f5ac39; }
+#battle-console-stream .text-orange, .text-attack { color: #f58b1a; }
+#battle-console-stream .text-red, .text-stamina { color: #df4a3b; }
+#battle-console-stream .text-dkgrey { color: #272c34; }
+#battle-console-stream .text-grey { color: #5b636f; }
+#battle-console-stream .text-ltgrey { color: #8f96a2; }
 /* blinking cursor */
 #battle-console-stream:last-child:after {
     content: "";
@@ -239,7 +245,7 @@ svg.stats-display .stat-bar-circle-text { fill:white; font: 14px Monaco, "Andale
     animation: blink 1s step-end infinite;
 }
 .noanimation {
-    background-color: #6ebff9;
+    background-color: #18c8d8;
     -webkit-transition: none !important;
     -moz-transition: none !important;
     -o-transition: none !important;
@@ -275,12 +281,12 @@ svg.stats-display .stat-bar-circle-text { fill:white; font: 14px Monaco, "Andale
     font-size: 88%;
     margin: 0 8px 8px 0;
     float: left;
-    background-color: #d243ec;
-    box-shadow: 2px 2px #ec8d28;
+    background-color: #f58b1a;
+    box-shadow: 2px 2px #df4a3b;
 }
 .battle-options:hover {
     cursor: pointer;
-    background-color: #cb79da;
+    background-color: #d69b6b;
 }
 
 .battle-options-defense {
@@ -294,7 +300,7 @@ svg.stats-display .stat-bar-circle-text { fill:white; font: 14px Monaco, "Andale
 .battle-options-esc {
     background-color: #8f96a2;
     box-shadow: 2px 2px #5b636f;
-    margin: 0 8px 0 0;
+    margin: 0 0 8px 0;
 }
 .battle-options-esc:hover {
     cursor: pointer;
