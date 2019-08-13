@@ -32,6 +32,9 @@ window.Demo = (function() {
 			} else {
 				// turn on
 				status = true;
+				// show all debug messages
+				Debug.setAll(true);
+				// start timer
 				idleInterval = setInterval(function() {
 					// call action
 					update();
@@ -45,28 +48,52 @@ window.Demo = (function() {
 	// check if we should run a demo action
 	function update() {
 		try {
+			// does the page have focus?
+			if (!document.hasFocus()) return;
+			// is it day time?
+			if (!FS_Date.isWorkday()) return;
+			// increase idle counter
 			idleTime++;
-			var d = new Date(),
-				str = "";
-			// console.log(d.toLocaleTimeString());
-			if (idleTime >= 10) {
-				// log('load new cat');
-				// load_random_cat();
-				// $('#exhibit_mode_info').html('');
 
-				newAction();
-			} else if (idleTime < 5) {
-				// $('#exhibit_mode_info').html('');
-				// idleTime++;
-			} else {
-				//str = (10 - idleTime);
+			let str = "";
+
+
+
+
+
+			// is a monster on the page?
+			if (Monster.onPage) {
 
 			}
+			// is a battle in progress?
+			else if (Battle.active()) {
 
-			if (str != ""){
-				$('.demo_window').html(str).css({'display':'block'});
+			}
+			else {
+				if (idleTime >= 10) {
+					// log('load new cat');
+					// load_random_cat();
+					// $('#exhibit_mode_info').html('');
+
+					newAction();
+				} else if (idleTime < 5) {
+					// $('#exhibit_mode_info').html('');
+					// idleTime++;
+				} else {
+					//str = (10 - idleTime);
+
+				}
+			}
+
+
+			if (str != "") {
+				$('.demo_window').html(str).css({
+					'display': 'block'
+				});
 			} else {
-				$('.demo_window').css({'display':'none'});
+				$('.demo_window').css({
+					'display': 'none'
+				});
 			}
 
 			console.log('🎲 Demo.update() idleTime=' + idleTime);
@@ -81,7 +108,7 @@ window.Demo = (function() {
 
 			//  choose action
 
-
+			TallyStorage.getDataFromServer('/url/random', Demo.goToUrl);
 
 
 
@@ -97,6 +124,12 @@ window.Demo = (function() {
 		}
 	}
 
+	function goToUrl(response) {
+		console.log('🎲 Demo.goToUrl()', response.data);
+		if (prop(response.data.urls[0]))
+			window.location.href = response.data.urls[0].url;
+	}
+
 	// if user interacts then reset
 	$(document).on('mousemove keypress', function(e) {
 		if (tally_user.admin > 0 && tally_options.gameMode === "demo") {
@@ -110,6 +143,9 @@ window.Demo = (function() {
 		start: start,
 		set: function(newStatus) {
 			set(newStatus);
+		},
+		goToUrl: function(url) {
+			goToUrl(url);
 		}
 
 	};

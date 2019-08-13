@@ -11,7 +11,9 @@ window.Monster = (function() {
 
 	let DEBUG = Debug.ALL.Monster,
 		currentMID = 0,
-		secondsBeforeDelete = 300; // 60 seconds for testing
+		onPage = false,
+		secondsBeforeDelete = 300 // 60 seconds for testing
+	;
 
 	/**
 	 *	Create a new monster object and return
@@ -49,7 +51,7 @@ window.Monster = (function() {
 	 */
 	function returnNewMonsterLevel() {
 		try {
-			if (DEBUG) console.log("👿 Monster.returnNewMonsterLevel()",tally_user);
+			if (DEBUG) console.log("👿 Monster.returnNewMonsterLevel()", tally_user);
 			let userLevel = tally_user.level,
 				factor = 0.5;
 			// use factor to keep the level different but near the user's level
@@ -72,7 +74,7 @@ window.Monster = (function() {
 	 */
 	function add(mid) {
 		try {
-		if (DEBUG) console.log('👿 ⊙⊙⊙!⊙ Monster.add()', mid, tally_nearby_monsters[mid]);
+			if (DEBUG) console.log('👿 ⊙⊙⊙!⊙ Monster.add()', mid, tally_nearby_monsters[mid]);
 			// don't show if game isn't running in full mode
 			if (!pageData.activeOnPage || tally_options.gameMode === "disabled" || tally_options.gameMode === "stealth") return;
 			// only proceed if mid is valid
@@ -99,6 +101,9 @@ window.Monster = (function() {
 			// reference to image file (moved to server )
 			var url = chrome.extension.getURL(tally_meta.website + '/' + 'assets/img/monsters-300h/' + monster.mid + '-anim-sheet.png');
 			//var url = chrome.extension.getURL('assets/img/472-master-3d-test.png');
+
+			// set marker
+			onPage = monster.mid;
 
 			// set monster image
 			$('.tally_monster_sprite_inner').css('background-image', 'url( ' + url + ')');
@@ -233,6 +238,7 @@ window.Monster = (function() {
 
 	// PUBLIC
 	return {
+		onPage: onPage,
 		create: function(mid) {
 			return create(mid);
 		},

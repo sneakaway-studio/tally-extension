@@ -15,11 +15,48 @@ window.Listener = (function() {
 
 
 
+				if (request.action == "getDataFromServer" && request.url) {
+					// console.log("👂🏼 Listener.addListener() getData 1", request.name);
+
+					// add token
+					let _tally_meta = store("tally_meta"),
+						_tally_secret = store("tally_secret");
+					request.token = _tally_secret.token;
+
+					// (attempt to) get data from server, response to callback
+					$.ajax({
+						type: "GET",
+						url: _tally_meta.api + request.url,
+						contentType: 'application/json',
+						dataType: 'json',
+						data: JSON.stringify(request.data)
+					}).done(result => {
+						// console.log("👂🏼 Listener.getDataFromServer() RESULT =", JSON.stringify(result));
+						// reply to contentscript
+						sendResponse({
+							"action": request.action,
+							"message": 1,
+							"data": result
+						});
+					}).fail(error => {
+						console.error("👂🏼 Listener.getDataFromServer() RESULT =", JSON.stringify(error));
+						// server might not be reachable
+						Server.updateStatus();
+						sendResponse({
+							"action": request.action,
+							"message": 0
+						});
+					});
+
+					// required so chrome knows this is asynchronous
+					return true;
+				}
+
 
 				/*  GENERIC "GETTER" / "SETTER"
 				 ******************************************************************************/
 
-				if (request.action == "getData" && request.name) {
+				else if (request.action == "getData" && request.name) {
 					// console.log("👂🏼 Listener.addListener() getData 1", request.name);
 					// build response
 					let resp = {

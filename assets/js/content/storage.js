@@ -181,24 +181,26 @@ window.TallyStorage = (function() {
 
 
 
-	//
-	// /**
-	//  *	Sync with API
-	//  */
-	// function syncWithServer() {
-	// 	try {
-	// 		//if (DEBUG) console.log("💾 < TallyStorage.syncWithServer()", name, caller);
-	// 		let msg = {
-	// 			'action': 'syncWithServer'
-	// 		};
-	// 		chrome.runtime.sendMessage(msg, function(response) {
-	// 			if (DEBUG) console.log("💾 > TallyStorage.syncWithServer() RESPONSE =", JSON.stringify(response));
-	// 			//TallyMain.sync(start);
-	// 		});
-	// 	} catch (err) {
-	// 		console.error(err);
-	// 	}
-	// }
+
+	/**
+	 *	Get data from API
+	 */
+	function getDataFromServer(url, callback) {
+		try {
+			//if (DEBUG) console.log("💾 < TallyStorage.getDataFromServer()", url);
+			let msg = {
+				'action': 'getDataFromServer',
+				'url': url
+			};
+			chrome.runtime.sendMessage(msg, function(response) {
+				if (DEBUG) console.log("💾 > TallyStorage.getDataFromServer() RESPONSE =", JSON.stringify(response));
+				//TallyMain.sync(start);
+				callback(response);
+			});
+		} catch (err) {
+			console.error(err);
+		}
+	}
 
 	/**
 	 *	Generic getData() function
@@ -372,6 +374,9 @@ window.TallyStorage = (function() {
 
 	// PUBLIC
 	return {
+		getDataFromServer: function(url,callback) {
+			return getDataFromServer(url,callback);
+		},
 		getData: function(name, caller) {
 			return getData(name, caller);
 		},
@@ -383,7 +388,7 @@ window.TallyStorage = (function() {
 		},
 		launchStartScreen: launchStartScreen,
 		// server
-		createBackgroundUpdate: function(type){
+		createBackgroundUpdate: function(type) {
 			createBackgroundUpdate(type);
 		},
 		backgroundUpdate: backgroundUpdate,
