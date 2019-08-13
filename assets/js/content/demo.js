@@ -59,9 +59,16 @@ window.Demo = (function() {
 				// $('#exhibit_mode_info').html('');
 				// idleTime++;
 			} else {
-				str = (10 - idleTime);
+				//str = (10 - idleTime);
 
 			}
+
+			if (str != ""){
+				$('.demo_window').html(str).css({'display':'block'});
+			} else {
+				$('.demo_window').css({'display':'none'});
+			}
+
 			console.log('🎲 Demo.update() idleTime=' + idleTime);
 		} catch (err) {
 			console.error(err);
@@ -73,7 +80,7 @@ window.Demo = (function() {
 			console.log('🎲 Demo.newAction()');
 
 			//  choose action
-			
+
 
 
 

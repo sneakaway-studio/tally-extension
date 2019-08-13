@@ -11,6 +11,8 @@ window.Interface = (function() {
 		try {
 			let str = "<div id='tally_wrapper' class='tally reset-this-root reset-this no-print'>" +
 
+							// demo mode
+							"<div class='tally' id='demo_window'></div>" +
 							// effects
 							"<div class='tally' id='tally_click_visual'></div>" +
 

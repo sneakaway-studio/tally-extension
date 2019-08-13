@@ -127,7 +127,7 @@ window.MonsterCheck = (function() {
 				let r = Math.random();
 
 				// gameMode === testing
-				if (tally_options.gameMode === "testing"){
+				if (["demo","testing"].includes(tally_options.gameMode)){
 					// test
 					tally_nearby_monsters[mid].stage = 3;
 					addMonster = true;

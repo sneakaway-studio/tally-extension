@@ -86,7 +86,7 @@ window.Consumable = (function() {
 			// pick random type
 			else if (r < 0.07) create("", "", count);
 			// gameMode === testing
-			else if (r < 0.4 && tally_options.gameMode === "testing") create("cookie", "", 1);
+			else if (r < 0.4 && ["demo","testing"].includes(tally_options.gameMode)) create("cookie", "", 1);
 
 		} catch (err) {
 			console.error(err);

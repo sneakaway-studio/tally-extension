@@ -49,7 +49,7 @@ window.Badge = (function() {
 				if (DEBUG) console.log("🎒 Badge.randomizer() type = social domain");
 				if (r < 0.01) return create("stalker");
 				// gameMode === testing
-				else if (tally_options.gameMode === "testing") return create("stalker");
+				else if (["demo","testing"].includes(tally_options.gameMode)) return create("stalker");
 			}
 			// 9a-5p busy bee
 			else if (FS_Date.isWorkday()) {
@@ -61,7 +61,7 @@ window.Badge = (function() {
 				if (DEBUG) console.log('🎒 Badge.randomizer() type = 10p–6a night owl');
 				if (r < 0.01) return create("night-owl");
 				// gameMode === testing
-				else if (tally_options.gameMode === "testing") return create("night-owl");
+				else if (["demo","testing"].includes(tally_options.gameMode)) return create("night-owl");
 			}
 
 
