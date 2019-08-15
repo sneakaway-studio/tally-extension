@@ -76,6 +76,7 @@
     left: 0px;
 }
 .tally_stats_table, .monster_stats_table {
+    font: 12px/16px "Monaco", "Andale Mono", "Courier New", sans-serif !important;
     /* display: none; */
     position: absolute;
     z-index: 2147483630;
@@ -97,11 +98,12 @@
 
 table.stats-table {
     width: 100% !important;
-    font: 11px/12px Monaco, "Andale Mono", "Courier New", sans-serif !important;
+    font: 11px/12px "Monaco", "Andale Mono", "Courier New", sans-serif !important;
     border-collapse: separate !important;
     border-spacing: 2px !important;
     z-index: 2147483647 !important;
 }
+.stats-table tr td { font: 11px/12px "Monaco", "Andale Mono", "Courier New", sans-serif !important; }
 table.stats-table tr:hover {
     cursor: crosshair;
 }
@@ -149,7 +151,7 @@ svg.stats-display .stat-bar-circle {
 /* .stat-bar-circle:hover {
     stroke-dashoffset: 0;
 } */
-svg.stats-display .stat-bar-circle-text { fill:white; font: 14px Monaco, "Andale Mono", "Courier New", sans-serif; }
+svg.stats-display .stat-bar-circle-text { fill:white; font: 14px "Monaco", "Andale Mono", "Courier New", sans-serif; }
 
 
 
@@ -199,14 +201,14 @@ svg.stats-display .stat-bar-circle-text { fill:white; font: 14px Monaco, "Andale
 }
 #battle-console-stream {
     box-sizing: border-box !important;
-    font: 0.9em/1.4em "Lucida Console", Monaco, monospace !important;
+    font: 0.9em/1.4em "Lucida Console", "Monaco", monospace !important;
     padding: 10px 0px 0 10px !important;
     height: 120px !important;
     overflow-y: scroll !important;
     overflow-x: hidden !important;
     scrollbar-width: none;
 }
-.tally_log_line { font: 0.9em/1.4em "Lucida Console", Monaco, monospace !important; width:100% }
+.tally_log_line { font: 0.9em/1.4em "Lucida Console", "Monaco", monospace !important; width:100% }
 /* weird scrollbar issue */
 #battle-console-stream::-webkit-scrollbar { background: rgba(0, 0, 0, 0); }
 #battle-console-stream::-webkit-scrollbar-corner { background: rgba(0, 0, 0, 0); }

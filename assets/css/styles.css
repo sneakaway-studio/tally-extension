@@ -3,6 +3,7 @@
 .tally {
     overflow-x: visible; /* fix for websites */
     box-sizing: border-box;
+    font: 12px/16px "Monaco", "Andale Mono", "Courier New", sans-serif !important;
 }
 
 #tally, #tyd, .tally_demo_window {

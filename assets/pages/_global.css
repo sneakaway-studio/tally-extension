@@ -112,6 +112,9 @@ table tr {
     border-spacing: 0;
     border: none;
 }
+table td {
+    margin-right: 10px;
+}
 
 .data-field {
     display: inline-block;

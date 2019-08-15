@@ -57,10 +57,11 @@ function getUser(callback) {
 	}, function(response) {
 		//console.log("getUser()",JSON.stringify(response.data));
 		tally_user = response.data;
+		$("#username").html(tally_user.username);
 		$("#level").html(tally_user.level);
 		$("#score").html(tally_user.score.score);
-		$("#likes").html(tally_user.score.likes);
 		$("#clicks").html(tally_user.score.clicks);
+		$("#likes").html(tally_user.score.likes);
 		$("#pages").html(tally_user.score.pages);
 		$("#time").html(moment.utc(tally_user.score.time*1000).format('HH:mm:ss'));
 		$("#monsters").html(objLength(tally_user.monsters));
@@ -439,6 +440,7 @@ function openTab(btn, tabName) {
 
 function updateSkins() {
 	let str = "";
+	if (!tally_user.skins) return;
 	for (var key in tally_user.skins) {
 		str += "<span class='skinThumb'><a href='#'>";
 		str += "<img src='";
