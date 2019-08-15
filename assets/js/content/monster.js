@@ -96,14 +96,14 @@ window.Monster = (function() {
 	function display(monster) {
 		try {
 			if (DEBUG) console.log('👿 ⊙⊙⊙⊙! Monster.display()', monster);
+			// set marker
+			onPage = monster.mid;
+
 			// show dialogue
 			Dialogue.show(Dialogue.get(["monster", "display", null]), true);
 			// reference to image file (moved to server )
-			var url = chrome.extension.getURL(tally_meta.website + '/' + 'assets/img/monsters-300h/' + monster.mid + '-anim-sheet.png');
+			var url = tally_meta.website + '/' + 'assets/img/monsters-300h/' + monster.mid + '-anim-sheet.png';
 			//var url = chrome.extension.getURL('assets/img/472-master-3d-test.png');
-
-			// set marker
-			onPage = monster.mid;
 
 			// set monster image
 			$('.tally_monster_sprite_inner').css('background-image', 'url( ' + url + ')');
@@ -235,10 +235,18 @@ window.Monster = (function() {
 		}
 	}
 
+	function returnOnPage(state){
+		if (state != undefined && (state === true || state === false))
+			onPage = state;
+		return onPage;
+	}
+
 
 	// PUBLIC
 	return {
-		onPage: onPage,
+		onPage: function(state) {
+			return returnOnPage(state);
+		},
 		create: function(mid) {
 			return create(mid);
 		},

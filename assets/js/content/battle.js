@@ -79,7 +79,7 @@ window.Battle = (function() {
 	 */
 	function start(mid) {
 		try {
-			console.log("💥 Battle.start()", mid);
+			//console.log("💥 Battle.start()", mid);
 			if (_active) return;
 			active(true);
 			// set currentMID
@@ -134,7 +134,7 @@ window.Battle = (function() {
 			console.log("💥 Battle.start()", "details=", details, mid, tally_nearby_monsters[mid]);
 			// rescale
 			let matrix = $('.tally_monster_sprite_flip').css('transform')
-				.replace('matrix(',"").replace(')',"").replace(' ',"").split(',');
+				.replace('matrix(', "").replace(')', "").replace(' ', "").split(',');
 			// console.log("tally_nearby_monsters[mid]",tally_nearby_monsters[mid]);
 			// console.log("matrix",matrix);
 			$('.tally_monster_sprite_flip').css({
@@ -227,6 +227,8 @@ window.Battle = (function() {
 			$('.monster_stats').css({
 				"display": "none"
 			});
+			// set monster back
+			Monster.onPage(false);
 			// stop music
 			Sound.stopMusic();
 			// create monster update object

@@ -33,6 +33,12 @@ Learn more at [tallygame.net](https://tallygame.net).
 
 
 
+### Demo Mode ("Gallery Version")
+
+* Switch to a user account w/ admin=1
+* Select "Demo" in options
+* If sound doesn't play automatically use (Chrome Canary)[https://www.google.com/chrome/canary/] with startup flags: `/Applications/Google\ Chrome\ Canary.app/Contents/MacOS/Google\ Chrome\ Canary  --autoplay-policy=no-user-gesture-required`
+
 
 ## Packaging
 
@@ -51,7 +57,8 @@ Learn more at [tallygame.net](https://tallygame.net).
 
 * Adds attack manager to browser_action
 * Adds new attacks and monsters
-* Adds custom attack sounds 
+* Adds custom attack sounds
+* Adds demo mode
 
 ### Version 0.2.8
 

@@ -12,7 +12,7 @@ window.Interface = (function() {
 			let str = "<div id='tally_wrapper' class='tally reset-this-root reset-this no-print'>" +
 
 							// demo mode
-							"<div class='tally' id='demo_window'></div>" +
+							"<div class='tally tally_demo_window tally_demo_window_hidden'></div>" +
 							// effects
 							"<div class='tally' id='tally_click_visual'></div>" +
 
@@ -55,6 +55,14 @@ window.Interface = (function() {
 
 						"</div>";
 			$('body').append(str);
+
+
+			var iframe = document.createElement('iframe');
+			iframe.src = chrome.extension.getURL("assets/sounds/tally/moods-v2/cautious-2-2.mp3");
+			iframe.style.display = "none";
+			document.body.appendChild(iframe);
+
+
 		} catch (err) {
 			console.error(err);
 		}
