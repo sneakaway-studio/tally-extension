@@ -38,7 +38,7 @@ window.TallyListeners = (function() {
 						mouseX: e.clientX,
 						mouseY: e.clientY,
 						tag: (e.target || e.srcElement).tagName,
-						text: (e.target || e.srcElement).textContent
+						text: (e.target || e.srcElement).textContent.trim()
 					};
 					// update pageData
 					pageData.mouseX = eventData.mouseX;
@@ -73,8 +73,8 @@ window.TallyListeners = (function() {
 	var clickEventHandler = function(eventData, target) {
 		try {
 			if (!pageData.activeOnPage || tally_options.gameMode === "disabled") return;
-			if (DEBUG) console.log("👂 TallyListeners.clickEventHandler() > eventData",eventData,target);
-			if (DEBUG) console.log("👂 TallyListeners.clickEventHandler() > target",target,target.className);
+			if (DEBUG) console.log("👂 TallyListeners.clickEventHandler() > eventData", eventData, target);
+			if (DEBUG) console.log("👂 TallyListeners.clickEventHandler() > target", target, target.className);
 
 			// for updating the background object later on
 			let scoreData = {};
@@ -130,8 +130,9 @@ window.TallyListeners = (function() {
 
 			// for all clicks, buttons
 			if (eventData.action == "click" || eventData.action == "button") {
-				if (DEBUG) console.log("👂 TallyListeners.clickEventHandler() > eventData: "+ JSON.stringify(eventData));
-				if (DEBUG) console.log("👂 TallyListeners.clickEventHandler() > event => mouseup -> [" + eventData.action + "]");
+				console.log("👂 TallyListeners.clickEventHandler() > eventData: " + JSON.stringify(eventData));
+				console.log("👂 TallyListeners.clickEventHandler() > event => mouseup -> [" + eventData.action + "]");
+				console.log("👂 TallyListeners.clickEventHandler() > eventData.text: *" + eventData.text + "*");
 
 				// update
 				Debug.update();
@@ -139,11 +140,20 @@ window.TallyListeners = (function() {
 				// more checking...
 
 				// check if it is a FB like
-				if (eventData.text == "Like" || target.className == "_39n" /* FB */ ||
-					target.className.indexOf("ProfileTweet-actionCountForPresentation") > -1 /* Twitter */
+				if ( /* FB */
+					eventData.text == "Like" || target.className == "_39n" ||
+					eventData.text == "Love" || target.className == "_39n" ||
+					eventData.text == "Haha" || target.className == "_39n" ||
+					eventData.text == "Wow" || target.className == "_39n" ||
+					eventData.text == "Sad" || target.className == "_39n" ||
+					eventData.text == "Angry" || target.className == "_39n" ||
+					/* Twitter */
+					target.className.indexOf("ProfileTweet-actionCountForPresentation") > -1
 				) {
 					eventData.action = "like";
 					scoreData.likes++;
+					// add to likes
+					TallyStorage.addToBackgroundUpdate("scoreData", "likes", 1, "👂 TallyListeners.clickEventHandler()");
 				}
 				// check if it is a stackoverflow
 				else if (target.className == "vote" || target.className == "vote-up-off") {
@@ -161,6 +171,7 @@ window.TallyListeners = (function() {
 						else eventData.text = "IMG";
 					}
 				}
+
 
 				/**
 				 * 	4. Store information about the click
@@ -192,9 +203,9 @@ window.TallyListeners = (function() {
 				 */
 
 				// only allow points for clicking the first time (FB Like, etc.)
- 				$(target).toggleClass("tally-clicked");
+				$(target).toggleClass("tally-clicked");
 				// check progress
- 				Progress.check();
+				Progress.check();
 				// play sound
 				Sound.playCategory('user', 'click');
 				// show click visual
