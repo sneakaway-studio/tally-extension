@@ -130,9 +130,8 @@ window.TallyListeners = (function() {
 
 			// for all clicks, buttons
 			if (eventData.action == "click" || eventData.action == "button") {
-				console.log("👂 TallyListeners.clickEventHandler() > eventData: " + JSON.stringify(eventData));
-				console.log("👂 TallyListeners.clickEventHandler() > event => mouseup -> [" + eventData.action + "]");
-				console.log("👂 TallyListeners.clickEventHandler() > eventData.text: *" + eventData.text + "*");
+				if (DEBUG) console.log("👂 TallyListeners.clickEventHandler() > eventData: " + JSON.stringify(eventData));
+				if (DEBUG) console.log("👂 TallyListeners.clickEventHandler() > event => mouseup -> [" + eventData.action + "]");
 
 				// update
 				Debug.update();

@@ -59,6 +59,7 @@ Learn more at [tallygame.net](https://tallygame.net).
 * Adds new attacks and monsters
 * Adds custom attack sounds
 * Adds demo mode
+* Fixes like tracking
 
 ### Version 0.2.8
 

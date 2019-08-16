@@ -131,7 +131,7 @@ window.Tally = (function() {
 				stop: function() {}
 			});
 
-			$('.tally_stats').on("mouseenter", function(e) {
+			$('.tally_stats').on("click", function(e) {
 				//console.log("hi",$('.tally_stats_table').css("display"));
 				if ($('.tally_stats_table').css("display") == "none")
 					$('.tally_stats_table').css({

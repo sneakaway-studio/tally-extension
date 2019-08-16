@@ -157,6 +157,18 @@ window.Battle = (function() {
 			$('.monster_stats').css({
 				"display": "block"
 			});
+			// add stats display / hide action
+			$('.monster_stats').on("click", function(e) {
+				//console.log("hi",$('.monster_stats_table').css("display"));
+				if ($('.monster_stats_table').css("display") == "none")
+					$('.monster_stats_table').css({
+						"display": "block"
+					});
+				else
+					$('.monster_stats_table').css({
+						"display": "none"
+					});
+			});
 
 			// play music (intro, then loop)
 			Sound.playBattleMusic();
