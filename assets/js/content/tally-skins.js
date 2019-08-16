@@ -259,23 +259,25 @@ window.Skin = (function() {
 		try {
 			var r = Math.random();
 			if (r < 0.1)
-				update("color", "magenta");
+				currentSkin = {"type":"color", "name":"magenta"};
 			else if (r < 0.2)
-				update("color", "cyan");
+				currentSkin = {"type":"color", "name":"cyan"};
 			else if (r < 0.4)
-				update("gradient", "rainbow");
+				currentSkin = {"type":"gradient", "name":"rainbow"};
 			else if (r < 0.6)
-				update("gradient", "redGold", "animation");
+				currentSkin = {"type":"gradient", "name":"redGold", "anim":true};
 			else if (r < 0.7)
-				update("gradient", "blueGreen", "animation");
+				currentSkin = {"type":"gradient", "name":"blueGreen", "anim":true};
 			// else if (r < 0.08)
-			// 	update("image", "camoGrey");
+				// currentSkin = {"type":"image", "name":"camoGrey"};
 			else if (r < 0.09)
-				update("pattern", "plaidYellow");
+				currentSkin = {"type":"pattern", "name":"plaidYellow"};
 			// else if (r < 1)
-			// 	update("image", "plaidRed");
+				// currentSkin = {"type":"image", "name":"plaidRed"};
 			else
-				update("color", "magenta");
+				currentSkin = {"type":"color", "name":"magenta"};
+
+			update(currentSkin);
 		} catch (err) {
 			console.error(err);
 		}

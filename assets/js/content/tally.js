@@ -222,19 +222,19 @@ window.Tally = (function() {
 				// closed so open
 
 				var str = "" +
-					"<button class='tally' id='tallyMenu_profile'>`1+p View profile</button>" +
-					"<button class='tally' id='tallyMenu_startScreen'>`1+s View start screen</button>" +
-					"<button class='tally' id='tallyMenu_testNearbyMonster'>`1+m Test nearby monster</button>" +
+					"<button class='tally' id='tallyMenu_profile'>View profile</button><br>" +
+					"<button class='tally' id='tallyMenu_startScreen'>View start screen</button><br>" +
 					"<hr>" +
-					"<button class='tally' id='tallyMenu_battleStart'>`1+b Start battle</button>" +
-					"<button class='tally' id='tallyMenu_battleEnd'>`1+q End battle</button>" +
-					"<button class='tally' id='tallyMenu_battleRumbleSmall'>`1+r+0 small battle rumble</button>" +
-					"<button class='tally' id='tallyMenu_battleRumbleMedium'>`1+r+1 medium battle rumble</button>" +
-					"<button class='tally' id='tallyMenu_battleRumbleLarge'>`1+r+2 large battle rumble</button>" +
-					"<hr>" +
-					"<button class='tally' id='tallyMenu_explodePage'>`1+e Explode Page</button>" +
-					"<button class='tally' id='tallyMenu_randomDialogue'>`1+t Random dialogue</button>" +
-					"<button class='tally' id='tallyMenu_randomSkin'>`1+w Random skin</button>" +
+					// "<button class='tally' id='tallyMenu_testNearbyMonster'>Test nearby monster</button><br>" +
+					// "<button class='tally' id='tallyMenu_battleStart'>Start battle</button><br>" +
+					// "<button class='tally' id='tallyMenu_battleEnd'>End battle</button><br>" +
+					// "<button class='tally' id='tallyMenu_battleRumbleSmall'>sm battle rumble</button><br>" +
+					// "<button class='tally' id='tallyMenu_battleRumbleMedium'>md battle rumble</button><br>" +
+					// "<button class='tally' id='tallyMenu_battleRumbleLarge'>lg battle rumble</button><br>" +
+
+					"<button class='tally' id='tallyMenu_explodePage'>Explode Page</button><br>" +
+					"<button class='tally' id='tallyMenu_randomDialogue'>Random dialogue</button><br>" +
+					"<button class='tally' id='tallyMenu_randomSkin'>Random skin</button><br>" +
 					"</div>";
 
 				Dialogue.showStr(str, false, true);
@@ -284,11 +284,6 @@ window.Tally = (function() {
 			console.error(err);
 		}
 	}
-
-
-
-
-
 
 	// PUBLIC
 	return {

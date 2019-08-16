@@ -50,17 +50,17 @@ window.StatsDisplay = (function() {
 				level = Stats.getLevel(who);
 			if (DEBUG) console.log("📈 StatsDisplay.returnInitialSVG()", who, statsPoints[who], "health=" + statsPoints[who].health.val, "stamina=" + statsPoints[who].stamina.val);
 
-			str += '<svg height="49" width="230" class="stats-display">';
-			str += '<g class="stat-bars">';
-			str += '<polygon points="' + combineSVGPoints(statsPoints[who].healthbg) + '" class="stat-bar-health-bg" />';
-			str += '<polygon points="' + combineSVGPoints(statsPoints[who].health) + '" data-value="' + statsPoints[who].health.val + '" class="stat-bar-health" />';
-			str += '<polygon points="' + combineSVGPoints(statsPoints[who].staminabg) + '" class="stat-bar-stamina-bg" />';
-			str += '<polygon points="' + combineSVGPoints(statsPoints[who].stamina) + '" data-value="' + statsPoints[who].stamina.val + '" class="stat-bar-stamina" />';
+			str += '<svg height="49" width="230" class="tally stats-display">';
+			str += '<g class="tally stat-bars">';
+			str += '<polygon points="' + combineSVGPoints(statsPoints[who].healthbg) + '" class="tally stat-bar-health-bg" />';
+			str += '<polygon points="' + combineSVGPoints(statsPoints[who].health) + '" class="tally stat-bar-health" data-value="' + statsPoints[who].health.val + '" />';
+			str += '<polygon points="' + combineSVGPoints(statsPoints[who].staminabg) + '" class="tally stat-bar-stamina-bg" />';
+			str += '<polygon points="' + combineSVGPoints(statsPoints[who].stamina) + '" class="tally stat-bar-stamina" data-value="' + statsPoints[who].stamina.val + '" />';
 			str += '</g>';
 			str += '<circle cx="' + statsPoints[who].circle.cx + '" cy="' + statsPoints[who].circle.cy;
-			str += '" r="' + statsPoints[who].circle.r + '" data-value="0" class="stat-bar-circle" />';
+			str += '" r="' + statsPoints[who].circle.r + '" data-value="0" class="tally stat-bar-circle" />';
 			str += '<text x="' + statsPoints[who].circle.cx + '" y="' + statsPoints[who].circle.cy;
-			str += '" dominant-baseline="middle" text-anchor="middle" class="stat-bar-circle-text ' + who + '-circle-text">' + level + '</text>';
+			str += '" dominant-baseline="middle" text-anchor="middle" class="tally stat-bar-circle-text ' + who + '-circle-text">' + level + '</text>';
 			str += '</svg>';
 			return str;
 		} catch (err) {
@@ -75,18 +75,18 @@ window.StatsDisplay = (function() {
 			let stats = Stats.get(who),
 				str = "",
 				blink = "";
-			str += "<div class='tally'><table class='tally stats-table'>";
+			str += "<div class='tally'><table class='tally stats-table'><tbody class='tally'>";
 			for (var key in stats) {
 				if (stats.hasOwnProperty(key)) {
 					blink = "";
 					if (changed == key) blink = " stat-blink";
 					let title = key + ": " + stats[key].val + "/" + stats[key].max;
 					str += "<tr class='tally text-" + key + blink + "' title='" + title + "'>" +
-						"<td>" + key + "</td>" +
-						"<td class='stats-number-column'>" + stats[key].val + "</td></tr>";
+						"<td class='tally'>" + key + "</td>" +
+						"<td class='tally stats-number-column'>" + stats[key].val + "</td></tr>";
 				}
 			}
-			str += "</table></div>";
+			str += "</tbody></table></div>";
 			return str;
 		} catch (err) {
 			console.error(err);
