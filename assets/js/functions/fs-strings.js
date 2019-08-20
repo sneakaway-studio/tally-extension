@@ -55,20 +55,39 @@ function trimStr(str, length) {
  */
 function cleanStringReturnTagArray(str = "") {
 	var arr = [];
+	// decode html entitites
+	str = htmlDecode(str);
+	// console.log(str);
+
+	// remove html
+	str = str.replace(/<[^>]*>?/gm, ' ');
+	// console.log(str);
+
+	// remove punctuation
+	str = str.replace(/['!"#$%&\\'…,()\*+\-\.\/:;<=>?@\[\\\]\^_`{|}~']/g, " ");
+	// console.log(str);
+
 	// clean
-	str = str.replace(/[.,\/#\"\'!$%\^&\*;:{}=\-_`~()\[\]]/g, " ") // remove punctuation
+	str = str
 		.replace(/[0-9]/g, '') // remove numbers
-		.replace(/\s\s+/g, ' ') // remove multiple (white)spaces
+		.replace(/\s+/g, ' ') // remove multiple (white)spaces
 		.toLowerCase() // convert to lowercase
 		.trim();
+	// console.log(str);
+
 	// if chars left then split into array
-	if (str.length > 0)
-		arr = str.split(" ");
-	//console.log( JSON.stringify(arr) )
+	if (str.length > 2) arr = str.split(" ");
+	//  make sure each tag is > 2 long
+	for (let i = 0; i < arr.length; i++)
+		if (arr[i].length <= 2) arr.splice(i, 1);
+	// console.log(JSON.stringify(arr));
+
 	return arr;
 }
 
-
+function htmlDecode(value) {
+	return $("<div/>").html(value).text();
+}
 
 function ucFirst(string) {
 	return string.charAt(0).toUpperCase() + string.slice(1);
