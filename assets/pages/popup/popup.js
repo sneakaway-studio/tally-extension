@@ -39,7 +39,9 @@ function init() {
 			$(".content").html(str);
 		} else {
 			if (tally_user.admin > 0)
-				$(".hideUnlessAdmin").css({'display':'block'});
+				$(".hideUnlessAdmin").css({
+					'display': 'block'
+				});
 			getOptions();
 		}
 	});
@@ -63,11 +65,11 @@ function getUser(callback) {
 		$("#clicks").html(tally_user.score.clicks);
 		$("#likes").html(tally_user.score.likes);
 		$("#pages").html(tally_user.score.pages);
-		$("#time").html(moment.utc(tally_user.score.time*1000).format('HH:mm:ss'));
+		$("#time").html(moment.utc(tally_user.score.time * 1000).format('HH:mm:ss'));
 		$("#monsters").html(objLength(tally_user.monsters));
 		// do a callback if exists
 		if (callback)
-			for(var i in callback)
+			for (var i in callback)
 				callback[i]();
 	});
 }
@@ -97,11 +99,8 @@ function getAttacks(callback) {
 				// show defense vs. attack
 				let defenseOption = "";
 
-
-
-
 				// if defense
-				if (tally_user.attacks[key].type === "defense"){
+				if (tally_user.attacks[key].type === "defense") {
 					defenseOption = "battle-options-defense";
 				}
 				let title = tally_user.attacks[key].name + " [" + tally_user.attacks[key].category + " " + tally_user.attacks[key].type + "] ";
@@ -121,12 +120,6 @@ function getAttacks(callback) {
 			}
 		}
 
-
-
-
-
-
-
 		// console.log(str);
 		$(".attacksCloud").html(str);
 		// update display
@@ -134,10 +127,10 @@ function getAttacks(callback) {
 
 		// add icons
 		$(".attack-icon-attack").css({
-			"background-image": 'url('+chrome.extension.getURL('../../assets/img/battles/sword-pixel-13sq.png') +')'
+			"background-image": 'url(' + chrome.extension.getURL('../../assets/img/battles/sword-pixel-13sq.png') + ')'
 		});
 		$(".attack-icon-defense").css({
-			"background-image": 'url('+chrome.extension.getURL('../../assets/img/battles/shield-pixel-13sq.png') +')'
+			"background-image": 'url(' + chrome.extension.getURL('../../assets/img/battles/shield-pixel-13sq.png') + ')'
 		});
 
 		// add listener for buttons
