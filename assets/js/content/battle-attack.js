@@ -478,6 +478,11 @@ window.BattleAttack = (function() {
 				// if so get a new one, passing name and type if set
 				attack = AttackData.returnAttack(name, type);
 
+			// if they haven't reached their attackLimit
+			if (tally_user.progress.attacksSelected.val < tally_user.progress.attackLimit.val)
+				// then mark it as selected
+				attack.selected = 1;
+
 			// save in background and on server
 			TallyStorage.saveTallyUser("attacks", attack, "💥 BattleAttack.rewardAttack()");
 			TallyStorage.addToBackgroundUpdate("itemData", "attacks", attack, "💥 BattleAttack.rewardAttack()");

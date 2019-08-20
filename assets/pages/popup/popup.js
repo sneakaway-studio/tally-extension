@@ -195,6 +195,18 @@ function saveAttacks() {
 		}
 	}
 	backgroundUpdate.itemData.attacks = attacks;
+
+
+	// update attacksSelected
+	let progress = [];
+	// add to update
+	progress.push({
+		"name": "attacksSelected",
+		"val": attacksSelected
+	});
+	backgroundUpdate.itemData.progress = progress;
+	// alert(JSON.stringify(backgroundUpdate.itemData.progress));
+
 	sendBackgroundUpdate();
 	// alert(JSON.stringify(attacks));
 }

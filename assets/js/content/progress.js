@@ -9,6 +9,7 @@ window.Progress = (function() {
 		"tokenAddedPlayWelcomeMessage": false,
 		// attacks
 		"attackLimit": 1,
+		"attacksSelected": 0,
 		"award1stAttack": false,
 		"award2ndAttack": false,
 		"award3rdAttack": false,
@@ -99,6 +100,7 @@ window.Progress = (function() {
 			if (get("attackLimit") < GameData.attackLimits[FS_Number.clamp(tally_user.level,0,4)]) {
 				update("attackLimit", GameData.attackLimits[FS_Number.clamp(tally_user.level,0,4)]);
 				Dialogue.showStr("You can now use " + get("attackLimit") + " attacks in battle!", "happy");
+				Dialogue.showStr("Manage your attacks with the button at the top right of browser window.", "happy");
 			}
 
 

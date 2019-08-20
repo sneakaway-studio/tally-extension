@@ -178,7 +178,7 @@ window.Dialogue = (function() {
 				'height': (lines * 12) + 26 + "px",
 				'left': '10px',
 				'opacity': 1 // make it visible
-			});
+			}); 
 			// make Tally look at user
 			Tally.stare();
 			// hide after appropriate reading period

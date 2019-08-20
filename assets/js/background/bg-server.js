@@ -112,7 +112,7 @@ window.Server = (function() {
 			_tally_meta.userTokenValid = _valid;
 			store("tally_meta", _tally_meta);
 
-			Background.dataReport();
+			// Background.dataReport();
 
 			// if userTokenStatus is ok
 			if (_tally_meta.userTokenStatus == "ok") {

@@ -2,7 +2,7 @@
 
 var AttackData = (function() {
 
-    let DEBUG = false;
+    let DEBUG = Debug.ALL.AttackData;
 
     /**
      *  Return an attack of name or type or random

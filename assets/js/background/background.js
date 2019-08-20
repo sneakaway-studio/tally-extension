@@ -126,8 +126,8 @@ window.Background = (function() {
 
 	// PUBLIC
 	return {
-		startApp:startApp,
-		dataReport:dataReport,
-		checkServerForDataOnStartApp:checkServerForDataOnStartApp
+		startApp: startApp,
+		dataReport: dataReport,
+		checkServerForDataOnStartApp: checkServerForDataOnStartApp
 	};
 }());
