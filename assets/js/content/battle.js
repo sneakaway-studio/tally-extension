@@ -20,6 +20,7 @@ window.Battle = (function() {
 			"monsterLevel": 1,
 			"monsterLostTurns": 0,
 			"monsterName": "",
+			"monsterTracker":"",
 			"oppName": "",
 			"oppStr": "",
 			"progress": 1, // cues for battle progress, normalized 1=start, 0=end
@@ -131,6 +132,7 @@ window.Battle = (function() {
 			details.monsterLevel = Monster.current().level; //Stats.getLevel("monster");
 			details.monsterName = MonsterData.dataById[mid].name + " monster";
 			details.monsterAttacks = AttackData.returnRandomAttacks(3);
+			details.monsterTracker = tally_nearby_monsters[mid].tracker;
 			console.log("💥 Battle.start()", "details=", details, mid, tally_nearby_monsters[mid]);
 			// rescale
 			let matrix = $('.tally_monster_sprite_flip').css('transform')
@@ -247,17 +249,33 @@ window.Battle = (function() {
 			let monsterUpdate = {
 				"mid": details.mid,
 				"level": details.monsterLevel,
+				"tracker": details.monsterTracker,
 				"captured": 0,
 				"missed": 0,
 			};
+
+			// create tracker update object
+			let trackerUpdate = {
+				"name": Battle.details.monsterTracker,
+				"mid": Battle.details.mid,
+				"blocked": Battle.details.mid
+			};
+
 			// set winner
 			if (Battle.details.winner === "tally") {
 				monsterUpdate.captured = 1;
+				trackerUpdate.blocked = 1;
 			} else if (Battle.details.winner === "monster") {
 				monsterUpdate.missed = 1;
+				trackerUpdate.blocked = 0;
 			}
-			// update server
+
+			// add monster to update
 			TallyStorage.addToBackgroundUpdate("itemData", "monsters", monsterUpdate);
+			// add tracker to update
+			TallyStorage.addToBackgroundUpdate("itemData", "trackers", trackerUpdate);
+
+			// update server
 			TallyStorage.checkSendBackgroundUpdate();
 		} catch (err) {
 			console.error(err);

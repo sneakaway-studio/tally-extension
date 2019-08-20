@@ -21,24 +21,27 @@ window.Monster = (function() {
 	function create(mid, _stage = 1) {
 		try {
 			if (!prop(mid) || !prop(_stage) || !prop(MonsterData.dataById[mid])) return;
-			if (DEBUG) console.log('👿 ⊙!⊙⊙⊙ Monster.create()1', "mid=" + mid, "_stage=" + _stage, MonsterData.dataById[mid]);
+			// make sure there are trackers on the page
+			let tracker = FS_Object.randomArrayIndex(pageData.trackers) || "";
+			if (tracker === "") return;
+			if (DEBUG) console.log('👿 ⊙!⊙⊙⊙ Monster.create()', "mid=" + mid, "_stage=" + _stage, MonsterData.dataById[mid]);
 			tally_nearby_monsters[mid] = {
 				"stage": _stage,
 				"level": returnNewMonsterLevel(),
 				"name": MonsterData.dataById[mid].name,
 				"slug": MonsterData.dataById[mid].slug,
 				"mid": mid,
+				"tracker": tracker,
 				"totalCaptured": 0,
 				"captured": 0,
 				"missed": 0,
 				"facing": MonsterData.dataById[mid].facing,
 				"updatedAt": Date.now()
 			};
-
 			// if it already exists then make it the number of captures +1
 			if (tally_user.monsters[mid])
 				tally_nearby_monsters[mid].totalCaptured = tally_user.monsters[mid].captured;
-			if (DEBUG) console.log('👿 ⊙!⊙⊙⊙ Monster.create()2', mid, tally_nearby_monsters[mid], tally_user.monsters[mid]);
+			if (DEBUG) console.log('👿 ⊙!⊙⊙⊙ Monster.create()', mid, tally_nearby_monsters[mid], tally_user.monsters[mid]);
 			// save
 			TallyStorage.saveData("tally_nearby_monsters", tally_nearby_monsters, "👿 Monster.create()");
 			return tally_nearby_monsters[mid];
@@ -235,7 +238,7 @@ window.Monster = (function() {
 		}
 	}
 
-	function returnOnPage(state){
+	function returnOnPage(state) {
 		if (state != undefined && (state === true || state === false))
 			onPage = state;
 		return onPage;

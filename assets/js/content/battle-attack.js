@@ -350,6 +350,8 @@ window.BattleAttack = (function() {
 	}
 
 	function tallyWins(message,dialogue) {
+		// explode page
+		Effect.explode();
 		// save winner
 		Battle.details.winner = "tally";
 		// log winning message
@@ -361,7 +363,7 @@ window.BattleAttack = (function() {
 		TallyStorage.addToBackgroundUpdate("scoreData", "score", increase);
 		BattleConsole.log("You earned "+ increase +" XP for beating this monster!!!");
 		// tell player they blocked tracker
-		BattleConsole.log("You now have blocked this tracker from grabbing your data!!!");
+		BattleConsole.log("You now have blocked the "+ Battle.details.monsterTracker +" tracker from grabbing your data!!!");
 		// potentially award a new attack
 		if (Progress.get("award4thAttack")) randomRewardAttack();
 		// play win sound
@@ -468,8 +470,6 @@ window.BattleAttack = (function() {
 	 */
 	function rewardAttack(name = "", type = "") {
 		try {
-			if (DEBUG) console.log("💥 BattleAttack.rewardAttack() name=" + name + ", type=" + type);
-
 			// get random attack
 			let attack = AttackData.returnAttack(name, type);
 
@@ -477,6 +477,8 @@ window.BattleAttack = (function() {
 			while (prop(tally_user.attacks[attack.name]))
 				// if so get a new one, passing name and type if set
 				attack = AttackData.returnAttack(name, type);
+
+			if (DEBUG) console.log("💥 BattleAttack.rewardAttack() name=" + name + ", type=" + type);
 
 			// if they haven't reached their attackLimit
 			if (tally_user.progress.attacksSelected.val < tally_user.progress.attackLimit.val)

@@ -12,7 +12,7 @@ window.Effect = (function() {
 	 */
 	function explode() {
 		try {
-			Sound.playFile("explosions/explode.mp3");
+			Sound.playFile("explosions/explode.mp3", false, 0);
 
 			// all possible html5 nodes
 			let nodes = ['a', 'a[href]', 'b', 'blockquote', 'br', 'button', 'canvas', 'code', 'dd', 'dl', 'dt',
