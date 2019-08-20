@@ -51,7 +51,101 @@ Learn more at [tallygame.net](https://tallygame.net).
 
 ## Development Versions
 
-## [Changelog](CHANGELOG.md)
+
+
+### Version 0.3.0
+
+* Connects trackers to monsters for local and remote 
+
+### Version 0.2.9
+
+* Adds attack manager to browser_action
+* Adds new attacks and monsters
+* Adds custom attack sounds
+* Adds demo mode
+* Fixes like tracking
+
+### Version 0.2.8
+
+* Fixes monster sprite flip and monster level bugs
+* Automates data importing
+* Adds special attacks "lose a turn"
+* Adds more monsters and attacks
+
+### Version 0.2.7
+
+* Fixes issues with battle logic
+* Adds testing game mode
+* Adds more monsters and attacks
+
+### Version 0.2.6
+
+* Rewrites backend updates to improve asynchronous communication w/ API
+* Creates a queueing system so many changes on ext. / API can be staged before sending to lower traffic / processing
+* Adds flags from / to ext. and server so message passing can happen more easily
+* Standardizes communication of "items" with server/database
+* Moves master to server so game progress is saved across installations
+* ^ This allows addition of "delete data" function on dashboard so players can delete / reset their data
+
+### Version 0.2.5
+
+* Improvements to dialogue system
+* Adds more monsters and attacks
+
+### Version 0.2.4
+
+* Fixes leveling issues
+* Fixes battle stats display
+* Adds more monsters and attacks
+* Adds distinction in battle options for attack v. defense buttons
+
+### Version 0.2.3
+
+* Fixes many issues with battle math
+* Adds battle music
+* Adds more monsters and attacks
+
+### Version 0.2.2
+
+* Adds nearly complete battle system
+* Adds badges
+* Adds more monsters and attacks
+
+### Version 0.2.1
+
+* Fixes various installation issues
+* Adds installation progress framework
+* Adds more monsters and attacks
+
+### Version 0.2.0
+
+* Adds beginning of turn-based RPG battle system with console, explosions, etc.
+* Adds consumables (cookies, data junk, etc.)
+* Adds new logging system to Tally Dialogues
+* Rewrite of Stats manager
+* Lots of small bug fixes and improvements
+
+### Version 0.1.4
+
+* Many bug fixes (sound, battles, monsters)
+* Adds double click debug menu option
+* Adds features to monster battle
+
+### Version 0.1.3
+
+* Monster update
+* Auth flow and other bug fixes
+
+### Version 0.1.2
+
+* Adds sound volume range slider to options
+* Adds functions for progressive tracker blocking
+* Other bug fixes
+
+### Version 0.1.1
+
+* Development version from Spring 2018 Digital Studies "Humanities Startup" course
+
 
 
 ## Dependencies
