@@ -56,13 +56,6 @@ window.Interface = (function() {
 						"</div>";
 			$('body').append(str);
 
-
-			var iframe = document.createElement('iframe');
-			iframe.src = chrome.extension.getURL("assets/sounds/tally/moods-v2/cautious-2-2.mp3");
-			iframe.style.display = "none";
-			document.body.appendChild(iframe);
-
-
 		} catch (err) {
 			console.error(err);
 		}

@@ -55,9 +55,9 @@ window.Sound = (function() {
 				"powerup10": "powerup10.wav",
 			},
 			"tally": {
-				"sad-hurt-1":"sad-hurt-1.wav",
-				"sad-hurt-2":"sad-hurt-2.wav",
-				"sad-hurt-3":"sad-hurt-3.wav",
+				"sad-hurt-1": "sad-hurt-1.wav",
+				"sad-hurt-2": "sad-hurt-2.wav",
+				"sad-hurt-3": "sad-hurt-3.wav",
 			}
 		};
 
@@ -121,6 +121,7 @@ window.Sound = (function() {
 
 	function startMusic() {
 		try {
+			if (!pageData.activeOnPage || tally_options.gameMode === "disabled" || tally_options.gameMode === "stealth") return;
 			if (DEBUG) console.log("♪ Sound.startMusic()");
 
 			if (musicAudio !== null) {
@@ -224,7 +225,7 @@ window.Sound = (function() {
 	 */
 	function playRandom(category, index, delay) {
 		try {
-			if (!tally_options.playSounds) return;
+			if (!pageData.activeOnPage || !tally_options.playSounds) return;
 			//if(DEBUG) console.log("playRandom("+ category +","+ index +")");
 			var soundFile = "";
 			// if a specific category && index provided, then get that sound
@@ -249,7 +250,7 @@ window.Sound = (function() {
 	// Sound.playCategory ("tally","general")
 	function playCategory(category, index, delay) {
 		try {
-			if (!tally_options.playSounds) return;
+			if (!pageData.activeOnPage || !tally_options.playSounds) return;
 			let file = category + "/" + sounds[category][index];
 			play(file, delay);
 		} catch (err) {
@@ -259,7 +260,7 @@ window.Sound = (function() {
 	// play a mood
 	function playMood(mood) {
 		try {
-			if (!tally_options.playSounds || !prop(mood)) return;
+			if (!pageData.activeOnPage || !tally_options.playSounds || !prop(mood)) return;
 			if (mood == "award") mood = "happy";
 			if (DEBUG) console.log("Sound.playMood()", mood);
 			let r = Math.ceil(Math.random() * moods[mood]);
@@ -301,7 +302,8 @@ window.Sound = (function() {
 	 */
 	function play(soundFile, delay = 0, volumeModifier = 0) {
 		try {
-			if (!pageData.activeOnPage || tally_options.gameMode === "disabled" || tally_options.gameMode === "stealth") return;
+			if (!pageData.activeOnPage || !tally_options.playSounds ||
+				tally_options.gameMode === "disabled" || tally_options.gameMode === "stealth") return;
 			if (DEBUG) console.log("♪♪♪♪♪ Sound.play(" + soundFile + "," + delay + "," + volumeModifier + ")");
 
 			// reference to audio element

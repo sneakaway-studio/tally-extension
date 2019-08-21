@@ -34,7 +34,7 @@ window.Debug = (function() {
 		"Onboarding": true,
 		"PageData": true,
 		"Progress": true,
-		"Sound": false,
+		"Sound": true,
 		"StatsDisplay": false,
 		"Stats": true,
 		"Skin": false,
