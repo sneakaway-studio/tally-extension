@@ -106,9 +106,7 @@ window.Install = (function() {
 					"time": 0,
 				},
 				"skins": ["color-magenta"],
-				"trackers": {
-					"blocked": {}
-				},
+				"trackers": {},
 				"username": "",
 			};
 			return obj;

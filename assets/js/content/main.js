@@ -36,9 +36,9 @@ window.TallyMain = (function() {
 				]) // getLastBackgroundUpdatePromise
 				.then(function() {
 					if (DEBUG) console.log('🧰 TallyMain.getDataFromBackground() -> all promises have resolved',
-								tally_user, tally_options, tally_meta
-								// ,tally_nearby_monsters, tally_top_monsters
-							);
+						tally_user, tally_options, tally_meta
+						// ,tally_nearby_monsters, tally_top_monsters
+					);
 
 					if (callback) callback();
 				})
@@ -73,8 +73,7 @@ window.TallyMain = (function() {
 			if (!pageData.activeOnPage) return;
 
 			// first, remove trackers that have been caught
-			// temp until I can add this to database so game progress is saved
-			// Tracker.removeCaughtTrackers(pageData.trackers);
+			Tracker.removeCaughtTrackers(pageData.trackers);
 
 			// add required CSS for game
 			FS_String.insertStylesheets();
