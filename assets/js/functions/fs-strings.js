@@ -37,6 +37,11 @@ window.FS_String = (function() {
 						"@keyframes " + name + "{" + frames + "}");
 				};
 			}
+		},
+
+		removeHTML: function(str){
+			// remove html and resulting whitespace
+			return str.replace(/<[^>]*>?/gm, ' ').replace(/\s+/g, ' ');
 		}
 
 	};
@@ -60,7 +65,7 @@ function cleanStringReturnTagArray(str = "") {
 	// console.log(str);
 
 	// remove html
-	str = str.replace(/<[^>]*>?/gm, ' ');
+	str = FS_String.removeHTML(str);
 	// console.log(str);
 
 	// remove punctuation

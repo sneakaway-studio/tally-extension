@@ -64,6 +64,7 @@ window.Dialogue = (function() {
 		try {
 			if (DEBUG) console.log("💭 Dialogue.show()", dialogue, mood, addIfDialogueInProcess);
 			if (!addIfDialogueInProcess && _queue.length > 0) return; // don't add if marked false
+			if (dialogue.text === "" || dialogue.text === undefined) return; // don't show if there is no text
 			add(dialogue);
 		} catch (err) {
 			console.error(err);
@@ -73,9 +74,10 @@ window.Dialogue = (function() {
 	/**
 	 *	Show dialogue bubble - pass an object to add() from string
 	 */
-	function showStr(str, mood, addIfDialogueInProcess = true) {
+	function showStr(str = "", mood = false, addIfDialogueInProcess = true) {
 		try {
 			if (DEBUG) console.log("💭 Dialogue.showStr()", str, mood, addIfDialogueInProcess);
+			if (!prop(str) || str === "") return; // don't show if there is no text
 			if (!addIfDialogueInProcess && _queue.length > 0) return; // don't add if marked false
 			add({
 				"text": str,
@@ -96,6 +98,7 @@ window.Dialogue = (function() {
 	function add(dialogue) {
 		try {
 			if (DEBUG) console.log("💭 Dialogue.add()", dialogue);
+			if (dialogue.text === "" || dialogue.text === undefined) return; // don't show if there is no text
 			// add to end of _queue
 			_queue.push(dialogue);
 			// start/make sure queueChecker is running
@@ -121,7 +124,7 @@ window.Dialogue = (function() {
 	 */
 	function queueChecker() {
 		try {
-			if (DEBUG) console.log("💭 Dialogue.queueChecker()", _queue, _active);
+			// if (DEBUG) console.log("💭 Dialogue.queueChecker()", _queue, _active);
 			// if no items in _queue then stop
 			if (_queue.length < 1) return;
 			// else, if not currently active then start a new one
@@ -161,13 +164,6 @@ window.Dialogue = (function() {
 
 			if (DEBUG) console.log("💭 Dialogue.writeNextInQueue()", dialogue, _queue, _active);
 
-			// set number of lines based on length of text
-			let lines = 1;
-			// 28 characters per line * 2
-			if (dialogue.text.length > 0)
-				lines = Math.ceil(dialogue.text.length / 28);
-			// set duration based on number lines
-			let duration = lines * 1950;
 			// add text
 			$('#tally_dialogue').html(dialogue.text);
 			// play sound (if exists)
@@ -175,17 +171,38 @@ window.Dialogue = (function() {
 			// adjust size of the box
 			$('#tally_dialogue_bubble').css({
 				'display': 'flex',
-				'height': (lines * 12) + 26 + "px",
+				'height': (stringLines(dialogue.text) * 12) + 26 + "px",
 				'left': '10px',
 				'opacity': 1 // make it visible
-			}); 
+			});
 			// make Tally look at user
 			Tally.stare();
 			// hide after appropriate reading period
-			setTimeout(hide, duration);
+			setTimeout(hide, stringDuration(dialogue.text));
 		} catch (err) {
 			console.error(err);
 		}
+	}
+
+
+	/**
+	 * 	Estimate number of lines for a string
+	 */
+	function stringLines(str, measure = 28) {
+		let lines = 1;
+		// remove html from string count
+		str = FS_String.removeHTML(str);
+		// 28 characters per line * 2
+		if (str.length > 0)
+			// set number of lines based on length of text
+			lines = Math.ceil(str.length / measure);
+		return lines;
+	}
+
+	function stringDuration(str) {
+		// set duration based on number lines
+		let duration = stringLines(str) * 1800; // 1950;
+		return duration;
 	}
 
 	/**
@@ -220,9 +237,10 @@ window.Dialogue = (function() {
 	/**
 	 *	Search and replace any template
 	 */
-	function searchReplaceTemplateStr(str) {
+	function searchReplaceTemplateStr(str = "") {
 		try {
 			if (DEBUG) console.log("💭 Dialogue.searchReplaceTemplateStr()", str, Monster.current());
+			if (str === "") return;
 			let find = "",
 				replace = "";
 			// check for any template replacement matches
@@ -276,7 +294,7 @@ window.Dialogue = (function() {
 	}
 
 	/**
-	 *	Return a dialogue, arr = ["category", "subcategory", "index"]
+	 *	Return a dialogue {"text":"","mood":""}, arr = ["category", "subcategory", "index"]
 	 */
 	function get(arr) {
 		try {
@@ -287,9 +305,13 @@ window.Dialogue = (function() {
 
 			if (DEBUG) console.log("💭 Dialogue.get() arr=" + JSON.stringify(arr));
 
-
 			// get category
-			let category, categoryStr, subcategoryStr;
+			let category,
+				categoryStr,
+				subcategoryStr,
+				result = false;
+
+			// get top category
 			categoryStr = arr[0];
 			category = DialogueData.data[categoryStr];
 
@@ -304,15 +326,15 @@ window.Dialogue = (function() {
 				// otherwise get a random one
 				let r = Math.floor(Math.random() * category[subcategoryStr].length);
 				if (DEBUG) console.log("💭 Dialogue.get()", "subcategoryStr=" + subcategoryStr + ", category[subcategoryStr]=" + JSON.stringify(category[subcategoryStr]));
-				return category[subcategoryStr][r];
+				result = category[subcategoryStr][r];
 			}
 			// if there is no subcategory, then get by index
 			else if (arr[2]) {
 				let index = arr[2];
-				return category[index];
+				result = category[index];
 			}
-			// otherwise
-			else return false;
+
+			return result;
 		} catch (err) {
 			console.error(err);
 		}
@@ -335,6 +357,9 @@ window.Dialogue = (function() {
 		},
 		get: function(arr) {
 			return get(arr);
+		},
+		stringDuration: function(str) {
+			return stringDuration(str);
 		},
 
 	};

@@ -20,22 +20,22 @@ window.Tracker = (function() {
 
 					// block it
 					if (x[0].src) {
-						x[0].src = "script-blocked-by-tally!!!";
+						x[0].src = trackersOnPage[i] + "-script-blocked-by-tally!!!";
 						if (DEBUG) console.warn("🕷️ Tracker.removeCaughtTrackers()", trackersOnPage[i], x[0].src, "BLOCKED BY TALLY!!!");
 					}
 				}
 			}
-		} catch(err){
+		} catch (err) {
 			console.error(err);
 		}
 	}
 	/**
 	 *	Add a tracker to remove list
 	 */
-	function addToRemoveList(tracker)    {
+	function addToRemoveList(tracker) {
 		try {
 
-		} catch(err){
+		} catch (err) {
 			console.error(err);
 		}
 	}

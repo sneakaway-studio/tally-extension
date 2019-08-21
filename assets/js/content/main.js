@@ -74,7 +74,6 @@ window.TallyMain = (function() {
 
 			// first, remove trackers that have been caught
 			Tracker.removeCaughtTrackers(pageData.trackers);
-
 			// add required CSS for game
 			FS_String.insertStylesheets();
 			// add debugger to page
