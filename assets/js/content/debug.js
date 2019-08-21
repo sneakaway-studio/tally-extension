@@ -20,7 +20,7 @@ window.Debug = (function() {
 		"Core": false,
 		"Debug": true,
 		"Demo": true,
-		"Dialogue": false,
+		"Dialogue": true,
 		"Effect": true,
 		"TallyEvents": true,
 		"Interface": true,

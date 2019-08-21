@@ -169,8 +169,9 @@ window.MonsterCheck = (function() {
 				// save to log after code above
 				if (DEBUG) console.log('👿 ⊙⊙?⊙⊙ MonsterCheck.handleMatch() -> monster =', MonsterData.dataById[mid].slug, tally_nearby_monsters[mid]);
 			}
-			// set skin
-			Skin.setStage(tally_nearby_monsters[mid].stage);
+			if(tally_nearby_monsters[mid])
+				// set skin
+				Skin.setStage(tally_nearby_monsters[mid].stage);
 			// save monsters
 			TallyStorage.saveData("tally_nearby_monsters",tally_nearby_monsters,"👿 MonsterCheck.handleMatch()");
 			// should we add the monster?

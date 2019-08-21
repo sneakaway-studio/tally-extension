@@ -159,7 +159,7 @@ svg#tally-svg * {
     padding: 0;
 }
 #tally_dialogue_bubble #tally_dialogue {
-    padding: 8px;
+    padding: 10px 8px 12px;
     text-align: center;
     margin: auto;
     font: 12px/16px "Monaco", "Andale Mono", "Courier New", sans-serif;
@@ -171,6 +171,7 @@ svg#tally-svg * {
 #tally_dialogue_bubble a {
     color: white;
     text-decoration: underline;
+    cursor: pointer;
 }
 /* http://leaverou.github.io/bubbly/ */
 .tally_speech_bubble {

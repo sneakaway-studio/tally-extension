@@ -60,29 +60,45 @@ window.Dialogue = (function() {
 	/**
 	 *	Show dialogue bubble - send object to add()
 	 */
-	function show(dialogue, mood, addIfDialogueInProcess = true) {
+	function show(dialogue, mood, addIfDialogueInProcess = true, instant = false) {
 		try {
 			if (DEBUG) console.log("💭 Dialogue.show()", dialogue, mood, addIfDialogueInProcess);
-			if (!addIfDialogueInProcess && _queue.length > 0) return; // don't add if marked false
 			if (dialogue.text === "" || dialogue.text === undefined) return; // don't show if there is no text
+			if (instant)
+				return showInstant(dialogue, mood);
+			if (!addIfDialogueInProcess && _queue.length > 0) return; // don't add if marked false
 			add(dialogue);
 		} catch (err) {
 			console.error(err);
 		}
 	}
 
+	function showInstant(dialogue, mood){
+		// erase queue
+		_queue = [];
+		// reset active
+		_active = false;
+		// add this dialogue to end of _queue
+		_queue.push(dialogue);
+		// start writing
+		writeNextInQueue();
+	}
+
 	/**
 	 *	Show dialogue bubble - pass an object to add() from string
 	 */
-	function showStr(str = "", mood = false, addIfDialogueInProcess = true) {
+	function showStr(str = "", mood = false, addIfDialogueInProcess = true, instant = false) {
 		try {
 			if (DEBUG) console.log("💭 Dialogue.showStr()", str, mood, addIfDialogueInProcess);
 			if (!prop(str) || str === "") return; // don't show if there is no text
-			if (!addIfDialogueInProcess && _queue.length > 0) return; // don't add if marked false
-			add({
+			let dialogue = {
 				"text": str,
 				"mood": mood
-			});
+			};
+			if (instant)
+				return showInstant(dialogue, mood);
+			if (!addIfDialogueInProcess && _queue.length > 0) return; // don't add if marked false
+			add(dialogue);
 		} catch (err) {
 			console.error(err);
 		}
@@ -171,7 +187,7 @@ window.Dialogue = (function() {
 			// adjust size of the box
 			$('#tally_dialogue_bubble').css({
 				'display': 'flex',
-				'height': (stringLines(dialogue.text) * 12) + 26 + "px",
+				'height': (stringLines(dialogue.text) * 15) + 28 + "px",
 				'left': '10px',
 				'opacity': 1 // make it visible
 			});
@@ -188,7 +204,7 @@ window.Dialogue = (function() {
 	/**
 	 * 	Estimate number of lines for a string
 	 */
-	function stringLines(str, measure = 28) {
+	function stringLines(str, measure = 26) {
 		let lines = 1;
 		// remove html from string count
 		str = FS_String.removeHTML(str);
@@ -315,7 +331,7 @@ window.Dialogue = (function() {
 			categoryStr = arr[0];
 			category = DialogueData.data[categoryStr];
 
-			if (DEBUG) console.log("💭 Dialogue.get()", "categoryStr=" + categoryStr + ", category=" + JSON.stringify(category));
+			// if (DEBUG) console.log("💭 Dialogue.get()", "categoryStr=" + categoryStr + ", category=" + JSON.stringify(category));
 
 			// if there is a subcategory, then select random
 			if (prop(arr[1])) {
@@ -343,11 +359,11 @@ window.Dialogue = (function() {
 
 	// PUBLIC
 	return {
-		show: function(dialogue, playSound, addIfDialogueInProcess) {
-			show(dialogue, playSound, addIfDialogueInProcess);
+		show: function(dialogue, playSound, addIfDialogueInProcess, instant) {
+			show(dialogue, playSound, addIfDialogueInProcess, instant);
 		},
-		showStr: function(str, mood, addIfDialogueInProcess) {
-			showStr(str, mood, addIfDialogueInProcess);
+		showStr: function(str, mood, addIfDialogueInProcess, instant) {
+			showStr(str, mood, addIfDialogueInProcess, instant);
 		},
 		showTrackerDialogue: showTrackerDialogue,
 		random: random,
