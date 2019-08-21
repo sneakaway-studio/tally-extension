@@ -349,6 +349,8 @@ function getMeta(callback) {
 		$("#tokenStatus").html((tally_meta.userTokenValid ? "yes" : "no"));
 		$("#tokenExpires").html((tally_meta.userTokenExpires ? tally_meta.userTokenExpires : "null"));
 		$("#serverStatus").html((tally_meta.serverOnline ? "yes" : "no"));
+		$("#currentAPI").html((tally_meta.currentAPI ? tally_meta.currentAPI : "null"));
+		$("#api").html((tally_meta.api ? tally_meta.api : "null"));
 
 
 		$("#installedOn").html(tally_meta.installedOn);
