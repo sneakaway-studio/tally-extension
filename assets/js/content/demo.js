@@ -11,11 +11,12 @@ window.Demo = (function() {
 		messageStr = "",
 		listenerActive = false,
 		idleInterval = {}, // store the interval
-		idleReset = 20, // start value
-		idleShowCountdown = 18, // when to start showing counter
+		idleReset = 15, // start value
+		idleShowCountdown = 10, // when to start showing counter
 		idleTime = idleReset, // counter
 		scrollToMonster = false,
-		clickOnMonster = false;
+		clickOnMonster = false,
+		tryToGoToNewPage = false;
 
 	// (maybe) set demo mode "on"
 	function start() {
@@ -157,8 +158,14 @@ window.Demo = (function() {
 					}, 400);
 
 				} else {
-					// go to a new page
-					TallyStorage.getDataFromServer('/url/random', Demo.goToUrlCallback);
+					let waitForServerUpdate = 0;
+					// if some updating needs to happen
+					if (clickOnMonster) {
+						waitForServerUpdate = 500;
+					}
+					setTimeout(function() {
+						goToNewPage();
+					}, waitForServerUpdate);
 				}
 			}
 			// update text
@@ -170,6 +177,30 @@ window.Demo = (function() {
 			console.error(err);
 		}
 	}
+
+
+	function goToNewPage() {
+		try {
+			// if we haven't tried already
+			if (!tryToGoToNewPage) {
+				// save attempt
+				tryToGoToNewPage = true;
+				// click random link
+				var links = $('a');
+				let r = Math.floor(Math.random() * links.length);
+				links.get(r).click();
+			}
+			// if it didn't work the first time
+			else {
+				// go to a new *random* page
+				TallyStorage.getDataFromServer('/url/random', Demo.goToUrlCallback);
+			}
+		} catch (err) {
+			console.error(err);
+		}
+	}
+
+
 
 	function showMessage(state) {
 		try {
@@ -203,6 +234,7 @@ window.Demo = (function() {
 	// PUBLIC
 	return {
 		start: start,
+		goToNewPage: goToNewPage,
 		goToUrlCallback: function(url) {
 			goToUrlCallback(url);
 		}

@@ -71,6 +71,8 @@ window.TallyMain = (function() {
 			pageData.activeOnPage = shouldExtensionBeActiveOnPage();
 			// do not procede if so
 			if (!pageData.activeOnPage) return;
+			// unless in demo mode then go to new page
+			else if (!pageData.activeOnPage && tally_options.gameMode == "demo") Demo.goToNewPage();
 
 			// first, remove trackers that have been caught
 			Tracker.removeCaughtTrackers(pageData.trackers);
