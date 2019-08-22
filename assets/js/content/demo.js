@@ -185,16 +185,26 @@ window.Demo = (function() {
 			if (!tryToGoToNewPage) {
 				// save attempt
 				tryToGoToNewPage = true;
-				// click random link
+				// get all links
 				var links = $('a');
-				let r = Math.floor(Math.random() * links.length);
-				links.get(r).click();
+				// is safe to click link
+				let isSafeLink = false;
+				// loop until it is
+				while (!isSafeLink) {
+					// get random link
+					let r = Math.floor(Math.random() * links.length);
+					// console.log(r, links[r].href);
+					// make sure it has an href and isn't an email
+					if (links[r].href && links[r].href.search("mailto") < 0) {
+						// console.log("SAFE", links[r].href);
+						isSafeLink = true;
+						links.get(r).click();
+						break;
+					}
+				}
 			}
-			// if it didn't work the first time
-			else {
-				// go to a new *random* page
-				TallyStorage.getDataFromServer('/url/random', Demo.goToUrlCallback);
-			}
+			// if it didn't work the first time, go to a new *random* page
+			else TallyStorage.getDataFromServer('/url/random', Demo.goToUrlCallback);
 		} catch (err) {
 			console.error(err);
 		}
