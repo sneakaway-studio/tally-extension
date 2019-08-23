@@ -5,8 +5,18 @@ window.Progress = (function() {
 	let DEBUG = Debug.ALL.Progress;
 
 	let defaults = {
+		// authentication
 		"tokenAdded": false,
 		"tokenAddedPlayWelcomeMessage": false,
+		// tutorials
+		"mouseEnterTally": false,
+		"mouseLeaveTally1": false,
+		"mouseLeaveTally2": false,
+		"clickTally": false,
+		"doubleClickTally": false,
+		"dragTally": false,
+		"viewTutorialOne": false,
+		"viewProfilePage": false,
 		// attacks
 		"attackLimit": 1,
 		"attacksSelected": 0,
@@ -18,8 +28,6 @@ window.Progress = (function() {
 		"battle1stMonster": false,
 		"battle2ndMonster": false,
 		"battle3rdMonster": false,
-		// tutorial
-		"viewProfilePage": false
 	};
 
 
@@ -51,6 +59,9 @@ window.Progress = (function() {
 		try {
 			console.log("🕹️ Progress.update()", name, val);
 
+			// save current status to return w/it later before changing
+			let current = get(name);
+
 			// create progress object
 			let obj = {
 				"name": name,
@@ -59,6 +70,8 @@ window.Progress = (function() {
 			// save in background and on server
 			TallyStorage.saveTallyUser("progress", obj, "🕹️ Progress.update()");
 			TallyStorage.addToBackgroundUpdate("itemData", "progress", obj, "🕹️ Progress.update()");
+
+			return current;
 		} catch (err) {
 			console.error(err);
 		}
@@ -97,8 +110,8 @@ window.Progress = (function() {
 			}
 
 			// if tally levels up her attack capacity increases
-			if (get("attackLimit") < GameData.attackLimits[FS_Number.clamp(tally_user.level,0,4)]) {
-				update("attackLimit", GameData.attackLimits[FS_Number.clamp(tally_user.level,0,4)]);
+			if (get("attackLimit") < GameData.attackLimits[FS_Number.clamp(tally_user.level, 0, 4)]) {
+				update("attackLimit", GameData.attackLimits[FS_Number.clamp(tally_user.level, 0, 4)]);
 				Dialogue.showStr("You can now use " + get("attackLimit") + " attacks in battle!", "happy");
 				Dialogue.showStr("Manage your attacks with the button at the top right of browser window.", "happy");
 			}
@@ -118,7 +131,7 @@ window.Progress = (function() {
 			return get(prop);
 		},
 		update: function(name, val) {
-			update(name, val);
+			return update(name, val);
 		},
 		check: check,
 	};

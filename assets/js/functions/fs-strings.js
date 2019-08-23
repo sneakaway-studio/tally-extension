@@ -19,6 +19,11 @@ window.FS_String = (function() {
 			return /[aeiouAEIOU]/.test(x);
 		},
 
+		ucFirst: function(str) {
+			if (str === undefined || str === "") return str;
+			return str.charAt(0).toUpperCase() + str.slice(1);
+		},
+
 		/**
 		 *	Insert stylesheet into a page, ensure it works for CSS3 animations
 		 *	credit: https://stackoverflow.com/a/43904152/441878
@@ -39,7 +44,7 @@ window.FS_String = (function() {
 			}
 		},
 
-		removeHTML: function(str){
+		removeHTML: function(str) {
 			// remove html and resulting whitespace
 			return str.replace(/<[^>]*>?/gm, ' ').replace(/\s+/g, ' ');
 		}
@@ -94,9 +99,7 @@ function htmlDecode(value) {
 	return $("<div/>").html(value).text();
 }
 
-function ucFirst(string) {
-	return string.charAt(0).toUpperCase() + string.slice(1);
-}
+
 
 function removeStopWords(str = null, wordArr = null) {
 	var common = stopWords();

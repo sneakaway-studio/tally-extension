@@ -8,7 +8,9 @@ window.Tally = (function() {
 	let DEBUG = Debug.ALL.Tally,
 		followCursor = false, // is eye following currently active? on page load, no
 		tallyMenuOpen = false,
-		tallyConsoleIcon = 'font-size:12px; background:url("'+ chrome.extension.getURL('assets/img/tally/tally-clear-20w.png') +'") no-repeat;';
+		tallyConsoleIcon = 'font-size:12px; background:url("' +
+		chrome.extension.getURL('assets/img/tally/tally-clear-20w.png') +
+		'") no-repeat;';
 
 
 	/*  TALLY EYES
@@ -146,26 +148,10 @@ window.Tally = (function() {
 			// display stats
 			StatsDisplay.updateDisplay("tally");
 
-			// HOVER
-			$(document).on('mouseenter mouseleave', '#tally_character', function() {
-				// works but don't need it yet
-				//tallyMenu();
-			});
-			// ONE CLICK
-			$(document).on('click', '#tally_character', function() {
-				//
-			});
-			// DOUBLE CLICK
-			$(document).on('dblclick', '#tally_character', function() {
-				// show testing menu
-				tallyMenu();
-			});
-
 			// for domains that rewrite body, add listener to add Tally back if removed
 			if (pageData.domain == "baidu.com") {
 				onRemove(document.getElementById('tally_click_visual'), reloadIfRemoved);
 			}
-
 		} catch (err) {
 			console.error(err);
 		}
@@ -199,6 +185,7 @@ window.Tally = (function() {
 			subtree: true
 		});
 	}
+
 	function reloadIfRemoved() {
 		// load everything again
 		Interface.addBaseHTML();
@@ -208,82 +195,182 @@ window.Tally = (function() {
 
 
 
-	/*  TALLY MENU
+	/*  TALLY MENU AND LISTENERS
 	 *****************************************************************************/
 
-	function tallyMenu() {
-		try {
-			//console.log(tallyMenuOpen)
-			if (tallyMenuOpen) {
-				// open so close
-				Dialogue.hide();
-				tallyMenuOpen = false;
-			} else {
-				// closed so open
 
-				var str = "" +
-					"<button class='tally' id='tallyMenu_profile'>View profile</button><br>" +
-					"<button class='tally' id='tallyMenu_startScreen'>View start screen</button><br>" +
-					"<hr>" +
-					// "<button class='tally' id='tallyMenu_testNearbyMonster'>Test nearby monster</button><br>" +
-					// "<button class='tally' id='tallyMenu_battleStart'>Start battle</button><br>" +
-					// "<button class='tally' id='tallyMenu_battleEnd'>End battle</button><br>" +
-					// "<button class='tally' id='tallyMenu_battleRumbleSmall'>sm battle rumble</button><br>" +
-					// "<button class='tally' id='tallyMenu_battleRumbleMedium'>md battle rumble</button><br>" +
-					// "<button class='tally' id='tallyMenu_battleRumbleLarge'>lg battle rumble</button><br>" +
+	/**
+	 *	Listeners for Tally menu
+	 *	- Placed outside of functions so they are only added once.
+	 */
 
-					"<button class='tally' id='tallyMenu_explodePage'>Explode Page</button><br>" +
-					"<button class='tally' id='tallyMenu_randomDialogue'>Random dialogue</button><br>" +
-					"<button class='tally' id='tallyMenu_randomSkin'>Random skin</button><br>" +
-					"</div>";
+	let mouseEnterMessage1 = false;
+	// MOUSEENTER
+	$(document).on('mouseenter', '#tally_character', function() {
+		if (mouseEnterMessage1) return; // only show one of these during each page
+		let r = Math.random(),
+			often = 1,
+			dialogue = {
+				"text": "Oh hi! I'm Tally!",
+				"mood": "happy"
+			};
+		// if not the first time then only show half the time
+		if (Progress.get("mouseEnterTally")) often = 0.5;
+		if (r > often) dialogue = {};
+		// otherwise get a random message
+		else dialogue = Dialogue.get(["random", "greeting", null]);
+		Dialogue.show(dialogue, false, true); // show dialogue
+		Progress.update("mouseEnterTally", true); // update progress
+		mouseEnterMessage1 = true;
+	});
+	// MOUSELEAVE
+	$(document).on('mouseleave', '#tally_character', function() {
+		if (!Progress.update("mouseLeaveTally1", true))
+			Dialogue.showStr("Did you know that you can drag me around the screen.", false, true);
+	});
 
-				Dialogue.showStr(str, false, true);
 
-				tallyMenuOpen = true;
-			}
 
-			// launch title page
-			$(document).on('click', '#tallyMenu_profile', function() {
-				window.open('https://tallygame.net/profile/' + tally_user.username);
-			});
-			$(document).on('click', '#tallyMenu_startScreen', function() {
-				chrome.runtime.sendMessage({
-					'action': 'openPage',
-					'url': chrome.extension.getURL('assets/pages/startScreen/startScreen.html')
-				});
-			});
-			$(document).on('click', '#tallyMenu_testNearbyMonster', function() {
-				Monster.test(); // launch one of the nearby monsters
-			});
-			$(document).on('click', '#tallyMenu_battleStart', function() {
-				Battle.test();
-			});
-			$(document).on('click', '#tallyMenu_battleRumbleSmall', function() {
-				BattleEffect.showRumble("small");
-			});
-			$(document).on('click', '#tallyMenu_battleRumbleMedium', function() {
-				BattleEffect.showRumble("medium");
-			});
-			$(document).on('click', '#tallyMenu_battleRumbleLarge', function() {
-				BattleEffect.showRumble("large");
-			});
-			$(document).on('click', '#tallyMenu_battleEnd', function() {
-				Battle.end();
-			});
-			$(document).on('click', '#tallyMenu_explodePage', function() {
-				Effect.explode();
-			});
-			$(document).on('click', '#tallyMenu_randomDialogue', function() {
-				Dialogue.random();
-			});
-			$(document).on('click', '#tallyMenu_randomSkin', function() {
-				Skin.random();
-			});
-
-		} catch (err) {
-			console.error(err);
+	// ON DRAG START
+	$(document).on('dragstart', '#tally_character', function() {
+		// Dialogue.showStr("Weeeeeeeee!", false, true);
+	});
+	let dragging = false;
+	// ON DRAG
+	$(document).on('drag', '#tally_character', function() {
+		if (!dragging) {
+			Dialogue.showStr("Weeeeeeeee!", "happy", true);
+			dragging = true;
 		}
-	}
+	});
+	// ON DRAG STOP
+	$(document).on('dragstop', '#tally_character', function() {
+		if (!Progress.update("dragTally", true))
+			Dialogue.showStr("Double click me!", "happy", true);
+		dragging = false;
+	});
+
+	// // ONE CLICK
+	// $(document).on('click', '#tally_character', function() {
+	// 	if (!Progress.update("clickTally", true))
+	// 		return Dialogue.showStr("Did you know that you can drag me around the screen.", false, true);
+	// });
+	// DOUBLE CLICK
+	$(document).on('dblclick', '#tally_character', function() {
+		// update progress (even tho we'll always show this menu)
+		Progress.update("doubleClickTally", true);
+		let str = "Would you like to view a " +
+			"<a class='tally' id='tally_showTutorialOne'>tutorial</a> " +
+			"or see more <a class='tally' id='tally_showMoreOptions'>options</a>?";
+		// show
+		Dialogue.showStr(str, false, true, true);
+	});
+
+	// MENU ITEM LISTENERS
+	$(document).on('click', '#tally_showTutorialOne', function() {
+		Tutorial.play("tutorial1");
+	});
+	$(document).on('click', '#tally_showMoreOptions', function() {
+		let str = "Here are some options:<br>" +
+			// user-specific
+			"View your <a class='tally' id='tally_profile'>profile</a>, " +
+			"your <a class='tally' id='tally_dashboard'>dashboard</a>, " +
+			"or <a class='tally' id='tally_leaderboard'>leaderboards</a>.<br>" +
+			// promo material
+			"Check out the <a class='tally' id='tally_startScreen'>start screen</a>, " +
+			"the <a class='tally' id='tally_howToPlay'>how to play page</a>, " +
+			"or the <a class='tally' id='tally_gameTrailerBtn'>game trailer</a>. " +
+			// nerd out
+			"Read our <a class='tally' id='tally_privacyPolicy'>privacy policy</a> " +
+			"or take the <a class='tally' id='tally_gameTrailerBtn'>beta tester survey</a> " +
+			"";
+		Dialogue.showStr(str, false, true, true);
+	});
+	$(document).on('click', '#tally_showDevOptions', function() {
+		let str = "Dev options:<br>" +
+			"<a class='tally' id='tally_testNearbyMonster'>Test nearby monster</a><br>" +
+			"<a class='tally' id='tally_battleStart'>Start battle</a><br>" +
+			"<a class='tally' id='tally_battleEnd'>End battle</a><br>" +
+			"<a class='tally' id='tally_battleRumbleSmall'>sm battle rumble</a><br>" +
+			"<a class='tally' id='tally_battleRumbleMedium'>md battle rumble</a><br>" +
+			"<a class='tally' id='tally_battleRumbleLarge'>lg battle rumble</a><br>" +
+			"<a class='tally' id='tally_explodePage'>Explode Page</a><br>" +
+			"<a class='tally' id='tally_randomDialogue'>Random dialogue</a><br>" +
+			"<a class='tally' id='tally_randomSkin'>Random skin</a>" +
+		"";
+		Dialogue.showStr(str, false, true, true);
+	});
+
+
+	/**
+	 *	Listeners for options menu
+	 *	- Placed outside of functions so they are only added once.
+	 */
+
+	// launch profile
+	$(document).on('click', '#tally_profile', function() {
+		window.open(tally_meta.website + "/profile/" + tally_user.username);
+	});
+	$(document).on('click', '#tally_dashboard', function() {
+		window.open(tally_meta.website + "/dashboard");
+	});
+	$(document).on('click', '#tally_leaderboard', function() {
+		window.open(tally_meta.website + "/leaderboards");
+	});
+
+	// launch start screen
+	$(document).on('click', '#tally_startScreen', function() {
+		chrome.runtime.sendMessage({
+			'action': 'openPage',
+			'url': chrome.extension.getURL('assets/pages/startScreen/startScreen.html')
+		});
+	});
+	$(document).on('click', '#tally_gameTrailerBtn', function() {
+		window.open("https://www.youtube.com/watch?v=xfsbm1cI2uo");
+	});
+
+	$(document).on('click', '#tally_privacyPolicy', function() {
+		window.open(tally_meta.website + "/privacy");
+	});
+	$(document).on('click', '#tally_howToPlay', function() {
+		window.open(tally_meta.website + "/how-to-play");
+	});
+	$(document).on('click', '#tally_betaTestSurvey', function() {
+		window.open("https://docs.google.com/forms/d/e/1FAIpQLSeGx8zsF4aMQZH1eM0SzOvcpXijt8Bem1pzg4eni9eK8Jr-Lg/viewform");
+	});
+
+
+
+
+
+
+	$(document).on('click', '#tally_testNearbyMonster', function() {
+		Monster.test(); // launch one of the nearby monsters
+	});
+	$(document).on('click', '#tally_battleStart', function() {
+		Battle.test();
+	});
+	$(document).on('click', '#tally_battleRumbleSmall', function() {
+		BattleEffect.showRumble("small");
+	});
+	$(document).on('click', '#tally_battleRumbleMedium', function() {
+		BattleEffect.showRumble("medium");
+	});
+	$(document).on('click', '#tally_battleRumbleLarge', function() {
+		BattleEffect.showRumble("large");
+	});
+	$(document).on('click', '#tally_battleEnd', function() {
+		Battle.end();
+	});
+	$(document).on('click', '#tally_explodePage', function() {
+		Effect.explode();
+	});
+	$(document).on('click', '#tally_randomDialogue', function() {
+		Dialogue.random();
+	});
+	$(document).on('click', '#tally_randomSkin', function() {
+		Skin.random();
+	});
 
 	// PUBLIC
 	return {
@@ -301,7 +388,9 @@ window.Tally = (function() {
 		tallyConsoleIcon: tallyConsoleIcon
 
 	};
+
 })();
+
 
 
 let k = "`+1";
@@ -367,21 +456,6 @@ Mousetrap.bind(k + ' v', function() {
 Mousetrap.bind(k + ' r', function() {
 
 });
-
-
-
-
 Mousetrap.bind(k + ' v', function() {
 	BattleTest.test();
 });
-
-
-// setInterval(function() {
-// 	StatsDisplay.adjustStatsBar("tally", "health", Math.random());
-// 	StatsDisplay.adjustStatsBar("tally", "stamina", Math.random());
-// 	StatsDisplay.adjustStatsCircle("tally", Math.random());
-//
-// 	StatsDisplay.adjustStatsBar("monster", "health", Math.random());
-// 	StatsDisplay.adjustStatsBar("monster", "stamina", Math.random());
-// 	StatsDisplay.adjustStatsCircle("monster", Math.random());
-// }, 3000);

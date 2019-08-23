@@ -6,6 +6,8 @@ window.Dialogue = (function() {
 	let DEBUG = Debug.ALL.Dialogue,
 		dialogueBubbleOpen = false, // whether or not dialogue bubble currently open
 		_active,
+		queueWaitTime = 0,
+		hideTimeout = {},
 		_queue = []; // array of objects
 
 
@@ -63,25 +65,34 @@ window.Dialogue = (function() {
 	function show(dialogue, mood, addIfDialogueInProcess = true, instant = false) {
 		try {
 			if (DEBUG) console.log("💭 Dialogue.show()", dialogue, mood, addIfDialogueInProcess);
-			if (dialogue.text === "" || dialogue.text === undefined) return; // don't show if there is no text
-			if (instant)
-				return showInstant(dialogue, mood);
-			if (!addIfDialogueInProcess && _queue.length > 0) return; // don't add if marked false
+			// don't show if there is no text
+			if (dialogue.text === "" || dialogue.text === undefined) return;
+			// show instant
+			if (instant) return showInstant(dialogue, mood);
+			// don't add if marked false
+			if (!addIfDialogueInProcess && _queue.length > 0) return;
 			add(dialogue);
 		} catch (err) {
 			console.error(err);
 		}
 	}
 
-	function showInstant(dialogue, mood){
-		// erase queue
-		_queue = [];
-		// reset active
-		_active = false;
-		// add this dialogue to end of _queue
-		_queue.push(dialogue);
-		// start writing
-		writeNextInQueue();
+	function showInstant(dialogue, mood) {
+		try {
+			if (DEBUG) console.log("💭 Dialogue.showInstant()", dialogue, mood);
+			// erase queue
+			_queue = [];
+			// reset active
+			_active = false;
+			// reset hide timer
+			clearTimeout(hideTimeout);
+			// add this dialogue to end of _queue
+			_queue.push(dialogue);
+			// start writing
+			writeNextInQueue();
+		} catch (err) {
+			console.error(err);
+		}
 	}
 
 	/**
@@ -90,14 +101,18 @@ window.Dialogue = (function() {
 	function showStr(str = "", mood = false, addIfDialogueInProcess = true, instant = false) {
 		try {
 			if (DEBUG) console.log("💭 Dialogue.showStr()", str, mood, addIfDialogueInProcess);
-			if (!prop(str) || str === "") return; // don't show if there is no text
+			// don't show if there is no text
+			if (!prop(str) || str === "") return;
+			// create dialogue obj
 			let dialogue = {
 				"text": str,
 				"mood": mood
 			};
-			if (instant)
-				return showInstant(dialogue, mood);
-			if (!addIfDialogueInProcess && _queue.length > 0) return; // don't add if marked false
+			// show instant
+			if (instant) return showInstant(dialogue, mood);
+			// don't add if marked false
+			if (!addIfDialogueInProcess && _queue.length > 0) return;
+			// add to queue
 			add(dialogue);
 		} catch (err) {
 			console.error(err);
@@ -115,6 +130,8 @@ window.Dialogue = (function() {
 		try {
 			if (DEBUG) console.log("💭 Dialogue.add()", dialogue);
 			if (dialogue.text === "" || dialogue.text === undefined) return; // don't show if there is no text
+			// add wait time for it to display
+			dialogue.wait = stringDuration(dialogue.text);
 			// add to end of _queue
 			_queue.push(dialogue);
 			// start/make sure queueChecker is running
@@ -140,7 +157,7 @@ window.Dialogue = (function() {
 	 */
 	function queueChecker() {
 		try {
-			// if (DEBUG) console.log("💭 Dialogue.queueChecker()", _queue, _active);
+			//if (DEBUG) console.log("💭 Dialogue.queueChecker()", _queue, _active);
 			// if no items in _queue then stop
 			if (_queue.length < 1) return;
 			// else, if not currently active then start a new one
@@ -158,7 +175,8 @@ window.Dialogue = (function() {
 	 */
 	function writeNextInQueue(lineSpeed = 150) {
 		try {
-			if (DEBUG) console.log("💭 Dialogue.writeNextInQueue()", _queue, _active);
+			if (DEBUG) console.log("💭 Dialogue.writeNextInQueue()", _queue, _active, queueWaitTime);
+
 			// if currently active, stop
 			if (_active) return;
 			// set active state true
@@ -177,8 +195,15 @@ window.Dialogue = (function() {
 
 			// replace any template strings
 			dialogue.text = searchReplaceTemplateStr(dialogue.text);
+			// update queueWaitTime
+			queueWaitTime = stringDuration(dialogue.text);
 
 			if (DEBUG) console.log("💭 Dialogue.writeNextInQueue()", dialogue, _queue, _active);
+
+			if (dialogue.callback)
+				if (DEBUG) console.log("💭 Dialogue.writeNextInQueue() THERE IS A CALLBACK 💪💪💪💪💪💪💪", dialogue, _queue, _active);
+
+				
 
 			// add text
 			$('#tally_dialogue').html(dialogue.text);
@@ -194,31 +219,11 @@ window.Dialogue = (function() {
 			// make Tally look at user
 			Tally.stare();
 			// hide after appropriate reading period
-			setTimeout(hide, stringDuration(dialogue.text));
+			clearTimeout(hideTimeout);
+			hideTimeout = setTimeout(hide, queueWaitTime);
 		} catch (err) {
 			console.error(err);
 		}
-	}
-
-
-	/**
-	 * 	Estimate number of lines for a string
-	 */
-	function stringLines(str, measure = 26) {
-		let lines = 1;
-		// remove html from string count
-		str = FS_String.removeHTML(str);
-		// 28 characters per line * 2
-		if (str.length > 0)
-			// set number of lines based on length of text
-			lines = Math.ceil(str.length / measure);
-		return lines;
-	}
-
-	function stringDuration(str) {
-		// set duration based on number lines
-		let duration = stringLines(str) * 1800; // 1950;
-		return duration;
 	}
 
 	/**
@@ -226,8 +231,7 @@ window.Dialogue = (function() {
 	 */
 	function hide() {
 		try {
-			//return; //testing
-			// if (!dialogueBubbleOpen) return;
+			if (DEBUG) console.log("💭 Dialogue.hide()", queueWaitTime);
 			$('#tally_dialogue_bubble').css({
 				'left': '-500px',
 				'display': 'none',
@@ -236,6 +240,39 @@ window.Dialogue = (function() {
 			dialogueBubbleOpen = false;
 			// release active state
 			active(false);
+		} catch (err) {
+			console.error(err);
+		}
+	}
+
+	/**
+	 * 	Estimate number of lines for a string
+	 */
+	function stringLines(str, measure = 26) {
+		try {
+			let lines = 1;
+			// remove html from string count
+			str = FS_String.removeHTML(str);
+			// 28 characters per line * 2
+			if (str.length > 0)
+				// set number of lines based on length of text
+				lines = Math.ceil(str.length / measure);
+			if (DEBUG) console.log("💭 Dialogue.stringLines()", str, measure, lines);
+			return lines;
+		} catch (err) {
+			console.error(err);
+		}
+	}
+
+	/**
+	 * 	Estimate number of milliseconds to display a string
+	 */
+	function stringDuration(str) {
+		try {
+			// set duration based on number lines
+			let duration = stringLines(str) * 1950;
+			if (DEBUG) console.log("💭 Dialogue.stringDuration() duration =", duration);
+			return duration;
 		} catch (err) {
 			console.error(err);
 		}
@@ -255,7 +292,7 @@ window.Dialogue = (function() {
 	 */
 	function searchReplaceTemplateStr(str = "") {
 		try {
-			if (DEBUG) console.log("💭 Dialogue.searchReplaceTemplateStr()", str, Monster.current());
+			// if (DEBUG) console.log("💭 Dialogue.searchReplaceTemplateStr()", str, Monster.current());
 			if (str === "") return;
 			let find = "",
 				replace = "";
@@ -275,7 +312,8 @@ window.Dialogue = (function() {
 			}
 			// perform replacement
 			if (find != "" && replace != "")
-				str = str.replace(new RegExp('\{\{(?:\\s+)?(' + find + ')(?:\\s+)?\}\}'), "<span class='tally-replace'>" + replace + "</span>");
+				str = str.replace(new RegExp('\{\{(?:\\s+)?(' + find + ')(?:\\s+)?\}\}'),
+					"<span class='tally-replace'>" + replace + "</span>");
 			// return string
 			return str;
 		} catch (err) {

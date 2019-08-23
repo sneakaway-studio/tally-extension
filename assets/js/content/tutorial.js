@@ -2,22 +2,85 @@
 
 window.Tutorial = (function() {
 	// PRIVATE
-	let DEBUG = Debug.ALL.Tutorial;
+	let DEBUG = Debug.ALL.Tutorial,
+		_active = false;
+
+
+	// control state
+	function active(state) {
+		try {
+			if (state != undefined && (state === true || state === false))
+				_active = state;
+			return _active;
+		} catch (err) {
+			console.error(err);
+		}
+	}
+
+
+	function show(str) {
+		console.log("📚 Tutorial.show()", str);
+	}
+
 
 	/**
-	 *	Checks to see if any tutorial events should be executed
+	 *	Play tutorial
 	 */
-	function check() {
+	function play(which) {
 		try {
-			console.log("📎 Tutorial.check()");
+			// set tutorial mode active
+			if (_active) return;
+			active(true);
 
+			let dialogue = {},
+				step = 1;
+
+			while (step > -1) {
+				// store dialogue obj
+				dialogue = Dialogue.get(["tutorial", null, which + "-" + step]);
+
+
+				// testing
+				console.log("📚 Tutorial.play()", step, which, dialogue);
+
+
+				// check to see if there is dialogue
+				if (dialogue === undefined) {
+				console.log("📚 Tutorial.play()", step, which, dialogue);
+					break;
+				} else {
+
+					console.log("📚 Tutorial.play()", step, which, dialogue);
+
+					// execute a callback if exists
+					// if (dialogue.callback) show(dialogue.callback);
+
+					if (step === 1)
+						// first dialogue of tutorial, instantly
+						Dialogue.show(dialogue, true, true, true);
+					else
+						// show next dialogue
+						Dialogue.show(dialogue, true, true);
+				}
+
+				step++;
+			}
+
+
+			setTimeout(function() {
+				active(false);
+			}, 500);
+
+
+			// mark as true and save
+			Progress.update("play" + FS_String.ucFirst(which), true);
 
 		} catch (err) {
 			console.error(err);
 		}
-
 	}
 
+	// function playSingle(dialogue)
 
 
 	/**
@@ -35,7 +98,12 @@ window.Tutorial = (function() {
 
 	// PUBLIC
 	return {
-		check: check,
+		active: function(state) {
+			return active(state);
+		},
+		play: function(which) {
+			play(which);
+		},
 		skip: skip
 	};
 }());
