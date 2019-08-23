@@ -129,6 +129,11 @@ window.TallyMain = (function() {
 				console.log("!!!!! Tally is disabled on file:// urls");
 				return false;
 			}
+			// this is a popup / signin that is really small
+			else if (pageData.browser.width < 500) {
+				console.log("!!!!! Tally is disabled on file:// urls");
+				return false;
+			}
 			// otherwise it is safe
 			else {
 				//console.log("shouldExtensionBeActiveOnPage()", true);
