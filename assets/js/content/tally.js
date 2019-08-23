@@ -104,6 +104,9 @@ window.Tally = (function() {
 					"<div class='tally tally_speech_bubble' id='tally_dialogue_bubble'>" +
 						"<div class='tally' id='tally_dialogue'></div>" +
 					"</div>" +
+					"<div class='tally' id='tally_slide_show'>" +
+						"<div class='tally' id='tally_slide_show_inner'></div>" +
+					"</div>" +
 					"<div class='tally' id='tally_character_inner'>" +
 						"<div class='tally' id='tally_body'>" +
 							Skin.returnBasicSVG() +

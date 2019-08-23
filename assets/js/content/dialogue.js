@@ -200,10 +200,10 @@ window.Dialogue = (function() {
 
 			if (DEBUG) console.log("💭 Dialogue.writeNextInQueue()", dialogue, _queue, _active);
 
-			if (dialogue.callback)
-				if (DEBUG) console.log("💭 Dialogue.writeNextInQueue() THERE IS A CALLBACK 💪💪💪💪💪💪💪", dialogue, _queue, _active);
+			if (dialogue.callback) {
+				Tutorial.dialogueCallback(dialogue.callback);
+			}
 
-				
 
 			// add text
 			$('#tally_dialogue').html(dialogue.text);
@@ -225,6 +225,8 @@ window.Dialogue = (function() {
 			console.error(err);
 		}
 	}
+
+
 
 	/**
 	 * 	Hide after player has time to read it

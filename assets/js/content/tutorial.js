@@ -44,9 +44,11 @@ window.Tutorial = (function() {
 				console.log("📚 Tutorial.play()", step, which, dialogue);
 
 
-				// check to see if there is dialogue
+				// check to see if there is more dialogue
 				if (dialogue === undefined) {
-				console.log("📚 Tutorial.play()", step, which, dialogue);
+					console.log("📚 Tutorial.play()", step, which, dialogue);
+					// hide slide show
+					dialogueCallbackVisible(false);
 					break;
 				} else {
 
@@ -66,11 +68,9 @@ window.Tutorial = (function() {
 				step++;
 			}
 
-
 			setTimeout(function() {
 				active(false);
 			}, 500);
-
 
 			// mark as true and save
 			Progress.update("play" + FS_String.ucFirst(which), true);
@@ -80,7 +80,67 @@ window.Tutorial = (function() {
 		}
 	}
 
-	// function playSingle(dialogue)
+	function dialogueCallback(callback = null) {
+		try {
+			if (DEBUG) console.log("📚 Tutorial.dialogueCallback()", callback);
+			let str = '';
+
+			if (callback === "slideShowCatGifs") {
+				str = '<img src="' + chrome.extension.getURL('assets/img/tutorial/funniest-cat-gifs-cat-sit-right-here.gif') + '">';
+
+			} else if (callback === "slideShowKindleMonster") {
+				str = '<img src="' + chrome.extension.getURL('assets/img/tutorial/monster-amazon-kindle.gif') + '">';
+
+			} else if (callback === "slideShowPopUpAds") {
+				str = '<img src="' + chrome.extension.getURL('assets/img/tutorial/popup-ads.gif') + '">';
+
+			} else if (callback === "slideShowBrowserDetails") {
+				str = '<span>' +
+					JSON.stringify(tally_meta.location).replace(",", ", ") + ", " +
+					JSON.stringify(pageData.browser).replace(",", ", ") +
+					'</span>';
+
+			} else if (callback === "slideShowBattle") {
+				str = '<img src="' + chrome.extension.getURL('assets/img/tutorial/monster-battle.gif') + '">';
+
+			} else if (callback === "tutorial1WaitAtEnd") {
+				str = "";
+				dialogueCallbackVisible(false);
+
+			} else {
+
+			}
+
+			$('#tally_slide_show_inner').html(str);
+			if (str) dialogueCallbackVisible(true);
+			else dialogueCallbackVisible(false);
+
+
+		} catch (err) {
+			console.error(err);
+		}
+	}
+	/**
+	 *	Slide show
+	 */
+	function dialogueCallbackVisible(state) {
+		try {
+			if (state) { // show it
+				$('#tally_slide_show').css({
+					"left": "300px",
+					"opacity": 1
+				});
+			} else { // hide it
+				$('#tally_slide_show').css({
+					"left": "-500px",
+					"opacity": 0
+				});
+			}
+		} catch (err) {
+			console.error(err);
+		}
+	}
+
 
 
 	/**
@@ -103,6 +163,9 @@ window.Tutorial = (function() {
 		},
 		play: function(which) {
 			play(which);
+		},
+		dialogueCallback: function(callback) {
+			dialogueCallback(callback);
 		},
 		skip: skip
 	};
