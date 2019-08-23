@@ -34,7 +34,7 @@ window.MonsterCheck = (function() {
 				deleteList = [];
 			// make sure tally_nearby_monsters exists
 			if (tally_nearby_monsters && objLength(tally_nearby_monsters) > 0) {
-				if(DEBUG) console.log("👿 ⊙⊙⊙⊙⊙ MonsterCheck.checkNearbyMonsterTimes() -> tally_nearby_monsters =",tally_nearby_monsters);
+				if (DEBUG) console.log("👿 ⊙⊙⊙⊙⊙ MonsterCheck.checkNearbyMonsterTimes() -> tally_nearby_monsters =", tally_nearby_monsters);
 				// loop through them
 				for (var mid in tally_nearby_monsters) {
 					if (tally_nearby_monsters.hasOwnProperty(mid)) {
@@ -55,7 +55,7 @@ window.MonsterCheck = (function() {
 			if (DEBUG)
 				if (deleteList.length > 0)
 					console.log("👿 ⊙⊙⊙⊙⊙ MonsterCheck.checkNearbyMonsterTimes() -> DELETING", deleteList);
-			TallyStorage.saveData("tally_nearby_monsters",tally_nearby_monsters,"👿 MonsterCheck.checkNearbyMonsterTimes()");
+			TallyStorage.saveData("tally_nearby_monsters", tally_nearby_monsters, "👿 MonsterCheck.checkNearbyMonsterTimes()");
 			// set the skin color
 			Skin.setStage(highestStage);
 			// continue
@@ -85,9 +85,9 @@ window.MonsterCheck = (function() {
 						let randomMID = arr[Math.floor(Math.random() * arr.length)];
 						// return if not a number or not found in dataById
 						if (isNaN(randomMID) || !prop(MonsterData.dataById[randomMID])) return;
-						if (DEBUG) console.log('👿 ?⊙⊙⊙⊙ MonsterCheck.checkForTagMatches() -> #'+ tag +" has",
-														arr.length, 'MATCH(ES) ('+ arr +') randomly selecting:',
-														MonsterData.dataById[randomMID].slug);
+						if (DEBUG) console.log('👿 ?⊙⊙⊙⊙ MonsterCheck.checkForTagMatches() -> #' + tag + " has",
+							arr.length, 'MATCH(ES) (' + arr + ') randomly selecting:',
+							MonsterData.dataById[randomMID].slug);
 						// we have identified a match, let's handle the monster
 						handleMatch(randomMID);
 						break;
@@ -106,18 +106,19 @@ window.MonsterCheck = (function() {
 	 */
 	function handleMatch(mid) {
 		try {
-			//if (DEBUG) console.log('👿 ⊙⊙?⊙⊙ MonsterCheck.handleMatch() mid='+ mid);
-			// if (mid && mid > 0 && tally_nearby_monsters && MonsterData.dataById[mid]){
-			// 	if (DEBUG) console.log(" ... "+
-			// 	MonsterData.dataById[mid].slug,
-			// 	"stage="+tally_nearby_monsters[mid].stage);
-			// }
+			if (DEBUG) console.log('👿 ⊙⊙?⊙⊙ MonsterCheck.handleMatch() mid=' + mid);
+			if (mid && mid > 0 && tally_nearby_monsters && MonsterData.dataById[mid] && tally_nearby_monsters[mid]) {
+				if (DEBUG) console.log(" ... " +
+					MonsterData.dataById[mid].slug,
+					"stage=" + tally_nearby_monsters[mid].stage);
+			}
 
 			// will we add the monster
 			let addMonster = false;
 
 			// if the monster id does not exist in nearby_monsters
 			if (!prop(tally_nearby_monsters[mid])) {
+				if (DEBUG) console.log('👿 ⊙⊙?⊙⊙ MonsterCheck.handleMatch() mid NOT IN nearby_monsters');
 				// add it
 				tally_nearby_monsters[mid] = Monster.create(mid);
 			}
@@ -127,11 +128,11 @@ window.MonsterCheck = (function() {
 				let r = Math.random();
 
 				// gameMode === testing
-				if (["demo","testing"].includes(tally_options.gameMode)){
+				if (["demo", "testing"].includes(tally_options.gameMode)) {
 					// test
 					tally_nearby_monsters[mid].stage = 3;
 					addMonster = true;
-				// what stage are we at with this monster?
+					// what stage are we at with this monster?
 				} else if (tally_nearby_monsters[mid].stage == 0) {
 					// do nothing
 					Dialogue.showTrackerDialogue();
@@ -169,11 +170,11 @@ window.MonsterCheck = (function() {
 				// save to log after code above
 				if (DEBUG) console.log('👿 ⊙⊙?⊙⊙ MonsterCheck.handleMatch() -> monster =', MonsterData.dataById[mid].slug, tally_nearby_monsters[mid]);
 			}
-			if(tally_nearby_monsters[mid])
+			if (tally_nearby_monsters[mid])
 				// set skin
 				Skin.setStage(tally_nearby_monsters[mid].stage);
 			// save monsters
-			TallyStorage.saveData("tally_nearby_monsters",tally_nearby_monsters,"👿 MonsterCheck.handleMatch()");
+			TallyStorage.saveData("tally_nearby_monsters", tally_nearby_monsters, "👿 MonsterCheck.handleMatch()");
 			// should we add the monster?
 			if (addMonster) {
 				currentMID = mid;
@@ -195,7 +196,7 @@ window.MonsterCheck = (function() {
 			// 	delete tally_nearby_monsters[mid];
 			// reset them all
 			tally_nearby_monsters = {};
-			TallyStorage.saveData("tally_nearby_monsters",tally_nearby_monsters,"👿 MonsterCheck.reset()");
+			TallyStorage.saveData("tally_nearby_monsters", tally_nearby_monsters, "👿 MonsterCheck.reset()");
 			// set the skin color
 			Skin.setStage(0);
 		} catch (err) {

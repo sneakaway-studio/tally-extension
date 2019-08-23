@@ -79,12 +79,13 @@ window.PageData = (function() {
 	/**
 	 *	Get all trackers hidden on this page
 	 */
-	function getTrackersOnPage() {
+	function getTrackersOnPage(pageData) {
 		try {
+			if (DEBUG) console.log("🗒️ PageData.getTrackersOnPage()");
 			var foundObj = {},
 				foundArr = [],
-				// testing
 				trackers = {
+					// this is only for testing, will be replaced
 					'Analytics': ['statcounter.com', '_gaq']
 				};
 			// get a much larger list
@@ -119,11 +120,19 @@ window.PageData = (function() {
 				// this method uses the single array (no categories)
 				// I think this may be the way to go in the end
 				if (foundArr.indexOf(scriptDomain) < 0 && trackers.indexOf(scriptDomain) >= 0) {
-					// console.log("👀 getTrackersOnPage()", str, scriptDomain);
+					if (DEBUG) console.log("🗒️ PageData.getTrackersOnPage() 👀", str, scriptDomain);
 					foundArr.push(scriptDomain);
 				}
 
 			}
+			// if the domain is known for tracking then also add it
+			if (pageData.domain){
+				console.log("pageData.domain",pageData.domain);
+				if (trackers.indexOf(pageData.domain)){
+					foundArr.push(pageData.domain);
+				}
+			}
+
 			// set the number of trackers in the badge
 			setBadgeText(foundArr.length);
 
@@ -176,7 +185,7 @@ window.PageData = (function() {
 				tags: "",
 				time: 0,
 				title: getTitle() || "",
-				trackers: getTrackersOnPage() || "",
+				trackers: "",
 				previousUrl: "",
 				url: document.location.href || ""
 			};
@@ -185,7 +194,9 @@ window.PageData = (function() {
 			data.browser.center.y = data.browser.height / 2;
 			// check page tags
 			data.tags = getPageTags(data);
-			//console.log("pageData",data);
+			// console.log("pageData",data);
+			// add trackers
+			data.trackers = getTrackersOnPage(data) || "";
 			// if youtube
 			if (data.domain == "youtube.com")
 				// 	addMutationObserver();

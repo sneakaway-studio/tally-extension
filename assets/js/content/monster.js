@@ -21,10 +21,9 @@ window.Monster = (function() {
 	function create(mid, _stage = 1) {
 		try {
 			if (!prop(mid) || !prop(_stage) || !prop(MonsterData.dataById[mid])) return;
-			// make sure there are trackers on the page
+			// if there are trackers on the page
 			let tracker = FS_Object.randomArrayIndex(pageData.trackers) || "";
-			if (tracker === "") return;
-			if (DEBUG) console.log('👿 ⊙!⊙⊙⊙ Monster.create()', "mid=" + mid, "_stage=" + _stage, MonsterData.dataById[mid]);
+			if (DEBUG) console.log('👿 ⊙!⊙⊙⊙ Monster.create() 2', "mid=" + mid, "_stage=" + _stage, MonsterData.dataById[mid]);
 			tally_nearby_monsters[mid] = {
 				"stage": _stage,
 				"level": returnNewMonsterLevel(),
@@ -82,6 +81,11 @@ window.Monster = (function() {
 			if (!pageData.activeOnPage || tally_options.gameMode === "disabled" || tally_options.gameMode === "stealth") return;
 			// only proceed if mid is valid
 			if (!mid || mid <= 0) return;
+			// if it doesn't yet have a tracker then try to get one
+			if (tally_nearby_monsters[mid].tracker === "")
+				tally_nearby_monsters[mid].tracker = FS_Object.randomArrayIndex(pageData.trackers) || "";
+			// return if we don't have one
+			if (tally_nearby_monsters[mid].tracker === "") return;
 			if (DEBUG) console.log('👿 ⊙⊙⊙!⊙ Monster.add()', mid, tally_nearby_monsters[mid]);
 			// set currentMID
 			currentMID = mid;
