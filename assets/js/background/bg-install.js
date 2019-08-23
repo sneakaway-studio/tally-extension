@@ -22,6 +22,7 @@ window.Install = (function() {
 			store("tally_top_monsters", {});
 			store("tally_last_background_update", {});
 
+
 			// was this a reset?
 			if (fromReset && existingToken !== {}) {
 				if (DEBUG) console.log("🔧 Install.init() -> installing an existing token!");
@@ -180,7 +181,8 @@ window.Install = (function() {
 				"currentAPI": "production", // "production" or "development";
 				"api": Config.production.api, // default to production
 				"website": Config.production.website,
-				"browser": Environment.getBrowserName()
+				"browser": Environment.getBrowserName(),
+				"location": {}
 			};
 			// testing installation
 			obj.currentAPI = "development";
@@ -207,14 +209,40 @@ window.Install = (function() {
 		}
 	}
 
+	/**
+	 *  Get location
+	 */
+	function saveLocation() {
+		try {
+			let _tally_meta = store("tally_meta");
+			$.getJSON('http://www.geoplugin.net/json.gp', function(data) {
+				console.log(JSON.stringify(data, null, 2));
+				_tally_meta.location = {
+					"ip": data.geoplugin_request,
+					"city": data.geoplugin_city,
+					"region": data.geoplugin_region,
+					"country": data.geoplugin_countryName,
+					"continent": data.geoplugin_continentName,
+					"lat": data.geoplugin_latitude,
+					"lng": data.geoplugin_longitude,
+					"timezone": data.geoplugin_timezone
+				};
+				store("tally_meta", _tally_meta);
+			});
+		} catch (err) {
+			console.error(err);
+		}
+	}
+
 
 	// PUBLIC
 	return {
 		init: init,
 		createOptions: createOptions,
-		setOptions: function(obj){
+		setOptions: function(obj) {
 			return setOptions(obj);
 		},
+		saveLocation:saveLocation,
 		launchStartScreen: launchStartScreen
 	};
 }());

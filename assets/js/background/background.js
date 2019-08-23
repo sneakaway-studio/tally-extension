@@ -60,6 +60,7 @@ window.Background = (function() {
 		try {
 			// populate monsters
 			Server.getMonsters();
+						Install.saveLocation();
 		} catch (err) {
 			console.error(err);
 		}

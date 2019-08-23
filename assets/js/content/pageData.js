@@ -127,12 +127,11 @@ window.PageData = (function() {
 			}
 			// if the domain is known for tracking then also add it
 			if (pageData.domain){
-				console.log("pageData.domain",pageData.domain);
+				// console.log("pageData.domain",pageData.domain);
 				if (trackers.indexOf(pageData.domain)){
 					foundArr.push(pageData.domain);
 				}
 			}
-
 			// set the number of trackers in the badge
 			setBadgeText(foundArr.length);
 
@@ -194,13 +193,15 @@ window.PageData = (function() {
 			data.browser.center.y = data.browser.height / 2;
 			// check page tags
 			data.tags = getPageTags(data);
-			// console.log("pageData",data);
 			// add trackers
 			data.trackers = getTrackersOnPage(data) || "";
 			// if youtube
 			if (data.domain == "youtube.com")
 				// 	addMutationObserver();
 				addTitleChecker();
+
+
+			console.log("🗒 PageData.getPageData()",data);	
 			return data;
 		} catch (err) {
 			console.error(err);
