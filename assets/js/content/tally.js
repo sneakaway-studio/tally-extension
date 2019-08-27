@@ -276,7 +276,7 @@ window.Tally = (function() {
 	$(document).on('click', '#tally_showMoreOptions', function() {
 		let str = "Here are some options:<br>" +
 			// user-specific
-			"View your <a class='tally' id='tally_profile'>profile</a>, " +
+			"View your <a class='tally tally_profile_link'>profile</a>, " +
 			"your <a class='tally' id='tally_dashboard'>dashboard</a>, " +
 			"or <a class='tally' id='tally_leaderboard'>leaderboards</a>.<br>" +
 			// promo material
@@ -311,7 +311,7 @@ window.Tally = (function() {
 	 */
 
 	// launch profile
-	$(document).on('click', '#tally_profile', function() {
+	$(document).on('click', '.tally_profile_link', function() {
 		window.open(tally_meta.website + "/profile/" + tally_user.username);
 	});
 	$(document).on('click', '#tally_dashboard', function() {
@@ -413,7 +413,8 @@ Mousetrap.bind(k + ' w', function() {
 	Skin.random();
 });
 Mousetrap.bind(k + ' m', function() {
-	Monster.test();
+	Battle.final();
+	// Monster.test();
 });
 Mousetrap.bind(k + ' b', function() {
 	Battle.test();

@@ -39,7 +39,7 @@ window.Interface = (function() {
 							"</div>" +
 
 							// award, consumables, and badges
-							"<div class='tally tally_award_wrapper'></div>" +
+							"<div class='tally battle_monster_capture_wrapper'></div>" +
 							"<div class='tally tally_consumable_wrapper'></div>" +
 							"<div class='tally tally_badge'></div>" +
 
