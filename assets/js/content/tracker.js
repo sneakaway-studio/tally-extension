@@ -21,7 +21,7 @@ window.Tracker = (function() {
 					// block it
 					if (x[0].src) {
 						x[0].src = trackersOnPage[i] + "-script-blocked-by-tally!!!";
-						if (DEBUG) console.warn("🕷️ Tracker.removeCaughtTrackers()", trackersOnPage[i], x[0].src, "BLOCKED BY TALLY!!!");
+						if (DEBUG) console.log("🕷️ Tracker.removeCaughtTrackers()", trackersOnPage[i], x[0].src, "BLOCKED BY TALLY!!!");
 					}
 				}
 			}
