@@ -20,7 +20,7 @@ window.Battle = (function() {
 			"monsterLevel": 1,
 			"monsterLostTurns": 0,
 			"monsterName": "",
-			"monsterTracker":"",
+			"monsterTracker": "",
 			"oppName": "",
 			"oppStr": "",
 			"progress": 1, // cues for battle progress, normalized 1=start, 0=end
@@ -196,18 +196,6 @@ window.Battle = (function() {
 	}
 
 
-	function final() {
-
-		// show battle completion message
-
-		// block tracker if they won
-
-		// save blocked list
-
-
-		end();
-	}
-
 	// end battle
 	function end() {
 		try {
@@ -229,7 +217,7 @@ window.Battle = (function() {
 			anime.remove('.tally_monster_sprite_container');
 			// change skin back to magenta and hide dialogue if open
 			Skin.setStage(0);
-			Dialogue.hide();
+			// Dialogue.hide();
 			// hide monster
 			anime({
 				targets: '.tally_monster_sprite_container',
@@ -238,6 +226,8 @@ window.Battle = (function() {
 				elasticity: 0,
 				duration: 1000,
 			});
+			// hide captured animation
+			BattleEffect.hideCapturedMonster();
 			$('.monster_stats').css({
 				"display": "none"
 			});
@@ -277,6 +267,11 @@ window.Battle = (function() {
 
 			// update server
 			TallyStorage.checkSendBackgroundUpdate();
+
+			// reset page after a moment
+			setTimeout(function(){
+				location.reload();
+			}, 800);
 		} catch (err) {
 			console.error(err);
 		}

@@ -28,6 +28,7 @@ window.Progress = (function() {
 		"battle1stMonster": false,
 		"battle2ndMonster": false,
 		"battle3rdMonster": false,
+		"notifyToClickAfterBattle": 0
 	};
 
 

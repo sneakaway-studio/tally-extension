@@ -262,7 +262,7 @@ window.BattleAttack = (function() {
 			// is an attack not in progress ATM?
 			if (!Battle.details.attackInProgress) return;
 
-			let endBattle = false,
+			let winner = "",
 				endBattleMessage = "";
 
 
@@ -270,21 +270,21 @@ window.BattleAttack = (function() {
 
 			// did tally lose?
 			if (Stats.get("tally").health.val <= 0) {
-				endBattle = true;
+				winner = "monster";
 				endBattleMessage = "We need to take a break from the internet and recharge!";
 				monsterWins("Tally's health has been depleted. Tally loses.", "tally-health-gone");
 			} else if (Stats.get("tally").stamina.val <= 0) {
-				endBattle = true;
+				winner = "monster";
 				endBattleMessage = "We lost this time but we'll fight these trackers another day!";
 				monsterWins("Tally's stamina has been depleted. Tally loses.", "tally-stamina-gone");
 			}
 			// did tally win?
 			else if (Stats.get("monster").health.val <= 0) {
-				endBattle = true;
+				winner = "tally";
 				endBattleMessage = "";
 				tallyWins("The monster's health has been depleted. Tally wins!!!", "monster-health-gone");
 			} else if (Stats.get("monster").stamina.val <= 0) {
-				endBattle = true;
+				winner = "tally";
 				endBattleMessage = "";
 				tallyWins("The monster's stamina has been depleted. Tally wins!!!", "monster-stamina-gone");
 			} else {
@@ -327,14 +327,34 @@ window.BattleAttack = (function() {
 			}
 
 			// 3. check if battle over
-			if (endBattle) {
+			if (winner === "monster" || winner === "tally") {
 				// stop music
 				Sound.stopMusic();
 				setTimeout(function() {
 					// show final dialogue
 					Dialogue.showStr(endBattleMessage, "neutral", true);
 					setTimeout(function() {
-						Battle.end();
+						// if in demo then quit after a moment
+						if (tally_options.gameMode === "demo") {
+							setTimeout(function() {
+								Battle.end();
+							}, 500);
+						} else {
+							// add click event so user ends themselves
+							$(document).on("click", function() {
+								Battle.end();
+							});
+							if (Progress.get("notifyToClickAfterBattle") < 1){
+								Dialogue.showStr("Congratulations on completing your first battle!", "happy", true);
+								Dialogue.showStr("Click anywhere to continue!", "happy", true);
+								Dialogue.showStr("Feel free to share a screenshot!", "happy", true);
+								Progress.update("notifyToClickAfterBattle", 1);
+							} else if (Progress.get("notifyToClickAfterBattle") < 2){
+								Dialogue.showStr("Yay! You finished your second battle!", "happy", true);
+								Dialogue.showStr("Click anywhere to reset the page!", "happy", true);
+								Progress.update("notifyToClickAfterBattle", 2);
+							}
+						}
 					}, _logDelay + 2000);
 				}, _logDelay + 4000);
 			}
@@ -346,14 +366,15 @@ window.BattleAttack = (function() {
 		} catch (err) {
 			console.error(err);
 		}
-
 	}
 
-	function tallyWins(message,dialogue) {
-		// explode page
-		Effect.explode();
+
+
+	function tallyWins(message, dialogue) {
 		// save winner
 		Battle.details.winner = "tally";
+		// explode page
+		Effect.explode();
 		// log winning message
 		BattleConsole.log(message);
 		// show tally excited
@@ -361,16 +382,21 @@ window.BattleAttack = (function() {
 		// calculate and show award for beating the monster
 		let increase = FS_Number.round(Battle.details.monsterLevel * 10);
 		TallyStorage.addToBackgroundUpdate("scoreData", "score", increase);
-		BattleConsole.log("You earned "+ increase +" XP for beating this monster!!!");
+		BattleConsole.log("You earned " + increase + " XP for beating this monster!!!");
 		// tell player they blocked tracker
-		BattleConsole.log("You now have blocked the "+ Battle.details.monsterTracker +" tracker from grabbing your data!!!");
+		BattleConsole.log("You now have blocked the " + Battle.details.monsterTracker + " tracker from grabbing your data!!!");
 		// potentially award a new attack
 		if (Progress.get("award4thAttack")) randomRewardAttack();
-		// play win sound
-		Sound.playFile("music/tally-battle-7-25/victory.mp3", false, 0);
+		setTimeout(function() {
+			// show captured monster
+			BattleEffect.showCapturedMonster();
+			// play win sound
+			Sound.playFile("music/tally-battle-7-25/victory.mp3", false, 0);
+		}, 400);
+
 	}
 
-	function monsterWins(message,dialogue) {
+	function monsterWins(message, dialogue) {
 		// save winner
 		Battle.details.winner = "monster";
 		// log losing message
@@ -500,7 +526,7 @@ window.BattleAttack = (function() {
 	 */
 	function randomRewardAttack() {
 		try {
-			if (Math.random() > 0.2) {
+			if (Math.random() > 0.5) {
 				if (DEBUG) console.log("💥 BattleAttack.randomRewardAttack()");
 				rewardAttack();
 			}
@@ -524,5 +550,9 @@ window.BattleAttack = (function() {
 		rewardAttack: function(name, type) {
 			return rewardAttack(name, type);
 		},
+		tallyWins: function(message, dialogue) {
+			tallyWins(message, dialogue);
+		}
+
 	};
 })();

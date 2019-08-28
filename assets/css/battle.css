@@ -376,3 +376,75 @@ svg.stats-display .stat-bar-circle-text { fill:white; font: 14px "Monaco", "Anda
     /* transform-origin: center center; */
     animation: small-rumble .09s infinite linear;
 }
+
+
+
+
+
+/*  BATTLE MONSTER CAPTURE
+******************************************************************************/
+
+.battle_monster_capture_wrapper {
+    box-sizing: border-box;
+    top: -500px;
+    left: 55%;
+    position: fixed;
+    z-index: 2147483647;
+    font: 22px/26px "Monaco", "Andale Mono", "Courier New", sans-serif;
+    color: #fff;
+}
+.monster_capture_banner_top,
+.monster_capture_banner_bottom,
+.monster_capture_taxonomy,
+.monster_capture_tracker,
+.monster_capture_cage {
+    position: fixed;
+    left: 55%;
+    /* transform: translateX(-50%); */
+    top: -500px;
+    padding: 10px 20px;
+    z-index: 2147483647;
+    background-color: transparent;
+}
+.monster_capture_tracker {
+    width: 290px;
+    height:80px;
+}
+.battle_monster_capture_wrapper svg {
+    background-color: transparent;
+}
+.monster_capture_banner_top,.monster_capture_banner_bottom {
+    width: 460px;
+    height: auto;
+}
+.monster_capture_banner_bottom {
+    cursor: pointer;
+}
+.monster_capture_cage {
+    width: 400px;
+    height: 320px;
+    z-index: 21474836;
+}
+
+
+.monster_capture_taxonomy {
+    font-size: 0.9rem;
+    padding: 0 0 30px 0;
+}
+.monster_capture_taxonomy span {
+    float: left;
+    background: rgba(0, 0, 0, .0);
+    height: 30px;
+}
+.monster_capture_taxonomy span.tier-text {
+    padding: 6px 8px 4px 0;
+}
+.monster_capture_taxonomy span.tier1 {
+    padding-left: 10px;
+}
+.monster_capture_taxonomy svg {
+    float: left;
+    height: 30px;
+    margin: 0;
+    padding: 0 !important;
+}

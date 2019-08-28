@@ -413,11 +413,14 @@ Mousetrap.bind(k + ' w', function() {
 	Skin.random();
 });
 Mousetrap.bind(k + ' m', function() {
-	Battle.final();
+	Sound.stopMusic();
+	BattleAttack.tallyWins("The monster's health has been depleted. Tally wins!!!", "monster-health-gone");
+	// BattleEffect.showCapturedMonster();
 	// Monster.test();
 });
 Mousetrap.bind(k + ' b', function() {
-	Battle.test();
+	// Battle.test();
+	Sound.playFile("explosions/explode.mp3", false, 0);
 });
 Mousetrap.bind(k + ' 0', function() {
 	BattleEffect.showRumble("small");
