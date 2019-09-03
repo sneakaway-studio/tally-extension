@@ -53,11 +53,15 @@ Learn more at [tallygame.net](https://tallygame.net).
 
 
 
+### Version 0.2.11
+
+* Improvements to demo mode
+
 ### Version 0.2.10
 
 * Connects trackers to monsters for local and remote
 * Improvements to demo mode
-* Adds monster capture animation to end of battle 
+* Adds monster capture animation to end of battle
 
 ### Version 0.2.9
 

@@ -16,7 +16,7 @@ window.Demo = (function() {
 		idleTime = idleReset, // counter
 		scrollToMonster = false,
 		clickOnMonster = false,
-		tryToGoToNewPage = false;
+		tryToFollowLink = false;
 
 	// (maybe) set demo mode "on"
 	function start() {
@@ -179,28 +179,36 @@ window.Demo = (function() {
 	}
 
 
-	function goToNewPage() {
+	function goToNewPage(now) {
 		try {
+			// occassionally go to new site
+			if (Math.random() > 0.5) tryToFollowLink = true;
+			// if we want to go to random right now
+			if (now) tryToFollowLink = true;
 			// if we haven't tried already
-			if (!tryToGoToNewPage) {
+			if (!tryToFollowLink) {
 				// save attempt
-				tryToGoToNewPage = true;
+				tryToFollowLink = true;
 				// get all links
-				var links = $('a');
+				var links = $('a[target!="_blank"]');
 				// is safe to click link
-				let isSafeLink = false;
+				let isSafeLink = false,
+					safety = 0;
 				// loop until it is
 				while (!isSafeLink) {
 					// get random link
 					let r = Math.floor(Math.random() * links.length);
-					// console.log(r, links[r].href);
+					// console.log(r, links[r], links[r].href);
 					// make sure it has an href and isn't an email
-					if (links[r].href && links[r].href.search("mailto") < 0) {
+					if (links[r].href &&
+						links[r].href.search("download") < 0 &&
+						links[r].href.search("mailto") < 0) {
 						// console.log("SAFE", links[r].href);
 						isSafeLink = true;
 						links.get(r).click();
 						break;
 					}
+					if (++safety > 20) break;
 				}
 			}
 			// if it didn't work the first time, go to a new *random* page
@@ -244,7 +252,9 @@ window.Demo = (function() {
 	// PUBLIC
 	return {
 		start: start,
-		goToNewPage: goToNewPage,
+		goToNewPage: function(now){
+			goToNewPage(now);
+		},
 		goToUrlCallback: function(url) {
 			goToUrlCallback(url);
 		}

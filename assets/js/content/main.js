@@ -69,11 +69,11 @@ window.TallyMain = (function() {
 
 			// check if extension should be active on this page before proceeding
 			pageData.activeOnPage = shouldExtensionBeActiveOnPage();
+			// if in demo mode then go to new page
+			if (!pageData.activeOnPage && tally_options.gameMode == "demo") Demo.goToNewPage(true);
 			// do not procede if so
 			if (!pageData.activeOnPage) return;
-			// unless in demo mode then go to new page
-			else if (!pageData.activeOnPage && tally_options.gameMode == "demo") Demo.goToNewPage();
-
+			
 			// first, remove trackers that have been caught
 			Tracker.removeCaughtTrackers(pageData.trackers);
 			// add required CSS for game

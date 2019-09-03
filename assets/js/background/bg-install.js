@@ -128,6 +128,9 @@ window.Install = (function() {
 				"disabledDomains": [
 					"drive.google.com",
 					"docs.google.com",
+					"gmail.com",
+					"mail.google.com",
+					"moodle.davidson.edu",
 				],
 				"showDebugger": false,
 				"debuggerPosition": [0, 300]
@@ -216,7 +219,7 @@ window.Install = (function() {
 		try {
 			let _tally_meta = store("tally_meta");
 			$.getJSON('http://www.geoplugin.net/json.gp', function(data) {
-				console.log(JSON.stringify(data, null, 2));
+				// console.log(JSON.stringify(data, null, 2));
 				_tally_meta.location = {
 					"ip": data.geoplugin_request,
 					"city": data.geoplugin_city,
@@ -242,7 +245,7 @@ window.Install = (function() {
 		setOptions: function(obj) {
 			return setOptions(obj);
 		},
-		saveLocation:saveLocation,
+		saveLocation: saveLocation,
 		launchStartScreen: launchStartScreen
 	};
 }());

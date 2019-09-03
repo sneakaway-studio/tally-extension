@@ -268,10 +268,13 @@ window.Battle = (function() {
 			// update server
 			TallyStorage.checkSendBackgroundUpdate();
 
-			// reset page after a moment
-			setTimeout(function(){
-				location.reload();
-			}, 800);
+			// reload page if tally won (because it was exploded)
+			if (Battle.details.winner === "tally") {
+				// reset page after a moment
+				setTimeout(function() {
+					location.reload();
+				}, 800);
+			}
 		} catch (err) {
 			console.error(err);
 		}
