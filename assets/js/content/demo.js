@@ -16,7 +16,7 @@ window.Demo = (function() {
 		idleTime = idleReset, // counter
 		scrollToMonster = false,
 		clickOnMonster = false,
-		tryToFollowLink = false;
+		alreadyTriedToFollowLink = false;
 
 	// (maybe) set demo mode "on"
 	function start() {
@@ -182,13 +182,15 @@ window.Demo = (function() {
 	function goToNewPage(now) {
 		try {
 			// occassionally go to new site
-			if (Math.random() > 0.5) tryToFollowLink = true;
+			if (Math.random() > 0.5) alreadyTriedToFollowLink = true;
+			// always go to random for now so it doesn't open new tabs
+			alreadyTriedToFollowLink = true;
 			// if we want to go to random right now
-			if (now) tryToFollowLink = true;
+			if (now) alreadyTriedToFollowLink = true;
 			// if we haven't tried already
-			if (!tryToFollowLink) {
+			if (!alreadyTriedToFollowLink) {
 				// save attempt
-				tryToFollowLink = true;
+				alreadyTriedToFollowLink = true;
 				// get all links
 				var links = $('a[target!="_blank"]');
 				// is safe to click link

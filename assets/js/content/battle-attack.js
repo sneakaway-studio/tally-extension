@@ -499,10 +499,14 @@ window.BattleAttack = (function() {
 			// get random attack
 			let attack = AttackData.returnAttack(name, type);
 
+			let safety = 0;
 			// make sure tally doesn't already have that attack
-			while (prop(tally_user.attacks[attack.name]))
+			while (prop(tally_user.attacks[attack.name])){
 				// if so get a new one, passing name and type if set
 				attack = AttackData.returnAttack(name, type);
+				// exit if all attacks have been rewarded
+				if (++safety > 10) break;
+			}
 
 			if (DEBUG) console.log("💥 BattleAttack.rewardAttack() name=" + name + ", type=" + type);
 
@@ -526,7 +530,7 @@ window.BattleAttack = (function() {
 	 */
 	function randomRewardAttack() {
 		try {
-			if (Math.random() > 0.5) {
+			if (Math.random() > 0.8) {
 				if (DEBUG) console.log("💥 BattleAttack.randomRewardAttack()");
 				rewardAttack();
 			}
