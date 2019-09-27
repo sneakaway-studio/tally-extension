@@ -52,6 +52,9 @@ Learn more at [tallygame.net](https://tallygame.net).
 ## Development Versions
 
 
+### Version 0.2.12
+
+* 
 
 ### Version 0.2.11
 
