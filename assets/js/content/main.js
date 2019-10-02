@@ -73,7 +73,7 @@ window.TallyMain = (function() {
 			if (!pageData.activeOnPage && tally_options.gameMode == "demo") Demo.goToNewPage(true);
 			// do not procede if so
 			if (!pageData.activeOnPage) return;
-			
+
 			// first, remove trackers that have been caught
 			Tracker.removeCaughtTrackers(pageData.trackers);
 			// add required CSS for game
@@ -232,7 +232,8 @@ window.TallyMain = (function() {
 				// an array of message prompts for new token
 				let msg = [
 					"Please <a href='" + tally_meta.website + "/dashboard' target='_blank'>visit your dashboard</a> to reconnect your account",
-					"<a href='" + tally_meta.website + "/dashboard' target='_blank'>Link your account to start playing Tally</a>"
+					"You can't stop the trackers unless you <a href='" + tally_meta.website + "/dashboard' target='_blank'>connect your account</a>",
+					"<a href='" + tally_meta.website + "/dashboard' target='_blank'>Link your account</a> to start playing Tally"
 				];
 				// for debugging
 				if (tally_meta.userTokenStatus === "expired") {
@@ -240,20 +241,26 @@ window.TallyMain = (function() {
 					// 	title: "YOUR TOKEN HAS EXPIRED",
 					// 	message: "Click here to get a new one"
 					// });
-				} else if (tally_meta.userTokenStatus !== "ok") {
+				} else if (tally_meta.userTokenStatus != "ok") {
 					// $.growl({
 					// 	title: "YOU HAVE NO TOKEN",
 					// 	message: msg[FS_Object.randomArrayIndex(msg)]
 					// });
 				}
 				// if token not valid
-				if (tally_meta.userTokenStatus === "expired" || tally_meta.userTokenStatus !== "ok") {
+				if (tally_meta.userTokenStatus == "expired" ||
+					tally_meta.userTokenStatus == "error" ||
+					tally_meta.userTokenStatus != "ok") {
 					if (DEBUG) console.log("🧰 TallyMain.checkTokenStatus() TOKEN (STILL) BROKEN " +
 						"tally_meta.userTokenPrompts = " + tally_meta.userTokenPrompts);
+
 					// don't bother them every time
-					if (tally_meta.userTokenPrompts++ < 10 || tally_meta.userTokenPrompts % 5 == 0) {
-						Dialogue.showStr(msg[FS_Object.randomArrayIndex(msg)], "sad");
+					if (tally_meta.userTokenPrompts % 2 == 0) {
+						setTimeout(function() {
+							Dialogue.showStr(FS_Object.randomArrayIndex(msg), "sad", true);
+						}, 500);
 					}
+					tally_meta.userTokenPrompts++;
 					TallyStorage.saveData('tally_meta', tally_meta, "🧰 TallyMain.checkTokenStatus()");
 				}
 			}
