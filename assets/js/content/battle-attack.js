@@ -510,10 +510,18 @@ window.BattleAttack = (function() {
 
 			if (DEBUG) console.log("💥 BattleAttack.rewardAttack() name=" + name + ", type=" + type);
 
-			// if they haven't reached their attackLimit
-			if (tally_user.progress.attacksSelected.val < tally_user.progress.attackLimit.val)
-				// then mark it as selected
+			// if progress not marked yet then
+			if (!prop(tally_user.progress.attacksSelected)){
+				Progress.update("attacksSelected",1);
 				attack.selected = 1;
+			}
+
+			// if they haven't reached their attackLimit
+			if (tally_user.progress.attacksSelected.val < tally_user.progress.attackLimit.val){
+				// then mark it as selected automagically
+				attack.selected = 1;
+				Progress.update("attacksSelected",tally_user.progress.attacksSelected + 1);
+			}
 
 			// save in background and on server
 			TallyStorage.saveTallyUser("attacks", attack, "💥 BattleAttack.rewardAttack()");

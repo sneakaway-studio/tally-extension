@@ -18,7 +18,7 @@ window.TallyStorage = (function() {
 	function createBackgroundUpdate(type = "update") {
 		try {
 			//console.trace();
-			if (DEBUG) console.log("💾 TallyStorage.createBackgroundUpdate()", cat, prop, val, caller);
+			if (DEBUG) console.log("💾 TallyStorage.createBackgroundUpdate()");
 			// if a backgroundUpdate is already in progress then return early
 			if (backgroundUpdateInProgress)
 				return console.warn("💾 TallyStorage.createBackgroundUpdate() backgroundUpdateInProgress=true");
@@ -328,6 +328,7 @@ window.TallyStorage = (function() {
 	function saveToken(data) {
 		try {
 			if (DEBUG) console.log('💾 < TallyStorage.saveToken() TRYING TO SAVE NEW TOKEN... DATA =', data);
+			// save locally first
 			chrome.runtime.sendMessage({
 				'action': 'saveToken',
 				'data': data

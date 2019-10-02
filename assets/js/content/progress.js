@@ -90,12 +90,12 @@ window.Progress = (function() {
 
 
 			// AWARD ATTACK - 1st
-			if (!get("award1stAttack") && tally_user.score.score > 3) {
+			if (!get("award1stAttack") && tally_user.score.score > 1) {
 				BattleAttack.rewardAttack("", "attack");
 				update("award1stAttack", true);
 			}
 			// AWARD ATTACK - 2nd
-			if (!get("award2ndAttack") && tally_user.score.score > 15) {
+			if (!get("award2ndAttack") && tally_user.score.score > 10) {
 				BattleAttack.rewardAttack("", "defense");
 				update("award2ndAttack", true);
 			}

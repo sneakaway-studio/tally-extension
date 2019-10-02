@@ -221,6 +221,7 @@ window.Listener = (function() {
 
 				// saveToken
 				else if (request.action == "saveToken") {
+					console.log("saveToken",request.data);
 					// get current token data
 					let _tally_secret = store("tally_secret"),
 					// default return type is fail

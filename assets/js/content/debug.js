@@ -26,6 +26,7 @@ window.Debug = (function() {
 		"Interface": true,
 		"TallyListeners": false,
 		"TallyMain": true,
+		"TallyStorage": true,
 		// monsters
 		"MonsterAward": false,
 		"MonsterCheck": true,
@@ -53,7 +54,7 @@ window.Debug = (function() {
 			}
 		}
 	}
-
+	// setAll(true);
 
 	// add the debugger
 	function add() {

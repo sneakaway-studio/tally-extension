@@ -290,9 +290,11 @@ window.TallyMain = (function() {
 				// update stats
 				Stats.reset("tally");
 				// tell user
-				Dialogue.showStr(GameData.flags.levelUp.dialogue, GameData.flags.levelUp.mood);
-				// remove flag once handled
-				remove("levelUp");
+				setTimeout(function() {
+					Dialogue.showStr(GameData.flags.levelUp.dialogue, GameData.flags.levelUp.mood, true);
+					// remove flag once handled
+					remove("levelUp");
+				}, 300);
 			}
 			// SERVER SAYS: we have received a new attack
 			// might do this locally instead

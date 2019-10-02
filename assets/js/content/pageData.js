@@ -201,7 +201,7 @@ window.PageData = (function() {
 				addTitleChecker();
 
 
-			console.log("🗒 PageData.getPageData()",data);	
+			console.log("🗒 PageData.getPageData()",data);
 			return data;
 		} catch (err) {
 			console.error(err);
