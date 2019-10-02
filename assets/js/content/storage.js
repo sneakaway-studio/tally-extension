@@ -60,7 +60,9 @@ window.TallyStorage = (function() {
 					"action": "",
 					"text": ""
 				},
+				"timezone": Intl.DateTimeFormat().resolvedOptions().timeZone || "",
 				"token": "INSERT_IN_BACKGROUND",
+				"userAgent": navigator.userAgent || "",
 			};
 			return obj;
 		} catch (err) {

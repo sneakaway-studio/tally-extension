@@ -107,6 +107,7 @@ window.Install = (function() {
 					"time": 0,
 				},
 				"skins": ["color-magenta"],
+				"timezone": "",
 				"trackers": {},
 				"username": "",
 			};

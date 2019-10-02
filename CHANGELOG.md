@@ -54,7 +54,7 @@ Learn more at [tallygame.net](https://tallygame.net).
 
 ### Version 0.2.12
 
-* 
+* Adds timezone support
 
 ### Version 0.2.11
 
