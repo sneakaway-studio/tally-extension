@@ -206,6 +206,8 @@ window.Consumable = (function() {
 			setTimeout(function() {
 				// update stats
 				Stats.updateFromConsumable(consumable);
+				// hide
+				$('.tally_consumable_wrapper').html("");
 			}, 700);
 		} catch (err) {
 			console.error(err);

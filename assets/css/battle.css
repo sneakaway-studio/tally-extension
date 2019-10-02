@@ -101,6 +101,7 @@ table.stats-table {
     font: 11px/12px "Monaco", "Andale Mono", "Courier New", sans-serif !important;
     border-collapse: separate !important;
     border-spacing: 2px !important;
+    padding-right: 4px !important;
     z-index: 2147483647 !important;
 }
 .stats-table tr td { font: 11px/12px "Monaco", "Andale Mono", "Courier New", sans-serif !important; }
