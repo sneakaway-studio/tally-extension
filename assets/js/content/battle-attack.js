@@ -346,11 +346,13 @@ window.BattleAttack = (function() {
 							});
 							if (Progress.get("notifyToClickAfterBattle") < 1){
 								Dialogue.showStr("Congratulations on completing your first battle!", "happy", true);
+								Dialogue.showStr("You blocked a tracker!", "happy", true);
 								Dialogue.showStr("Click anywhere to continue!", "happy", true);
-								Dialogue.showStr("Feel free to share a screenshot!", "happy", true);
 								Progress.update("notifyToClickAfterBattle", 1);
 							} else if (Progress.get("notifyToClickAfterBattle") < 2){
 								Dialogue.showStr("Yay! You finished your second battle!", "happy", true);
+								Dialogue.showStr("You blocked another tracker!", "happy", true);
+								Dialogue.showStr("Feel free to share a screenshot!", "happy", true);
 								Dialogue.showStr("Click anywhere to reset the page!", "happy", true);
 								Progress.update("notifyToClickAfterBattle", 2);
 							}

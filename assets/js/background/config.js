@@ -3,8 +3,8 @@
 var Config = (function() {
 	// PRIVATE
 	let development = {
-			"api": "http://localhost:5000/api",
-			"website": "http://localhost:5000",
+			"api": "http://owenmundy.local:5000/api",
+			"website": "http://owenmundy.local:5000",
 		},
 		production = {
 			"api": "https://tallygame.net/api",
