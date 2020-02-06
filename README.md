@@ -4,7 +4,7 @@
 
 ![Tally](https://tallygame.net/assets/img/tally-153w.png "Hi! I'm Tally.")
 
-Tally is a browser extension that uses AI to transform the data advertisers collect into a multiplayer game.
+Tally is a browser extension that transforms the data advertisers collect into a multiplayer game. 
 Learn more at [tallygame.net](https://tallygame.net).
 
 

@@ -18,7 +18,7 @@ window.Server = (function() {
 				startTime = new Date().getTime();
 			$.ajax({
 				type: "GET",
-				timeout: 5000,
+				timeout: 10000,
 				url: _tally_meta.api,
 				contentType: 'application/json', // type of data you are sending
 				dataType: 'json', // type of data you expect to receive
@@ -33,7 +33,8 @@ window.Server = (function() {
 				verifyToken();
 			}).fail(error => {
 				// server is not online, do not start game
-				console.error("📟 Server.updateStatus() 😢 NOT ONLINE, DO NOT START GAME", JSON.stringify(error));
+				console.error("📟 Server.updateStatus() " + _tally_meta.api +
+					" 😢 NOT ONLINE, DO NOT START GAME", JSON.stringify(error));
 				// save state
 				_tally_meta.serverOnline = 0;
 				_tally_meta.userOnline = 0;
