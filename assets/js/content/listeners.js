@@ -204,7 +204,7 @@ window.TallyListeners = (function() {
 				// only allow points for clicking the first time (FB Like, etc.)
 				$(target).toggleClass("tally-clicked");
 				// check progress
-				Progress.check();
+				Progress.check("TallyListeners");
 				// play sound
 				Sound.playCategory('user', 'click');
 				// show click visual

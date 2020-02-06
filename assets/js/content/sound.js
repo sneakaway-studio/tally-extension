@@ -83,7 +83,7 @@ window.Sound = (function() {
 
 	function playMusic(file, loop, volumeModifier = 0) {
 		try {
-			if (DEBUG) console.log("♪ Sound.playMusic()", file, loop, volumeModifier);
+			if (DEBUG) console.log("🎵 Sound.playMusic()", file, loop, volumeModifier);
 
 			// if music isn't already playing then start it
 			if (musicFile === "") {
@@ -122,7 +122,7 @@ window.Sound = (function() {
 	function startMusic() {
 		try {
 			if (!pageData.activeOnPage || tally_options.gameMode === "disabled" || tally_options.gameMode === "stealth") return;
-			if (DEBUG) console.log("♪ Sound.startMusic()");
+			if (DEBUG) console.log("🎵 Sound.startMusic()");
 
 			if (musicAudio !== null) {
 				musicAudio.pause();
@@ -159,7 +159,7 @@ window.Sound = (function() {
 
 	function stopMusic() {
 		try {
-			if (DEBUG) console.log("♪ Sound.stopMusic()");
+			if (DEBUG) console.log("🎵 Sound.stopMusic()");
 			musicAudio.pause();
 			musicFile = "";
 		} catch (err) {
@@ -169,7 +169,7 @@ window.Sound = (function() {
 
 	//
 	// function loopMusic() {
-	// 	if (DEBUG) console.log("♪ Sound.loopMusic()",musicAudio.src)
+	// 	if (DEBUG) console.log("🎵 Sound.loopMusic()",musicAudio.src)
 	// 	musicAudio.addEventListener('ended', function() {
 	// 		this.currentTime = 0;
 	// 		this.play();
@@ -226,7 +226,7 @@ window.Sound = (function() {
 	function playRandom(category, index, delay) {
 		try {
 			if (!pageData.activeOnPage || !tally_options.playSounds) return;
-			//if(DEBUG) console.log("playRandom("+ category +","+ index +")");
+			//if(DEBUG) console.log("🎵 Sound.playRandom("+ category +","+ index +")");
 			var soundFile = "";
 			// if a specific category && index provided, then get that sound
 			if (prop(category) && prop(index))
@@ -262,7 +262,7 @@ window.Sound = (function() {
 		try {
 			if (!pageData.activeOnPage || !tally_options.playSounds || !prop(mood)) return;
 			if (mood == "award") mood = "happy";
-			if (DEBUG) console.log("Sound.playMood()", mood);
+			if (DEBUG) console.log("🎵 Sound.playMood()", mood);
 			let r = Math.ceil(Math.random() * moods[mood]);
 			let file = "tally/moods-v2/" + mood + "-" + r + "-2.mp3";
 			play(file, 150);
@@ -278,7 +278,7 @@ window.Sound = (function() {
 	 */
 	// function playOld(soundFile, delay = 0, volumeModifier = 0) {
 	// try {
-	// 	//if(DEBUG) console.log("♪ Sound.play("+ soundFile +","+ delay +","+ volumeModifier +")");
+	// 	//if(DEBUG) console.log("🎵 Sound.play("+ soundFile +","+ delay +","+ volumeModifier +")");
 	// 	// load/play sound
 	// 	var audio = new Audio(chrome.extension.getURL("assets/sounds/" + soundFile));
 	// 	audio.muted = true;
@@ -304,7 +304,7 @@ window.Sound = (function() {
 		try {
 			if (!pageData.activeOnPage || !tally_options.playSounds ||
 				tally_options.gameMode === "disabled" || tally_options.gameMode === "stealth") return;
-			if (DEBUG) console.log("♪♪♪♪♪ Sound.play(" + soundFile + "," + delay + "," + volumeModifier + ")");
+			if (DEBUG) console.log("🎵 Sound.play(" + soundFile + "," + delay + "," + volumeModifier + ")");
 
 			// reference to audio element
 			var audio = document.querySelector('#tally_audio');

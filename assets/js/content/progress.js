@@ -19,15 +19,13 @@ window.Progress = (function() {
 		"viewProfilePage": false,
 		// attacks
 		"attackLimit": 1,
+		"attacksAwarded": 0,
 		"attacksSelected": 0,
-		"award1stAttack": false,
-		"award2ndAttack": false,
-		"award3rdAttack": false,
-		"award4thAttack": false,
 		// battles
-		"battle1stMonster": false,
-		"battle2ndMonster": false,
-		"battle3rdMonster": false,
+		"battlesFought": 0,
+		"battleWon": 0,
+		"battleLost": 0,
+		"battleEscaped": 0,
 		"notifyToClickAfterBattle": 0
 	};
 
@@ -39,13 +37,12 @@ window.Progress = (function() {
 		try {
 			// if value exists in tally_user && is true | >0 | !""
 			if (FS_Object.prop(tally_user.progress) &&
-				FS_Object.prop(tally_user.progress[name]) &&
-				FS_Object.prop(tally_user.progress[name].val)) {
+				FS_Object.prop(tally_user.progress[name])) {
 
-				console.log("🕹️ Progress.get()", tally_user.progress[name]);
+				if (DEBUG) console.log("🕹️ Progress.get()", tally_user.progress[name]);
 				return tally_user.progress[name].val;
 			} else {
-				console.log("🕹️ Progress.get() NOT FOUND");
+				if (DEBUG) console.log("🕹️ Progress.get() "+ name +" NOT FOUND");
 				return false;
 			}
 		} catch (err) {
@@ -53,16 +50,22 @@ window.Progress = (function() {
 		}
 	}
 
+
 	/**
 	 *	Update progress on server
 	 */
-	function update(name, val) {
+	function update(name, val, operator = "=") {
 		try {
-			console.log("🕹️ Progress.update()", name, val);
-
-			// save current status to return w/it later before changing
-			let current = get(name);
-
+			if (DEBUG) console.log("🕹️ Progress.update() [1]", name + operator + val);
+			// save current status to return later before changing
+			let currentVal = get(name);
+				if (DEBUG) console.log("🕹️ Progress.update() [2]", name + operator + val, "currentVal="+currentVal);
+			// instead of setting, we need to do an operation
+			if (operator !== "=") {
+				// update value
+				val = FS_Number.operation(currentVal, val, operator);
+			}
+				if (DEBUG) console.log("🕹️ Progress.update() [3]", name + operator + val, "currentVal="+currentVal);
 			// create progress object
 			let obj = {
 				"name": name,
@@ -71,8 +74,7 @@ window.Progress = (function() {
 			// save in background and on server
 			TallyStorage.saveTallyUser("progress", obj, "🕹️ Progress.update()");
 			TallyStorage.addToBackgroundUpdate("itemData", "progress", obj, "🕹️ Progress.update()");
-
-			return current;
+			return currentVal;
 		} catch (err) {
 			console.error(err);
 		}
@@ -81,33 +83,33 @@ window.Progress = (function() {
 	/**
 	 *	Checks to see if any progress events should be executed
 	 */
-	function check() {
+	function check(caller = "Progress") {
 		try {
-			console.log("🕹️ Progress.check()", tally_user.progress);
+			if (DEBUG) console.log("🕹️ Progress.check() caller =", caller, tally_user.progress);
 			// return if not found
 			if (!tally_user.progress) return;
 
 
 
 			// AWARD ATTACK - 1st
-			if (!get("award1stAttack") && tally_user.score.score > 1) {
+			if (get("attacksAwarded") <= 0 && tally_user.score.score > 1) {
 				BattleAttack.rewardAttack("", "attack");
-				update("award1stAttack", true);
+				update("attacksAwarded", 1, "+");
 			}
 			// AWARD ATTACK - 2nd
-			if (!get("award2ndAttack") && tally_user.score.score > 10) {
+			if (get("attacksAwarded") <= 1 && tally_user.score.score > 10) {
 				BattleAttack.rewardAttack("", "defense");
-				update("award2ndAttack", true);
+				update("attacksAwarded", 1, "+");
 			}
 			// AWARD ATTACK - 3rd
-			if (!get("award3rdAttack") && get("battle1stMonster")) {
+			if (get("attacksAwarded") <= 2 && get("battlesFought") > 0) {
 				BattleAttack.rewardAttack("", "attack");
-				update("award3rdAttack", true);
+				update("attacksAwarded", 1, "+");
 			}
 			// AWARD ATTACK - 4th
-			if (!get("award4thAttack") && tally_user.score.score > 100) {
+			if (get("attacksAwarded") <= 3 && tally_user.score.score > 100) {
 				BattleAttack.rewardAttack("", "defense");
-				update("award4thAttack", true);
+				update("attacksAwarded", 1, "+");
 			}
 
 			// if tally levels up her attack capacity increases
@@ -131,9 +133,11 @@ window.Progress = (function() {
 		get: function(prop) {
 			return get(prop);
 		},
-		update: function(name, val) {
+		update: function(name, val, operator) {
 			return update(name, val);
 		},
-		check: check,
+		check: function(caller) {
+			return check(caller);
+		}
 	};
 }());

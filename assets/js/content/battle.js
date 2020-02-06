@@ -23,7 +23,7 @@ window.Battle = (function() {
 			"monsterTracker": "",
 			"oppName": "",
 			"oppStr": "",
-			"progress": 1, // cues for battle progress, normalized 1=start, 0=end
+			"progress": 1, // cues for progress for this battle only, normalized 1=start, 0=end
 			"recentAttack": {},
 			"selfName": "",
 			"selfStr": "",
@@ -85,15 +85,15 @@ window.Battle = (function() {
 			active(true);
 			// set currentMID
 			Monster.currentMID = mid;
-			// check progress
-			if (!Progress.get("battle1stMonster")) {
-				// update progress
-				Progress.update("battle1stMonster", true);
+			// if this is first battle
+			if (Progress.get("battlesFought") == 0) {
 				// inform them about RPG battling
 				Dialogue.showStr("This game is like a classic RPG.", "neutral", true);
 				Dialogue.showStr("You and the monster must battle by taking turns lauching attacks or defenses.", "neutral", true);
 				Dialogue.showStr("You go first!", "happy", true);
 			}
+			// update progress
+			Progress.update("battlesFought", 1, "+");
 			// intro sound
 			Sound.playCategory('powerups', 'powerup1');
 			// setup page for effects
@@ -255,9 +255,16 @@ window.Battle = (function() {
 			if (Battle.details.winner === "tally") {
 				monsterUpdate.captured = 1;
 				trackerUpdate.blocked = 1;
+				Progress.update("battlesWon", 1, "+");
 			} else if (Battle.details.winner === "monster") {
 				monsterUpdate.missed = 1;
 				trackerUpdate.blocked = 0;
+				Progress.update("battlesLost", 1, "+");
+			} else {
+				monsterUpdate.missed = 1;
+				trackerUpdate.blocked = 0;
+				// tally must have run
+				Progress.update("battleEscaped", 1, "+");
 			}
 
 			// add monster to update

@@ -14,7 +14,7 @@ window.FS_Number = (function() {
 				console.error(err);
 			}
 		},
-		round: function(val, precision =0) {
+		round: function(val, precision = 0) {
 			try {
 				if (val == null || precision == null)
 					console.error("more numbers required!", val, precision);
@@ -50,6 +50,20 @@ window.FS_Number = (function() {
 				let one = Math.round(Math.random()) * 2 - 1;
 				// use val to get random * 1 or -1
 				return (Math.random() * val) * one;
+			} catch (err) {
+				console.error(err);
+			}
+		},
+		operation: function(operand1, operand2, operator) {
+			// console.log("FS_Number.operation()", operand1, operand2, operator);
+			try {
+				if (operator === "+") {
+					return operand1 + operand2;
+				} else if (operator === "-") {
+					return operand1 - operand2;
+				} else if (operator === "*") {
+					return operand1 * operand2;
+				}
 			} catch (err) {
 				console.error(err);
 			}

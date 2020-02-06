@@ -20,8 +20,12 @@ window.TallyMain = (function() {
 	};
 
 	$(function() {
-		// begin by getting data from background, then performing start checks
-		getDataFromBackground(performStartChecks);
+		try {
+			// begin by getting data from background, then performing start checks
+			getDataFromBackground(performStartChecks);
+		} catch (err) {
+			console.error("🧰 TallyMain.getDataFromBackground() failed", err);
+		}
 	});
 
 	/**
@@ -149,6 +153,8 @@ window.TallyMain = (function() {
 	 */
 	function startGameOnPage() {
 		try {
+			if (DEBUG) console.log("🧰 TallyMain.startGameOnPage() ...");
+
 			// don't run if pageData failed
 			if (!pageData || pageData == undefined || !pageData.activeOnPage) return;
 			// welcome message for the curious
@@ -170,7 +176,7 @@ window.TallyMain = (function() {
 			// check for, and possibly add monsters on the page
 			MonsterCheck.check();
 			// check for, and possibly complete any progress
-			Progress.check();
+			Progress.check("TallyMain");
 			// check for, and possibly execute and flags from dashboard
 			// Flag.checkDashboard();
 			// check for, and possibly execute and flags from server (from previous update)
@@ -262,6 +268,8 @@ window.TallyMain = (function() {
 					}
 					tally_meta.userTokenPrompts++;
 					TallyStorage.saveData('tally_meta', tally_meta, "🧰 TallyMain.checkTokenStatus()");
+				} else {
+					if (DEBUG) console.log("🧰 TallyMain.checkTokenStatus() TOKEN OK ");
 				}
 			}
 		} catch (err) {

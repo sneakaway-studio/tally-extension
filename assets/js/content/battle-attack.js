@@ -344,15 +344,15 @@ window.BattleAttack = (function() {
 							$(document).on("click", function() {
 								Battle.end();
 							});
-							if (Progress.get("notifyToClickAfterBattle") < 1){
+							if (Progress.get("notifyToClickAfterBattle") < 1) {
 								Dialogue.showStr("Congratulations on completing your first battle!", "happy", true);
-								Dialogue.showStr("You blocked a tracker!", "happy", true);
+								if (winner === "tally") Dialogue.showStr("You blocked a tracker!", "happy", true);
 								Dialogue.showStr("Click anywhere to continue!", "happy", true);
 								Progress.update("notifyToClickAfterBattle", 1);
-							} else if (Progress.get("notifyToClickAfterBattle") < 2){
+							} else if (Progress.get("notifyToClickAfterBattle") < 2) {
 								Dialogue.showStr("Yay! You finished your second battle!", "happy", true);
-								Dialogue.showStr("You blocked another tracker!", "happy", true);
-								Dialogue.showStr("Feel free to share a screenshot!", "happy", true);
+								if (winner === "tally") Dialogue.showStr("You blocked another tracker!", "happy", true);
+								Dialogue.showStr("Share a screenshot!", "happy", true);
 								Dialogue.showStr("Click anywhere to reset the page!", "happy", true);
 								Progress.update("notifyToClickAfterBattle", 2);
 							}
@@ -388,7 +388,7 @@ window.BattleAttack = (function() {
 		// tell player they blocked tracker
 		BattleConsole.log("You now have blocked the " + Battle.details.monsterTracker + " tracker from grabbing your data!!!");
 		// potentially award a new attack
-		if (Progress.get("award4thAttack")) randomRewardAttack();
+		if (Progress.get("attacksAwarded") >= 4) randomRewardAttack();
 		setTimeout(function() {
 			// show captured monster
 			BattleEffect.showCapturedMonster();
@@ -501,9 +501,9 @@ window.BattleAttack = (function() {
 			// get random attack
 			let attack = AttackData.returnAttack(name, type);
 
-			let safety = 0;
 			// make sure tally doesn't already have that attack
-			while (prop(tally_user.attacks[attack.name])){
+			let safety = 0;
+			while (prop(tally_user.attacks[attack.name])) {
 				// if so get a new one, passing name and type if set
 				attack = AttackData.returnAttack(name, type);
 				// exit if all attacks have been rewarded
@@ -512,20 +512,21 @@ window.BattleAttack = (function() {
 
 			if (DEBUG) console.log("💥 BattleAttack.rewardAttack() name=" + name + ", type=" + type);
 
-			// if progress not marked yet then
-			if (!prop(tally_user.progress.attacksSelected)){
-				Progress.update("attacksSelected",1);
-				attack.selected = 1;
-			}
+			// // if progress not marked yet then
+			// if (!prop(tally_user.progress.attacksSelected)) {
+			// 	Progress.update("attacksSelected", 1, "+");
+			// 	attack.selected = 1;
+			// }
 
 			// if they haven't reached their attackLimit
-			if (tally_user.progress.attacksSelected.val < tally_user.progress.attackLimit.val){
+			if (tally_user.progress.attacksSelected.val < tally_user.progress.attackLimit.val) {
 				// then mark it as selected automagically
 				attack.selected = 1;
-				Progress.update("attacksSelected",tally_user.progress.attacksSelected + 1);
+				Progress.update("attacksSelected", 1, "+");
 			}
 
-			// save in background and on server
+			// save progress, in background, and on server
+			Progress.update("attacksAwarded", 1, "+");
 			TallyStorage.saveTallyUser("attacks", attack, "💥 BattleAttack.rewardAttack()");
 			TallyStorage.addToBackgroundUpdate("itemData", "attacks", attack, "💥 BattleAttack.rewardAttack()");
 
