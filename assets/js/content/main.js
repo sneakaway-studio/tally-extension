@@ -172,7 +172,7 @@ window.TallyMain = (function() {
 			// check for, and possibly complete any progress
 			Progress.check();
 			// check for, and possibly execute and flags from dashboard
-			PageData.checkDashboardForFlags();
+			// Flag.checkDashboard();
 			// check for, and possibly execute and flags from server (from previous update)
 			checkForServerFlags();
 			// update debugger
