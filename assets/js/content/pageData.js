@@ -81,7 +81,7 @@ window.PageData = (function() {
 	 */
 	function getTrackersOnPage(pageData) {
 		try {
-			if (DEBUG) console.log("🗒️ PageData.getTrackersOnPage()");
+			// if (DEBUG) console.log("🗒️ PageData.getTrackersOnPage()");
 			var foundObj = {},
 				foundArr = [],
 				trackers = {
@@ -120,7 +120,7 @@ window.PageData = (function() {
 				// this method uses the single array (no categories)
 				// I think this may be the way to go in the end
 				if (foundArr.indexOf(scriptDomain) < 0 && trackers.indexOf(scriptDomain) >= 0) {
-					if (DEBUG) console.log("🗒️ PageData.getTrackersOnPage() 👀", str, scriptDomain);
+					// if (DEBUG) console.log("🗒️ PageData.getTrackersOnPage() 👀", str, scriptDomain);
 					foundArr.push(scriptDomain);
 				}
 
