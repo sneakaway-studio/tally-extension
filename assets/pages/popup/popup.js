@@ -107,7 +107,7 @@ function getAttacks(callback) {
 				if (tally_user.attacks[key].description) title += tally_user.attacks[key].description;
 
 				str += "<li>";
-				str += '<input type="checkbox" id="' + key + '" name="attacks" ' + checked + ' />';
+				str += '<input class="attack-checkbox" type="checkbox" id="' + key + '" name="attacks" ' + checked + ' />';
 				str += "<label " +
 					" for='" + key + "'" +
 					" title='" + title + "' " +
@@ -134,7 +134,7 @@ function getAttacks(callback) {
 		});
 
 		// add listener for buttons
-		$('input[type="checkbox"]').change(function() {
+		$('input.attack-checkbox[type="checkbox"]').change(function() {
 			// update totals
 			updateSelectedCheckboxes();
 			// get attack name
