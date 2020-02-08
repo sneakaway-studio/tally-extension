@@ -41,7 +41,7 @@ window.Debug = (function() {
 		"Stats": true,
 		"Skin": false,
 		"Tally": true,
-		"Tracker": true,
+		"Tracker": false,
 		"Tutorial": true
 	};
 
@@ -62,7 +62,7 @@ window.Debug = (function() {
 		try {
 			if (!prop(tally_options) || !tally_options.showDebugger) return;
 
-			let str = "<div id='tyd' class='tally draggable data-field grabbable'>" + "</div>";
+			let str = "<div id='tyd' class='tally draggable data-field grabbable'></div>";
 			$('#tally_wrapper').append(str);
 			// make it draggable
 			$("#tyd").draggable({
@@ -89,16 +89,40 @@ window.Debug = (function() {
 			if (!prop(tally_options) || !tally_options.showDebugger) return;
 			if (!$("#tyd").length) return;
 
-			var str = "<div class='tally'>" +
-				"<b class='tally'>tally_user.score (XP)</b>: " + JSON.stringify(tally_user.score) + "<br>" +
-				"<b class='tally'>tally_user.monsters</b>: " + JSON.stringify(tally_user.monsters) + "<br>" +
-				"<b class='tally'>tally_nearby_monsters (" + FS_Object.objLength(tally_nearby_monsters) + ")</b>: " + JSON.stringify(tally_nearby_monsters) + "<br>" +
-				//"tally_options: " + JSON.stringify(tally_options) +"<br>"+
-				//"<b>pageData</b>: " + JSON.stringify(pageData) +"<br>"+
-				"<b class='tally'>pageData.tags (" + pageData.tags.length + ")</b>: " + JSON.stringify(pageData.tags) + "<br>" +
-				"<b class='tally'>pageData.trackers (" + pageData.trackers.length + ")</b>: " + JSON.stringify(pageData.trackers) + "<br>" +
-				"</div>";
+			var str = "<div class='tally'>" + "<button id='updateGameFromServer'>RESET</button>";
+
+			if (prop(tally_user.score))
+				str += "<b class='tally'>tally_user.score (XP)</b>: " + JSON.stringify(tally_user.score) + "<br>";
+
+			if (prop(tally_user.monsters))
+				str += "<b class='tally'>tally_user.monsters</b>: " + JSON.stringify(tally_user.monsters) + "<br>";
+
+			// if (prop(tally_nearby_monsters))
+			// 	str += "<b class='tally'>tally_nearby_monsters (" +
+			// 	FS_Object.objLength(tally_nearby_monsters) + ")</b>: " +JSON.stringify(tally_nearby_monsters) + "<br>";
+
+			if (prop(tally_options))
+				str += "tally_options: " + JSON.stringify(tally_options) + "<br>";
+
+			if (prop(pageData))
+				str += "<b>pageData</b>: " + JSON.stringify(pageData) + "<br>";
+
+			// if (prop(pageData.tags))
+			// 	str += "<b class='tally'>pageData.tags (" + pageData.tags.length + ")</b>: " +
+			// 	JSON.stringify(pageData.tags) + "<br>";
+
+			// if (prop(pageData.trackers))
+			// 	str += "<b class='tally'>pageData.trackers (" + pageData.trackers.length + ")</b>: " +
+			// 	JSON.stringify(pageData.trackers) + "<br>";
+
+			str += "</div>";
 			$('#tyd').html(str);
+
+			// add listener for reset button
+			$(document).on("click", '#updateGameFromServer', function() {
+				TallyMain.resetGameDataFromServer();
+			});
+
 		} catch (err) {
 			console.error(err);
 		}

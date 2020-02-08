@@ -39,7 +39,7 @@ window.Progress = (function() {
 			if (FS_Object.prop(tally_user.progress) &&
 				FS_Object.prop(tally_user.progress[name])) {
 
-				if (DEBUG) console.log("🕹️ Progress.get()", tally_user.progress[name]);
+				// if (DEBUG) console.log("🕹️ Progress.get()", tally_user.progress[name]);
 				return tally_user.progress[name].val;
 			} else {
 				if (DEBUG) console.log("🕹️ Progress.get() " + name + " NOT FOUND");
@@ -56,16 +56,16 @@ window.Progress = (function() {
 	 */
 	function update(name, val, operator = "=") {
 		try {
-			if (DEBUG) console.log("🕹️ Progress.update() [1] OPERATION=", name + operator + val);
+			// if (DEBUG) console.log("🕹️ Progress.update() [1] OPERATION=", name + operator + val);
 			// save current status to return later before changing
 			let currentVal = get(name);
-			if (DEBUG) console.log("🕹️ Progress.update() [2] OPERATION=", name + operator + val, " / currentVal=" + currentVal);
+			// if (DEBUG) console.log("🕹️ Progress.update() [2] OPERATION=", name + operator + val, " / currentVal=" + currentVal);
 			// instead of setting, we need to do an operation
 			if (operator !== "=") {
 				// update value
 				val = FS_Number.operation(currentVal, val, operator);
 			}
-			if (DEBUG) console.log("🕹️ Progress.update() [3] OPERATION=", name + operator + val, " / currentVal=" + currentVal);
+			// if (DEBUG) console.log("🕹️ Progress.update() [3] OPERATION=", name + operator + val, " / currentVal=" + currentVal);
 			// create progress object
 			let obj = {
 				"name": name,
