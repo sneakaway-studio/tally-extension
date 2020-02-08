@@ -196,12 +196,12 @@ window.TallyMain = (function() {
 	}
 
 	/**
-	 *	Refresh app
+	 *	Refresh app after page mutation
 	 */
-	function refreshApp(caller) {
+	function refreshAppAfterMutation(caller) {
 		try {
 			if (!pageData.activeOnPage) return;
-			if (DEBUG) console.log("🧰 TallyMain.refreshApp() caller = " + caller);
+			if (DEBUG) console.log("🧰 TallyMain.refreshAppAfterMutation() caller = " + caller);
 			// refresh pageData
 			pageData = PageData.getPageData();
 			// check for monsters again
@@ -342,6 +342,6 @@ window.TallyMain = (function() {
 		performStartChecks: performStartChecks,
 		startGameOnPage: startGameOnPage,
 		checkForServerFlags: checkForServerFlags,
-		refreshApp: refreshApp
+		refreshAppAfterMutation: refreshAppAfterMutation
 	};
 }());

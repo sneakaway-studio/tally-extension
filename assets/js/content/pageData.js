@@ -220,7 +220,7 @@ window.PageData = (function() {
 		if (tally_options.gameMode === "disabled" || !pageData.activeOnPage) return;
 		new MutationObserver(function(mutations) {
 			console.log("title changed", mutations[0].target.nodeValue);
-			TallyMain.refreshApp("pageData.addMutationObserver()");
+			TallyMain.refreshAppAfterMutation("pageData.addMutationObserver()");
 		}).observe(
 			document.querySelector('title'), {
 				subtree: true,
@@ -235,7 +235,7 @@ window.PageData = (function() {
 			let title = getTitle();
 			if (title != pageData.title) {
 				//console.log("title changed", pageData.title, " to: ",title);
-				TallyMain.refreshApp("pageData.addTitleChecker()");
+				TallyMain.refreshAppAfterMutation("pageData.addTitleChecker()");
 			} else {
 				//console.log("title is same", pageData.title, " to: ",title);
 			}
