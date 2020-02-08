@@ -55,7 +55,10 @@ window.FS_Number = (function() {
 			}
 		},
 		operation: function(operand1, operand2, operator) {
-			// console.log("FS_Number.operation()", operand1, operand2, operator);
+			// make sure they are ints
+			operand1 = parseInt(operand1);
+			operand2 = parseInt(operand2);
+			console.log("FS_Number.operation()", operand1, operand2, operator);
 			try {
 				if (operator === "+") {
 					return operand1 + operand2;

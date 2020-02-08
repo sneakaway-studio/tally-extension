@@ -33,7 +33,7 @@ window.MonsterCheck = (function() {
 				highestStage = 0,
 				deleteList = [];
 			// make sure tally_nearby_monsters exists
-			if (tally_nearby_monsters && objLength(tally_nearby_monsters) > 0) {
+			if (tally_nearby_monsters && FS_Object.objLength(tally_nearby_monsters) > 0) {
 				if (DEBUG) console.log("👿 ⊙⊙⊙⊙⊙ MonsterCheck.checkNearbyMonsterTimes() -> tally_nearby_monsters =", tally_nearby_monsters);
 				// loop through them
 				for (var mid in tally_nearby_monsters) {

@@ -509,24 +509,22 @@ window.BattleAttack = (function() {
 				// exit if all attacks have been rewarded
 				if (++safety > 10) break;
 			}
-
 			if (DEBUG) console.log("💥 BattleAttack.rewardAttack() name=" + name + ", type=" + type);
 
-			// // if progress not marked yet then
-			// if (!prop(tally_user.progress.attacksSelected)) {
-			// 	Progress.update("attacksSelected", 1, "+");
-			// 	attack.selected = 1;
-			// }
 
-			// if they haven't reached their attackLimit
-			if (tally_user.progress.attacksSelected.val < tally_user.progress.attackLimit.val) {
-				// then mark it as selected automagically
-				attack.selected = 1;
-				Progress.update("attacksSelected", 1, "+");
+			// attack is selected by default
+			attack.selected = 1;
+			// unless # selected is already >= to limit
+			let selected = returnAttacksSelected();
+			if (selected >= tally_user.progress.attackLimit.val){
+				attack.selected = 0;
+			} else {
+				Progress.update("attacksSelected", selected+1);
 			}
 
-			// save progress, in background, and on server
-			Progress.update("attacksAwarded", 1, "+");
+			// update progress
+			Progress.update("attacksAwarded", FS_Object.objLength(tally_user.attacks));
+			// save in background, and on server
 			TallyStorage.saveTallyUser("attacks", attack, "💥 BattleAttack.rewardAttack()");
 			TallyStorage.addToBackgroundUpdate("itemData", "attacks", attack, "💥 BattleAttack.rewardAttack()");
 
@@ -536,6 +534,30 @@ window.BattleAttack = (function() {
 			console.error(err);
 		}
 	}
+
+
+	/**
+	 *	Return Attacks Selected
+	 */
+	function returnAttacksSelected() {
+		try {
+			let selected = 0;
+			// count currently selected
+			for (let attackName in tally_user.attacks) {
+				console.log(tally_user.attacks[attackName]);
+				if (tally_user.attacks[attackName].selected == 1)
+					selected++;
+			}
+			return selected;
+		} catch (err) {
+			console.error(err);
+		}
+	}
+
+
+
+
+
 	/**
 	 *	(Possibly) reward Tally with a new attack
 	 */

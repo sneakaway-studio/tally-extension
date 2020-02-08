@@ -66,7 +66,7 @@ function getUser(callback) {
 		$("#likes").html(tally_user.score.likes);
 		$("#pages").html(tally_user.score.pages);
 		$("#time").html(moment.utc(tally_user.score.time * 1000).format('HH:mm:ss'));
-		$("#monsters").html(objLength(tally_user.monsters));
+		$("#monsters").html(FS_Object.objLength(tally_user.monsters));
 		// do a callback if exists
 		if (callback)
 			for (var i in callback)
@@ -164,6 +164,7 @@ function getAttacks(callback) {
 }
 
 function updateSelectedCheckboxes() {
+	// get all that are checked
 	var checkedBoxes = document.querySelectorAll('input[type=checkbox]:checked');
 	attacksSelected = checkedBoxes.length;
 	attacksMax = tally_user.progress.attackLimit.val;

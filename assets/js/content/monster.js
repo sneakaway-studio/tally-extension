@@ -170,7 +170,7 @@ window.Monster = (function() {
 	function test() {
 		try {
 			// make sure there are monsters nearby
-			if (!tally_nearby_monsters || objLength(tally_nearby_monsters) <= 0) return;
+			if (!tally_nearby_monsters || FS_Object.objLength(tally_nearby_monsters) <= 0) return;
 
 			// TESTING
 			let mid = randomObjKey(tally_nearby_monsters),

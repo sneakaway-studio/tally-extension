@@ -20,6 +20,13 @@ window.FS_Object = (function() {
 	}
 
 	/**
+	 *	Return number of properties in an object
+	 */
+	function objLength(obj) {
+		return Object.keys(obj).length;
+	}
+
+	/**
 	 *	Return random property from an object
 	 */
 	function randomObjProperty(obj) {
@@ -47,6 +54,9 @@ window.FS_Object = (function() {
 	return {
 		prop: function(obj) {
 			return prop(obj);
+		},
+		objLength: function(obj){
+			return objLength(obj);
 		},
 		randomObjProperty: function(obj) {
 			return randomObjProperty(obj);
@@ -94,12 +104,6 @@ var randomObjKey = function(obj) {
 	return keys[keys.length * Math.random() << 0];
 };
 
-/**
- *	Return number of properties in an object
- */
-var objLength = function(obj) {
-	return Object.keys(obj).length;
-};
 
 
 

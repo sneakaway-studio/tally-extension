@@ -92,7 +92,7 @@ window.Debug = (function() {
 			var str = "<div class='tally'>" +
 				"<b class='tally'>tally_user.score (XP)</b>: " + JSON.stringify(tally_user.score) + "<br>" +
 				"<b class='tally'>tally_user.monsters</b>: " + JSON.stringify(tally_user.monsters) + "<br>" +
-				"<b class='tally'>tally_nearby_monsters (" + objLength(tally_nearby_monsters) + ")</b>: " + JSON.stringify(tally_nearby_monsters) + "<br>" +
+				"<b class='tally'>tally_nearby_monsters (" + FS_Object.objLength(tally_nearby_monsters) + ")</b>: " + JSON.stringify(tally_nearby_monsters) + "<br>" +
 				//"tally_options: " + JSON.stringify(tally_options) +"<br>"+
 				//"<b>pageData</b>: " + JSON.stringify(pageData) +"<br>"+
 				"<b class='tally'>pageData.tags (" + pageData.tags.length + ")</b>: " + JSON.stringify(pageData.tags) + "<br>" +

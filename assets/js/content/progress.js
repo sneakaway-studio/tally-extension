@@ -42,7 +42,7 @@ window.Progress = (function() {
 				if (DEBUG) console.log("🕹️ Progress.get()", tally_user.progress[name]);
 				return tally_user.progress[name].val;
 			} else {
-				if (DEBUG) console.log("🕹️ Progress.get() "+ name +" NOT FOUND");
+				if (DEBUG) console.log("🕹️ Progress.get() " + name + " NOT FOUND");
 				return false;
 			}
 		} catch (err) {
@@ -56,16 +56,16 @@ window.Progress = (function() {
 	 */
 	function update(name, val, operator = "=") {
 		try {
-			if (DEBUG) console.log("🕹️ Progress.update() [1]", name + operator + val);
+			if (DEBUG) console.log("🕹️ Progress.update() [1] OPERATION=", name + operator + val);
 			// save current status to return later before changing
 			let currentVal = get(name);
-				if (DEBUG) console.log("🕹️ Progress.update() [2]", name + operator + val, "currentVal="+currentVal);
+			if (DEBUG) console.log("🕹️ Progress.update() [2] OPERATION=", name + operator + val, " / currentVal=" + currentVal);
 			// instead of setting, we need to do an operation
 			if (operator !== "=") {
 				// update value
 				val = FS_Number.operation(currentVal, val, operator);
 			}
-				if (DEBUG) console.log("🕹️ Progress.update() [3]", name + operator + val, "currentVal="+currentVal);
+			if (DEBUG) console.log("🕹️ Progress.update() [3] OPERATION=", name + operator + val, " / currentVal=" + currentVal);
 			// create progress object
 			let obj = {
 				"name": name,
@@ -94,32 +94,30 @@ window.Progress = (function() {
 			// AWARD ATTACK - 1st
 			if (get("attacksAwarded") <= 0 && tally_user.score.score > 1) {
 				BattleAttack.rewardAttack("", "attack");
-				update("attacksAwarded", 1, "+");
 			}
 			// AWARD ATTACK - 2nd
-			if (get("attacksAwarded") <= 1 && tally_user.score.score > 10) {
+			else if (get("attacksAwarded") <= 1 && tally_user.score.score > 10) {
 				BattleAttack.rewardAttack("", "defense");
-				update("attacksAwarded", 1, "+");
 			}
 			// AWARD ATTACK - 3rd
-			if (get("attacksAwarded") <= 2 && get("battlesFought") > 0) {
+			else if (get("attacksAwarded") <= 2 && get("battlesFought") > 0) {
 				BattleAttack.rewardAttack("", "attack");
-				update("attacksAwarded", 1, "+");
 			}
 			// AWARD ATTACK - 4th
-			if (get("attacksAwarded") <= 3 && tally_user.score.score > 100) {
+			else if (get("attacksAwarded") <= 3 && tally_user.score.score > 100) {
 				BattleAttack.rewardAttack("", "defense");
-				update("attacksAwarded", 1, "+");
 			}
 
 			// if tally levels up her attack capacity increases
-			if (get("attackLimit") < GameData.attackLimits[FS_Number.clamp(tally_user.level, 0, 4)]) {
-				update("attackLimit", GameData.attackLimits[FS_Number.clamp(tally_user.level, 0, 4)]);
+			let maxAttacksAllowed = 4;
+			if (get("attackLimit") < GameData.attackLimits[FS_Number.clamp(tally_user.level, 0, maxAttacksAllowed)]) {
+				update("attackLimit", GameData.attackLimits[FS_Number.clamp(tally_user.level, 0, maxAttacksAllowed)]);
 				Dialogue.showStr("You can now use " + get("attackLimit") + " attacks in battle!", "happy");
 				Dialogue.showStr("Manage your attacks with the button at the top right of browser window.", "happy");
 			}
 
-
+			// update the attacksAwarded count
+			update("attacksAwarded", FS_Object.objLength(tally_user.attacks));
 
 		} catch (err) {
 			console.error(err);
@@ -134,7 +132,7 @@ window.Progress = (function() {
 			return get(prop);
 		},
 		update: function(name, val, operator) {
-			return update(name, val);
+			return update(name, val, operator);
 		},
 		check: function(caller) {
 			return check(caller);
