@@ -33,6 +33,27 @@ window.Demo = (function() {
 				// call action
 				counter();
 			}, 1000);
+
+			// if user interacts then restart
+			$(document).on('mousemove keypress scroll click', function(e) {
+				try {
+					// only call restart once per event
+					if (listenerActive) return;
+					// double check we are in demo mode
+					if (tally_user && tally_user.admin > 0 && tally_options.gameMode === "demo") {
+						listenerActive = true;
+						restart();
+						// set listenerActive back after a moment
+						setTimeout(function() {
+							listenerActive = false;
+						}, 500);
+					}
+				} catch (err) {
+					console.error(err);
+				}
+			});
+
+
 		} catch (err) {
 			console.error(err);
 		}
@@ -67,24 +88,7 @@ window.Demo = (function() {
 		}
 	}
 
-	// if user interacts then restart
-	$(document).on('mousemove keypress scroll click', function(e) {
-		try {
-			// only call restart once per event
-			if (listenerActive) return;
-			// double check we are in demo mode
-			if (tally_user.admin > 0 && tally_options.gameMode === "demo") {
-				listenerActive = true;
-				restart();
-				// set listenerActive back after a moment
-				setTimeout(function() {
-					listenerActive = false;
-				}, 500);
-			}
-		} catch (err) {
-			console.error(err);
-		}
-	});
+
 
 	// check if we should run a demo action
 	function counter() {

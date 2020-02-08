@@ -133,19 +133,28 @@ window.Stats = (function() {
 	 *	For getting Tally stats from Storage
 	 */
 	function overwrite(who, stats) {
-		//if (DEBUG) console.log("📋 Stats.overwrite()", who, stats);
-		allStats[who] = stats;
+		try {
+			//if (DEBUG) console.log("📋 Stats.overwrite()", who, stats);
+			allStats[who] = stats;
+		} catch (err) {
+			console.error(err);
+		}
 	}
 	/**
 	 *	Return the level of the player or monster
 	 */
 	function getLevel(who) {
-		let level = 0;
-		if (who == "tally") level = tally_user.level;
-		else if (Monster.currentMID !== 0) level = Monster.current().level;
-		else level = Monster.returnNewMonsterLevel(); // temp
-		//if (DEBUG) console.log("📋 Stats.getLevel()", who + " => " + level);
-		return level;
+		try {
+			if (!prop(tally_user)) return;
+			let level = 0;
+			if (who == "tally") level = tally_user.level;
+			else if (Monster.currentMID !== 0) level = Monster.current().level;
+			else level = Monster.returnNewMonsterLevel(); // temp
+			//if (DEBUG) console.log("📋 Stats.getLevel()", who + " => " + level);
+			return level;
+		} catch (err) {
+			console.error(err);
+		}
 	}
 
 	/**
