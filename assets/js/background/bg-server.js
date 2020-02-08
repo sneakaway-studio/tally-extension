@@ -170,28 +170,32 @@ window.Server = (function() {
 
 
 	function handleSync(result) {
-		// get local objects to update them
-		let _tally_user = store("tally_user");
+		try {
+			// get local objects to update them
+			let _tally_user = store("tally_user");
 
-		// treat all server data as master, store in tally_user
-		if (result.username) _tally_user.username = result.username;
-		if (result.admin) _tally_user.admin = result.admin;
-		if (result.level) _tally_user.level = result.level;
-		//
-		if (result.clicks) _tally_user.score.clicks = result.clicks;
-		if (result.likes) _tally_user.score.likes = result.likes;
-		if (result.pages) _tally_user.score.pages = result.pages;
-		if (result.score) _tally_user.score.score = result.score;
-		if (result.time) _tally_user.score.time = result.time;
-		if (result.attacks) _tally_user.attacks = result.attacks;
-		if (result.consumables) _tally_user.consumables = result.consumables;
-		if (result.badges) _tally_user.badges = result.badges;
-		store("tally_user", _tally_user);
-		// store any flags from server
-		if (result.flags && result.flags.length > 0) {
-			console.log("🚩 Server.handleSync() FLAGS =", JSON.stringify(result.flags));
-			// store
-			// !!!! THIS SHOULD BE INSIDE backgroundUpdate now
+			// treat all server data as master, store in tally_user
+			if (result.username) _tally_user.username = result.username;
+			if (result.admin) _tally_user.admin = result.admin;
+			if (result.level) _tally_user.level = result.level;
+			//
+			if (result.clicks) _tally_user.score.clicks = result.clicks;
+			if (result.likes) _tally_user.score.likes = result.likes;
+			if (result.pages) _tally_user.score.pages = result.pages;
+			if (result.score) _tally_user.score.score = result.score;
+			if (result.time) _tally_user.score.time = result.time;
+			if (result.attacks) _tally_user.attacks = result.attacks;
+			if (result.consumables) _tally_user.consumables = result.consumables;
+			if (result.badges) _tally_user.badges = result.badges;
+			store("tally_user", _tally_user);
+			// store any flags from server
+			if (result.flags && result.flags.length > 0) {
+				console.log("🚩 Server.handleSync() FLAGS =", JSON.stringify(result.flags));
+				// store
+				// !!!! THIS SHOULD BE INSIDE backgroundUpdate now
+			}
+		} catch (err) {
+			console.error(err);
 		}
 	}
 
@@ -275,6 +279,35 @@ window.Server = (function() {
 	}
 
 
+	/**
+	 *	Merge attack data from server with game data properties
+	 */
+	function mergeAttackDataFromServer(attacks) {
+		// loop through attacks from server 
+		for (var key in attacks) {
+			if (attacks.hasOwnProperty(key)) {
+				// get name
+				let name = attacks[key].name;
+				// add GameData properties to obj from server
+				//console.log("👂🏼 Listener.sendBackgroundUpdate()", key, attacks[key], name);
+				// make sure it exists
+				let attackData = AttackData.data[name];
+				//console.log("👂🏼 Listener.sendBackgroundUpdate()", key, attacks[key], name, attackData);
+				if (attackData) {
+					// loop through GameData properites add
+					for (var p in attackData) {
+						if (attackData.hasOwnProperty(p)) {
+							//console.log("👂🏼 Listener.sendBackgroundUpdate()", p, attackData[p]);
+							attacks[key][p] = attackData[p];
+						}
+					}
+				}
+			}
+		}
+		return attacks;
+	}
+
+
 	// PUBLIC
 	return {
 		updateStatus: updateStatus,
@@ -287,6 +320,10 @@ window.Server = (function() {
 		sendMonsterUpdate: function(data) {
 			sendMonsterUpdate(data);
 		},
-		getMonsters: getMonsters
+		getMonsters: getMonsters,
+		resetGameDataFromServer: resetGameDataFromServer,
+		mergeAttackDataFromServer: function(attacks) {
+			return mergeAttackDataFromServer(attacks);
+		}
 	};
 }());

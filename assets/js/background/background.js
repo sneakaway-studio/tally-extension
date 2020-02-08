@@ -12,7 +12,7 @@ window.Background = (function() {
 			2. Install.launchStartScreen()
 		then (or if tally_meta exists)
 			3. Background.startApp()
-			4. Server.updateStatus()
+			4. Server.checkIfOnline()
 			5. Server.verifyToken()
 			6. content script takes over */
 
@@ -50,21 +50,13 @@ window.Background = (function() {
 			// set server/api production | development
 			setCurrentAPI();
 			// check the API status, if connected then check token
-			Server.updateStatus();
+			Server.checkIfOnline();
 		} catch (err) {
 			console.error(err);
 		}
 	}
 
-	function checkServerForDataOnStartApp() {
-		try {
-			// populate monsters
-			Server.getMonsters();
-						Install.saveLocation();
-		} catch (err) {
-			console.error(err);
-		}
-	}
+
 
 	/**
 	 * 	Check if it is a new version
@@ -128,7 +120,6 @@ window.Background = (function() {
 	// PUBLIC
 	return {
 		startApp: startApp,
-		dataReport: dataReport,
-		checkServerForDataOnStartApp: checkServerForDataOnStartApp
+		dataReport: dataReport
 	};
 }());

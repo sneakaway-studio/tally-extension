@@ -268,30 +268,8 @@ window.Listener = (function() {
 					}).done(result => {
 						//console.log("👂🏼 Listener.sendBackgroundUpdate() RESULT =", JSON.stringify(result));
 
-
-						// UPDATE ATTACK DATA
-						for (var key in result.attacks) {
-							if (result.attacks.hasOwnProperty(key)) {
-								// get name
-								let name = result.attacks[key].name;
-								// add GameData properties to obj from server
-								//console.log("👂🏼 Listener.sendBackgroundUpdate()", key, result.attacks[key], name);
-								// make sure it exists
-								let attackData = AttackData.data[name];
-								//console.log("👂🏼 Listener.sendBackgroundUpdate()", key, result.attacks[key], name, attackData);
-								if (attackData){
-									// loop through GameData properites add
-									for (var p in attackData) {
-										if (attackData.hasOwnProperty(p)) {
-											//console.log("👂🏼 Listener.sendBackgroundUpdate()", p, attackData[p]);
-											result.attacks[key][p] = attackData[p];
-										}
-									}
-								}
-							}
-						}
-
-
+						// merge attack data from server with game data properties
+						result.attacks = Server.mergeAttackDataFromServer(result.attacks);
 						// store result
 						store("tally_user",result);
 						// reply to contentscript with updated tally_user
