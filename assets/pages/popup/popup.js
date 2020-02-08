@@ -166,7 +166,7 @@ function getAttacks(callback) {
 function updateSelectedCheckboxes() {
 	// get all that are checked
 	var checkedBoxes = document.querySelectorAll('input[type=checkbox]:checked');
-	attacksSelected = checkedBoxes.length;
+	attacksSelected = checkedBoxes.length-1;
 	attacksMax = tally_user.progress.attackLimit.val;
 	// alert(JSON.stringify(checkedBoxes));
 	// alert(attacksSelected +"/"+ attacksMax);
