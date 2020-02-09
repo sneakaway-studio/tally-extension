@@ -23,6 +23,10 @@ window.Install = (function() {
 			store("tally_last_background_update", {});
 
 
+// get user's geolocation
+Install.saveLocation();
+
+
 			// was this a reset?
 			if (fromReset && existingToken !== {}) {
 				if (DEBUG) console.log("🔧 Install.init() -> installing an existing token!");
@@ -45,10 +49,62 @@ window.Install = (function() {
 	 *  Launch registration page
 	 */
 	function launchStartScreen() {
+
+		if (DEBUG) console.log("🔧 Install.launchStartScreen() ...");
+		console.trace();
+
+
+			// return;
 		try {
-			let _tally_meta = store("tally_meta");
-			// if we haven't prompted them too many times
-			if (_tally_meta.userTokenPrompts <= 1) {
+
+			let openStartScreen = false,
+				_tally_meta = store("tally_meta");
+
+			// get current page
+			chrome.tabs.query({
+				active: true,
+				currentWindow: true
+			}, function(tabs) {
+				var tab = tabs[0];
+				if (DEBUG) console.log("🔧 Install.launchStartScreen() tab = " + JSON.stringify(tab));
+
+
+// 1. On install (first time) - from ?
+// 2. On re-install (* time) - from ?
+// 3. On token expire - from any page
+
+
+
+
+
+				//
+				// // make sure we are install page
+				// if (tab.url === undefined ){
+				// 	openStartScreen = true;
+				// }
+
+
+				// make sure we aren't in the process resetting user's data
+				// /resetUserAccount
+				if (tab.url !== undefined && tab.url.includes("dashboard")) {
+					if (DEBUG) console.log("🔧 Install.launchStartScreen() WE ARE ON DASHBOARD");
+					return;
+				}
+
+
+
+
+
+
+
+				// if we haven't prompted them too many times
+				if (_tally_meta.userTokenPrompts <= 1) {
+
+				}
+
+
+
+
 				//launch install page
 				chrome.tabs.create({
 					url: chrome.extension.getURL('assets/pages/startScreen/startScreen.html')
@@ -58,9 +114,12 @@ window.Install = (function() {
 					store("tally_meta", _tally_meta);
 					if (DEBUG) console.log("🔧 Install.launchStartScreen() -> launching start screen", tab.url);
 				});
-			} else {
-				// do nothing, content script will prompt them
-			}
+
+
+
+
+			});
+
 		} catch (err) {
 			console.error(err);
 		}

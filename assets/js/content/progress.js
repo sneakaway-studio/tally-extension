@@ -97,15 +97,15 @@ window.Progress = (function() {
 			}
 			// AWARD ATTACK - 2nd
 			else if (get("attacksAwarded") <= 1 && tally_user.score.score > 10) {
-				BattleAttack.rewardAttack("", "defense");
+				BattleAttack.rewardAttack("", "attack");
 			}
 			// AWARD ATTACK - 3rd
 			else if (get("attacksAwarded") <= 2 && get("battlesFought") > 0) {
-				BattleAttack.rewardAttack("", "attack");
+				BattleAttack.rewardAttack("", "defense");
 			}
 			// AWARD ATTACK - 4th
 			else if (get("attacksAwarded") <= 3 && tally_user.score.score > 100) {
-				BattleAttack.rewardAttack("", "defense");
+				BattleAttack.rewardAttack("", "attack");
 			}
 
 			// if tally levels up her attack capacity increases

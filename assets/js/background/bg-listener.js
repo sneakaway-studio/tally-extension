@@ -15,6 +15,9 @@ window.Listener = (function() {
 
 
 
+				/**
+				 *	A generic server data grabber - currently in use for random urls only
+				 */
 				if (request.action == "getDataFromServer" && request.url) {
 					// console.log("👂🏼 Listener.addListener() getData 1", request.name);
 
@@ -41,7 +44,7 @@ window.Listener = (function() {
 					}).fail(error => {
 						console.error("👂🏼 Listener.getDataFromServer() RESULT =", JSON.stringify(error));
 						// server might not be reachable
-						Server.updateStatus();
+						Server.checkIfOnline();
 						sendResponse({
 							"action": request.action,
 							"message": 0
@@ -51,6 +54,22 @@ window.Listener = (function() {
 					// required so chrome knows this is asynchronous
 					return true;
 				}
+
+				/**
+				 *	Resets all local tally_user data from server
+				 */
+				else if (request.action == "resetGameDataFromServer") {
+					let result = Server.resetGameDataFromServer(sendResponse);
+					sendResponse({
+						"action": request.action,
+						"data": result,
+						"message": 1
+					});
+					// required so chrome knows this is asynchronous
+					return true;
+				}
+
+
 
 
 				/*  GENERIC "GETTER" / "SETTER"
@@ -177,6 +196,13 @@ window.Listener = (function() {
 					});
 				}
 
+
+
+
+
+
+
+
 				// resetUser (a.k.a. "resetGame" resets everything in the game, called from API)
 				else if (request.action == "resetUser") {
 					let tokenOnPage = false,
@@ -246,9 +272,10 @@ window.Listener = (function() {
 
 
 
-				// sendBackgroundUpdate - receive and send score, event, page, etc. data to server
+				// sendBackgroundUpdate
+				// - receive and send score, event, page, etc. data to server
 				else if (request.action == "sendBackgroundUpdate") {
-					//if (DEBUG) console.log("👂🏼 Listener.sendBackgroundUpdate", JSON.stringify(request.data));
+					// if (DEBUG) console.log("👂🏼 Listener.sendBackgroundUpdate", JSON.stringify(request.data));
 
 					// store update object
 					store("tally_last_background_update", request.data);
@@ -281,7 +308,7 @@ window.Listener = (function() {
 					}).fail(error => {
 						console.error("👂🏼 Listener.sendBackgroundUpdate() RESULT =", JSON.stringify(error));
 						// server might not be reachable
-						Server.updateStatus();
+						Server.checkIfOnline();
 						sendResponse({
 							"action": request.action,
 							"message": 0

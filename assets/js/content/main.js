@@ -28,6 +28,10 @@ window.TallyMain = (function() {
 		}
 	});
 
+
+
+
+
 	/**
 	 *	Get all data from background (can be called multiple times, w/ or w/o callback)
 	 */
@@ -78,12 +82,17 @@ window.TallyMain = (function() {
 			// do not procede if so
 			if (!pageData.activeOnPage) return;
 
+
 			// first, remove trackers that have been caught
 			Tracker.removeCaughtTrackers(pageData.trackers);
+			// check for, and possibly execute and flags
+			Flag.check();
 			// add required CSS for game
 			FS_String.insertStylesheets();
-			// add debugger to page
+			// add debugger to page and update
 			Debug.add();
+			Debug.update();
+
 			// add Tally character
 			Tally.addCharacter();
 			// add timed events listeners
@@ -91,7 +100,7 @@ window.TallyMain = (function() {
 			// add main click listener
 			TallyListeners.addMainClickEventListener();
 			// check the token
-			checkTokenStatus(); // shouldn't this be done already ?
+			checkTokenStatus();
 			// are we running in demo mode?
 			Demo.start();
 
@@ -177,8 +186,7 @@ window.TallyMain = (function() {
 			MonsterCheck.check();
 			// check for, and possibly complete any progress
 			Progress.check("TallyMain");
-			// check for, and possibly execute and flags from dashboard
-			// Flag.checkDashboard();
+
 			// check for, and possibly execute and flags from server (from previous update)
 			checkForServerFlags();
 			// update debugger
@@ -212,19 +220,7 @@ window.TallyMain = (function() {
 		}
 	}
 
-	/**
-	 *	May or may not need this
-	 */
-	function resetGameData() {
-		// reset everything
-		pageData = PageData.getPageData();
-		tally_user = {};
-		tally_options = {};
-		tally_meta = {};
-		tally_nearby_monsters = {};
-		tally_top_monsters = {};
-		getDataFromBackground(performStartChecks);
-	}
+
 
 	/**
 	 *	Make sure user's token is current

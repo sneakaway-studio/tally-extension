@@ -112,6 +112,8 @@ window.TallyStorage = (function() {
 			// save local edits (even though these will be overwritten)
 			TallyStorage.saveData("tally_user", tally_user);
 			console.log("💾 TallyStorage.addToBackgroundUpdate()", backgroundUpdate, cat, prop, val);
+			// console.log(JSON.stringify(backgroundUpdate));
+
 		} catch (err) {
 			console.error(err);
 		}
@@ -272,6 +274,7 @@ window.TallyStorage = (function() {
 	// emergency only
 	function launchStartScreen() {
 		try {
+			return;
 			chrome.runtime.sendMessage({
 				'action': 'launchStartScreen'
 			}, function(response) {
@@ -297,6 +300,38 @@ window.TallyStorage = (function() {
 			console.error(err);
 		}
 	}
+
+
+	/**
+	 *	Reset game data from server (after new install or token)
+	 */
+	function resetGameDataFromServer() {
+		try {
+			if (DEBUG) console.log("💾 <> TallyStorage.resetGameDataFromServer()");
+			let msg = {
+				'action': 'resetGameDataFromServer'
+			};
+			chrome.runtime.sendMessage(msg, function(response) {
+				if (DEBUG) console.log("💾 <> TallyStorage.resetGameDataFromServer() RESPONSE =", JSON.stringify(response));
+
+				// reset everything
+				// pageData = PageData.getPageData();
+				tally_user = {};
+				tally_options = {};
+				tally_meta = {};
+				tally_nearby_monsters = {};
+				tally_top_monsters = {};
+				// now that all data is refreshed, grab from background and start game over on page
+				TallyMain.getDataFromBackground(TallyMain.performStartChecks);
+
+			});
+
+		} catch (err) {
+			console.error(err);
+		}
+	}
+
+
 
 
 
@@ -325,22 +360,22 @@ window.TallyStorage = (function() {
 	}
 
 	// SAVE TOKEN FROM DASHBOARD
-	function saveToken(data) {
+	function saveTokenFromDashboard(data) {
 		try {
-			if (DEBUG) console.log('💾 < TallyStorage.saveToken() TRYING TO SAVE NEW TOKEN... DATA =', data);
+			if (DEBUG) console.log('💾 < TallyStorage.saveTokenFromDashboard() TRYING TO SAVE NEW TOKEN... DATA =', data);
 			// save locally first
 			chrome.runtime.sendMessage({
 				'action': 'saveToken',
 				'data': data
 			}, function(response) {
-				if (DEBUG) console.log('💾 > TallyStorage.saveToken() RESPONSE =', response);
+				if (DEBUG) console.log('💾 > TallyStorage.saveTokenFromDashboard() RESPONSE =', response);
 
 				// if the token was different and it was updated ...
 				if (response.message == 1) {
 
 					// 1. if this is the first time user is saving a token
 					if (!Progress.get("tokenAdded")) {
-						if (DEBUG) console.log("💾 > TallyStorage.saveToken() 1 -> NEW TOKEN WAS SAVED", data);
+						if (DEBUG) console.log("💾 > TallyStorage.saveTokenFromDashboard() 1 -> NEW TOKEN WAS SAVED", data);
 						// mark as true and save
 						Progress.update("tokenAdded", true);
 						// reload page after token grabbed
@@ -348,7 +383,7 @@ window.TallyStorage = (function() {
 					}
 					// 2. after the page has refreshed
 					else if (!Progress.get("tokenAddedPlayWelcomeMessage")) {
-						if (DEBUG) console.log("💾 > TallyStorage.saveToken() 2 -> NEW TOKEN WAS SAVED", data);
+						if (DEBUG) console.log("💾 > TallyStorage.saveTokenFromDashboard() 2 -> NEW TOKEN WAS SAVED", data);
 						// mark as true and save
 						Progress.update("tokenAddedPlayWelcomeMessage", true);
 						// introductions, then encourage them to explore
@@ -361,13 +396,15 @@ window.TallyStorage = (function() {
 					}
 					// if user has been here before
 					else {
-						if (DEBUG) console.log("💾 > TallyStorage.saveToken() 3 -> NEW TOKEN WAS SAVED", data);
+						if (DEBUG) console.log("💾 > TallyStorage.saveTokenFromDashboard() 3 -> NEW TOKEN WAS SAVED", data);
 						Dialogue.showStr("Your account has been updated!", "happy");
 						Dialogue.showStr("Let's go get some trackers!", "happy");
 						// force a background update to confirm with API / background
 						// MAYBE DON'T NEED BECAUSE THIS ALL HAPPENS ON UPDATE
 						//sendBackgroundUpdate(true);
 					}
+
+					resetGameDataFromServer();
 				}
 			});
 		} catch (err) {
@@ -377,8 +414,8 @@ window.TallyStorage = (function() {
 
 	// PUBLIC
 	return {
-		getDataFromServer: function(url,callback) {
-			return getDataFromServer(url,callback);
+		getDataFromServer: function(url, callback) {
+			return getDataFromServer(url, callback);
 		},
 		getData: function(name, caller) {
 			return getData(name, caller);
@@ -404,12 +441,13 @@ window.TallyStorage = (function() {
 		newBackgroundMonsterUpdate: function(mid) {
 			return newBackgroundMonsterUpdate(mid);
 		},
-		saveToken: function(data) {
-			saveToken(data);
+		saveTokenFromDashboard: function(data) {
+			saveTokenFromDashboard(data);
 		},
 		resetUser: function(tokenOnPage, tokenData) {
 			return resetUser(tokenOnPage, tokenData);
-		}
+		},
+		resetGameDataFromServer: resetGameDataFromServer,
 	};
 })();
 

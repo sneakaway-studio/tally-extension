@@ -11,7 +11,7 @@ window.Server = (function() {
 	/**
 	 *  Check if API Server is online, save status
 	 */
-	function updateStatus() {
+	function checkIfOnline() {
 		try {
 			let _tally_meta = store("tally_meta"),
 				// time it
@@ -23,7 +23,7 @@ window.Server = (function() {
 				contentType: 'application/json', // type of data you are sending
 				dataType: 'json', // type of data you expect to receive
 			}).done(result => {
-				console.log("📟 Server.updateStatus() ONLINE", JSON.stringify(result));
+				console.log("📟 Server.checkIfOnline() ONLINE", JSON.stringify(result));
 				// save state
 				let endTime = new Date().getTime();
 				_tally_meta.serverOnline = 1;
@@ -33,14 +33,14 @@ window.Server = (function() {
 				verifyToken();
 			}).fail(error => {
 				// server is not online, do not start game
-				console.error("📟 Server.updateStatus() " + _tally_meta.api +
+				console.error("📟 Server.checkIfOnline() " + _tally_meta.api +
 					" 😢 NOT ONLINE, DO NOT START GAME", JSON.stringify(error));
 				// save state
 				_tally_meta.serverOnline = 0;
 				_tally_meta.userOnline = 0;
 				_tally_meta.serverOnlineTime = -1;
 			}).always(() => {
-				//console.log("📟 Server.updateStatus() ALWAYS");
+				//console.log("📟 Server.checkIfOnline() ALWAYS");
 				// save result
 				store("tally_meta", _tally_meta);
 			});
@@ -118,7 +118,7 @@ window.Server = (function() {
 			// if userTokenStatus is ok
 			if (_tally_meta.userTokenStatus == "ok") {
 				console.log("📟 Server.handleTokenStatus() 🔑 -> everything is cool, start game");
-				Background.checkServerForDataOnStartApp();
+				resetGameDataFromServer();
 				// content script takes over
 			} else if (_tally_meta.userTokenStatus == "expired") {
 				console.log("📟 Server.handleTokenStatus() 🔑 -> TOKEN EXPIRED");
@@ -135,33 +135,81 @@ window.Server = (function() {
 		}
 	}
 
-
-
 	/**
-	 *  Send update to API server, sync data locally
+	 *  Handle token status
 	 */
-	function sendUpdate(data) {
+	function resetGameDataFromServer(callback = null) {
 		try {
-			console.log("📟 Server.sendUpdate()", data);
-			// get local objects to update them
-			let _tally_meta = store("tally_meta");
-			// only procede if the following allows
-			if (!_tally_meta.serverOnline || _tally_meta.userTokenStatus != "ok") return;
+			// populate monsters
+			getMonsters();
+
+			let _tally_meta = store("tally_meta"),
+				_tally_secret = store("tally_secret");
+
+			console.log("📟 Server.resetGameDataFromServer()", {"token":_tally_secret.token});
+
 			$.ajax({
-				type: "PUT",
-				url: _tally_meta.api + "/user/extensionUpdate",
+				type: "POST",
+				url: _tally_meta.api + "/user/returnAllGameData",
 				contentType: 'application/json',
 				dataType: 'json',
-				data: JSON.stringify(data)
+				data: JSON.stringify({"token":_tally_secret.token})
 			}).done(result => {
-				console.log("📟 Server.sendUpdate() RESULT =", JSON.stringify(result));
-				// handleSync(result);
-				return result;
+				console.log("📟 Server.resetGameDataFromServer() RESULT =", JSON.stringify(result));
+				// merge attack data from server with game data properties
+				result.attacks = Server.mergeAttackDataFromServer(result.attacks);
+				// store result
+				store("tally_user",result);
+				if (callback)
+					callback(result);
 			}).fail(error => {
-				console.error("📟 Server.sendUpdate() RESULT =", JSON.stringify(error));
+				console.error("📟 Server.resetGameDataFromServer() RESULT =", JSON.stringify(error));
 				// server might not be reachable
-				updateStatus();
+				Server.checkIfOnline();
+				if (callback)
+					callback(0);
 			});
+
+
+
+
+
+
+
+			//
+			//
+			// console.log("📟 Server.resetGameDataFromServer()", _tally_meta, _tally_user);
+			// if (!_tally_meta.serverOnline || _tally_meta.userTokenStatus != "ok") return;
+			// if (prop(_tally_user.username) && _tally_user.username != "") username = _tally_user.username;
+			// $.ajax({
+			// 	type: "GET",
+			// 	url: _tally_meta.api + "/user/returnAllGameData" + username,
+			// 	contentType: 'application/json',
+			// 	dataType: 'json',
+			// }).done(result => {
+			// 	//console.log("📟 Server.resetGameDataFromServer() RESULT =", JSON.stringify(result));
+			// 	//
+			// 	// // treat all server data as master
+			// 	// _tally_user.monsters = convertArrayToObject(result.userMonsters, "mid");
+			// 	// _tally_top_monsters = convertArrayToObject(result.topMonsters, "mid");
+			//
+			//
+			// 	store("tally_user", _tally_user);
+			//
+			// }).fail(error => {
+			// 	console.error("📟 Server.resetGameDataFromServer() RESULT =", JSON.stringify(error));
+			// 	// server might not be reachable
+			// 	checkIfOnline();
+			// });
+			//
+
+
+
+
+
+			// do callback
+			if (callback)
+				callback();
 		} catch (err) {
 			console.error(err);
 		}
@@ -231,7 +279,7 @@ window.Server = (function() {
 			}).fail(error => {
 				console.error("📟 Server.sendMonsterUpdate() RESULT =", JSON.stringify(error));
 				// server might not be reachable
-				updateStatus();
+				checkIfOnline();
 			});
 		} catch (err) {
 			console.error(err);
@@ -271,7 +319,7 @@ window.Server = (function() {
 			}).fail(error => {
 				console.error("📟 Server.getMonsters() RESULT =", JSON.stringify(error));
 				// server might not be reachable
-				updateStatus();
+				checkIfOnline();
 			});
 		} catch (err) {
 			console.error(err);
@@ -283,7 +331,7 @@ window.Server = (function() {
 	 *	Merge attack data from server with game data properties
 	 */
 	function mergeAttackDataFromServer(attacks) {
-		// loop through attacks from server 
+		// loop through attacks from server
 		for (var key in attacks) {
 			if (attacks.hasOwnProperty(key)) {
 				// get name
@@ -310,7 +358,7 @@ window.Server = (function() {
 
 	// PUBLIC
 	return {
-		updateStatus: updateStatus,
+		checkIfOnline: checkIfOnline,
 		verifyToken: function(callback) {
 			verifyToken(callback);
 		},
