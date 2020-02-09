@@ -187,14 +187,14 @@ window.Listener = (function() {
 				/*  CUSTOM FUNCTIONS
 				 ******************************************************************************/
 
-				// launchStartScreen
-				else if (request.action == "launchStartScreen") {
-					Install.launchStartScreen();
-					sendResponse({
-						"action": request.action,
-						"message": 1
-					});
-				}
+				// // launchStartScreen
+				// else if (request.action == "launchStartScreen") {
+				// 	Install.launchStartScreen();
+				// 	sendResponse({
+				// 		"action": request.action,
+				// 		"message": 1
+				// 	});
+				// }
 
 
 

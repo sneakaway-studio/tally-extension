@@ -271,19 +271,21 @@ window.TallyStorage = (function() {
 	}
 
 
-	// emergency only
-	function launchStartScreen() {
-		try {
-			return;
-			chrome.runtime.sendMessage({
-				'action': 'launchStartScreen'
-			}, function(response) {
-				return response.data;
-			});
-		} catch (err) {
-			console.error(err);
-		}
-	}
+	// // emergency only
+	// function launchStartScreen(caller) {
+	// 	try {
+	// 		if (DEBUG) console.log("💾 < TallyStorage.launchStartScreen()", caller);
+	// 		chrome.runtime.sendMessage({
+	// 			'action': 'launchStartScreen'
+	// 		}, function(response) {
+	// 			return response.data;
+	// 		});
+	// 	} catch (err) {
+	// 		console.error(err);
+	// 	}
+	// }
+
+
 	// resetUser a.k.a. resetGame
 	function resetUser(tokenOnPage = false, tokenData = {}) {
 		try {
@@ -426,7 +428,9 @@ window.TallyStorage = (function() {
 		saveTallyUser: function(cat, obj, caller) {
 			saveTallyUser(cat, obj, caller);
 		},
-		launchStartScreen: launchStartScreen,
+		// launchStartScreen: function(caller) {
+		// 	launchStartScreen(caller);
+		// },
 		// server
 		createBackgroundUpdate: function(type) {
 			createBackgroundUpdate(type);

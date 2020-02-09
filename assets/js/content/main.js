@@ -63,7 +63,7 @@ window.TallyMain = (function() {
 		} catch (err) {
 			console.error(err);
 			// if for some reason there is error then prompt for new token
-			TallyStorage.launchStartScreen();
+			// TallyStorage.launchStartScreen("getDataFromBackground");
 		}
 	}
 
@@ -109,7 +109,7 @@ window.TallyMain = (function() {
 		} catch (err) {
 			console.error(err);
 			// if for some reason there is error then prompt for new token
-			TallyStorage.launchStartScreen();
+			// TallyStorage.launchStartScreen();
 		}
 	}
 
@@ -250,9 +250,7 @@ window.TallyMain = (function() {
 					// });
 				}
 				// if token not valid
-				if (tally_meta.userTokenStatus == "expired" ||
-					tally_meta.userTokenStatus == "error" ||
-					tally_meta.userTokenStatus != "ok") {
+				if (tally_meta.userTokenStatus !== "ok") { // expired || error || !ok
 					if (DEBUG) console.log("🧰 TallyMain.checkTokenStatus() TOKEN (STILL) BROKEN " +
 						"tally_meta.userTokenPrompts = " + tally_meta.userTokenPrompts);
 
