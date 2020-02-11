@@ -204,6 +204,7 @@ svg#tally-svg * {
     display: flex;
     padding: 0;
     background: #000;
+    display: none;
 }
 #tally_slide_show_inner {
     width: 100%;

@@ -110,10 +110,12 @@ window.Tutorial = (function() {
 			} else {
 
 			}
+			// add string and show
 
-			$('#tally_slide_show_inner').html(str);
-			if (str) dialogueCallbackVisible(true);
-			else dialogueCallbackVisible(false);
+			if (str) {
+				$('#tally_slide_show_inner').html(str);
+				dialogueCallbackVisible(true);
+			} else dialogueCallbackVisible(false);
 
 
 		} catch (err) {
@@ -127,12 +129,14 @@ window.Tutorial = (function() {
 		try {
 			if (state) { // show it
 				$('#tally_slide_show').css({
+					"display": "block",
 					"left": "300px",
 					"opacity": 1
 				});
 			} else { // hide it
 				$('#tally_slide_show').css({
-					"left": "-500px",
+					"display": "none",
+					"left": "-1500px",
 					"opacity": 0
 				});
 			}
