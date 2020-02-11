@@ -373,74 +373,91 @@ window.BattleAttack = (function() {
 
 
 	function tallyWins(message, dialogue) {
-		// save winner
-		Battle.details.winner = "tally";
-		// explode page
-		Effect.explode();
-		// log winning message
-		BattleConsole.log(message);
-		// show tally excited
-		Dialogue.show(Dialogue.get(["battle", dialogue, null]), "happy", true);
-		// calculate and show award for beating the monster
-		let increase = FS_Number.round(Battle.details.monsterLevel * 10);
-		TallyStorage.addToBackgroundUpdate("scoreData", "score", increase);
-		BattleConsole.log("You earned " + increase + " XP for beating this monster!!!");
-		// tell player they blocked tracker
-		BattleConsole.log("You now have blocked the " + Battle.details.monsterTracker + " tracker from grabbing your data!!!");
-		// potentially award a new attack
-		if (Progress.get("attacksAwarded") >= 4) randomRewardAttack();
-		setTimeout(function() {
-			// show captured monster
-			BattleEffect.showCapturedMonster();
-			// play win sound
-			Sound.playFile("music/tally-battle-7-25/victory.mp3", false, 0);
-		}, 400);
+		try {
+			// save winner
+			Battle.details.winner = "tally";
+			// explode page
+			Effect.explode();
+			// log winning message
+			BattleConsole.log(message);
+			// show tally excited
+			Dialogue.show(Dialogue.get(["battle", dialogue, null]), "happy", true);
+			// calculate and show award for beating the monster
+			let increase = FS_Number.round(Battle.details.monsterLevel * 10);
+			TallyStorage.addToBackgroundUpdate("scoreData", "score", increase);
+			BattleConsole.log("You earned " + increase + " XP for beating this monster!!!");
+			// tell player they blocked tracker
+			BattleConsole.log("You now have blocked the " + Battle.details.monsterTracker + " tracker from grabbing your data!!!");
+			// potentially award a new attack
+			if (Progress.get("attacksAwarded") >= 4) randomRewardAttack();
+			setTimeout(function() {
+				// show captured monster
+				BattleEffect.showCapturedMonster();
+				// play win sound
+				Sound.playFile("music/tally-battle-7-25/victory.mp3", false, 0);
+			}, 400);
+		} catch (err) {
+			console.error(err);
+		}
 
 	}
 
 	function monsterWins(message, dialogue) {
-		// save winner
-		Battle.details.winner = "monster";
-		// log losing message
-		BattleConsole.log(message);
-		// show tally sad
-		Dialogue.show(Dialogue.get(["battle", dialogue, null]), "sad", true);
-		// play lose sound
-		Sound.playFile("music/tally-battle-7-25/defeat.mp3", false, 0);
+		try {
+			// save winner
+			Battle.details.winner = "monster";
+			// log losing message
+			BattleConsole.log(message);
+			// show tally sad
+			Dialogue.show(Dialogue.get(["battle", dialogue, null]), "sad", true);
+			// play lose sound
+			Sound.playFile("music/tally-battle-7-25/defeat.mp3", false, 0);
+		} catch (err) {
+			console.error(err);
+		}
 	}
 
-
-
-
 	function resetTurns(who) {
-		if (DEBUG) console.log("💥 BattleAttack.resetTurns()", who, JSON.stringify(Battle.details));
-		// take away a turn
-		Battle.details[who + "LostTurns"] = 0;
+		try {
+			if (DEBUG) console.log("💥 BattleAttack.resetTurns()", who, JSON.stringify(Battle.details));
+			// take away a turn
+			Battle.details[who + "LostTurns"] = 0;
+		} catch (err) {
+			console.error(err);
+		}
 	}
 
 	function takeAwayTurns(who, turns) {
-		// take away a turn
-		if (who === "tally") Battle.details.tallyLostTurns -= turns;
-		else if (who === "monster") Battle.details.monsterLostTurns -= turns;
-		if (DEBUG) console.log("💥 BattleAttack.takeAwayTurns()", who, turns,
-			"Battle.details.tallyLostTurns=" + Battle.details.tallyLostTurns,
-			"Battle.details.monsterLostTurns=" + Battle.details.monsterLostTurns
-		);
+		try {
+			// take away a turn
+			if (who === "tally") Battle.details.tallyLostTurns -= turns;
+			else if (who === "monster") Battle.details.monsterLostTurns -= turns;
+			if (DEBUG) console.log("💥 BattleAttack.takeAwayTurns()", who, turns,
+				"Battle.details.tallyLostTurns=" + Battle.details.tallyLostTurns,
+				"Battle.details.monsterLostTurns=" + Battle.details.monsterLostTurns
+			);
+		} catch (err) {
+			console.error(err);
+		}
 	}
 
-
 	function updatePlayerDetails(selfStr) {
-		if (selfStr !== "tally" && selfStr !== "monster") return console.warn("selfStr should be either tally or monster!");
-		// set all the details
-		Battle.details.selfStr = selfStr;
-		if (selfStr === "tally") {
-			Battle.details.oppName = Battle.details.monsterName;
-			Battle.details.oppStr = "monster";
-			Battle.details.selfName = "Tally";
-		} else if (selfStr === "monster") {
-			Battle.details.oppName = "Tally";
-			Battle.details.oppStr = "tally";
-			Battle.details.selfName = Battle.details.monsterName;
+		try {
+			if (selfStr !== "tally" && selfStr !== "monster")
+				return console.warn("selfStr should be either tally or monster!");
+			// set all the details
+			Battle.details.selfStr = selfStr;
+			if (selfStr === "tally") {
+				Battle.details.oppName = Battle.details.monsterName;
+				Battle.details.oppStr = "monster";
+				Battle.details.selfName = "Tally";
+			} else if (selfStr === "monster") {
+				Battle.details.oppName = "Tally";
+				Battle.details.oppStr = "tally";
+				Battle.details.selfName = Battle.details.monsterName;
+			}
+		} catch (err) {
+			console.error(err);
 		}
 	}
 
@@ -509,17 +526,17 @@ window.BattleAttack = (function() {
 				// exit if all attacks have been rewarded
 				if (++safety > 10) break;
 			}
-			if (DEBUG) console.log("💥 BattleAttack.rewardAttack() name=" + name + ", type=" + type);
+			if (DEBUG) console.log("💥 BattleAttack.rewardAttack() name=" + attack.name + ", type=" + attack.type);
 
 
 			// attack is selected by default
 			attack.selected = 1;
 			// unless # selected is already >= to limit
 			let selected = returnAttacksSelected();
-			if (selected >= tally_user.progress.attackLimit.val){
+			if (selected >= tally_user.progress.attackLimit.val) {
 				attack.selected = 0;
 			} else {
-				Progress.update("attacksSelected", selected+1);
+				Progress.update("attacksSelected", selected + 1);
 			}
 
 			// update progress
