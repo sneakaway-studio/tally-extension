@@ -45,6 +45,12 @@ window.Debug = (function() {
 		"Tutorial": true
 	};
 
+	// https://coderwall.com/p/fskzdw/colorful-console-log
+	let styles = {
+		"red": 'background: red; color: white; display: block;',
+		"green": 'background: green; color: white; display: block;'
+	};
+
 	/**
 	 *	Set all the debug props to...
 	 */
@@ -56,6 +62,7 @@ window.Debug = (function() {
 		}
 	}
 	// setAll(true);
+	// setAll(false);
 
 	// add the debugger
 	function add() {
@@ -132,6 +139,7 @@ window.Debug = (function() {
 	// PUBLIC
 	return {
 		ALL: ALL,
+		styles: styles,
 		setAll: function(state) {
 			setAll(state);
 		},

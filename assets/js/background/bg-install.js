@@ -12,7 +12,7 @@ window.Install = (function() {
 		try {
 			if (DEBUG) console.log("🔧 Install.init() -> installing game!");
 
-			// Create objects
+			// Create all game objects
 			store("tally_user", createUser());
 			store("tally_options", createOptions());
 			store("tally_nearby_monsters", {});
@@ -22,10 +22,8 @@ window.Install = (function() {
 			store("tally_top_monsters", {});
 			store("tally_last_background_update", {});
 
-
-// get user's geolocation
-Install.saveLocation();
-
+			// get user's geolocation
+			Install.saveLocation();
 
 			// was this a reset?
 			if (fromReset && existingToken !== {}) {
@@ -45,20 +43,18 @@ Install.saveLocation();
 		}
 	}
 
+
+
+
 	/**
-	 *  Launch registration page
+	 *  Launch Start Screen - call after token 1) not found 2) not working
 	 */
 	function launchStartScreen() {
-
-		if (DEBUG) console.log("🔧 Install.launchStartScreen() ...");
-		console.trace();
-
-
-			// return;
 		try {
+			if (DEBUG) console.log("🔧 Install.launchStartScreen() ...");
+			console.trace();
 
-			let openStartScreen = false,
-				_tally_meta = store("tally_meta");
+			let _tally_meta = store("tally_meta");
 
 			// get current page
 			chrome.tabs.query({
@@ -66,56 +62,31 @@ Install.saveLocation();
 				currentWindow: true
 			}, function(tabs) {
 				var tab = tabs[0];
-				if (DEBUG) console.log("🔧 Install.launchStartScreen() tab = " + JSON.stringify(tab));
+				if (DEBUG) console.log("🔧 Install.launchStartScreen() current tab = " + JSON.stringify(tab));
 
 
-// 1. On install (first time) - from ?
-// 2. On re-install (* time) - from ?
-// 3. On token expire - from any page
+				// 1. On install (first time) - from ?
+				// 2. On re-install (* time) - from ?
+				// 3. On token expire - from any page
 
 
 
 
-
-				//
-				// // make sure we are install page
-				// if (tab.url === undefined ){
-				// 	openStartScreen = true;
-				// }
-
-
-				// make sure we aren't in the process resetting user's data
-				// /resetUserAccount
+				// are we in the process resetting user's data?
 				if (tab.url !== undefined && tab.url.includes("dashboard")) {
-					if (DEBUG) console.log("🔧 Install.launchStartScreen() WE ARE ON DASHBOARD");
+					if (DEBUG) console.log("🔧 Install.launchStartScreen() *** NO *** WE ARE ON DASHBOARD");
 					return;
 				}
-
-
-
-
-
-
-
-				// if we haven't prompted them too many times
-				if (_tally_meta.userTokenPrompts <= 1) {
-
-				}
-
-
-
 
 				//launch install page
 				chrome.tabs.create({
 					url: chrome.extension.getURL('assets/pages/startScreen/startScreen.html')
 				}, function(tab) {
-					// increment prompts
-					_tally_meta.userTokenPrompts++;
+					// increment, check # prompts
+					if (++_tally_meta.userTokenPrompts <= 3) {}
 					store("tally_meta", _tally_meta);
 					if (DEBUG) console.log("🔧 Install.launchStartScreen() -> launching start screen", tab.url);
 				});
-
-
 
 
 			});
@@ -135,6 +106,10 @@ Install.saveLocation();
 	// 		if (DEBUG) console.log("🔧 Install.launchRegistrationPage() -> launching registration page", tab.url);
 	// 	});
 	// }
+
+
+
+
 
 
 	/*  BACKGROUND INIT FUNCTIONS

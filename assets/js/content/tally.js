@@ -100,30 +100,30 @@ window.Tally = (function() {
 			//console.log("%c   Tally.addCharacter()", tallyConsoleIcon, Skin.skins);
 
 			let str =
-				"<div class='tally draggable' id='tally_character'>" +// style='transform:translateY(-350px);'
-					"<div class='tally tally_speech_bubble' id='tally_dialogue_bubble'>" +
-						"<div class='tally' id='tally_dialogue'></div>" +
-					"</div>" +
-					"<div class='tally' id='tally_slide_show'>" +
-						"<div class='tally' id='tally_slide_show_inner'></div>" +
-					"</div>" +
-					"<div class='tally' id='tally_character_inner'>" +
-						"<div class='tally' id='tally_body'>" +
-							Skin.returnBasicSVG() +
-						"</div>" +
-						"<div class='tally' id='tally_eyes'>" +
-							"<span class='tally tally_lid'>" +
-								"<span class='tally tally_eye tally_eye_left'>" +
-									"<span class='tally tally_eye_pupil'></span></span></span>" +
-							"<span class='tally tally_lid'>" +
-								"<span class='tally tally_eye tally_eye_right'>" +
-									"<span class='tally tally_eye_pupil'></span></span></span>" +
-						"</div>" +
-					"</div>" +
-					"<div class='tally tally_stats'>" +
-						"<div class='tally tally_stats_bars'></div>" +
-						"<div class='tally tally_stats_table'></div>" +
-					"</div>" +
+				"<div class='tally draggable' id='tally_character'>" + // style='transform:translateY(-350px);'
+				"<div class='tally tally_speech_bubble' id='tally_dialogue_bubble'>" +
+				"<div class='tally' id='tally_dialogue'></div>" +
+				"</div>" +
+				"<div class='tally' id='tally_slide_show'>" +
+				"<div class='tally' id='tally_slide_show_inner'></div>" +
+				"</div>" +
+				"<div class='tally' id='tally_character_inner'>" +
+				"<div class='tally' id='tally_body'>" +
+				Skin.returnBasicSVG() +
+				"</div>" +
+				"<div class='tally' id='tally_eyes'>" +
+				"<span class='tally tally_lid'>" +
+				"<span class='tally tally_eye tally_eye_left'>" +
+				"<span class='tally tally_eye_pupil'></span></span></span>" +
+				"<span class='tally tally_lid'>" +
+				"<span class='tally tally_eye tally_eye_right'>" +
+				"<span class='tally tally_eye_pupil'></span></span></span>" +
+				"</div>" +
+				"</div>" +
+				"<div class='tally tally_stats'>" +
+				"<div class='tally tally_stats_bars'></div>" +
+				"<div class='tally tally_stats_table'></div>" +
+				"</div>" +
 				"</div>";
 			$('#tally_wrapper').append(str);
 
@@ -198,7 +198,7 @@ window.Tally = (function() {
 
 
 
-	/*  TALLY MENU AND LISTENERS
+	/*  TALLY LISTENERS
 	 *****************************************************************************/
 
 
@@ -253,21 +253,81 @@ window.Tally = (function() {
 		dragging = false;
 	});
 
-	// // ONE CLICK
-	// $(document).on('click', '#tally_character', function() {
-	// 	if (!Progress.update("clickTally", true))
-	// 		return Dialogue.showStr("Did you know that you can drag me around the screen.", false, true);
-	// });
-	// DOUBLE CLICK
-	$(document).on('dblclick', '#tally_character', function() {
-		// update progress (even tho we'll always show this menu)
-		Progress.update("doubleClickTally", true);
-		let str = "Would you like to view a " +
-			"<a class='tally' id='tally_showTutorialOne'>tutorial</a> " +
-			"or see more <a class='tally' id='tally_showMoreOptions'>options</a>?";
-		// show
-		Dialogue.showStr(str, false, true, true);
+
+
+
+
+
+	/**
+	 *	Tally multiclick
+	 */
+	let clickTimer = 0,
+		clickTimerMax = 220,
+		clickCount = 0,
+		clickCountMax = 5,
+		clickInterval = null,
+		clickIntervalTime = 10;
+	// listener
+	$(document).on('click', '#tally_character', function() {
+		// if restarting or continuing
+		if ((clickCount >= 0 && clickCount <= clickCountMax) || clickInterval) {
+			// increment clicks
+			++clickCount;
+			console.log("click #" + clickCount);
+			// reset timer
+			clickTimer = 0;
+			// clear old and start new interval
+			clearInterval(clickInterval);
+			clickInterval = setInterval(multiclickCountdown, clickIntervalTime);
+		} else multiclickReset();
 	});
+	// multiclick count down
+	function multiclickCountdown() {
+		console.log("multiclickCountdown() clickCount=" + clickCount + "/" + clickCountMax, clickTimer + "/" + clickTimerMax);
+		// increase time
+		clickTimer += clickIntervalTime;
+		// time has run out so reset everything
+		if (clickTimer >= clickTimerMax)
+			multiclickReset();
+	}
+	// multiclick reset
+	function multiclickReset() {
+		multiclickAction();
+		clickCount = 0;
+		clickTimer = 0;
+		clearInterval(clickInterval);
+	}
+	// multiclick action
+	function multiclickAction() {
+		if (clickCount <= 0) return;
+		// ONE CLICK
+		if (clickCount === 1) {
+			// if (!Progress.update("clickTally", true))
+			// 	return Dialogue.showStr("Did you know that you can drag me around the screen.", false, true);
+		}
+		// TWO CLICKS
+		else if (clickCount === 2) {
+			// update progress (even tho we'll always show this menu)
+			Progress.update("doubleClickTally", true);
+			// build string and show
+			let str = "Would you like to view a " +
+				"<a class='tally' id='tally_showTutorialOne'>tutorial</a> " +
+				"or see more <a class='tally' id='tally_showMoreOptions'>options</a>?";
+			Dialogue.showStr(str, false, true, true);
+		}
+		// THREE CLICKS
+		else if (clickCount === 3) {
+			// alert("three!");
+			showDevOptions();
+		}
+	}
+
+
+
+
+
+	/*  TALLY MENU
+	 *****************************************************************************/
 
 	// MENU ITEM LISTENERS
 	$(document).on('click', '#tally_showTutorialOne', function() {
@@ -289,20 +349,7 @@ window.Tally = (function() {
 			"";
 		Dialogue.showStr(str, false, true, true);
 	});
-	$(document).on('click', '#tally_showDevOptions', function() {
-		let str = "Dev options:<br>" +
-			"<a class='tally' id='tally_testNearbyMonster'>Test nearby monster</a><br>" +
-			"<a class='tally' id='tally_battleStart'>Start battle</a><br>" +
-			"<a class='tally' id='tally_battleEnd'>End battle</a><br>" +
-			"<a class='tally' id='tally_battleRumbleSmall'>sm battle rumble</a><br>" +
-			"<a class='tally' id='tally_battleRumbleMedium'>md battle rumble</a><br>" +
-			"<a class='tally' id='tally_battleRumbleLarge'>lg battle rumble</a><br>" +
-			"<a class='tally' id='tally_explodePage'>Explode Page</a><br>" +
-			"<a class='tally' id='tally_randomDialogue'>Random dialogue</a><br>" +
-			"<a class='tally' id='tally_randomSkin'>Random skin</a>" +
-		"";
-		Dialogue.showStr(str, false, true, true);
-	});
+
 
 
 	/**
@@ -345,7 +392,24 @@ window.Tally = (function() {
 
 
 
+	/*  TEST LISTENERS
+	 *****************************************************************************/
 
+
+	 function showDevOptions(){
+		 let str = "Dev options: <br>" +
+ 			"Monster: <a class='tally' id='tally_testNearbyMonster'>test</a>; " +
+ 			"Battle: <a class='tally' id='tally_battleStart'>start</a>, " +
+ 			"<a class='tally' id='tally_battleEnd'>end</a>;<br>" +
+ 			"Rumble: <a class='tally' id='tally_battleRumbleSmall'>sm</a>, " +
+ 			"<a class='tally' id='tally_battleRumbleMedium'>md</a>, " +
+ 			"<a class='tally' id='tally_battleRumbleLarge'>lg</a>, " +
+ 			"<a class='tally' id='tally_explodePage'>explode</a>;<br>" +
+ 			"Dialogue: <a class='tally' id='tally_randomDialogue'>random</a>; " +
+ 			"Skin: <a class='tally' id='tally_randomSkin'>random</a>" +
+ 			"";
+ 		Dialogue.showStr(str, false, true, true);
+	 }
 
 	$(document).on('click', '#tally_testNearbyMonster', function() {
 		Monster.test(); // launch one of the nearby monsters

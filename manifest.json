@@ -92,7 +92,7 @@
             "assets/js/content/sound.js",
             "assets/js/content/listeners.js",
             "assets/js/content/dialogue.js",
-            "assets/js/content/tally-skins.js",
+            "assets/js/content/skin.js",
             "assets/js/content/consumable.js",
             "assets/js/content/badge.js",
             "assets/js/content/events.js",

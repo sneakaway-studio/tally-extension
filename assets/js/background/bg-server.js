@@ -103,7 +103,7 @@ window.Server = (function() {
 	 */
 	function handleTokenStatus(_expires, _expiresDiff, _status, _valid) {
 		try {
-			//console.log("📟 Server.handleTokenStatus()",_expires, _expiresDiff, _status, _valid);
+			if (DEBUG) console.log("📟 Server.handleTokenStatus()",_expires, _expiresDiff, _status, _valid);
 
 			// save result
 			let _tally_meta = store("tally_meta");
@@ -113,21 +113,23 @@ window.Server = (function() {
 			_tally_meta.userTokenValid = _valid;
 			store("tally_meta", _tally_meta);
 
-			// Background.dataReport();
+			Background.dataReport();
 
-			// if userTokenStatus is ok
+			// 1. token == ok
 			if (_tally_meta.userTokenStatus == "ok") {
-				console.log("📟 Server.handleTokenStatus() 🔑 -> everything is cool, start game");
+				if (DEBUG) console.log("📟 Server.handleTokenStatus() 🔑 -> everything is cool, start game");
 				resetGameDataFromServer();
 				// content script takes over
-			} else if (_tally_meta.userTokenStatus == "expired") {
-				console.log("📟 Server.handleTokenStatus() 🔑 -> TOKEN EXPIRED");
+			}
+			// 2. token == expired
+			else if (_tally_meta.userTokenStatus == "expired") {
+				if (DEBUG) console.log("📟 Server.handleTokenStatus() 🔑 -> TOKEN EXPIRED");
 				// prompts handled by content script
-			} else {
-				// tally_meta exists but there is no token or there is an error
-				// have we prompted them before?
-				// launch registration
-				console.log("📟 Server.handleTokenStatus() 🔑 -> NO TOKEN FOUND");
+			}
+			// 3. tally_meta exists but there is no token or there is an error
+			else {
+				// launch signin / registration
+				if (DEBUG) console.log("📟 Server.handleTokenStatus() 🔑 -> NO TOKEN FOUND");
 				Install.launchStartScreen();
 			}
 		} catch (err) {

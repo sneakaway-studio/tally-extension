@@ -24,8 +24,8 @@ window.Background = (function() {
 	 */
 	chrome.runtime.onInstalled.addListener(function() {
 		try {
-			if (DEBUG) console.log("🧰 Background.onInstalled() -> new installation detected");
-			// is this the first install?
+			if (DEBUG) console.log("🧰 Background.onInstalled() -> new installation (or updated code) detected");
+			// does tally_meta exists, or is this the first install?
 			if (!prop(store("tally_meta"))) {
 				if (DEBUG) console.log("🧰 no tally_meta found, creating app");
 				// run create app script
@@ -40,7 +40,7 @@ window.Background = (function() {
 	});
 
 	/**
-	 *  Start the app (always called)
+	 *  2. Start the app (always called)
 	 */
 	function startApp() {
 		try {
@@ -59,21 +59,21 @@ window.Background = (function() {
 
 
 	/**
-	 * 	Check if it is a new version
+	 * 	2a. Check if it is a new version
 	 */
 	function isNewVersion() {
 		try {
 			let _tally_meta = store("tally_meta"),
 				manifestData = chrome.runtime.getManifest();
 			if (_tally_meta.version == manifestData.version) {
-				if (DEBUG) console.log("🧰 Background.isNewVersion()", _tally_meta.version, manifestData.version, "..... SAME VERSION");
-				return true;
+				if (DEBUG) console.log("🧰 Background.isNewVersion()", _tally_meta.version +"=="+ manifestData.version, "..... SAME VERSION");
+				return false;
 			} else {
-				if (DEBUG) console.log("🧰 Background.isNewVersion()", _tally_meta.version, manifestData.version, "!!!!! NEW VERSION");
+				if (DEBUG) console.log("🧰 Background.isNewVersion()", _tally_meta.version +"!="+ manifestData.version, "!!!!! NEW VERSION");
 				// update version
 				_tally_meta.version = manifestData.version;
 				store("tally_meta", _tally_meta);
-				return false;
+				return true;
 			}
 		} catch (err) {
 			console.error(err);
@@ -82,14 +82,14 @@ window.Background = (function() {
 
 
 	/**
-	 *  Set development or production server
+	 *  2b. Set development or production server
 	 */
 	function setCurrentAPI() {
 		try {
 			let _tally_meta = store("tally_meta");
 			_tally_meta.api = Config[_tally_meta.currentAPI].api;
 			_tally_meta.website = Config[_tally_meta.currentAPI].website;
-			if (DEBUG) console.log("🧰 Background.setCurrentAPI() currentAPI=" + _tally_meta.currentAPI,
+			if (DEBUG) console.log("🧰 Background.setCurrentAPI() currentAPI=%c" + _tally_meta.currentAPI, Debug.styles.green,
 				"api=" + _tally_meta.api, "website=" + _tally_meta.website);
 			store("tally_meta", _tally_meta);
 		} catch (err) {
@@ -107,10 +107,10 @@ window.Background = (function() {
 				tally_meta = store("tally_meta"),
 				tally_secret = store("tally_secret");
 			if (DEBUG) console.log("############################## welcome back ! ##############################");
-			if (DEBUG) console.log("tally_user", JSON.stringify(tally_user));
-			if (DEBUG) console.log("tally_options", JSON.stringify(tally_options));
-			if (DEBUG) console.log("tally_meta", JSON.stringify(tally_meta));
-			if (DEBUG) console.log("tally_secret", JSON.stringify(tally_secret));
+			if (DEBUG) console.log("%ctally_user", Debug.styles.green, JSON.stringify(tally_user));
+			if (DEBUG) console.log("%ctally_options", Debug.styles.green, JSON.stringify(tally_options));
+			if (DEBUG) console.log("%ctally_meta", Debug.styles.green, JSON.stringify(tally_meta));
+			if (DEBUG) console.log("%ctally_secret", Debug.styles.green, JSON.stringify(tally_secret));
 		} catch (ex) {
 			console.log("dataReport() failed");
 		}
