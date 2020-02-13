@@ -77,15 +77,23 @@ window.Dialogue = (function() {
 		}
 	}
 
-	function showInstant(dialogue, mood) {
+	function emptyQueue(){
 		try {
-			if (DEBUG) console.log("💭 Dialogue.showInstant()", dialogue, mood);
 			// erase queue
 			_queue = [];
 			// reset active
 			_active = false;
 			// reset hide timer
 			clearTimeout(hideTimeout);
+		} catch (err) {
+			console.error(err);
+		}
+	}
+
+	function showInstant(dialogue, mood) {
+		try {
+			if (DEBUG) console.log("💭 Dialogue.showInstant()", dialogue, mood);
+			emptyQueue();
 			// add this dialogue to end of _queue
 			_queue.push(dialogue);
 			// start writing
@@ -405,6 +413,7 @@ window.Dialogue = (function() {
 		showStr: function(str, mood, addIfDialogueInProcess, instant) {
 			showStr(str, mood, addIfDialogueInProcess, instant);
 		},
+		emptyQueue: emptyQueue,
 		showTrackerDialogue: showTrackerDialogue,
 		random: random,
 		hide: hide,

@@ -248,6 +248,8 @@ window.BattleConsole = (function() {
 			$(document).on("click", '.battle-options-esc', function() {
 				// remove listener
 				$(document).off("click", '.battle-options-esc');
+				// empty queue of any leftover dialogue 
+				Dialogue.emptyQueue();
 				// end battle
 				Battle.end();
 			});
