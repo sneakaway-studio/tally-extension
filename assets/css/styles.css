@@ -6,6 +6,23 @@
     font: 12px/16px "Monaco", "Andale Mono", "Courier New", sans-serif !important;
 }
 
+/* default button */
+.tally button {
+    box-sizing: border-box;
+    display:inline-block;
+    padding: 2px 4px;
+    color: #eee0f7;
+    font-size: 88%;
+    background-color: #6ece41;
+    box-shadow: 2px 2px #d243ec;
+}
+.tally button:hover {
+    cursor: pointer;
+    background-color: rgb(240, 87, 255);
+}
+
+
+
 #tally, #tyd, .tally_demo_window {
     position: absolute;
     display: block;

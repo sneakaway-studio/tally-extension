@@ -273,7 +273,7 @@ window.Tally = (function() {
 		if ((clickCount >= 0 && clickCount <= clickCountMax) || clickInterval) {
 			// increment clicks
 			++clickCount;
-			console.log("click #" + clickCount);
+			// console.log("click #" + clickCount);
 			// reset timer
 			clickTimer = 0;
 			// clear old and start new interval
@@ -283,7 +283,7 @@ window.Tally = (function() {
 	});
 	// multiclick count down
 	function multiclickCountdown() {
-		console.log("multiclickCountdown() clickCount=" + clickCount + "/" + clickCountMax, clickTimer + "/" + clickTimerMax);
+		// console.log("multiclickCountdown() clickCount=" + clickCount + "/" + clickCountMax, clickTimer + "/" + clickTimerMax);
 		// increase time
 		clickTimer += clickIntervalTime;
 		// time has run out so reset everything
@@ -317,6 +317,10 @@ window.Tally = (function() {
 		}
 		// THREE CLICKS
 		else if (clickCount === 3) {
+			Dialogue.showStr("A triple click!", false, true, true);
+		}
+		// FOUR CLICKS
+		else if (clickCount === 4) {
 			// alert("three!");
 			showDevOptions();
 		}

@@ -96,7 +96,7 @@ window.Debug = (function() {
 			if (!prop(tally_options) || !tally_options.showDebugger) return;
 			if (!$("#tyd").length) return;
 
-			var str = "<div class='tally'>" + "<button id='updateGameFromServer'>RESET</button>";
+			var str = "<div class='tally'>" + "<button class='reset-this tally' id='updateGameFromServer'>RESET</button>";
 
 			if (prop(tally_user.score))
 				str += "<b class='tally'>tally_user.score (XP)</b>: " + JSON.stringify(tally_user.score) + "<br>";
