@@ -62,7 +62,7 @@ window.Sound = (function() {
 		};
 
 
-	let musicAudio = null,
+	let musicAudioEl = null,
 		musicFile = "",
 		battleMusicDir = "tally-battle-6-27/";
 
@@ -90,20 +90,20 @@ window.Sound = (function() {
 				// save file
 				musicFile = file;
 				// get reference to musicAudio element and add source
-				musicAudio = document.querySelector('#tally_music');
+				musicAudioEl = document.querySelector('#tally_music');
 				$('#tally_music_source').attr("src", chrome.extension.getURL("assets/sounds/music/" + musicFile));
 				// set params
-				musicAudio.volume = FS_Number.clamp((tally_options.soundVolume || 0.3) + volumeModifier, 0, 1);
+				musicAudioEl.volume = FS_Number.clamp((tally_options.soundVolume || 0.3) + volumeModifier, 0, 1);
 				// some hacks for Chrome
-				musicAudio.muted = false;
-				musicAudio.loop = loop;
-				musicAudio.pause();
-				musicAudio.load();
+				musicAudioEl.muted = false;
+				musicAudioEl.loop = loop;
+				musicAudioEl.pause();
+				musicAudioEl.load();
 
 				startMusic();
 
 				// add listener to make sure loop happens
-				musicAudio.addEventListener('ended', function() {
+				musicAudioEl.addEventListener('ended', function() {
 					startMusic();
 				}, false);
 
@@ -124,31 +124,31 @@ window.Sound = (function() {
 			if (!pageData.activeOnPage || tally_options.gameMode === "disabled" || tally_options.gameMode === "stealth") return;
 			if (DEBUG) console.log("🎵 Sound.startMusic()");
 
-			if (musicAudio !== null) {
-				musicAudio.pause();
-				musicAudio.currentTime = 0;
+			if (musicAudioEl !== null) {
+				musicAudioEl.pause();
+				musicAudioEl.currentTime = 0;
 			}
 
 			// create promise / attempt to play
-			var soundPromise = musicAudio.play();
+			var soundPromise = musicAudioEl.play();
 			// if play failed
 			if (soundPromise !== undefined) {
 				soundPromise.then(_ => {
 					//if(DEBUG) console.log("Autoplay started!");
 					//Pause and reset the sound
 					// start playing again using new music if it exists
-					musicAudio.pause();
-					// musicAudio.currentTime = 0;
+					musicAudioEl.pause();
+					// musicAudioEl.currentTime = 0;
 					// only update src
 					$('#tally_music_source').attr("src", chrome.extension.getURL("assets/sounds/music/" + musicFile));
-					musicAudio.load();
+					musicAudioEl.load();
 					// create promise / attempt to play
-					musicAudio.play();
+					musicAudioEl.play();
 				}).catch(err => {
 					//if (DEBUG) console.log(err);
 					//if(DEBUG) console.log("Autoplay prevented!");
-					// musicAudio.pause();
-					// musicAudio.play();
+					// musicAudioEl.pause();
+					// musicAudioEl.play();
 				});
 			}
 
@@ -160,7 +160,7 @@ window.Sound = (function() {
 	function stopMusic() {
 		try {
 			if (DEBUG) console.log("🎵 Sound.stopMusic()");
-			musicAudio.pause();
+			musicAudioEl.pause();
 			musicFile = "";
 		} catch (err) {
 			console.error(err);
@@ -169,12 +169,12 @@ window.Sound = (function() {
 
 	//
 	// function loopMusic() {
-	// 	if (DEBUG) console.log("🎵 Sound.loopMusic()",musicAudio.src)
-	// 	musicAudio.addEventListener('ended', function() {
+	// 	if (DEBUG) console.log("🎵 Sound.loopMusic()",musicAudioEl.src)
+	// 	musicAudioEl.addEventListener('ended', function() {
 	// 		this.currentTime = 0;
 	// 		this.play();
 	// 	}, false);
-	// 	musicAudio.play();
+	// 	musicAudioEl.play();
 	// }
 	//
 	//
@@ -302,23 +302,27 @@ window.Sound = (function() {
 	 */
 	function play(soundFile, delay = 0, volumeModifier = 0) {
 		try {
+			// return if not active or sounds are disabled
 			if (!pageData.activeOnPage || !tally_options.playSounds ||
 				tally_options.gameMode === "disabled" || tally_options.gameMode === "stealth") return;
 			if (DEBUG) console.log("🎵 Sound.play(" + soundFile + "," + delay + "," + volumeModifier + ")");
 
 			// reference to audio element
-			var audio = document.querySelector('#tally_audio');
+			var audioEl = document.querySelector('#tally_audio');
 			// add source
 			$('#tally_audio_source').attr("src", chrome.extension.getURL("assets/sounds/" + soundFile));
-			// set params
-			audio.volume = (tally_options.soundVolume || 0.3) + volumeModifier;
-			if (audio.volume < 0) audio.volume = 0;
-			audio.muted = false;
-			audio.pause();
-			audio.load();
-
+			// update the source
+			audioEl.load();
+			// set volume
+			audioEl.volume = (tally_options.soundVolume || 0.3) + volumeModifier;
+			if (audioEl.volume < 0) audioEl.volume = 0;
+			audioEl.muted = false;
+			// pause
+			if (!audioEl.paused && !audioEl.ended) {
+				audioEl.pause();
+			}
 			// create promise / attempt to play
-			var promise = audio.play();
+			var promise = audioEl.play();
 			// if play failed
 			if (promise !== undefined) {
 				promise.then(_ => {
@@ -326,8 +330,8 @@ window.Sound = (function() {
 				}).catch(err => {
 					//console.log(err);
 					//if(DEBUG) console.log("Autoplay prevented!");
-					// audio.pause();
-					// audio.play();
+					// audioEl.pause();
+					// audioEl.play();
 				});
 			}
 		} catch (err) {
