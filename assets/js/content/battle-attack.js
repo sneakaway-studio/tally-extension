@@ -350,7 +350,7 @@ window.BattleAttack = (function() {
 								Dialogue.showStr("Click anywhere to continue!", "happy", true);
 								Progress.update("notifyToClickAfterBattle", 1);
 							} else if (Progress.get("notifyToClickAfterBattle") < 2) {
-								Dialogue.showStr("Yay! You finished your second battle!", "happy", true);
+								Dialogue.showStr("You finished your second battle!", "happy", true);
 								if (winner === "tally") Dialogue.showStr("You blocked another tracker!", "happy", true);
 								Dialogue.showStr("Share a screenshot!", "happy", true);
 								Dialogue.showStr("Click anywhere to reset the page!", "happy", true);

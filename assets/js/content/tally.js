@@ -97,8 +97,6 @@ window.Tally = (function() {
 				Tally.moveEye(".tally_eye_right", "mouse", event);
 			});
 
-			//console.log("%c   Tally.addCharacter()", tallyConsoleIcon, Skin.skins);
-
 			let str =
 				"<div class='tally draggable' id='tally_character'>" + // style='transform:translateY(-350px);'
 				"<div class='tally tally_speech_bubble' id='tally_dialogue_bubble'>" +

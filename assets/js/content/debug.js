@@ -39,7 +39,7 @@ window.Debug = (function() {
 		"Sound": false,
 		"StatsDisplay": false,
 		"Stats": true,
-		"Skin": false,
+		"Skin": true,
 		"Tally": true,
 		"Tracker": false,
 		"Tutorial": true

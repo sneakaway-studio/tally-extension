@@ -140,7 +140,7 @@ window.Install = (function() {
 					"score": 0,
 					"time": 0,
 				},
-				"skins": ["color-magenta"],
+				"skins": ["magenta"],
 				"timezone": "",
 				"trackers": {},
 				"username": "",
