@@ -52,10 +52,15 @@ Learn more at [tallygame.net](https://tallygame.net).
 ## Development Versions
 
 
+### Version 0.2.13
+
+* Updates how skins are handled
+* Multiple improvements to performance, debugging, installation
+
 ### Version 0.2.12
 
 * Adds timezone support
-* Multiple installation fixes 
+* Multiple installation fixes
 
 ### Version 0.2.11
 

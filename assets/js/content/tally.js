@@ -300,6 +300,7 @@ window.Tally = (function() {
 		if (clickCount <= 0) return;
 		// ONE CLICK
 		if (clickCount === 1) {
+			Skin.random();
 			// if (!Progress.update("clickTally", true))
 			// 	return Dialogue.showStr("Did you know that you can drag me around the screen.", false, true);
 		}

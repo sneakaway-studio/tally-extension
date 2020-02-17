@@ -3,140 +3,46 @@
 window.Skin = (function() {
 	// PRIVATE
 	let DEBUG = Debug.ALL.Skin;
-	let skins = {
-			"color": {
-				"magenta": {
-					front: "#D32CF1",
-					back: "#C308C1"
-				},
-				"red": {
-					front: "#fd0202",
-					back: "#db0606"
-				},
-				"orange": {
-					front: "#fe8023",
-					back: "#ed6d10"
-				},
-				"yellow": {
-					front: "#f1ce2c",
-					back: "#e0c02a"
-				},
-				"cyan": {
-					front: "#2ccef1",
-					back: "#1eaecd"
-				},
-			},
 
 
-			// REVISIT these
-			// https://www.visualcinnamon.com/2016/05/smooth-color-legend-d3-svg-gradient.html
-			// https://codepen.io/brenna/pen/mybQVx
 
-			"gradient": {
-				"redGold": {
-					"angle": 90,
-					"stops": {
-						"20%": "gold",
-						"90%": "red"
-					}
-				},
-				"blueGreen": {
-					"angle": 90,
-					"stops": {
-						"0%": "#7A5FFF",
-						"100%": "#01FF89"
-					}
-				},
-				"rainbow": {
-					"angle": 45,
-					"stops": {
-						"10%": "#b33bfd",
-						"15%": "#733cfa",
-						"20%": "#363afd",
-						"25%": "#3268fc",
-						"30%": "#38a4fc",
-						"35%": "#3ce1fd",
-						"40%": "#3efee5",
-						"45%": "#3affa5",
-						"50%": "#40fd7c",
-						"55%": "#40fc43",
-						"60%": "#7cfd41",
-						"70%": "#b6fe43",
-						"75%": "#fffc4a",
-						"85%": "#fec842",
-						"95%": "#fe863a",
-						"100%": "#fe0000",
-					}
-				}
-			},
-			// "pattern": {
-			// 	"plaidYellow": {
-			// 		"str": '<pattern id="tallyPattern" width="40" height="40" patternUnits="userSpaceOnUse"><rect width="40" height="40" fill="#343434"></rect><path d="M0,8l8,-8M-2,2l4,-4M6,10l4,-4" stroke="white" stroke-width="5" stroke-linecap="square"></path>'
-			// 	},
-			// 	"plaidRed": {
-			// 		"str": '<pattern id="tallyPattern" width="40" height="40" patternUnits="userSpaceOnUse"><rect width="40" height="40" fill="#343434"></rect><path d="M0,8l8,-8M-2,2l4,-4M6,10l4,-4" stroke="white" stroke-width="5" stroke-linecap="square"></path>'
-			// 	}
-			// },
-			"image": {
-				"flowerRetro": {
-					"url": chrome.extension.getURL('assets/img/tally/tally/skins/skin-pattern-flower-retro.png'),
-					"w": 222,
-					"h": 198
-				},
-				"plaidRed": {
-					"url": chrome.extension.getURL('assets/img/tally/skins/skin-pattern-plaid-red.png'),
-					"w": 225,
-					"h": 225
-				},
-				"camoGrey": {
-					"url": chrome.extension.getURL('assets/img/tally/skins/skin-pattern-camo-grey.png'),
-					"w": 225,
-					"h": 225
-				},
-				"plaidYellow": {
-					"url": chrome.extension.getURL('assets/img/tally/skins/patterns/plaidYellow.png'),
-					"w": 311,
-					"h": 162
-				}
-			}
-		},
-		skinStage = 0,
-		currentSkin = {
-			"type": "color",
-			"name": "magenta",
-			"anim": false
-		};
+	let skinStage = 0,
+		currentSkinName = "magenta",
+		currentSkinObj = {};
+
+	let changeWithMonsters = false; // unsure whether to let user know we are changing
 
 
-	// var skins = [
-	// 	"color-cyan",
-	// 	"color-magenta",
-	// 	"color-yellow",
-	// 	"grad-rainbow",
-	// 	"grad-yellow-orange",
-	// 	"pattern-camo-grey",
-	// 	"pattern-flower-retro",
-	// 	"pattern-plaid-red"
-	// ];
+	// REVISIT these
+	// https://www.visualcinnamon.com/2016/05/smooth-color-legend-d3-svg-gradient.html
+	// https://codepen.io/brenna/pen/mybQVx
+
+
+
+	// "pattern": {
+	// 	"plaidYellow": {
+	// 		"str": '<pattern id="tallyPattern" width="40" height="40" patternUnits="userSpaceOnUse"><rect width="40" height="40" fill="#343434"></rect><path d="M0,8l8,-8M-2,2l4,-4M6,10l4,-4" stroke="white" stroke-width="5" stroke-linecap="square"></path>'
+	// 	},
+	// 	"plaidRed": {
+	// 		"str": '<pattern id="tallyPattern" width="40" height="40" patternUnits="userSpaceOnUse"><rect width="40" height="40" fill="#343434"></rect><path d="M0,8l8,-8M-2,2l4,-4M6,10l4,-4" stroke="white" stroke-width="5" stroke-linecap="square"></path>'
+	// 	}
+
+
+
 
 
 	/**
 	 *	Set the skin color based on the stage
 	 */
-	function setStage(n) {
+	function setStage(n = 0) {
 		try {
 			if (DEBUG) console.log("👚 Skin.setStage(" + n + ")");
 			skinStage = n;
-			currentSkin.type = "color";
-			if (skinStage === 1)
-				currentSkin.name = "yellow";
-			else if (skinStage === 2)
-				currentSkin.name = "orange";
-			else if (skinStage === 3)
-				currentSkin.name = "red";
-			else // (skinStage == 0)
-				currentSkin.name = "magenta";
-			update(currentSkin);
+			// update skin
+			if (skinStage === 1) update("yellow");
+			else if (skinStage === 2) update("orange");
+			else if (skinStage === 3) update("red");
+			else update("magenta");
 		} catch (err) {
 			console.error(err);
 		}
@@ -147,7 +53,7 @@ window.Skin = (function() {
 
 
 	/*
-	 *	Default Tally SVG
+	 *	Return Tally SVG
 	 */
 	function returnBasicSVG(defs = "") {
 		try {
@@ -171,77 +77,90 @@ window.Skin = (function() {
 		}
 	}
 
-
-
-
 	/*
 	 *	Update Tally SVG
 	 */
-	function update(currentSkin) {
+	function update(newSkinName = "magenta") {
 		try {
-			if (DEBUG) console.log("👚 Skin.update() currentSkin = "+ currentSkin);
 
-			let skinObj = {},
-				def = "",
+			// // if !tally_user.skins then set magenta default
+			// if (!prop(tally_user.skins) || FS_Object.objLength(tally_user.skins) < 1 || tally_user.skins[newSkinName]) {
+			// 	newSkinName = "magenta";
+			// }
+
+			let def = "",
 				frontFill = "",
 				backFill = "";
 
-			// if !skin set default
-			if (!prop(skins[currentSkin.type]) || skins[currentSkin.type] == "") {
-				currentSkin.type = "color";
-				currentSkin.name = "magenta";
-			}
-			// get object reference
-			skinObj = skins[currentSkin.type][currentSkin.name];
-			if (DEBUG) console.log("👚 Skin.update() currentSkin.type = "+ currentSkin.type +", skinObj = "+ JSON.stringify(skinObj));
+			// set current skin name and obj
+			currentSkinName = newSkinName;
+			currentSkinObj = SkinData.data[currentSkinName];
 
-			// if a solid color
-			if (currentSkin.type == "color") {
-				frontFill = skinObj.front;
-				backFill = skinObj.back;
+			if (DEBUG) console.log("👚 Skin.update() currentSkinName = " + currentSkinName + ", currentSkinObj = " + JSON.stringify(currentSkinObj));
+
+			// COLOR
+			if (currentSkinObj.type == "color") {
+				frontFill = currentSkinObj.front;
+				backFill = currentSkinObj.back;
 			}
-			// if a gradient
-			else if (currentSkin.type == "gradient") {
+
+			// GRADIENT
+			else if (currentSkinObj.type == "gradient") {
 				// make a copy of the colors
-				var colors = Object.values(skinObj.stops);
-				// use linearGradient
-				def += '<linearGradient id="tallyGradient" x2="1" gradientTransform="rotate(' + skinObj.angle + ')"  >';
-				// loop through stops in the gradient once to get colors
-				for (const key in skinObj.stops) {
-					if (skinObj.stops.hasOwnProperty(key)) {
-						def += '<stop offset="' + key + '" stop-color="' + skinObj.stops[key] + '">';
-						if (currentSkin.anim) {
-							def += '<animate attributeName="stop-color" values="' + colors.join('; ') + '; ' + colors[0] + '" dur="2s" repeatCount="indefinite"></animate>';
-							// move last to first
-							var last = colors.pop();
-							colors.unshift(last);
-						}
+				let stops = currentSkinObj.stops.trim().split(","),
+					stopColors = currentSkinObj["stop-colors"].trim().split(",");
+
+				// use linearGradient to set gradient angle
+				def += '<linearGradient id="tallyGradient" x2="1" gradientTransform="rotate(' + currentSkinObj.angle + ')"  >';
+
+
+				// loop through stops in the gradient to get colors
+
+				for (const key in stops) {
+					console.log(key,stops[key]);
+					if (stops[key] !== undefined) {
+						def += '<stop offset="' + stops[key] + '%" stop-color="' + stopColors[key] + '">';
+
 						def += '</stop>';
 					}
 				}
+
+// not sure if this needs to be inside stop element
+				//
+				// if (currentSkinObj.anim) {
+				// 	def += '<animate attributeName="stop-color" dur="2s" repeatCount="indefinite" ';
+				// 	// def += ' values="0;1;0"';
+				// 	def += ' values="'+ stopColors.join('; ') + '; ' + stopColors[0] +'"';
+				// 	def += '></animate>';
+				//
+				// // ' + colors.join('; ') + '; ' + colors[0] + '
+				//
+				// 	// move last to first
+				//
+				//
+				// 	// var last = colors.pop();
+				// 	// colors.unshift(last);
+				// }
+
 				// close gradient
 				def += '</linearGradient>';
 				frontFill = "url(#tallyGradient)";
 				backFill = "url(#tallyGradient)";
 			}
-			// PATTERN
-			else if (currentSkin.type == "pattern") {
-				def = skinObj.str;
-				frontFill = "url(#tallyPattern)";
-				backFill = "url(#tallyPattern)";
-			}
+
 			// IMAGE
-			else if (currentSkin.type == "image") {
-				def += '<pattern id="tallyPattern" patternUnits="userSpaceOnUse" width="100%" height="100%">';
-				def += '<image xlink:href="' + skinObj.url + '" x="-10" y="-10" width="100%" height="100%" />';
+			else if (currentSkinObj.type == "image") {
+				def += '<pattern id="tallyPattern" patternUnits="userSpaceOnUse" width="120%" height="120%">';
+				def += '<image xlink:href="' + chrome.extension.getURL('assets/img/tally/skins/' + currentSkinObj.url) + '" x="-10" y="-10" width="100%" height="100%" />';
 				def += '</pattern>';
 				frontFill = "url(#tallyPattern)";
 				backFill = "url(#tallyPattern)";
 			}
+
 			// otherwise default to magenta
 			else {
-				frontFill = skinObj.front;
-				backFill = skinObj.back;
+				frontFill = currentSkinObj.front;
+				backFill = currentSkinObj.back;
 			}
 
 			// set/reset defs
@@ -257,37 +176,23 @@ window.Skin = (function() {
 
 	function random() {
 		try {
-			var r = Math.random();
-			if (r < 0.1)
-				currentSkin = {"type":"color", "name":"magenta"};
-			else if (r < 0.2)
-				currentSkin = {"type":"color", "name":"cyan"};
-			else if (r < 0.4)
-				currentSkin = {"type":"gradient", "name":"rainbow"};
-			else if (r < 0.6)
-				currentSkin = {"type":"gradient", "name":"redGold", "anim":true};
-			else if (r < 0.7)
-				currentSkin = {"type":"gradient", "name":"blueGreen", "anim":true};
-			// else if (r < 0.08)
-				// currentSkin = {"type":"image", "name":"camoGrey"};
-			else if (r < 0.09)
-				currentSkin = {"type":"pattern", "name":"plaidYellow"};
-			// else if (r < 1)
-				// currentSkin = {"type":"image", "name":"plaidRed"};
-			else
-				currentSkin = {"type":"color", "name":"magenta"};
-
-			update(currentSkin);
+			update(FS_Object.randomObjProperty(SkinData.data).name);
 		} catch (err) {
 			console.error(err);
 		}
 	}
 
 
+
+
+
+
+
+
 	// PUBLIC
 	return {
-		update: function(obj) {
-			update(obj);
+		update: function(str) {
+			update(str);
 		},
 		returnBasicSVG: function() {
 			return returnBasicSVG();
@@ -296,11 +201,14 @@ window.Skin = (function() {
 			setStage(n);
 		},
 		random: random,
-		skins: skins,
 
-		returnSkin: function(skin) {
-			return returnSkin(skin);
-		}
+
+
+
+
+		// returnSkin: function(skin) {
+		// 	return returnSkin(skin);
+		// }
 
 		//preload: preload
 
