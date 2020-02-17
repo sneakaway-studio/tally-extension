@@ -4,7 +4,7 @@
 
 ![Tally](https://tallygame.net/assets/img/tally-153w.png "Hi! I'm Tally.")
 
-Tally is a browser extension that transforms the data advertisers collect into a multiplayer game. 
+Tally is a browser extension that transforms the data advertisers collect into a multiplayer game.
 Learn more at [tallygame.net](https://tallygame.net).
 
 
@@ -47,6 +47,15 @@ Learn more at [tallygame.net](https://tallygame.net).
 3. Zip only files needed for extension (`assets/`,`LICENSE`,`manifest.json`,`README.md`)
 4. Rename extension and upload to live server
 
+
+## Development How-to
+
+1. Install GIT and Github Desktop
+2. Create a Github account
+3. Clone the project
+4. If using remote API, comment out `obj.currentAPI = "development";` and following 2 lines in `bg-install.js`
+5. Install in Chrome per above instructions
+6. Change options as needed in popup
 
 
 ## Development Versions
