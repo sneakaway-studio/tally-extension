@@ -4,13 +4,28 @@ var GameData = (function() {
 
 
 	let socialDomains = [
-		"facebook.com",
-		"instagram.com",
-		"reddit.com",
-		"twitter.com",
-		"youtube.com",
-		"linkedin.com"
-	];
+			"facebook.com",
+			"instagram.com",
+			"reddit.com",
+			"twitter.com",
+			"youtube.com",
+			"linkedin.com"
+		],
+		commercialDomains = [
+			"amazon.com",
+			"walmart.com",
+			"target.com"
+		],
+		trackerDomains = [
+			"alexa.com",
+			"ads.google.com/home/",
+			"www.adcolony.com/",
+			"airpush.com/",
+			"www.experian.com/",
+			"www.beckon.com/",
+			"www.blueconic.com/",
+			"www.acxiom.com/"
+		];
 
 	let domainKeywords = {
 		"facebook.com": "social,networks,facebook,like",
@@ -149,6 +164,8 @@ var GameData = (function() {
 
 	return {
 		socialDomains: socialDomains,
+		commercialDomains: commercialDomains,
+		trackerDomains: trackerDomains,
 		clickScore: clickScore,
 		attackLimits: attackLimits,
 		levels: levels,

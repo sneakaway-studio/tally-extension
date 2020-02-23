@@ -28,7 +28,7 @@ window.Dialogue = (function() {
 				show(get(["random", "greeting", null]), true, true);
 			else if (r < 0.5)
 				// show dialogue from data, [category/0/index], play sound
-				show(get(["onboarding", null, "onboarding3"]), true);
+				show(get(["tutorial", null, null]), true);
 			else if (r < 0.75)
 				// show dialogue from facts, trackers, play sound
 				show(getFact("trackers", false), "neutral", true);
@@ -77,7 +77,7 @@ window.Dialogue = (function() {
 		}
 	}
 
-	function emptyQueue(){
+	function emptyQueue() {
 		try {
 			// erase queue
 			_queue = [];
@@ -393,9 +393,14 @@ window.Dialogue = (function() {
 				result = category[subcategoryStr][r];
 			}
 			// if there is no subcategory, then get by index
-			else if (arr[2]) {
+			else if (prop(arr[2])) {
 				let index = arr[2];
 				result = category[index];
+			}
+			// if neither subcategory or index then get random from category
+			else {
+				if (category)
+					result = FS_Object.randomObjProperty(category);
 			}
 
 			return result;

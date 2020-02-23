@@ -75,6 +75,8 @@ window.TallyMain = (function() {
 		try {
 			if (DEBUG) console.log('🧰 TallyMain.performStartChecks()');
 
+			// do not procede if pageData failed
+			if (!prop(pageData)) return;
 			// check if extension should be active on this page before proceeding
 			pageData.activeOnPage = shouldExtensionBeActiveOnPage();
 			// if in demo mode then go to new page
@@ -123,6 +125,10 @@ window.TallyMain = (function() {
 			// the server is not online
 			if (!tally_meta.serverOnline) {
 				console.log("!!!!! Connection to Tally server is down");
+				return false;
+			}
+			// pageData failed
+			else if (!prop(pageData)){
 				return false;
 			}
 			// this is a disabled domain

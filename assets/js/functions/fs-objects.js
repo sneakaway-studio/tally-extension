@@ -37,9 +37,9 @@ window.FS_Object = (function() {
 	/**
 	 *	Return random index from array
 	 */
-	var randomArrayIndex = function(arr) {
+	function randomArrayIndex(arr) {
 		return arr[Math.floor(Math.random() * arr.length)];
-	};
+	}
 
 	/**
 	 *	Is an object empty?

@@ -271,11 +271,11 @@ window.BattleAttack = (function() {
 			// did tally lose?
 			if (Stats.get("tally").health.val <= 0) {
 				winner = "monster";
-				endBattleMessage = "We need to take a break from the internet and recharge!";
+				endBattleMessage = Dialogue.get(["battle", "tally-health-gone", null]);
 				monsterWins("Tally's health has been depleted. Tally loses.", "tally-health-gone");
 			} else if (Stats.get("tally").stamina.val <= 0) {
 				winner = "monster";
-				endBattleMessage = "We lost this time but we'll fight these trackers another day!";
+				endBattleMessage = Dialogue.get(["battle", "lost", null]);
 				monsterWins("Tally's stamina has been depleted. Tally loses.", "tally-stamina-gone");
 			}
 			// did tally win?

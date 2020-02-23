@@ -395,12 +395,15 @@ window.TallyStorage = (function() {
 						Dialogue.showStr("You can edit your profile here.", "happy");
 						Dialogue.showStr("Good to stay anonymous though, what with all the monsters around...", "cautious");
 						Dialogue.showStr("Now, let's go find some trackers!", "happy");
+						Dialogue.showStr("I have a <a target='_blank' href='https://"+
+							FS_Object.randomArrayIndex(GameData.trackerDomains) +"'>good idea where there will be some</a>...", "happy");
 					}
 					// if user has been here before
 					else {
 						if (DEBUG) console.log("💾 > TallyStorage.saveTokenFromDashboard() 3 -> NEW TOKEN WAS SAVED", data);
 						Dialogue.showStr("Your account has been updated!", "happy");
-						Dialogue.showStr("Let's go get some trackers!", "happy");
+						Dialogue.showStr("Let's go get some <a target='_blank' href='https://"+
+							FS_Object.randomArrayIndex(GameData.trackerDomains) +"'>trackers</a>!", "happy");
 						// force a background update to confirm with API / background
 						// MAYBE DON'T NEED BECAUSE THIS ALL HAPPENS ON UPDATE
 						//sendBackgroundUpdate(true);
