@@ -83,7 +83,7 @@ window.Battle = (function() {
 			//console.log("💥 Battle.start()", mid);
 			if (_active) return;
 			active(true);
-			// set currentMID
+			// set current
 			Monster.currentMID = mid;
 			// if this is first battle
 			if (Progress.get("battlesFought") == 0) {

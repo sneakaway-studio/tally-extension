@@ -3,7 +3,6 @@
 window.MonsterCheck = (function() {
 
 	let DEBUG = Debug.ALL.MonsterCheck,
-		currentMID = "",
 		secondsBeforeDelete = 300; // 60 seconds for testing
 
 
@@ -175,11 +174,10 @@ window.MonsterCheck = (function() {
 				Skin.setStage(tally_nearby_monsters[mid].stage);
 			// save monsters
 			TallyStorage.saveData("tally_nearby_monsters", tally_nearby_monsters, "👿 MonsterCheck.handleMatch()");
-			// should we add the monster?
+			// should we show the monster on the page?
 			if (addMonster) {
-				currentMID = mid;
-				// add monster to page
-				Monster.add(mid);
+				// show monster on page
+				Monster.showOnPage(mid);
 			}
 		} catch (err) {
 			console.error(err);

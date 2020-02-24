@@ -10,8 +10,8 @@ window.Monster = (function() {
 	 */
 
 	let DEBUG = Debug.ALL.Monster,
-		currentMID = 0,
 		onPage = false,
+		currentMID = 0,
 		secondsBeforeDelete = 300 // 60 seconds for testing
 	;
 
@@ -64,7 +64,7 @@ window.Monster = (function() {
 				max = Math.ceil(userLevel + (userLevel * factor));
 			let level = Math.floor(Math.random() * (max - min) + min) - 1;
 			if (level < 1) level = 1;
-			//if (DEBUG) console.log("👿 Monster.returnNewMonsterLevel()",userLevel,min,max,level);
+			if (DEBUG) console.log("👿 Monster.returnNewMonsterLevel()", tally_user, userLevel, min, max, level);
 			return level;
 		} catch (err) {
 			console.error(err);
@@ -74,9 +74,9 @@ window.Monster = (function() {
 	/**
 	 *	Add a product monster (contains checks)
 	 */
-	function add(mid) {
+	function showOnPage(mid) {
 		try {
-			if (DEBUG) console.log('👿 ⊙⊙⊙!⊙ Monster.add()', mid, tally_nearby_monsters[mid]);
+			if (DEBUG) console.log('👿 ⊙⊙⊙!⊙ Monster.showOnPage()', mid, tally_nearby_monsters[mid]);
 			// don't show if game isn't running in full mode
 			if (!pageData.activeOnPage || tally_options.gameMode === "disabled" || tally_options.gameMode === "stealth") return;
 			// only proceed if mid is valid
@@ -86,13 +86,15 @@ window.Monster = (function() {
 				tally_nearby_monsters[mid].tracker = FS_Object.randomArrayIndex(pageData.trackers) || "";
 			// return if we don't have one
 			if (tally_nearby_monsters[mid].tracker === "") return;
-			if (DEBUG) console.log('👿 ⊙⊙⊙!⊙ Monster.add()', mid, tally_nearby_monsters[mid]);
-			// set currentMID
-			currentMID = mid;
-			// reset / create new stats for monster
-			Stats.reset("monster");
-			// display it on the page
-			display(tally_nearby_monsters[mid]);
+			// make sure everything has loaded before running
+			setTimeout(function() {
+				// set currentMID
+				currentMID = mid;
+				// reset / create new stats for monster
+				Stats.reset("monster");
+				// display it on the page
+				display(tally_nearby_monsters[mid]);
+			}, 500);
 		} catch (err) {
 			console.error(err);
 		}
@@ -122,7 +124,11 @@ window.Monster = (function() {
 				$('.tally_monster_sprite_flip').css('transform', 'scale(.5,.5)'); // reset (right)
 
 			// get random position
-			let pos = Core.returnRandomPositionFull('.tally_monster_sprite_container');
+			let preference = "";
+			if (tally_user.level < 5) {
+				preference = "above-the-fold";
+			}
+			let pos = Core.returnRandomPositionFull('.tally_monster_sprite_container', null, null, preference);
 			let css = {
 				'position': 'absolute',
 				"display": "block",
@@ -257,8 +263,8 @@ window.Monster = (function() {
 		create: function(mid) {
 			return create(mid);
 		},
-		add: function(mid) {
-			add(mid);
+		showOnPage: function(mid) {
+			showOnPage(mid);
 		},
 		currentMID: currentMID,
 		current: function() {
