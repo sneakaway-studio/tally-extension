@@ -388,19 +388,8 @@ function getMeta(callback) {
 		}, function(response) {
 			//console.log("getMeta()",JSON.stringify(response.data));
 			tally_meta = response.data;
-			// auth
-			// if (tally_meta.userAuthenticated) $("#authStatus").html("true");
-			// else $("#authStatus").html("false");
-			// token
-			if (tally_meta.userTokenValid) $("#tokenStatus").html("true");
-			else $("#tokenStatus").html("false");
-			// token expires
-			if (tally_meta.userTokenValid) $("#tokenExpires").html("true");
-			else $("#tokenExpires").html("false");
 
-
-			// $("#authStatus").html((tally_meta.serverOnline ? "yes" : "no"));
-			$("#tokenStatus").html((tally_meta.userTokenValid ? "yes" : "no"));
+			$("#tokenStatus").html(tally_meta.userTokenStatus);
 			$("#tokenExpires").html((tally_meta.userTokenExpires ? tally_meta.userTokenExpires : "null"));
 			$("#serverStatus").html((tally_meta.serverOnline ? "yes" : "no"));
 			$("#currentAPI").html((tally_meta.currentAPI ? tally_meta.currentAPI : "null"));

@@ -212,7 +212,6 @@ window.Install = (function() {
 				"userTokenExpiresDiff": -1,
 				"userTokenPrompts": 0,
 				"userTokenStatus": "",
-				"userTokenValid": 0,
 				"userOnline": navigator.onLine,
 				"serverOnline": 1,
 				"serverOnlineTime": 0,

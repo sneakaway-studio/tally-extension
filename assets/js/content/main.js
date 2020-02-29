@@ -255,7 +255,7 @@ window.TallyMain = (function() {
 					// 	message: msg[FS_Object.randomArrayIndex(msg)]
 					// });
 				}
-				// if token not valid
+				// if token status not ok
 				if (tally_meta.userTokenStatus !== "ok") { // expired || error || !ok
 					if (DEBUG) console.log("🧰 TallyMain.checkTokenStatus() TOKEN (STILL) BROKEN " +
 						"tally_meta.userTokenPrompts = " + tally_meta.userTokenPrompts);

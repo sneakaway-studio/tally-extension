@@ -50,7 +50,7 @@ window.Server = (function() {
 	}
 
 	/**
-	 *  Verify token is valid, not expired
+	 *  Verify token is ok, not expired
 	 */
 	function verifyToken(callback) {
 		try {
@@ -84,10 +84,10 @@ window.Server = (function() {
 				// if diff is > 0 (in the future)
 				if (diff && diff > 0) {
 					console.log("📟 Server.verifyToken() 🔑 -> OK", diff, result.tokenExpires);
-					handleTokenStatus(result.tokenExpires, diff, "ok", 1);
+					handleTokenStatus(result.tokenExpires, diff, "ok");
 				} else {
 					console.log("📟 Server.verifyToken() 🔑 -> EXPIRED", result.tokenExpires);
-					handleTokenStatus(result.tokenExpires, diff, "expired", 0);
+					handleTokenStatus(result.tokenExpires, diff, "expired");
 				}
 			}).fail(function(jqXHR, textStatus, errorThrown) {
 				console.error("📟 Server.verifyToken() 🔑 -> result =", jqXHR, textStatus, errorThrown);
@@ -101,16 +101,15 @@ window.Server = (function() {
 	/**
 	 *  Handle token status
 	 */
-	function handleTokenStatus(_expires, _expiresDiff, _status, _valid) {
+	function handleTokenStatus(_expires, _expiresDiff, _status) {
 		try {
-			if (DEBUG) console.log("📟 Server.handleTokenStatus()",_expires, _expiresDiff, _status, _valid);
+			if (DEBUG) console.log("📟 Server.handleTokenStatus()",_expires, _expiresDiff, _status);
 
 			// save result
 			let _tally_meta = store("tally_meta");
 			_tally_meta.userTokenExpires = moment().format(_expires);
 			_tally_meta.userTokenExpiresDiff = _expiresDiff;
 			_tally_meta.userTokenStatus = _status;
-			_tally_meta.userTokenValid = _valid;
 			store("tally_meta", _tally_meta);
 
 			Background.dataReport();
