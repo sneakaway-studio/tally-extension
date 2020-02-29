@@ -207,7 +207,7 @@ window.Install = (function() {
 				"installedOn": moment().format(),
 				"lastSyncedToServer": 0,
 				"lastSyncedResult": 0,
-				"userAuthenticated": 0,
+				// "userAuthenticated": 0, mark for deletion, now handled with userTokenStatus
 				"userTokenExpires": 0,
 				"userTokenExpiresDiff": -1,
 				"userTokenPrompts": 0,

@@ -36,7 +36,7 @@ function init() {
 		chrome.runtime.sendMessage({
 			'action': 'getMeta'
 		}, function(response) {
-			//console.log("getMeta()",JSON.stringify(response.data));
+			console.log("getMeta()",JSON.stringify(response.data));
 			tally_meta = response.data;
 			if (tally_meta.userTokenStatus != "ok") {
 				// display only the login
@@ -389,8 +389,8 @@ function getMeta(callback) {
 			//console.log("getMeta()",JSON.stringify(response.data));
 			tally_meta = response.data;
 			// auth
-			if (tally_meta.userAuthenticated) $("#authStatus").html("true");
-			else $("#authStatus").html("false");
+			// if (tally_meta.userAuthenticated) $("#authStatus").html("true");
+			// else $("#authStatus").html("false");
 			// token
 			if (tally_meta.userTokenValid) $("#tokenStatus").html("true");
 			else $("#tokenStatus").html("false");
@@ -399,7 +399,7 @@ function getMeta(callback) {
 			else $("#tokenExpires").html("false");
 
 
-			$("#authStatus").html((tally_meta.serverOnline ? "yes" : "no"));
+			// $("#authStatus").html((tally_meta.serverOnline ? "yes" : "no"));
 			$("#tokenStatus").html((tally_meta.userTokenValid ? "yes" : "no"));
 			$("#tokenExpires").html((tally_meta.userTokenExpires ? tally_meta.userTokenExpires : "null"));
 			$("#serverStatus").html((tally_meta.serverOnline ? "yes" : "no"));
