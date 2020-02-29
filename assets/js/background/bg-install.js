@@ -56,6 +56,9 @@ window.Install = (function() {
 
 			let _tally_meta = store("tally_meta");
 
+			// return early if !server or token is ok
+			if (!_tally_meta.serverOnline || _tally_meta.userTokenStatus === "ok") return;
+
 			// get current page
 			chrome.tabs.query({
 				active: true,
@@ -73,7 +76,7 @@ window.Install = (function() {
 
 
 				// are we in the process resetting user's data?
-				if (tab.url !== undefined && tab.url.includes("dashboard")) {
+				if (tab.url !== undefined && (tab.url.includes("dashboard") || tab.url.includes("tallygame.net"))) {
 					if (DEBUG) console.log("🔧 Install.launchStartScreen() *** NO *** WE ARE ON DASHBOARD");
 					return;
 				}

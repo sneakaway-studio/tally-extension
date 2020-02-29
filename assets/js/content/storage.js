@@ -80,6 +80,7 @@ window.TallyStorage = (function() {
 			if (DEBUG) console.log("💾 TallyStorage.addToBackgroundUpdate()", cat, prop, val, caller);
 			// everything is required
 			if (!FS_Object.prop(cat) || !FS_Object.prop(prop) || !FS_Object.prop(val)) return;
+			if (!FS_Object.prop(tally_user)) return;
 			// make sure a background update exists
 			if (!FS_Object.prop(backgroundUpdate)) backgroundUpdate = createBackgroundUpdate("update");
 			// mark backgroundUpdate in progres
@@ -251,6 +252,7 @@ window.TallyStorage = (function() {
 	function saveTallyUser(cat, obj, caller = "") {
 		try {
 			if (DEBUG) console.log("💾 < TallyStorage.saveTallyUser()", cat, obj, caller);
+			if (!FS_Object.prop(tally_user)) return;
 			// get latest from background ? NO IDT this is required
 			//tally_user = TallyStorage.getData("tally_user");
 			// save in content
@@ -371,6 +373,9 @@ window.TallyStorage = (function() {
 				'data': data
 			}, function(response) {
 				if (DEBUG) console.log('💾 > TallyStorage.saveTokenFromDashboard() RESPONSE =', response);
+
+				// set
+				tally_meta.userTokenStatus = "ok";
 
 				// if the token was different and it was updated ...
 				if (response.message == 1) {

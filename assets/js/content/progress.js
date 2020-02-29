@@ -36,7 +36,8 @@ window.Progress = (function() {
 	function get(name) {
 		try {
 			// if value exists in tally_user && is true | >0 | !""
-			if (FS_Object.prop(tally_user.progress) &&
+			if (FS_Object.prop(tally_user) &&
+				FS_Object.prop(tally_user.progress) &&
 				FS_Object.prop(tally_user.progress[name])) {
 
 				// if (DEBUG) console.log("🕹️ Progress.get()", tally_user.progress[name]);
@@ -57,6 +58,7 @@ window.Progress = (function() {
 	function update(name, val, operator = "=") {
 		try {
 			// if (DEBUG) console.log("🕹️ Progress.update() [1] OPERATION=", name + operator + val);
+			if (!FS_Object.prop(tally_user)) return;
 			// save current status to return later before changing
 			let currentVal = get(name);
 			// if (DEBUG) console.log("🕹️ Progress.update() [2] OPERATION=", name + operator + val, " / currentVal=" + currentVal);

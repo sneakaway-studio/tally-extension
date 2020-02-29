@@ -101,7 +101,7 @@ window.StatsDisplay = (function() {
 			let stats = Stats.get(who),
 				level = Stats.getLevel(who);
 			if (DEBUG) console.log("📈 StatsDisplay.updateDisplay()", "who="+ who, "stats="+ stats, "level="+ level);
-			if (stats === {}) return;
+			if (stats === {} || !FS_Object.prop(tally_user)  || !FS_Object.prop(tally_user.score) ) return;
 			// bars, circle, table
 			adjustStatsBar(who, "health");
 			adjustStatsBar(who, "stamina");

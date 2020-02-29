@@ -155,6 +155,11 @@ window.PageData = (function() {
 			// object
 			var data = {
 				activeOnPage: false, // default
+				pageMode: {
+					active: 1, // default
+					noToken: 0,
+					notActive: 0
+				},
 				browser: {
 					name: Environment.getBrowserName() || "",
 					cookieEnabled: navigator.cookieEnabled || "",
@@ -199,7 +204,6 @@ window.PageData = (function() {
 			if (data.domain == "youtube.com")
 				// 	addMutationObserver();
 				addTitleChecker();
-
 
 			console.log("🗒 PageData.getPageData()",data);
 			return data;

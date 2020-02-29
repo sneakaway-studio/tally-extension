@@ -1,11 +1,18 @@
 "use strict";
 
-// all other scripts have loaded so safe to create global objects
+/**
+ *	TallyMain
+ *	- run after all other scripts have loaded
+ * 	- sets a pageStatus
+ */
+
+
+// 0. create global objects
 let pageData = PageData.getPageData(),
 	// objects created on server, mirrored locally
 	tally_user = {},
 	tally_top_monsters = {},
-	// objects that only exist locally
+	// objects that only exist locally only
 	tally_meta = {},
 	tally_options = {},
 	tally_nearby_monsters = {};
@@ -14,14 +21,17 @@ window.TallyMain = (function() {
 	// PRIVATE
 	let DEBUG = Debug.ALL.TallyMain;
 
+
+
+
 	// global error handler
 	window.onerror = function(message, source, lineno, colno, error) {
-		console.error(message, source, lineno, colno, error);
+		console.error("Tally", message, source, lineno, colno, error);
 	};
 
 	$(function() {
 		try {
-			// begin by getting data from background, then performing start checks
+			// 1. get data from background; perform start checks callback()
 			getDataFromBackground(performStartChecks);
 		} catch (err) {
 			console.error("🧰 TallyMain.getDataFromBackground() failed", err);
@@ -33,7 +43,7 @@ window.TallyMain = (function() {
 
 
 	/**
-	 *	Get all data from background (can be called multiple times, w/ or w/o callback)
+	 *	2. Get all data from background (can be called multiple times, w/ or w/o callback)
 	 */
 	function getDataFromBackground(callback = null) {
 		try {
@@ -68,8 +78,8 @@ window.TallyMain = (function() {
 	}
 
 	/**
-	 *	Perform all start checks to make sure it is safe to run game
-	 *	then, add all required elements to DOM that should only be added once
+	 *	3. Perform all start checks
+	 *	- confirm it is safe to run game; then add all required elements to DOM
 	 */
 	function performStartChecks() {
 		try {
@@ -121,7 +131,9 @@ window.TallyMain = (function() {
 	function shouldExtensionBeActiveOnPage() {
 		try {
 			if (DEBUG) console.log("🧰 TallyMain.shouldExtensionBeActiveOnPage()");
+
 			// do not start if ...
+
 			// the server is not online
 			if (!tally_meta.serverOnline) {
 				console.log("!!!!! Connection to Tally server is down");
@@ -155,7 +167,6 @@ window.TallyMain = (function() {
 			}
 			// otherwise it is safe
 			else {
-				//console.log("shouldExtensionBeActiveOnPage()", true);
 				return true;
 			}
 		} catch (err) {
@@ -172,6 +183,12 @@ window.TallyMain = (function() {
 
 			// don't run if pageData failed
 			if (!pageData || pageData == undefined || !pageData.activeOnPage) return;
+			// don't run if no token
+			if (!FS_Object.prop(tally_user) || tally_meta.userTokenStatus != "ok") {
+				console.warn ("🧰 TallyMain.startGameOnPage() *** NO TOKEN FOUND ***");
+				return;
+			}
+
 			// welcome message for the curious
 			console.log("%c   Hello, I'm Tally!", Tally.tallyConsoleIcon);
 			// if (DEBUG) console.log(">>>>> startGameOnPage() -> Starting Tally on this page");
@@ -229,6 +246,24 @@ window.TallyMain = (function() {
 
 
 	/**
+	 *	Return a prompt string to update token
+	 */
+	function userTokenPromptMessage(){
+		try {
+			// an array of message prompts for new token
+			let messages = [
+				"Please <a href='" + tally_meta.website + "/dashboard' target='_blank'>visit your dashboard</a> to reconnect your account",
+				"You can't stop the trackers unless you <a href='" + tally_meta.website + "/dashboard' target='_blank'>connect your account</a>",
+				"<a href='" + tally_meta.website + "/dashboard' target='_blank'>Link your account</a> to start playing Tally"
+			];
+			return FS_Object.randomArrayIndex(messages);
+		} catch (err) {
+			console.error(err);
+		}
+	}
+
+
+	/**
 	 *	Make sure user's token is current
 	 */
 	function checkTokenStatus() {
@@ -236,13 +271,6 @@ window.TallyMain = (function() {
 			if (DEBUG) console.log("🧰 TallyMain.checkTokenStatus() tally_meta = " + JSON.stringify(tally_meta));
 			// if not on the dashboard
 			if (pageData.url !== tally_meta.website + "/dashboard") {
-
-				// an array of message prompts for new token
-				let msg = [
-					"Please <a href='" + tally_meta.website + "/dashboard' target='_blank'>visit your dashboard</a> to reconnect your account",
-					"You can't stop the trackers unless you <a href='" + tally_meta.website + "/dashboard' target='_blank'>connect your account</a>",
-					"<a href='" + tally_meta.website + "/dashboard' target='_blank'>Link your account</a> to start playing Tally"
-				];
 				// for debugging
 				if (tally_meta.userTokenStatus === "expired") {
 					// $.growl({
@@ -252,7 +280,7 @@ window.TallyMain = (function() {
 				} else if (tally_meta.userTokenStatus != "ok") {
 					// $.growl({
 					// 	title: "YOU HAVE NO TOKEN",
-					// 	message: msg[FS_Object.randomArrayIndex(msg)]
+					// 	message: userTokenPromptMessage()
 					// });
 				}
 				// if token status not ok
@@ -263,7 +291,7 @@ window.TallyMain = (function() {
 					// don't bother them every time
 					if (tally_meta.userTokenPrompts % 2 == 0) {
 						setTimeout(function() {
-							Dialogue.showStr(FS_Object.randomArrayIndex(msg), "sad", true);
+							Dialogue.showStr(userTokenPromptMessage(), "sad", true);
 						}, 500);
 					}
 					tally_meta.userTokenPrompts++;
@@ -276,7 +304,6 @@ window.TallyMain = (function() {
 			console.error(err);
 		}
 	}
-
 
 
 
@@ -336,6 +363,7 @@ window.TallyMain = (function() {
 
 	// PUBLIC
 	return {
+		userTokenPromptMessage: userTokenPromptMessage,
 		getDataFromBackground: function(callback) {
 			getDataFromBackground(callback);
 		},

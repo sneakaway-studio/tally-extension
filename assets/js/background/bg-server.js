@@ -56,11 +56,16 @@ window.Server = (function() {
 		try {
 			let _tally_secret = store("tally_secret"),
 				_tally_meta = store("tally_meta");
+
+			// return early if !server
+			if (!_tally_meta.serverOnline) return;
+
 			// if a token does not exist
 			if (!_tally_secret.token || _tally_secret.token == "") {
 				handleTokenStatus(0, 0, "", 0);
 				return;
 			}
+
 			// check with server
 			$.ajax({
 				url: _tally_meta.api + "/user/verifyToken",
@@ -103,7 +108,7 @@ window.Server = (function() {
 	 */
 	function handleTokenStatus(_expires, _expiresDiff, _status) {
 		try {
-			if (DEBUG) console.log("📟 Server.handleTokenStatus()",_expires, _expiresDiff, _status);
+			if (DEBUG) console.log("📟 Server.handleTokenStatus()", _expires, _expiresDiff, _status);
 
 			// save result
 			let _tally_meta = store("tally_meta");
@@ -141,32 +146,46 @@ window.Server = (function() {
 	 */
 	function resetGameDataFromServer(callback = null) {
 		try {
-			// populate monsters
-			getMonsters();
-
 			let _tally_meta = store("tally_meta"),
 				_tally_secret = store("tally_secret");
 
-			console.log("📟 Server.resetGameDataFromServer()", {"token":_tally_secret.token});
+			console.log("📟 Server.resetGameDataFromServer()", {
+				"token": _tally_secret.token
+			});
+
+			// return early if !server
+			if (!_tally_meta.serverOnline) {
+				console.error("📟 Server.resetGameDataFromServer() *** SERVER NOT ONLINE ***");
+				return;
+			}
+			else if (_tally_meta.userTokenStatus != "ok") {
+				console.error("📟 Server.resetGameDataFromServer() *** TOKEN NOT OK ***");
+				return;
+			}
+
+			// populate monsters
+			getMonsters();
 
 			$.ajax({
 				type: "POST",
 				url: _tally_meta.api + "/user/returnAllGameData",
 				contentType: 'application/json',
 				dataType: 'json',
-				data: JSON.stringify({"token":_tally_secret.token})
+				data: JSON.stringify({
+					"token": _tally_secret.token
+				})
 			}).done(result => {
 				console.log("📟 Server.resetGameDataFromServer() RESULT =", JSON.stringify(result));
 				// merge attack data from server with game data properties
 				result.attacks = Server.mergeAttackDataFromServer(result.attacks);
 				// store result
-				store("tally_user",result);
+				store("tally_user", result);
 				if (callback)
 					callback(result);
 			}).fail(error => {
 				console.error("📟 Server.resetGameDataFromServer() RESULT =", JSON.stringify(error));
 				// server might not be reachable
-				Server.checkIfOnline();
+				checkIfOnline();
 				if (callback)
 					callback(0);
 			});
@@ -258,7 +277,10 @@ window.Server = (function() {
 			let _tally_meta = store("tally_meta"),
 				_tally_user = store("tally_user"),
 				_tally_top_monsters = store("tally_top_monsters");
+
+			// return early if !server or !token
 			if (!_tally_meta.serverOnline || _tally_meta.userTokenStatus != "ok") return;
+
 			$.ajax({
 				type: "PUT",
 				url: _tally_meta.api + "/user/extensionMonsterUpdate",
@@ -298,7 +320,10 @@ window.Server = (function() {
 				username = "";
 
 			console.log("📟 Server.getMonsters()", _tally_meta, _tally_user);
+
+			// return early if !server or !token
 			if (!_tally_meta.serverOnline || _tally_meta.userTokenStatus != "ok") return;
+
 			if (prop(_tally_user.username) && _tally_user.username != "") username = _tally_user.username;
 			$.ajax({
 				type: "GET",

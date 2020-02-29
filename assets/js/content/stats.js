@@ -34,6 +34,9 @@ window.Stats = (function() {
 		try {
 			// get level
 			let level = getLevel(who);
+			if (!level){
+				console.warn("📋 Stats.reset()", who, level, "NO LEVEL");
+			}
 			// for each resetStat
 			for (var stat in resetStatsAll) {
 				// if valid prop

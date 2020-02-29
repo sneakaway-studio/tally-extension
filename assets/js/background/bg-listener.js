@@ -250,6 +250,7 @@ window.Listener = (function() {
 					console.log("saveToken",request.data);
 					// get current token data
 					let _tally_secret = store("tally_secret"),
+						_tally_meta = store("tally_meta"),
 					// default return type is fail
 						message = 0;
 					// if they don't match
@@ -258,6 +259,8 @@ window.Listener = (function() {
 						_tally_secret.token = request.data.token;
 						_tally_secret.tokenExpires = request.data.tokenExpires;
 						store("tally_secret", _tally_secret);
+						_tally_meta.userTokenStatus = "ok";
+						store("tally_meta", _tally_meta);
 						// (re)start app
 						Background.startApp();
 						// set response to success
