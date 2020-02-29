@@ -149,7 +149,7 @@ window.TallyMain = (function() {
 				return false;
 			}
 			// this is a popup / signin that is really small
-			else if (pageData.browser.width < 500) {
+			else if (pageData.browser.width < 600) {
 				console.log("!!!!! Tally is disabled on small windows");
 				return false;
 			}

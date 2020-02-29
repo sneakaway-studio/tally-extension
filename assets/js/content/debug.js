@@ -25,6 +25,7 @@ window.Debug = (function() {
 		"Flag": true,
 		"TallyEvents": true,
 		"Interface": true,
+		"Item": true,
 		"TallyListeners": false,
 		"TallyMain": true,
 		"TallyStorage": true,

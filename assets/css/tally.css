@@ -225,3 +225,23 @@ svg#tally-svg * {
     color: #fff;
     overflow-y: scroll;
 }
+/*  ITEM MANAGER
+ ******************************************************************************/
+#tally_item_manager {
+    position: absolute;
+    box-sizing: border-box;
+    width: 280px;
+    height: 200px;
+    bottom: 150px;
+    left: -1500px;
+    opacity: 0;
+    padding: 10px;
+    background: #111;
+    display: flex;
+}
+#tally_item_manager_inner {
+    width: 100%;
+    height: 100%;
+    font: 12px/16px "Monaco", "Andale Mono", "Courier New", sans-serif;
+    color: #fff
+}

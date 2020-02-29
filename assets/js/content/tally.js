@@ -99,29 +99,32 @@ window.Tally = (function() {
 
 			let str =
 				"<div class='tally draggable' id='tally_character'>" + // style='transform:translateY(-350px);'
-				"<div class='tally tally_speech_bubble' id='tally_dialogue_bubble'>" +
-				"<div class='tally' id='tally_dialogue'></div>" +
-				"</div>" +
-				"<div class='tally' id='tally_slide_show'>" +
-				"<div class='tally' id='tally_slide_show_inner'></div>" +
-				"</div>" +
-				"<div class='tally' id='tally_character_inner'>" +
-				"<div class='tally' id='tally_body'>" +
-				Skin.returnBasicSVG() +
-				"</div>" +
-				"<div class='tally' id='tally_eyes'>" +
-				"<span class='tally tally_lid'>" +
-				"<span class='tally tally_eye tally_eye_left'>" +
-				"<span class='tally tally_eye_pupil'></span></span></span>" +
-				"<span class='tally tally_lid'>" +
-				"<span class='tally tally_eye tally_eye_right'>" +
-				"<span class='tally tally_eye_pupil'></span></span></span>" +
-				"</div>" +
-				"</div>" +
-				"<div class='tally tally_stats'>" +
-				"<div class='tally tally_stats_bars'></div>" +
-				"<div class='tally tally_stats_table'></div>" +
-				"</div>" +
+					"<div class='tally tally_speech_bubble' id='tally_dialogue_bubble'>" +
+						"<div class='tally' id='tally_dialogue'></div>" +
+					"</div>" +
+					"<div class='tally' id='tally_item_manager'>" +
+						"<div class='tally' id='tally_item_manager_inner'></div>" +
+					"</div>" +
+					"<div class='tally' id='tally_slide_show'>" +
+						"<div class='tally' id='tally_slide_show_inner'></div>" +
+					"</div>" +
+					"<div class='tally' id='tally_character_inner'>" +
+					"<div class='tally' id='tally_body'>" +
+					Skin.returnBasicSVG() +
+					"</div>" +
+					"<div class='tally' id='tally_eyes'>" +
+					"<span class='tally tally_lid'>" +
+					"<span class='tally tally_eye tally_eye_left'>" +
+					"<span class='tally tally_eye_pupil'></span></span></span>" +
+					"<span class='tally tally_lid'>" +
+					"<span class='tally tally_eye tally_eye_right'>" +
+					"<span class='tally tally_eye_pupil'></span></span></span>" +
+					"</div>" +
+					"</div>" +
+					"<div class='tally tally_stats'>" +
+						"<div class='tally tally_stats_bars'></div>" +
+						"<div class='tally tally_stats_table'></div>" +
+					"</div>" +
 				"</div>";
 			$('#tally_wrapper').append(str);
 
@@ -300,7 +303,8 @@ window.Tally = (function() {
 		if (clickCount <= 0) return;
 		// ONE CLICK
 		if (clickCount === 1) {
-			Skin.random();
+			// Item.showManager();
+			// Skin.random();
 			// if (!Progress.update("clickTally", true))
 			// 	return Dialogue.showStr("Did you know that you can drag me around the screen.", false, true);
 		}
@@ -337,18 +341,18 @@ window.Tally = (function() {
 		Tutorial.play("tutorial1");
 	});
 	$(document).on('click', '#tally_showMoreOptions', function() {
-		let str = "Here are some options:<br>" +
+		let str = "" +
 			// user-specific
 			"View your <a class='tally tally_profile_link'>profile</a>, " +
-			"your <a class='tally' id='tally_dashboard'>dashboard</a>, " +
+			"<a class='tally' id='tally_dashboard'>dashboard</a>, " +
 			"or <a class='tally' id='tally_leaderboard'>leaderboards</a>.<br>" +
 			// promo material
 			"Check out the <a class='tally' id='tally_startScreen'>start screen</a>, " +
 			"the <a class='tally' id='tally_howToPlay'>how to play page</a>, " +
 			"or the <a class='tally' id='tally_gameTrailerBtn'>game trailer</a>. " +
 			// nerd out
-			"Read our <a class='tally' id='tally_privacyPolicy'>privacy policy</a> " +
-			"or take the <a class='tally' id='tally_gameTrailerBtn'>beta tester survey</a> " +
+			// "Read our <a class='tally' id='tally_privacyPolicy'>privacy policy</a> " +
+			// "or take the <a class='tally' id='tally_gameTrailerBtn'>beta tester survey</a> " +
 			"";
 		Dialogue.showStr(str, false, true, true);
 	});
