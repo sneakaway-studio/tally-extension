@@ -32,7 +32,7 @@ window.Tally = (function() {
 	function moveEye(which, how, event) {
 		try {
 			// return if game should not be active
-			if (!prop(pageData) || !pageData.activeOnPage) return;
+			if (!prop(Page.data) || !Page.mode.active) return;
 			if (!$(".tally")) return;
 			if (!followCursor) return;
 			if ($(which).length == 0) return;
@@ -81,11 +81,10 @@ window.Tally = (function() {
 	 */
 	function addCharacter() {
 		try {
-			//console.log("%c   Tally.addCharacter()", tallyConsoleIcon);
+			if (DEBUG) console.log("%c   Tally.addCharacter()", tallyConsoleIcon);
 
 			// only show Tally if game mode == full
-			if (prop(pageData) && !pageData.activeOnPage) return;
-			if (!prop(tally_options) || !tally_options.showTally) return;
+			if (Page.mode.notActive || !prop(tally_options) || !tally_options.showTally) return;
 
 			// maybe temp...
 			//Skin.preload(); // don't need now, replacing with svg
@@ -128,14 +127,20 @@ window.Tally = (function() {
 				"</div>";
 			$('#tally_wrapper').append(str);
 
-			// insert SVG, stats table
-			$('.tally_stats_bars').html(StatsDisplay.returnInitialSVG("tally"));
-			$('.tally_stats_table').html(StatsDisplay.returnFullTable("tally"));
-
 			$("#tally_character").draggable({
 				drag: function() {},
 				stop: function() {}
 			});
+
+			// only proceed if active
+			if (!Page.mode.active) return;
+
+			// insert SVG, stats table
+			$('.tally_stats').css({
+				"display": "block"
+			});
+			$('.tally_stats_bars').html(StatsDisplay.returnInitialSVG("tally"));
+			$('.tally_stats_table').html(StatsDisplay.returnFullTable("tally"));
 
 			$('.tally_stats').on("click", function(e) {
 				//console.log("hi",$('.tally_stats_table').css("display"));
@@ -153,7 +158,7 @@ window.Tally = (function() {
 			StatsDisplay.updateDisplay("tally");
 
 			// for domains that rewrite body, add listener to add Tally back if removed
-			if (pageData.domain == "baidu.com") {
+			if (Page.data.domain == "baidu.com") {
 				onRemove(document.getElementById('tally_click_visual'), reloadIfRemoved);
 			}
 		} catch (err) {
@@ -218,12 +223,12 @@ window.Tally = (function() {
 	});
 
 	// ON DRAG START | DRAG | DRAG STOP
+	let dragging = false;
 	$(document).on('dragstart', '#tally_character', function() {
 		interactionHandler('dragstart');
 	});
-	let dragging = false;
 	$(document).on('drag', '#tally_character', function() {
-		interactionHandler('drag');
+		// interactionHandler('drag'); // fires too often
 	});
 	$(document).on('dragstop', '#tally_character', function() {
 		interactionHandler('dragstop');
@@ -239,9 +244,15 @@ window.Tally = (function() {
 		try {
 			console.log("%c   Tally.interactionHandler()", tallyConsoleIcon, interaction);
 
+			// if not active then only allow one of these to happen
+
+			if (!FS_Object.prop(window.tallyFirstMouseEnterMessage)) return;
+
+
 
 			// default to prompt if not connected
-			if (!FS_Object.prop(tally_user) || tally_meta.userTokenStatus != "ok") {
+			if (!window.tallyTokenPrompt && !Page.mode.active) {
+				window.tallyTokenPrompt = true;
 				Dialogue.showStr(TallyMain.userTokenPromptMessage(), "sad", true);
 				return;
 			}
@@ -249,39 +260,50 @@ window.Tally = (function() {
 
 
 			else if (interaction === 'mouseenter') {
-				// only show one of these during each page
-				if (!FS_Object.prop(window.tallyFirstMouseEnterMessage)) return;
-				let r = Math.random(),
-					often = 1,
-					dialogue = {
-						"text": "Oh hi! I'm Tally!",
-						"mood": "happy"
-					};
-				// if not the first time then only show half the time
-				if (Progress.get("mouseEnterTally")) often = 0.5;
-				if (r > often) dialogue = {};
-				// otherwise get a random message
-				else dialogue = Dialogue.get(["random", "greeting", null]);
-				Dialogue.show(dialogue, false, true); // show dialogue
-				Progress.update("mouseEnterTally", true); // update progress
-				window.tallyFirstMouseEnterMessage = true;
+
+				if (Page.mode.active) {
+					// only show one of these during each page
+					if (!FS_Object.prop(window.tallyFirstMouseEnterMessage)) return;
+					let r = Math.random(),
+						often = 1,
+						dialogue = {
+							"text": "Oh hi! I'm Tally!",
+							"mood": "happy"
+						};
+					// if not the first time then only show half the time
+					if (Progress.get("mouseEnterTally")) often = 0.5;
+					if (r > often) dialogue = {};
+					// otherwise get a random message
+					else dialogue = Dialogue.get(["random", "greeting", null]);
+					Dialogue.show(dialogue, false, true); // show dialogue
+					Progress.update("mouseEnterTally", true); // update progress
+					window.tallyFirstMouseEnterMessage = true;
+				}
 
 			} else if (interaction === 'mouseleave') {
-				if (!Progress.update("mouseLeaveTally1", true))
-					Dialogue.showStr("Did you know that you can drag me around the screen.", false, true);
+				// only proceed if active
+				if (Page.mode.active)
+					if (!Progress.update("mouseLeaveTally1", true))
+						Dialogue.showStr("Did you know that you can drag me around the screen.", false, true);
 			} else if (interaction === 'dragstart') {
 				// Dialogue.showStr("Weeeeeeeee!", false, true);
-			} else if (interaction === 'drag') {
+			}
+
+
+
+			// do allow dragging though
+			if (interaction === 'drag') {
 				if (!dragging) {
-					Dialogue.showStr("Weeeeeeeee!", "happy", true);
+					if (Page.mode.active)
+						Dialogue.showStr("Weeeeeeeee!", "happy", true);
 					dragging = true;
 				}
 			} else if (interaction === 'dragstop') {
-				if (!Progress.update("dragTally", true))
-					Dialogue.showStr("Double click me!", "happy", true);
+				if (Page.mode.active)
+					if (!Progress.update("dragTally", true))
+						Dialogue.showStr("Double click me!", "happy", true);
 				dragging = false;
 			}
-
 
 		} catch (err) {
 			console.error(err);

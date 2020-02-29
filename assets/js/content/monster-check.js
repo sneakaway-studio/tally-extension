@@ -15,7 +15,7 @@ window.MonsterCheck = (function() {
 	function check() {
 		try {
 			// don't check if disabled
-			if (pageData.domain == "tallygame.net" || tally_options.gameMode === "disabled" || !pageData.activeOnPage)
+			if (!Page.mode.active || Page.data.domain == "tallygame.net" || tally_options.gameMode === "disabled")
 				return;
 			checkNearbyMonsterTimes();
 		} catch (err) {
@@ -69,11 +69,11 @@ window.MonsterCheck = (function() {
 	 */
 	function checkForTagMatches() {
 		try {
-			if (DEBUG) console.log('👿 ⊙⊙⊙⊙⊙ MonsterCheck.checkForTagMatches() -> pageData.tags =', pageData.tags);
+			if (DEBUG) console.log('👿 ⊙⊙⊙⊙⊙ MonsterCheck.checkForTagMatches() -> Page.data.tags =', Page.data.tags);
 			// loop through the tags on the page
-			for (var i = 0, l = pageData.tags.length; i < l; i++) {
+			for (var i = 0, l = Page.data.tags.length; i < l; i++) {
 				// save reference
-				let tag = pageData.tags[i];
+				let tag = Page.data.tags[i];
 				// if tag is in list
 				if (MonsterData.idsByTag[tag]) {
 					// save reference to related monster ids

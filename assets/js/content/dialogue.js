@@ -46,8 +46,8 @@ window.Dialogue = (function() {
 	function showTrackerDialogue() {
 		try {
 			let subcategory = "none";
-			if (pageData.trackers.length > 0) subcategory = "few";
-			if (pageData.trackers.length > 3) subcategory = "lots";
+			if (Page.data.trackers.length > 0) subcategory = "few";
+			if (Page.data.trackers.length > 3) subcategory = "lots";
 			if (DEBUG) console.log("💭 Dialogue.showTrackerDialogue() subcategory=" + subcategory);
 			show(get(["tracker", subcategory, null]), true);
 		} catch (err) {
@@ -312,13 +312,13 @@ window.Dialogue = (function() {
 				replace = MonsterData.dataById[Monster.current().mid].name;
 				if (FS_String.isVowel(replace[0])) replace = "n " + replace;
 			}
-			if (str.indexOf("{{pageData.title}}") > -1) {
-				find = "pageData.title";
-				replace = pageData.title;
+			if (str.indexOf("{{Page.data.title}}") > -1) {
+				find = "Page.data.title";
+				replace = Page.data.title;
 			}
-			if (str.indexOf("{{pageData.browser.name}}") > -1) {
-				find = "pageData.browser.name";
-				replace = pageData.browser.name;
+			if (str.indexOf("{{Page.data.browser.name}}") > -1) {
+				find = "Page.data.browser.name";
+				replace = Page.data.browser.name;
 			}
 			// perform replacement
 			if (find != "" && replace != "")

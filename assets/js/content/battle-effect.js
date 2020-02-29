@@ -125,7 +125,7 @@ window.BattleEffect = (function() {
 				endPos = Core.getCenterPosition(".tally_monster_sprite_container");
 				if (BattleAttack.getOutcomeDetails().outcomes === "missed") {
 					// add to pos and time
-					endPos.left = pageData.browser.width + 200;
+					endPos.left = Page.data.browser.width + 200;
 					addToDuration = 1000;
 				}
 			}

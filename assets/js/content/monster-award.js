@@ -48,7 +48,7 @@ window.MonsterAward = (function() {
 	function moveMonsterToAward(_mid) {
 		console.log("☆☆☆☆☆ Monster.moveMonsterToAward()", _mid, tally_nearby_monsters[_mid]);
 
-		let _scale = pageData.browser.width > 1200 ? 0.85 : 0.65; // increase scale w/larger screens
+		let _scale = Page.data.browser.width > 1200 ? 0.85 : 0.65; // increase scale w/larger screens
 
 		// get monster position
 		let pos = $('.tally_monster_sprite_container').position();
@@ -62,7 +62,7 @@ window.MonsterAward = (function() {
 		addKeyFrames(
 			'moveToAward',
 			//'from{ background-color: red;}' +
-			'to{ transform: scale(' + _scale + ',' + _scale + '); left: 30%; top: ' + (pageData.browser.height - 370) + 'px;}'
+			'to{ transform: scale(' + _scale + ',' + _scale + '); left: 30%; top: ' + (Page.data.browser.height - 370) + 'px;}'
 		);
 		// start animation
 		$('.tally_monster_sprite_container').css({
@@ -239,9 +239,9 @@ window.MonsterAward = (function() {
 	function launchFrom(_mid, _pos) {
 		console.log("⊙⊙⊙⊙! Monster.launchFrom()", _mid, _pos, tally_nearby_monsters[_mid]);
 
-		let _duration = ((pageData.browser.width / 15) + 3800) /*+ (tally_nearby_monsters[_mid].level * 100)*/ , // animation duration
+		let _duration = ((Page.data.browser.width / 15) + 3800) /*+ (tally_nearby_monsters[_mid].level * 100)*/ , // animation duration
 			_direction = "normal", // default animation direction
-			_scale = pageData.browser.width > 1200 ? 0.65 : 0.5; // increase scale w/larger screens
+			_scale = Page.data.browser.width > 1200 ? 0.65 : 0.5; // increase scale w/larger screens
 
 		// set direction of monster (default is normal, i.e. right)
 		if (prop(tally_nearby_monsters[_mid].facing)) {
@@ -262,11 +262,11 @@ window.MonsterAward = (function() {
 			speed: 1,
 			start: {
 				x: -300,
-				y: (pageData.browser.height * 0.25) + (Math.random() * (pageData.browser.height * 0.5))
+				y: (Page.data.browser.height * 0.25) + (Math.random() * (Page.data.browser.height * 0.5))
 			},
 			end: {
-				x: pageData.browser.width + 300,
-				y: pageData.browser.height / 2 - 200
+				x: Page.data.browser.width + 300,
+				y: Page.data.browser.height / 2 - 200
 			}
 		};
 		//console.log("coords", coords);

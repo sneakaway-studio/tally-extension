@@ -19,16 +19,16 @@ window.TallyListeners = (function() {
 	 */
 	function addMainClickEventListener() {
 		try {
-			if (!pageData.activeOnPage) return;
+			if (!Page.mode.active) return;
 			// core mouseup listener
 			document.addEventListener("mouseup", function(e) {
 				// a bit of throttling: if mouseup was just fired ignore this click
-				if (pageData.mouseupFired != true) {
+				if (Page.data.mouseupFired != true) {
 					// set to true
-					pageData.mouseupFired = true;
+					Page.data.mouseupFired = true;
 					// and reset timer
 					setTimeout(function() {
-						pageData.mouseupFired = false;
+						Page.data.mouseupFired = false;
 					}, 500);
 					// update
 					Debug.update();
@@ -40,9 +40,9 @@ window.TallyListeners = (function() {
 						tag: (e.target || e.srcElement).tagName,
 						text: (e.target || e.srcElement).textContent.trim()
 					};
-					// update pageData
-					pageData.mouseX = eventData.mouseX;
-					pageData.mouseY = eventData.mouseY;
+					// update Page.data
+					Page.data.mouseX = eventData.mouseX;
+					Page.data.mouseY = eventData.mouseY;
 					// include parent tags if they exist
 					if (prop(e.target.parentElement)) {
 						eventData.parentTag = (e.target.parentElement || e.srcElement.parentNode).tagName;
@@ -72,7 +72,7 @@ window.TallyListeners = (function() {
 	 */
 	var clickEventHandler = function(eventData, target) {
 		try {
-			if (!pageData.activeOnPage || tally_options.gameMode === "disabled") return;
+			if (!Page.mode.active || tally_options.gameMode === "disabled") return;
 			if (DEBUG) console.log("👂 TallyListeners.clickEventHandler() > eventData", eventData, target);
 			if (DEBUG) console.log("👂 TallyListeners.clickEventHandler() > target", target, target.className);
 
@@ -86,7 +86,7 @@ window.TallyListeners = (function() {
 			let exit = "";
 			if (ignoreNode(target.id) || ignoreNode(target.className) || ignoreNode(eventData.tag))
 				exit = " -> ignore [" + target.id + ", " + eventData.tag + "] node(s)";
-			// else if ( pageData.url == pageData.previousUrl) // THIS BREAKS ON FB
+			// else if ( Page.data.url == Page.data.previousUrl) // THIS BREAKS ON FB
 			// 	exit = " -> url is not different";
 			if (exit !== "") {
 				if (DEBUG) console.log("👂 TallyListeners.clickEventHandler() > event => mouseup" + exit);
@@ -179,9 +179,9 @@ window.TallyListeners = (function() {
 				// if we are this far it is a click
 				TallyStorage.addToBackgroundUpdate("scoreData", "clicks", 1, "👂 TallyListeners.clickEventHandler()");
 				// store time
-				TallyStorage.addToBackgroundUpdate("pageData", "time", pageData.time, "👂 TallyListeners.clickEventHandler()");
+				TallyStorage.addToBackgroundUpdate("Page.data", "time", Page.data.time, "👂 TallyListeners.clickEventHandler()");
 				// reset page time
-				pageData.time = 0;
+				Page.data.time = 0;
 				// store event data
 				TallyStorage.addToBackgroundUpdate("eventData", eventData, null, "👂 TallyListeners.clickEventHandler()");
 				// add and update score

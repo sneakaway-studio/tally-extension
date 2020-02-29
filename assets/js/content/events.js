@@ -18,7 +18,7 @@ window.TallyEvents = (function() {
 				pageTimerInterval: setInterval(function() {
 					// if this page is visible
 					if (document.hasFocus()) {
-						pageData.time = pageData.time + 0.5;
+						Page.data.time = Page.data.time + 0.5;
 						Debug.update();
 					}
 				}, 500),

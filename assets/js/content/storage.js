@@ -47,13 +47,13 @@ window.TallyStorage = (function() {
 				},
 				// PAGE
 				"pageData": {
-					"description": pageData.description,
-					"domain": pageData.domain,
-					"keywords": pageData.keywords,
-					"tags": pageData.tags,
-					"time": pageData.time,
-					"title": pageData.title,
-					"url": pageData.url
+					"description": Page.data.description,
+					"domain": Page.data.domain,
+					"keywords": Page.data.keywords,
+					"tags": Page.data.tags,
+					"time": Page.data.time,
+					"title": Page.data.title,
+					"url": Page.data.url
 				},
 				// EVENTS
 				"eventData": {
@@ -143,7 +143,7 @@ window.TallyStorage = (function() {
 		try {
 			// no need to send if not updated
 			if (!force && backgroundUpdateInProgress === false) return;
-			//if (!pageData.activeOnPage) return;
+			//if (!Page.mode.active) return;
 			chrome.runtime.sendMessage({
 				'action': 'sendBackgroundUpdate',
 				'data': backgroundUpdate
@@ -169,7 +169,7 @@ window.TallyStorage = (function() {
 	// SEND MONSTER DATA TO BACKGROUND
 	function sendBackgroundMonsterUpdate(data) {
 		try {
-			//if (!pageData.activeOnPage) return;
+			//if (!Page.mode.active) return;
 			chrome.runtime.sendMessage({
 				'action': 'sendBackgroundMonsterUpdate',
 				'data': data
@@ -319,7 +319,6 @@ window.TallyStorage = (function() {
 				if (DEBUG) console.log("💾 <> TallyStorage.resetGameDataFromServer() RESPONSE =", JSON.stringify(response));
 
 				// reset everything
-				// pageData = PageData.getPageData();
 				tally_user = {};
 				tally_options = {};
 				tally_meta = {};
@@ -347,10 +346,10 @@ window.TallyStorage = (function() {
 		try {
 			var obj = {
 				"pageData": {
-					"domain": pageData.domain,
-					"tags": pageData.tags,
-					"time": pageData.time,
-					"url": pageData.url
+					"domain": Page.data.domain,
+					"tags": Page.data.tags,
+					"time": Page.data.time,
+					"url": Page.data.url
 				},
 
 				"token": "INSERT_IN_BACKGROUND",
@@ -530,7 +529,7 @@ function createStartupPromises() {
 // USER
 const getUserPromise = new Promise(
 	(resolve, reject) => {
-		//if (!pageData.activeOnPage) return;
+		//if (!Page.mode.active) return;
 		chrome.runtime.sendMessage({
 			'action': 'getUser'
 		}, function(response) {
@@ -543,7 +542,7 @@ const getUserPromise = new Promise(
 // OPTIONS
 const getOptionsPromise = new Promise(
 	(resolve, reject) => {
-		//if (!pageData.activeOnPage) return;
+		//if (!Page.mode.active) return;
 		chrome.runtime.sendMessage({
 			'action': 'getOptions'
 		}, function(response) {
@@ -556,7 +555,7 @@ const getOptionsPromise = new Promise(
 // GET TALLY_META
 const getMetaPromise = new Promise(
 	(resolve, reject) => {
-		//if (!pageData.activeOnPage) return;
+		//if (!Page.mode.active) return;
 		chrome.runtime.sendMessage({
 			'action': 'getMeta'
 		}, function(response) {
@@ -569,7 +568,7 @@ const getMetaPromise = new Promise(
 // GET NEARBY MONSTERS
 const getNearbyMonstersPromise = new Promise(
 	(resolve, reject) => {
-		//if (!pageData.activeOnPage) return;
+		//if (!Page.mode.active) return;
 		chrome.runtime.sendMessage({
 			'action': 'getNearbyMonsters'
 		}, function(response) {
@@ -582,7 +581,7 @@ const getNearbyMonstersPromise = new Promise(
 // GET STATS
 const getStatsPromise = new Promise(
 	(resolve, reject) => {
-		//if (!pageData.activeOnPage) return;
+		//if (!Page.mode.active) return;
 		chrome.runtime.sendMessage({
 			'action': 'getStats'
 		}, function(response) {
@@ -614,28 +613,6 @@ const getTopMonstersPromise = new Promise(
 
 /*  CUSTOM FUNCTIONS
  ******************************************************************************/
-
-
-// GET LAST BACKGROUND UPDATE
-const getLastBackgroundUpdatePromise = new Promise(
-	(resolve, reject) => {
-		//if (!pageData.activeOnPage) return;
-		chrome.runtime.sendMessage({
-			'action': 'getLastBackgroundUpdate'
-		}, function(response) {
-			//if (DEBUG) console.log('💾 >>>>> getLastBackgroundUpdatePromise()',response);
-			let _lastBackgroundUpdate = {};
-			if (response.message === 1 && prop(response.data)) {
-				_lastBackgroundUpdate = response.data; // store data
-				if (pageData && prop(_lastBackgroundUpdate.pageData.url))
-					pageData.previousUrl = _lastBackgroundUpdate.pageData.url;
-			}
-			resolve(_lastBackgroundUpdate); // resolve promise
-		});
-	}
-);
-
-
 
 
 function setBadgeText(data) {

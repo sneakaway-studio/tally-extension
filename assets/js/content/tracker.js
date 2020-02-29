@@ -7,21 +7,22 @@ window.Tracker = (function() {
 	/**
 	 *	Remove trackers that have been "caught"
 	 */
-	function removeCaughtTrackers(trackersOnPage) {
+	function removeCaughtTrackers() {
 		try {
-			if (DEBUG) console.log("🕷️ Tracker.removeCaughtTrackers()", tally_user.trackers, trackersOnPage);
-			if (!tally_user.trackers || trackersOnPage.length < 1) return;
+			if (DEBUG) console.log("🕷️ Tracker.removeCaughtTrackers()", tally_user.trackers,
+			Page.data.trackers);
+			if (!tally_user.trackers || Page.data.trackers.length < 1) return;
 			// loop through trackers on page and check if each is in block list
-			for (let i = 0, l = trackersOnPage.length; i < l; i++) {
+			for (let i = 0, l = Page.data.trackers.length; i < l; i++) {
 				// if there is a match then block it
-				if (tally_user.trackers[trackersOnPage[i]] && tally_user.trackers[trackersOnPage[i]].blocked) {
+				if (tally_user.trackers[Page.data.trackers[i]] && tally_user.trackers[Page.data.trackers[i]].blocked) {
 					// reference to script element
-					var x = $("script[src*='" + trackersOnPage[i] + "']");
+					var x = $("script[src*='" + Page.data.trackers[i] + "']");
 
 					// block it
 					if (x[0].src) {
-						x[0].src = trackersOnPage[i] + "-script-blocked-by-tally!!!";
-						if (DEBUG) console.log("🕷️ Tracker.removeCaughtTrackers()", trackersOnPage[i], x[0].src, "BLOCKED BY TALLY!!!");
+						x[0].src = Page.data.trackers[i] + "-script-blocked-by-tally!!!";
+						if (DEBUG) console.log("🕷️ Tracker.removeCaughtTrackers()", Page.data.trackers[i], x[0].src, "BLOCKED BY TALLY!!!");
 					}
 				}
 			}

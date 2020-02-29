@@ -97,7 +97,7 @@ window.Tutorial = (function() {
 			} else if (callback === "slideShowBrowserDetails") {
 				str = '<span>' +
 					JSON.stringify(tally_meta.location).replace(",", ", ") + ", " +
-					JSON.stringify(pageData.browser).replace(",", ", ") +
+					JSON.stringify(Page.data.browser).replace(",", ", ") +
 					'</span>';
 
 			} else if (callback === "slideShowBattle") {

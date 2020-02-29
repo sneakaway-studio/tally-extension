@@ -323,18 +323,7 @@ window.Listener = (function() {
 					// required so chrome knows this is asynchronous
 					return true;
 				}
-				// getLastBackgroundUpdate
-				else if (request.action == "getLastBackgroundUpdate") {
-					let message = 0,
-						tally_last_background_update = store("tally_last_background_update");
-					if (prop(tally_last_background_update) && prop(tally_last_background_update.pageData))
-						message = 1;
-					sendResponse({
-						"action": request.action,
-						"message": message,
-						"data": tally_last_background_update
-					});
-				}
+
 
 
 				// sendBackgroundMonsterUpdate - receive and send Monster, page data to server
@@ -356,13 +345,7 @@ window.Listener = (function() {
 						//"tally_user": _tally_user
 					});
 				}
-				// getLastBackgroundUpdate
-				else if (request.action == "getLastBackgroundMonsterUpdate") {
-					sendResponse({
-						"action": request.action,
-						"data": store("tally_last_monster_update")
-					});
-				}
+
 
 				// default to resolve promise
 				else {

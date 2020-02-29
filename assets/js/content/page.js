@@ -1,8 +1,24 @@
 "use strict";
 
-window.PageData = (function() {
+window.Page = (function() {
 	// PRIVATE
-	let DEBUG = Debug.ALL.PageData;
+	let DEBUG = Debug.ALL.Page,
+		mode = {},
+		data = getData();
+
+	function updateMode(state = "active") {
+		// reset all
+		mode = {
+			active: 0,
+			noToken: 0,
+			notActive: 0
+		};
+		// default
+		if (state === "active") mode.active = 1;
+		else if (state === "noToken") mode.noToken = 1;
+		else if (state === "notActive") mode.notActive = 1;
+	}
+
 
 	function getDescription() {
 		try {
@@ -79,9 +95,9 @@ window.PageData = (function() {
 	/**
 	 *	Get all trackers hidden on this page
 	 */
-	function getTrackersOnPage(pageData) {
+	function getTrackersOnPage(newData) {
 		try {
-			// if (DEBUG) console.log("🗒️ PageData.getTrackersOnPage()");
+			// if (DEBUG) console.log("🗒️ Page.getTrackersOnPage()");
 			var foundObj = {},
 				foundArr = [],
 				trackers = {
@@ -120,16 +136,16 @@ window.PageData = (function() {
 				// this method uses the single array (no categories)
 				// I think this may be the way to go in the end
 				if (foundArr.indexOf(scriptDomain) < 0 && trackers.indexOf(scriptDomain) >= 0) {
-					// if (DEBUG) console.log("🗒️ PageData.getTrackersOnPage() 👀", str, scriptDomain);
+					// if (DEBUG) console.log("🗒️ Page.getTrackersOnPage() 👀", str, scriptDomain);
 					foundArr.push(scriptDomain);
 				}
 
 			}
 			// if the domain is known for tracking then also add it
-			if (pageData.domain){
-				// console.log("pageData.domain",pageData.domain);
-				if (trackers.indexOf(pageData.domain)){
-					foundArr.push(pageData.domain);
+			if (newData.domain) {
+				// console.log("newData.domain",newData.domain);
+				if (trackers.indexOf(newData.domain)) {
+					foundArr.push(newData.domain);
 				}
 			}
 			// set the number of trackers in the badge
@@ -144,22 +160,26 @@ window.PageData = (function() {
 	}
 
 
+	function refreshData(){
+		try {
+			data = getData();
+		} catch (err) {
+			console.error(err);
+		}
+	}
+
+
 	/**
 	 *	Get data about this page
 	 */
-	function getPageData() {
+	function getData() {
 		try {
 			var url = document.location.href;
 			// only run on web pages
 			if (!url || !url.match(/^http/)) return;
 			// object
-			var data = {
+			let newData = {
 				activeOnPage: false, // default
-				pageMode: {
-					active: 1, // default
-					noToken: 0,
-					notActive: 0
-				},
 				browser: {
 					name: Environment.getBrowserName() || "",
 					cookieEnabled: navigator.cookieEnabled || "",
@@ -194,19 +214,19 @@ window.PageData = (function() {
 				url: document.location.href || ""
 			};
 			// add dimensions
-			data.browser.center.x = data.browser.width / 2;
-			data.browser.center.y = data.browser.height / 2;
+			newData.browser.center.x = newData.browser.width / 2;
+			newData.browser.center.y = newData.browser.height / 2;
 			// check page tags
-			data.tags = getPageTags(data);
+			newData.tags = getPageTags(newData);
 			// add trackers
-			data.trackers = getTrackersOnPage(data) || "";
+			newData.trackers = getTrackersOnPage(newData) || "";
 			// if youtube
-			if (data.domain == "youtube.com")
+			if (newData.domain == "youtube.com")
 				// 	addMutationObserver();
 				addTitleChecker();
 
-			console.log("🗒 PageData.getPageData()",data);
-			return data;
+			console.log("🗒 Page.getData()", newData);
+			return newData;
 		} catch (err) {
 			console.error(err);
 		}
@@ -221,10 +241,10 @@ window.PageData = (function() {
 	 */
 	function addMutationObserver() {
 		// if running
-		if (tally_options.gameMode === "disabled" || !pageData.activeOnPage) return;
+		if (!Page.mode.active || tally_options.gameMode === "disabled") return;
 		new MutationObserver(function(mutations) {
 			console.log("title changed", mutations[0].target.nodeValue);
-			TallyMain.refreshAppAfterMutation("pageData.addMutationObserver()");
+			TallyMain.refreshAppAfterMutation("Page.data.addMutationObserver()");
 		}).observe(
 			document.querySelector('title'), {
 				subtree: true,
@@ -237,11 +257,11 @@ window.PageData = (function() {
 	function addTitleChecker() {
 		let pageTitleInterval = setInterval(function() {
 			let title = getTitle();
-			if (title != pageData.title) {
-				//console.log("title changed", pageData.title, " to: ",title);
-				TallyMain.refreshAppAfterMutation("pageData.addTitleChecker()");
+			if (title != data.title) {
+				//console.log("title changed", Page.data.title, " to: ",title);
+				TallyMain.refreshAppAfterMutation("Page.data.addTitleChecker()");
 			} else {
-				//console.log("title is same", pageData.title, " to: ",title);
+				//console.log("title is same", Page.data.title, " to: ",title);
 			}
 		}, 10000);
 	}
@@ -251,7 +271,12 @@ window.PageData = (function() {
 
 	// PUBLIC
 	return {
-		getPageData: getPageData
+		mode: mode,
+		updateMode: function(state) {
+			updateMode(state);
+		},
+		refreshData: refreshData,
+		data: data
 
 	};
 })();

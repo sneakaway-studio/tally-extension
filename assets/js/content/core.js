@@ -110,17 +110,17 @@ window.Core = (function() {
 				w = $(ele).width() || 200;
 				h = $(ele).height() || 200;
 			}
-			if (DEBUG) console.log("🔧 Core.returnRandomPositionFull()", ele, w + "," + h, pageData.browser.width, pageData.browser.fullHeight);
+			if (DEBUG) console.log("🔧 Core.returnRandomPositionFull()", ele, w + "," + h, Page.data.browser.width, Page.data.browser.fullHeight);
 			// position
 			let pos = {
-				"x": Math.ceil(Math.random() * (pageData.browser.width - w)),
-				"y": Math.ceil(Math.random() * (pageData.browser.fullHeight - h))
+				"x": Math.ceil(Math.random() * (Page.data.browser.width - w)),
+				"y": Math.ceil(Math.random() * (Page.data.browser.fullHeight - h))
 			};
 			// include preferences for objects
 			if (preference === "above-the-fold")
-				pos.y = FS_Number.randomIntBetween(0, pageData.browser.fullHeight / 2);
+				pos.y = FS_Number.randomIntBetween(0, Page.data.browser.fullHeight / 2);
 			if (preference === "below-the-fold")
-				pos.y = FS_Number.randomIntBetween(pageData.browser.fullHeight / 2, pageData.browser.fullHeight);
+				pos.y = FS_Number.randomIntBetween(Page.data.browser.fullHeight / 2, Page.data.browser.fullHeight);
 
 			if (DEBUG) console.log("🔧 Core.returnRandomPositionFull()", w +","+ h, pos);
 			return pos;

@@ -17,8 +17,8 @@ window.Flag = (function() {
 	function check() {
 		try {
 			// only if user is on dashboard...
-			if (pageData.url.includes("dashboard")) {
-				if (DEBUG) console.log("🚩 Flag.check() *** DASHBOARD *** ", pageData.url);
+			if (Page.data.url.includes("dashboard")) {
+				if (DEBUG) console.log("🚩 Flag.check() *** DASHBOARD *** ", Page.data.url);
 
 				// is a token on the page?
 				let tokenOnPage = false,

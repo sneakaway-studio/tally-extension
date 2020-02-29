@@ -35,7 +35,7 @@ window.Badge = (function() {
 	function randomizer() {
 		try {
 			// don't display badge if display is off
-			if (!pageData.activeOnPage || tally_options.gameMode === "disabled" || tally_options.gameMode === "stealth") return;
+			if (!Page.mode.active || tally_options.gameMode === "disabled" || tally_options.gameMode === "stealth") return;
 
 			let r = Math.random(), // whether to create badge of type
 				chosen = false;
@@ -45,7 +45,7 @@ window.Badge = (function() {
 			//return create("night-owl");
 
 			// SOCIAL DOMAINS
-			if (GameData.socialDomains.indexOf(pageData.domain) > -1) {
+			if (GameData.socialDomains.indexOf(Page.data.domain) > -1) {
 				if (DEBUG) console.log("🎒 Badge.randomizer() type = social domain");
 				if (r < 0.01) return create("stalker");
 				// gameMode === testing

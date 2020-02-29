@@ -35,14 +35,14 @@ window.Debug = (function() {
 		"Monster": true,
 
 		"Onboarding": true,
-		"PageData": true,
+		"Page": true,
 		"Progress": true,
 		"Sound": false,
 		"StatsDisplay": false,
 		"Stats": true,
 		"Skin": true,
 		"Tally": true,
-		"Tracker": false,
+		"Tracker": true,
 		"Tutorial": true
 	};
 
@@ -62,7 +62,7 @@ window.Debug = (function() {
 			}
 		}
 	}
-	// setAll(true);
+	setAll(true);
 	// setAll(false);
 
 	// add the debugger
@@ -112,16 +112,16 @@ window.Debug = (function() {
 			if (prop(tally_options))
 				str += "tally_options: " + JSON.stringify(tally_options) + "<br>";
 
-			if (prop(pageData))
-				str += "<b>pageData</b>: " + JSON.stringify(pageData) + "<br>";
+			if (prop(Page.data))
+				str += "<b>Page.data</b>: " + JSON.stringify(Page.data) + "<br>";
 
-			// if (prop(pageData.tags))
-			// 	str += "<b class='tally'>pageData.tags (" + pageData.tags.length + ")</b>: " +
-			// 	JSON.stringify(pageData.tags) + "<br>";
+			// if (prop(Page.data.tags))
+			// 	str += "<b class='tally'>Page.data.tags (" + Page.data.tags.length + ")</b>: " +
+			// 	JSON.stringify(Page.data.tags) + "<br>";
 
-			// if (prop(pageData.trackers))
-			// 	str += "<b class='tally'>pageData.trackers (" + pageData.trackers.length + ")</b>: " +
-			// 	JSON.stringify(pageData.trackers) + "<br>";
+			// if (prop(Page.data.trackers))
+			// 	str += "<b class='tally'>Page.data.trackers (" + Page.data.trackers.length + ")</b>: " +
+			// 	JSON.stringify(Page.data.trackers) + "<br>";
 
 			str += "</div>";
 			$('#tyd').html(str);

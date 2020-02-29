@@ -59,6 +59,7 @@
     height: 65px;
     top: 240px;
     left: 0;
+    display: none;
 }
 .monster_stats {
     z-index: 2147483645;
