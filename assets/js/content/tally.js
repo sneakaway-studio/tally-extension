@@ -99,32 +99,32 @@ window.Tally = (function() {
 
 			let str =
 				"<div class='tally draggable' id='tally_character'>" + // style='transform:translateY(-350px);'
-					"<div class='tally tally_speech_bubble' id='tally_dialogue_bubble'>" +
-						"<div class='tally' id='tally_dialogue'></div>" +
-					"</div>" +
-					"<div class='tally' id='tally_item_manager'>" +
-						"<div class='tally' id='tally_item_manager_inner'></div>" +
-					"</div>" +
-					"<div class='tally' id='tally_slide_show'>" +
-						"<div class='tally' id='tally_slide_show_inner'></div>" +
-					"</div>" +
-					"<div class='tally' id='tally_character_inner'>" +
-					"<div class='tally' id='tally_body'>" +
-					Skin.returnBasicSVG() +
-					"</div>" +
-					"<div class='tally' id='tally_eyes'>" +
-					"<span class='tally tally_lid'>" +
-					"<span class='tally tally_eye tally_eye_left'>" +
-					"<span class='tally tally_eye_pupil'></span></span></span>" +
-					"<span class='tally tally_lid'>" +
-					"<span class='tally tally_eye tally_eye_right'>" +
-					"<span class='tally tally_eye_pupil'></span></span></span>" +
-					"</div>" +
-					"</div>" +
-					"<div class='tally tally_stats'>" +
-						"<div class='tally tally_stats_bars'></div>" +
-						"<div class='tally tally_stats_table'></div>" +
-					"</div>" +
+				"<div class='tally tally_speech_bubble' id='tally_dialogue_bubble'>" +
+				"<div class='tally' id='tally_dialogue'></div>" +
+				"</div>" +
+				"<div class='tally' id='tally_item_manager'>" +
+				"<div class='tally' id='tally_item_manager_inner'></div>" +
+				"</div>" +
+				"<div class='tally' id='tally_slide_show'>" +
+				"<div class='tally' id='tally_slide_show_inner'></div>" +
+				"</div>" +
+				"<div class='tally' id='tally_character_inner'>" +
+				"<div class='tally' id='tally_body'>" +
+				Skin.returnBasicSVG() +
+				"</div>" +
+				"<div class='tally' id='tally_eyes'>" +
+				"<span class='tally tally_lid'>" +
+				"<span class='tally tally_eye tally_eye_left'>" +
+				"<span class='tally tally_eye_pupil'></span></span></span>" +
+				"<span class='tally tally_lid'>" +
+				"<span class='tally tally_eye tally_eye_right'>" +
+				"<span class='tally tally_eye_pupil'></span></span></span>" +
+				"</div>" +
+				"</div>" +
+				"<div class='tally tally_stats'>" +
+				"<div class='tally tally_stats_bars'></div>" +
+				"<div class='tally tally_stats_table'></div>" +
+				"</div>" +
 				"</div>";
 			$('#tally_wrapper').append(str);
 
@@ -208,51 +208,85 @@ window.Tally = (function() {
 	 *	- Placed outside of functions so they are only added once.
 	 */
 
-	let mouseEnterMessage1 = false;
-	// MOUSEENTER
+	// let mouseEnterMessage1 = false;
+	// MOUSEENTER | MOUSELEAVE
 	$(document).on('mouseenter', '#tally_character', function() {
-		if (mouseEnterMessage1) return; // only show one of these during each page
-		let r = Math.random(),
-			often = 1,
-			dialogue = {
-				"text": "Oh hi! I'm Tally!",
-				"mood": "happy"
-			};
-		// if not the first time then only show half the time
-		if (Progress.get("mouseEnterTally")) often = 0.5;
-		if (r > often) dialogue = {};
-		// otherwise get a random message
-		else dialogue = Dialogue.get(["random", "greeting", null]);
-		Dialogue.show(dialogue, false, true); // show dialogue
-		Progress.update("mouseEnterTally", true); // update progress
-		mouseEnterMessage1 = true;
+		interactionHandler('mouseenter');
 	});
-	// MOUSELEAVE
 	$(document).on('mouseleave', '#tally_character', function() {
-		if (!Progress.update("mouseLeaveTally1", true))
-			Dialogue.showStr("Did you know that you can drag me around the screen.", false, true);
+		interactionHandler('mouseleave');
 	});
 
-
-
-	// ON DRAG START
+	// ON DRAG START | DRAG | DRAG STOP
 	$(document).on('dragstart', '#tally_character', function() {
-		// Dialogue.showStr("Weeeeeeeee!", false, true);
+		interactionHandler('dragstart');
 	});
 	let dragging = false;
-	// ON DRAG
 	$(document).on('drag', '#tally_character', function() {
-		if (!dragging) {
-			Dialogue.showStr("Weeeeeeeee!", "happy", true);
-			dragging = true;
-		}
+		interactionHandler('drag');
 	});
-	// ON DRAG STOP
 	$(document).on('dragstop', '#tally_character', function() {
-		if (!Progress.update("dragTally", true))
-			Dialogue.showStr("Double click me!", "happy", true);
-		dragging = false;
+		interactionHandler('dragstop');
 	});
+
+
+
+
+	/**
+	 *	Generic handler to route | stop | color all interaction
+	 */
+	function interactionHandler(interaction) {
+		try {
+			console.log("%c   Tally.interactionHandler()", tallyConsoleIcon, interaction);
+
+
+			// default to prompt if not connected
+			if (!FS_Object.prop(tally_user) || tally_meta.userTokenStatus != "ok") {
+				Dialogue.showStr(TallyMain.userTokenPromptMessage(), "sad", true);
+				return;
+			}
+
+
+
+			else if (interaction === 'mouseenter') {
+				// only show one of these during each page
+				if (!FS_Object.prop(window.tallyFirstMouseEnterMessage)) return;
+				let r = Math.random(),
+					often = 1,
+					dialogue = {
+						"text": "Oh hi! I'm Tally!",
+						"mood": "happy"
+					};
+				// if not the first time then only show half the time
+				if (Progress.get("mouseEnterTally")) often = 0.5;
+				if (r > often) dialogue = {};
+				// otherwise get a random message
+				else dialogue = Dialogue.get(["random", "greeting", null]);
+				Dialogue.show(dialogue, false, true); // show dialogue
+				Progress.update("mouseEnterTally", true); // update progress
+				window.tallyFirstMouseEnterMessage = true;
+
+			} else if (interaction === 'mouseleave') {
+				if (!Progress.update("mouseLeaveTally1", true))
+					Dialogue.showStr("Did you know that you can drag me around the screen.", false, true);
+			} else if (interaction === 'dragstart') {
+				// Dialogue.showStr("Weeeeeeeee!", false, true);
+			} else if (interaction === 'drag') {
+				if (!dragging) {
+					Dialogue.showStr("Weeeeeeeee!", "happy", true);
+					dragging = true;
+				}
+			} else if (interaction === 'dragstop') {
+				if (!Progress.update("dragTally", true))
+					Dialogue.showStr("Double click me!", "happy", true);
+				dragging = false;
+			}
+
+
+		} catch (err) {
+			console.error(err);
+		}
+	}
 
 
 
@@ -300,32 +334,42 @@ window.Tally = (function() {
 	}
 	// multiclick action
 	function multiclickAction() {
-		if (clickCount <= 0) return;
-		// ONE CLICK
-		if (clickCount === 1) {
-			// Item.showManager();
-			// Skin.random();
-			// if (!Progress.update("clickTally", true))
-			// 	return Dialogue.showStr("Did you know that you can drag me around the screen.", false, true);
-		}
-		// TWO CLICKS
-		else if (clickCount === 2) {
-			// update progress (even tho we'll always show this menu)
-			Progress.update("doubleClickTally", true);
-			// build string and show
-			let str = "Would you like to view a " +
-				"<a class='tally' id='tally_showTutorialOne'>tutorial</a> " +
-				"or see more <a class='tally' id='tally_showMoreOptions'>options</a>?";
-			Dialogue.showStr(str, false, true, true);
-		}
-		// THREE CLICKS
-		else if (clickCount === 3) {
-			Dialogue.showStr("A triple click!", false, true, true);
-		}
-		// FOUR CLICKS
-		else if (clickCount === 4) {
-			// alert("three!");
-			showDevOptions();
+		try {
+			// default to prompt if not connected
+			if (!FS_Object.prop(tally_user) || tally_meta.userTokenStatus != "ok") {
+				Dialogue.showStr(TallyMain.userTokenPromptMessage(), "sad", true);
+				return;
+			}
+
+			if (clickCount <= 0) return;
+			// ONE CLICK
+			if (clickCount === 1) {
+				// Item.showManager();
+				// Skin.random();
+				// if (!Progress.update("clickTally", true))
+				// 	return Dialogue.showStr("Did you know that you can drag me around the screen.", false, true);
+			}
+			// TWO CLICKS
+			else if (clickCount === 2) {
+				// update progress (even tho we'll always show this menu)
+				Progress.update("doubleClickTally", true);
+				// build string and show
+				let str = "Would you like to view a " +
+					"<a class='tally' id='tally_showTutorialOne'>tutorial</a> " +
+					"or see more <a class='tally' id='tally_showMoreOptions'>options</a>?";
+				Dialogue.showStr(str, false, true, true);
+			}
+			// THREE CLICKS
+			else if (clickCount === 3) {
+				Dialogue.showStr("A triple click!", false, true, true);
+			}
+			// FOUR CLICKS
+			else if (clickCount === 4) {
+				// alert("three!");
+				showDevOptions();
+			}
+		} catch (err) {
+			console.error(err);
 		}
 	}
 
@@ -403,20 +447,20 @@ window.Tally = (function() {
 	 *****************************************************************************/
 
 
-	 function showDevOptions(){
-		 let str = "Dev options: <br>" +
- 			"Monster: <a class='tally' id='tally_testNearbyMonster'>test</a>; " +
- 			"Battle: <a class='tally' id='tally_battleStart'>start</a>, " +
- 			"<a class='tally' id='tally_battleEnd'>end</a>;<br>" +
- 			"Rumble: <a class='tally' id='tally_battleRumbleSmall'>sm</a>, " +
- 			"<a class='tally' id='tally_battleRumbleMedium'>md</a>, " +
- 			"<a class='tally' id='tally_battleRumbleLarge'>lg</a>, " +
- 			"<a class='tally' id='tally_explodePage'>explode</a>;<br>" +
- 			"Dialogue: <a class='tally' id='tally_randomDialogue'>random</a>; " +
- 			"Skin: <a class='tally' id='tally_randomSkin'>random</a>" +
- 			"";
- 		Dialogue.showStr(str, false, true, true);
-	 }
+	function showDevOptions() {
+		let str = "Dev options: <br>" +
+			"Monster: <a class='tally' id='tally_testNearbyMonster'>test</a>; " +
+			"Battle: <a class='tally' id='tally_battleStart'>start</a>, " +
+			"<a class='tally' id='tally_battleEnd'>end</a>;<br>" +
+			"Rumble: <a class='tally' id='tally_battleRumbleSmall'>sm</a>, " +
+			"<a class='tally' id='tally_battleRumbleMedium'>md</a>, " +
+			"<a class='tally' id='tally_battleRumbleLarge'>lg</a>, " +
+			"<a class='tally' id='tally_explodePage'>explode</a>;<br>" +
+			"Dialogue: <a class='tally' id='tally_randomDialogue'>random</a>; " +
+			"Skin: <a class='tally' id='tally_randomSkin'>random</a>" +
+			"";
+		Dialogue.showStr(str, false, true, true);
+	}
 
 	$(document).on('click', '#tally_testNearbyMonster', function() {
 		Monster.test(); // launch one of the nearby monsters
