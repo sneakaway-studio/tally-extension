@@ -41,7 +41,7 @@ window.Progress = (function() {
 	 */
 	function get(name) {
 		try {
-			if (DEBUG) console.log("🕹️ Progress.get() [1]", name);
+			// if (DEBUG) console.log("🕹️ Progress.get() [1]", name);
 
 			// console.log(tally_user, FS_Object.prop(tally_user));
 			// console.log(tally_user.progress, FS_Object.prop(tally_user.progress));
@@ -49,10 +49,10 @@ window.Progress = (function() {
 
 			// if value exists in tally_user && is true | >0 | !""
 			if (tally_user.progress[name]) {
-				if (DEBUG) console.log("🕹️ Progress.get() [2]", tally_user.progress[name]);
+				// if (DEBUG) console.log("🕹️ Progress.get() [2]", tally_user.progress[name]);
 				return tally_user.progress[name].val;
 			} else {
-				if (DEBUG) console.log("🕹️ Progress.get() [3]" + name + " NOT FOUND");
+				// if (DEBUG) console.log("🕹️ Progress.get() [3]" + name + " NOT FOUND");
 				return false;
 			}
 		} catch (err) {
@@ -78,9 +78,6 @@ window.Progress = (function() {
 			// set default if does not exist
 			if (!currentVal) currentVal = defaults[name];
 
-			if (DEBUG) console.log("🕹️ Progress.update() [1]", name, currentVal + " " + operator + " " + val);
-
-
 			// instead of setting, we need to do an operation
 			if (operator === "=") {
 				// update value
@@ -89,7 +86,7 @@ window.Progress = (function() {
 				// update value
 				newVal = FS_Number.operation(currentVal, val, operator);
 			}
-			if (DEBUG) console.log("🕹️ Progress.update() [2]", name, currentVal + " " + operator + " " + val + " = " + newVal);
+			if (DEBUG) console.log("🕹️ Progress.update()", name, currentVal + " " + operator + " " + val + " = " + newVal);
 
 			// create progress object
 			let obj = {
@@ -159,10 +156,7 @@ window.Progress = (function() {
 	function tokenAdded() {
 		try {
 			if (DEBUG) console.log("🕹️ Progress.tokenAdded() [1] -> 🔑 SAVED");
-			// update Page.mode()
-			Page.updateMode("active");
-			// run game again
-			TallyMain.contentStartChecks();
+
 			// increment counter
 			let tokenCount = update("tokenAdded", 1, "+");
 

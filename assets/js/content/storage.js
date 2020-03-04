@@ -204,14 +204,21 @@ window.TallyStorage = (function() {
 					tally_options = response.tally_options;
 					tally_meta = response.tally_meta;
 
-					// let progress show game events
-					Progress.tokenAdded();
+
+					// update Page.mode()
+					Page.updateMode("active");
+					// run game again
+					TallyMain.contentStartChecks();
+
+					// let caller know to restart
+					return true;
 
 				} else if (response.message === "same") {
 					if (DEBUG) console.log('💾 > TallyStorage.saveTokenFromDashboard() [3] 🔑 IS THE SAME', response);
 				} else {
 					if (DEBUG) console.log('💾 > TallyStorage.saveTokenFromDashboard() [4] 🔑 FAILED', response);
 				}
+				return false;
 			});
 		} catch (err) {
 			console.error(err);

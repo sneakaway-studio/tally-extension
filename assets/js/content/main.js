@@ -80,8 +80,9 @@ window.TallyMain = (function() {
 	 *	2. Perform all start checks
 	 *	- confirm it is safe to run game; then add all required elements to DOM
 	 */
-	function contentStartChecks() {
+	async function contentStartChecks() {
 		try {
+			if (DEBUG) Debug.dataReportHeader("🧰 TallyMain.contentStartChecks()", "#", "before", 30);
 
 			// 2.1. Set the Page.mode
 			if (DEBUG) console.log('🧰 TallyMain.contentStartChecks() [2.1] -> SET Page.mode');
@@ -98,7 +99,15 @@ window.TallyMain = (function() {
 			if (DEBUG) console.log('🧰 TallyMain.contentStartChecks() [2.2] -> Check for flags');
 
 			// check for, and possibly execute and flags
-			Flag.check();
+			let newTokenFound = await Flag.check();
+			// if token flag found we should allow restart to happen
+			if (newTokenFound) return false;
+            // if this is the second run after a new token found 
+			else if (Page.data.tokenFound == true) {
+				// let progress show game events
+				Progress.tokenAdded();
+			}
+
 			// remove trackers that have been caught
 			Tracker.removeCaughtTrackers();
 
@@ -204,47 +213,48 @@ window.TallyMain = (function() {
 	 */
 	function startGameOnPage() {
 		try {
-            // allow offline
-            if (Page.mode().notActive) return;
-            // don't allow if mode disabled
-            if (tally_options.gameMode === "disabled") return;
+			// allow offline
+			if (Page.mode().notActive) return;
+			// don't allow if mode disabled
+			if (tally_options.gameMode === "disabled") return;
 
 			if (DEBUG) console.log("🧰 TallyMain.startGameOnPage() [1]");
 
 
-            // 4.1.
+			// 4.1. Progress and event checks
 
-            // check for, and possibly complete any progress
-            Progress.check("TallyMain");
-
-
-return;
-
-			// RUN ALL GAME METHODS
-
-
+			// check for, and possibly complete any progress
+			Progress.check("TallyMain");
 			// check last active status and potentially recharge
 			TallyEvents.checkLastActiveAndRecharge();
-			// check for, and possibly add a consumable
+
+
+			// 4.2. Check and show items
+
+			// potentially add a consumable
 			Consumable.randomizer();
-			// check for, and possibly add badge
+			// potentially add badge
 			Badge.randomizer();
-			// check for, and possibly add monsters on the page
+			// check for, and potentially add monsters on the page
 			MonsterCheck.check();
 
 
-			// check for, and possibly execute and flags from server (from previous update)
+			return;
+
+
+			// should be done in bg?
+			// check for, and potentially execute and flags from server (from previous update)
 			// checkForServerFlags();
 
 			// update debugger
 			Debug.update();
 
 
-// ?
-            // if in demo mode (server required) then go to new page
+			// ?
+			// if in demo mode (server required) then go to new page
 			if (tally_options.gameMode == "demo") Demo.goToNewPage(true);
 
-            // are we running in demo mode?
+			// are we running in demo mode?
 			Demo.start();
 
 		} catch (err) {

@@ -14,7 +14,7 @@ window.Flag = (function() {
 	/**
 	 *	If on dashboard page then check for specific flags
 	 */
-	function check() {
+	async function check() {
 		try {
 			// allow offline
 			if (Page.mode().notActive) return;
@@ -43,7 +43,15 @@ window.Flag = (function() {
 					};
 					if (DEBUG) console.log("🚩 Flag.check() 🔑 FOUND");
 					// save token (also saves progress, restarts game)
-					TallyStorage.saveTokenFromDashboard(tokenData);
+					let newTokenFound = await TallyStorage.saveTokenFromDashboard(tokenData);
+					// if we found a token stop main contentStartChecks()
+					if (newTokenFound){
+						if (DEBUG) console.log("🚩 Flag.check() 🔑 NEW");
+						return true;
+					} else {
+						if (DEBUG) console.log("🚩 Flag.check() 🔑 SAME");
+						return true;
+					}
 				}
 
 
