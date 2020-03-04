@@ -276,33 +276,42 @@ window.Tally = (function() {
 			if (interaction === 'mouseenter') {
 				if (DEBUG) console.log("%c   Tally.interactionHandler()", tallyConsoleIcon, interaction);
 
-				// only show one of these during each page
-				if (!FS_Object.prop(window.tallyFirstMouseEnterMessage)) return;
-				window.tallyFirstMouseEnterMessage = true;
+				// the first time
+				if (Progress.update("mouseEnterTally", 1, "+") < 1){
+					if (Progress.update("toldToDragTally", 1, "+") < 1) {
+						// tell them more
+						Dialogue.showStr("Did you know that you can drag me around the screen.", false, true);
+					}
+				} else {
+					// show random greeting once per page load
+					if (!FS_Object.prop(window.tallyFirstMouseEnterMessage)) return;
+					window.tallyFirstMouseEnterMessage = true;
 
-				// use random to determine what to do
-				let r = Math.random(),
-					// how often %
-					often = 1,
-					// sample dialogue
-					dialogue = {
-						"text": "Oh hi! I'm Tally!",
-						"mood": "happy"
-					};
-				// check/update progress, after the first time then only show half the time
-				if (Progress.update("mouseEnterTally", 1, "+") > 0) often = 0.5;
-				// if random is > % show dialogue
-				if (r > often) Dialogue.show(Dialogue.get(["random", "greeting", null]), false, true);
-
+					// use random to determine what to do
+					let r = Math.random(),
+						// how often %
+						often = 1,
+						// sample dialogue
+						dialogue = {
+							"text": "Oh hi! I'm Tally!",
+							"mood": "happy"
+						};
+					// check/update progress, after the first time then only show half the time
+					if (Progress.get("mouseEnterTally") > 0) often = 0.5;
+					// if random is > % show dialogue
+					if (r > often) Dialogue.show(Dialogue.get(["random", "greeting", null]), false, true);
+				}
 
 			} else if (interaction === 'mouseleave') {
 				if (DEBUG) console.log("%c   Tally.interactionHandler()", tallyConsoleIcon, interaction);
 
-				if (Progress.update("mouseLeaveTally", 1, "+") < 2) {
-					Dialogue.showStr("Did you know that you can drag me around the screen.", false, true);
+				// update progress
+				if (Progress.update("mouseLeaveTally", 1, "+") < 3){
+					if (Progress.get("clickTallyDouble") < 1)
+						Dialogue.showStr("Double click me to see a menu!", "happy", true);
 				}
-			}
 
+			}
 
 			// do allow dragging though
 			else if (interaction === 'dragstart') {
@@ -315,9 +324,15 @@ window.Tally = (function() {
 				// Dialogue.showStr("Weeeeeeeee!", false, true);
 			} else if (interaction === 'dragstop') {
 				if (DEBUG) console.log("%c   Tally.interactionHandler()", tallyConsoleIcon, interaction);
-				if (!Progress.update("dragTally", 1, "+"))
-					Dialogue.showStr("Double click me!", "happy", true);
+				// reset flag
 				dragging = false;
+				// update progress
+				Progress.update("dragTally", 1, "+");
+				// tell them more
+				if (Progress.update("toldToClickDouble", 1, "+") < 1)
+					Dialogue.showStr("Double click me!", "happy", true);
+				else if (Progress.get("clickTallyDouble") < 1)
+					Dialogue.showStr("Double click me to see a menu!", "happy", true);
 			}
 
 		} catch (err) {
@@ -403,31 +418,39 @@ window.Tally = (function() {
 			// ONE CLICK
 			if (clickCount === 1) {
 				// if dialogue open let them click through it
-
 				Dialogue.skipToNext();
 
 				// Item.showManager();
 				Skin.random();
-				if (Progress.update("clickTally", 1, "+") < 1)
-					return Dialogue.showStr("Did you know that you can drag me around the screen.", false, true);
+				// update progress
+				if (Progress.update("clickTallySingle", 1, "+") < 1)
+					// tell them more
+					if (Progress.update("toldToClickDouble", 1, "+") < 1)
+						Dialogue.showStr("Double click me!", "happy", true);
+					else
+						Dialogue.showStr("Double click me to see a menu!", "happy", true);
 			}
 			// TWO CLICKS
 			else if (clickCount === 2) {
-				// update progress (even tho we'll always show this menu)
-				Progress.update("doubleClickTally", 1, "+");
+				// update progress
+				Progress.update("clickTallyDouble", 1, "+");
 				// build string and show
 				let str = "Would you like to view a " +
-					"<a class='tally' id='tally_showTutorialOne'>tutorial</a> " +
+					"<a class='tally' id='tally_showTutorial1'>tutorial</a> " +
 					"or see more <a class='tally' id='tally_showMoreOptions'>options</a>?";
 				Dialogue.showStr(str, false, true, true);
 			}
 			// THREE CLICKS
 			else if (clickCount === 3) {
+				// update progress
+				Progress.update("clickTallyTriple", 1, "+");
 				Dialogue.showStr("A triple click!", false, true, true);
 			}
 			// FOUR CLICKS
 			else if (clickCount === 4) {
-				// alert("three!");
+				// update progress
+				Progress.update("clickTallyQuadruple", 1, "+");
+				// (if admin) show developer options
 				showDevOptions();
 			}
 		} catch (err) {
@@ -443,7 +466,7 @@ window.Tally = (function() {
 	 *****************************************************************************/
 
 	// MENU ITEM LISTENERS
-	$(document).on('click', '#tally_showTutorialOne', function() {
+	$(document).on('click', '#tally_showTutorial1', function() {
 		Tutorial.play("tutorial1");
 	});
 	$(document).on('click', '#tally_showMoreOptions', function() {

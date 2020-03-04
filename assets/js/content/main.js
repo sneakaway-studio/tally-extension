@@ -204,19 +204,25 @@ window.TallyMain = (function() {
 	 */
 	function startGameOnPage() {
 		try {
-			if (DEBUG) console.log("🧰 TallyMain.startGameOnPage() ...");
-
             // allow offline
-			if (Page.mode().notActive) return;
-			// don't allow if mode disabled 
-			if (tally_options.gameMode === "disabled") return;
+            if (Page.mode().notActive) return;
+            // don't allow if mode disabled
+            if (tally_options.gameMode === "disabled") return;
+
+			if (DEBUG) console.log("🧰 TallyMain.startGameOnPage() [1]");
+
+
+            // 4.1.
+
+            // check for, and possibly complete any progress
+            Progress.check("TallyMain");
+
 
 return;
 
 			// RUN ALL GAME METHODS
 
-			// are we running in demo mode?
-			Demo.start();
+
 			// check last active status and potentially recharge
 			TallyEvents.checkLastActiveAndRecharge();
 			// check for, and possibly add a consumable
@@ -225,8 +231,7 @@ return;
 			Badge.randomizer();
 			// check for, and possibly add monsters on the page
 			MonsterCheck.check();
-			// check for, and possibly complete any progress
-			Progress.check("TallyMain");
+
 
 			// check for, and possibly execute and flags from server (from previous update)
 			// checkForServerFlags();
@@ -239,6 +244,8 @@ return;
             // if in demo mode (server required) then go to new page
 			if (tally_options.gameMode == "demo") Demo.goToNewPage(true);
 
+            // are we running in demo mode?
+			Demo.start();
 
 		} catch (err) {
 			console.error(err);

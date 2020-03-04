@@ -7,15 +7,22 @@ window.Progress = (function() {
 	let defaults = {
 		// authentication
 		"tokenAdded": 0,
-		"tokenAddedPlayWelcomeMessage": 0,
+		"tokenAddedWelcomeMessage": 0,
 		// tutorials
+		"viewTutorial1": 0,
+		"viewProfilePage": 0,
+		"viewDashboardPage": 0,
+		// interaction
+		"clickTallySingle": 0,
+		"clickTallyDouble": 0,
+		"clickTallyTriple": 0,
+		"clickTallyQuadruple": 0,
+		"dragTally": 0,
 		"mouseEnterTally": 0,
 		"mouseLeaveTally": 0,
-		"clickTally": 0,
-		"doubleClickTally": 0,
-		"dragTally": 0,
-		"viewTutorialOne": false,
-		"viewProfilePage": false,
+		// things to tell the player
+		"toldToDragTally": 0,
+		"toldToClickDouble": 0,
 		// attacks
 		"attackLimit": 1,
 		"attacksAwarded": 0,

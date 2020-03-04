@@ -6,7 +6,9 @@ window.Tutorial = (function() {
 		_active = false;
 
 
-	// control state
+	/**
+	 *	Control Tutorial state
+	 */
 	function active(state) {
 		try {
 			if (state != undefined && (state === true || state === false))
@@ -17,17 +19,18 @@ window.Tutorial = (function() {
 		}
 	}
 
-
-	function show(str) {
-		console.log("📚 Tutorial.show()", str);
-	}
-
-
 	/**
-	 *	Play tutorial
+	 *	Add tutorial to Dialogue and play
 	 */
 	function play(which) {
 		try {
+			// allow offline
+			if (Page.mode().notActive) return;
+			// don't allow if mode disabled or stealth
+			if (tally_options.gameMode === "disabled" || tally_options.gameMode === "stealth") return;
+
+			if (DEBUG) console.log("📚 Tutorial.play() [1]", which);
+
 			// set tutorial mode active
 			if (_active) return;
 			active(true);
@@ -35,36 +38,30 @@ window.Tutorial = (function() {
 			let dialogue = {},
 				step = 1;
 
+			// loop through all the dialogue objects for this tutorial and add them
 			while (step > -1) {
-				// store dialogue obj
+				// store each dialogue obj
 				dialogue = Dialogue.get(["tutorial", null, which + "-" + step]);
 
-
 				// testing
-				console.log("📚 Tutorial.play()", step, which, dialogue);
-
+				if (DEBUG) console.log("📚 Tutorial.play() [2]", step, which, dialogue);
 
 				// check to see if there is more dialogue
-				if (dialogue === undefined) {
-					console.log("📚 Tutorial.play()", step, which, dialogue);
-					// hide slide show
+				if (dialogue !== undefined) {
+					// if (DEBUG) console.log("📚 Tutorial.play() [3]", step, which, dialogue);
+
+					// play first dialogue of tutorial, instantly
+					if (step === 1) Dialogue.show(dialogue, true, true, true);
+					// otherwise add next dialogue to queue
+					else Dialogue.show(dialogue, true, true);
+
+				} else {
+					if (DEBUG) console.log("📚 Tutorial.play() [4] NO MORE DIALOGUE");
+
+					// hide slide show and break loop
 					dialogueCallbackVisible(false);
 					break;
-				} else {
-
-					console.log("📚 Tutorial.play()", step, which, dialogue);
-
-					// execute a callback if exists
-					// if (dialogue.callback) show(dialogue.callback);
-
-					if (step === 1)
-						// first dialogue of tutorial, instantly
-						Dialogue.show(dialogue, true, true, true);
-					else
-						// show next dialogue
-						Dialogue.show(dialogue, true, true);
 				}
-
 				step++;
 			}
 
@@ -82,7 +79,13 @@ window.Tutorial = (function() {
 
 	function dialogueCallback(callback = null) {
 		try {
+			// allow offline
+			if (Page.mode().notActive) return;
+			// don't allow if mode disabled or stealth
+			if (tally_options.gameMode === "disabled" || tally_options.gameMode === "stealth") return;
+
 			if (DEBUG) console.log("📚 Tutorial.dialogueCallback()", callback);
+
 			let str = '';
 
 			if (callback === "slideShowCatGifs") {
@@ -108,10 +111,9 @@ window.Tutorial = (function() {
 				dialogueCallbackVisible(false);
 
 			} else {
-
+				// do nothing
 			}
 			// add string and show
-
 			if (str) {
 				$('#tally_slide_show_inner').html(str);
 				dialogueCallbackVisible(true);
@@ -165,12 +167,8 @@ window.Tutorial = (function() {
 		active: function(state) {
 			return active(state);
 		},
-		play: function(which) {
-			play(which);
-		},
-		dialogueCallback: function(callback) {
-			dialogueCallback(callback);
-		},
+		play: play,
+		dialogueCallback: dialogueCallback,
 		skip: skip
 	};
 }());
