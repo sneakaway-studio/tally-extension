@@ -74,6 +74,8 @@ window.Sound = (function() {
 			if (Page.mode().notActive) return;
 			// don't allow if mode disabled or stealth
 			if (tally_options.gameMode === "disabled" || tally_options.gameMode === "stealth") return;
+			// don't allow if this page doesn't have focus
+			if (!document.hasFocus()) return;
 			// don't allow if playSounds disabled
 			if (!tally_options.playSounds) return;
 
@@ -97,6 +99,8 @@ window.Sound = (function() {
 			if (Page.mode().notActive) return;
 			// don't allow if mode disabled or stealth
 			if (tally_options.gameMode === "disabled" || tally_options.gameMode === "stealth") return;
+			// don't allow if this page doesn't have focus
+			if (!document.hasFocus()) return;
 			// don't allow if playSounds disabled
 			if (!tally_options.playSounds) return;
 
@@ -142,6 +146,8 @@ window.Sound = (function() {
 			if (Page.mode().notActive) return;
 			// don't allow if mode disabled or stealth
 			if (tally_options.gameMode === "disabled" || tally_options.gameMode === "stealth") return;
+			// don't allow if this page doesn't have focus
+			if (!document.hasFocus()) return;
 			// don't allow if playSounds disabled
 			if (!tally_options.playSounds) return;
 
@@ -252,6 +258,8 @@ window.Sound = (function() {
 			if (Page.mode().notActive) return;
 			// don't allow if mode disabled or stealth
 			if (tally_options.gameMode === "disabled" || tally_options.gameMode === "stealth") return;
+			// don't allow if this page doesn't have focus
+			if (!document.hasFocus()) return;
 			// don't allow if playSounds disabled
 			if (!tally_options.playSounds) return;
 
@@ -283,6 +291,8 @@ window.Sound = (function() {
 			if (Page.mode().notActive) return;
 			// don't allow if mode disabled or stealth
 			if (tally_options.gameMode === "disabled" || tally_options.gameMode === "stealth") return;
+			// don't allow if this page doesn't have focus
+			if (!document.hasFocus()) return;
 			// don't allow if playSounds disabled
 			if (!tally_options.playSounds) return;
 
@@ -299,6 +309,8 @@ window.Sound = (function() {
 			if (Page.mode().notActive) return;
 			// don't allow if mode disabled or stealth
 			if (tally_options.gameMode === "disabled" || tally_options.gameMode === "stealth") return;
+			// don't allow if this page doesn't have focus
+			if (!document.hasFocus()) return;
 			// don't allow if playSounds disabled
 			if (!tally_options.playSounds) return;
 
@@ -349,6 +361,8 @@ window.Sound = (function() {
 			if (Page.mode().notActive) return;
 			// don't allow if mode disabled or stealth
 			if (tally_options.gameMode === "disabled" || tally_options.gameMode === "stealth") return;
+			// don't allow if this page doesn't have focus
+			if (!document.hasFocus()) return;
 			// don't allow if playSounds disabled
 			if (!tally_options.playSounds) return;
 
