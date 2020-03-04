@@ -5,7 +5,7 @@ window.Dialogue = (function() {
 
 	let DEBUG = Debug.ALL.Dialogue,
 		dialogueBubbleOpen = false, // whether or not dialogue bubble currently open
-		_active,
+		_active, // is text currently being shown in the speech bubble
 		queueWaitTime = 0,
 		hideTimeout = {},
 		_queue = []; // array of objects
@@ -181,12 +181,12 @@ window.Dialogue = (function() {
 	/**
 	 *	Show next dialogue in queue
 	 */
-	function writeNextInQueue(lineSpeed = 150) {
+	function writeNextInQueue(lineSpeed = 150, skipToNext = false) {
 		try {
-			if (DEBUG) console.log("💭 Dialogue.writeNextInQueue()", _queue, _active, queueWaitTime);
+			if (DEBUG) console.log("💭 Dialogue.writeNextInQueue() [1]", _queue, _active, queueWaitTime);
 
-			// if currently active, stop
-			if (_active) return;
+			// if currently active, stop (unless we want to skip to next)
+			if (_active && !skipToNext) return;
 			// set active state true
 			active(true);
 			// set open
@@ -206,12 +206,11 @@ window.Dialogue = (function() {
 			// update queueWaitTime
 			queueWaitTime = stringDuration(dialogue.text);
 
-			if (DEBUG) console.log("💭 Dialogue.writeNextInQueue()", dialogue, _queue, _active);
+			if (DEBUG) console.log("💭 Dialogue.writeNextInQueue() [2]", dialogue, _queue, _active);
 
 			if (dialogue.callback) {
 				Tutorial.dialogueCallback(dialogue.callback);
 			}
-
 
 			// add text
 			$('#tally_dialogue').html(dialogue.text);
@@ -229,6 +228,20 @@ window.Dialogue = (function() {
 			// hide after appropriate reading period
 			clearTimeout(hideTimeout);
 			hideTimeout = setTimeout(hide, queueWaitTime);
+		} catch (err) {
+			console.error(err);
+		}
+	}
+
+	function skipToNext() {
+		try {
+			if (DEBUG) console.log("💭 Dialogue.skipToNext()");
+
+			// if queue contains dialogue then skip
+			if (_queue.length > 0) writeNextInQueue(150,true);
+			// or hide it
+			else hide();
+
 		} catch (err) {
 			console.error(err);
 		}
@@ -431,6 +444,10 @@ window.Dialogue = (function() {
 		stringDuration: function(str) {
 			return stringDuration(str);
 		},
+		active: function() {
+			return _active;
+		},
+		skipToNext: skipToNext
 
 	};
 })();

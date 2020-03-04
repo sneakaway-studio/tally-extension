@@ -377,20 +377,25 @@ window.Tally = (function() {
 	// multiclick action
 	function multiclickAction() {
 		try {
+			if (clickCount <= 0) return;
+
 			// default to prompt if not connected
-			if (!FS_Object.prop(tally_user) || tally_meta.token.status != "ok" || !window.tallyTokenPrompt) {
-				window.tallyTokenPrompt = true;
+			if (!Page.mode().active && window.tallyTokenPrompt < 10) {
+				window.tallyTokenPrompt ++;
 				Dialogue.showStr(Token.returnPrompt(), "sad", true);
 				return;
 			}
 
-			if (clickCount <= 0) return;
 			// ONE CLICK
 			if (clickCount === 1) {
+				// if dialogue open let them click through it
+
+				Dialogue.skipToNext();
+
 				// Item.showManager();
 				Skin.random();
-				// if (!Progress.update("clickTally", , 1, "+"))
-				// 	return Dialogue.showStr("Did you know that you can drag me around the screen.", false, true);
+				if (Progress.update("clickTally", 1, "+") < 1)
+					return Dialogue.showStr("Did you know that you can drag me around the screen.", false, true);
 			}
 			// TWO CLICKS
 			else if (clickCount === 2) {
