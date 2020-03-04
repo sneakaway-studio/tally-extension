@@ -20,10 +20,20 @@ window.Monster = (function() {
 	 */
 	function create(mid, _stage = 1) {
 		try {
+			// allow offline
+			if (Page.mode().notActive) return;
+			// don't allow if mode disabled or stealth
+			if (tally_options.gameMode === "disabled" || tally_options.gameMode === "stealth") return;
+
+			let log = "👿 Monster.create()";
+
+			// make sure we have required data
 			if (!prop(mid) || !prop(_stage) || !prop(MonsterData.dataById[mid])) return;
 			// if there are trackers on the page
 			let tracker = FS_Object.randomArrayIndex(Page.data.trackers) || "";
-			if (DEBUG) console.log('👿 ⊙!⊙⊙⊙ Monster.create() 2', "mid=" + mid, "_stage=" + _stage, MonsterData.dataById[mid]);
+
+			if (DEBUG) console.log(log, "[1] mid=" + mid, "_stage=" + _stage, MonsterData.dataById[mid]);
+
 			tally_nearby_monsters[mid] = {
 				"stage": _stage,
 				"level": returnNewMonsterLevel(),
@@ -40,7 +50,7 @@ window.Monster = (function() {
 			// if it already exists then make it the number of captures +1
 			if (tally_user.monsters[mid])
 				tally_nearby_monsters[mid].totalCaptured = tally_user.monsters[mid].captured;
-			if (DEBUG) console.log('👿 ⊙!⊙⊙⊙ Monster.create()', mid, tally_nearby_monsters[mid], tally_user.monsters[mid]);
+			if (DEBUG) console.log(log, '[2]', mid, tally_nearby_monsters[mid], tally_user.monsters[mid]);
 			// save
 			TallyStorage.saveData("tally_nearby_monsters", tally_nearby_monsters, "👿 Monster.create()");
 			return tally_nearby_monsters[mid];
@@ -48,6 +58,7 @@ window.Monster = (function() {
 			console.error(err);
 		}
 	}
+
 	/**
 	 *	Determine and return a monster's level
 	 */
@@ -81,7 +92,7 @@ window.Monster = (function() {
 			// don't allow if mode disabled or stealth
 			if (tally_options.gameMode === "disabled" || tally_options.gameMode === "stealth") return;
 
-			if (DEBUG) console.log('👿 ⊙⊙⊙!⊙ Monster.showOnPage()', mid, tally_nearby_monsters[mid]);
+			if (DEBUG) console.log('👿 Monster.showOnPage()', mid, tally_nearby_monsters[mid]);
 
 			// only proceed if mid is valid
 			if (!mid || mid <= 0) return;
@@ -108,7 +119,7 @@ window.Monster = (function() {
 	 */
 	function display(monster) {
 		try {
-			if (DEBUG) console.log('👿 ⊙⊙⊙⊙! Monster.display()', monster);
+			if (DEBUG) console.log('👿 Monster.display()', monster);
 			// set marker
 			onPage = monster.mid;
 
@@ -188,11 +199,11 @@ window.Monster = (function() {
 			tally_nearby_monsters[mid] = create(mid, _stage);
 			tally_nearby_monsters[mid].captured = 0;
 			tally_nearby_monsters[mid].missed = 0;
-			if (DEBUG) console.log("👿 ⊙⊙⊙⊙⊙ Monster.test()", MonsterData.dataById[mid]);
+			if (DEBUG) console.log("👿 Monster.test()", MonsterData.dataById[mid]);
 			// save
 			TallyStorage.saveData("tally_nearby_monsters", tally_nearby_monsters, "👿 Monster.test()");
-			// set the skin color
-			Skin.setStage(tally_nearby_monsters[mid].stage);
+			// check/reset skin
+			Skin.updateFromHighestMonsterStage();
 			Dialogue.show(Dialogue.get(["monster", "show", null]), true);
 			add();
 		} catch (err) {
@@ -245,8 +256,8 @@ window.Monster = (function() {
 			tally_nearby_monsters = {};
 			monster = {};
 			TallyStorage.saveData("tally_nearby_monsters", tally_nearby_monsters, "👿 Monster.reset()");
-			// set the skin color
-			Skin.setStage(0);
+			// check/reset skin
+			Skin.updateFromHighestMonsterStage();
 		} catch (err) {
 			console.error(err);
 		}
@@ -267,9 +278,7 @@ window.Monster = (function() {
 		create: function(mid) {
 			return create(mid);
 		},
-		showOnPage: function(mid) {
-			showOnPage(mid);
-		},
+		showOnPage: showOnPage,
 		currentMID: currentMID,
 		current: function() {
 			return tally_nearby_monsters[currentMID];

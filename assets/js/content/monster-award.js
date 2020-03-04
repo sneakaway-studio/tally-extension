@@ -325,8 +325,8 @@ window.MonsterAward = (function() {
 		// reset them all
 		tally_nearby_monsters = {};
 		TallyStorage.saveData("tally_nearby_monsters",tally_nearby_monsters, "MonsterAward.reset()");
-		// set the skin color
-		Skin.setStage(0);
+		// check/reset skin
+		Skin.updateFromHighestMonsterStage();
 	}
 
 

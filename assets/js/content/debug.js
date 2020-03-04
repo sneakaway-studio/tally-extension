@@ -235,9 +235,7 @@ window.Debug = (function() {
 			Mousetrap.bind(k + ' q', function() {
 				Battle.end();
 			});
-			Mousetrap.bind('escape', function() {
-				Battle.end();
-			});
+
 			Mousetrap.bind(k + ' e', function() {
 				Effect.explode();
 			});

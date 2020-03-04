@@ -2,11 +2,8 @@
 
 window.Skin = (function() {
 	// PRIVATE
-	let DEBUG = Debug.ALL.Skin;
-
-
-
-	let skinStage = 0,
+	let DEBUG = Debug.ALL.Skin,
+		currentMonsterStage = 0,
 		currentSkinName = "magenta",
 		currentSkinObj = {};
 
@@ -17,14 +14,16 @@ window.Skin = (function() {
 	// https://www.visualcinnamon.com/2016/05/smooth-color-legend-d3-svg-gradient.html
 	// https://codepen.io/brenna/pen/mybQVx
 
-
-
 	// "pattern": {
 	// 	"plaidYellow": {
-	// 		"str": '<pattern id="tallyPattern" width="40" height="40" patternUnits="userSpaceOnUse"><rect width="40" height="40" fill="#343434"></rect><path d="M0,8l8,-8M-2,2l4,-4M6,10l4,-4" stroke="white" stroke-width="5" stroke-linecap="square"></path>'
+	// 		"str": '<pattern id="tallyPattern" width="40" height="40" patternUnits="userSpaceOnUse">'+
+	// '<rect width="40" height="40" fill="#343434"></rect>'+
+	// '<path d="M0,8l8,-8M-2,2l4,-4M6,10l4,-4" stroke="white" stroke-width="5" stroke-linecap="square"></path>'
 	// 	},
 	// 	"plaidRed": {
-	// 		"str": '<pattern id="tallyPattern" width="40" height="40" patternUnits="userSpaceOnUse"><rect width="40" height="40" fill="#343434"></rect><path d="M0,8l8,-8M-2,2l4,-4M6,10l4,-4" stroke="white" stroke-width="5" stroke-linecap="square"></path>'
+	// 		"str": '<pattern id="tallyPattern" width="40" height="40" patternUnits="userSpaceOnUse">'+
+	// '<rect width="40" height="40" fill="#343434"></rect>'+
+	// '<path d="M0,8l8,-8M-2,2l4,-4M6,10l4,-4" stroke="white" stroke-width="5" stroke-linecap="square"></path>'
 	// 	}
 
 
@@ -32,17 +31,66 @@ window.Skin = (function() {
 
 
 	/**
-	 *	Set the skin color based on the stage
+	 *	Update the skin color (using the highest monster stage and skin name)
 	 */
-	function setStage(n = 0) {
+	function updateFromHighestMonsterStage() {
 		try {
-			if (DEBUG) console.log("👚 Skin.setStage(" + n + ")");
-			skinStage = n;
-			// update skin
-			if (skinStage === 1) update("yellow");
-			else if (skinStage === 2) update("orange");
-			else if (skinStage === 3) update("red");
-			else update("magenta");
+			if (DEBUG) console.log("👚 Skin.updateFromHighestMonsterStage() [1] currentMonsterStage =",
+				currentMonsterStage, ", currentSkinName=", currentSkinName);
+			// console.trace();
+
+			// save the highest stage
+			currentMonsterStage = returnHighestMonsterStage();
+			// save the current skin name
+			let newSkinName = returnSkinNameFromStage(currentMonsterStage);
+			// return if already the same
+			if (newSkinName == currentSkinName) return;
+			// else update name
+			else currentSkinName = newSkinName;
+			// change skin
+			update(currentSkinName);
+
+		} catch (err) {
+			console.error(err);
+		}
+	}
+
+	/*
+	 *	Return the number of the monster with the highest stage
+	 */
+	function returnHighestMonsterStage() {
+		try {
+			let highestStage = 0;
+			// loop through nearby monsters
+			for (var mid in tally_nearby_monsters) {
+				if (tally_nearby_monsters.hasOwnProperty(mid)) {
+					// skin should reflect highest stage
+					highestStage = Math.max(highestStage, parseInt(tally_nearby_monsters[mid].stage));
+				}
+			}
+			if (DEBUG) console.log("👚 Skin.returnHighestMonsterStage() highestStage =", highestStage);
+
+			return highestStage;
+
+		} catch (err) {
+			console.error(err);
+		}
+	}
+
+	/*
+	 *	Save and return the skin name from a stage
+	 */
+	function returnSkinNameFromStage(stage = 0) {
+		try {
+			if (DEBUG) console.log("👚 Skin.returnSkinNameFromStage()", stage);
+
+			if (stage === 1) currentSkinName = "yellow";
+			else if (stage === 2) currentSkinName = "orange";
+			else if (stage === 3) currentSkinName = "red";
+			else currentSkinName = "magenta";
+
+			return currentSkinName;
+
 		} catch (err) {
 			console.error(err);
 		}
@@ -55,20 +103,29 @@ window.Skin = (function() {
 	/*
 	 *	Return Tally SVG
 	 */
-	function returnBasicSVG(defs = "") {
+	function returnTallySVG(defs = "") {
 		try {
+			if (DEBUG) console.log("👚 Skin.returnTallySVG()");
+
+			// run first so we have accurate color
+			let highestStage = returnHighestMonsterStage();
+			// get skin name
+			let newSkinName = returnSkinNameFromStage(highestStage);
+			// get skin data
+			let skinData = returnSkinData(newSkinName);
+
 			// old bitmap method
 			//svg = "<img class='tally-svg' src='" + chrome.extension.getURL('assets/img/tally/tally.svg') + "'>";
 
 			var svg = "";
-			svg += '<svg id="tally-svg" class="tally" ' +
-				'xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" ' +
-				'viewBox="0 0 914 814">';
-			svg += '<defs>';
-			svg += '<style type="text/css"> .tallySkinBack {fill:#C308C1;} .tallySkinFront {fill:#D32CF1;} </style>';
-			svg += defs + '</defs>';
-			svg += '<path class="tally tallySkinBack" d="M652.5,793.8l255.5-281L565.2,127.6l-307.3,35L5,366l88.5,346.8L652.5,793.8z"/>';
-			svg += '<path class="tally tallySkinFront" d="M199.8,809l419.9-139.2l126.5,10.1l161.9-319L690.5,14.1L509.8,36.2L450.2,' +
+			svg += '<svg id="tally-svg" class="tally" viewBox="0 0 914 814"' +
+				'xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">';
+			svg += '<defs>' + defs + '</defs>';
+			// svg += '<style type="text/css"> .tallySkinBack {fill:#C308C1;} .tallySkinFront {fill:#D32CF1;} </style>';
+			svg += '<path class="tally tallySkinBack" fill="' + skinData.backFill +
+				'" d="M652.5,793.8l255.5-281L565.2,127.6l-307.3,35L5,366l88.5,346.8L652.5,793.8z"/>';
+			svg += '<path class="tally tallySkinFront" fill="' + skinData.frontFill +
+				'" d="M199.8,809l419.9-139.2l126.5,10.1l161.9-319L690.5,14.1L509.8,36.2L450.2,' +
 				'4L258.3,66.9l-190,23.2 l-17.7,443L199.8,809z"/>';
 			svg += '</svg>';
 			return svg;
@@ -78,60 +135,62 @@ window.Skin = (function() {
 	}
 
 	/*
-	 *	Update Tally SVG
+	 *	Return the skin information 1) to initalize tally character or 2) update after on screen
 	 */
-	function update(newSkinName = "magenta") {
+	function returnSkinData(newSkinName = "magenta") {
 		try {
+			if (DEBUG) console.log("👚 Skin.returnSkinData() [1] newSkinName =", newSkinName);
 
-			// // if !tally_user.skins then set magenta default
-			// if (!prop(tally_user.skins) || FS_Object.objLength(tally_user.skins) < 1 || tally_user.skins[newSkinName]) {
-			// 	newSkinName = "magenta";
-			// }
-
-			let def = "",
-				frontFill = "",
-				backFill = "";
-
+			// if skin doesn't exist set magenta default
+			if (!FS_Object.prop(tally_user.skins) ||
+				FS_Object.objLength(tally_user.skins) < 1 || tally_user.skins[newSkinName]) {
+				newSkinName = "magenta";
+			}
 			// set current skin name and obj
 			currentSkinName = newSkinName;
 			currentSkinObj = SkinData.data[currentSkinName];
+			if (DEBUG) console.log("👚 Skin.returnSkinData() [2] currentSkinName = " + currentSkinName +
+				", currentSkinObj = " + JSON.stringify(currentSkinObj));
 
-			if (DEBUG) console.log("👚 Skin.update() currentSkinName = " + currentSkinName + ", currentSkinObj = " + JSON.stringify(currentSkinObj));
+			// object to hold / pass
+			let skinData = {
+				"def": "",
+				"frontFill": "",
+				"backFill": ""
+			};
 
-			// COLOR
+			// type = COLOR
 			if (currentSkinObj.type == "color") {
-				frontFill = currentSkinObj.front;
-				backFill = currentSkinObj.back;
+				skinData.frontFill = currentSkinObj.front;
+				skinData.backFill = currentSkinObj.back;
 			}
 
-			// GRADIENT
+			// type = GRADIENT
 			else if (currentSkinObj.type == "gradient") {
 				// make a copy of the colors
 				let stops = currentSkinObj.stops.trim().split(","),
 					stopColors = currentSkinObj["stop-colors"].trim().split(",");
 
 				// use linearGradient to set gradient angle
-				def += '<linearGradient id="tallyGradient" x2="1" gradientTransform="rotate(' + currentSkinObj.angle + ')"  >';
-
+				skinData.def += '<linearGradient id="tallyGradient" x2="1" gradientTransform="rotate(' + currentSkinObj.angle + ')" >';
 
 				// loop through stops in the gradient to get colors
-
 				for (const key in stops) {
-					console.log(key,stops[key]);
+					console.log(key, stops[key]);
 					if (stops[key] !== undefined) {
-						def += '<stop offset="' + stops[key] + '%" stop-color="' + stopColors[key] + '">';
+						skinData.def += '<stop offset="' + stops[key] + '%" stop-color="' + stopColors[key] + '">';
 
-						def += '</stop>';
+						skinData.def += '</stop>';
 					}
 				}
 
-// not sure if this needs to be inside stop element
+				// not sure if this needs to be inside stop element
 				//
 				// if (currentSkinObj.anim) {
-				// 	def += '<animate attributeName="stop-color" dur="2s" repeatCount="indefinite" ';
-				// 	// def += ' values="0;1;0"';
-				// 	def += ' values="'+ stopColors.join('; ') + '; ' + stopColors[0] +'"';
-				// 	def += '></animate>';
+				// 	skinData.def += '<animate attributeName="stop-color" dur="2s" repeatCount="indefinite" ';
+				// 	// skinData.def += ' values="0;1;0"';
+				// 	skinData.def += ' values="'+ stopColors.join('; ') + '; ' + stopColors[0] +'"';
+				// 	skinData.def += '></animate>';
 				//
 				// // ' + colors.join('; ') + '; ' + colors[0] + '
 				//
@@ -143,37 +202,59 @@ window.Skin = (function() {
 				// }
 
 				// close gradient
-				def += '</linearGradient>';
-				frontFill = "url(#tallyGradient)";
-				backFill = "url(#tallyGradient)";
+				skinData.def += '</linearGradient>';
+				skinData.frontFill = "url(#tallyGradient)";
+				skinData.backFill = "url(#tallyGradient)";
 			}
 
-			// IMAGE
+			// type = IMAGE
 			else if (currentSkinObj.type == "image") {
-				def += '<pattern id="tallyPattern" patternUnits="userSpaceOnUse" width="120%" height="120%">';
-				def += '<image xlink:href="' + chrome.extension.getURL('assets/img/tally/skins/' + currentSkinObj.url) + '" x="-10" y="-10" width="100%" height="100%" />';
-				def += '</pattern>';
-				frontFill = "url(#tallyPattern)";
-				backFill = "url(#tallyPattern)";
+				skinData.def += '<pattern id="tallyPattern" patternUnits="userSpaceOnUse" width="120%" height="120%">';
+				skinData.def += '<image xlink:href="' + chrome.extension.getURL('assets/img/tally/skins/' +
+					currentSkinObj.url) + '" x="-10" y="-10" width="100%" height="100%" />';
+				skinData.def += '</pattern>';
+				skinData.frontFill = "url(#tallyPattern)";
+				skinData.backFill = "url(#tallyPattern)";
 			}
 
 			// otherwise default to magenta
 			else {
-				frontFill = currentSkinObj.front;
-				backFill = currentSkinObj.back;
+				skinData.frontFill = currentSkinObj.front;
+				skinData.backFill = currentSkinObj.back;
 			}
 
-			// set/reset defs
-			$('#tally-svg defs').html(def);
-			// update fill
-			$('.tallySkinFront').attr("fill", frontFill);
-			$('.tallySkinBack').attr("fill", backFill);
+			return skinData;
+
+
 		} catch (err) {
 			console.error(err);
 		}
 	}
 
+	/*
+	 *	Update Tally SVG (already on page)
+	 */
+	function update(newSkinName) {
+		try {
+			// allow offline
+			if (Page.mode().notActive) return;
+			// don't allow if mode disabled or stealth
+			if (tally_options.gameMode === "disabled" || tally_options.gameMode === "stealth") return;
 
+			// get skin data
+			let skinData = returnSkinData(newSkinName);
+			// set def and fill
+			$('#tally-svg defs').html(skinData.def);
+			$('.tallySkinFront').attr("fill", skinData.frontFill);
+			$('.tallySkinBack').attr("fill", skinData.backFill);
+		} catch (err) {
+			console.error(err);
+		}
+	}
+
+	/*
+	 *	Select and change to a random skin
+	 */
 	function random() {
 		try {
 			update(FS_Object.randomObjProperty(SkinData.data).name);
@@ -185,25 +266,13 @@ window.Skin = (function() {
 
 
 
-
-
-
-
 	// PUBLIC
 	return {
-		update: function(str) {
-			update(str);
-		},
-		returnBasicSVG: function() {
-			return returnBasicSVG();
-		},
-		setStage: function(n) {
-			setStage(n);
-		},
+		update: update,
+		returnTallySVG: returnTallySVG,
+		updateFromHighestMonsterStage: updateFromHighestMonsterStage,
+		returnHighestMonsterStage: returnHighestMonsterStage,
 		random: random,
-
-
-
 
 
 		// returnSkin: function(skin) {

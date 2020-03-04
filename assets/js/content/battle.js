@@ -50,7 +50,7 @@ window.Battle = (function() {
 	function test() {
 		try {
 			if (_active) return;
-			if (tally_nearby_monsters.length < 1) return;
+			if (FS_Object.objLength(tally_nearby_monsters) < 1) return;
 			// use random ...
 			let mid = randomObjKey(tally_nearby_monsters);
 			// or pick from some favorites...
@@ -195,6 +195,9 @@ window.Battle = (function() {
 		}
 	}
 
+	Mousetrap.bind('escape', function() {
+		Battle.end();
+	});
 
 	// end battle
 	function end() {
@@ -215,8 +218,7 @@ window.Battle = (function() {
 			// remove floating animations
 			anime.remove("#tally_character_inner");
 			anime.remove('.tally_monster_sprite_container');
-			// change skin back to magenta and hide dialogue if open
-			Skin.setStage(0);
+			// hide dialogue if open
 			// Dialogue.hide();
 			// hide monster
 			anime({
@@ -251,6 +253,14 @@ window.Battle = (function() {
 				"blocked": Battle.details.mid
 			};
 
+			// remove monster and save tally_nearby_monsters
+			if (FS_Object.objLength(tally_nearby_monsters) && FS_Object.prop(tally_nearby_monsters[details.mid])){
+				delete tally_nearby_monsters[details.mid];
+				TallyStorage.saveData("tally_nearby_monsters", tally_nearby_monsters, "💥 Battle.end()");
+			}
+			// then check/reset skin
+			Skin.updateFromHighestMonsterStage();
+
 			// set winner
 			if (Battle.details.winner === "tally") {
 				monsterUpdate.captured = 1;
@@ -260,7 +270,9 @@ window.Battle = (function() {
 				monsterUpdate.missed = 1;
 				trackerUpdate.blocked = 0;
 				Progress.update("battlesLost", 1, "+");
-			} else {
+			}
+			// if no winner then player ended early
+			else {
 				monsterUpdate.missed = 1;
 				trackerUpdate.blocked = 0;
 				// tally must have run

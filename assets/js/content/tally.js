@@ -117,7 +117,7 @@ window.Tally = (function() {
 				"</div>" +
 				"<div class='tally' id='tally_character_inner'>" +
 				"<div class='tally' id='tally_body'>" +
-				Skin.returnBasicSVG() +
+				Skin.returnTallySVG() +
 				"</div>" +
 				"<div class='tally' id='tally_eyes'>" +
 				"<span class='tally tally_lid'>" +
@@ -559,8 +559,7 @@ window.Tally = (function() {
 
 			let str = "Dev options: <br>" +
 				"Monster: <a class='tally' id='tally_testNearbyMonster'>test</a>; " +
-				"Battle: <a class='tally' id='tally_battleStart'>start</a>, " +
-				"<a class='tally' id='tally_battleEnd'>end</a>;<br>" +
+				"Battle: <a class='tally' id='tally_battleStart'>start</a>;<br>" +
 				"Rumble: <a class='tally' id='tally_battleRumbleSmall'>sm</a>, " +
 				"<a class='tally' id='tally_battleRumbleMedium'>md</a>, " +
 				"<a class='tally' id='tally_battleRumbleLarge'>lg</a>, " +
@@ -588,9 +587,6 @@ window.Tally = (function() {
 			});
 			$(document).on('click', '#tally_battleRumbleLarge', function() {
 				BattleEffect.showRumble("large");
-			});
-			$(document).on('click', '#tally_battleEnd', function() {
-				Battle.end();
 			});
 			$(document).on('click', '#tally_explodePage', function() {
 				Effect.explode();

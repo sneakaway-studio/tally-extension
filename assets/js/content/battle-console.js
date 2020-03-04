@@ -242,13 +242,11 @@ window.BattleConsole = (function() {
 					BattleAttack.doAttack(tally_user.attacks[attackName], "tally", "monster");
 				}
 			});
-
-
-			// add "run" listener
+			// add "run" / "escape" listener
 			$(document).on("click", '.battle-options-esc', function() {
 				// remove listener
 				$(document).off("click", '.battle-options-esc');
-				// empty queue of any leftover dialogue 
+				// empty queue of any leftover dialogue
 				Dialogue.emptyQueue();
 				// end battle
 				Battle.end();

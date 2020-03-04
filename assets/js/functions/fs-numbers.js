@@ -26,8 +26,9 @@ window.FS_Number = (function() {
 		},
 		clamp: function(val, min = 0, max = 1) {
 			try {
-				if (val == null || min === null || max == null)
+				if (val === null || min === null || max === null)
 					console.error("more numbers required!", val, min, max);
+				// console.log(val,min,max)	
 				return Math.min(Math.max(val, min), max);
 				// return Math.max(min, Math.min(val, max));
 			} catch (err) {

@@ -187,13 +187,20 @@ window.Stats = (function() {
 	 */
 	function updateFromConsumable(consumable) {
 		try {
+			// allow offline
+			if (Page.mode().notActive) return;
+			// don't allow if mode disabled
+			if (tally_options.gameMode === "disabled") return;
+
 			let who = "tally";
-			console.log("📋 Stats.updateFromConsumable() 1", consumable);
+
+			console.log("📋 Stats.updateFromConsumable() [1]", consumable);
+
 			// save original so we can make up or down sound
 			let originalStatVal = allStats[who][consumable.stat].val;
 			// if stat is already full
 			if (consumable.val > 0 && allStats[who][consumable.stat].val >= allStats[who][consumable.stat].max) {
-				Dialogue.showStr("Your " + consumable.stat + " is full!", "happy", true);
+				Dialogue.showStr("Your " + consumable.stat + " is full!", "happy", true, true);
 				return;
 			}
 			// else, add new stat
