@@ -21,7 +21,11 @@ window.Demo = (function() {
 	// (maybe) set demo mode "on"
 	function start() {
 		try {
-			if (tally_options.gameMode !== "demo") return;
+            // do not allow offline
+            if (!Page.mode().active) return;
+            // do not allow if mode !demo
+            if (tally_options.gameMode !== "demo") return;
+
 			if (mode !== "off") return;
 			console.log('🎲 Demo.start() idleTime=' + idleTime);
 			// show all debug messages
@@ -185,6 +189,11 @@ window.Demo = (function() {
 
 	function goToNewPage(now) {
 		try {
+            // do not allow offline
+            if (!Page.mode().active) return;
+            // do not allow if mode !demo
+            if (tally_options.gameMode !== "demo") return;
+		
 			// occassionally go to new site
 			if (Math.random() > 0.5) alreadyTriedToFollowLink = true;
 			// always go to random for now so it doesn't open new tabs
@@ -258,12 +267,8 @@ window.Demo = (function() {
 	// PUBLIC
 	return {
 		start: start,
-		goToNewPage: function(now){
-			goToNewPage(now);
-		},
-		goToUrlCallback: function(url) {
-			goToUrlCallback(url);
-		}
+		goToNewPage: goToNewPage,
+		goToUrlCallback: goToUrlCallback
 
 	};
 })();

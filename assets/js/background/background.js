@@ -20,23 +20,12 @@ window.Background = (function() {
 
 	/**
 	 *  2. Run start checks (always called on new install or update)
-
-		 if tally_meta not found...
-			 1. Install.init()
-		 if server online
-			 2. Install.launchStartScreen()
-		 then (or if tally_meta exists)
-			 3. Background.runStartChecks()
-			 4. Server.checkIfOnline()
-			 5. Server.verifyToken()
-			 6. content script takes over
-
 	 */
 	async function runStartChecks() {
 		try {
 			dataReportHeader("🧰 Background.runStartChecks()", "@", "before");
 
-			// install objects
+			// if tally_meta not found, install objects
 			const newInstall = await Install.init();
 			// check the version
 			await Install.setVersion();

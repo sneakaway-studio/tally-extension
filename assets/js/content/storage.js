@@ -19,7 +19,11 @@ window.TallyStorage = (function() {
 	// SEND MONSTER DATA TO BACKGROUND
 	function sendBackgroundMonsterUpdate(data) {
 		try {
-			//if (!Page.mode().active) return;
+			// allow offline
+			if (Page.mode().notActive) return;
+			// don't allow if mode disabled or stealth
+			if (tally_options.gameMode === "disabled" || tally_options.gameMode === "stealth") return;
+
 			chrome.runtime.sendMessage({
 				'action': 'sendBackgroundMonsterUpdate',
 				'data': data
@@ -150,39 +154,6 @@ window.TallyStorage = (function() {
 	// }
 
 
-	// /**
-	//  *	Reset game data from server (after new install or token)
-	//  */
-	// function returnAllGameDataFromServer(caller = "") {
-	// 	try {
-	// 		console.log("💾 <> TallyStorage.returnAllGameDataFromServer()", caller, Page.mode(), Page.mode().active);
-	// 		if (!Page.mode().active) {
-	// 			return console.error("💾 <> TallyStorage.returnAllGameDataFromServer() !Page.mode().active", caller, Page.mode());
-	// 		}
-	// 		if (DEBUG) console.log("💾 <> TallyStorage.returnAllGameDataFromServer()", caller);
-	// 		let msg = {
-	// 			'action': 'returnAllGameDataFromServer'
-	// 		};
-	// 		chrome.runtime.sendMessage(msg, function(response) {
-	// 			if (DEBUG) console.log("💾 <> TallyStorage.returnAllGameDataFromServer() RESPONSE =", JSON.stringify(response));
-	//
-	// 			// reset everything
-	// 			tally_user = {};
-	// 			tally_options = {};
-	// 			tally_meta = {};
-	// 			tally_nearby_monsters = {};
-	// 			tally_top_monsters = {};
-	//
-	// 			// now that all data is refreshed, grab from background and start game over on page
-	// 			// TallyMain.getDataFromBackground();
-	//
-	// 		});
-	//
-	// 	} catch (err) {
-	// 		console.error(err);
-	// 	}
-	// }
-
 
 
 
@@ -214,7 +185,10 @@ window.TallyStorage = (function() {
 	// SAVE TOKEN FROM DASHBOARD
 	async function saveTokenFromDashboard(data) {
 		try {
-			if (DEBUG) console.log('💾 < TallyStorage.saveTokenFromDashboard() 🔑 SAVING', data);
+			// do not allow offline
+			if (Page.mode().serverOffline) return;
+
+			if (DEBUG) console.log('💾 < TallyStorage.saveTokenFromDashboard() [1] 🔑 SAVING', data);
 
 			chrome.runtime.sendMessage({
 				'action': 'saveToken',
@@ -223,9 +197,7 @@ window.TallyStorage = (function() {
 
 				// if the token was different and it was updated ...
 				if (response.message === "new") {
-					if (DEBUG) console.log('💾 > TallyStorage.saveTokenFromDashboard() 🔑 IS NEW', response);
-					// update Page.mode()
-					Page.updateMode("active");
+					if (DEBUG) console.log('💾 > TallyStorage.saveTokenFromDashboard() [2] 🔑 IS NEW', response);
 
 					// update all objects
 					tally_user = response.tally_user;
@@ -236,9 +208,9 @@ window.TallyStorage = (function() {
 					Progress.tokenAdded();
 
 				} else if (response.message === "same") {
-					if (DEBUG) console.log('💾 > TallyStorage.saveTokenFromDashboard() 🔑 IS THE SAME', response);
+					if (DEBUG) console.log('💾 > TallyStorage.saveTokenFromDashboard() [3] 🔑 IS THE SAME', response);
 				} else {
-					if (DEBUG) console.log('💾 > TallyStorage.saveTokenFromDashboard() 🔑 FAILED', response);
+					if (DEBUG) console.log('💾 > TallyStorage.saveTokenFromDashboard() [4] 🔑 FAILED', response);
 				}
 			});
 		} catch (err) {
@@ -339,7 +311,6 @@ function createStartupPromises() {
 // USER
 const getUserPromise = new Promise(
 	(resolve, reject) => {
-		//if (!Page.mode().active) return;
 		chrome.runtime.sendMessage({
 			'action': 'getUser'
 		}, function(response) {
@@ -352,7 +323,6 @@ const getUserPromise = new Promise(
 // OPTIONS
 const getOptionsPromise = new Promise(
 	(resolve, reject) => {
-		//if (!Page.mode().active) return;
 		chrome.runtime.sendMessage({
 			'action': 'getOptions'
 		}, function(response) {
@@ -365,7 +335,6 @@ const getOptionsPromise = new Promise(
 // GET TALLY_META
 const getMetaPromise = new Promise(
 	(resolve, reject) => {
-		//if (!Page.mode().active) return;
 		chrome.runtime.sendMessage({
 			'action': 'getMeta'
 		}, function(response) {
@@ -378,7 +347,6 @@ const getMetaPromise = new Promise(
 // GET NEARBY MONSTERS
 const getNearbyMonstersPromise = new Promise(
 	(resolve, reject) => {
-		//if (!Page.mode().active) return;
 		chrome.runtime.sendMessage({
 			'action': 'getNearbyMonsters'
 		}, function(response) {
@@ -391,7 +359,6 @@ const getNearbyMonstersPromise = new Promise(
 // GET STATS
 const getStatsPromise = new Promise(
 	(resolve, reject) => {
-		//if (!Page.mode().active) return;
 		chrome.runtime.sendMessage({
 			'action': 'getStats'
 		}, function(response) {

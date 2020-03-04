@@ -8,11 +8,13 @@ window.Page = (function() {
 
 
 	/**
-	 *	Update the page mode
-	 *	- active = background, token, and everything else is good
-	 *	- noToken = no token or did not validate - tally can still point to trackers, prompt for token
-	 *	- serverOffline = server is offline - tally can still point to trackers
-	 *	- notActive = something really wrong - tally does not show at all
+	 *	Update the page mode for the current page
+	 *	- active = background, token, server, and everything else is good
+	 *	- noToken = no token or did not validate; tally can still point to trackers, prompt for token, save in bg
+	 *	- serverOffline = server is offline; tally can still point to trackers, save in bg
+	 * 	---------- *everything means the game can run using the background only -----------
+	 *	---------- for example, if token is broken or server is offline -----------
+	 *	- notActive = something really wrong with page; tally does not show at all, do not save in background
 	 */
 	function updateMode(state = "notActive") {
 		try {
@@ -188,19 +190,22 @@ window.Page = (function() {
 	}
 
 
-	function refreshData() {
+	/**
+	 *	Run getData again with refresh flag
+	 */
+	async function refreshData() {
 		try {
-			data = getData();
+			data = await getData(true);
+			return true;
 		} catch (err) {
 			console.error(err);
 		}
 	}
 
-
 	/**
 	 *	Get data about this page
 	 */
-	function getData() {
+	function getData(refresh = false) {
 		try {
 			var url = document.location.href;
 			// only run on web pages
@@ -255,7 +260,7 @@ window.Page = (function() {
 
 			console.log("🗒 Page.getData()", newData);
 			// show in background
-			Debug.sendBackgroundDebugMessage("Page.getData()", newData.url);
+			Debug.sendBackgroundDebugMessage("🗒 Page.getData()", newData.url);
 			return newData;
 		} catch (err) {
 			console.error(err);
@@ -270,32 +275,72 @@ window.Page = (function() {
 	 *	NOTE: This slows down the page
 	 */
 	function addMutationObserver() {
-		// if running
-		if (!Page.mode().active || tally_options.gameMode === "disabled") return;
-		new MutationObserver(function(mutations) {
-			console.log("title changed", mutations[0].target.nodeValue);
-			TallyMain.refreshAppAfterMutation("Page.data.addMutationObserver()");
-		}).observe(
-			document.querySelector('title'), {
-				subtree: true,
-				characterData: true,
-				childList: true
-			}
-		);
+		try {
+			// allow offline
+			if (Page.mode().notActive) return;
+			// don't allow if mode disabled
+			if (tally_options.gameMode === "disabled") return;
+
+			new MutationObserver(function(mutations) {
+				console.log("title changed", mutations[0].target.nodeValue);
+				restartAfterMutation("🗒 Page.addMutationObserver()");
+			}).observe(
+				document.querySelector('title'), {
+					subtree: true,
+					characterData: true,
+					childList: true
+				}
+			);
+		} catch (err) {
+			console.error(err);
+		}
 	}
 	// alternate observer, simply listens for title change
 	function addTitleChecker() {
-		let pageTitleInterval = setInterval(function() {
-			let title = getTitle();
-			if (title != data.title) {
-				//console.log("title changed", Page.data.title, " to: ",title);
-				TallyMain.refreshAppAfterMutation("Page.data.addTitleChecker()");
-			} else {
-				//console.log("title is same", Page.data.title, " to: ",title);
-			}
-		}, 10000);
+		try {
+			// allow offline
+			if (Page.mode().notActive) return;
+			// don't allow if mode disabled
+			if (tally_options.gameMode === "disabled") return;
+
+			let pageTitleInterval = setInterval(function() {
+				let title = getTitle();
+				if (title != data.title) {
+					//console.log("title changed", Page.data.title, " to: ",title);
+					restartAfterMutation("🗒 Page.addTitleChecker()");
+				} else {
+					//console.log("title is same", Page.data.title, " to: ",title);
+				}
+			}, 10000);
+		} catch (err) {
+			console.error(err);
+		}
 	}
 
+
+	/**
+	 *	Restart app after page mutation
+	 */
+	function restartAfterMutation(caller) {
+		try {
+			// allow offline
+			if (Page.mode().notActive) return;
+			// don't allow if mode disabled
+			if (tally_options.gameMode === "disabled") return;
+
+			if (DEBUG) console.log("🗒 Page.restartAfterMutation() caller = " + caller);
+
+			// refresh Page.data
+			Page.refreshData().then(function(){
+				// check for monsters again
+				MonsterCheck.check();
+				Debug.update();
+			});
+
+		} catch (err) {
+			console.error(err);
+		}
+	}
 
 
 

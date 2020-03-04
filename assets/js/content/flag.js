@@ -16,22 +16,26 @@ window.Flag = (function() {
 	 */
 	function check() {
 		try {
+			// allow offline
+			if (Page.mode().notActive) return;
+			// don't allow if mode disabled
+			if (tally_options.gameMode === "disabled") return;
+
 			// only if user is on dashboard...
 			if (Page.data.url.includes("dashboard")) {
 				if (DEBUG) console.log("🚩 Flag.check() *** DASHBOARD *** ", Page.data.url);
 
-				// is a token on the page?
-				let tokenOnPage = false,
-					tokenData = {};
-
+				let tokenData = {};
 
 				// TOKEN FLAG
 				if ($("#token").length) {
+					// don't allow if serverOffline
+					if (Page.mode().serverOffline) return;
+					// if we already found one on this page
 					if (Page.data.tokenFound) return console.log("🚩 Flag.check() 🔑 ALREADY CHECKED");
 					// so we don't check again
 					Page.data.tokenFound = true;
-					// for flag checking
-					tokenOnPage = true;
+
 					// grab the token data
 					tokenData = {
 						token: $("#token").val().trim(),

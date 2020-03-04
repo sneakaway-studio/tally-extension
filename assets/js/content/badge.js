@@ -34,8 +34,10 @@ window.Badge = (function() {
 	 */
 	function randomizer() {
 		try {
-			// don't display badge if display is off
-			if (!Page.mode().active || tally_options.gameMode === "disabled" || tally_options.gameMode === "stealth") return;
+			// allow offline
+			if (Page.mode().notActive) return;
+			// don't allow if mode disabled or stealth
+			if (tally_options.gameMode === "disabled" || tally_options.gameMode === "stealth") return;
 
 			let r = Math.random(), // whether to create badge of type
 				chosen = false;

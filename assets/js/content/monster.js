@@ -76,9 +76,13 @@ window.Monster = (function() {
 	 */
 	function showOnPage(mid) {
 		try {
+			// allow offline
+			if (Page.mode().notActive) return;
+			// don't allow if mode disabled or stealth
+			if (tally_options.gameMode === "disabled" || tally_options.gameMode === "stealth") return;
+
 			if (DEBUG) console.log('👿 ⊙⊙⊙!⊙ Monster.showOnPage()', mid, tally_nearby_monsters[mid]);
-			// don't show if game isn't running in full mode
-			if (!Page.mode().active || tally_options.gameMode === "disabled" || tally_options.gameMode === "stealth") return;
+
 			// only proceed if mid is valid
 			if (!mid || mid <= 0) return;
 			// if it doesn't yet have a tracker then try to get one

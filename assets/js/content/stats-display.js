@@ -101,7 +101,11 @@ window.StatsDisplay = (function() {
 	 */
 	function updateDisplay(who) {
 		try {
-			if (!Page.mode().active) return;
+			// allow offline
+			if (Page.mode().notActive) return;
+			// don't allow if mode disabled or stealth
+			if (tally_options.gameMode === "disabled" || tally_options.gameMode === "stealth") return;
+
 			// get stats and level
 			let stats = Stats.get(who),
 				level = Stats.getLevel(who);

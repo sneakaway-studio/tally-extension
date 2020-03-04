@@ -2,8 +2,9 @@
 
 /**
  *	TallyMain
- *	- run after all other scripts have loaded
- * 	- sets a pageStatus
+ *	0. create global objects after all other scripts have loaded
+ * 	1. get data from background
+ *  2. perform start checks (data, token, Page.mode)
  */
 
 
@@ -30,9 +31,9 @@ window.TallyMain = (function() {
 
 	$(function() {
 		try {
-            // welcome message for the curious
-            console.log("%c   Hello, I'm Tally!", Tally.tallyConsoleIcon);
-			// 1. get data from background; when finished perform start checks with callback()
+			// welcome message for the curious
+			console.log("%c   Hello, I'm Tally!", Tally.tallyConsoleIcon);
+			// get data from background, perform start checks
 			getDataFromBackground(contentStartChecks);
 		} catch (err) {
 			console.error("🧰 TallyMain.getDataFromBackground() failed", err);
@@ -43,7 +44,7 @@ window.TallyMain = (function() {
 
 
 	/**
-	 *	2. Get all data from background (can be called multiple times, w/ or w/o callback)
+	 *	1. Get all data from background (can be called multiple times, w/ or w/o callback)
 	 */
 	async function getDataFromBackground(callback = null) {
 		try {
@@ -76,68 +77,74 @@ window.TallyMain = (function() {
 	}
 
 	/**
-	 *	3. Perform all start checks
+	 *	2. Perform all start checks
 	 *	- confirm it is safe to run game; then add all required elements to DOM
 	 */
-	async function contentStartChecks() {
+	function contentStartChecks() {
 		try {
 
-			// @#1. Set the Page.mode
-			if (DEBUG) console.log('🧰 TallyMain.contentStartChecks() [1] -> SET Page.mode');
+			// 2.1. Set the Page.mode
+			if (DEBUG) console.log('🧰 TallyMain.contentStartChecks() [2.1] -> SET Page.mode');
 
-			// STOP: if Page.data failed
+			// stop if Page.data failed
 			if (!prop(Page.data)) return console.error("... Page.data NOT FOUND");
-			// check if extension should be active on this page before proceeding
+			// check page mode before proceeding
 			Page.updateMode(getPageMode());
-			// STOP: if Page.mode().notActive
+			// stop if page mode marked notActive
 			if (Page.mode().notActive) return console.error("... Page.mode = notActive", Page.mode());
 
 
-            // 2. Check for Flags (in case we need to pause and restart game with data)
-			if (DEBUG) console.log('🧰 TallyMain.contentStartChecks() [2] -> Check for flags');
+			// 2.2. Check for Flags (in case we need to pause and restart game with data)
+			if (DEBUG) console.log('🧰 TallyMain.contentStartChecks() [2.2] -> Check for flags');
 
-            // check for, and possibly execute and flags
-            Flag.check();
-
-
-            // 3. Required before start
-            if (DEBUG) console.log('🧰 TallyMain.contentStartChecks() [3] -> Add requirements');
-
-            // add required CSS for game
-			FS_String.insertStylesheets();
-            // add debugger to page and update
-			Debug.add();
-			Debug.update();
-            // remove trackers that have been caught
+			// check for, and possibly execute and flags
+			Flag.check();
+			// remove trackers that have been caught
 			Tracker.removeCaughtTrackers();
 
 
-            // // procede if not, notActive
-			// if (Page.mode().notActive) return;
+			// 2.3. Add stylesheets and debugger
+			if (DEBUG) console.log('🧰 TallyMain.contentStartChecks() [2.3] -> Add game requirements');
 
+			// add required CSS for game
+			FS_String.insertStylesheets();
+			// add debugger to page and update
+			Debug.add();
+			Debug.update();
 
-            // 4. Add visual elements
-            if (DEBUG) console.log('🧰 TallyMain.contentStartChecks() [3] -> Add requirements');
+			addTallyToPage();
 
-            // add Tally character
-			Tally.addCharacter();
-            // add timed events listeners
-			TallyEvents.startTimeEvents();
-            // add main click listener
-			TallyListeners.addMainClickEventListener();
-            // create a fresh background update
-			TallyData.createBackgroundUpdate();
-
-
-			return;
-
-
-			// start game on this page
-			startGameOnPage();
 		} catch (err) {
 			console.error(err);
 		}
 	}
+
+	/**
+	 *	3. Add Tally to page
+	 *	- confirm it is safe to run game; then add all required elements to DOM
+	 */
+	function addTallyToPage() {
+		try {
+			// 3.1. add Tally character
+			if (DEBUG) console.log('🧰 TallyMain.addTallyToPage() [3.1] -> Add tally');
+
+			// add Tally character
+			Tally.addCharacter();
+			// add timed events listeners
+			TallyEvents.startTimeEvents();
+			// add main click listener
+			TallyListeners.addMainClickEventListener();
+			// create a fresh background update
+			TallyData.createBackgroundUpdate();
+
+			// start game on the page
+			startGameOnPage();
+
+		} catch (err) {
+			console.error(err);
+		}
+	}
+
 
 	/**
 	 * 	Make sure Tally isn't disabled on this page | domain | subdomain | etc
@@ -193,25 +200,18 @@ window.TallyMain = (function() {
 	}
 
 	/**
-	 * 	Run game on this page, can be called as many times as necessary
+	 * 	4. Run game on this page, can be called as many times as necessary
 	 */
 	function startGameOnPage() {
 		try {
 			if (DEBUG) console.log("🧰 TallyMain.startGameOnPage() ...");
 
-			// don't run if Page.data failed
-			if (!prop(Page.data) || !Page.mode().active) return;
-			// don't run if no token
-			if (!FS_Object.prop(tally_user) || tally_meta.token.status != "ok") {
-				console.warn("🧰 TallyMain.startGameOnPage() *** NO TOKEN FOUND ***");
-				return;
-			}
+            // allow offline
+			if (Page.mode().notActive) return;
+			// don't allow if mode disabled 
+			if (tally_options.gameMode === "disabled") return;
 
-
-    		// if in demo mode then go to new page
-    		if (Page.mode().active && tally_options.gameMode == "demo") Demo.goToNewPage(true);
-
-
+return;
 
 			// RUN ALL GAME METHODS
 
@@ -235,29 +235,17 @@ window.TallyMain = (function() {
 			Debug.update();
 
 
+// ?
+            // if in demo mode (server required) then go to new page
+			if (tally_options.gameMode == "demo") Demo.goToNewPage(true);
+
 
 		} catch (err) {
 			console.error(err);
 		}
 	}
 
-	/**
-	 *	Refresh app after page mutation
-	 */
-	function refreshAppAfterMutation(caller) {
-		try {
-			if (!Page.mode().active) return;
-			if (DEBUG) console.log("🧰 TallyMain.refreshAppAfterMutation() caller = " + caller);
-// may need to bring back
-// // refresh Page.data
-// Page.refreshData();
-			// check for monsters again
-			MonsterCheck.check();
-			Debug.update();
-		} catch (err) {
-			console.error(err);
-		}
-	}
+
 
 
 
@@ -277,8 +265,8 @@ window.TallyMain = (function() {
 				// make sure we have this flag in GameData
 				if (!FS_Object.prop(GameData.flags.levelUp))
 					return console.warn("Flag does not exist in GameData.");
-	// // update stats
-	// Stats.reset("tally");
+				// // update stats
+				// Stats.reset("tally");
 				// tell user
 				setTimeout(function() {
 					Dialogue.showStr(GameData.flags.levelUp.dialogue, GameData.flags.levelUp.mood, true);
@@ -309,7 +297,7 @@ window.TallyMain = (function() {
 			delete tally_user.flags[name];
 			// save in background
 			TallyStorage.saveData("tally_user", tally_user, "🧰 TallyMain.removeFlag()");
-            // save in background (and on server)
+			// save in background (and on server)
 			TallyData.handle("itemData", "flags", flag, "🧰 TallyMain.removeFlag()");
 		}
 	}
@@ -321,7 +309,6 @@ window.TallyMain = (function() {
 		getDataFromBackground: getDataFromBackground,
 		contentStartChecks: contentStartChecks,
 		startGameOnPage: startGameOnPage,
-		checkForServerFlags: checkForServerFlags,
-		refreshAppAfterMutation: refreshAppAfterMutation
+		checkForServerFlags: checkForServerFlags
 	};
 }());

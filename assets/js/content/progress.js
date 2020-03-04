@@ -59,8 +59,10 @@ window.Progress = (function() {
 	 */
 	function update(name, val, operator = "=") {
 		try {
-			// only proceed if game active
-			if (!Page.mode().active) return;
+			// allow offline
+			if (Page.mode().notActive) return;
+			// don't allow if mode disabled or stealth
+			if (tally_options.gameMode === "disabled") return;
 
 			// get current value
 			let currentVal = get(name),
@@ -145,48 +147,93 @@ window.Progress = (function() {
 
 
 	/**
-	 *	The first time a user adds a token
+	 *	User adds or updates token
 	 */
 	function tokenAdded() {
 		try {
-
+			if (DEBUG) console.log("🕹️ Progress.tokenAdded() [1] -> 🔑 SAVED");
+			// update Page.mode()
+			Page.updateMode("active");
+			// run game again
+			TallyMain.contentStartChecks();
+			// increment counter
+			let tokenCount = update("tokenAdded", 1, "+");
 
 			// 1. if this is the first time user is saving a token
-			if (update("mouseEnterTally", 1, "+") < 1) {
-				if (DEBUG) console.log("💾 > TallyStorage.saveTokenFromDashboard() 1 -> NEW TOKEN WAS SAVED", data);
-				// set page mode active
-				Page.updateMode("active");
-				// run game again
-				TallyMain.contentStartChecks();
-			}
-			// 2. after the page has refreshed
-			else if (update("tokenAddedPlayWelcomeMessage", 1, "+") < 1) {
-				if (DEBUG) console.log("💾 > TallyStorage.saveTokenFromDashboard() 2 -> NEW TOKEN WAS SAVED", data);
-
-				// introductions, then encourage them to explore
-				Dialogue.showStr("Oh hi! I'm Tally!!!", "happy");
-				Dialogue.showStr("Your account is now active and you are ready to play!", "happy");
-				Dialogue.showStr("This is your dashboard.", "happy");
-				Dialogue.showStr("You can edit your profile here.", "happy");
-				Dialogue.showStr("Good to stay anonymous though, what with all the monsters around...", "cautious");
-				Dialogue.showStr("Now, let's go find some trackers!", "happy");
-				Dialogue.showStr("I have a <a target='_blank' href='https://" +
-					FS_Object.randomArrayIndex(GameData.trackerDomains) + "'>good idea where there will be some</a>...", "happy");
+			if (update("tokenAddedWelcomeMessage", 1, "+") < 1 && tokenCount < 1) {
+				if (DEBUG) console.log("🕹️ Progress.tokenAdded() [2] -> 🔑 FIRST");
+				playIntroduction();
+				playTokenUpdated();
+				playDashboardIntro();
+				playLetsGetTrackers();
 			}
 			// if user has been here before
 			else {
-				if (DEBUG) console.log("💾 > TallyStorage.saveTokenFromDashboard() 3 -> NEW TOKEN WAS SAVED", data);
-				Dialogue.showStr("Your account has been updated!", "happy");
-				Dialogue.showStr("Let's go get some <a target='_blank' href='https://" +
-					FS_Object.randomArrayIndex(GameData.trackerDomains) + "'>trackers</a>!", "happy");
-				// force a background update to confirm with API / background
-				// MAYBE DON'T NEED BECAUSE THIS ALL HAPPENS ON UPDATE
-				//sendUpdateToBackground(true);
+				if (DEBUG) console.log("🕹️ Progress.tokenAdded() [3] -> 🔑 RENEW");
+				playTokenUpdated();
+				playLetsGetTrackers();
 			}
 
+		} catch (err) {
+			console.error(err);
+		}
+	}
 
 
+	function playIntroduction() {
+		try {
+			let r = Math.random();
+			if (r < 0.33) {
+				Dialogue.showStr("Oh hi! I'm Tally!!!", "happy");
+			} else if (r < 0.66) {
+				Dialogue.showStr("Hello!", "happy");
+				Dialogue.showStr("I'm Tally!!!", "happy");
+			} else {
+				Dialogue.showStr("My name is Tally!!!", "happy");
+			}
+		} catch (err) {
+			console.error(err);
+		}
+	}
+	function playTokenUpdated() {
+		try {
+			let r = Math.random();
+			if (r < 0.33) {
+				Dialogue.showStr("Your account has been updated!", "happy");
+			} else if (r < 0.66) {
+				Dialogue.showStr("Your account is now active and you are ready to play!", "happy");
+			} else {
+				Dialogue.showStr("Your account is active!", "happy");
+			}
+		} catch (err) {
+			console.error(err);
+		}
+	}
 
+	function playDashboardIntro() {
+		try {
+			Dialogue.showStr("This is your dashboard.", "happy");
+			Dialogue.showStr("You can edit your profile here.", "happy");
+			Dialogue.showStr("Good to stay anonymous though, what with all the monsters around...", "cautious");
+		} catch (err) {
+			console.error(err);
+		}
+	}
+
+	function playLetsGetTrackers() {
+		try {
+			let r = Math.random();
+			if (r < 0.33) {
+				Dialogue.showStr("Now, let's go find some trackers!", "happy");
+				Dialogue.showStr("I have a <a target='_blank' href='https://" +
+					FS_Object.randomArrayIndex(GameData.trackerDomains) + "'>good idea where there will be some</a>...", "happy");
+			} else if (r < 0.66) {
+				Dialogue.showStr("Let's go get some <a target='_blank' href='https://" +
+					FS_Object.randomArrayIndex(GameData.trackerDomains) + "'>trackers</a>!", "happy");
+			} else {
+				Dialogue.showStr("Want to find some <a target='_blank' href='https://" +
+					FS_Object.randomArrayIndex(GameData.trackerDomains) + "'>trackers</a> with me?", "happy");
+			}
 		} catch (err) {
 			console.error(err);
 		}

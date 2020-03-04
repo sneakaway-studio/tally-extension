@@ -70,7 +70,12 @@ window.Sound = (function() {
 
 	function playBattleMusic() {
 		try {
-			if (!Page.mode().active) return;
+			// allow offline
+			if (Page.mode().notActive) return;
+			// don't allow if mode disabled or stealth
+			if (tally_options.gameMode === "disabled" || tally_options.gameMode === "stealth") return;
+			// don't allow if playSounds disabled
+			if (!tally_options.playSounds) return;
 
 			// play intro
 			//playMusic(battleMusicDir + "battle-intro.wav", false, 0);
@@ -88,8 +93,14 @@ window.Sound = (function() {
 
 	function playMusic(file, loop, volumeModifier = 0) {
 		try {
+			// allow offline
+			if (Page.mode().notActive) return;
+			// don't allow if mode disabled or stealth
+			if (tally_options.gameMode === "disabled" || tally_options.gameMode === "stealth") return;
+			// don't allow if playSounds disabled
+			if (!tally_options.playSounds) return;
+
 			if (DEBUG) console.log("🎵 Sound.playMusic()", file, loop, volumeModifier);
-			if (!Page.mode().active) return;
 
 			// if music isn't already playing then start it
 			if (musicFile === "") {
@@ -127,7 +138,13 @@ window.Sound = (function() {
 
 	function startMusic() {
 		try {
-			if (!Page.mode().active || tally_options.gameMode === "disabled" || tally_options.gameMode === "stealth") return;
+			// allow offline
+			if (Page.mode().notActive) return;
+			// don't allow if mode disabled or stealth
+			if (tally_options.gameMode === "disabled" || tally_options.gameMode === "stealth") return;
+			// don't allow if playSounds disabled
+			if (!tally_options.playSounds) return;
+
 			if (DEBUG) console.log("🎵 Sound.startMusic()");
 
 			if (musicAudioEl !== null) {
@@ -231,7 +248,13 @@ window.Sound = (function() {
 	 */
 	function playRandom(category, index, delay) {
 		try {
-			if (!Page.mode().active || !tally_options.playSounds) return;
+			// allow offline
+			if (Page.mode().notActive) return;
+			// don't allow if mode disabled or stealth
+			if (tally_options.gameMode === "disabled" || tally_options.gameMode === "stealth") return;
+			// don't allow if playSounds disabled
+			if (!tally_options.playSounds) return;
+
 			//if(DEBUG) console.log("🎵 Sound.playRandom("+ category +","+ index +")");
 			var soundFile = "";
 			// if a specific category && index provided, then get that sound
@@ -256,7 +279,13 @@ window.Sound = (function() {
 	// Sound.playCategory ("tally","general")
 	function playCategory(category, index, delay) {
 		try {
-			if (!Page.mode().active || !tally_options.playSounds) return;
+			// allow offline
+			if (Page.mode().notActive) return;
+			// don't allow if mode disabled or stealth
+			if (tally_options.gameMode === "disabled" || tally_options.gameMode === "stealth") return;
+			// don't allow if playSounds disabled
+			if (!tally_options.playSounds) return;
+
 			let file = category + "/" + sounds[category][index];
 			play(file, delay);
 		} catch (err) {
@@ -266,7 +295,15 @@ window.Sound = (function() {
 	// play a mood
 	function playMood(mood) {
 		try {
-			if (!Page.mode().active || !tally_options.playSounds || !prop(mood)) return;
+			// allow offline
+			if (Page.mode().notActive) return;
+			// don't allow if mode disabled or stealth
+			if (tally_options.gameMode === "disabled" || tally_options.gameMode === "stealth") return;
+			// don't allow if playSounds disabled
+			if (!tally_options.playSounds) return;
+
+			// make sure mood exists
+			if (!prop(mood)) return;
 			if (mood == "award") mood = "happy";
 			if (DEBUG) console.log("🎵 Sound.playMood()", mood);
 			let r = Math.ceil(Math.random() * moods[mood]);
@@ -308,9 +345,13 @@ window.Sound = (function() {
 	 */
 	function play(soundFile, delay = 0, volumeModifier = 0) {
 		try {
-			// return if not active or sounds are disabled
-			if (!Page.mode().active || !tally_options.playSounds ||
-				tally_options.gameMode === "disabled" || tally_options.gameMode === "stealth") return;
+			// allow offline
+			if (Page.mode().notActive) return;
+			// don't allow if mode disabled or stealth
+			if (tally_options.gameMode === "disabled" || tally_options.gameMode === "stealth") return;
+			// don't allow if playSounds disabled
+			if (!tally_options.playSounds) return;
+
 			if (DEBUG) console.log("🎵 Sound.play(" + soundFile + "," + delay + "," + volumeModifier + ")");
 
 			// reference to audio element

@@ -10,14 +10,19 @@ window.MonsterCheck = (function() {
 
 
 	/**
-	 *	Initial check function, refreshes nearby monsters from back end continues to next
+	 *	Initial check function, error checking, refreshes nearby monsters from backend continues to next
 	 */
 	function check() {
 		try {
-			// don't check if disabled
-			if (!Page.mode().active || Page.data.domain == "tallygame.net" || tally_options.gameMode === "disabled")
-				return;
+			// allow offline
+			if (Page.mode().notActive) return;
+			// don't allow if mode disabled or stealth
+			if (tally_options.gameMode === "disabled" || tally_options.gameMode === "stealth") return;
+			// don't check on our site
+			if (Page.data.domain == "tallygame.net") return;
+
 			checkNearbyMonsterTimes();
+
 		} catch (err) {
 			console.error(err);
 		}

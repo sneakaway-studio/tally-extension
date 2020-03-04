@@ -66,8 +66,10 @@ window.Consumable = (function() {
 	 */
 	function randomizer() {
 		try {
-			// don't display consumable if display is off
-			if (!Page.mode().active || tally_options.gameMode === "disabled" || tally_options.gameMode === "stealth") return;
+			// allow offline
+			if (Page.mode().notActive) return;
+			// don't allow if mode disabled or stealth
+			if (tally_options.gameMode === "disabled" || tally_options.gameMode === "stealth") return;
 
 			let countR = Math.random(), // whether to create a consumable at all
 				r = Math.random(), // whether to create consumable of type
@@ -97,8 +99,8 @@ window.Consumable = (function() {
 	 */
 	function create(type = "", name = "", num = 1) {
 		try {
-			// don't display if off
-			if (!Page.mode().active || tally_options.gameMode === "disabled" || tally_options.gameMode === "stealth" || type === "") return;
+			// make sure there is a type
+			if (type === "") return;
 			if (DEBUG) console.log("🍪 Consumable.create()", "type=" + type, "name=" + name, "num=" + num);
 
 			// store the consumable
@@ -219,9 +221,6 @@ window.Consumable = (function() {
 	// PUBLIC
 	return {
 		randomizer: randomizer,
-		create: function(type, name, num) {
-			create(type, name, num);
-		},
 		add: add,
 	};
 })();

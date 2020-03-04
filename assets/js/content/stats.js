@@ -32,7 +32,11 @@ window.Stats = (function() {
 	 */
 	function reset(who) {
 		try {
-			if (!Page.mode().active) return;
+			// allow offline
+			if (Page.mode().notActive) return;
+			// don't allow if mode disabled
+			if (tally_options.gameMode === "disabled") return;
+
 			// get level
 			let level = getLevel(who);
 			if (!level){
@@ -77,7 +81,11 @@ window.Stats = (function() {
 	 */
 	function save(who) {
 		try {
-			if (!Page.mode().active) return;
+			// allow offline
+			if (Page.mode().notActive) return;
+			// don't allow if mode disabled
+			if (tally_options.gameMode === "disabled") return;
+
 			if (DEBUG) console.log("📋 Stats.save()", who);
 			TallyStorage.saveData('tally_stats', allStats.tally, "📋 Stats.save()");
 		} catch (err) {
@@ -150,8 +158,14 @@ window.Stats = (function() {
 	 */
 	function getLevel(who) {
 		try {
+			// allow offline
+			if (Page.mode().notActive) return;
+			// don't allow if mode disabled
+			if (tally_options.gameMode === "disabled") return;
+
 			// error checking
-			if (Page.mode().notActive || !prop(tally_user)) return;
+			if (!prop(tally_user)) return;
+
 			// default
 			let level = 0;
 
