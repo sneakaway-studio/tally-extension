@@ -50,7 +50,7 @@ window.Progress = (function() {
 			// if value exists in tally_user && is true | >0 | !""
 			if (tally_user.progress[name]) {
 				// if (DEBUG) console.log("🕹️ Progress.get() [2]", tally_user.progress[name]);
-				return tally_user.progress[name].val;
+				return parseInt(tally_user.progress[name].val);
 			} else {
 				// if (DEBUG) console.log("🕹️ Progress.get() [3]" + name + " NOT FOUND");
 				return false;
@@ -93,8 +93,12 @@ window.Progress = (function() {
 				"name": name,
 				"val": newVal
 			};
-			// save in background (and on server)
-			TallyData.handle("itemData", "progress", obj, "🕹️ Progress.update()");
+
+			// if an update happened
+			if (newVal !== currentVal) {
+				// save in background (and on server)
+				TallyData.handle("itemData", "progress", obj, "🕹️ Progress.update()");
+			}
 
 			// return current value so we can use it in game logic too
 			return currentVal;
@@ -140,8 +144,12 @@ window.Progress = (function() {
 				Dialogue.showStr("Manage your attacks with the button at the top right of browser window.", "happy");
 			}
 
-			// update the attacksAwarded count
-			update("attacksAwarded", FS_Object.objLength(tally_user.attacks));
+			if (DEBUG) console.log("🕹️ Progress.check()", typeof get("attacksAwarded"), typeof FS_Object.objLength(tally_user.attacks));
+
+			if (get("attacksAwarded") !== FS_Object.objLength(tally_user.attacks)) {
+				// update the attacksAwarded count
+				update("attacksAwarded", FS_Object.objLength(tally_user.attacks));
+			}
 
 		} catch (err) {
 			console.error(err);
@@ -196,6 +204,7 @@ window.Progress = (function() {
 			console.error(err);
 		}
 	}
+
 	function playTokenUpdated() {
 		try {
 			let r = Math.random();

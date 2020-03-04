@@ -581,6 +581,7 @@ window.BattleAttack = (function() {
 	 */
 	function randomRewardAttack() {
 		try {
+			// 20%
 			if (Math.random() > 0.8) {
 				if (DEBUG) console.log("💥 BattleAttack.randomRewardAttack()");
 				rewardAttack();

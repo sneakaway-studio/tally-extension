@@ -102,7 +102,7 @@ window.TallyMain = (function() {
 			let newTokenFound = await Flag.check();
 			// if token flag found we should allow restart to happen
 			if (newTokenFound) return false;
-            // if this is the second run after a new token found 
+            // if this is the second run after a new token found
 			else if (Page.data.tokenFound == true) {
 				// let progress show game events
 				Progress.tokenAdded();
@@ -213,12 +213,14 @@ window.TallyMain = (function() {
 	 */
 	function startGameOnPage() {
 		try {
+			if (DEBUG) Debug.dataReportHeader("🧰 TallyMain.startGameOnPage()", "#", "before", 30);
+
 			// allow offline
 			if (Page.mode().notActive) return;
 			// don't allow if mode disabled
 			if (tally_options.gameMode === "disabled") return;
 
-			if (DEBUG) console.log("🧰 TallyMain.startGameOnPage() [1]");
+			// if (DEBUG) console.log("🧰 TallyMain.startGameOnPage() [1]");
 
 
 			// 4.1. Progress and event checks
@@ -237,17 +239,16 @@ window.TallyMain = (function() {
 			Badge.randomizer();
 			// check for, and potentially add monsters on the page
 			MonsterCheck.check();
+            // update debugger
+			Debug.update();
 
 
 			return;
 
-
+// ?
 			// should be done in bg?
 			// check for, and potentially execute and flags from server (from previous update)
 			// checkForServerFlags();
-
-			// update debugger
-			Debug.update();
 
 
 			// ?
