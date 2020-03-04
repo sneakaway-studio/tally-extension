@@ -85,15 +85,13 @@ window.Battle = (function() {
 			active(true);
 			// set current
 			Monster.currentMID = mid;
-			// if this is first battle
-			if (Progress.get("battlesFought") == 0) {
-				// inform them about RPG battling
+			// update progress
+			if (Progress.update("battlesFought", 1, "+") < 1) {
+				// if this is first battle inform them about RPG battling
 				Dialogue.showStr("This game is like a classic RPG.", "neutral", true);
 				Dialogue.showStr("You and the monster must battle by taking turns lauching attacks or defenses.", "neutral", true);
 				Dialogue.showStr("You go first!", "happy", true);
 			}
-			// update progress
-			Progress.update("battlesFought", 1, "+");
 			// intro sound
 			Sound.playCategory('powerups', 'powerup1');
 			// setup page for effects
@@ -218,8 +216,15 @@ window.Battle = (function() {
 			// remove floating animations
 			anime.remove("#tally_character_inner");
 			anime.remove('.tally_monster_sprite_container');
-			// hide dialogue if open
-			// Dialogue.hide();
+
+			// say something (also clears any leftover battle dialogue that exists)
+			let r = Math.random();
+			if (r < 0.5){
+				Dialogue.showStr("There are likely other trackers nearby", "cautious", true, true);
+			} else {
+				Dialogue.showStr("The battle is over!", "happy", true, true);
+			}
+			
 			// hide monster
 			anime({
 				targets: '.tally_monster_sprite_container',

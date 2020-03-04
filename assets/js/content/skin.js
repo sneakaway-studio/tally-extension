@@ -42,11 +42,11 @@ window.Skin = (function() {
 			// save the highest stage
 			currentMonsterStage = returnHighestMonsterStage();
 			// save the current skin name
-			let newSkinName = returnSkinNameFromStage(currentMonsterStage);
-			// return if already the same
-			if (newSkinName == currentSkinName) return;
-			// else update name
-			else currentSkinName = newSkinName;
+			currentSkinName = returnSkinNameFromStage(currentMonsterStage);
+
+			if (DEBUG) console.log("👚 Skin.updateFromHighestMonsterStage() [2] currentMonsterStage =",
+				currentMonsterStage, ", currentSkinName=", currentSkinName);
+
 			// change skin
 			update(currentSkinName);
 
