@@ -40,15 +40,18 @@ window.StatsDisplay = (function() {
 		}
 	}
 	// initial stats bar for tally or monster
-	function returnInitialSVG(who="") {
+	function returnInitialSVG(who = "") {
 		try {
 			// who is required
-			if (who === "") return console.warn("📈 StatsDisplay.returnInitialSVG() --> who is required!!", who);
+			if (who === "") return console.error("📈 StatsDisplay.returnInitialSVG() --> who is required!!", who);
 
 			// get player's stats SVG coordinates
 			let str = '',
 				level = Stats.getLevel(who);
-			if (DEBUG) console.log("📈 StatsDisplay.returnInitialSVG()", who, statsPoints[who], "health=" + statsPoints[who].health.val, "stamina=" + statsPoints[who].stamina.val);
+
+			if (DEBUG) console.log("📈 StatsDisplay.returnInitialSVG()", who, statsPoints[who],
+				"health=" + statsPoints[who].health.val, "stamina=" + statsPoints[who].stamina.val
+			);
 
 			str += '<svg height="49" width="230" class="tally stats-display">';
 			str += '<g class="tally stat-bars">';
@@ -98,15 +101,20 @@ window.StatsDisplay = (function() {
 	 */
 	function updateDisplay(who) {
 		try {
+			if (!Page.mode().active) return;
+			// get stats and level
 			let stats = Stats.get(who),
 				level = Stats.getLevel(who);
-			if (DEBUG) console.log("📈 StatsDisplay.updateDisplay()", "who="+ who, "stats="+ stats, "level="+ level);
-			if (stats === {} || !FS_Object.prop(tally_user)  || !FS_Object.prop(tally_user.score) ) return;
+			// if any problems return
+			if (level < 1 || stats === {} || !FS_Object.prop(tally_user) || !FS_Object.prop(tally_user.score))
+				return console.error("📈 StatsDisplay.updateDisplay() ERROR");
+
+			if (DEBUG) console.log("📈 StatsDisplay.updateDisplay()", who, "=>", JSON.stringify(stats));
 			// bars, circle, table
 			adjustStatsBar(who, "health");
 			adjustStatsBar(who, "stamina");
 			adjustStatsCircle(who, level);
-			$('.'+ who +'_stats_table').html(returnFullTable(who));
+			$('.' + who + '_stats_table').html(returnFullTable(who));
 		} catch (err) {
 			console.error(err);
 		}
@@ -118,14 +126,14 @@ window.StatsDisplay = (function() {
 	/**
 	 * 	Adjust stats bars for Tally *values are normalized*
 	 */
-	function adjustStatsBar(who="", bar="", val=null) {
+	function adjustStatsBar(who = "", bar = "", val = null) {
 		try {
 			// who is required
 			if (who === "" || bar === "") return console.warn("📈 StatsDisplay.adjustStatsBar() --> who and bar required!!", who, bar);
 			// only update health | stamina bars
 			if (bar !== "health" && bar !== "stamina") return;
 
-			if (DEBUG) console.log("📈 StatsDisplay.adjustStatsBar()0", "who="+ who, "bar="+ bar, "val="+ val, "statsPoints[who][bar]="+JSON.stringify(statsPoints[who][bar]));
+			if (DEBUG) console.log("📈 StatsDisplay.adjustStatsBar()0", "who=" + who, "bar=" + bar, "val=" + val, "statsPoints[who][bar]=" + JSON.stringify(statsPoints[who][bar]));
 
 			// clean value
 			let oldVal = FS_Number.normalize(statsPoints[who][bar].val, 0, 1);
@@ -204,8 +212,8 @@ window.StatsDisplay = (function() {
 	 * 	Adjust stats circle for Tally
 	 *	*circle circumference is normalized so xp needs to be 0–1
 	 */
-	function adjustStatsCircle(who, level, xpFactor=0) {
-		if (DEBUG) console.log("📈 StatsDisplay.adjustStatsCircle() --> who="+ who, "level="+level, "xpFactor="+xpFactor);
+	function adjustStatsCircle(who, level, xpFactor = 0) {
+		if (DEBUG) console.log("📈 StatsDisplay.adjustStatsCircle() --> who=" + who, "level=" + level, "xpFactor=" + xpFactor);
 		try {
 			// who is required
 			if (who === "") return console.warn("📈 StatsDisplay.adjustStatsCircle() --> who is required!!", who);
@@ -214,7 +222,7 @@ window.StatsDisplay = (function() {
 			// don't show xp, just text for monster
 			if (who == "monster") return;
 
-			if (DEBUG) console.log("📈 StatsDisplay.adjustStatsCircle() --> level="+ level);
+			if (DEBUG) console.log("📈 StatsDisplay.adjustStatsCircle() --> level=" + level);
 
 
 			let currentXP = tally_user.score.score;
@@ -228,22 +236,22 @@ window.StatsDisplay = (function() {
 			let xpGoal = GameData.levels[level + 1].xp ? GameData.levels[level + 1].xp : FS_Object.lastKeyValue(GameData.levels).level;
 
 			// xp
-			let xpRange = xpGoal-xpPrevious;
-			let xpDiff = xpPrevious-currentXP;
+			let xpRange = xpGoal - xpPrevious;
+			let xpDiff = xpPrevious - currentXP;
 
 			// normalize
 			//let xpNormalized = FS_Number.normalize((xpGoal - currentXP) / xpGoal,0,1);
-			let xpNormalized = -FS_Number.normalize((xpDiff / xpRange),0,1);
+			let xpNormalized = -FS_Number.normalize((xpDiff / xpRange), 0, 1);
 
-// xpPrevious=24389 currentXP=25382 xpGoal=27000 xpNormalized=0.059925925925925924
+			// xpPrevious=24389 currentXP=25382 xpGoal=27000 xpNormalized=0.059925925925925924
 
-// 27000 - 24389 = 2611 (range)
-// 27000 - 25382 = 1618 (what is left)
-// 1618/2611
+			// 27000 - 24389 = 2611 (range)
+			// 27000 - 25382 = 1618 (what is left)
+			// 1618/2611
 
 
 
-			if (DEBUG) console.log("📈 StatsDisplay.adjustStatsCircle() --> level="+ level, "xpPrevious="+ xpPrevious, "currentXP="+ currentXP, "xpGoal="+ xpGoal, "xpNormalized="+ xpNormalized);
+			if (DEBUG) console.log("📈 StatsDisplay.adjustStatsCircle() --> level=" + level, "xpPrevious=" + xpPrevious, "currentXP=" + currentXP, "xpGoal=" + xpGoal, "xpNormalized=" + xpNormalized);
 
 			// save old values
 			let oldCircle = statsPoints[who].circle;
@@ -274,7 +282,7 @@ window.StatsDisplay = (function() {
 			$('.' + who + '-circle-text').text(val);
 
 
-	// the below wil count a number up, saving in case I need it.
+			// the below wil count a number up, saving in case I need it.
 
 			// // get old value
 			// let oldText = $('.' + who + '_stats .stat-bar-circle-text').text();

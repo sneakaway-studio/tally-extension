@@ -15,7 +15,7 @@ window.MonsterCheck = (function() {
 	function check() {
 		try {
 			// don't check if disabled
-			if (!Page.mode.active || Page.data.domain == "tallygame.net" || tally_options.gameMode === "disabled")
+			if (!Page.mode().active || Page.data.domain == "tallygame.net" || tally_options.gameMode === "disabled")
 				return;
 			checkNearbyMonsterTimes();
 		} catch (err) {

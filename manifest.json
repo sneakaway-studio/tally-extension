@@ -46,7 +46,6 @@
     "content_scripts": [{
         "matches": ["<all_urls>"],
         "js": [
-            "assets/libs/bluebird.min.js",
             "assets/js/content/debug.js",
             "assets/js/content/storage.js",
             "assets/libs/jquery-3.2.1.min.js",
@@ -76,6 +75,8 @@
             "assets/data/attack-data.js",
             "assets/data/skin-data.js",
             "assets/js/content/item.js",
+            "assets/js/content/token.js",
+            "assets/js/content/data.js",
             "assets/js/content/flag.js",
             "assets/js/content/core.js",
             "assets/js/content/page.js",

@@ -8,10 +8,15 @@ window.Install = (function() {
 	/**
 	 *  Create all objects for game from scratch
 	 */
-	function init(fromReset = false, existingToken = {}) {
+	async function init(fromReset = false, existingToken = {}) {
 		try {
-			if (DEBUG) console.log("🔧 Install.init() -> installing game!");
+			// does tally_meta exists, or is this the first install?
+			if (prop(store("tally_meta"))) {
+				if (DEBUG) console.log("🔧 Install.init() -> tally_meta exists, need to check token");
+				return false;
+			}
 
+			if (DEBUG) console.log("🔧 Install.init() -> no tally_meta found, creating app");
 			// Create all game objects
 			store("tally_user", createUser());
 			store("tally_options", createOptions());
@@ -20,26 +25,66 @@ window.Install = (function() {
 			store("tally_stats", {});
 			store("tally_secret", createSecret());
 			store("tally_top_monsters", {});
-			store("tally_last_background_update", {});
 
 			// get user's geolocation
-			Install.saveLocation();
+			await saveLocation();
 
-			// was this a reset?
-			if (fromReset && existingToken !== {}) {
-				if (DEBUG) console.log("🔧 Install.init() -> installing an existing token!");
-				// save token and tokenExpires
-				let _tally_secret = {
-					"token": existingToken.token,
-					"tokenExpires": existingToken.tokenExpires
-				};
-				store("tally_secret", _tally_secret);
-			}
+			// // was this a reset?
+			// if (fromReset && existingToken !== {}) {
+			// 	if (DEBUG) console.log("🔧 Install.init() -> installing an existing token!");
+			// 	// save token and tokenExpires
+			// 	let _tally_secret = {
+			// 		"token": existingToken.token,
+			// 		"tokenExpires": existingToken.tokenExpires
+			// 	};
+			// 	store("tally_secret", _tally_secret);
+			// }
 
-			// start app
-			Background.startApp();
+			if (DEBUG) console.log("🔧 Install.init() -> game installed!");
+			return true;
 		} catch (err) {
 			console.error("failed to create user", err);
+		}
+	}
+
+
+	/**
+	 * 	Check if it is a new version
+	 */
+	async function setVersion() {
+		try {
+			let _tally_meta = store("tally_meta"),
+				manifestData = chrome.runtime.getManifest();
+			if (_tally_meta.version == manifestData.version) {
+				if (DEBUG) console.log("🔧 Install.setVersion()", _tally_meta.version + "==" + manifestData.version, "..... SAME VERSION");
+				return false;
+			} else {
+				if (DEBUG) console.log("🔧 Install.setVersion()", _tally_meta.version + "!=" + manifestData.version, "!!!!! NEW VERSION");
+				// update version
+				_tally_meta.version = manifestData.version;
+				store("tally_meta", _tally_meta);
+				return true;
+			}
+		} catch (err) {
+			console.error(err);
+		}
+	}
+
+
+	/**
+	 *  Set development or production server
+	 */
+	async function setCurrentAPI() {
+		try {
+			let _tally_meta = store("tally_meta");
+			_tally_meta.api = Config[_tally_meta.currentAPI].api;
+			_tally_meta.website = Config[_tally_meta.currentAPI].website;
+			if (DEBUG) console.log("🔧 Install.setCurrentAPI() currentAPI=%c" + _tally_meta.currentAPI, Debug.styles.green,
+				"api=" + _tally_meta.api, "website=" + _tally_meta.website);
+			store("tally_meta", _tally_meta);
+			return true;
+		} catch (err) {
+			console.error(err);
 		}
 	}
 
@@ -49,15 +94,18 @@ window.Install = (function() {
 	/**
 	 *  Launch Start Screen - call after token 1) not found 2) not working
 	 */
-	function launchStartScreen() {
+	async function launchStartScreen() {
 		try {
-			if (DEBUG) console.log("🔧 Install.launchStartScreen() ...");
-			console.trace();
+			// console.trace();
+			let _tally_meta = await store("tally_meta");
 
-			let _tally_meta = store("tally_meta");
+			// don't launch if !server
+			if (!_tally_meta.server.online)
+				return console.log("🔧 Install.launchStartScreen() 🛑 SERVER OFFLINE");
 
-			// return early if !server or token is ok
-			if (!_tally_meta.serverOnline || _tally_meta.userTokenStatus === "ok") return;
+			// don't launch if !token
+			if (_tally_meta.token.status === "ok")
+				return console.log("🔧 Install.launchStartScreen() 🛑 NO TOKEN");
 
 			// get current page
 			chrome.tabs.query({
@@ -65,35 +113,23 @@ window.Install = (function() {
 				currentWindow: true
 			}, function(tabs) {
 				var tab = tabs[0];
-				if (DEBUG) console.log("🔧 Install.launchStartScreen() current tab = " + JSON.stringify(tab));
-
-
-				// 1. On install (first time) - from ?
-				// 2. On re-install (* time) - from ?
-				// 3. On token expire - from any page
-
-
-
+				if (DEBUG) console.log("🔧 Install.launchStartScreen() current tab =", tab);
 
 				// are we in the process resetting user's data?
 				if (tab.url !== undefined && (tab.url.includes("dashboard") || tab.url.includes("tallygame.net"))) {
-					if (DEBUG) console.log("🔧 Install.launchStartScreen() *** NO *** WE ARE ON DASHBOARD");
-					return;
+					return console.log("🔧 Install.launchStartScreen() 🛑 ON DASHBOARD");
 				}
-
 				//launch install page
 				chrome.tabs.create({
 					url: chrome.extension.getURL('assets/pages/startScreen/startScreen.html')
-				}, function(tab) {
+				}, function(newTab) {
 					// increment, check # prompts
-					if (++_tally_meta.userTokenPrompts <= 3) {}
+					if (++_tally_meta.token.prompts <= 3) {}
 					store("tally_meta", _tally_meta);
-					if (DEBUG) console.log("🔧 Install.launchStartScreen() -> launching start screen", tab.url);
+					if (DEBUG) console.log("🔧 Install.launchStartScreen() 👍 launching", newTab);
+					return true;
 				});
-
-
 			});
-
 		} catch (err) {
 			console.error(err);
 		}
@@ -115,7 +151,7 @@ window.Install = (function() {
 
 
 
-	/*  BACKGROUND INIT FUNCTIONS
+	/*  INIT FUNCTIONS
 	 ******************************************************************************/
 
 	/**
@@ -209,15 +245,18 @@ window.Install = (function() {
 				"version": manifestData.version, // set in manifest
 				"installedOn": moment().format(),
 				"lastSyncedToServer": 0,
-				"lastSyncedResult": 0,
-				// "userAuthenticated": 0, mark for deletion, now handled with userTokenStatus
-				"userTokenExpires": 0,
-				"userTokenExpiresDiff": -1,
-				"userTokenPrompts": 0,
-				"userTokenStatus": "",
+				"token": {
+					"expiresDate": 0, // date expires
+					"expiresInMillis": -1, // milliseconds until expires
+					"prompts": 0, // number prompts given to user
+					"status": "", // status = ok | expired
+				},
+				"server": {
+					"lastSyncedDate": 0,
+					"online": 1,
+					"responseMillis": -1
+				},
 				"userOnline": navigator.onLine,
-				"serverOnline": 1,
-				"serverOnlineTime": 0,
 				"currentAPI": "production", // "production" or "development";
 				"api": Config.production.api, // default to production
 				"website": Config.production.website,
@@ -252,10 +291,10 @@ window.Install = (function() {
 	/**
 	 *  Get location
 	 */
-	function saveLocation() {
+	async function saveLocation() {
 		try {
 			let _tally_meta = store("tally_meta");
-			$.getJSON('http://www.geoplugin.net/json.gp', function(data) {
+			return $.getJSON('http://www.geoplugin.net/json.gp', function(data) {
 				// console.log(JSON.stringify(data, null, 2));
 				_tally_meta.location = {
 					"ip": data.geoplugin_request,
@@ -278,6 +317,9 @@ window.Install = (function() {
 	// PUBLIC
 	return {
 		init: init,
+		setVersion: setVersion,
+		setCurrentAPI: setCurrentAPI,
+
 		createOptions: createOptions,
 		setOptions: function(obj) {
 			return setOptions(obj);

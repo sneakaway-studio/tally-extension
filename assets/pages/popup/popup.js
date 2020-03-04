@@ -12,7 +12,7 @@ let tally_options = {},
 	tally_meta = {},
 	attacksMax = 0,
 	attacksSelected = 0,
-	backgroundUpdate = createBackgroundUpdate();
+	popupUpdate = createPopupBackgroundUpdate();
 
 
 // make sure everything is saved when user closes window
@@ -38,7 +38,7 @@ function init() {
 		}, function(response) {
 			console.log("getMeta()",JSON.stringify(response.data));
 			tally_meta = response.data;
-			if (tally_meta.userTokenStatus != "ok") {
+			if (tally_meta.token.status != "ok") {
 				// display only the login
 				let str = "<a href='" + tally_meta.website + "/dashboard" + "' target='_blank'>Link your Tally account</a>";
 				$(".content").html(str);
@@ -224,7 +224,7 @@ function saveAttacks() {
 				attacks.push(tally_user.attacks[name]);
 			}
 		}
-		backgroundUpdate.itemData.attacks = attacks;
+		popupUpdate.itemData.attacks = attacks;
 
 
 		// update attacksSelected
@@ -234,10 +234,10 @@ function saveAttacks() {
 			"name": "attacksSelected",
 			"val": attacksSelected
 		});
-		backgroundUpdate.itemData.progress = progress;
-		// alert(JSON.stringify(backgroundUpdate.itemData.progress));
+		popupUpdate.itemData.progress = progress;
+		// alert(JSON.stringify(popupUpdate.itemData.progress));
 
-		sendBackgroundUpdate();
+		sendUpdateToBackground();
 		// alert(JSON.stringify(attacks));
 	} catch (err) {
 		console.error(err);
@@ -245,7 +245,7 @@ function saveAttacks() {
 }
 
 
-function createBackgroundUpdate() {
+function createPopupBackgroundUpdate() {
 	try {
 		return {
 			// the type of update (e.g. "update" | "sync")
@@ -264,7 +264,6 @@ function createBackgroundUpdate() {
 			},
 			"scoreData": {},
 			"pageData": {},
-			"eventData": {},
 			"token": "INSERT_IN_BACKGROUND",
 		};
 	} catch (err) {
@@ -273,18 +272,18 @@ function createBackgroundUpdate() {
 }
 
 
-function sendBackgroundUpdate() {
+function sendUpdateToBackground() {
 	try {
 
 		chrome.runtime.sendMessage({
-			'action': 'sendBackgroundUpdate',
-			'data': backgroundUpdate
+			'action': 'sendUpdateToBackground',
+			'data': popupUpdate
 		}, function(response) {
-			console.log('💾 > sendBackgroundUpdate() RESPONSE =', response);
+			console.log('💾 > sendUpdateToBackground() RESPONSE =', response);
 			// update tally_user in content
 			tally_user = response.tally_user;
 			// reset
-			backgroundUpdate = createBackgroundUpdate();
+			popupUpdate = createPopupBackgroundUpdate();
 		});
 	} catch (err) {
 		console.error(err);
@@ -389,9 +388,10 @@ function getMeta(callback) {
 			//console.log("getMeta()",JSON.stringify(response.data));
 			tally_meta = response.data;
 
-			$("#tokenStatus").html(tally_meta.userTokenStatus);
-			$("#tokenExpires").html((tally_meta.userTokenExpires ? tally_meta.userTokenExpires : "null"));
-			$("#serverStatus").html((tally_meta.serverOnline ? "yes" : "no"));
+			$("#tokenStatus").html(tally_meta.token.status);
+			$("#tokenExpiresDate").html((tally_meta.token.expiresDate ? tally_meta.token.expiresDate : "null"));
+			$("#tokenExpiresInMillis").html((tally_meta.token.expiresInMillis ? tally_meta.token.expiresInMillis : "null"));
+			$("#serverStatus").html((tally_meta.server.online ? "yes" : "no"));
 			$("#currentAPI").html((tally_meta.currentAPI ? tally_meta.currentAPI : "null"));
 			$("#api").html((tally_meta.api ? tally_meta.api : "null"));
 

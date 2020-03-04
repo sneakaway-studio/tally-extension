@@ -90,7 +90,7 @@ window.FS_Date = (function() {
 
 
 
-/*  DATE FUNCTIONS (OLD, VANILLA JS)
+/*  DATE FUNCTIONS (OLD, VANILLA JS, BEFORE SWITCHING TO MOMENT() )
  ******************************************************************************/
 
 /**

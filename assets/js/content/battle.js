@@ -268,12 +268,11 @@ window.Battle = (function() {
 			}
 
 			// add monster to update
-			TallyStorage.addToBackgroundUpdate("itemData", "monsters", monsterUpdate);
+			TallyData.handle("itemData", "monsters", monsterUpdate);
 			// add tracker to update
-			TallyStorage.addToBackgroundUpdate("itemData", "trackers", trackerUpdate);
-
-			// update server
-			TallyStorage.checkSendBackgroundUpdate();
+			TallyData.handle("itemData", "trackers", trackerUpdate);
+			// update server immediately
+			TallyData.pushUpdate();
 
 			// reload page if tally won (because it was exploded)
 			if (Battle.details.winner === "tally") {

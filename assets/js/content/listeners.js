@@ -19,7 +19,8 @@ window.TallyListeners = (function() {
 	 */
 	function addMainClickEventListener() {
 		try {
-			if (!Page.mode.active) return;
+			// allow in all modes
+			if (Page.mode().notActive) return;
 			// core mouseup listener
 			document.addEventListener("mouseup", function(e) {
 				// a bit of throttling: if mouseup was just fired ignore this click
@@ -72,9 +73,13 @@ window.TallyListeners = (function() {
 	 */
 	var clickEventHandler = function(eventData, target) {
 		try {
-			if (!Page.mode.active || tally_options.gameMode === "disabled") return;
-			if (DEBUG) console.log("👂 TallyListeners.clickEventHandler() > eventData", eventData, target);
-			if (DEBUG) console.log("👂 TallyListeners.clickEventHandler() > target", target, target.className);
+			// allow in all modes, except disabled
+			if (Page.mode().notActive || tally_options.gameMode === "disabled") return;
+
+			let caller = "👂 TallyListeners.clickEventHandler()";
+
+			// if (DEBUG) console.log(caller + " > eventData", eventData);
+			// if (DEBUG) console.log(caller + " > target", target, target.className);
 
 			// for updating the background object later on
 			let scoreData = {};
@@ -89,7 +94,7 @@ window.TallyListeners = (function() {
 			// else if ( Page.data.url == Page.data.previousUrl) // THIS BREAKS ON FB
 			// 	exit = " -> url is not different";
 			if (exit !== "") {
-				if (DEBUG) console.log("👂 TallyListeners.clickEventHandler() > event => mouseup" + exit);
+				if (DEBUG) console.log(caller + " > event => mouseup" + exit);
 				return;
 			}
 
@@ -120,7 +125,7 @@ window.TallyListeners = (function() {
 				exit = " -> ignore [" + target.id + ", " + eventData.tag + "] node(s)";
 			}
 			if (exit !== "") {
-				if (DEBUG) console.log("👂 TallyListeners.clickEventHandler() > event => mouseup" + exit);
+				// if (DEBUG) console.log(caller + " > event => mouseup" + exit);
 				return;
 			}
 
@@ -130,8 +135,7 @@ window.TallyListeners = (function() {
 
 			// for all clicks, buttons
 			if (eventData.action == "click" || eventData.action == "button") {
-				if (DEBUG) console.log("👂 TallyListeners.clickEventHandler() > eventData: " + JSON.stringify(eventData));
-				if (DEBUG) console.log("👂 TallyListeners.clickEventHandler() > event => mouseup -> [" + eventData.action + "]");
+				if (DEBUG) console.log(caller + " => mouseup -> [" + eventData + "]");
 
 				// update
 				Debug.update();
@@ -152,7 +156,7 @@ window.TallyListeners = (function() {
 					eventData.action = "like";
 					scoreData.likes++;
 					// add to likes
-					TallyStorage.addToBackgroundUpdate("scoreData", "likes", 1, "👂 TallyListeners.clickEventHandler()");
+					TallyData.handle("scoreData", "likes", 1, caller);
 				}
 				// check if it is a stackoverflow
 				else if (target.className == "vote" || target.className == "vote-up-off") {
@@ -177,16 +181,13 @@ window.TallyListeners = (function() {
 				 */
 
 				// if we are this far it is a click
-				TallyStorage.addToBackgroundUpdate("scoreData", "clicks", 1, "👂 TallyListeners.clickEventHandler()");
+				TallyData.handle("scoreData", "clicks", 1, caller);
 				// store time
-				TallyStorage.addToBackgroundUpdate("Page.data", "time", Page.data.time, "👂 TallyListeners.clickEventHandler()");
+				TallyData.handle("pageData", "time", Page.data.time, caller);
 				// reset page time
 				Page.data.time = 0;
-				// store event data
-				TallyStorage.addToBackgroundUpdate("eventData", eventData, null, "👂 TallyListeners.clickEventHandler()");
 				// add and update score
-				TallyStorage.addToBackgroundUpdate("scoreData", "score", GameData.clickScore[eventData.action], "👂 TallyListeners.clickEventHandler()");
-
+				TallyData.handle("scoreData", "score", GameData.clickScore[eventData.action], caller);
 
 				// when a user clicks one of the following happens
 				// 1) dynamic page (react, etc.) and the url didn't changed
@@ -194,7 +195,8 @@ window.TallyListeners = (function() {
 				// 3) static page and they are using form elements, etc.
 				// 4) we are headed to a new page
 				// in any case, check, send, and reset update for every click
-				TallyStorage.checkSendBackgroundUpdate();
+				// update server immediately
+				TallyData.pushUpdate();
 
 
 				/**
@@ -203,15 +205,18 @@ window.TallyListeners = (function() {
 
 				// only allow points for clicking the first time (FB Like, etc.)
 				$(target).toggleClass("tally-clicked");
-				// check progress
-				Progress.check("TallyListeners");
 				// play sound
 				Sound.playCategory('user', 'click');
 				// show click visual
 				Effect.showClickVisualText(eventData, "+" + GameData.clickScore[eventData.action]);
 				// update stats display
-				// StatsDisplay.adjustStatsCircle("tally", tally_user.level);
 				StatsDisplay.updateDisplay("tally");
+
+				return;
+								// check progress
+								Progress.check("TallyListeners");
+
+
 			}
 			// disable click action in case they are editing text
 			else if (eventData.action == "textSelect") {

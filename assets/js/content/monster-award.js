@@ -134,7 +134,7 @@ window.MonsterAward = (function() {
 			str = "";
 			// handler for page reset
 			$('.award_did_you_know').click(function(){
-				location.reload();
+				// location.reload();
 			});
 		}
 		// 3. OR, are they below top

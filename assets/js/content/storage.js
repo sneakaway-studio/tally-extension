@@ -6,170 +6,20 @@
 
 window.TallyStorage = (function() {
 
-	let DEBUG = Debug.ALL.TallyStorage,
-		// create "blank" background update obj for this page
-		backgroundUpdate = null,
-		// track whether the current one has been edited
-		backgroundUpdateInProgress = false;
-
-	/**
-	 * 	create the backgroundUpdate obj, default to type="update"
-	 */
-	function createBackgroundUpdate(type = "update") {
-		try {
-			//console.trace();
-			if (DEBUG) console.log("💾 TallyStorage.createBackgroundUpdate()");
-			// if a backgroundUpdate is already in progress then return early
-			if (backgroundUpdateInProgress)
-				return console.warn("💾 TallyStorage.createBackgroundUpdate() backgroundUpdateInProgress=true");
-
-			let obj = {
-				// the type of update (e.g. "update" | "sync")
-				"updateType": type,
-				// all the individual props that can be updated, sent as arrays
-				"itemData": {
-					"achievements": [],
-					"attacks": [],
-					"badges": [],
-					"consumables": [],
-					"flags": [],
-					"monsters": [],
-					"progress": [],
-					"skins": [],
-					"trackers": [],
-				},
-				// SCORE
-				"scoreData": {
-					"clicks": 0,
-					"likes": 0,
-					"pages": 0,
-					"score": 0
-				},
-				// PAGE
-				"pageData": {
-					"description": Page.data.description,
-					"domain": Page.data.domain,
-					"keywords": Page.data.keywords,
-					"tags": Page.data.tags,
-					"time": Page.data.time,
-					"title": Page.data.title,
-					"url": Page.data.url
-				},
-				// EVENTS
-				"eventData": {
-					"action": "",
-					"text": ""
-				},
-				"timezone": Intl.DateTimeFormat().resolvedOptions().timeZone || "",
-				"token": "INSERT_IN_BACKGROUND",
-				"userAgent": navigator.userAgent || "",
-			};
-			return obj;
-		} catch (err) {
-			console.error(err);
-		}
-	}
+	let DEBUG = Debug.ALL.TallyStorage;
 
 
-	/**
-	 *	Adds data to backgroundUpdate object (to be sent later)
-	 */
-	function addToBackgroundUpdate(cat = null, prop = null, val = null, caller = "") {
-		try {
-			//console.trace();
-			if (DEBUG) console.log("💾 TallyStorage.addToBackgroundUpdate()", cat, prop, val, caller);
-			// everything is required
-			if (!FS_Object.prop(cat) || !FS_Object.prop(prop) || !FS_Object.prop(val)) return;
-			if (!FS_Object.prop(tally_user)) return;
-			// make sure a background update exists
-			if (!FS_Object.prop(backgroundUpdate)) backgroundUpdate = createBackgroundUpdate("update");
-			// mark backgroundUpdate in progres
-			backgroundUpdateInProgress = true;
-
-			// if this is an item
-			if (cat === "itemData") {
-				// push the object to the array
-				backgroundUpdate[cat][prop].push(val);
-				// save in tally_user so visible before server reply
-				tally_user[prop][val.name] = val;
-			}
-			// if score data
-			else if (cat === "scoreData") {
-				// add the value
-				backgroundUpdate[cat][prop] += val;
-				// save in tally_user so visible before server reply
-				tally_user.score[prop] += val;
-			}
-			// if event data
-			else if (cat === "eventData") {
-				//  store the obj
-				backgroundUpdate[cat] = prop;
-			}
-			// otherwise it's just a string so ...
-			else {
-				// set the value
-				backgroundUpdate[cat][prop] = val;
-			}
-			// save local edits (even though these will be overwritten)
-			TallyStorage.saveData("tally_user", tally_user);
-			console.log("💾 TallyStorage.addToBackgroundUpdate()", backgroundUpdate, cat, prop, val);
-			// console.log(JSON.stringify(backgroundUpdate));
-
-		} catch (err) {
-			console.error(err);
-		}
-	}
 
 
-	/**
-	 *	Check and send backgroundUpdate if it has been edited
-	 */
-	function checkSendBackgroundUpdate() {
-		try {
-			// no need to send if not updated
-			if (backgroundUpdateInProgress !== false)
-				sendBackgroundUpdate();
-		} catch (err) {
-			console.error(err);
-		}
-	}
 
 
-	/**
-	 *	Send backgroundUpdate
-	 */
-	function sendBackgroundUpdate(force = false) {
-		console.log('💾 TallyStorage.sendBackgroundUpdate()', backgroundUpdate);
-		try {
-			// no need to send if not updated
-			if (!force && backgroundUpdateInProgress === false) return;
-			//if (!Page.mode.active) return;
-			chrome.runtime.sendMessage({
-				'action': 'sendBackgroundUpdate',
-				'data': backgroundUpdate
-			}, function(response) {
-				if (DEBUG) console.log('💾 > TallyStorage.sendBackgroundUpdate() RESPONSE =', response);
-				// update tally_user in content
-				tally_user = response.tally_user;
-				// it is also possible one of the following is true and we need to reset a few other things
-				// 1. during development switching users for testing
-				// 2. a user resets their data but continues to play
-				Stats.reset("tally");
-				Debug.update();
-				// set it back to false
-				backgroundUpdateInProgress = false;
-				// reset backgroundUpdate after sending
-				backgroundUpdate = createBackgroundUpdate("update");
-			});
-		} catch (err) {
-			console.error(err);
-		}
-	}
+
+
 
 	// SEND MONSTER DATA TO BACKGROUND
 	function sendBackgroundMonsterUpdate(data) {
 		try {
-			//if (!Page.mode.active) return;
+			//if (!Page.mode().active) return;
 			chrome.runtime.sendMessage({
 				'action': 'sendBackgroundMonsterUpdate',
 				'data': data
@@ -210,7 +60,7 @@ window.TallyStorage = (function() {
 	/**
 	 *	Generic getData() function
 	 */
-	function getData(name, caller = "") {
+	async function getData(name, caller = "") {
 		try {
 			if (DEBUG) console.log("💾 < TallyStorage.getData()", name, caller);
 			let msg = {
@@ -235,7 +85,7 @@ window.TallyStorage = (function() {
 				'name': name,
 				'data': data
 			};
-			if (DEBUG) console.log("💾 < TallyStorage.saveData()", msg, caller);
+			if (DEBUG) console.log("💾 < TallyStorage.saveData()", name, msg, caller);
 			chrome.runtime.sendMessage(msg, function(response) {
 				if (DEBUG) console.log("💾 > TallyStorage.saveData() RESPONSE =", name, caller, JSON.stringify(response));
 				//return response.data;
@@ -246,17 +96,23 @@ window.TallyStorage = (function() {
 	}
 
 
+
+
+
 	/**
 	 *	Save tally_user in content / background
 	 */
-	function saveTallyUser(cat, obj, caller = "") {
+	function saveTallyUser(name, obj, caller = "") {
 		try {
-			if (DEBUG) console.log("💾 < TallyStorage.saveTallyUser()", cat, obj, caller);
-			if (!FS_Object.prop(tally_user)) return;
+			if (DEBUG) console.log("💾 < TallyStorage.saveTallyUser()", name, obj, caller, "tally_user =", tally_user);
+			if (!FS_Object.prop(tally_user.progress)) {
+				console.error("💾 < TallyStorage.saveTallyUser() NO tally_user");
+				return;
+			}
 			// get latest from background ? NO IDT this is required
 			//tally_user = TallyStorage.getData("tally_user");
 			// save in content
-			tally_user[cat][obj.name] = obj;
+			tally_user[name][obj.name] = obj;
 			// save in background
 			let msg = {
 				'action': 'saveData',
@@ -265,7 +121,7 @@ window.TallyStorage = (function() {
 			};
 			chrome.runtime.sendMessage(msg, function(response) {
 				if (DEBUG) console.log("💾 > TallyStorage.saveTallyUser() RESPONSE =", JSON.stringify(response));
-				// tally_user = response.data;
+				tally_user = response.data;
 			});
 		} catch (err) {
 			console.error(err);
@@ -273,13 +129,19 @@ window.TallyStorage = (function() {
 	}
 
 
-	// // emergency only
-	// function launchStartScreen(caller) {
+
+
+	//
+	// // resetUser a.k.a. resetGame
+	// function resetUser(tokenOnPage = false, tokenData = {}) {
 	// 	try {
-	// 		if (DEBUG) console.log("💾 < TallyStorage.launchStartScreen()", caller);
+	// 		if (DEBUG) console.log("💾 < TallyStorage.resetUser()", tokenOnPage, tokenData);
 	// 		chrome.runtime.sendMessage({
-	// 			'action': 'launchStartScreen'
+	// 			'action': 'resetUser',
+	// 			'tokenOnPage': tokenOnPage,
+	// 			'tokenData': tokenData
 	// 		}, function(response) {
+	// 			if (DEBUG) console.log("💾 > TallyStorage.resetUser() RESPONSE =", response);
 	// 			return response.data;
 	// 		});
 	// 	} catch (err) {
@@ -288,51 +150,38 @@ window.TallyStorage = (function() {
 	// }
 
 
-	// resetUser a.k.a. resetGame
-	function resetUser(tokenOnPage = false, tokenData = {}) {
-		try {
-			if (DEBUG) console.log("💾 < TallyStorage.resetUser()", tokenOnPage, tokenData);
-			chrome.runtime.sendMessage({
-				'action': 'resetUser',
-				'tokenOnPage': tokenOnPage,
-				'tokenData': tokenData
-			}, function(response) {
-				if (DEBUG) console.log("💾 > TallyStorage.resetUser() RESPONSE =", response);
-				return response.data;
-			});
-		} catch (err) {
-			console.error(err);
-		}
-	}
-
-
-	/**
-	 *	Reset game data from server (after new install or token)
-	 */
-	function resetGameDataFromServer() {
-		try {
-			if (DEBUG) console.log("💾 <> TallyStorage.resetGameDataFromServer()");
-			let msg = {
-				'action': 'resetGameDataFromServer'
-			};
-			chrome.runtime.sendMessage(msg, function(response) {
-				if (DEBUG) console.log("💾 <> TallyStorage.resetGameDataFromServer() RESPONSE =", JSON.stringify(response));
-
-				// reset everything
-				tally_user = {};
-				tally_options = {};
-				tally_meta = {};
-				tally_nearby_monsters = {};
-				tally_top_monsters = {};
-				// now that all data is refreshed, grab from background and start game over on page
-				TallyMain.getDataFromBackground(TallyMain.performStartChecks);
-
-			});
-
-		} catch (err) {
-			console.error(err);
-		}
-	}
+	// /**
+	//  *	Reset game data from server (after new install or token)
+	//  */
+	// function returnAllGameDataFromServer(caller = "") {
+	// 	try {
+	// 		console.log("💾 <> TallyStorage.returnAllGameDataFromServer()", caller, Page.mode(), Page.mode().active);
+	// 		if (!Page.mode().active) {
+	// 			return console.error("💾 <> TallyStorage.returnAllGameDataFromServer() !Page.mode().active", caller, Page.mode());
+	// 		}
+	// 		if (DEBUG) console.log("💾 <> TallyStorage.returnAllGameDataFromServer()", caller);
+	// 		let msg = {
+	// 			'action': 'returnAllGameDataFromServer'
+	// 		};
+	// 		chrome.runtime.sendMessage(msg, function(response) {
+	// 			if (DEBUG) console.log("💾 <> TallyStorage.returnAllGameDataFromServer() RESPONSE =", JSON.stringify(response));
+	//
+	// 			// reset everything
+	// 			tally_user = {};
+	// 			tally_options = {};
+	// 			tally_meta = {};
+	// 			tally_nearby_monsters = {};
+	// 			tally_top_monsters = {};
+	//
+	// 			// now that all data is refreshed, grab from background and start game over on page
+	// 			// TallyMain.getDataFromBackground();
+	//
+	// 		});
+	//
+	// 	} catch (err) {
+	// 		console.error(err);
+	// 	}
+	// }
 
 
 
@@ -363,58 +212,48 @@ window.TallyStorage = (function() {
 	}
 
 	// SAVE TOKEN FROM DASHBOARD
-	function saveTokenFromDashboard(data) {
+	async function saveTokenFromDashboard(data) {
 		try {
-			if (DEBUG) console.log('💾 < TallyStorage.saveTokenFromDashboard() TRYING TO SAVE NEW TOKEN... DATA =', data);
-			// save locally first
+			if (DEBUG) console.log('💾 < TallyStorage.saveTokenFromDashboard() 🔑 SAVING', data);
+
 			chrome.runtime.sendMessage({
 				'action': 'saveToken',
 				'data': data
 			}, function(response) {
-				if (DEBUG) console.log('💾 > TallyStorage.saveTokenFromDashboard() RESPONSE =', response);
-
-				// set
-				tally_meta.userTokenStatus = "ok";
 
 				// if the token was different and it was updated ...
-				if (response.message == 1) {
+				if (response.message === "new") {
+					if (DEBUG) console.log('💾 > TallyStorage.saveTokenFromDashboard() 🔑 IS NEW', response);
+					// update Page.mode()
+					Page.updateMode("active");
 
-					// 1. if this is the first time user is saving a token
-					if (!Progress.get("tokenAdded")) {
-						if (DEBUG) console.log("💾 > TallyStorage.saveTokenFromDashboard() 1 -> NEW TOKEN WAS SAVED", data);
-						// mark as true and save
-						Progress.update("tokenAdded", true);
-						// reload page after token grabbed
-						location.reload();
-					}
-					// 2. after the page has refreshed
-					else if (!Progress.get("tokenAddedPlayWelcomeMessage")) {
-						if (DEBUG) console.log("💾 > TallyStorage.saveTokenFromDashboard() 2 -> NEW TOKEN WAS SAVED", data);
-						// mark as true and save
-						Progress.update("tokenAddedPlayWelcomeMessage", true);
-						// introductions, then encourage them to explore
-						Dialogue.showStr("Oh hi! I'm Tally!!!", "happy");
-						Dialogue.showStr("Your account is now active and you are ready to play!", "happy");
-						Dialogue.showStr("This is your dashboard.", "happy");
-						Dialogue.showStr("You can edit your profile here.", "happy");
-						Dialogue.showStr("Good to stay anonymous though, what with all the monsters around...", "cautious");
-						Dialogue.showStr("Now, let's go find some trackers!", "happy");
-						Dialogue.showStr("I have a <a target='_blank' href='https://"+
-							FS_Object.randomArrayIndex(GameData.trackerDomains) +"'>good idea where there will be some</a>...", "happy");
-					}
-					// if user has been here before
-					else {
-						if (DEBUG) console.log("💾 > TallyStorage.saveTokenFromDashboard() 3 -> NEW TOKEN WAS SAVED", data);
-						Dialogue.showStr("Your account has been updated!", "happy");
-						Dialogue.showStr("Let's go get some <a target='_blank' href='https://"+
-							FS_Object.randomArrayIndex(GameData.trackerDomains) +"'>trackers</a>!", "happy");
-						// force a background update to confirm with API / background
-						// MAYBE DON'T NEED BECAUSE THIS ALL HAPPENS ON UPDATE
-						//sendBackgroundUpdate(true);
-					}
+					// update all objects
+					tally_user = response.tally_user;
+					tally_options = response.tally_options;
+					tally_meta = response.tally_meta;
 
-					resetGameDataFromServer();
+					// let progress show game events
+					Progress.tokenAdded();
+
+				} else if (response.message === "same") {
+					if (DEBUG) console.log('💾 > TallyStorage.saveTokenFromDashboard() 🔑 IS THE SAME', response);
+				} else {
+					if (DEBUG) console.log('💾 > TallyStorage.saveTokenFromDashboard() 🔑 FAILED', response);
 				}
+			});
+		} catch (err) {
+			console.error(err);
+		}
+	}
+
+
+	function setBadgeText(data) {
+		try {
+			chrome.runtime.sendMessage({
+				'action': 'setBadgeText',
+				'data': data
+			}, function(response) {
+				// ?
 			});
 		} catch (err) {
 			console.error(err);
@@ -423,42 +262,13 @@ window.TallyStorage = (function() {
 
 	// PUBLIC
 	return {
-		getDataFromServer: function(url, callback) {
-			return getDataFromServer(url, callback);
-		},
-		getData: function(name, caller) {
-			return getData(name, caller);
-		},
-		saveData: function(name, data, caller) {
-			return saveData(name, data, caller);
-		},
-		saveTallyUser: function(cat, obj, caller) {
-			saveTallyUser(cat, obj, caller);
-		},
-		// launchStartScreen: function(caller) {
-		// 	launchStartScreen(caller);
-		// },
-		// server
-		createBackgroundUpdate: function(type) {
-			createBackgroundUpdate(type);
-		},
-		backgroundUpdate: backgroundUpdate,
-		backgroundUpdateInProgress: backgroundUpdateInProgress,
-		addToBackgroundUpdate: function(cat, prop, val, caller) {
-			addToBackgroundUpdate(cat, prop, val, caller);
-		},
-		checkSendBackgroundUpdate: checkSendBackgroundUpdate,
-		sendBackgroundUpdate: sendBackgroundUpdate,
-		newBackgroundMonsterUpdate: function(mid) {
-			return newBackgroundMonsterUpdate(mid);
-		},
-		saveTokenFromDashboard: function(data) {
-			saveTokenFromDashboard(data);
-		},
-		resetUser: function(tokenOnPage, tokenData) {
-			return resetUser(tokenOnPage, tokenData);
-		},
-		resetGameDataFromServer: resetGameDataFromServer,
+		getDataFromServer: getDataFromServer,
+		getData: getData,
+		saveData: saveData,
+		saveTallyUser: saveTallyUser,
+		newBackgroundMonsterUpdate: newBackgroundMonsterUpdate,
+		saveTokenFromDashboard: saveTokenFromDashboard,
+		setBadgeText: setBadgeText
 	};
 })();
 
@@ -529,7 +339,7 @@ function createStartupPromises() {
 // USER
 const getUserPromise = new Promise(
 	(resolve, reject) => {
-		//if (!Page.mode.active) return;
+		//if (!Page.mode().active) return;
 		chrome.runtime.sendMessage({
 			'action': 'getUser'
 		}, function(response) {
@@ -542,7 +352,7 @@ const getUserPromise = new Promise(
 // OPTIONS
 const getOptionsPromise = new Promise(
 	(resolve, reject) => {
-		//if (!Page.mode.active) return;
+		//if (!Page.mode().active) return;
 		chrome.runtime.sendMessage({
 			'action': 'getOptions'
 		}, function(response) {
@@ -555,7 +365,7 @@ const getOptionsPromise = new Promise(
 // GET TALLY_META
 const getMetaPromise = new Promise(
 	(resolve, reject) => {
-		//if (!Page.mode.active) return;
+		//if (!Page.mode().active) return;
 		chrome.runtime.sendMessage({
 			'action': 'getMeta'
 		}, function(response) {
@@ -568,7 +378,7 @@ const getMetaPromise = new Promise(
 // GET NEARBY MONSTERS
 const getNearbyMonstersPromise = new Promise(
 	(resolve, reject) => {
-		//if (!Page.mode.active) return;
+		//if (!Page.mode().active) return;
 		chrome.runtime.sendMessage({
 			'action': 'getNearbyMonsters'
 		}, function(response) {
@@ -581,7 +391,7 @@ const getNearbyMonstersPromise = new Promise(
 // GET STATS
 const getStatsPromise = new Promise(
 	(resolve, reject) => {
-		//if (!Page.mode.active) return;
+		//if (!Page.mode().active) return;
 		chrome.runtime.sendMessage({
 			'action': 'getStats'
 		}, function(response) {
@@ -608,22 +418,3 @@ const getTopMonstersPromise = new Promise(
 		});
 	}
 );
-
-
-
-/*  CUSTOM FUNCTIONS
- ******************************************************************************/
-
-
-function setBadgeText(data) {
-	try {
-		chrome.runtime.sendMessage({
-			'action': 'setBadgeText',
-			'data': data
-		}, function(response) {
-			// ?
-		});
-	} catch (err) {
-		console.error(err);
-	}
-}

@@ -32,10 +32,11 @@ window.Stats = (function() {
 	 */
 	function reset(who) {
 		try {
+			if (!Page.mode().active) return;
 			// get level
 			let level = getLevel(who);
 			if (!level){
-				console.warn("📋 Stats.reset()", who, level, "NO LEVEL");
+				return console.error("📋 Stats.reset()", who, level, "NO LEVEL");
 			}
 			// for each resetStat
 			for (var stat in resetStatsAll) {
@@ -76,7 +77,8 @@ window.Stats = (function() {
 	 */
 	function save(who) {
 		try {
-			//if (DEBUG) console.log("📋 Stats.save()", who);
+			if (!Page.mode().active) return;
+			if (DEBUG) console.log("📋 Stats.save()", who);
 			TallyStorage.saveData('tally_stats', allStats.tally, "📋 Stats.save()");
 		} catch (err) {
 			console.error(err);
@@ -149,19 +151,17 @@ window.Stats = (function() {
 	function getLevel(who) {
 		try {
 			// error checking
-			if (!prop(tally_user)) return;
+			if (Page.mode().notActive || !prop(tally_user)) return;
 			// default
 			let level = 0;
 
 			if (who == "tally"){
 				level = tally_user.level;
+				if (DEBUG) console.log("📋 Stats.getLevel()", who + " => " + level);
 			} else if (Monster.currentMID > 0 || Monster.current().level > 0) {
 				level = Monster.current().level;
+				if (DEBUG) console.log("📋 Stats.getLevel()", who + " => " + level, Monster.current());
 			}
-
-			if (DEBUG) console.log("📋 Stats.getLevel() Monster.currentMID =", Monster.currentMID,
-				"Monster.current() = ", Monster.current(), who + " => " + level);
-
 			return level;
 		} catch (err) {
 			console.error(err);

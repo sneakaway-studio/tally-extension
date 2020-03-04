@@ -6,45 +6,51 @@
 window.Debug = (function() {
 	// PRIVATE
 
-	let ALL = {
-		"Badge": true,
-		// battles
-		"BattleAttack": true,
-		"BattleConsole": false,
-		"BattleEffect": false,
-		"BattleMath": true,
-		"BattleTest": true,
-		"Battle": true,
+	let DEBUG = true,
+		ALL = {
+			"Badge": true,
+			// battles
+			"BattleAttack": true,
+			"BattleConsole": false,
+			"BattleEffect": false,
+			"BattleMath": true,
+			"BattleTest": true,
+			"Battle": true,
 
-		"Consumable": true,
-		"Core": false,
-		"Debug": true,
-		"Demo": true,
-		"Dialogue": false,
-		"Effect": true,
-		"Flag": true,
-		"TallyEvents": true,
-		"Interface": true,
-		"Item": true,
-		"TallyListeners": false,
-		"TallyMain": true,
-		"TallyStorage": true,
-		// monsters
-		"MonsterAward": false,
-		"MonsterCheck": true,
-		"Monster": true,
+			"Consumable": true,
+			"Core": false,
+			"Debug": true,
+			"Demo": true,
+			"Dialogue": false,
+			"Effect": true,
+			"Flag": true,
+			"TallyEvents": true,
+			"Interface": true,
+			"Item": true,
 
-		"Onboarding": true,
-		"Page": true,
-		"Progress": true,
-		"Sound": false,
-		"StatsDisplay": false,
-		"Stats": true,
-		"Skin": true,
-		"Tally": true,
-		"Tracker": true,
-		"Tutorial": true
-	};
+			// monsters
+			"MonsterAward": false,
+			"MonsterCheck": true,
+			"Monster": true,
+
+			"Onboarding": true,
+			"Page": true,
+			"Progress": true,
+
+			"Sound": false,
+			"StatsDisplay": false,
+			"Stats": false,
+			"Skin": true,
+
+			"Tally": true,
+			"TallyData": true,
+			"TallyListeners": true,
+			"TallyMain": true,
+			"TallyStorage": true,
+			"Token": true,
+			"Tracker": true,
+			"Tutorial": true
+		};
 
 	// https://coderwall.com/p/fskzdw/colorful-console-log
 	let styles = {
@@ -62,8 +68,50 @@ window.Debug = (function() {
 			}
 		}
 	}
-	setAll(true);
+	// setAll(true);
 	// setAll(false);
+
+
+	/**
+	 *	Send a denug message to background console
+	 */
+	function sendBackgroundDebugMessage(caller, str) {
+		try {
+			// time the request
+			let startTime = new Date().getTime();
+
+			// if (DEBUG) console.log("🐞 Debug.sendBackgroundDebugMessage()", caller, str);
+			let msg = {
+				'action': 'sendBackgroundDebugMessage',
+				'caller': caller,
+				'str': str
+			};
+			chrome.runtime.sendMessage(msg, function(response) {
+				let endTime = new Date().getTime();
+				if (DEBUG) console.log("🐞 Debug.sendBackgroundDebugMessage() time = " + (endTime - startTime) + "ms, RESPONSE =", JSON.stringify(response));
+			});
+		} catch (err) {
+			console.error(err);
+		}
+	}
+
+
+	function dataReportHeader(title, char, pos, count=30) {
+		try {
+			if (!DEBUG) return;
+			// make string
+			let line = "";
+			for (let i = 0; i < count; i++) {
+				line += char;
+			}
+			if (pos == "before") console.log("");
+			console.log(line + " " + title + " " + line);
+			if (pos == "after") console.log("");
+		} catch (err) {
+			console.error(err);
+		}
+	}
+
 
 	// add the debugger
 	function add() {
@@ -128,7 +176,7 @@ window.Debug = (function() {
 
 			// add listener for reset button
 			$(document).on("click", '#updateGameFromServer', function() {
-				TallyMain.resetGameDataFromServer();
+				// TallyMain.returnAllGameData("Debug.update() click handler");
 			});
 
 		} catch (err) {
@@ -137,13 +185,92 @@ window.Debug = (function() {
 	}
 
 
+	function addKeys() {
+		try {
+
+			let k = "`+1";
+			Mousetrap.bind(k + ' p', function() {
+				window.open('https://tallygame.net/profile/' + tally_user.username);
+			});
+			Mousetrap.bind(k + ' s', function() {
+				chrome.runtime.sendMessage({
+					'action': 'openPage',
+					'url': chrome.extension.getURL('assets/pages/startScreen/startScreen.html')
+				});
+			});
+			Mousetrap.bind(k + ' t', function() {
+				Dialogue.random();
+			});
+			Mousetrap.bind(k + ' w', function() {
+				Skin.random();
+			});
+			Mousetrap.bind(k + ' m', function() {
+				Sound.stopMusic();
+				BattleAttack.tallyWins("The monster's health has been depleted. Tally wins!!!", "monster-health-gone");
+				// BattleEffect.showCapturedMonster();
+				// Monster.test();
+			});
+			Mousetrap.bind(k + ' b', function() {
+				// Battle.test();
+				Sound.playFile("explosions/explode.mp3", false, 0);
+			});
+			Mousetrap.bind(k + ' 0', function() {
+				BattleEffect.showRumble("small");
+			});
+			Mousetrap.bind(k + ' 1', function() {
+				BattleEffect.showRumble("medium");
+			});
+			Mousetrap.bind(k + ' 2', function() {
+				BattleEffect.showRumble("large");
+			});
+			Mousetrap.bind(k + ' 7', function() {
+
+			});
+			Mousetrap.bind(k + ' 8', function() {
+				BattleConsole.log("What will Tally do?", "showBattleOptions");
+			});
+			Mousetrap.bind(k + ' 9', function() {
+
+			});
+			Mousetrap.bind(k + ' q', function() {
+				Battle.end();
+			});
+			Mousetrap.bind('escape', function() {
+				Battle.end();
+			});
+			Mousetrap.bind(k + ' e', function() {
+				Effect.explode();
+			});
+
+
+			Mousetrap.bind(k + ' z', function() {
+				StatsDisplay.adjustStatsBar("tally", "health", Math.random());
+			});
+			Mousetrap.bind(k + ' x', function() {
+				StatsDisplay.adjustStatsBar("tally", "stamina", Math.random());
+			});
+			Mousetrap.bind(k + ' v', function() {
+				StatsDisplay.adjustStatsCircle("tally", Math.random());
+			});
+			Mousetrap.bind(k + ' r', function() {
+
+			});
+			Mousetrap.bind(k + ' v', function() {
+				BattleTest.test();
+			});
+
+		} catch (err) {
+			console.error(err);
+		}
+	}
+
 	// PUBLIC
 	return {
 		ALL: ALL,
+		setAll: setAll,
 		styles: styles,
-		setAll: function(state) {
-			setAll(state);
-		},
+		sendBackgroundDebugMessage: sendBackgroundDebugMessage,
+		dataReportHeader: dataReportHeader,
 		add: add,
 		update: update
 	};

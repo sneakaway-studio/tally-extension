@@ -7,6 +7,8 @@
 window.FS_Object = (function() {
 
 	function prop(obj){
+		// console.log("FS_Object.prop()", obj);
+		// console.trace();
 		if (typeof obj !== 'undefined' && obj && obj !== null) return true;
 		else return false;
 	}
@@ -52,9 +54,7 @@ window.FS_Object = (function() {
 
 	// PUBLIC
 	return {
-		prop: function(obj) {
-			return prop(obj);
-		},
+		prop: prop,
 		objLength: function(obj){
 			return objLength(obj);
 		},
@@ -87,6 +87,8 @@ window.FS_Object = (function() {
  *	* like PHP isset()
  */
 function prop(val) {
+	// console.log("prop()", val);
+	// console.trace();
 	if (typeof val !== 'undefined' && val && val !== null) {
 		return true;
 	} else {

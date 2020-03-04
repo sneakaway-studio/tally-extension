@@ -5,7 +5,7 @@
     "browser": true,
     "undef": true,
     "validthis": true,
-    "esversion": 6,
+    "esversion": 8,
     "globals": {
         "$": false,
         "Storage": false,

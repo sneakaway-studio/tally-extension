@@ -58,7 +58,7 @@ window.FS_Number = (function() {
 			// make sure they are ints
 			operand1 = parseInt(operand1);
 			operand2 = parseInt(operand2);
-			console.log("FS_Number.operation()", operand1, operand2, operator);
+			// console.log("FS_Number.operation()", operand1, operator, operand2);
 			try {
 				if (operator === "+") {
 					return operand1 + operand2;
@@ -66,6 +66,8 @@ window.FS_Number = (function() {
 					return operand1 - operand2;
 				} else if (operator === "*") {
 					return operand1 * operand2;
+				} else if (operator === "/") {
+					return operand1 / operand2;
 				}
 			} catch (err) {
 				console.error(err);

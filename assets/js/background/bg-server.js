@@ -8,165 +8,177 @@ window.Server = (function() {
 	/*  AJAX FUNCTIONS
 	 ******************************************************************************/
 
+
 	/**
-	 *  Check if API Server is online, save status
+	 *	(New async) Check if API Server is online, save status
 	 */
-	function checkIfOnline() {
-		try {
-			let _tally_meta = store("tally_meta"),
-				// time it
-				startTime = new Date().getTime();
-			$.ajax({
+	async function checkIfOnline() {
+		let _tally_meta = store("tally_meta"),
+			_startTime = new Date().getTime(),
+			_server = {
+				"lastSyncedDate": 0,
+				"online": 1,
+				"responseMillis": -1
+			};
+		// return result of ajax call
+		return $.ajax({
 				type: "GET",
 				timeout: 10000,
 				url: _tally_meta.api,
 				contentType: 'application/json', // type of data you are sending
 				dataType: 'json', // type of data you expect to receive
-			}).done(result => {
-				console.log("📟 Server.checkIfOnline() ONLINE", JSON.stringify(result));
+			})
+			.done(result => {
+				console.log("📟 Server.checkIfOnline() SUCCESS", JSON.stringify(result));
 				// save state
-				let endTime = new Date().getTime();
-				_tally_meta.serverOnline = 1;
+				_tally_meta.server.online = 1;
 				_tally_meta.userOnline = 1;
-				_tally_meta.serverOnlineTime = endTime - startTime;
-				// since server is online check token
-				verifyToken();
+				_tally_meta.server.responseMillis = new Date().getTime() - _startTime;
 			}).fail(error => {
-				// server is not online, do not start game
-				console.error("📟 Server.checkIfOnline() " + _tally_meta.api +
-					" 😢 NOT ONLINE, DO NOT START GAME", JSON.stringify(error));
+				// server is not online
+				console.error("📟 Server.checkIfOnline() FAIL", _tally_meta.api,
+					"😢 NOT ONLINE", JSON.stringify(error));
 				// save state
-				_tally_meta.serverOnline = 0;
+				_tally_meta.server.online = 0;
 				_tally_meta.userOnline = 0;
-				_tally_meta.serverOnlineTime = -1;
+				_tally_meta.server.responseMillis = -1;
 			}).always(() => {
-				//console.log("📟 Server.checkIfOnline() ALWAYS");
+				// console.log("📟 Server.checkIfOnline() ALWAYS store results");
 				// save result
+				_tally_meta.server = _server;
 				store("tally_meta", _tally_meta);
 			});
-		} catch (err) {
-			console.error(err);
-		}
 	}
 
+
+
 	/**
-	 *  Verify token is ok, not expired
+	 *  (New async) Verify token is ok, not expired
 	 */
-	function verifyToken(callback) {
-		try {
-			let _tally_secret = store("tally_secret"),
-				_tally_meta = store("tally_meta");
+	async function verifyToken() {
 
-			// return early if !server
-			if (!_tally_meta.serverOnline) return;
+		let _tally_secret = store("tally_secret"),
+			_tally_meta = store("tally_meta"),
+			_token = {
+				"expiresDate": 0,
+				"expiresInMillis": -1,
+				"prompts": 0,
+				"status": ""
+			};
 
-			// if a token does not exist
-			if (!_tally_secret.token || _tally_secret.token == "") {
-				handleTokenStatus(0, 0, "", 0);
-				return;
+		// return early if !server
+		if (!_tally_meta.server.online) return false;
+
+		// if a token does not exist
+		if (!_tally_secret.token || _tally_secret.token == "") {
+			console.log("📟 Server.verifyToken() 🔑 -> NO TOKEN", JSON.stringify(_tally_secret), _tally_meta);
+			_tally_meta.token = _token;
+			await store("tally_meta", _tally_meta);
+			return false;
+		}
+
+		// we have a token so validate with server
+		return $.ajax({
+			url: _tally_meta.api + "/user/verifyToken",
+			type: "POST",
+			timeout: 15000, // set timeout to 15 secs to catch ERR_CONNECTION_REFUSED
+			contentType: 'application/json',
+			dataType: 'json',
+			data: JSON.stringify({
+				"token": _tally_secret.token
+			})
+		}).done(result => {
+			console.log("📟 Server.verifyToken() DONE 🔑 -> result", result);
+
+			// check and save milliseconds until expires
+			if (result.tokenExpires) {
+				_token.expiresDate = moment().format(result.tokenExpires);
+				_token.expiresInMillis = FS_Date.difference(result.tokenExpires, "now");
+			} else {
+				// token is expired
+				_token.status = "expired";
+				console.log("📟 Server.verifyToken() DONE 🔑 -> EXPIRED", _token);
 			}
 
-			// check with server
-			$.ajax({
-				url: _tally_meta.api + "/user/verifyToken",
-				type: "POST",
-				timeout: 15000, // set timeout to 15 secs to catch ERR_CONNECTION_REFUSED
-				contentType: 'application/json',
-				dataType: 'json',
-				data: JSON.stringify({
-					"token": _tally_secret.token
-				})
-			}).done(result => {
-				if (DEBUG) console.log("📟 Server.verifyToken() 🔑 ->", JSON.stringify(result));
-				let diff = null;
-				//console.log("📟 Server.verifyToken() 🔑 -> result.tokenExpires",result.tokenExpires,moment().format(result.tokenExpires));
-				// check date on token
-				if (result.tokenExpires) {
-					//diff = returnDateDifferenceMinutes(result.tokenExpires);
-					// console.log("📟 Server.verifyToken() 🔑 -> diff",diff,moment(result.tokenExpires).diff(moment()));
-					diff = FS_Date.difference(result.tokenExpires, "now");
-				}
-				// if diff is > 0 (in the future)
-				if (diff && diff > 0) {
-					console.log("📟 Server.verifyToken() 🔑 -> OK", diff, result.tokenExpires);
-					handleTokenStatus(result.tokenExpires, diff, "ok");
-				} else {
-					console.log("📟 Server.verifyToken() 🔑 -> EXPIRED", result.tokenExpires);
-					handleTokenStatus(result.tokenExpires, diff, "expired");
-				}
-			}).fail(function(jqXHR, textStatus, errorThrown) {
-				console.error("📟 Server.verifyToken() 🔑 -> result =", jqXHR, textStatus, errorThrown);
-				handleTokenStatus(0, 0, "error", 0);
-			});
-		} catch (err) {
-			console.error(err);
-		}
-	}
-
-	/**
-	 *  Handle token status
-	 */
-	function handleTokenStatus(_expires, _expiresDiff, _status) {
-		try {
-			if (DEBUG) console.log("📟 Server.handleTokenStatus()", _expires, _expiresDiff, _status);
-
-			// save result
-			let _tally_meta = store("tally_meta");
-			_tally_meta.userTokenExpires = moment().format(_expires);
-			_tally_meta.userTokenExpiresDiff = _expiresDiff;
-			_tally_meta.userTokenStatus = _status;
+			// if not expired = _token.expiresInMillis is > 0 (in the future)
+			if (_token.expiresInMillis && _token.expiresInMillis > 0) {
+				// token is ok
+				_token.status = "ok";
+				// console.log("📟 Server.verifyToken() NOT EXPIRED 🔑 -> OK", _token);
+			} else {
+				// token is expired
+				_token.status = "expired";
+				// console.log("📟 Server.verifyToken() DONE 🔑 -> EXPIRED", _token);
+			}
+			return true;
+		}).fail(function(jqXHR, textStatus, errorThrown) {
+			_token.status = "fail";
+			console.error("📟 Server.verifyToken() FAIL 🔑 -> result =", jqXHR, textStatus, errorThrown, _token);
+			return false;
+		}).always(() => {
+			console.log("📟 Server.verifyToken() ALWAYS 🔑 -> STORE", _token);
+			// save token
+			_tally_meta.token = _token;
 			store("tally_meta", _tally_meta);
+		});
+	}
 
-			Background.dataReport();
+	/**
+	 *  Handle token status - OLD BUT NEED SOME OF THESE THINGS
+	 */
+	function saveTokenStatus(_expires, _expiresInMillis, _status) {
+		try {
 
-			// 1. token == ok
-			if (_tally_meta.userTokenStatus == "ok") {
-				if (DEBUG) console.log("📟 Server.handleTokenStatus() 🔑 -> everything is cool, start game");
-				resetGameDataFromServer();
-				// content script takes over
-			}
-			// 2. token == expired
-			else if (_tally_meta.userTokenStatus == "expired") {
-				if (DEBUG) console.log("📟 Server.handleTokenStatus() 🔑 -> TOKEN EXPIRED");
-				// prompts handled by content script
-			}
-			// 3. tally_meta exists but there is no token or there is an error
-			else {
-				// launch signin / registration
-				if (DEBUG) console.log("📟 Server.handleTokenStatus() 🔑 -> NO TOKEN FOUND");
-				Install.launchStartScreen();
-			}
+
+			// // 1. token == ok
+			// if (_tally_meta.token.status == "ok") {
+			// 	if (DEBUG) console.log("📟 Server.saveTokenStatus() 🔑 -> everything is cool, start game");
+			// 	// returnAllGameData();
+			// 	// content script takes over
+			// }
+			// // 2. token == expired
+			// else if (_tally_meta.token.status == "expired") {
+			// 	if (DEBUG) console.log("📟 Server.saveTokenStatus() 🔑 -> TOKEN EXPIRED");
+			// 	// prompts handled by content script
+			// }
+			// // 3. tally_meta exists but there is no token or there is an error
+			// else {
+			// 	// launch signin / registration
+			// 	if (DEBUG) console.log("📟 Server.saveTokenStatus() 🔑 -> NO TOKEN FOUND");
+			// 	// Install.launchStartScreen();
+			// }
+
+
 		} catch (err) {
 			console.error(err);
 		}
 	}
 
 	/**
-	 *  Handle token status
+	 *  Get latest game data from API
 	 */
-	function resetGameDataFromServer(callback = null) {
+	async function returnAllGameData() {
 		try {
 			let _tally_meta = store("tally_meta"),
 				_tally_secret = store("tally_secret");
 
-			console.log("📟 Server.resetGameDataFromServer()", {
-				"token": _tally_secret.token
-			});
-
-			// return early if !server
-			if (!_tally_meta.serverOnline) {
-				console.error("📟 Server.resetGameDataFromServer() *** SERVER NOT ONLINE ***");
-				return;
-			}
-			else if (_tally_meta.userTokenStatus != "ok") {
-				console.error("📟 Server.resetGameDataFromServer() *** TOKEN NOT OK ***");
-				return;
+			// return early if !server || !token
+			if (!_tally_meta.server.online) {
+				console.error("📟 Server.returnAllGameData() *** SERVER NOT ONLINE ***");
+				return false;
+			} else if (_tally_meta.token.status !== "ok") {
+				console.error("📟 Server.returnAllGameData() *** TOKEN NOT OK ***");
+				return false;
 			}
 
-			// populate monsters
-			getMonsters();
 
-			$.ajax({
+
+
+
+
+
+			// send token to server to get latest game data
+			return $.ajax({
 				type: "POST",
 				url: _tally_meta.api + "/user/returnAllGameData",
 				contentType: 'application/json',
@@ -175,61 +187,19 @@ window.Server = (function() {
 					"token": _tally_secret.token
 				})
 			}).done(result => {
-				console.log("📟 Server.resetGameDataFromServer() RESULT =", JSON.stringify(result));
+				console.log("📟 Server.returnAllGameData() DONE %c" + JSON.stringify(result.username), Debug.styles.green );
 				// merge attack data from server with game data properties
 				result.attacks = Server.mergeAttackDataFromServer(result.attacks);
+
+			}).fail(error => {
+				console.error("📟 Server.returnAllGameData() FAIL", JSON.stringify(error));
+				// server might not be online
+				checkIfOnline();
+			}).always((result) => {
+				console.log("📟 Server.returnAllGameData() ALWAYS", JSON.stringify(result.username));
 				// store result
 				store("tally_user", result);
-				if (callback)
-					callback(result);
-			}).fail(error => {
-				console.error("📟 Server.resetGameDataFromServer() RESULT =", JSON.stringify(error));
-				// server might not be reachable
-				checkIfOnline();
-				if (callback)
-					callback(0);
 			});
-
-
-
-
-
-
-
-			//
-			//
-			// console.log("📟 Server.resetGameDataFromServer()", _tally_meta, _tally_user);
-			// if (!_tally_meta.serverOnline || _tally_meta.userTokenStatus != "ok") return;
-			// if (prop(_tally_user.username) && _tally_user.username != "") username = _tally_user.username;
-			// $.ajax({
-			// 	type: "GET",
-			// 	url: _tally_meta.api + "/user/returnAllGameData" + username,
-			// 	contentType: 'application/json',
-			// 	dataType: 'json',
-			// }).done(result => {
-			// 	//console.log("📟 Server.resetGameDataFromServer() RESULT =", JSON.stringify(result));
-			// 	//
-			// 	// // treat all server data as master
-			// 	// _tally_user.monsters = convertArrayToObject(result.userMonsters, "mid");
-			// 	// _tally_top_monsters = convertArrayToObject(result.topMonsters, "mid");
-			//
-			//
-			// 	store("tally_user", _tally_user);
-			//
-			// }).fail(error => {
-			// 	console.error("📟 Server.resetGameDataFromServer() RESULT =", JSON.stringify(error));
-			// 	// server might not be reachable
-			// 	checkIfOnline();
-			// });
-			//
-
-
-
-
-
-			// do callback
-			if (callback)
-				callback();
 		} catch (err) {
 			console.error(err);
 		}
@@ -279,7 +249,7 @@ window.Server = (function() {
 				_tally_top_monsters = store("tally_top_monsters");
 
 			// return early if !server or !token
-			if (!_tally_meta.serverOnline || _tally_meta.userTokenStatus != "ok") return;
+			if (!_tally_meta.server.online || _tally_meta.token.status != "ok") return;
 
 			$.ajax({
 				type: "PUT",
@@ -301,7 +271,7 @@ window.Server = (function() {
 				store("tally_top_monsters", _tally_top_monsters);
 			}).fail(error => {
 				console.error("📟 Server.sendMonsterUpdate() RESULT =", JSON.stringify(error));
-				// server might not be reachable
+				// server might not be online
 				checkIfOnline();
 			});
 		} catch (err) {
@@ -309,20 +279,23 @@ window.Server = (function() {
 		}
 	}
 	/**
-	 *  Refresh monsters from API server
+	 *  Refresh tally_top_monsters from API server
 	 */
-	function getMonsters() {
+	function returnTopMonsters() {
 		try {
-			//console.log("📟 Server.getMonsters()");
+
+			return;
+
+			//console.log("📟 Server.returnTopMonsters()");
 			let _tally_meta = store("tally_meta"),
 				_tally_user = store("tally_user"),
 				_tally_top_monsters = store("tally_top_monsters"),
 				username = "";
 
-			console.log("📟 Server.getMonsters()", _tally_meta, _tally_user);
+			console.log("📟 Server.returnTopMonsters()", _tally_meta, _tally_user);
 
 			// return early if !server or !token
-			if (!_tally_meta.serverOnline || _tally_meta.userTokenStatus != "ok") return;
+			if (!_tally_meta.server.online || _tally_meta.token.status != "ok") return;
 
 			if (prop(_tally_user.username) && _tally_user.username != "") username = _tally_user.username;
 			$.ajax({
@@ -331,20 +304,20 @@ window.Server = (function() {
 				contentType: 'application/json',
 				dataType: 'json',
 			}).done(result => {
-				//console.log("📟 Server.getMonsters() RESULT =", JSON.stringify(result));
+				//console.log("📟 Server.returnTopMonsters() RESULT =", JSON.stringify(result));
 
 				// treat all server data as master
 				_tally_user.monsters = convertArrayToObject(result.userMonsters, "mid");
 				_tally_top_monsters = convertArrayToObject(result.topMonsters, "mid");
 
-				//console.log("📟 Server.getMonsters() RESULT =", JSON.stringify(_tally_user.monsters));
-				//console.log("📟 Server.getMonsters() RESULT =", JSON.stringify(_tally_top_monsters));
+				//console.log("📟 Server.returnTopMonsters() RESULT =", JSON.stringify(_tally_user.monsters));
+				//console.log("📟 Server.returnTopMonsters() RESULT =", JSON.stringify(_tally_top_monsters));
 
 				store("tally_user", _tally_user);
 				store("tally_top_monsters", _tally_top_monsters);
 			}).fail(error => {
-				console.error("📟 Server.getMonsters() RESULT =", JSON.stringify(error));
-				// server might not be reachable
+				console.error("📟 Server.returnTopMonsters() RESULT =", JSON.stringify(error));
+				// server might not be online
 				checkIfOnline();
 			});
 		} catch (err) {
@@ -363,15 +336,15 @@ window.Server = (function() {
 				// get name
 				let name = attacks[key].name;
 				// add GameData properties to obj from server
-				//console.log("👂🏼 Listener.sendBackgroundUpdate()", key, attacks[key], name);
+				//console.log("📟 Server.mergeAttackDataFromServer()", key, attacks[key], name);
 				// make sure it exists
 				let attackData = AttackData.data[name];
-				//console.log("👂🏼 Listener.sendBackgroundUpdate()", key, attacks[key], name, attackData);
+				//console.log("📟 Server.mergeAttackDataFromServer()", key, attacks[key], name, attackData);
 				if (attackData) {
 					// loop through GameData properites add
 					for (var p in attackData) {
 						if (attackData.hasOwnProperty(p)) {
-							//console.log("👂🏼 Listener.sendBackgroundUpdate()", p, attackData[p]);
+							//console.log("📟 Server.mergeAttackDataFromServer()", p, attackData[p]);
 							attacks[key][p] = attackData[p];
 						}
 					}
@@ -385,19 +358,10 @@ window.Server = (function() {
 	// PUBLIC
 	return {
 		checkIfOnline: checkIfOnline,
-		verifyToken: function(callback) {
-			verifyToken(callback);
-		},
-		sendUpdate: function(data) {
-			sendUpdate(data);
-		},
-		sendMonsterUpdate: function(data) {
-			sendMonsterUpdate(data);
-		},
-		getMonsters: getMonsters,
-		resetGameDataFromServer: resetGameDataFromServer,
-		mergeAttackDataFromServer: function(attacks) {
-			return mergeAttackDataFromServer(attacks);
-		}
+		verifyToken: verifyToken,
+		sendMonsterUpdate: sendMonsterUpdate,
+		returnTopMonsters: returnTopMonsters,
+		returnAllGameData: returnAllGameData,
+		mergeAttackDataFromServer: mergeAttackDataFromServer
 	};
 }());

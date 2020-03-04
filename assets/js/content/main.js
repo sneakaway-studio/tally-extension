@@ -12,10 +12,11 @@
 // objects created on server, mirrored locally
 let tally_user = {},
 	tally_top_monsters = {};
-// objects that only exist locally only
+// objects that only exist locally
 let tally_meta = {},
 	tally_options = {},
-	tally_nearby_monsters = {};
+	tally_nearby_monsters = {},
+	tally_stats = {};
 
 
 window.TallyMain = (function() {
@@ -29,8 +30,10 @@ window.TallyMain = (function() {
 
 	$(function() {
 		try {
-			// 1. get data from background; perform start checks callback()
-			getDataFromBackground(performStartChecks);
+            // welcome message for the curious
+            console.log("%c   Hello, I'm Tally!", Tally.tallyConsoleIcon);
+			// 1. get data from background; when finished perform start checks with callback()
+			getDataFromBackground(contentStartChecks);
 		} catch (err) {
 			console.error("🧰 TallyMain.getDataFromBackground() failed", err);
 		}
@@ -39,23 +42,21 @@ window.TallyMain = (function() {
 
 
 
-
 	/**
 	 *	2. Get all data from background (can be called multiple times, w/ or w/o callback)
 	 */
-	function getDataFromBackground(callback = null) {
+	async function getDataFromBackground(callback = null) {
 		try {
-			if (DEBUG) console.log('🧰 TallyMain.getDataFromBackground()');
 			Promise
 				.all([getUserPromise, getOptionsPromise, getMetaPromise,
 					getNearbyMonstersPromise, getStatsPromise, getTopMonstersPromise
 				])
 				.then(function() {
-					if (DEBUG) console.log('🧰 TallyMain.getDataFromBackground() -> all promises have resolved',
-						tally_user, tally_options, tally_meta
-						// ,tally_nearby_monsters, tally_top_monsters
-					);
-
+					if (DEBUG) console.log('🧰 TallyMain.getDataFromBackground() -> all promises have resolved');
+					if (DEBUG) console.log("%ctally_user", Debug.styles.green, JSON.stringify(tally_user));
+					if (DEBUG) console.log("%ctally_options", Debug.styles.green, JSON.stringify(tally_options));
+					if (DEBUG) console.log("%ctally_meta", Debug.styles.green, JSON.stringify(tally_meta));
+					// tally_nearby_monsters, tally_top_monsters, tally_stats
 					if (callback) callback();
 				})
 				.catch(function(err) {
@@ -65,13 +66,12 @@ window.TallyMain = (function() {
 						"\n tally_options =", tally_options,
 						"\n tally_meta =", tally_meta,
 						"\n tally_nearby_monsters =", tally_nearby_monsters,
-						"\n tally_top_monsters =", tally_top_monsters
+						"\n tally_top_monsters =", tally_top_monsters,
+						"\n tally_stats =", tally_stats
 					);
 				});
 		} catch (err) {
 			console.error(err);
-			// if for some reason there is error then prompt for new token
-			// TallyStorage.launchStartScreen("getDataFromBackground");
 		}
 	}
 
@@ -79,126 +79,139 @@ window.TallyMain = (function() {
 	 *	3. Perform all start checks
 	 *	- confirm it is safe to run game; then add all required elements to DOM
 	 */
-	function performStartChecks() {
+	async function contentStartChecks() {
 		try {
-			if (DEBUG) console.log('🧰 TallyMain.performStartChecks()');
 
-			// do not procede if Page.data failed
-			if (!prop(Page.data)) return;
+			// @#1. Set the Page.mode
+			if (DEBUG) console.log('🧰 TallyMain.contentStartChecks() [1] -> SET Page.mode');
+
+			// STOP: if Page.data failed
+			if (!prop(Page.data)) return console.error("... Page.data NOT FOUND");
 			// check if extension should be active on this page before proceeding
-			shouldExtensionBeActiveOnPage();
-			// if in demo mode then go to new page
-			if (Page.mode.active && tally_options.gameMode == "demo") Demo.goToNewPage(true);
-			// procede if not, notActive
-			if (Page.mode.notActive) return;
+			Page.updateMode(getPageMode());
+			// STOP: if Page.mode().notActive
+			if (Page.mode().notActive) return console.error("... Page.mode = notActive", Page.mode());
 
 
-			// check the token
-			checkTokenStatus();
-			// first, remove trackers that have been caught
-			Tracker.removeCaughtTrackers();
-			// check for, and possibly execute and flags
-			Flag.check();
-			// add required CSS for game
+            // 2. Check for Flags (in case we need to pause and restart game with data)
+			if (DEBUG) console.log('🧰 TallyMain.contentStartChecks() [2] -> Check for flags');
+
+            // check for, and possibly execute and flags
+            Flag.check();
+
+
+            // 3. Required before start
+            if (DEBUG) console.log('🧰 TallyMain.contentStartChecks() [3] -> Add requirements');
+
+            // add required CSS for game
 			FS_String.insertStylesheets();
-			// add debugger to page and update
+            // add debugger to page and update
 			Debug.add();
 			Debug.update();
+            // remove trackers that have been caught
+			Tracker.removeCaughtTrackers();
 
-			// add Tally character
+
+            // // procede if not, notActive
+			// if (Page.mode().notActive) return;
+
+
+            // 4. Add visual elements
+            if (DEBUG) console.log('🧰 TallyMain.contentStartChecks() [3] -> Add requirements');
+
+            // add Tally character
 			Tally.addCharacter();
-
-
-			// // procede if not, notActive
-			// if (Page.mode.notActive) return;
-
-			// add timed events listeners
+            // add timed events listeners
 			TallyEvents.startTimeEvents();
-			// add main click listener
+            // add main click listener
 			TallyListeners.addMainClickEventListener();
+            // create a fresh background update
+			TallyData.createBackgroundUpdate();
 
+
+			return;
 
 
 			// start game on this page
 			startGameOnPage();
 		} catch (err) {
 			console.error(err);
-			// if for some reason there is error then prompt for new token
-			// TallyStorage.launchStartScreen();
 		}
 	}
 
 	/**
 	 * 	Make sure Tally isn't disabled on this page | domain | subdomain | etc
 	 */
-	function shouldExtensionBeActiveOnPage() {
+	function getPageMode() {
 		try {
-			if (DEBUG) console.log("🧰 TallyMain.shouldExtensionBeActiveOnPage()");
-
-			let newMode = "active";
+			let str = "🧰 TallyMain.getPageMode() -> ";
 
 			// the server is not online
-			if (!tally_meta.serverOnline) {
-				console.log("!!!!! Connection to Tally server is down");
-				newMode = "notActive";
+			if (!tally_meta.server.online) {
+				console.log(str + "Connection to Tally server is down");
+				return "serverOffline";
 			}
 			// Page.data failed
 			else if (!prop(Page.data)) {
-				newMode = "notActive";
+				console.log(str + "No Page.data found");
+				return "notActive";
 			}
 			// this is a disabled domain
 			else if (prop(tally_options.disabledDomains) &&
 				(($.inArray(Page.data.domain, tally_options.disabledDomains) >= 0) ||
 					($.inArray(Page.data.subDomain, tally_options.disabledDomains) >= 0))) {
-				console.log("!!!!! Tally is disabled on this domain");
-				newMode = "notActive";
+				console.log(str + "Tally is disabled on this domain");
+				return "notActive";
 			}
 			// this is not a web page (e.g. a PDF or image)
 			else if (Page.data.contentType != "text/html") {
-				console.log("!!!!! Tally is disabled on pages like " + Page.data.contentType);
-				newMode = "notActive";
+				console.log(str + "Tally is disabled on pages like " + Page.data.contentType);
+				return "notActive";
 			}
 			// this is a file:// URI
 			else if (Page.data.url.indexOf("file://") > -1) {
-				console.log("!!!!! Tally is disabled on file:// urls");
-				newMode = "notActive";
+				console.log(str + "Tally is disabled on file:// urls");
+				return "notActive";
 			}
 			// this is a popup / signin that is really small
 			else if (Page.data.browser.width < 600) {
-				console.log("!!!!! Tally is disabled on small windows");
-				newMode = "notActive";
+				console.log(str + "Tally is disabled on small windows");
+				return "notActive";
+			}
+			// there is a problem with the token
+			else if (tally_meta.token.status !== "ok") {
+				console.log(str + "tally_meta.token.status =", tally_meta.token.status, tally_meta);
+				return "noToken";
+			} else {
+				console.log(str + "All is good, setting mode=active");
+				return "active";
 			}
 
-			if (DEBUG) console.log("🧰 TallyMain.shouldExtensionBeActiveOnPage()", newMode);
-			// finally, save the mode
-			Page.updateMode(newMode);
 		} catch (err) {
 			console.error(err);
 		}
 	}
 
 	/**
-	 * 	Run game on this page, can be called as many times as necessary, getDataFromBackground() first
+	 * 	Run game on this page, can be called as many times as necessary
 	 */
 	function startGameOnPage() {
 		try {
 			if (DEBUG) console.log("🧰 TallyMain.startGameOnPage() ...");
 
 			// don't run if Page.data failed
-			if (!prop(Page.data) || !Page.mode.active) return;
+			if (!prop(Page.data) || !Page.mode().active) return;
 			// don't run if no token
-			if (!FS_Object.prop(tally_user) || tally_meta.userTokenStatus != "ok") {
+			if (!FS_Object.prop(tally_user) || tally_meta.token.status != "ok") {
 				console.warn("🧰 TallyMain.startGameOnPage() *** NO TOKEN FOUND ***");
 				return;
 			}
 
-			// welcome message for the curious
-			console.log("%c   Hello, I'm Tally!", Tally.tallyConsoleIcon);
-			// if (DEBUG) console.log(">>>>> startGameOnPage() -> Starting Tally on this page");
-			// if (DEBUG) console.log(">>>>> Page.data = "+ JSON.stringify(Page.data));
 
-			// on startGameOnPage, create new backgroundUpdate before anything new happens on page
-			TallyStorage.createBackgroundUpdate();
+    		// if in demo mode then go to new page
+    		if (Page.mode().active && tally_options.gameMode == "demo") Demo.goToNewPage(true);
+
+
 
 			// RUN ALL GAME METHODS
 
@@ -216,15 +229,12 @@ window.TallyMain = (function() {
 			Progress.check("TallyMain");
 
 			// check for, and possibly execute and flags from server (from previous update)
-			checkForServerFlags();
+			// checkForServerFlags();
+
 			// update debugger
 			Debug.update();
 
-			// UPDATE SERVER *ONLY* IF ANYTHING HAS CHANGED
-			setTimeout(function() {
-				// update will reset for any clicking afterwards...
-				TallyStorage.checkSendBackgroundUpdate();
-			}, 2000);
+
 
 		} catch (err) {
 			console.error(err);
@@ -236,10 +246,11 @@ window.TallyMain = (function() {
 	 */
 	function refreshAppAfterMutation(caller) {
 		try {
-			if (!Page.mode.active) return;
+			if (!Page.mode().active) return;
 			if (DEBUG) console.log("🧰 TallyMain.refreshAppAfterMutation() caller = " + caller);
-			// refresh Page.data
-			Page.refreshData();
+// may need to bring back
+// // refresh Page.data
+// Page.refreshData();
 			// check for monsters again
 			MonsterCheck.check();
 			Debug.update();
@@ -248,72 +259,6 @@ window.TallyMain = (function() {
 		}
 	}
 
-
-
-	/**
-	 *	Return a prompt string to update token
-	 */
-	function userTokenPromptMessage() {
-		try {
-			// an array of message prompts for new token
-			let messages = [
-				"Please <a href='" + tally_meta.website + "/dashboard' target='_blank'>visit your dashboard</a> to reconnect your account",
-				"You can't stop the trackers unless you <a href='" + tally_meta.website + "/dashboard' target='_blank'>connect your account</a>",
-				"<a href='" + tally_meta.website + "/dashboard' target='_blank'>Link your account</a> to start playing Tally"
-			];
-			return FS_Object.randomArrayIndex(messages);
-		} catch (err) {
-			console.error(err);
-		}
-	}
-
-
-	/**
-	 *	Make sure user's token is current
-	 */
-	function checkTokenStatus() {
-		try {
-			if (DEBUG) console.log("🧰 TallyMain.checkTokenStatus() tally_meta = " + JSON.stringify(tally_meta));
-			// if not on the dashboard
-			if (Page.data.url !== tally_meta.website + "/dashboard") {
-				// for debugging
-				if (tally_meta.userTokenStatus === "expired") {
-					// $.growl({
-					// 	title: "YOUR TOKEN HAS EXPIRED",
-					// 	message: "Click here to get a new one"
-					// });
-				} else if (tally_meta.userTokenStatus != "ok") {
-					// $.growl({
-					// 	title: "YOU HAVE NO TOKEN",
-					// 	message: userTokenPromptMessage()
-					// });
-				}
-				// if token status not ok
-				// - expired || error || !ok
-				if (tally_meta.userTokenStatus !== "ok") {
-					// set Page.mode
-					Page.updateMode("noToken");
-
-					if (DEBUG) console.log("🧰 TallyMain.checkTokenStatus() TOKEN (STILL) BROKEN " +
-						"tally_meta.userTokenPrompts = " + tally_meta.userTokenPrompts);
-
-					// don't bother them every time
-					if (tally_meta.userTokenPrompts % 2 == 0) {
-						setTimeout(function() {
-							Dialogue.showStr(userTokenPromptMessage(), "sad", true);
-						}, 500);
-					}
-					tally_meta.userTokenPrompts++;
-					TallyStorage.saveData('tally_meta', tally_meta, "🧰 TallyMain.checkTokenStatus()");
-
-				} else {
-					if (DEBUG) console.log("🧰 TallyMain.checkTokenStatus() TOKEN OK ");
-				}
-			}
-		} catch (err) {
-			console.error(err);
-		}
-	}
 
 
 
@@ -332,8 +277,8 @@ window.TallyMain = (function() {
 				// make sure we have this flag in GameData
 				if (!FS_Object.prop(GameData.flags.levelUp))
 					return console.warn("Flag does not exist in GameData.");
-				// update stats
-				Stats.reset("tally");
+	// // update stats
+	// Stats.reset("tally");
 				// tell user
 				setTimeout(function() {
 					Dialogue.showStr(GameData.flags.levelUp.dialogue, GameData.flags.levelUp.mood, true);
@@ -364,8 +309,8 @@ window.TallyMain = (function() {
 			delete tally_user.flags[name];
 			// save in background
 			TallyStorage.saveData("tally_user", tally_user, "🧰 TallyMain.removeFlag()");
-			// then add to server update (will be pushed on next update)
-			TallyStorage.addToBackgroundUpdate("itemData", "flags", flag, "🧰 TallyMain.removeFlag()");
+            // save in background (and on server)
+			TallyData.handle("itemData", "flags", flag, "🧰 TallyMain.removeFlag()");
 		}
 	}
 
@@ -373,11 +318,8 @@ window.TallyMain = (function() {
 
 	// PUBLIC
 	return {
-		userTokenPromptMessage: userTokenPromptMessage,
-		getDataFromBackground: function(callback) {
-			getDataFromBackground(callback);
-		},
-		performStartChecks: performStartChecks,
+		getDataFromBackground: getDataFromBackground,
+		contentStartChecks: contentStartChecks,
 		startGameOnPage: startGameOnPage,
 		checkForServerFlags: checkForServerFlags,
 		refreshAppAfterMutation: refreshAppAfterMutation

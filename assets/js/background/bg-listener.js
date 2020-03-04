@@ -58,8 +58,8 @@ window.Listener = (function() {
 				/**
 				 *	Resets all local tally_user data from server
 				 */
-				else if (request.action == "resetGameDataFromServer") {
-					let result = Server.resetGameDataFromServer(sendResponse);
+				else if (request.action == "returnAllGameData") {
+					let result = Server.returnAllGameData();
 					sendResponse({
 						"action": request.action,
 						"data": result,
@@ -74,21 +74,20 @@ window.Listener = (function() {
 
 				/*  GENERIC "GETTER" / "SETTER"
 				 ******************************************************************************/
-
 				else if (request.action == "getData" && request.name) {
-					// console.log("👂🏼 Listener.addListener() getData 1", request.name);
+					console.log("👂🏼 Listener.addListener() getData 1", request.name);
 					// build response
 					let resp = {
 						"action": request.action,
 						"message": 1,
 						"data": store(request.name)
 					};
-					// console.log("👂🏼 Listener.addListener() getData 2", request.name, resp);
+					console.log("👂🏼 Listener.addListener() getData 2", request.name, resp);
 					// send
 					sendResponse(resp);
 				}
 				if (request.action == "saveData" && request.name && request.data) {
-					// console.log("👂🏼 Listener.addListener() saveData", request.name, request.data);
+					console.log("👂🏼 Listener.addListener() saveData", request.name, request.data);
 					// save data
 					let success = 0;
 					if (store(request.name, request.data))
@@ -199,25 +198,32 @@ window.Listener = (function() {
 
 
 
-
-
-
-
-				// resetUser (a.k.a. "resetGame" resets everything in the game, called from API)
-				else if (request.action == "resetUser") {
-					let tokenOnPage = false,
-						tokenData = {};
-					// if token on page
-					if (prop(request.tokenOnPage)) tokenOnPage = request.tokenOnPage;
-					if (prop(request.tokenData)) tokenData = request.tokenData;
-					// delete all game data and restart
-					Install.init(tokenOnPage, tokenData);
-					// send response
+				// receive and log debug messages from content
+				else if (request.action == "sendBackgroundDebugMessage") {
+					Background.dataReportHeader("🐞 " + request.caller, "<", "before");
+					if (DEBUG) console.log(request.str);
+					Background.dataReportHeader("/ 🐞 " + request.caller, ">", "after");
 					sendResponse({
 						"action": request.action,
 						"message": 1
-					}); // send success response
+					});
 				}
+
+// // resetUser (a.k.a. "resetGame" resets everything in the game, called from API)
+// else if (request.action == "resetUser") {
+// 	let tokenOnPage = false,
+// 		tokenData = {};
+// 	// if token on page
+// 	if (prop(request.tokenOnPage)) tokenOnPage = request.tokenOnPage;
+// 	if (prop(request.tokenData)) tokenData = request.tokenData;
+// 	// delete all game data and restart
+// 	Install.init(tokenOnPage, tokenData);
+// 	// send response
+// 	sendResponse({
+// 		"action": request.action,
+// 		"message": 1
+// 	}); // send success response
+// }
 
 				// setBadgeText
 				else if (request.action == "setBadgeText") {
@@ -246,49 +252,82 @@ window.Listener = (function() {
 				 ******************************************************************************/
 
 				// saveToken
+				// - called from content script
+				// - effectively resets all game data
 				else if (request.action == "saveToken") {
-					console.log("saveToken",request.data);
+
 					// get current token data
 					let _tally_secret = store("tally_secret"),
-						_tally_meta = store("tally_meta"),
-					// default return type is fail
-						message = 0;
+						_tally_meta = store("tally_meta");
+
 					// if they don't match
 					if (_tally_secret.token != request.data.token) {
+						if (DEBUG) console.log("👂🏼 Listener.saveToken 🔑 FOUND [1]", request.data);
+
 						// save new token and tokenExpires
 						_tally_secret.token = request.data.token;
 						_tally_secret.tokenExpires = request.data.tokenExpires;
 						store("tally_secret", _tally_secret);
-						_tally_meta.userTokenStatus = "ok";
-						store("tally_meta", _tally_meta);
-						// (re)start app
-						Background.startApp();
-						// set response to success
-						message = 1;
+
+// mark for removal
+// // set token status to "ok"
+// _tally_meta.token.status = "ok";
+// store("tally_meta", _tally_meta);
+
+						// (re)start app to pull in data
+						Background.runStartChecks()
+							.then(function(result) {
+								if (DEBUG) console.log("👂🏼 Listener.saveToken 🔑 NEW [2] ", result);
+								console.log(store("tally_user"))
+								if (DEBUG) console.log("👂🏼 Listener.saveToken 🔑 NEW [3] ", result);
+								// send response with latest
+								sendResponse({
+									"action": request.action,
+									"tally_user": store("tally_user"),
+									"tally_options": store("tally_options"),
+									"tally_meta": store("tally_meta"),
+									"message": "new"
+								});
+							});
+					} else if (_tally_secret.token === request.data.token) {
+						if (DEBUG) console.log("👂🏼 Listener.saveToken 🔑 SAME", request.data);
+						// they are the same
+						sendResponse({
+							"action": request.action,
+							"message": "same"
+						});
 					}
-					sendResponse({
-						"action": request.action,
-						"message": message
-					});
+					// required so chrome knows this is asynchronous
+					return true;
 				}
 
 
 
 
-				// sendBackgroundUpdate
-				// - receive and send score, event, page, etc. data to server
-				else if (request.action == "sendBackgroundUpdate") {
-					// if (DEBUG) console.log("👂🏼 Listener.sendBackgroundUpdate", JSON.stringify(request.data));
+				// sendUpdateToBackground
+				// - receive and save score, event, page, etc. data in background
+				// - if server online and token good then send to server
+				else if (request.action == "sendUpdateToBackground") {
+					if (DEBUG) console.log("👂🏼 Listener.sendUpdateToBackground", JSON.stringify(request.data));
 
-					// store update object
-					store("tally_last_background_update", request.data);
-
-					// add token
 					let _tally_meta = store("tally_meta"),
 						_tally_secret = store("tally_secret");
+
+					// if there is no token or server is down then we are just saving in background
+					if (!_tally_secret.token || !_tally_meta.server.online) {
+
+						// reply to contentscript with updated tally_user
+						sendResponse({
+							"action": request.action,
+							"message": 1,
+							"tally_user": result
+						});
+					}
+
+					// otherwise add token
 					request.data.token = _tally_secret.token;
 
-					// (attempt to) send data to server, response to callback
+					// and (attempt to) send data to server, response to callback
 					$.ajax({
 						type: "PUT",
 						url: _tally_meta.api + "/user/extensionUpdate",
@@ -296,12 +335,13 @@ window.Listener = (function() {
 						dataType: 'json',
 						data: JSON.stringify(request.data)
 					}).done(result => {
-						//console.log("👂🏼 Listener.sendBackgroundUpdate() RESULT =", JSON.stringify(result));
+						// result contains tally_user
+						console.log("👂🏼 Listener.sendUpdateToBackground() RESULT =", JSON.stringify(result));
 
 						// merge attack data from server with game data properties
 						result.attacks = Server.mergeAttackDataFromServer(result.attacks);
 						// store result
-						store("tally_user",result);
+						store("tally_user", result);
 						// reply to contentscript with updated tally_user
 						sendResponse({
 							"action": request.action,
@@ -309,7 +349,7 @@ window.Listener = (function() {
 							"tally_user": result
 						});
 					}).fail(error => {
-						console.error("👂🏼 Listener.sendBackgroundUpdate() RESULT =", JSON.stringify(error));
+						console.error("👂🏼 Listener.sendUpdateToBackground() RESULT =", JSON.stringify(error));
 						// server might not be reachable
 						Server.checkIfOnline();
 						sendResponse({
@@ -317,8 +357,6 @@ window.Listener = (function() {
 							"message": 0
 						});
 					});
-
-
 
 					// required so chrome knows this is asynchronous
 					return true;

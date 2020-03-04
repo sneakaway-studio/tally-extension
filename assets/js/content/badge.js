@@ -35,7 +35,7 @@ window.Badge = (function() {
 	function randomizer() {
 		try {
 			// don't display badge if display is off
-			if (!Page.mode.active || tally_options.gameMode === "disabled" || tally_options.gameMode === "stealth") return;
+			if (!Page.mode().active || tally_options.gameMode === "disabled" || tally_options.gameMode === "stealth") return;
 
 			let r = Math.random(), // whether to create badge of type
 				chosen = false;
@@ -166,9 +166,8 @@ window.Badge = (function() {
 			if (DEBUG) console.log("🎒 Badge.collect()", id, badge);
 			// play sound
 			Sound.playRandomPowerup();
-			// save in background and on server
-			TallyStorage.saveTallyUser("badges", badge, "🎒 Badge.collect()");
-			TallyStorage.addToBackgroundUpdate("itemData", "badges", badge, "🎒 Badge.collect()");
+			// save in background (and on server)
+			TallyData.handle("itemData", "badges", badge, "🎒 Badge.collect()");
 		} catch (err) {
 			console.error(err);
 		}

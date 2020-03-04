@@ -111,9 +111,7 @@ window.Effect = (function() {
 
 	// PUBLIC
 	return {
-		showClickVisualText: function(eventData, str) {
-			showClickVisualText(eventData, str);
-		},
+		showClickVisualText: showClickVisualText,
 		explode:explode
 	};
 })();

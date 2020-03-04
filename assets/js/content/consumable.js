@@ -67,7 +67,7 @@ window.Consumable = (function() {
 	function randomizer() {
 		try {
 			// don't display consumable if display is off
-			if (!Page.mode.active || tally_options.gameMode === "disabled" || tally_options.gameMode === "stealth") return;
+			if (!Page.mode().active || tally_options.gameMode === "disabled" || tally_options.gameMode === "stealth") return;
 
 			let countR = Math.random(), // whether to create a consumable at all
 				r = Math.random(), // whether to create consumable of type
@@ -98,7 +98,7 @@ window.Consumable = (function() {
 	function create(type = "", name = "", num = 1) {
 		try {
 			// don't display if off
-			if (!Page.mode.active || tally_options.gameMode === "disabled" || tally_options.gameMode === "stealth" || type === "") return;
+			if (!Page.mode().active || tally_options.gameMode === "disabled" || tally_options.gameMode === "stealth" || type === "") return;
 			if (DEBUG) console.log("🍪 Consumable.create()", "type=" + type, "name=" + name, "num=" + num);
 
 			// store the consumable
@@ -199,9 +199,8 @@ window.Consumable = (function() {
 			//if (DEBUG) console.log("🍪 Consumable.collect()", key, consumable);
 			// play sound
 			Sound.playRandomPowerup();
-			// save in background and on server
-			TallyStorage.saveTallyUser("consumables", consumable, "🍪 Consumables.collect()");
-			TallyStorage.addToBackgroundUpdate("itemData", "consumables", consumable, "🍪 Consumables.collect()");
+			// save in background (and on server)
+			TallyData.handle("itemData", "consumables", consumable, "🍪 Consumables.collect()");
 			// delay then update stats
 			setTimeout(function() {
 				// update stats

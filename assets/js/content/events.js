@@ -14,6 +14,7 @@ window.TallyEvents = (function() {
 	function startTimeEvents() {
 		try {
 			timedEvents = {
+
 				// track time on current page
 				pageTimerInterval: setInterval(function() {
 					// if this page is visible
@@ -24,9 +25,9 @@ window.TallyEvents = (function() {
 				}, 500),
 
 				// check if user is online
-				// userOnlineInt: setInterval(function() {
-				// }, 5 * 1000),
+				userOnlineInt: setInterval(function() {
 
+				}, 5 * 1000),
 
 			};
 		} catch (err) {

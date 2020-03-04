@@ -6,15 +6,14 @@ window.Progress = (function() {
 
 	let defaults = {
 		// authentication
-		"tokenAdded": false,
-		"tokenAddedPlayWelcomeMessage": false,
+		"tokenAdded": 0,
+		"tokenAddedPlayWelcomeMessage": 0,
 		// tutorials
-		"mouseEnterTally": false,
-		"mouseLeaveTally1": false,
-		"mouseLeaveTally2": false,
-		"clickTally": false,
-		"doubleClickTally": false,
-		"dragTally": false,
+		"mouseEnterTally": 0,
+		"mouseLeaveTally": 0,
+		"clickTally": 0,
+		"doubleClickTally": 0,
+		"dragTally": 0,
 		"viewTutorialOne": false,
 		"viewProfilePage": false,
 		// attacks
@@ -35,15 +34,18 @@ window.Progress = (function() {
 	 */
 	function get(name) {
 		try {
-			// if value exists in tally_user && is true | >0 | !""
-			if (FS_Object.prop(tally_user) &&
-				FS_Object.prop(tally_user.progress) &&
-				FS_Object.prop(tally_user.progress[name])) {
+			if (DEBUG) console.log("🕹️ Progress.get() [1]", name);
 
-				// if (DEBUG) console.log("🕹️ Progress.get()", tally_user.progress[name]);
+			// console.log(tally_user, FS_Object.prop(tally_user));
+			// console.log(tally_user.progress, FS_Object.prop(tally_user.progress));
+			// console.log(tally_user.progress[name], FS_Object.prop(tally_user.progress[name]));
+
+			// if value exists in tally_user && is true | >0 | !""
+			if (tally_user.progress[name]) {
+				if (DEBUG) console.log("🕹️ Progress.get() [2]", tally_user.progress[name]);
 				return tally_user.progress[name].val;
 			} else {
-				if (DEBUG) console.log("🕹️ Progress.get() " + name + " NOT FOUND");
+				if (DEBUG) console.log("🕹️ Progress.get() [3]" + name + " NOT FOUND");
 				return false;
 			}
 		} catch (err) {
@@ -53,30 +55,44 @@ window.Progress = (function() {
 
 
 	/**
-	 *	Update progress on server
+	 *	Update progress in background and on server, return original value
 	 */
 	function update(name, val, operator = "=") {
 		try {
-			// if (DEBUG) console.log("🕹️ Progress.update() [1] OPERATION=", name + operator + val);
-			if (!FS_Object.prop(tally_user)) return;
-			// save current status to return later before changing
-			let currentVal = get(name);
-			// if (DEBUG) console.log("🕹️ Progress.update() [2] OPERATION=", name + operator + val, " / currentVal=" + currentVal);
+			// only proceed if game active
+			if (!Page.mode().active) return;
+
+			// get current value
+			let currentVal = get(name),
+				newVal = 0;
+
+			// set default if does not exist
+			if (!currentVal) currentVal = defaults[name];
+
+			if (DEBUG) console.log("🕹️ Progress.update() [1]", name, currentVal + " " + operator + " " + val);
+
+
 			// instead of setting, we need to do an operation
-			if (operator !== "=") {
+			if (operator === "=") {
 				// update value
-				val = FS_Number.operation(currentVal, val, operator);
+				newVal = val;
+			} else {
+				// update value
+				newVal = FS_Number.operation(currentVal, val, operator);
 			}
-			// if (DEBUG) console.log("🕹️ Progress.update() [3] OPERATION=", name + operator + val, " / currentVal=" + currentVal);
+			if (DEBUG) console.log("🕹️ Progress.update() [2]", name, currentVal + " " + operator + " " + val + " = " + newVal);
+
 			// create progress object
 			let obj = {
 				"name": name,
-				"val": val
+				"val": newVal
 			};
-			// save in background and on server
-			TallyStorage.saveTallyUser("progress", obj, "🕹️ Progress.update()");
-			TallyStorage.addToBackgroundUpdate("itemData", "progress", obj, "🕹️ Progress.update()");
+			// save in background (and on server)
+			TallyData.handle("itemData", "progress", obj, "🕹️ Progress.update()");
+
+			// return current value so we can use it in game logic too
 			return currentVal;
+
 		} catch (err) {
 			console.error(err);
 		}
@@ -128,16 +144,62 @@ window.Progress = (function() {
 
 
 
+	/**
+	 *	The first time a user adds a token
+	 */
+	function tokenAdded() {
+		try {
+
+
+			// 1. if this is the first time user is saving a token
+			if (update("mouseEnterTally", 1, "+") < 1) {
+				if (DEBUG) console.log("💾 > TallyStorage.saveTokenFromDashboard() 1 -> NEW TOKEN WAS SAVED", data);
+				// set page mode active
+				Page.updateMode("active");
+				// run game again
+				TallyMain.contentStartChecks();
+			}
+			// 2. after the page has refreshed
+			else if (update("tokenAddedPlayWelcomeMessage", 1, "+") < 1) {
+				if (DEBUG) console.log("💾 > TallyStorage.saveTokenFromDashboard() 2 -> NEW TOKEN WAS SAVED", data);
+
+				// introductions, then encourage them to explore
+				Dialogue.showStr("Oh hi! I'm Tally!!!", "happy");
+				Dialogue.showStr("Your account is now active and you are ready to play!", "happy");
+				Dialogue.showStr("This is your dashboard.", "happy");
+				Dialogue.showStr("You can edit your profile here.", "happy");
+				Dialogue.showStr("Good to stay anonymous though, what with all the monsters around...", "cautious");
+				Dialogue.showStr("Now, let's go find some trackers!", "happy");
+				Dialogue.showStr("I have a <a target='_blank' href='https://" +
+					FS_Object.randomArrayIndex(GameData.trackerDomains) + "'>good idea where there will be some</a>...", "happy");
+			}
+			// if user has been here before
+			else {
+				if (DEBUG) console.log("💾 > TallyStorage.saveTokenFromDashboard() 3 -> NEW TOKEN WAS SAVED", data);
+				Dialogue.showStr("Your account has been updated!", "happy");
+				Dialogue.showStr("Let's go get some <a target='_blank' href='https://" +
+					FS_Object.randomArrayIndex(GameData.trackerDomains) + "'>trackers</a>!", "happy");
+				// force a background update to confirm with API / background
+				// MAYBE DON'T NEED BECAUSE THIS ALL HAPPENS ON UPDATE
+				//sendUpdateToBackground(true);
+			}
+
+
+
+
+		} catch (err) {
+			console.error(err);
+		}
+	}
+
+
+
+
 	// PUBLIC
 	return {
-		get: function(prop) {
-			return get(prop);
-		},
-		update: function(name, val, operator) {
-			return update(name, val, operator);
-		},
-		check: function(caller) {
-			return check(caller);
-		}
+		get: get,
+		update: update,
+		check: check,
+		tokenAdded: tokenAdded
 	};
 }());

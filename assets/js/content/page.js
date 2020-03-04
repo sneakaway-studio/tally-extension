@@ -6,18 +6,46 @@ window.Page = (function() {
 		mode = {},
 		data = getData();
 
-	function updateMode(state = "active") {
-		// reset all
-		mode = {
-			active: 0,
-			noToken: 0,
-			notActive: 0
-		};
-		// default
-		if (state === "active") mode.active = 1;
-		else if (state === "noToken") mode.noToken = 1;
-		else if (state === "notActive") mode.notActive = 1;
+
+	/**
+	 *	Update the page mode
+	 *	- active = background, token, and everything else is good
+	 *	- noToken = no token or did not validate - tally can still point to trackers, prompt for token
+	 *	- serverOffline = server is offline - tally can still point to trackers
+	 *	- notActive = something really wrong - tally does not show at all
+	 */
+	function updateMode(state = "notActive") {
+		try {
+			// make a copy of the old mode
+			let oldMode = Object.assign({}, mode);
+			// reset current
+			mode = {
+				active: 0,
+				noToken: 0,
+				serverOffline: 0,
+				notActive: 0
+			};
+			// default
+			if (state === "active") mode.active = 1;
+			else if (state === "noToken") mode.noToken = 1;
+			else if (state === "serverOffline") mode.serverOffline = 1;
+			else if (state === "notActive") mode.notActive = 1;
+			if (DEBUG) console.log("🗒️ Page.updateMode()", state, "OLD =", oldMode, "NEW =", JSON.stringify(mode));
+		} catch (err) {
+			console.error(err);
+		}
 	}
+	/**
+	 *	Return the current Page.mode
+	 */
+	function getMode() {
+		return mode;
+	}
+
+
+
+	/*  HTML FUNCTIONS
+	 ******************************************************************************/
 
 
 	function getDescription() {
@@ -149,7 +177,7 @@ window.Page = (function() {
 				}
 			}
 			// set the number of trackers in the badge
-			setBadgeText(foundArr.length);
+			TallyStorage.setBadgeText(foundArr.length);
 
 			//console.log("foundObj",foundObj);
 			//console.log("foundArr",foundArr);
@@ -160,7 +188,7 @@ window.Page = (function() {
 	}
 
 
-	function refreshData(){
+	function refreshData() {
 		try {
 			data = getData();
 		} catch (err) {
@@ -179,7 +207,6 @@ window.Page = (function() {
 			if (!url || !url.match(/^http/)) return;
 			// object
 			let newData = {
-				activeOnPage: false, // default
 				browser: {
 					name: Environment.getBrowserName() || "",
 					cookieEnabled: navigator.cookieEnabled || "",
@@ -209,6 +236,7 @@ window.Page = (function() {
 				tags: "",
 				time: 0,
 				title: getTitle() || "",
+				tokenFound: false,
 				trackers: "",
 				previousUrl: "",
 				url: document.location.href || ""
@@ -226,6 +254,8 @@ window.Page = (function() {
 				addTitleChecker();
 
 			console.log("🗒 Page.getData()", newData);
+			// show in background
+			Debug.sendBackgroundDebugMessage("Page.getData()", newData.url);
 			return newData;
 		} catch (err) {
 			console.error(err);
@@ -241,7 +271,7 @@ window.Page = (function() {
 	 */
 	function addMutationObserver() {
 		// if running
-		if (!Page.mode.active || tally_options.gameMode === "disabled") return;
+		if (!Page.mode().active || tally_options.gameMode === "disabled") return;
 		new MutationObserver(function(mutations) {
 			console.log("title changed", mutations[0].target.nodeValue);
 			TallyMain.refreshAppAfterMutation("Page.data.addMutationObserver()");
@@ -271,12 +301,9 @@ window.Page = (function() {
 
 	// PUBLIC
 	return {
-		mode: mode,
-		updateMode: function(state) {
-			updateMode(state);
-		},
+		mode: getMode,
+		updateMode: updateMode,
 		refreshData: refreshData,
 		data: data
-
 	};
 })();
