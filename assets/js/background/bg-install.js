@@ -264,9 +264,9 @@ window.Install = (function() {
 				"location": {}
 			};
 			// testing installation
-			obj.currentAPI = "development";
-			obj.api = Config.development.api;
-			obj.website = Config.development.website;
+			// obj.currentAPI = "development";
+			// obj.api = Config.development.api;
+			// obj.website = Config.development.website;
 			return obj;
 		} catch (err) {
 			console.error(err);
