@@ -64,7 +64,7 @@ window.TallyData = (function() {
 
 			// if a backgroundUpdate is already in progress then return early
 			if (backgroundUpdateEdits > 0)
-				return console.error("💾 TallyData.createBackgroundUpdate() backgroundUpdateInProgress=true");
+				return console.log("💾 TallyData.createBackgroundUpdate() backgroundUpdateInProgress=true");
 
 			backgroundUpdate = {
 				// the type of update (e.g. "update" | "sync")
