@@ -317,11 +317,11 @@ window.Tally = (function() {
 			else if (interaction === 'dragstart') {
 				if (DEBUG) console.log("%c   Tally.interactionHandler()", tallyConsoleIcon, interaction);
 				if (!dragging) {
-					Dialogue.showStr("Weeeeeeeee!", "happy", true);
+					Dialogue.showStr("Weeeeeeeee!", "happy", false);
 					dragging = true;
 				}
 			} else if (interaction === 'drag') {
-				// Dialogue.showStr("Weeeeeeeee!", false, true);
+				// Dialogue.showStr("Weeeeeeeee!", "happy", false);
 			} else if (interaction === 'dragstop') {
 				if (DEBUG) console.log("%c   Tally.interactionHandler()", tallyConsoleIcon, interaction);
 				// reset flag
@@ -435,9 +435,9 @@ window.Tally = (function() {
 				// update progress
 				Progress.update("clickTallyDouble", 1, "+");
 				// build string and show
-				let str = "Would you like to view a " +
-					"<a class='tally' id='tally_showTutorial1'>tutorial</a> " +
-					"or see more <a class='tally' id='tally_showMoreOptions'>options</a>?";
+				let str = "Want to hear <a class='tally tally_showStory1'>my story</a>,<br>" +
+					" see a <a class='tally tally_showTutorial1'>game tutorial</a>,<br> " +
+					"or view <a class='tally' id='tally_showMoreOptions'>options</a>?";
 				Dialogue.showStr(str, false, true, true);
 			}
 			// THREE CLICKS
@@ -466,7 +466,10 @@ window.Tally = (function() {
 	 *****************************************************************************/
 
 	// MENU ITEM LISTENERS
-	$(document).on('click', '#tally_showTutorial1', function() {
+	$(document).on('click', '.tally_showStory1', function() {
+		Tutorial.play("story1");
+	});
+	$(document).on('click', '.tally_showTutorial1', function() {
 		Tutorial.play("tutorial1");
 	});
 	$(document).on('click', '#tally_showMoreOptions', function() {

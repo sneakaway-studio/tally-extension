@@ -209,6 +209,7 @@ svg#tally-svg * {
 #tally_slide_show_inner {
     width: 100%;
     height: 100%;
+    padding: 5px;
 }
 #tally_slide_show_inner img {
     min-width: 100%;
@@ -217,13 +218,19 @@ svg#tally-svg * {
     height: auto;
     border: 5px solid #000;
 }
-#tally_slide_show_inner span {
-    padding: 15px;
-    text-align: center;
-    margin: auto;
-    font: 16px/20px "Monaco", "Andale Mono", "Courier New", sans-serif;
+#tally_slide_show_inner div {
+    font: 0.9em/1.4em "Lucida Console", "Monaco", monospace !important;
     color: #fff;
-    overflow-y: scroll;
+    overflow-y: visible;
+    background: #111;
+    padding: 2px 5px;
+}
+#tally_slide_show_inner div i {
+    
+}
+#tally_slide_show_inner div b {
+    margin-left: 10px;
+    color: #ddd;
 }
 /*  ITEM MANAGER
  ******************************************************************************/

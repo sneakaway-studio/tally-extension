@@ -208,8 +208,10 @@ window.Dialogue = (function() {
 
 			if (DEBUG) console.log("💭 Dialogue.writeNextInQueue() [2]", dialogue, _queue, _active);
 
+			// is there a callback in the dialogue object?
 			if (dialogue.callback) {
-				Tutorial.dialogueCallback(dialogue.callback);
+				// if so pass it to the Tutorial
+				Tutorial.slideshowCallback(dialogue.callback);
 			}
 
 			// add text

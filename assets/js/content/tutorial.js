@@ -59,7 +59,7 @@ window.Tutorial = (function() {
 					if (DEBUG) console.log("📚 Tutorial.play() [4] NO MORE DIALOGUE");
 
 					// hide slide show and break loop
-					dialogueCallbackVisible(false);
+					slideshowVisible(false);
 					break;
 				}
 				step++;
@@ -70,54 +70,76 @@ window.Tutorial = (function() {
 			}, 500);
 
 			// mark as true and save
-			Progress.update("play" + FS_String.ucFirst(which), true);
+			Progress.update("play" + FS_String.ucFirst(which), 1, "+");
 
 		} catch (err) {
 			console.error(err);
 		}
 	}
 
-	function dialogueCallback(callback = null) {
+	/**
+	 *	Show a frame of the "slideshow" using a Dialogue.callback
+	 */
+	function slideshowCallback(callback = null) {
 		try {
 			// allow offline
 			if (Page.mode().notActive) return;
 			// don't allow if mode disabled or stealth
 			if (tally_options.gameMode === "disabled" || tally_options.gameMode === "stealth") return;
 
-			if (DEBUG) console.log("📚 Tutorial.dialogueCallback()", callback);
+			if (DEBUG) console.log("📚 Tutorial.slideshowCallback() [1]", callback);
 
-			let str = '';
-
-			if (callback === "slideShowCatGifs") {
-				str = '<img src="' + chrome.extension.getURL('assets/img/tutorial/funniest-cat-gifs-cat-sit-right-here.gif') + '">';
-
-			} else if (callback === "slideShowKindleMonster") {
-				str = '<img src="' + chrome.extension.getURL('assets/img/tutorial/monster-amazon-kindle.gif') + '">';
-
-			} else if (callback === "slideShowPopUpAds") {
-				str = '<img src="' + chrome.extension.getURL('assets/img/tutorial/popup-ads.gif') + '">';
-
-			} else if (callback === "slideShowBrowserDetails") {
-				str = '<span>' +
-					JSON.stringify(tally_meta.location).replace(",", ", ") + ", " +
-					JSON.stringify(Page.data.browser).replace(",", ", ") +
-					'</span>';
-
-			} else if (callback === "slideShowBattle") {
-				str = '<img src="' + chrome.extension.getURL('assets/img/tutorial/monster-battle.gif') + '">';
-
-			} else if (callback === "tutorial1WaitAtEnd") {
-				str = "";
-				dialogueCallbackVisible(false);
-
-			} else {
-				// do nothing
+			// string to hold the frame HTML
+			let frameStr = '';
+			if (callback === "closeSlideshow") {
+				slideshowVisible(false);
 			}
-			// add string and show
-			if (str) {
-				$('#tally_slide_show_inner').html(str);
-				dialogueCallbackVisible(true);
-			} else dialogueCallbackVisible(false);
+
+			/*  story1
+			 ******************************************************************************/
+			else if (callback === "slideShowCatGifs") {
+				frameStr = '<img src="' + chrome.extension.getURL('assets/img/tutorial/funniest-cat-gifs-cat-sit-right-here.gif') + '">';
+			} else if (callback === "slideShowKindleMonster") {
+				frameStr = '<img src="' + chrome.extension.getURL('assets/img/tutorial/monster-amazon-kindle.gif') + '">';
+			} else if (callback === "slideShowPopUpAds") {
+				frameStr = '<img src="' + chrome.extension.getURL('assets/img/tutorial/popup-ads.gif') + '">';
+			} else if (callback === "slideShowBrowserDetails") {
+				frameStr = '';
+				if (tally_meta.location.ip) {
+					frameStr += '<div><i>Your location:</i></div> ';
+					if (tally_meta.location.ip) frameStr += "<div><b>IP address</b>: " + tally_meta.location.ip + "</div> ";
+					if (tally_meta.location.city) frameStr += "<div><b>City</b>: " + tally_meta.location.city + "</div> ";
+					if (tally_meta.location.region) frameStr += "<div><b>Region</b>: " + tally_meta.location.region + "</div> ";
+					if (tally_meta.location.country) frameStr += "<div><b>Country</b>: " + tally_meta.location.country + "</div> ";
+					if (tally_meta.location.continent) frameStr += "<div><b>Continent</b>: " + tally_meta.location.continent + "</div> ";
+					if (tally_meta.location.lat)
+						frameStr += "<div><b>Geolocation</b>: " + tally_meta.location.lat + "," + tally_meta.location.lng + "</div> ";
+					if (tally_meta.location.timezone) frameStr += "<div><b>timezone</b>: " + tally_meta.location.timezone + "</div> ";
+				}
+				if (Page.data.browser.platform) {
+					frameStr += '<div><i>Your computer</i></div> ';
+					if (Page.data.browser.name) frameStr += "<div><b>Browser</b>: " + Page.data.browser.name + "</div> ";
+					if (Page.data.browser.cookieEnabled) frameStr += "<div><b>Cookies</b>: " + Page.data.browser.cookieEnabled + "</div> ";
+					if (Page.data.browser.language) frameStr += "<div><b>Language</b>: " + Page.data.browser.language + "</div> ";
+					if (Page.data.browser.platform) frameStr += "<div><b>Platform</b>: " + Page.data.browser.platform + "</div> ";
+				}
+			} else if (callback === "slideShowBattle") {
+				frameStr = '<img src="' + chrome.extension.getURL('assets/img/tutorial/monster-battle.gif') + '">';
+			}
+
+			/*  gameTutorial1
+			 ******************************************************************************/
+
+
+			// if string isn't empty then show it
+			if (frameStr) {
+				// add to HTML
+				$('#tally_slide_show_inner').html(frameStr);
+				// make sure slideshow is visible
+				slideshowVisible(true);
+			}
+			// otherwise hide the slideshow
+			else slideshowVisible(false);
 
 
 		} catch (err) {
@@ -125,17 +147,17 @@ window.Tutorial = (function() {
 		}
 	}
 	/**
-	 *	Slide show
+	 *	Show or hide the slide show element
 	 */
-	function dialogueCallbackVisible(state) {
+	function slideshowVisible(state) {
 		try {
-			if (state) { // show it
+			if (state) {
 				$('#tally_slide_show').css({
 					"display": "block",
 					"left": "300px",
 					"opacity": 1
 				});
-			} else { // hide it
+			} else {
 				$('#tally_slide_show').css({
 					"display": "none",
 					"left": "-1500px",
@@ -168,7 +190,7 @@ window.Tutorial = (function() {
 			return active(state);
 		},
 		play: play,
-		dialogueCallback: dialogueCallback,
+		slideshowCallback: slideshowCallback,
 		skip: skip
 	};
 }());
