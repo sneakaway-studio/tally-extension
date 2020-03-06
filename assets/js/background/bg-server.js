@@ -278,21 +278,23 @@ window.Server = (function() {
 			console.error(err);
 		}
 	}
+
+
+
+
 	/**
 	 *  Refresh tally_top_monsters from API server
 	 */
-	function returnTopMonsters() {
+	async function returnTopMonsters() {
 		try {
-
-			return;
-
-			//console.log("📟 Server.returnTopMonsters()");
-			let _tally_meta = store("tally_meta"),
-				_tally_user = store("tally_user"),
-				_tally_top_monsters = store("tally_top_monsters"),
+			let _tally_meta = await store("tally_meta"),
+				_tally_user = await store("tally_user"),
+				_tally_top_monsters = {},
 				username = "";
 
 			console.log("📟 Server.returnTopMonsters()", _tally_meta, _tally_user);
+
+
 
 			// return early if !server or !token
 			if (!_tally_meta.server.online || _tally_meta.token.status != "ok") return;
@@ -310,8 +312,8 @@ window.Server = (function() {
 				_tally_user.monsters = convertArrayToObject(result.userMonsters, "mid");
 				_tally_top_monsters = convertArrayToObject(result.topMonsters, "mid");
 
-				//console.log("📟 Server.returnTopMonsters() RESULT =", JSON.stringify(_tally_user.monsters));
-				//console.log("📟 Server.returnTopMonsters() RESULT =", JSON.stringify(_tally_top_monsters));
+				console.log("📟 Server.returnTopMonsters() RESULT =", JSON.stringify(_tally_user.monsters));
+				console.log("📟 Server.returnTopMonsters() RESULT =", JSON.stringify(_tally_top_monsters));
 
 				store("tally_user", _tally_user);
 				store("tally_top_monsters", _tally_top_monsters);

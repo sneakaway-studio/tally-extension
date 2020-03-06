@@ -278,7 +278,7 @@ window.Listener = (function() {
 						Background.runStartChecks()
 							.then(function(result) {
 								if (DEBUG) console.log("👂🏼 Listener.saveToken 🔑 NEW [2] ", result);
-								console.log(store("tally_user"))
+								console.log(store("tally_user"));
 								if (DEBUG) console.log("👂🏼 Listener.saveToken 🔑 NEW [3] ", result);
 								// send response with latest
 								sendResponse({
@@ -320,7 +320,7 @@ window.Listener = (function() {
 						sendResponse({
 							"action": request.action,
 							"message": 1,
-							"tally_user": result
+							"tally_user": store("tally_user")
 						});
 					}
 
