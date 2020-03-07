@@ -14,42 +14,34 @@ window.TallyData = (function() {
 		// if the current backgroundUpdate is being sent to background
 		backgroundUpdateInProgress = false,
 		// interval to watch when pushUpdate() necessary
-		managerInterval = {};
+		managerTimeout = {},
+		// time in millis to wait until sending update
+		managerWaitTime = 2000;
 
 
 
 	/**
-	 * 	Keep track of data status
+	 * 	Count down and send after n milliseconds
 	 */
-	function startManager() {
+	function manager() {
 		try {
-			// start manager loop
-			managerInterval = setTimeout(function() {
-				managerLoop();
-			}, 500);
+			// start countdown
+			managerTimeout = setTimeout(function() {
+
+				// if there are no edits then kill interval
+				if (backgroundUpdateEdits == 0) clearTimeout(managerTimeout);
+				else {
+					if (DEBUG) console.log("💾 TallyData.managerLoop() SENDING");
+					// update background / server if anything has changed
+					pushUpdate();
+				}
+
+			}, managerWaitTime);
 		} catch (err) {
 			console.error(err);
 		}
 	}
 
-	/**
-	 * 	Keep track of data status
-	 */
-	function managerLoop() {
-		try {
-			if (DEBUG) console.log("💾 TallyData.managerLoop()");
-
-			// if there are no edits then kill interval
-			if (backgroundUpdateEdits == 0) clearTimeout(managerInterval);
-			else {
-				// update background / server if anything has changed
-				pushUpdate();
-			}
-
-		} catch (err) {
-			console.error(err);
-		}
-	}
 
 
 
@@ -182,7 +174,7 @@ window.TallyData = (function() {
 			// console.log(JSON.stringify(backgroundUpdate));
 
 			// start a timer to see if we need to send update soon
-			startManager();
+			manager();
 
 		} catch (err) {
 			console.error(err);
@@ -210,7 +202,7 @@ window.TallyData = (function() {
 			// send update to background (which will determine whether to send to server)
 			chrome.runtime.sendMessage({
 				'action': 'sendUpdateToBackground',
-				'data': TallyData.returnBackgroundUpdate()
+				'data': backgroundUpdate
 			}, function(response) {
 				if (DEBUG) console.log('💾 > TallyData.pushUpdate() [2] RESPONSE =', response);
 				// update tally_user in content
@@ -228,7 +220,7 @@ window.TallyData = (function() {
 				// reset "in progress"
 				backgroundUpdateInProgress = false;
 				// remove any intervals / timeouts
-				clearTimeout(managerInterval);
+				clearTimeout(managerTimeout);
 				// reset backgroundUpdate after sending
 				createBackgroundUpdate();
 
@@ -243,7 +235,7 @@ window.TallyData = (function() {
 
 	// PUBLIC
 	return {
-		startManager: startManager,
+		manager: manager,
 		handle: handle,
 		backgroundUpdate: backgroundUpdate,
 		returnBackgroundUpdate: function(){

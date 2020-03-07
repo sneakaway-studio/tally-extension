@@ -311,6 +311,8 @@ window.Listener = (function() {
 
 					// if there is no token or server is down then we are just saving in background
 					if (!_tally_secret.token || !_tally_meta.server.online) {
+					
+						console.error("👂🏼 Listener.sendUpdateToBackground() NO TOKEN OR SERVER OFFLINE =", JSON.stringify(error));
 
 						// reply to contentscript with updated tally_user
 						sendResponse({

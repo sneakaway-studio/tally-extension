@@ -29,8 +29,8 @@ window.Progress = (function() {
 		"attacksSelected": 0,
 		// battles
 		"battlesFought": 0,
-		"battleWon": 0,
-		"battleLost": 0,
+		"battlesWon": 0,
+		"battlesLost": 0,
 		"battleEscaped": 0,
 		"notifyToClickAfterBattle": 0
 	};
@@ -48,7 +48,7 @@ window.Progress = (function() {
 			// console.log(tally_user.progress[name], FS_Object.prop(tally_user.progress[name]));
 
 			// if value exists in tally_user && is true | >0 | !""
-			if (tally_user.progress[name]) {
+			if (FS_Object.prop(tally_user.progress[name])) {
 				// if (DEBUG) console.log("🕹️ Progress.get() [2]", tally_user.progress[name]);
 				return parseInt(tally_user.progress[name].val);
 			} else {
