@@ -41,8 +41,8 @@ window.Listener = (function() {
 							"message": 1,
 							"data": result
 						});
-					}).fail(error => {
-						console.error("👂🏼 Listener.getDataFromServer() RESULT =", JSON.stringify(error));
+					}).fail(err => {
+						console.error("👂🏼 Listener.getDataFromServer() RESULT =", JSON.stringify(err));
 						// server might not be reachable
 						Server.checkIfOnline();
 						sendResponse({
@@ -312,7 +312,7 @@ window.Listener = (function() {
 					// if there is no token or server is down then we are just saving in background
 					if (!_tally_secret.token || !_tally_meta.server.online) {
 
-						console.error("👂🏼 Listener.sendUpdateToBackground() NO TOKEN OR SERVER OFFLINE =", JSON.stringify(error));
+						console.error("👂🏼 Listener.sendUpdateToBackground() NO TOKEN OR SERVER OFFLINE");
 
 						// reply to contentscript with updated tally_user
 						sendResponse({
@@ -346,8 +346,8 @@ window.Listener = (function() {
 							"message": 1,
 							"tally_user": result
 						});
-					}).fail(error => {
-						console.error("👂🏼 Listener.sendUpdateToBackground() RESULT =", JSON.stringify(error));
+					}).fail(err => {
+						console.error("👂🏼 Listener.sendUpdateToBackground() RESULT =", JSON.stringify(err));
 						// server might not be reachable
 						Server.checkIfOnline();
 						sendResponse({

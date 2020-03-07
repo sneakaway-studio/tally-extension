@@ -5,6 +5,12 @@
 
 ## Development Versions
 
+
+
+### Version 0.2.15
+
+* Adds icons 
+
 ### Version 0.2.14
 
 * Bug fixes and game play improvement

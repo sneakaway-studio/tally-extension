@@ -2,12 +2,15 @@
     "manifest_version": 2,
 
     "name": "Tally",
+    "short_name": "Tally",
     "description": "Tally is a browser extension that transforms the data advertisers collect into a multiplayer game.",
-    "version": "0.2.15",
+    "version": "0.2.16",
     "author": "Owen Mundy, Joelle Dietrick, and many more...",
 
     "icons": {
-        "48": "assets/img/icons/tally_icon_48x48.png"
+        "16": "assets/img/icons/tally_icon_16x16.png",
+        "48": "assets/img/icons/tally_icon_48x48.png",
+        "128": "assets/img/icons/tally_icon_128x128.png"
     },
     "browser_action": {
         "default_icon": {
