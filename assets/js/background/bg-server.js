@@ -133,7 +133,7 @@ window.Server = (function() {
 			// // 1. token == ok
 			// if (_tally_meta.token.status == "ok") {
 			// 	if (DEBUG) console.log("📟 Server.saveTokenStatus() 🔑 -> everything is cool, start game");
-			// 	// returnAllGameData();
+			// 	// getTallyUser();
 			// 	// content script takes over
 			// }
 			// // 2. token == expired
@@ -155,19 +155,19 @@ window.Server = (function() {
 	}
 
 	/**
-	 *  Get latest game data from API
+	 *  Get latest tally_user data from API
 	 */
-	async function returnAllGameData() {
+	async function getTallyUser() {
 		try {
 			let _tally_meta = store("tally_meta"),
 				_tally_secret = store("tally_secret");
 
 			// return early if !server || !token
 			if (!_tally_meta.server.online) {
-				console.error("📟 Server.returnAllGameData() *** SERVER NOT ONLINE ***");
+				console.error("📟 Server.getTallyUser() *** SERVER NOT ONLINE ***");
 				return false;
 			} else if (_tally_meta.token.status !== "ok") {
-				console.error("📟 Server.returnAllGameData() *** TOKEN NOT OK ***");
+				console.error("📟 Server.getTallyUser() *** TOKEN NOT OK ***");
 				return false;
 			}
 
@@ -177,26 +177,26 @@ window.Server = (function() {
 
 
 
-			// send token to server to get latest game data
+			// send token to server to get latest tally_user data
 			return $.ajax({
 				type: "POST",
-				url: _tally_meta.api + "/user/returnAllGameData",
+				url: _tally_meta.api + "/user/returnTallyUser",
 				contentType: 'application/json',
 				dataType: 'json',
 				data: JSON.stringify({
 					"token": _tally_secret.token
 				})
 			}).done(result => {
-				console.log("📟 Server.returnAllGameData() DONE %c" + JSON.stringify(result.username), Debug.styles.green );
-				// merge attack data from server with game data properties
+				console.log("📟 Server.getTallyUser() DONE %c" + JSON.stringify(result.username), Debug.styles.green );
+				// merge attack data from server with tally_user data properties
 				result.attacks = Server.mergeAttackDataFromServer(result.attacks);
 
 			}).fail(error => {
-				console.error("📟 Server.returnAllGameData() FAIL", JSON.stringify(error));
+				console.error("📟 Server.getTallyUser() FAIL", JSON.stringify(error));
 				// server might not be online
 				checkIfOnline();
 			}).always((result) => {
-				console.log("📟 Server.returnAllGameData() ALWAYS", JSON.stringify(result.username));
+				console.log("📟 Server.getTallyUser() ALWAYS", JSON.stringify(result.username));
 				// store result
 				store("tally_user", result);
 			});
@@ -337,13 +337,13 @@ window.Server = (function() {
 			if (attacks.hasOwnProperty(key)) {
 				// get name
 				let name = attacks[key].name;
-				// add GameData properties to obj from server
+				// add AttackData properties to obj from server
 				//console.log("📟 Server.mergeAttackDataFromServer()", key, attacks[key], name);
 				// make sure it exists
 				let attackData = AttackData.data[name];
 				//console.log("📟 Server.mergeAttackDataFromServer()", key, attacks[key], name, attackData);
 				if (attackData) {
-					// loop through GameData properites add
+					// loop through AttackData properties add
 					for (var p in attackData) {
 						if (attackData.hasOwnProperty(p)) {
 							//console.log("📟 Server.mergeAttackDataFromServer()", p, attackData[p]);
@@ -363,7 +363,7 @@ window.Server = (function() {
 		verifyToken: verifyToken,
 		sendMonsterUpdate: sendMonsterUpdate,
 		returnTopMonsters: returnTopMonsters,
-		returnAllGameData: returnAllGameData,
+		getTallyUser: getTallyUser,
 		mergeAttackDataFromServer: mergeAttackDataFromServer
 	};
 }());

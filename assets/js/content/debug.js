@@ -176,7 +176,7 @@ window.Debug = (function() {
 
 			// add listener for reset button
 			$(document).on("click", '#updateGameFromServer', function() {
-				// TallyMain.returnAllGameData("Debug.update() click handler");
+				TallyMain.getDataFromBackground(TallyMain.contentStartChecks);
 			});
 
 		} catch (err) {

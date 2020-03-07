@@ -58,8 +58,8 @@ window.Listener = (function() {
 				/**
 				 *	Resets all local tally_user data from server
 				 */
-				else if (request.action == "returnAllGameData") {
-					let result = Server.returnAllGameData();
+				else if (request.action == "getTallyUserFromServer") {
+					let result = Server.getTallyUser();
 					sendResponse({
 						"action": request.action,
 						"data": result,
@@ -269,11 +269,6 @@ window.Listener = (function() {
 						_tally_secret.tokenExpires = request.data.tokenExpires;
 						store("tally_secret", _tally_secret);
 
-// mark for removal
-// // set token status to "ok"
-// _tally_meta.token.status = "ok";
-// store("tally_meta", _tally_meta);
-
 						// (re)start app to pull in data
 						Background.runStartChecks()
 							.then(function(result) {
@@ -307,6 +302,7 @@ window.Listener = (function() {
 				// sendUpdateToBackground
 				// - receive and save score, event, page, etc. data in background
 				// - if server online and token good then send to server
+				// - receive and reply to content with tally_user
 				else if (request.action == "sendUpdateToBackground") {
 					if (DEBUG) console.log("👂🏼 Listener.sendUpdateToBackground", JSON.stringify(request.data));
 

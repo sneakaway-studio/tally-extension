@@ -50,8 +50,8 @@ window.Background = (function() {
 					// if token is valid
 					if (tokenResponse) {
 						console.log("🧰 Background.runStartChecks() -> TOKEN VALID");
-						// wait to refresh data from server
-						const gameDataResponse = await Server.returnAllGameData();
+						// wait to refresh tally_user data from server
+						const tallyUserResponse = await Server.getTallyUser();
 
 // NEED TO REWRITE HOW MONSTERS ARE PULLED IN
 
@@ -68,7 +68,7 @@ window.Background = (function() {
 
 						dataReportHeader("END 🧰 Background.runStartChecks()", "@", "after");
 						// return true to send data back to content
-						if (gameDataResponse) return true;
+						if (tallyUserResponse) return true;
 					} else {
 						console.log("🧰 Background.runStartChecks() -> TOKEN NOT VALID");
 						// token not valid
