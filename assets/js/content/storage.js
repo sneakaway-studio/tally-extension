@@ -15,28 +15,29 @@ window.TallyStorage = (function() {
 
 
 
+// MARKED FOR DELETION
 
-	// SEND MONSTER DATA TO BACKGROUND
-	function sendBackgroundMonsterUpdate(data) {
-		try {
-			// allow offline
-			if (Page.mode().notActive) return;
-			// don't allow if mode disabled or stealth
-			if (tally_options.gameMode === "disabled" || tally_options.gameMode === "stealth") return;
-
-			chrome.runtime.sendMessage({
-				'action': 'sendBackgroundMonsterUpdate',
-				'data': data
-			}, function(response) {
-				if (DEBUG) console.log('💾 > TallyStorage.sendBackgroundMonsterUpdate() RESPONSE =', response);
-				//		tally_user = response.tally_user;
-				Debug.update();
-			});
-		} catch (err) {
-			console.error(err);
-		}
-	}
-
+	// // SEND MONSTER DATA TO BACKGROUND
+	// function sendBackgroundMonsterUpdate(data) {
+	// 	try {
+	// 		// allow offline
+	// 		if (Page.mode().notActive) return;
+	// 		// don't allow if mode disabled or stealth
+	// 		if (tally_options.gameMode === "disabled" || tally_options.gameMode === "stealth") return;
+	//
+	// 		chrome.runtime.sendMessage({
+	// 			'action': 'sendBackgroundMonsterUpdate',
+	// 			'data': data
+	// 		}, function(response) {
+	// 			if (DEBUG) console.log('💾 > TallyStorage.sendBackgroundMonsterUpdate() RESPONSE =', response);
+	// 			//		tally_user = response.tally_user;
+	// 			Debug.update();
+	// 		});
+	// 	} catch (err) {
+	// 		console.error(err);
+	// 	}
+	// }
+	//
 
 
 
@@ -157,30 +158,30 @@ window.TallyStorage = (function() {
 
 
 
+// MARKED FOR DELETION
 
-
-	/**
-	 *  Create new newBackgroundMonsterUpdate object
-	 */
-	function newBackgroundMonsterUpdate(mid) {
-		try {
-			var obj = {
-				"pageData": {
-					"domain": Page.data.domain,
-					"tags": Page.data.tags,
-					"time": Page.data.time,
-					"url": Page.data.url
-				},
-
-				"token": "INSERT_IN_BACKGROUND",
-
-			};
-			//if (DEBUG) console.log("💾 newBackgroundMonsterUpdate() -> obj", obj);
-			return obj;
-		} catch (err) {
-			console.error(err);
-		}
-	}
+	// /**
+	//  *  Create new newBackgroundMonsterUpdate object
+	//  */
+	// function newBackgroundMonsterUpdate(mid) {
+	// 	try {
+	// 		var obj = {
+	// 			"pageData": {
+	// 				"domain": Page.data.domain,
+	// 				"tags": Page.data.tags,
+	// 				"time": Page.data.time,
+	// 				"url": Page.data.url
+	// 			},
+	//
+	// 			"token": "INSERT_IN_BACKGROUND",
+	//
+	// 		};
+	// 		//if (DEBUG) console.log("💾 newBackgroundMonsterUpdate() -> obj", obj);
+	// 		return obj;
+	// 	} catch (err) {
+	// 		console.error(err);
+	// 	}
+	// }
 
 	// SAVE TOKEN FROM DASHBOARD
 	async function saveTokenFromDashboard(data) {
@@ -245,7 +246,7 @@ window.TallyStorage = (function() {
 		getData: getData,
 		saveData: saveData,
 		saveTallyUser: saveTallyUser,
-		newBackgroundMonsterUpdate: newBackgroundMonsterUpdate,
+		// newBackgroundMonsterUpdate: newBackgroundMonsterUpdate,
 		saveTokenFromDashboard: saveTokenFromDashboard,
 		setBadgeText: setBadgeText
 	};

@@ -52,19 +52,8 @@ window.Background = (function() {
 						console.log("🧰 Background.runStartChecks() -> TOKEN VALID");
 						// wait to refresh tally_user data from server
 						const tallyUserResponse = await Server.getTallyUser();
-
-// NEED TO REWRITE HOW MONSTERS ARE PULLED IN
-
-// need
-// a list of all monsters to capture
-// a list of all monsters captured
-// a list of all monsters missed
-// all the details on each monster (tags, img, etc.)
-
 						// now we know the username and we can pass it to populate monsters
-						// const _tally_top_monsters = await Server.returnTopMonsters();
-
-
+						const _tally_top_monsters = await Server.returnTopMonsters();
 
 						dataReportHeader("END 🧰 Background.runStartChecks()", "@", "after");
 						// return true to send data back to content

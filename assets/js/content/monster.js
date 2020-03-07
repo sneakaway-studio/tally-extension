@@ -214,34 +214,37 @@ window.Monster = (function() {
 	/**
 	 *	Save monster locally, push to background / server
 	 */
-	function saveAndPush(mid) {
-		try {
-			if (DEBUG) console.log('👿 Monster.saveAndPush()', mid, tally_nearby_monsters[mid]);
-			// add monsters to tally_user
-			if (tally_user.monsters[mid]) {
-				tally_user.monsters[mid].level = tally_nearby_monsters[mid].level;
-			} else {
-				tally_user.monsters[mid] = {
-					"level": tally_nearby_monsters[mid].level
-				};
-			}
-			// save monsters
-			TallyStorage.saveData("tally_nearby_monsters", tally_nearby_monsters, "👿 Monster.saveAndPush()");
 
-			// save user in background
-			TallyStorage.saveData('tally_user', tally_user, "👿 Monster.saveAndPush()");
-			// create object
-			var backgroundMonsterUpdate = TallyStorage.newBackgroundMonsterUpdate(mid);
-			// store the nearby monster in it
-			backgroundMonsterUpdate.monsterData = tally_nearby_monsters[mid];
-			// then push to the server
-			sendBackgroundMonsterUpdate(backgroundMonsterUpdate);
-			// finally reset monster
-			reset(mid);
-		} catch (err) {
-			console.error(err);
-		}
-	}
+// MARKED FOR DELETION
+
+	// function saveAndPush(mid) {
+	// 	try {
+	// 		if (DEBUG) console.log('👿 Monster.saveAndPush()', mid, tally_nearby_monsters[mid]);
+	// 		// add monsters to tally_user
+	// 		if (tally_user.monsters[mid]) {
+	// 			tally_user.monsters[mid].level = tally_nearby_monsters[mid].level;
+	// 		} else {
+	// 			tally_user.monsters[mid] = {
+	// 				"level": tally_nearby_monsters[mid].level
+	// 			};
+	// 		}
+	// 		// save monsters
+	// 		TallyStorage.saveData("tally_nearby_monsters", tally_nearby_monsters, "👿 Monster.saveAndPush()");
+	//
+	// 		// save user in background
+	// 		TallyStorage.saveData('tally_user', tally_user, "👿 Monster.saveAndPush()");
+	// 		// create object
+	// 		var backgroundMonsterUpdate = TallyStorage.newBackgroundMonsterUpdate(mid);
+	// 		// store the nearby monster in it
+	// 		backgroundMonsterUpdate.monsterData = tally_nearby_monsters[mid];
+	// 		// then push to the server
+	// 		sendBackgroundMonsterUpdate(backgroundMonsterUpdate);
+	// 		// finally reset monster
+	// 		reset(mid);
+	// 	} catch (err) {
+	// 		console.error(err);
+	// 	}
+	// }
 
 
 	/**

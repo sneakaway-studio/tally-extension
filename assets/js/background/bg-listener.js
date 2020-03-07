@@ -311,7 +311,7 @@ window.Listener = (function() {
 
 					// if there is no token or server is down then we are just saving in background
 					if (!_tally_secret.token || !_tally_meta.server.online) {
-					
+
 						console.error("👂🏼 Listener.sendUpdateToBackground() NO TOKEN OR SERVER OFFLINE =", JSON.stringify(error));
 
 						// reply to contentscript with updated tally_user
@@ -361,26 +361,26 @@ window.Listener = (function() {
 				}
 
 
-
-				// sendBackgroundMonsterUpdate - receive and send Monster, page data to server
-				else if (request.action == "sendBackgroundMonsterUpdate") {
-					if (DEBUG) console.log("👂🏼 Listener.sendBackgroundMonsterUpdate", JSON.stringify(request.data));
-
-					// store update object
-					store("tally_last_monster_update", request.data);
-
-					// create new serverUpdate
-					var serverMonsterUpdate = createMonsterUpdate(request.data);
-					// (attempt to) send data to server, response to callback
-					sendMonsterUpdate(serverMonsterUpdate);
-
-					// reply to contentscript with updated tally_user
-					sendResponse({
-						"action": request.action,
-						"message": 1,
-						//"tally_user": _tally_user
-					});
-				}
+// MARKED FOR DELETION
+				// // sendBackgroundMonsterUpdate - receive and send Monster, page data to server
+				// else if (request.action == "sendBackgroundMonsterUpdate") {
+				// 	if (DEBUG) console.log("👂🏼 Listener.sendBackgroundMonsterUpdate", JSON.stringify(request.data));
+				//
+				// 	// store update object
+				// 	store("tally_last_monster_update", request.data);
+				//
+				// 	// create new serverUpdate
+				// 	var serverMonsterUpdate = createMonsterUpdate(request.data);
+				// 	// (attempt to) send data to server, response to callback
+				// 	sendMonsterUpdate(serverMonsterUpdate);
+				//
+				// 	// reply to contentscript with updated tally_user
+				// 	sendResponse({
+				// 		"action": request.action,
+				// 		"message": 1,
+				// 		//"tally_user": _tally_user
+				// 	});
+				// }
 
 
 				// default to resolve promise
@@ -396,32 +396,34 @@ window.Listener = (function() {
 		}
 	);
 
-	/**
-	 *  Create Server *Monster* Update
-	 */
-	function createMonsterUpdate(data) {
-		try {
-			let _tally_secret = store("tally_secret");
-			var obj = {
-				"monster": {
-					"level": data.monsterData.level,
-					"mid": data.monsterData.mid,
-					"captured": data.monsterData.captured,
-					"missed": data.monsterData.missed
-				},
-				"token": _tally_secret.token,
-				"time": data.pageData.time || 0,
-				"tags": data.pageData.tags || "",
-				"url": data.pageData.url || "",
-				"domain": data.pageData.domain || "",
-			};
-			if (DEBUG) console.log("👂🏼 Listener.createMonsterUpdate()", obj);
-			return obj;
-		} catch (err) {
-			console.error(err);
-		}
-	}
 
+// MARKED FOR DELETION
+	// /**
+	//  *  Create Server *Monster* Update
+	//  */
+	// function createMonsterUpdate(data) {
+	// 	try {
+	// 		let _tally_secret = store("tally_secret");
+	// 		var obj = {
+	// 			"monster": {
+	// 				"level": data.monsterData.level,
+	// 				"mid": data.monsterData.mid,
+	// 				"captured": data.monsterData.captured,
+	// 				"missed": data.monsterData.missed
+	// 			},
+	// 			"token": _tally_secret.token,
+	// 			"time": data.pageData.time || 0,
+	// 			"tags": data.pageData.tags || "",
+	// 			"url": data.pageData.url || "",
+	// 			"domain": data.pageData.domain || "",
+	// 		};
+	// 		if (DEBUG) console.log("👂🏼 Listener.createMonsterUpdate()", obj);
+	// 		return obj;
+	// 	} catch (err) {
+	// 		console.error(err);
+	// 	}
+	// }
+	//
 
 
 

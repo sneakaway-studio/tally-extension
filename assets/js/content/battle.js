@@ -224,7 +224,7 @@ window.Battle = (function() {
 			} else {
 				Dialogue.showStr("The battle is over!", "happy", true, true);
 			}
-			
+
 			// hide monster
 			anime({
 				targets: '.tally_monster_sprite_container',
@@ -309,9 +309,7 @@ window.Battle = (function() {
 
 	// PUBLIC
 	return {
-		start: function(mid) {
-			start(mid);
-		},
+		start: start,
 		end: end,
 		test: test,
 		active: function(state) {
