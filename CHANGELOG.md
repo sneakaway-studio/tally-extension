@@ -5,6 +5,10 @@
 
 ## Development Versions
 
+### Version 0.2.14
+
+* Bug fixes and game play improvement
+* First version testing on Chrome Web Store
 
 ### Version 0.2.13
 

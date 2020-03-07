@@ -40,9 +40,6 @@ window.Background = (function() {
 
 				let tally_secret = await store("tally_secret");
 
-
-
-
 				// if a token exists
 				if (tally_secret.token) {
 					// check token
@@ -78,7 +75,7 @@ window.Background = (function() {
 				console.error("🧰 Background.runStartChecks() -> API SERVER NOT ONLINE");
 				dataReportHeader("END 🧰 Background.runStartChecks()", "@", "after");
 			}
-console.log("END OF runStartChecks()")
+console.log("END OF runStartChecks()");
 
 		} catch (err) {
 			console.error(err);
