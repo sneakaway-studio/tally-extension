@@ -315,12 +315,19 @@ window.BattleMath = (function() {
 	// if we want attacks to ocassionally miss
 	function didHit(attack, self, opp) {
 		try {
-			if (DEBUG) console.log("🔢 BattleMath.didHit()", "attack =", attack, "self =", self, "opp =", opp);
+			if (DEBUG) console.log("🔢 BattleMath.didHit() [1]", "attack =", attack, "self =", self, "opp =", opp);
 			let hitChance = attack.accuracy * (self.accuracy.val / opp.evasion.val);
-			if (DEBUG) console.log("🔢 BattleMath.didHit()",
+			let r = Math.random();
+
+			if (DEBUG) console.log("🔢 BattleMath.didHit() [2]",
 				"hitChance [" + hitChance + "] = attack.accuracy [" + attack.accuracy + "] * ",
-				"(self.accuracy.val [" + self.accuracy.val + "] / opp.evasion.val [" + opp.evasion.val + "])");
-			return (hitChance > 0.7);
+				"(self.accuracy.val [" + self.accuracy.val + "] / opp.evasion.val [" + opp.evasion.val + "]) r=", r,
+				"didHit ===", (hitChance > r)
+			);
+
+			// return (hitChance > 0.6);
+			// make sure chance is actually represented
+			return (hitChance > r);
 		} catch (err) {
 			console.error(err);
 		}
