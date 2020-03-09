@@ -92,7 +92,7 @@ window.TallyMain = (function() {
 			// check page mode before proceeding
 			Page.updateMode(getPageMode());
 			// stop if page mode marked notActive
-			if (Page.mode().notActive) return console.error("... Page.mode = notActive", Page.mode());
+			if (Page.mode().notActive) return console.log("... Page.mode = notActive", Page.mode());
 
 
 			// 2.2. Check for Flags (in case we need to pause and restart game with data)

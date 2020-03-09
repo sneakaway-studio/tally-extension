@@ -106,16 +106,15 @@ window.TallyData = (function() {
 	 */
 	function handle(type = null, prop = null, val = null, caller = "") {
 		try {
-			if (DEBUG) Debug.dataReportHeader("💾 TallyData.handle() " + type + "." + prop, "#", "before", 30);
+			let log = "💾 TallyData.handle()";
 
-			if (!FS_Object.prop(val)) {
-				return console.log("💾 TallyData.handle() NO VALUE RECEIVED", type, prop, val, caller);
-			}
+			if (DEBUG) Debug.dataReportHeader(log, type + "." + prop, "#", "before", 30);
 
 			// everything is required
-			if (!FS_Object.prop(type) || !FS_Object.prop(prop) || !FS_Object.prop(tally_user)) {
-				return console.error("💾 TallyData.handle() ERROR -> SOMETHING IS MISSING", type, prop, val, caller);
-			}
+			if (!FS_Object.prop(tally_user)) return console.log(log, "missing: tally_user", type, prop, val, caller);
+			else if (!FS_Object.prop(type)) return console.log(log, "missing: type", type, prop, val, caller);
+			else if (!FS_Object.prop(prop)) return console.log(log, "missing: prop", type, prop, val, caller);
+			else if (!FS_Object.prop(val)) return console.log(log, "missing: val", type, prop, val, caller);
 
 			// prepare the object
 			let unit = {

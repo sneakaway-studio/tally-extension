@@ -103,6 +103,8 @@ window.Sound = (function() {
 			if (!document.hasFocus()) return;
 			// don't allow if playSounds disabled
 			if (!tally_options.playSounds) return;
+			// don't allow if no soundFile
+			if (!FS_Object.prop(file)) return;
 
 			if (DEBUG) console.log("🎵 Sound.playMusic()", file, loop, volumeModifier);
 
@@ -150,6 +152,8 @@ window.Sound = (function() {
 			if (!document.hasFocus()) return;
 			// don't allow if playSounds disabled
 			if (!tally_options.playSounds) return;
+			// don't allow if no soundFile
+			if (!FS_Object.prop(musicFile)) return;
 
 			if (DEBUG) console.log("🎵 Sound.startMusic()");
 
@@ -365,6 +369,8 @@ window.Sound = (function() {
 			if (!document.hasFocus()) return;
 			// don't allow if playSounds disabled
 			if (!tally_options.playSounds) return;
+			// don't allow if no soundFile
+			if (!FS_Object.prop(soundFile)) return;
 
 			if (DEBUG) console.log("🎵 Sound.play(" + soundFile + "," + delay + "," + volumeModifier + ")");
 

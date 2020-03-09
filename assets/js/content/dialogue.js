@@ -273,8 +273,9 @@ window.Dialogue = (function() {
 	/**
 	 * 	Estimate number of lines for a string
 	 */
-	function stringLines(str, measure = 26) {
+	function stringLines(str = "", measure = 26) {
 		try {
+			if (DEBUG) console.log("💭 Dialogue.stringLines() [1]", str, measure);
 			let lines = 1;
 			// remove html from string count
 			str = FS_String.removeHTML(str);
