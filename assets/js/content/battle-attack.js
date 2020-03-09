@@ -536,7 +536,7 @@ window.BattleAttack = (function() {
 			attack.selected = 1;
 			// unless # selected is already >= to limit
 			let selected = returnAttacksSelected();
-			if (selected >= tally_user.progress.attackLimit.val) {
+			if (selected >= 4) {
 				attack.selected = 0;
 			} else {
 				Progress.update("attacksSelected", selected + 1);

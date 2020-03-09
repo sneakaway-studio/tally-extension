@@ -43,9 +43,6 @@ var GameData = (function() {
 		"ultra": 	100,
 	};
 
-
-	let attackLimits = [0,1,2,3,4,5];
-
 	// added 0 even though new installs default to level=1
 	// in order to make array work elsewhere intuitive (e.g. level = array[n])
 	let levels = [
@@ -167,7 +164,6 @@ var GameData = (function() {
 		commercialDomains: commercialDomains,
 		trackerDomains: trackerDomains,
 		clickScore: clickScore,
-		attackLimits: attackLimits,
 		levels: levels,
 		flags: flags
 	};

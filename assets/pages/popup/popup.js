@@ -10,7 +10,7 @@
 let tally_options = {},
 	tally_user = {},
 	tally_meta = {},
-	attacksMax = 0,
+	attacksMax = 4,
 	attacksSelected = 0,
 	popupUpdate = createPopupBackgroundUpdate();
 
@@ -93,10 +93,8 @@ function getAttacks(callback) {
 		}, function(response) {
 			//console.log("getAttacks()",JSON.stringify(response.data));
 			tally_user = response.data;
-			// set limits
-			attacksMax = tally_user.progress.attackLimit.val;
+			// track selected
 			attacksSelected = 0;
-			// alert(attacksSelected + "," + attacksMax);
 			// start string
 			var str = "";
 			// for each attack
@@ -132,6 +130,7 @@ function getAttacks(callback) {
 
 				}
 			}
+			// alert("getAttacks() " + attacksSelected + "/" + attacksMax);
 
 			// console.log(str);
 			$(".attacksCloud").html(str);
@@ -153,7 +152,7 @@ function getAttacks(callback) {
 				// get attack name
 				let name = $(this).attr("id");
 				// do not allow selection of more than limit
-				if (attacksSelected > attacksMax) {
+				if (attacksSelected >= attacksMax) {
 					// tell user
 					showStatus('You can only use ' + attacksMax + ' attacks in battle. Level up to earn more!'); // display success message
 					// set back to false
@@ -184,9 +183,8 @@ function updateSelectedCheckboxes() {
 		// get all that are checked
 		var checkedBoxes = document.querySelectorAll('input[type=checkbox]:checked');
 		attacksSelected = checkedBoxes.length - 1;
-		attacksMax = tally_user.progress.attackLimit.val;
 		// alert(JSON.stringify(checkedBoxes));
-		// alert(attacksSelected +"/"+ attacksMax);
+		// alert("updateSelectedCheckboxes() " + attacksSelected +"/"+ attacksMax);
 	} catch (err) {
 		console.error(err);
 	}
@@ -196,9 +194,6 @@ function updateSelectedCheckboxesDisplay() {
 	try {
 		let attacksInfo = '<span id="attacksSelected">' + attacksSelected + '</span>/' +
 			'<span id="attacksMax">' + attacksMax + '</span>';
-		if (attacksMax <= 0) {
-			attacksInfo = "0";
-		}
 		$("#attacksInfo").html(attacksInfo);
 	} catch (err) {
 		console.error(err);

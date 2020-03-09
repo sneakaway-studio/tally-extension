@@ -24,7 +24,6 @@ window.Progress = (function() {
 		"toldToDragTally": 0,
 		"toldToClickDouble": 0,
 		// attacks
-		"attackLimit": 1,
 		"attacksAwarded": 0,
 		"attacksSelected": 0,
 		// battles
@@ -126,6 +125,7 @@ window.Progress = (function() {
 			// AWARD ATTACK - 2nd
 			else if (get("attacksAwarded") <= 1 && tally_user.score.score > 10) {
 				BattleAttack.rewardAttack("", "attack");
+				Dialogue.showStr("Manage your attacks with the button at the top right of browser window.", "happy");
 			}
 			// AWARD ATTACK - 3rd
 			else if (get("attacksAwarded") <= 2 && get("battlesFought") > 0) {
@@ -136,13 +136,6 @@ window.Progress = (function() {
 				BattleAttack.rewardAttack("", "attack");
 			}
 
-			// if tally levels up her attack capacity increases
-			let maxAttacksAllowed = 4;
-			if (get("attackLimit") < GameData.attackLimits[FS_Number.clamp(tally_user.level, 0, maxAttacksAllowed)]) {
-				update("attackLimit", GameData.attackLimits[FS_Number.clamp(tally_user.level, 0, maxAttacksAllowed)]);
-				Dialogue.showStr("You can now use " + get("attackLimit") + " attacks in battle!", "happy");
-				Dialogue.showStr("Manage your attacks with the button at the top right of browser window.", "happy");
-			}
 
 			if (DEBUG) console.log("🕹️ Progress.check()", typeof get("attacksAwarded"), typeof FS_Object.objLength(tally_user.attacks));
 
