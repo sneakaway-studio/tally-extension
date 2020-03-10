@@ -73,10 +73,20 @@ window.BattleMath = (function() {
 				"affects": "self",
 				"stat": "stamina",
 				"affectsStat": "staminaCost"
+			},
+			"opp-loses-1-turn": {
+				"change": 1,
+				"affects": "opp",
+				"special": "opp-loses-1-turn"
+			},
+			"opp-loses-2-turns": {
+				"change": 2,
+				"affects": "opp",
+				"special": "opp-loses-2-turns"
 			}
 		};
 
-	function logOutcome(which, outcome, who, stat) {
+	function logOutcome(which, outcome, who="", stat=0) {
 		if (!DEBUG) return;
 		console.log("🔢 BattleMath.logOutcome() attack." + which,
 			"\n --> outcome=", JSON.stringify(outcome) +
@@ -129,14 +139,19 @@ window.BattleMath = (function() {
 			else if (prop(attack.special)) {
 				console.log("🔢 BattleMath.returnAttackOutcomes() SPECIAL ATTACK !", attack.special);
 
-				// types...
-				if (attack.special === "opp-loses-1-turn") {
-					return "opp-loses-1-turn";
-				} else if (attack.special === "opp-loses-2-turns") {
-					return "opp-loses-2-turns";
-				} else if (attack.special === "opp-loses-3-turns") {
-					return "opp-loses-3-turns";
-				}
+				// // types...
+				// if (attack.special === "opp-loses-1-turn") {
+				// 	return "opp-loses-1-turn";
+				// } else if (attack.special === "opp-loses-2-turns") {
+				// 	return "opp-loses-2-turns";
+				// } else if (attack.special === "opp-loses-3-turns") {
+				// 	return "opp-loses-3-turns";
+				// }
+
+
+				outcome = outcomeData[attack.special]; // get data
+				attackOutcomes.push(outcome); // store outcome
+				logOutcome(attack.special, outcome); // log
 
 			}
 

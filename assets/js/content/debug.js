@@ -11,7 +11,7 @@ window.Debug = (function() {
 			"Badge": true,
 			// battles
 			"BattleAttack": true,
-			"BattleConsole": false,
+			"BattleConsole": true,
 			"BattleEffect": false,
 			"BattleMath": true,
 			"BattleTest": true,

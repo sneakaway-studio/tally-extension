@@ -91,7 +91,7 @@ window.BattleAttack = (function() {
 	}
 
 	/**
-	 *	Handle attack outcomes
+	 *	Receive attack and self and opp stats and handle attack outcomes
 	 */
 	function handleAttackOutcomes(attack, selfStr, oppStr) {
 		try {
@@ -100,7 +100,8 @@ window.BattleAttack = (function() {
 			// is an attack not in progress ATM?
 			if (!Battle.details.attackInProgress) return;
 
-			let positiveOutcomeTally = null;
+			let positiveOutcomeTally = null,
+				specialSkipTurn = false;
 
 
 			// 1. what is the result of the attack?
@@ -115,32 +116,39 @@ window.BattleAttack = (function() {
 				// go to next turn...
 				nextAttackPrompt(selfStr, "The attack <span class='text-blue'>had no effect</span>.");
 			}
-			// SPECIAL ATTACK: opp-loses-1-turn
-			else if (outcomeDetails.outcomes === "opp-loses-1-turn") {
-				if (DEBUG) console.log("💥 BattleAttack.handleAttackOutcomes()", outcomeDetails.outcomes, selfStr, oppStr);
-				// take away turns
-				takeAwayTurns(oppStr, 1);
-				// tell user
-				BattleConsole.log(outcomeDetails.oppName + " lost a turn!");
-				// let nextAttackPrompt() skip to opponents next turn...
-				nextAttackPrompt(selfStr, "");
-				return;
-			}
-			// SPECIAL ATTACK: opp-loses-2-turns
-			else if (outcomeDetails.outcomes === "opp-loses-2-turns") {
-				if (DEBUG) console.log("💥 BattleAttack.handleAttackOutcomes()", outcomeDetails.outcomes, selfStr, oppStr);
-				// take away turns
-				takeAwayTurns(oppStr, 2);
-				// tell user
-				BattleConsole.log(outcomeDetails.oppName + " lost two turns!");
-				// let nextAttackPrompt() skip to opponents next turn...
-				nextAttackPrompt(selfStr, "");
-				return;
-			}
 			// ATTACK RESULTED IN INCREASE OR DECREASE IN STATS
 			else if (outcomeDetails.outcomes.length > 0) {
 
-				// 2. get the name of the player to create attack outcome log
+
+				// 2. check for and handle any special attacks
+
+				for (let i = 0; i < outcomeDetails.outcomes.length; i++) {
+					if (FS_Object.prop(outcomeDetails.outcomes[i].special)) {
+						if (DEBUG) console.log("💥 BattleAttack.handleAttackOutcomes()", outcomeDetails.outcomes, selfStr, oppStr);
+
+						// SPECIAL ATTACK: opp-loses-1-turn
+						if (outcomeDetails.outcomes[i].special === "opp-loses-1-turn") {
+							// take away turns
+							takeAwayTurns(oppStr, 1);
+							// tell user
+							BattleConsole.log(outcomeDetails.oppName + " lost a turn!");
+							// set flag to skip turn at end
+							specialSkipTurn = true;
+						}
+						// SPECIAL ATTACK: opp-loses-2-turns
+						else if (outcomeDetails.outcomes[i].special === "opp-loses-2-turns") {
+							// take away turns
+							takeAwayTurns(oppStr, 2);
+							// tell user
+							BattleConsole.log(outcomeDetails.oppName + " lost two turns!");
+							// set flag to skip turn at end
+							specialSkipTurn = true;
+						}
+
+					}
+				}
+
+				// 3. get the name of the player to create attack outcome log
 
 				let affectsStr = "tally",
 					affectsName = "Tally",
@@ -159,7 +167,10 @@ window.BattleAttack = (function() {
 					}
 				}
 
-				// 3. loop through attack outcomes and add to attackOutcomeLog
+				// track how many outcomes affected the player
+				let statAffectingOutcomes = 0;
+
+				// 4. loop through attack outcomes and add to attackOutcomeLog
 				for (let i = 0; i < outcomeDetails.outcomes.length; i++) {
 					/*jshint loopfunc: true */
 
@@ -169,6 +180,11 @@ window.BattleAttack = (function() {
 					if (outcomeDetails.outcomes[i].change == 0) continue;
 
 					let flipStat = 1;
+
+					// skip special attacks in this loop
+					if (FS_Object.prop(outcomeDetails.outcomes[i].special)) {
+						continue;
+					}
 
 					// was the stat decreased?
 					if (outcomeDetails.outcomes[i].change < 0) {
@@ -188,22 +204,24 @@ window.BattleAttack = (function() {
 					}
 
 					// if 2 outcomes and on 2nd outcome
-					if (outcomeDetails.outcomes.length === 2 && i === 1) attackOutcomeLog += " and ";
+					if (++statAffectingOutcomes === 2 && i === 1) attackOutcomeLog += " and ";
 					// if 3+ outcomes and on last outcome
-					else if (outcomeDetails.outcomes.length >= 3 && i === outcomeDetails.outcomes.length - 1) attackOutcomeLog += " and ";
+					else if (statAffectingOutcomes >= 3 && i === statAffectingOutcomes - 1) attackOutcomeLog += " and ";
 					// if 3+ outcomes and before last outcome but after first
-					else if (outcomeDetails.outcomes.length >= 3 && i > 0 && i < outcomeDetails.outcomes.length - 1) attackOutcomeLog += ", ";
+					else if (statAffectingOutcomes >= 3 && i > 0 && i < statAffectingOutcomes - 1) attackOutcomeLog += ", ";
 
 					// add to log, changing value for display
 					attackOutcomeLog += "<span class='text-blue'>" + (outcomeDetails.outcomes[i].change *= flipStat);
 					attackOutcomeLog += " " + outcomeDetails.outcomes[i].stat + "</span>";
 
 
-					//if (DEBUG) console.log("attackOutcomeLog=", attackOutcomeLog);
+					if (DEBUG) console.log("💥 BattleAttack.handleAttackOutcomes() i=", i, " attackOutcomeLog=", attackOutcomeLog);
 				}
 
-				// determine what tally says
+
+				// 5. determine visuals
 				if (oppStr === "tally") {
+					// what tally says
 					positiveOutcomeTally = false;
 					// show lurch and damage from recieving attack
 					if (attack.type !== "defense") {
@@ -218,29 +236,18 @@ window.BattleAttack = (function() {
 					}
 				}
 
-				// put string together
-				attackOutcomeLog = affectsName + " " + gainedLostString + " " + attackOutcomeLog + "!";
-
-				// show log and change in stats after a moment
+				// 6. show log and change in stats after a moment
 				setTimeout(function() {
+					// assemble attack outcome string
+					attackOutcomeLog = affectsName + " " + gainedLostString + " " + attackOutcomeLog + "!";
 					if (DEBUG) console.log("💥 BattleAttack.handleAttackOutcomes() attackOutcomeLog=", attackOutcomeLog);
-					// show log
+					// show log with stat changes
 					BattleConsole.log(attackOutcomeLog);
 					// update stats display for player who is affected
 					StatsDisplay.updateDisplay(affectsStr);
-
-					// show dialogue from Tally commenting on the outcome of last attack
-					let r = Math.random();
-					if (r > 0.7) {
-						// show log and change in stats after a moment
-						setTimeout(function() {
-							if (positiveOutcomeTally == true)
-								Dialogue.show(Dialogue.get(["battle", "gained-stats", null]), true);
-							else if (positiveOutcomeTally == false)
-								Dialogue.show(Dialogue.get(["battle", "lost-stats", null]), true);
-						}, _logDelay + 300);
-					}
-					// end check
+					// potentially let Tally comment
+					tallyCommentOnAttack(positiveOutcomeTally);
+					// else end check
 					checkForEnd(selfStr, oppStr);
 				}, _logDelay + 300);
 			}
@@ -249,7 +256,25 @@ window.BattleAttack = (function() {
 		}
 	}
 
-
+	/**
+	 * 	potentially show dialogue from Tally commenting on the outcome of last attack
+	 */
+	function tallyCommentOnAttack(positiveOutcomeTally) {
+		try {
+			let r = Math.random();
+			if (r > 0.7) {
+				// show log and change in stats after a moment
+				setTimeout(function() {
+					if (positiveOutcomeTally == true)
+						Dialogue.show(Dialogue.get(["battle", "gained-stats", null]), true);
+					else if (positiveOutcomeTally == false)
+						Dialogue.show(Dialogue.get(["battle", "lost-stats", null]), true);
+				}, _logDelay + 300);
+			}
+		} catch (err) {
+			console.log(err);
+		}
+	}
 
 
 	/**
@@ -332,7 +357,7 @@ window.BattleAttack = (function() {
 				Sound.stopMusic();
 				setTimeout(function() {
 					// show final dialogue
-					console.warn("endBattleMessage",endBattleMessage);
+					console.warn("endBattleMessage", endBattleMessage);
 					Dialogue.showStr(endBattleMessage, "neutral", true);
 					setTimeout(function() {
 						// if in demo then quit after a moment

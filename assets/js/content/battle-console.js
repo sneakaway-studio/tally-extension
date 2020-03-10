@@ -134,7 +134,7 @@ window.BattleConsole = (function() {
 			active(true);
 			// remove first element in array
 			var str = _queue.shift();
-			//if(DEBUG) console.log("writeNextInQueue()", str, _queue, _active);
+			if (DEBUG) console.log("🖥️ BattleConsole.writeNextInQueue() [1]", str, _queue, _active);
 			// insert placeholder
 			var ele = "<div class='tally tally_log_line'>" +
 				"<span id='tally_log" + (++logId) + "' class='tally tally_log_cursor'></span>" +
@@ -150,7 +150,7 @@ window.BattleConsole = (function() {
 			setTimeout(function() {
 				typeWriter("tally_log" + logId, str, 0);
 			}, lineSpeed);
-			if (DEBUG) console.log("🖥️ BattleConsole.writeNextInQueue() str=", str);
+			if (DEBUG) console.log("🖥️ BattleConsole.writeNextInQueue() [2] str =", str);
 		} catch (err) {
 			console.error(err);
 		}
@@ -207,10 +207,10 @@ window.BattleConsole = (function() {
 			$("#battle-console-stream").append(ele);
 			// add icons
 			$(".attack-icon-attack").css({
-				"background-image": 'url('+chrome.extension.getURL('assets/img/battles/sword-pixel-13sq.png') +')'
+				"background-image": 'url(' + chrome.extension.getURL('assets/img/battles/sword-pixel-13sq.png') + ')'
 			});
 			$(".attack-icon-defense").css({
-				"background-image": 'url('+chrome.extension.getURL('assets/img/battles/shield-pixel-13sq.png') +')'
+				"background-image": 'url(' + chrome.extension.getURL('assets/img/battles/shield-pixel-13sq.png') + ')'
 			});
 
 			// add only one listener
@@ -270,7 +270,7 @@ window.BattleConsole = (function() {
 	 */
 	function typeWriter(ele, str, i) {
 		try {
-			//if (DEBUG) console.log("typeWriter()", ele, str, i);
+			if (DEBUG) console.log("typeWriter() [" + i + "]", ele, str);
 			if (!document.getElementById(ele)) return;
 			if (i >= str.length) {
 				BattleConsole.lineComplete(ele);
@@ -288,44 +288,53 @@ window.BattleConsole = (function() {
 				// }
 
 				// handle html in string
-				var htmlElementStr = "",
-					htmlElementFirstTagOpen = false,
-					htmlElementFirstTagClosed = false;
+				let htmlElementStr = "",
+					htmlElementTagOpen = false,
+					htmlElementTagClosed = false,
+					currentCharacter = i;
 				// if open character
 				if (str.charAt(i) === "<") {
 					// then open first tag
-					htmlElementFirstTagOpen = true;
-
-					// loop until we get to closing tag
-					while (htmlElementFirstTagOpen === true) {
-						// add to html element, move to next
-						htmlElementStr += str.charAt(i++);
-						//if (DEBUG) console.log("typeWriter() WHILE", i, htmlElementStr);
-						// check next element for closing tag
+					htmlElementTagOpen = true;
+					// loop until we get to closing character ">"
+					while (htmlElementTagOpen === true) {
+						// get char
+						currentCharacter = str.charAt(i);
+						// add to html element
+						htmlElementStr += currentCharacter;
+						if (DEBUG) console.log("typeWriter() WHILE", i +"="+ currentCharacter, htmlElementStr);
+						// was this the closing tag?
 						if (str.charAt(i) === ">") {
-							// should close the first element
-							if (!htmlElementFirstTagClosed)
-								htmlElementFirstTagClosed = true;
-							// or close the whole thing
-							else {
-								// stop loop
-								htmlElementFirstTagOpen = true;
-								// add next character
-								htmlElementStr += str.charAt(i);
-								// increase i to next character
-								i++;
+							// if so close it
+							htmlElementTagOpen = false;
+
+
+
+							// // if so then should close the first element
+							// if (!htmlElementTagClosed) htmlElementTagClosed = true;
+							// // or close the whole thing
+							// else {
+							// 	// stop loop
+							// 	htmlElementTagOpen = false;
+							// 	htmlElementTagClosed = false;
+								// // add next character
+								// htmlElementStr += str.charAt(i);
 								// add to html
 								$("#" + ele).html($("#" + ele).html() + htmlElementStr);
-								// reset everything
+								// reset str
 								htmlElementStr = "";
-								htmlElementFirstTagOpen = false;
-								htmlElementFirstTagClosed = false;
-							}
+								// advance before breaking
+								// i++;
+								// break;
+							// }
 						}
+						// increase i to next character
+						i++;
 						// emergency
 						if (i > 300) break;
 					}
 				}
+
 				// if there is still some left
 				if (i < str.length) {
 					// add current character
@@ -340,6 +349,12 @@ window.BattleConsole = (function() {
 			console.error(err);
 		}
 	}
+
+
+
+
+
+
 
 	/**
 	 *	Called after each line is complete
