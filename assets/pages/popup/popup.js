@@ -93,7 +93,7 @@ function getAttacks(callback) {
 		}, function(response) {
 			//console.log("getAttacks()",JSON.stringify(response.data));
 			tally_user = response.data;
-			// track selected
+			// reset selected
 			attacksSelected = 0;
 			// start string
 			var str = "";

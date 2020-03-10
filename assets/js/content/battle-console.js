@@ -148,6 +148,7 @@ window.BattleConsole = (function() {
 			}, 800);
 			// insert text
 			setTimeout(function() {
+				// log to console
 				typeWriter("tally_log" + logId, str, 0);
 			}, lineSpeed);
 			if (DEBUG) console.log("🖥️ BattleConsole.writeNextInQueue() [2] str =", str);
@@ -265,93 +266,141 @@ window.BattleConsole = (function() {
 	}
 
 
+
+
 	/**
-	 *	Typewriter effect
+	 *	Typewriter text effect for BattleConsole
 	 */
-	function typeWriter(ele, str, i) {
+	function typeWriter(ele, str = "", i = 0) {
 		try {
-			if (DEBUG) console.log("typeWriter() [" + i + "]", ele, str);
-			if (!document.getElementById(ele)) return;
-			if (i >= str.length) {
-				BattleConsole.lineComplete(ele);
-			} else {
-				// OLD METHOD, DOESN'T SUPPORT MULTIPLE ELEMENTS, FOR REFERENCE
+			// allow offline
+			if (Page.mode().notActive) return;
+			// don't allow if mode disabled or stealth
+			if (tally_options.gameMode === "disabled" || tally_options.gameMode === "stealth") return;
+			// don't allow if ele doesn't exist or str or arr is empty
+			if (!document.getElementById(ele) || str == "") return;
 
-				// // handle html in string
-				// if (str.charAt(i) === "<") {
-				// 	// capture it all
-				// 	let code = str.match(/<span(.*?)<\/span>/g);
-				// 	// remove from str
-				// 	str = str.replace(/<span(.*?)<\/span>/g, '');
-				// 	// display it all at once in page
-				// 	$("#" + ele).html($("#" + ele).html() + code[0]);
-				// }
+			let htmlOut = "",
+				arr = returnTagsAsArray(str),
+				arrLoop, // use function assignment instead of a function declaration
+				strLoop; // so that functions are not hoisted to the top of scope
 
-				// handle html in string
-				let htmlElementStr = "",
-					htmlElementTagOpen = false,
-					htmlElementTagClosed = false,
-					currentCharacter = i;
-				// if open character
-				if (str.charAt(i) === "<") {
-					// then open first tag
-					htmlElementTagOpen = true;
-					// loop until we get to closing character ">"
-					while (htmlElementTagOpen === true) {
-						// get char
-						currentCharacter = str.charAt(i);
-						// add to html element
-						htmlElementStr += currentCharacter;
-						if (DEBUG) console.log("typeWriter() WHILE", i +"="+ currentCharacter, htmlElementStr);
-						// was this the closing tag?
-						if (str.charAt(i) === ">") {
-							// if so close it
-							htmlElementTagOpen = false;
+			if (DEBUG) console.log("🖥️ BattleConsole.typeWriter()", ele, str, i, arr);
 
+			// loop through arr element
+			arrLoop = function(i, j, arr) {
+				if (DEBUG) console.log("typeWriter() -> arrLoop()", i, arr[i]);
 
+				// if we haven't reached the end of the arr
+				if (i < arr.length) {
 
-							// // if so then should close the first element
-							// if (!htmlElementTagClosed) htmlElementTagClosed = true;
-							// // or close the whole thing
-							// else {
-							// 	// stop loop
-							// 	htmlElementTagOpen = false;
-							// 	htmlElementTagClosed = false;
-								// // add next character
-								// htmlElementStr += str.charAt(i);
-								// add to html
-								$("#" + ele).html($("#" + ele).html() + htmlElementStr);
-								// reset str
-								htmlElementStr = "";
-								// advance before breaking
-								// i++;
-								// break;
-							// }
+					// loop through txt in arr element
+					strLoop = function(i, j, arr) {
+						let char = arr[i].charAt(j);
+						// if (DEBUG) console.log("typeWriter() -> strLoop()", i, arr[i], j, char);
+
+						// if character is not html
+						if (char != "<") {
+							// add it
+							htmlOut += char;
+							if (DEBUG) console.log("a", i, j, htmlOut);
+						} else {
+							// otherwise add whole html ele
+							htmlOut += arr[i];
+							if (DEBUG) console.log("b", i, j, htmlOut);
+							// move to end
+							j = 1000;
 						}
-						// increase i to next character
-						i++;
-						// emergency
-						if (i > 300) break;
-					}
-				}
+						// update html
+						$("#" + ele).html(htmlOut);
 
-				// if there is still some left
-				if (i < str.length) {
-					// add current character
-					$("#" + ele).html($("#" + ele).html() + str.charAt(i));
-					setTimeout(function() {
-						// work on next character
-						typeWriter(ele, str, ++i);
-					}, 20);
+						// if there is more left in string
+						if (j < arr[i].length) {
+							setTimeout(function() {
+								// work on next character with slight pause
+								strLoop(i, ++j, arr);
+							}, 20);
+						} else {
+							setTimeout(function() {
+								// work on next array with slight pause
+								arrLoop(++i, 0, arr);
+							}, 20);
+							return;
+						}
+						// safety
+						if (i > 300 || j > 300) return;
+					};
+					// call function, reset j
+					strLoop(i, 0, arr);
+
+					// another safety
+					if (i > 300) return;
+				} else {
+					if (DEBUG) console.log("typeWriter() -> END OF ARRAY");
+					// color text
+					lineComplete(ele);
+					return;
 				}
-			}
+			};
+			// call function, reset j
+			arrLoop(i, 0, arr);
+
+
+
+			// OLD METHOD, DOESN'T SUPPORT MULTIPLE ELEMENTS, FOR REFERENCE
+
+			// // handle html in string
+			// if (str.charAt(i) === "<") {
+			// 	// capture it all
+			// 	let code = str.match(/<span(.*?)<\/span>/g);
+			// 	// remove from str
+			// 	str = str.replace(/<span(.*?)<\/span>/g, '');
+			// 	// display it all at once in page
+			// 	$("#" + ele).html($("#" + ele).html() + code[0]);
+			// }
+
 		} catch (err) {
 			console.error(err);
 		}
 	}
 
 
+	// let str = "Model Toys monster lost <span class='text-blue'>16.2 health</span> and <span class='text-blue'>10.6 accuracy</span>!";
+	// let arr = returnTagsAsArray(str);
+	// console.log(arr)
+	// let htmlOut = "";
 
+
+	// // loop through array
+	// for (let i = 0; i < arr.length; i++) {
+	// 	// loop through txt in arr element
+	// 	for (let j = 0; j < arr[i].length; j++) {
+	// 		// if not html
+	// 		if (arr[i].charAt(j) != "<") {
+	// 			// add character
+	// 			htmlOut += arr[i].charAt(j);
+	// 			console.log("a", i, j, htmlOut)
+	// 		} else {
+	// 			// whole html ele
+	// 			htmlOut += arr[i];
+	// 			console.log("b", i, j, htmlOut)
+	// 			break;
+	// 		}
+	// 	}
+	// 	if (i > 300) break;
+	// }
+
+
+
+	function returnTagsAsArray(str) {
+		// add a delimiter
+		str = str
+			.replace(/<span/g, '^<span')
+			.replace(/\/span>/g, '\/span>^');
+		console.log("#####", str);
+		// split on delimeter
+		return str.split("^");
+	}
 
 
 
@@ -361,14 +410,19 @@ window.BattleConsole = (function() {
 	 */
 	function lineComplete(ele) {
 		try {
+			if (DEBUG) console.log("🖥️ BattleConsole.lineComplete() [1]", ele);
+
 			// add a little time at the end of each line
 			setTimeout(function() {
 				active(false);
 				// text is done writing so color it
 				colorText(ele);
+					if (DEBUG) console.log("🖥️ BattleConsole.lineComplete() [2]", ele);
 				// if queue is empty and there is a next string
 				if (_queue.length < 1 && _next != "") {
+					if (DEBUG) console.log("🖥️ BattleConsole.lineComplete() [3]", ele);
 					if (_next == "showBattleOptions") {
+						if (DEBUG) console.log("🖥️ BattleConsole.lineComplete() [4]", ele);
 						//if (DEBUG) console.log(_next);
 						showBattleOptions();
 					}
@@ -414,17 +468,11 @@ window.BattleConsole = (function() {
 	return {
 		display: display,
 		hide: hide,
-		log: function(str, next) {
-			log(str, next);
-		},
+		log: log,
 		active: function(state) {
 			return active(state);
 		},
-		lineComplete: function(ele) {
-			lineComplete(ele);
-		},
-		colorText: function(ele) {
-			colorText(ele);
-		}
+		lineComplete: lineComplete,
+		colorText: colorText
 	};
 })();

@@ -130,8 +130,10 @@ window.BattleAttack = (function() {
 						if (outcomeDetails.outcomes[i].special === "opp-loses-1-turn") {
 							// take away turns
 							takeAwayTurns(oppStr, 1);
+							// remove from array
+							outcomeDetails.outcomes.splice(i, 1);
 							// tell user
-							BattleConsole.log(outcomeDetails.oppName + " lost a turn!");
+							BattleConsole.log(outcomeDetails.oppName + " lost <span class='text-blue'>a turn</span>!");
 							// set flag to skip turn at end
 							specialSkipTurn = true;
 						}
@@ -139,8 +141,10 @@ window.BattleAttack = (function() {
 						else if (outcomeDetails.outcomes[i].special === "opp-loses-2-turns") {
 							// take away turns
 							takeAwayTurns(oppStr, 2);
+							// remove from array
+							outcomeDetails.outcomes.splice(i, 1);
 							// tell user
-							BattleConsole.log(outcomeDetails.oppName + " lost two turns!");
+							BattleConsole.log(outcomeDetails.oppName + " lost <span class='text-blue'>two turns</span>!");
 							// set flag to skip turn at end
 							specialSkipTurn = true;
 						}
@@ -154,6 +158,7 @@ window.BattleAttack = (function() {
 					affectsName = "Tally",
 					attackOutcomeLog = "",
 					gainedLostString = "";
+
 				// tally is default unless one of these are true
 				if (selfStr == "tally") {
 					if (outcomeDetails.outcomes[0].affects == "opp") {
@@ -307,11 +312,11 @@ window.BattleAttack = (function() {
 			else if (Stats.get("monster").health.val <= 0) {
 				winner = "tally";
 				endBattleMessage = "";
-				tallyWins("The monster's health has been depleted. Tally wins!!!", "monster-health-gone");
+				tallyWins("The <span class='tally text-green'>monster's</span> health has been depleted. Tally wins!!!", "monster-health-gone");
 			} else if (Stats.get("monster").stamina.val <= 0) {
 				winner = "tally";
 				endBattleMessage = "";
-				tallyWins("The monster's stamina has been depleted. Tally wins!!!", "monster-stamina-gone");
+				tallyWins("The <span class='tally text-green'>monster's</span> stamina has been depleted. Tally wins!!!", "monster-stamina-gone");
 			} else {
 
 				// or update battle progress
@@ -412,10 +417,9 @@ window.BattleAttack = (function() {
 			let increase = FS_Number.round(Battle.details.monsterLevel * 10);
 			// save in background (and on server)
 			TallyData.handle("scoreData", "score", increase);
-			// show in log
-			BattleConsole.log("You earned " + increase + " XP for beating this monster!!!");
-			// tell player they blocked tracker
-			BattleConsole.log("You now have blocked the " + Battle.details.monsterTracker + " tracker from grabbing your data!!!");
+			// show in log and tell player they blocked tracker
+			BattleConsole.log("You earned " + increase + " XP " + "and blocked the <span class='tally text-green'>" +
+				Battle.details.monsterTracker + " tracker</span> from grabbing your data!");
 			// potentially award a new attack
 			if (Progress.get("attacksAwarded") >= 4) randomRewardAttack();
 			setTimeout(function() {
@@ -424,6 +428,8 @@ window.BattleAttack = (function() {
 				// play win sound
 				Sound.playFile("music/tally-battle-7-25/victory.mp3", false, 0);
 			}, 400);
+			// notify to reset page
+			resetPageNotification();
 		} catch (err) {
 			console.error(err);
 		}
@@ -440,9 +446,18 @@ window.BattleAttack = (function() {
 			Dialogue.show(Dialogue.get(["battle", dialogue, null]), "sad", true);
 			// play lose sound
 			Sound.playFile("music/tally-battle-7-25/defeat.mp3", false, 0);
+			// notify to reset page
+			resetPageNotification();
 		} catch (err) {
 			console.error(err);
 		}
+	}
+
+	function resetPageNotification() {
+		setTimeout(function() {
+			// reset page notification
+			BattleConsole.log("Click anywhere to reset the page.");
+		}, 8000);
 	}
 
 	function resetTurns(who) {
