@@ -6,10 +6,16 @@
 ## Development Versions
 
 
+### Version 0.2.16
+
+* Fixes bug in hitChance
+* Fixes bug in monster position 
+* Removes attack limits across game
+* Improvements and bug fixes in BattleConsole
 
 ### Version 0.2.15
 
-* Adds icons 
+* Adds chrome store icons
 
 ### Version 0.2.14
 

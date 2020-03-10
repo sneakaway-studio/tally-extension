@@ -118,9 +118,9 @@ window.Core = (function() {
 			};
 			// include preferences for objects
 			if (preference === "above-the-fold")
-				pos.y = FS_Number.randomIntBetween(0, Page.data.browser.fullHeight / 2);
-			if (preference === "below-the-fold")
-				pos.y = FS_Number.randomIntBetween(Page.data.browser.fullHeight / 2, Page.data.browser.fullHeight);
+				pos.y = FS_Number.randomIntBetween(0, $(window).height());
+			else if (preference === "below-the-fold")
+				pos.y = FS_Number.randomIntBetween($(window).height(), Page.data.browser.fullHeight);
 
 			if (DEBUG) console.log("🔧 Core.returnRandomPositionFull()", w +","+ h, pos);
 			return pos;
