@@ -418,7 +418,10 @@ window.Tally = (function() {
 			// ONE CLICK
 			if (clickCount === 1) {
 				// if dialogue open let them click through it
-				Dialogue.skipToNext();
+				// Dialogue.skipToNext();
+
+Dialogue.conversationTest();
+
 
 				// Item.showManager();
 				Skin.random();
