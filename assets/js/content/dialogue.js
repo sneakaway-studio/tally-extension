@@ -426,8 +426,30 @@ window.Dialogue = (function() {
 	}
 
 
+	function conversationTest(){
+		try {
+
+			// show a random conversation item
+			let r = Math.random();
+			if (r > 0.9){
+				Dialogue.show(Dialogue.get(["random", "conversation", null]), false, true);
+			} else if (r > 0.8){
+				setTimeout(function(){
+					Dialogue.show(Dialogue.get(["random", "conversation", null]), false, true);
+				}, 1000);
+			}
+
+
+		} catch(err){
+			console.error(err);
+		}
+	}
+
+
+
 	// PUBLIC
 	return {
+		conversationTest: conversationTest,
 		show: function(dialogue, playSound, addIfDialogueInProcess, instant) {
 			show(dialogue, playSound, addIfDialogueInProcess, instant);
 		},

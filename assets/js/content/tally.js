@@ -567,7 +567,10 @@ window.Tally = (function() {
 				"<a class='tally' id='tally_battleRumbleMedium'>md</a>, " +
 				"<a class='tally' id='tally_battleRumbleLarge'>lg</a>, " +
 				"<a class='tally' id='tally_explodePage'>explode</a>;<br>" +
-				"Dialogue: <a class='tally' id='tally_randomDialogue'>random</a>; " +
+
+				"Dialogue: <a class='tally' id='tally_randomDialogue'>random</a> " +
+				"<a class='tally' id='tally_randomConversation'>conversation</a>; " +
+
 				"Skin: <a class='tally' id='tally_randomSkin'>random</a>" +
 				"";
 			Dialogue.showStr(str, false, true, true);
@@ -594,9 +597,14 @@ window.Tally = (function() {
 			$(document).on('click', '#tally_explodePage', function() {
 				Effect.explode();
 			});
+
 			$(document).on('click', '#tally_randomDialogue', function() {
 				Dialogue.random();
 			});
+			$(document).on('click', '#tally_randomConversation', function() {
+				Dialogue.conversationTest();
+			});
+
 			$(document).on('click', '#tally_randomSkin', function() {
 				Skin.random();
 			});
