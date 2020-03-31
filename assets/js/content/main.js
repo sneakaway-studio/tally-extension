@@ -243,6 +243,11 @@ window.TallyMain = (function() {
 			Debug.update();
 
 
+            if (Math.random() > 0.9){
+                Dialogue.show(Dialogue.get(["random", "conversation", null]), false, true);
+            }
+
+
 			return;
 
 // ?
