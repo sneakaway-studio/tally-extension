@@ -298,11 +298,6 @@ window.Page = (function() {
 	// alternate observer, simply listens for title change
 	function addTitleChecker() {
 		try {
-			// allow offline
-			if (Page.mode().notActive) return;
-			// don't allow if mode disabled
-			if (tally_options.gameMode === "disabled") return;
-
 			let pageTitleInterval = setInterval(function() {
 				let title = getTitle();
 				if (title != data.title) {

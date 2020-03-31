@@ -55,20 +55,7 @@ window.Listener = (function() {
 					return true;
 				}
 
-				/**
-				 *	Resets all local tally_user data from server
-				 */
-				else if (request.action == "getTallyUserFromServer") {
-					let result = Server.getTallyUser();
-					sendResponse({
-						"action": request.action,
-						"data": result,
-						"message": 1
-					});
-					// required so chrome knows this is asynchronous
-					return true;
-				}
-
+	
 
 
 
