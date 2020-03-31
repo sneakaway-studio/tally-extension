@@ -242,9 +242,14 @@ window.TallyMain = (function() {
             // update debugger
 			Debug.update();
 
-
-            if (Math.random() > 0.9){
+            // show a random conversation item
+            let r = Math.random();
+            if (r > 0.9){
                 Dialogue.show(Dialogue.get(["random", "conversation", null]), false, true);
+            } else if (r > 0.8){
+                setTimeout(function(){
+                    Dialogue.show(Dialogue.get(["random", "conversation", null]), false, true);
+                }, 1000);
             }
 
 
