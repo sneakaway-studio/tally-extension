@@ -75,7 +75,7 @@ window.Background = (function() {
 				console.error("🧰 Background.runStartChecks() -> API SERVER NOT ONLINE");
 				dataReportHeader("END 🧰 Background.runStartChecks()", "@", "after");
 			}
-console.log("END OF runStartChecks()");
+			console.log("END OF runStartChecks()");
 
 		} catch (err) {
 			console.error(err);
@@ -98,10 +98,11 @@ console.log("END OF runStartChecks()");
 			if (DEBUG) console.log("%ctally_meta", Debug.styles.green, JSON.stringify(tally_meta));
 			if (DEBUG) console.log("%ctally_secret", Debug.styles.green, JSON.stringify(tally_secret));
 			dataReportHeader("/ 🧰 Background.dataReport()", "#", "after");
-		} catch (ex) {
+		} catch (err) {
 			console.error("dataReport() failed");
 		}
 	}
+
 	function dataReportHeader(title, char, pos) {
 		if (!DEBUG) return;
 		// make string
@@ -112,6 +113,20 @@ console.log("END OF runStartChecks()");
 		if (pos == "before") console.log("");
 		console.log(line + " " + title + " " + line);
 		if (pos == "after") console.log("");
+	}
+
+
+	/**
+	 *	Background timed events
+	 */
+	function serverCheckTimer() {
+		try {
+			setInterval(function(){
+				Server.checkIfOnline();
+			},(1000*60));			
+		} catch (err) {
+			console.error("dataReport() failed");
+		}
 	}
 
 

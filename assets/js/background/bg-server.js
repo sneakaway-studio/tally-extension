@@ -31,7 +31,7 @@ window.Server = (function() {
 			.done(result => {
 				console.log("📟 Server.checkIfOnline() SUCCESS", JSON.stringify(result));
 				// save state
-				_tally_meta.server.online = 1;
+				_server.online = 1;
 				_tally_meta.userOnline = 1;
 				_tally_meta.server.responseMillis = new Date().getTime() - _startTime;
 			}).fail(error => {
@@ -39,7 +39,7 @@ window.Server = (function() {
 				console.error("📟 Server.checkIfOnline() FAIL", _tally_meta.api,
 					"😢 NOT ONLINE", JSON.stringify(error));
 				// save state
-				_tally_meta.server.online = 0;
+				_server.online = 0;
 				_tally_meta.userOnline = 0;
 				_tally_meta.server.responseMillis = -1;
 			}).always(() => {

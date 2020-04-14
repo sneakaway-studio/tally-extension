@@ -323,10 +323,14 @@ window.Dialogue = (function() {
 			let find = "",
 				replace = "";
 			// check for any template replacement matches
-			if (str.indexOf("{{Monster.current}}") > -1) {
+			if (str.indexOf("a {{Monster.current}}") > -1) {
 				find = "Monster.current";
 				replace = MonsterData.dataById[Monster.current().mid].name;
 				if (FS_String.isVowel(replace[0])) replace = "n " + replace;
+			}
+			if (str.indexOf("{{Monster.current}}") > -1) {
+				find = "Monster.current";
+				replace = MonsterData.dataById[Monster.current().mid].name;
 			}
 			if (str.indexOf("{{Page.data.title}}") > -1) {
 				find = "Page.data.title";
@@ -428,16 +432,21 @@ window.Dialogue = (function() {
 
 	function conversationTest(){
 		try {
+			console.log("💭 Dialogue.conversationTest()");
 
-			// show a random conversation item
-			let r = Math.random();
-			if (r > 0.9){
-				Dialogue.show(Dialogue.get(["random", "conversation", null]), false, true);
-			} else if (r > 0.8){
-				setTimeout(function(){
-					Dialogue.show(Dialogue.get(["random", "conversation", null]), false, true);
-				}, 1000);
-			}
+			Dialogue.show(Dialogue.get(["random", "conversation", null]), false, true);
+
+
+// add these later
+			// // show a random conversation item
+			// let r = Math.random();
+			// if (r > 0.9){
+			// 	Dialogue.show(Dialogue.get(["random", "conversation", null]), false, true);
+			// } else if (r > 0.8){
+			// 	setTimeout(function(){
+			// 		Dialogue.show(Dialogue.get(["random", "conversation", null]), false, true);
+			// 	}, 1000);
+			// }
 
 
 		} catch(err){
