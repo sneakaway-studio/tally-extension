@@ -6,10 +6,17 @@
 ## Development Versions
 
 
+### Version 0.2.17
+
+* Fixes resetTallyUser
+* Improvements to server / client synching
+* Improvements to development mode (hotreload, etc.)
+
+
 ### Version 0.2.16
 
 * Fixes bug in hitChance
-* Fixes bug in monster position 
+* Fixes bug in monster position
 * Removes attack limits across game
 * Improvements and bug fixes in BattleConsole
 

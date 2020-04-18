@@ -233,50 +233,6 @@ window.Server = (function() {
 
 
 
-// MARKED FOR DELETION
-	// /**
-	//  *  Send monster update to API server
-	//  */
-	// function sendMonsterUpdate(data) {
-	// 	try {
-	// 		console.log("📟 Server.sendMonsterUpdate()", data);
-	// 		let _tally_meta = store("tally_meta"),
-	// 			_tally_user = store("tally_user"),
-	// 			_tally_top_monsters = store("tally_top_monsters");
-	//
-	// 		// return early if !server or !token
-	// 		if (!_tally_meta.server.online || _tally_meta.token.status != "ok") return;
-	//
-	// 		$.ajax({
-	// 			type: "PUT",
-	// 			url: _tally_meta.api + "/user/extensionMonsterUpdate",
-	// 			contentType: 'application/json',
-	// 			dataType: 'json',
-	// 			data: JSON.stringify(data)
-	// 		}).done(result => {
-	// 			//console.log("📟 Server.sendMonsterUpdate() RESULT =", JSON.stringify(result));
-	//
-	// 			// treat all server data as master
-	// 			_tally_user.monsters = convertArrayToObject(result.userMonsters, "mid");
-	// 			_tally_top_monsters = convertArrayToObject(result.topMonsters, "mid");
-	//
-	// 			//console.log("📟 Server.sendMonsterUpdate() RESULT =", JSON.stringify(_tally_user.monsters));
-	// 			//console.log("📟 Server.sendMonsterUpdate() RESULT =", JSON.stringify(_tally_top_monsters));
-	//
-	// 			store("tally_user", _tally_user);
-	// 			store("tally_top_monsters", _tally_top_monsters);
-	// 		}).fail(error => {
-	// 			console.error("📟 Server.sendMonsterUpdate() RESULT =", JSON.stringify(error));
-	// 			// server might not be online
-	// 			checkIfOnline();
-	// 		});
-	// 	} catch (err) {
-	// 		console.error(err);
-	// 	}
-	// }
-	//
-	//
-
 
 	/**
 	 *  Refresh tally_top_monsters from API server
@@ -356,7 +312,6 @@ window.Server = (function() {
 	return {
 		checkIfOnline: checkIfOnline,
 		verifyToken: verifyToken,
-		// sendMonsterUpdate: sendMonsterUpdate,
 		returnTopMonsters: returnTopMonsters,
 		getTallyUser: getTallyUser,
 		mergeAttackDataFromServer: mergeAttackDataFromServer
