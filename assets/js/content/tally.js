@@ -622,7 +622,6 @@ Dialogue.conversationTest();
 
 	// PUBLIC
 	return {
-		moveEye: moveEye,
 		setFollowCursor: setFollowCursor,
 		stare: stare,
 		addCharacter: addCharacter,

@@ -96,6 +96,30 @@ window.Skin = (function() {
 		}
 	}
 
+	function returnPatternStr(pattern) {
+		try {
+			let str = "";
+
+			if (pattern === "houndstooth") {
+				// w/h = how often repeat happens
+				str += '<pattern id="tallyPattern" x="0" y="0" width="70" height="70" patternUnits="userSpaceOnUse">';
+				str += '<g id="tallyFrontGroup" fill="rgba(255,255,255,.15)">';
+				str += '<path d="M70.173,20.624 L89.265,19.917 L70.880,38.302 L70.173,53.151 L34.818,88.506 L34.111,72.243 L52.496,53.858 L34.818,54.565 L35.525,36.887 L17.140,55.272 L0.877,54.565 L36.232,19.210 L51.789,19.210 L70.173,0.825 L70.173,20.624 Z" />';
+				str += '</g>';
+				// duplicate and reposition the pattern -->
+				str += '<use x="70" y="0" xlink:href="#tallyFrontGroup" />';
+				str += '<use x="0" y="-70" xlink:href="#tallyFrontGroup" />';
+				str += '<use x="-70" y="0" xlink:href="#tallyFrontGroup" />';
+				str += '</pattern>';
+			}
+			return str;
+		} catch (err) {
+			console.error(err);
+		}
+	}
+
+
+
 
 
 
@@ -120,13 +144,28 @@ window.Skin = (function() {
 			var svg = "";
 			svg += '<svg id="tally-svg" class="tally" viewBox="0 0 914 814"' +
 				'xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">';
-			svg += '<defs>' + defs + '</defs>';
+			svg += '<defs></defs>';
 			// svg += '<style type="text/css"> .tallySkinBack {fill:#C308C1;} .tallySkinFront {fill:#D32CF1;} </style>';
-			svg += '<path class="tally tallySkinBack" fill="' + skinData.backFill +
-				'" d="M652.5,793.8l255.5-281L565.2,127.6l-307.3,35L5,366l88.5,346.8L652.5,793.8z"/>';
-			svg += '<path class="tally tallySkinFront" fill="' + skinData.frontFill +
-				'" d="M199.8,809l419.9-139.2l126.5,10.1l161.9-319L690.5,14.1L509.8,36.2L450.2,' +
+
+
+
+			// back
+			svg += '<path class="tally tallySkinBack" fill="' + skinData.backFill + '"' +
+				' d="M652.5,793.8l255.5-281L565.2,127.6l-307.3,35L5,366l88.5,346.8L652.5,793.8z"/>';
+			// back pattern
+			svg += '<path class="tally tallySkinBackPattern" fill="url(#tallyPattern)"' +
+				' d="M652.5,793.8l255.5-281L565.2,127.6l-307.3,35L5,366l88.5,346.8L652.5,793.8z"/>';
+
+			// front
+			svg += '<path class="tally tallySkinFront" fill="' + skinData.frontFill + '"' +
+				' d="M199.8,809l419.9-139.2l126.5,10.1l161.9-319L690.5,14.1L509.8,36.2L450.2,' +
 				'4L258.3,66.9l-190,23.2 l-17.7,443L199.8,809z"/>';
+			// front pattern
+			svg += '<path class="tally tallySkinFrontPattern" fill="url(#tallyPattern)"' +
+				' d="M199.8,809l419.9-139.2l126.5,10.1l161.9-319L690.5,14.1L509.8,36.2L450.2,' +
+				'4L258.3,66.9l-190,23.2 l-17.7,443L199.8,809z"/>';
+
+
 			svg += '</svg>';
 			return svg;
 		} catch (err) {
@@ -135,7 +174,9 @@ window.Skin = (function() {
 	}
 
 	/*
-	 *	Return the skin information 1) to initalize tally character or 2) update after on screen
+	 *	Return the skin information
+	 *	1) to initalize tally character or
+	 *	2) update after on character already on screen
 	 */
 	function returnSkinData(newSkinName = "magenta") {
 		try {
@@ -152,78 +193,118 @@ window.Skin = (function() {
 			if (DEBUG) console.log("👚 Skin.returnSkinData() [2] currentSkinName = " + currentSkinName +
 				", currentSkinObj = " + JSON.stringify(currentSkinObj));
 
-			// object to hold / pass
+			// object to hold / pass strings
 			let skinData = {
-				"def": "",
+				"pattern": "",
+				"gradient": "",
 				"frontFill": "",
 				"backFill": ""
 			};
 
 			// type = COLOR
+			// - apply front and back fill only
 			if (currentSkinObj.type == "color") {
 				skinData.frontFill = currentSkinObj.front;
 				skinData.backFill = currentSkinObj.back;
 			}
 
 			// type = GRADIENT
+			// - add string to <gradient>
+			// - then store reference in fills
 			else if (currentSkinObj.type == "gradient") {
-				// make a copy of the colors
-				let stops = currentSkinObj.stops.trim().split(","),
-					stopColors = currentSkinObj["stop-colors"].trim().split(",");
-
-				// use linearGradient to set gradient angle
-				skinData.def += '<linearGradient id="tallyGradient" x2="1" gradientTransform="rotate(' + currentSkinObj.angle + ')" >';
-
-				// loop through stops in the gradient to get colors
-				for (const key in stops) {
-					console.log(key, stops[key]);
-					if (stops[key] !== undefined) {
-						skinData.def += '<stop offset="' + stops[key] + '%" stop-color="' + stopColors[key] + '">';
-
-						skinData.def += '</stop>';
-					}
-				}
-
-				// not sure if this needs to be inside stop element
-				//
-				// if (currentSkinObj.anim) {
-				// 	skinData.def += '<animate attributeName="stop-color" dur="2s" repeatCount="indefinite" ';
-				// 	// skinData.def += ' values="0;1;0"';
-				// 	skinData.def += ' values="'+ stopColors.join('; ') + '; ' + stopColors[0] +'"';
-				// 	skinData.def += '></animate>';
-				//
-				// // ' + colors.join('; ') + '; ' + colors[0] + '
-				//
-				// 	// move last to first
-				//
-				//
-				// 	// var last = colors.pop();
-				// 	// colors.unshift(last);
-				// }
-
-				// close gradient
-				skinData.def += '</linearGradient>';
-				skinData.frontFill = "url(#tallyGradient)";
-				skinData.backFill = "url(#tallyGradient)";
+				let gradientObj = assembleGradient(currentSkinObj);
+				skinData.gradient = gradientObj.front + gradientObj.back;
+				skinData.frontFill = "url(#tallyGradientFront)";
+				skinData.backFill = "url(#tallyGradientBack)";
 			}
 
 			// type = IMAGE
+			// - add image url to <pattern>
+			// - then store reference in fills
 			else if (currentSkinObj.type == "image") {
-				skinData.def += '<pattern id="tallyPattern" patternUnits="userSpaceOnUse" width="120%" height="120%">';
-				skinData.def += '<image xlink:href="' + chrome.extension.getURL('assets/img/tally/skins/' +
-					currentSkinObj.url) + '" x="-10" y="-10" width="100%" height="100%" />';
-				skinData.def += '</pattern>';
+				skinData.pattern = '<pattern id="tallyPattern" patternUnits="userSpaceOnUse" width="120%" height="120%">' +
+					'<image xlink:href="' + chrome.extension.getURL('assets/img/tally/skins/' + currentSkinObj.url) +
+					'" x="-10" y="-10" width="100%" height="100%" />' +
+					'</pattern>';
 				skinData.frontFill = "url(#tallyPattern)";
 				skinData.backFill = "url(#tallyPattern)";
 			}
 
-			// otherwise default to magenta
+			// type = PATTERN
+			// - add SVG to <pattern>
+			// - then store reference in fills
+			else if (currentSkinObj.type == "pattern") {
+				skinData.pattern = returnPatternStr("houndstooth");
+				skinData.frontFill = "url(#tallyPattern)";
+				skinData.backFill = "url(#tallyPattern)";
+			}
+
+			// DEFAULT 
+			// otherwise default to magenta fill
 			else {
 				skinData.frontFill = currentSkinObj.front;
 				skinData.backFill = currentSkinObj.back;
 			}
 
 			return skinData;
+
+
+		} catch (err) {
+			console.error(err);
+		}
+	}
+
+
+
+	/*
+	 *	Assemble an SVG gradient
+	 */
+	function assembleGradient(currentSkinObj) {
+		try {
+
+			let gradientObj = {
+				"stops": currentSkinObj.stops.trim().split(","),
+				"stopColors": currentSkinObj["stop-colors"].trim().split(","),
+				"front": "",
+				"back": ""
+			};
+
+			// use linearGradient to set gradient angle
+			gradientObj.front = '<linearGradient id="tallyGradientFront" x2="1" gradientTransform="rotate(' + currentSkinObj.angle + ')" >';
+			gradientObj.back = '<linearGradient id="tallyGradientBack" x2="1" gradientTransform="rotate(' + (currentSkinObj.angle + 135) + ')" >';
+
+			// loop through stops in the gradient to get colors
+			for (const key in gradientObj.stops) {
+				console.log(key, gradientObj.stops[key]);
+				if (gradientObj.stops[key] !== undefined) {
+					gradientObj.front += '<stop offset="' + gradientObj.stops[key] + '%" stop-color="' +
+						gradientObj.stopColors[key] + '"></stop>';
+					gradientObj.back += '<stop offset="' + gradientObj.stops[key] + '%" stop-color="' +
+						gradientObj.stopColors[key] + '"></stop>';
+				}
+			}
+
+			// not sure if this needs to be inside stop element
+			//
+			// if (currentSkinObj.anim) {
+			// 	frontGradient += '<animate attributeName="stop-color" dur="2s" repeatCount="indefinite" ';
+			// 	// skinData.gradient += ' values="0;1;0"';
+			// 	frontGradient += ' values="'+ stopColors.join('; ') + '; ' + stopColors[0] +'"';
+			// 	frontGradient += '></animate>';
+			//
+			// // ' + colors.join('; ') + '; ' + colors[0] + '
+			//
+			// 	// move last to first
+			//
+			// 	// var last = colors.pop();
+			// 	// colors.unshift(last);
+			// }
+
+			// close gradient
+			gradientObj.front += '</linearGradient>';
+			gradientObj.back += '</linearGradient>';
+
+			return gradientObj;
 
 
 		} catch (err) {
@@ -244,9 +325,14 @@ window.Skin = (function() {
 			// get skin data
 			let skinData = returnSkinData(newSkinName);
 			// set def and fill
-			$('#tally-svg defs').html(skinData.def);
+			$('#tally-svg defs').html(skinData.pattern + skinData.gradient);
 			$('.tallySkinFront').attr("fill", skinData.frontFill);
 			$('.tallySkinBack').attr("fill", skinData.backFill);
+
+			// start pulse
+
+
+
 		} catch (err) {
 			console.error(err);
 		}
