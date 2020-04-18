@@ -42,10 +42,10 @@ Learn more at [tallygame.net](https://tallygame.net).
 
 ## Packaging
 
-1. Remove (dev only) reference in manifest to `hot-reload.js`
-2. Comment `development` lines in `changeMeta()` function in `assets/js/background/background-install.js`
+1. Change config `options.hotreload` to `false` (prevents `hot-reload.js` from running)
+2. Change config `options.localhost` to `false` (so extension uses production server)
 3. Zip only files needed for extension (`assets/`,`LICENSE`,`manifest.json`,`README.md`)
-4. Rename extension and upload to live server
+4. Rename extension zip file and upload to live server
 
 
 ## Development How-to
@@ -53,7 +53,7 @@ Learn more at [tallygame.net](https://tallygame.net).
 1. Install GIT and Github Desktop
 2. Create a Github account
 3. Clone the project
-4. If using remote API, comment out `obj.currentAPI = "development";` and following 2 lines in `bg-install.js`
+4. If using remote API, change config `options.localhost` to `false`
 5. Install in Chrome per above instructions
 6. Change options as needed in popup
 

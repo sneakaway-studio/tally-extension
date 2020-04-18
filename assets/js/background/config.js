@@ -11,8 +11,8 @@ var Config = (function() {
 			"website": "https://tallygame.net",
 		},
 		options = {
-			"localhost": true,
-			"hotreload": true
+			"localhost": false,
+			"hotreload": false
 		};
 
 	// PUBLIC
