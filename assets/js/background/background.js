@@ -31,6 +31,8 @@ window.Background = (function() {
 			await Install.setVersion();
 			// set server/api production | development
 			await Install.setCurrentAPI();
+			// set development options
+			await Install.setDevelopmentOptions();
 			// check the API status
 			const serverOnline = await Server.checkIfOnline();
 

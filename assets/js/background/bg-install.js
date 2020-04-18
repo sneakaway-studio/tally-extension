@@ -48,6 +48,7 @@ window.Install = (function() {
 	}
 
 
+
 	/**
 	 * 	Check if it is a new version
 	 */
@@ -88,6 +89,34 @@ window.Install = (function() {
 		}
 	}
 
+
+	/**
+	 *  Set options for development
+	 */
+	async function setDevelopmentOptions() {
+		try {
+			let _tally_meta = store("tally_meta");
+			if (Config.options.localhost){
+				if (DEBUG) console.log("🔧 Install.setDevelopmentOptions() Config.options=%c" +
+					JSON.stringify(Config.options), Debug.styles.green, "USING LOCALHOST");
+				// testing installation
+				_tally_meta.currentAPI = "development";
+				_tally_meta.api = Config.development.api;
+				_tally_meta.website = Config.development.website;
+			} else {
+				if (DEBUG) console.log("🔧 Install.setDevelopmentOptions() Config.options=%c" +
+					JSON.stringify(Config.options), Debug.styles.green, "USING tallygame.net");
+				// testing installation
+				_tally_meta.currentAPI = "production";
+				_tally_meta.api = Config.production.api;
+				_tally_meta.website = Config.production.website;
+			}
+			store("tally_meta", _tally_meta);
+			return true;
+		} catch (err) {
+			console.error(err);
+		}
+	}
 
 
 
@@ -263,10 +292,7 @@ window.Install = (function() {
 				"browser": Environment.getBrowserName(),
 				"location": {}
 			};
-			// testing installation
-			obj.currentAPI = "development";
-			obj.api = Config.development.api;
-			obj.website = Config.development.website;
+
 			return obj;
 		} catch (err) {
 			console.error(err);
@@ -319,7 +345,7 @@ window.Install = (function() {
 		init: init,
 		setVersion: setVersion,
 		setCurrentAPI: setCurrentAPI,
-
+		setDevelopmentOptions: setDevelopmentOptions,
 		createOptions: createOptions,
 		setOptions: function(obj) {
 			return setOptions(obj);

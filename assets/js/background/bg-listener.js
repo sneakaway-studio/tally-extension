@@ -19,7 +19,7 @@ window.Listener = (function() {
 				 *	A generic server data grabber - currently in use for random urls only
 				 */
 				if (request.action == "getDataFromServer" && request.url) {
-					// console.log("👂🏼 Listener.addListener() getData 1", request.name);
+					console.log("👂🏼 < Listener.addListener() getData 1", request.name);
 
 					// add token
 					let _tally_meta = store("tally_meta"),
@@ -34,7 +34,7 @@ window.Listener = (function() {
 						dataType: 'json',
 						data: JSON.stringify(request.data)
 					}).done(result => {
-						// console.log("👂🏼 Listener.getDataFromServer() RESULT =", JSON.stringify(result));
+						console.log("👂🏼 > Listener.getDataFromServer() RESULT =", JSON.stringify(result));
 						// reply to contentscript
 						sendResponse({
 							"action": request.action,
@@ -42,7 +42,7 @@ window.Listener = (function() {
 							"data": result
 						});
 					}).fail(err => {
-						console.error("👂🏼 Listener.getDataFromServer() RESULT =", JSON.stringify(err));
+						console.error("👂🏼 > Listener.getDataFromServer() RESULT =", JSON.stringify(err));
 						// server might not be reachable
 						Server.checkIfOnline();
 						sendResponse({
@@ -55,32 +55,32 @@ window.Listener = (function() {
 					return true;
 				}
 
-	
+
 
 
 
 				/*  GENERIC "GETTER" / "SETTER"
 				 ******************************************************************************/
 				else if (request.action == "getData" && request.name) {
-					console.log("👂🏼 Listener.addListener() getData 1", request.name);
+					console.log("👂🏼 < Listener.addListener() getData 1", request.name);
 					// build response
 					let resp = {
 						"action": request.action,
 						"message": 1,
 						"data": store(request.name)
 					};
-					console.log("👂🏼 Listener.addListener() getData 2", request.name, resp);
+					console.log("👂🏼 > Listener.addListener() getData 2", request.name, resp);
 					// send
 					sendResponse(resp);
 				}
 				if (request.action == "saveData" && request.name && request.data) {
-					console.log("👂🏼 Listener.addListener() saveData", request.name, request.data);
+					console.log("👂🏼 < Listener.addListener() saveData", request.name, request.data);
 					// save data
 					let success = 0;
 					if (store(request.name, request.data))
 						success = 1;
 					else
-						console.error("👂🏼 Listener.addListener() -> Could not save data", request);
+						console.error("👂🏼 > Listener.addListener() -> Could not save data", request);
 					// send response
 					sendResponse({
 						"action": request.action,
@@ -188,7 +188,6 @@ window.Listener = (function() {
 				// receive and log debug messages from content
 				else if (request.action == "sendBackgroundDebugMessage") {
 					Background.dataReportHeader("🐞 " + request.caller, "<", "before");
-					if (DEBUG) console.log(request.str);
 					Background.dataReportHeader("/ 🐞 " + request.caller, ">", "after");
 					sendResponse({
 						"action": request.action,
@@ -249,7 +248,7 @@ window.Listener = (function() {
 
 					// if they don't match
 					if (_tally_secret.token != request.data.token) {
-						if (DEBUG) console.log("👂🏼 Listener.saveToken 🔑 FOUND [1]", request.data);
+						if (DEBUG) console.log("👂🏼 < Listener.saveToken 🔑 FOUND [1]", request.data);
 
 						// save new token and tokenExpires
 						_tally_secret.token = request.data.token;
@@ -259,9 +258,9 @@ window.Listener = (function() {
 						// (re)start app to pull in data
 						Background.runStartChecks()
 							.then(function(result) {
-								if (DEBUG) console.log("👂🏼 Listener.saveToken 🔑 NEW [2] ", result);
+								if (DEBUG) console.log("👂🏼 > Listener.saveToken 🔑 NEW [2] ", result);
 								console.log(store("tally_user"));
-								if (DEBUG) console.log("👂🏼 Listener.saveToken 🔑 NEW [3] ", result);
+								if (DEBUG) console.log("👂🏼 > Listener.saveToken 🔑 NEW [3] ", result);
 								// send response with latest
 								sendResponse({
 									"action": request.action,
@@ -272,7 +271,7 @@ window.Listener = (function() {
 								});
 							});
 					} else if (_tally_secret.token === request.data.token) {
-						if (DEBUG) console.log("👂🏼 Listener.saveToken 🔑 SAME", request.data);
+						if (DEBUG) console.log("👂🏼 > Listener.saveToken 🔑 SAME", request.data);
 						// they are the same
 						sendResponse({
 							"action": request.action,
@@ -291,7 +290,7 @@ window.Listener = (function() {
 				// - if server online and token good then send to server
 				// - receive and reply to content with tally_user
 				else if (request.action == "sendUpdateToBackground") {
-					if (DEBUG) console.log("👂🏼 Listener.sendUpdateToBackground", JSON.stringify(request.data));
+					if (DEBUG) console.log("👂🏼 < Listener.sendUpdateToBackground", JSON.stringify(request.data));
 
 					let _tally_meta = store("tally_meta"),
 						_tally_secret = store("tally_secret");
@@ -299,7 +298,7 @@ window.Listener = (function() {
 					// if there is no token or server is down then we are just saving in background
 					if (!_tally_secret.token || !_tally_meta.server.online) {
 
-						console.error("👂🏼 Listener.sendUpdateToBackground() NO TOKEN OR SERVER OFFLINE");
+						console.error("👂🏼 ! Listener.sendUpdateToBackground() NO TOKEN OR SERVER OFFLINE");
 
 						// reply to contentscript with updated tally_user
 						sendResponse({
@@ -321,7 +320,7 @@ window.Listener = (function() {
 						data: JSON.stringify(request.data)
 					}).done(result => {
 						// result contains tally_user
-						console.log("👂🏼 Listener.sendUpdateToBackground() RESULT =", JSON.stringify(result));
+						console.log("👂🏼 > Listener.sendUpdateToBackground() RESULT =", JSON.stringify(result));
 
 						// merge attack data from server with game data properties
 						result.attacks = Server.mergeAttackDataFromServer(result.attacks);
@@ -334,7 +333,7 @@ window.Listener = (function() {
 							"tally_user": result
 						});
 					}).fail(err => {
-						console.error("👂🏼 Listener.sendUpdateToBackground() RESULT =", JSON.stringify(err));
+						console.error("👂🏼 > Listener.sendUpdateToBackground() RESULT =", JSON.stringify(err));
 						// server might not be reachable
 						Server.checkIfOnline();
 						sendResponse({
@@ -348,10 +347,10 @@ window.Listener = (function() {
 				}
 
 
-// MARKED FOR DELETION
+				// MARKED FOR DELETION
 				// // sendBackgroundMonsterUpdate - receive and send Monster, page data to server
 				// else if (request.action == "sendBackgroundMonsterUpdate") {
-				// 	if (DEBUG) console.log("👂🏼 Listener.sendBackgroundMonsterUpdate", JSON.stringify(request.data));
+				// 	if (DEBUG) console.log("👂🏼 < Listener.sendBackgroundMonsterUpdate", JSON.stringify(request.data));
 				//
 				// 	// store update object
 				// 	store("tally_last_monster_update", request.data);

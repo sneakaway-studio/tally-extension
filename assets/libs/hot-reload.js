@@ -40,7 +40,10 @@ const watchChanges = (dir, lastTimestamp) => {
 			setTimeout(() => watchChanges(dir, timestamp), 1000);
 		} else {
 			if (!document.location.href.includes("docs.google.com")) {
-				reload();
+                if (Config.options.hotreload){
+                    console.log(Config.options, "RELOADING!!!!");
+                    reload();
+                }
 			}
 		}
 	});

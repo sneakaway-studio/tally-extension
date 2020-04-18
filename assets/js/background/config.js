@@ -9,10 +9,15 @@ var Config = (function() {
 		production = {
 			"api": "https://tallygame.net/api",
 			"website": "https://tallygame.net",
+		},
+		options = {
+			"localhost": true,
+			"hotreload": true
 		};
 
 	// PUBLIC
 	return {
+		options: options,
 		development: development,
 		production: production,
 	};
