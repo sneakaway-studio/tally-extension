@@ -214,13 +214,13 @@ window.TallyData = (function() {
 
 				// update debugger
 				Debug.update();
-				// reset # edits
+				// set # edits back to zero
 				backgroundUpdateEdits = 0;
-				// reset "in progress"
+				// set "in progress" back to false
 				backgroundUpdateInProgress = false;
 				// remove any intervals / timeouts
 				clearTimeout(managerTimeout);
-				// reset backgroundUpdate after sending
+				// create new backgroundUpdate after sending
 				createBackgroundUpdate();
 
 			});

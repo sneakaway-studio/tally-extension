@@ -29,17 +29,6 @@ window.Install = (function() {
 			// get user's geolocation
 			await saveLocation();
 
-			// // was this a reset?
-			// if (fromReset && existingToken !== {}) {
-			// 	if (DEBUG) console.log("🔧 Install.init() -> installing an existing token!");
-			// 	// save token and tokenExpires
-			// 	let _tally_secret = {
-			// 		"token": existingToken.token,
-			// 		"tokenExpires": existingToken.tokenExpires
-			// 	};
-			// 	store("tally_secret", _tally_secret);
-			// }
-
 			if (DEBUG) console.log("🔧 Install.init() -> game installed!");
 			return true;
 		} catch (err) {

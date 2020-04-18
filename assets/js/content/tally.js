@@ -420,6 +420,9 @@ window.Tally = (function() {
 				// if dialogue open let them click through it
 				// Dialogue.skipToNext();
 
+
+TallyStorage.resetTallyUser();
+
 Dialogue.conversationTest();
 
 
@@ -622,6 +625,7 @@ Dialogue.conversationTest();
 
 	// PUBLIC
 	return {
+		moveEye: moveEye,
 		setFollowCursor: setFollowCursor,
 		stare: stare,
 		addCharacter: addCharacter,

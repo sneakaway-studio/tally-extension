@@ -135,24 +135,49 @@ window.TallyStorage = (function() {
 
 
 
+	/**
+	 *	Save tally_user in content / background
+	 * 	- a.k.a. "resetUser", "resetGame"
+	 */
+	function resetTallyUser(tokenOnPage = false, tokenData = {}) {
+		try {
+			if (DEBUG) console.log("💾 < TallyStorage.resetTallyUser()", tokenOnPage, tokenData);
 
-	//
-	// // resetUser a.k.a. resetGame
-	// function resetUser(tokenOnPage = false, tokenData = {}) {
-	// 	try {
-	// 		if (DEBUG) console.log("💾 < TallyStorage.resetUser()", tokenOnPage, tokenData);
-	// 		chrome.runtime.sendMessage({
-	// 			'action': 'resetUser',
-	// 			'tokenOnPage': tokenOnPage,
-	// 			'tokenData': tokenData
-	// 		}, function(response) {
-	// 			if (DEBUG) console.log("💾 > TallyStorage.resetUser() RESPONSE =", response);
-	// 			return response.data;
-	// 		});
-	// 	} catch (err) {
-	// 		console.error(err);
-	// 	}
-	// }
+			// if we already ran
+			if (Page.data.resetTallyUserCalled)
+				return console.log("💾 TallyStorage.resetTallyUser() ALREADY PERFORMED");
+			// so we only check this once and don't check again
+			Page.data.resetTallyUserCalled = true;
+
+
+
+			if (DEBUG) console.log("💾 < TallyStorage.resetTallyUser()", tokenOnPage, tokenData);
+
+			chrome.runtime.sendMessage({
+				'action': 'resetTallyUser',
+				'tokenOnPage': tokenOnPage,
+				'tokenData': tokenData
+			}, function(response) {
+				if (DEBUG) console.log("💾 > TallyStorage.resetTallyUser() RESPONSE =", response);
+
+
+				// update all objects
+				tally_user = response.tally_user;
+				tally_options = response.tally_options;
+				tally_meta = response.tally_meta;
+				// update Page.mode()
+				Page.updateMode("active");
+				// run game again
+				TallyMain.contentStartChecks();
+
+
+
+				// return response.data;
+			});
+		} catch (err) {
+			console.error(err);
+		}
+	}
 
 
 
@@ -183,7 +208,15 @@ window.TallyStorage = (function() {
 	// 	}
 	// }
 
-	// SAVE TOKEN FROM DASHBOARD
+
+
+
+
+
+	/**
+	 *	Save token in background and run
+	 * 	- Runs Background.runStartChecks()
+	 */
 	async function saveTokenFromDashboard(data) {
 		try {
 			// do not allow offline
@@ -248,7 +281,8 @@ window.TallyStorage = (function() {
 		saveTallyUser: saveTallyUser,
 		// newBackgroundMonsterUpdate: newBackgroundMonsterUpdate,
 		saveTokenFromDashboard: saveTokenFromDashboard,
-		setBadgeText: setBadgeText
+		setBadgeText: setBadgeText,
+		resetTallyUser: resetTallyUser
 	};
 })();
 

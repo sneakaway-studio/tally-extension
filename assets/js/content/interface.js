@@ -54,7 +54,12 @@ window.Interface = (function() {
 							"</div>" +
 
 						"</div>";
-			$('body').append(str);
+			// in the case we are reseting the page
+			if ($("#tally_wrapper").length) {
+				$("#tally_wrapper").replaceWith(str);
+			}else {
+				$('body').append(str);
+			}
 
 		} catch (err) {
 			console.error(err);

@@ -23,7 +23,7 @@ window.TallyListeners = (function() {
 			if (Page.mode().notActive) return;
 			// don't allow if mode disabled
 			if (tally_options.gameMode === "disabled") return;
-			
+
 			// core mouseup listener
 			document.addEventListener("mouseup", function(e) {
 				// a bit of throttling: if mouseup was just fired ignore this click

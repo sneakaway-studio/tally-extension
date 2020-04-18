@@ -242,6 +242,7 @@ window.Page = (function() {
 				time: 0,
 				title: getTitle() || "",
 				tokenFound: false,
+				resetTallyUserCalled: false,
 				trackers: "",
 				previousUrl: "",
 				url: document.location.href || ""

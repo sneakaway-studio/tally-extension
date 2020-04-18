@@ -44,7 +44,10 @@ window.TallyMain = (function() {
 
 
 	/**
-	 *	1. Get all data from background (can be called multiple times, w/ or w/o callback)
+	 *	1. Get all data from background
+     *  - can be called multiple times, w/ or w/o callback
+     *  - if sent with contentStartChecks callback then resets game in content script 
+     *  - assumes background data is current (so does not sync with server)
 	 */
 	async function getDataFromBackground(callback = null) {
 		try {
@@ -242,7 +245,7 @@ window.TallyMain = (function() {
             // update debugger
 			Debug.update();
 
-            
+
 
 
 			return;

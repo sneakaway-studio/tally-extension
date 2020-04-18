@@ -83,7 +83,7 @@ window.Effect = (function() {
 				opacity: 0,
 				easing: 'easeInOutQuad',
 				complete: function() {
-					// reset
+					// set it back
 					$('#tally_click_visual').css({
 						'transform': 'none'
 					});

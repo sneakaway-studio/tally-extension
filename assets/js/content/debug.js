@@ -40,17 +40,18 @@ window.Debug = (function() {
 			"Sound": false,
 			"StatsDisplay": false,
 			"Stats": false,
-			"Skin": true,
+			"Skin": false,
 
 			"Tally": true,
 			"TallyData": true,
-			"TallyListeners": true,
+			"TallyListeners": false,
 			"TallyMain": true,
 			"TallyStorage": true,
 			"Token": true,
 			"Tracker": true,
 			"Tutorial": true
-		};
+		},
+		debugButtonListenersAdded = false;
 
 	// https://coderwall.com/p/fskzdw/colorful-console-log
 	let styles = {
@@ -96,7 +97,7 @@ window.Debug = (function() {
 	}
 
 
-	function dataReportHeader(title, char, pos, count=30) {
+	function dataReportHeader(title, char, pos, count = 30) {
 		try {
 			if (!DEBUG) return;
 			// make string
@@ -118,20 +119,23 @@ window.Debug = (function() {
 		try {
 			if (!prop(tally_options) || !tally_options.showDebugger) return;
 
+			// make sure it isn't already there
+			if ($("#tyd").length) return;
+
 			let str = "<div id='tyd' class='tally draggable data-field grabbable'></div>";
 			$('#tally_wrapper').append(str);
 			// make it draggable
 			$("#tyd").draggable({
 				axis: "y",
 				drag: function() {
-					//console.log("draggable:drag");
+					//console.log("🐞 Debug.add() draggable:drag");
 					// var offset = $(this).offset();
 					// var xPos = offset.left;
 					// var yPos = offset.top - $(window).scrollTop();
 					// tally_options.debuggerPosition = [xPos,yPos];
 				},
 				stop: function() {
-					//console.log("draggable:stop");
+					//console.log("🐞 Debug.add() draggable:stop");
 					//TallyStorage.saveData("tally_options",tally_options,"tyd.draggable.stop");
 				}
 			});
@@ -145,28 +149,38 @@ window.Debug = (function() {
 			if (!prop(tally_options) || !tally_options.showDebugger) return;
 			if (!$("#tyd").length) return;
 
-			var str = "<div class='tally'>" + "<button class='reset-this tally' id='updateGameFromServer'>RESET</button>";
+			var str = "<div class='tally'>" +
+				// "<button class='' id='resetTallyUserFromBackground'>RESET FROM BACKGROUND</button> " +
+				// "<button class='' id='resetTallyUserFromServer'>RESET FROM SERVER</button>"+
+				"";
 
+			// add tally_user.score
 			if (prop(tally_user.score))
 				str += "<b class='tally'>tally_user.score (XP)</b>: " + JSON.stringify(tally_user.score) + "<br>";
 
+			// add tally_user.monsters
 			if (prop(tally_user.monsters))
 				str += "<b class='tally'>tally_user.monsters</b>: " + JSON.stringify(tally_user.monsters) + "<br>";
 
+			// add tally_nearby_monsters
 			// if (prop(tally_nearby_monsters))
 			// 	str += "<b class='tally'>tally_nearby_monsters (" +
 			// 	FS_Object.objLength(tally_nearby_monsters) + ")</b>: " +JSON.stringify(tally_nearby_monsters) + "<br>";
 
+			// add tally_options
 			if (prop(tally_options))
 				str += "tally_options: " + JSON.stringify(tally_options) + "<br>";
 
+			// add Page.data
 			if (prop(Page.data))
 				str += "<b>Page.data</b>: " + JSON.stringify(Page.data) + "<br>";
 
+			// add Page.data.tags
 			// if (prop(Page.data.tags))
 			// 	str += "<b class='tally'>Page.data.tags (" + Page.data.tags.length + ")</b>: " +
 			// 	JSON.stringify(Page.data.tags) + "<br>";
 
+			// add Page.data.trackers
 			// if (prop(Page.data.trackers))
 			// 	str += "<b class='tally'>Page.data.trackers (" + Page.data.trackers.length + ")</b>: " +
 			// 	JSON.stringify(Page.data.trackers) + "<br>";
@@ -174,10 +188,31 @@ window.Debug = (function() {
 			str += "</div>";
 			$('#tyd').html(str);
 
-			// add listener for reset button
-			$(document).on("click", '#updateGameFromServer', function() {
+			// addDebugButtonListeners();
+
+		} catch (err) {
+			console.error(err);
+		}
+	}
+
+
+	function addDebugButtonListeners() {
+		try {
+			if (debugButtonListenersAdded) return;
+			debugButtonListenersAdded = true;
+
+			console.log("🐞 Debug.addDebugButtons()");
+
+			// add listener for reset buttons
+			$(document).on("click", '#resetTallyUserFromBackground', function() {
 				TallyMain.getDataFromBackground(TallyMain.contentStartChecks);
 			});
+			$(document).on("click", '#resetTallyUserFromServer', function() {
+				console.log("🐞 Debug.update() -> resetTallyUser()");
+				// call without token data (assume it is fine)
+				// TallyStorage.resetTallyUser();
+			});
+
 
 		} catch (err) {
 			console.error(err);

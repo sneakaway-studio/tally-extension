@@ -19,7 +19,9 @@ window.Background = (function() {
 
 
 	/**
-	 *  2. Run start checks (always called on new install or update)
+	 *  2. Run start checks
+	 *	- always called on new install or update
+	 * 	- checks for previous install, verifies token, gets latest server data
 	 */
 	async function runStartChecks() {
 		try {
@@ -57,6 +59,7 @@ window.Background = (function() {
 						dataReportHeader("END 🧰 Background.runStartChecks()", "@", "after");
 						// return true to send data back to content
 						if (tallyUserResponse) return true;
+						return false;
 					} else {
 						console.log("🧰 Background.runStartChecks() -> TOKEN NOT VALID");
 						// token not valid
@@ -125,7 +128,7 @@ window.Background = (function() {
 		try {
 			setInterval(function(){
 				Server.checkIfOnline();
-			},(1000*60));			
+			},(1000*60));
 		} catch (err) {
 			console.error("dataReport() failed");
 		}

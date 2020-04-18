@@ -27,13 +27,14 @@ window.Flag = (function() {
 
 				let tokenData = {};
 
-				// TOKEN FLAG
+				// ************ FLAG: CHECK FOR TOKEN ************ //
+
 				if ($("#token").length) {
 					// don't allow if serverOffline
 					if (Page.mode().serverOffline) return;
 					// if we already found one on this page
 					if (Page.data.tokenFound) return console.log("🚩 Flag.check() 🔑 ALREADY CHECKED");
-					// so we don't check again
+					// so we only check this once and don't check again
 					Page.data.tokenFound = true;
 
 					// grab the token data
@@ -45,7 +46,7 @@ window.Flag = (function() {
 					// save token (also saves progress, restarts game)
 					let newTokenFound = await TallyStorage.saveTokenFromDashboard(tokenData);
 					// if we found a token stop main contentStartChecks()
-					if (newTokenFound){
+					if (newTokenFound) {
 						if (DEBUG) console.log("🚩 Flag.check() 🔑 NEW");
 						return true;
 					} else {
@@ -54,30 +55,20 @@ window.Flag = (function() {
 					}
 				}
 
+				// ************ FLAG: CHECK FOR TOKEN ************ //
 
+				if ($("#tallyFlags").length && $("#resetTallyUser").length) {
+					// don't allow if serverOffline
+					if (Page.mode().serverOffline) return;
 
- // save need to fix
+					if (DEBUG) console.log("🚩 Flag.check() resetTallyUser FLAG FOUND");
 
-				//
-				// // OTHER FLAGS
-				// if ($("#tallyFlags").length) {
-				// 	if (DEBUG) console.log("🚩 Flag.check() FLAGS! 🚩🚩🚩", $("#tallyFlags").html().trim());
-				//
-				// 	let flags = JSON.parse($("#tallyFlags").html().trim());
-				//
-				// 	for (let i = 0; i < flags.length; i++) {
-				// 		console.log("🚩 Flag.check() FLAG = " + JSON.stringify(flags[i]));
-				//
-				// 		// if resetUser
-				// 		if (flags[i].name == "resetUser") {
-				// 			// tell user
-				// 			Dialogue.showStr("You have reset your account. One moment while the game resets...", "neutral");
-				// 			// reset game
-				// 			TallyStorage.resetUser(tokenOnPage, tokenData);
-				// 		}
-				// 	}
-				// }
-				//
+					// tell user
+					Dialogue.showStr("You have reset your account. One moment while the game resets...", "neutral");
+					// reset game
+					TallyStorage.resetTallyUser();
+				}
+
 
 
 

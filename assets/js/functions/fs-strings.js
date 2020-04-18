@@ -42,9 +42,11 @@ window.FS_String = (function() {
 		 */
 		insertStylesheets: function() {
 			try {
+				if ($("#tally_styles").length) return;
 				let sheets = document.styleSheets,
 					style = document.createElement('style'),
 					addKeyFrames = null;
+				style.setAttribute("id", "tally_styles");
 				style.appendChild(document.createTextNode(""));
 				document.head.appendChild(style);
 				if (CSS && CSS.supports && CSS.supports('animation: name')) {
