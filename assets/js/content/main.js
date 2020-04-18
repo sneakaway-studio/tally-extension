@@ -46,7 +46,7 @@ window.TallyMain = (function() {
 	/**
 	 *	1. Get all data from background
      *  - can be called multiple times, w/ or w/o callback
-     *  - if sent with contentStartChecks callback then resets game in content script 
+     *  - if sent with contentStartChecks callback then resets game in content script
      *  - assumes background data is current (so does not sync with server)
 	 */
 	async function getDataFromBackground(callback = null) {
@@ -244,32 +244,20 @@ window.TallyMain = (function() {
 			MonsterCheck.check();
             // update debugger
 			Debug.update();
+            // start Demo if we are running in demo mode
+			Demo.start();
 
 
-
-
-			return;
-
-// ?
+            // ?
 			// should be done in bg?
 			// check for, and potentially execute and flags from server (from previous update)
 			// checkForServerFlags();
 
 
-			// ?
-			// if in demo mode (server required) then go to new page
-			if (tally_options.gameMode == "demo") Demo.goToNewPage(true);
-
-			// are we running in demo mode?
-			Demo.start();
-
 		} catch (err) {
 			console.error(err);
 		}
 	}
-
-
-
 
 
 
