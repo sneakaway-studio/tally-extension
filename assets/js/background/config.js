@@ -12,7 +12,7 @@ var Config = (function() {
 		},
 		options = {
 			"localhost": false,
-			"hotreload": false
+			"hotreload": true
 		};
 
 	// PUBLIC

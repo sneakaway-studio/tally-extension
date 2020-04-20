@@ -33,14 +33,18 @@ Learn more at [tallygame.net](https://tallygame.net).
 
 
 
+
+## Development
+
+
 ### Demo Mode ("Gallery Version")
 
-* Switch to a user account w/ admin=1
+* Switch to a user account with admin privileges
 * Select "Demo" in options
-* If sound doesn't play automatically use (Chrome Canary)[https://www.google.com/chrome/canary/] with startup flags: `/Applications/Google\ Chrome\ Canary.app/Contents/MacOS/Google\ Chrome\ Canary  --autoplay-policy=no-user-gesture-required`
+* If sound doesn't play automatically use [Chrome Canary](https://www.google.com/chrome/canary/) with startup flags: `/Applications/Google\ Chrome\ Canary.app/Contents/MacOS/Google\ Chrome\ Canary  --autoplay-policy=no-user-gesture-required`
 
 
-## Packaging
+### Packaging
 
 1. Change config `options.hotreload` to `false` (prevents `hot-reload.js` from running)
 2. Change config `options.localhost` to `false` (so extension uses production server)
@@ -48,7 +52,7 @@ Learn more at [tallygame.net](https://tallygame.net).
 4. Rename extension zip file and upload to live server
 
 
-## Development How-to
+### Development How-to
 
 1. Install GIT and Github Desktop
 2. Create a Github account
@@ -58,12 +62,10 @@ Learn more at [tallygame.net](https://tallygame.net).
 6. Change options as needed in popup
 
 
-## Development Versions
-
-## [Changelog](CHANGELOG.md)
+### [Changelog](CHANGELOG.md)
 
 
-## Dependencies
+### Dependencies
 
 * [Mousetrap.js](https://craig.is/killing/mice)
 * [Moment.js](https://momentjs.com/)
@@ -74,7 +76,7 @@ Learn more at [tallygame.net](https://tallygame.net).
 * [Store2](https://www.npmjs.com/package/store2)
 
 
-# Notes on cross-browser compatibility
+### Notes on cross-browser compatibility
 
 * [Porting a Google Chrome extension](https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/Porting_a_Google_Chrome_extension)
 * [Mozilla > Chrome incompatibilities](https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/Chrome_incompatibilities)

@@ -45,9 +45,9 @@ window.TallyMain = (function() {
 
 	/**
 	 *	1. Get all data from background
-     *  - can be called multiple times, w/ or w/o callback
-     *  - if sent with contentStartChecks callback then resets game in content script
-     *  - assumes background data is current (so does not sync with server)
+	 *  - can be called multiple times, w/ or w/o callback
+	 *  - if sent with contentStartChecks callback then resets game in content script
+	 *  - assumes background data is current (so does not sync with server)
 	 */
 	async function getDataFromBackground(callback = null) {
 		try {
@@ -105,7 +105,7 @@ window.TallyMain = (function() {
 			let newTokenFound = await Flag.check();
 			// if token flag found we should allow restart to happen
 			if (newTokenFound) return false;
-            // if this is the second run after a new token found
+			// if this is the second run after a new token found
 			else if (Page.data.tokenFound == true) {
 				// let progress show game events
 				Progress.tokenAdded();
@@ -176,9 +176,11 @@ window.TallyMain = (function() {
 				return "notActive";
 			}
 			// this is a disabled domain
-			else if (prop(tally_options.disabledDomains) &&
-				(($.inArray(Page.data.domain, tally_options.disabledDomains) >= 0) ||
-					($.inArray(Page.data.subDomain, tally_options.disabledDomains) >= 0))) {
+			else if (prop(tally_options.disabledDomains) && (
+					($.inArray(Page.data.domain, tally_options.disabledDomains) >= 0) ||
+					($.inArray(Page.data.subDomain, tally_options.disabledDomains) >= 0)
+                )
+            ) {
 				console.log(str + "Tally is disabled on this domain");
 				return "notActive";
 			}
@@ -242,13 +244,13 @@ window.TallyMain = (function() {
 			Badge.randomizer();
 			// check for, and potentially add monsters on the page
 			MonsterCheck.check();
-            // update debugger
+			// update debugger
 			Debug.update();
-            // start Demo if we are running in demo mode
+			// start Demo if we are running in demo mode
 			Demo.start();
 
 
-            // ?
+			// ?
 			// should be done in bg?
 			// check for, and potentially execute and flags from server (from previous update)
 			// checkForServerFlags();
