@@ -6,12 +6,17 @@
 ## Development Versions
 
 
+
+### Version 0.2.18
+
+* Adds instructions for block list ("disabled domains")
+* Improves battle console usability
+
 ### Version 0.2.17
 
 * Fixes resetTallyUser
 * Improvements to server / client synching
 * Improvements to development mode (hotreload, etc.)
-
 
 ### Version 0.2.16
 

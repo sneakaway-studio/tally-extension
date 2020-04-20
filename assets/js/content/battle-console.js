@@ -206,6 +206,7 @@ window.BattleConsole = (function() {
 			var ele = "<div class='tally tally_log_line'>" +
 				"<span id='tally_log" + (++logId) + "' class='tally tally_log_cursor'>" + str + "</span>" + "</div>";
 			$("#battle-console-stream").append(ele);
+
 			// add icons
 			$(".attack-icon-attack").css({
 				"background-image": 'url(' + chrome.extension.getURL('assets/img/battles/sword-pixel-13sq.png') + ')'
@@ -223,7 +224,7 @@ window.BattleConsole = (function() {
 			});
 			// add only one listener
 			$(document).on("click", '.battle-options-fire', function() {
-				console.log("🖥️ 🖥️ 🖥️ 🖥️ 🖥️ 🖥️ 🖥️ 🖥️  CLICK CALLED, attack =", $(this).attr("data-attack"), Battle.details);
+				console.log("🖥️ CLICK CALLED, attack =", $(this).attr("data-attack"), Battle.details);
 				// if user can't do attack yet but they clicked anyway
 				if (Battle.details.attackInProgress) {
 					let r = Math.random();
@@ -237,6 +238,8 @@ window.BattleConsole = (function() {
 				} else {
 					// remove listener (from all)
 					$(document).off("click", '.battle-options-fire');
+					// show .battle-options-fire disabled
+					$('.battle-options-row').addClass("disabled");
 					// get attack name
 					let attackName = $(this).attr("data-attack");
 					if (DEBUG) console.log("🖥️ BattleConsole.showBattleOptions() attackName =", attackName, tally_user.attacks);
