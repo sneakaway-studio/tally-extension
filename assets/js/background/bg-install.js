@@ -214,7 +214,7 @@ window.Install = (function() {
 				"showTally": true,
 				"showClickVisuals": true,
 				"playSounds": true,
-				"soundVolume": 0.3,
+				"soundVolume": 0.2,
 				"showAnimations": true,
 				"gameMode": "full", // "demo" | "testing" | "full" | "stealth" | "disabled"
 				"disabledDomains": [

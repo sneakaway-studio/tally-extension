@@ -111,10 +111,10 @@
 					<h3>Attacks <span id="attacksInfo"></span></h3>
 					<ul class="attacksCloud"> </ul>
 				</div>
-				<div class="tabSection">
+				<!-- <div class="tabSection">
 					<h3>Skins</h3>
 					<div id="skinThumbs"></div>
-				</div>
+				</div> -->
 			</div>
 
 
@@ -122,13 +122,13 @@
 			<div id="optionsTab" class="tab" style="display:none">
 
 				<div class="tabSection">
-					<h3>Game</h3>
+					<h3>Game Options</h3>
 
 					<label for="gameMode">Game mode</label>
 					<select class="option-dropdown" id="gameMode">
 						<option value="demo" class="hideUnlessAdmin">Demo mode - For galleries</option>
 						<option value="testing" class="hideUnlessAdmin">Testing - Everything on every page!!!</option>
-						<option value="full">Full – All the feels!</option>
+						<option value="full">Regular – All the feels!</option>
 						<option value="stealth">Stealth – Visuals and sounds off</option>
 						<option value="disabled">Disabled</option>
 					</select>
@@ -142,9 +142,11 @@
 
 
 				<div class="tabSection">
-					<h3>Privacy</h3>
+					<h3>Privacy Options</h3>
 
-					<label for="disabledDomains">Disabled domains</label><br>
+					<label for="disabledDomains"><b>Disabled domains</b></label><br>
+					<span class="lite">Add a domain or subdomain (on a new line) below to block Tally on that domain</span><br>
+
 					<textarea class="option-textarea" id="disabledDomains" rows="4" cols="40"></textarea>
 				</div>
 

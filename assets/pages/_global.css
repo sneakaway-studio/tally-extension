@@ -13,6 +13,7 @@ html, body { background: #461899; margin: 0; padding: 0; box-sizing: border-box;
 a:link, a:active, a:visited { color: #5698ae; text-decoration: none;}
 a:hover {color: #4ba9af; text-decoration: underline;}
 h1, h2, h3, h4, h5, h6 { color: #d32cf1; }
+.lite { color: #999; }
 
 .center-vertical { display: flex; justify-content: center; align-items: center; }
 
