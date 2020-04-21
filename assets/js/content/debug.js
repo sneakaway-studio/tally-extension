@@ -97,7 +97,7 @@ window.Debug = (function() {
 	}
 
 
-	function dataReportHeader(title, char, pos, count = 30) {
+	function dataReportHeader(title, char, pos, count = 20) {
 		try {
 			if (!DEBUG) return;
 			// make string

@@ -35,7 +35,7 @@ window.MonsterCheck = (function() {
 	function checkNearbyMonsterTimes() {
 		try {
 			let log = "👿 MonsterCheck.checkNearbyMonsterTimes()";
-			if (DEBUG) Debug.dataReportHeader(log, "⊙", "before", 30);
+			if (DEBUG) Debug.dataReportHeader(log, "⊙", "before", 15);
 
 			let now = Date.now(),
 				deleteList = [];

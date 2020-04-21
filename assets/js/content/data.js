@@ -108,7 +108,7 @@ window.TallyData = (function() {
 		try {
 			let log = "💾 TallyData.handle()";
 
-			if (DEBUG) Debug.dataReportHeader(log, type + "." + prop, "#", "before", 30);
+			if (DEBUG) Debug.dataReportHeader(log, type + "." + prop, "#", "before");
 
 			// everything is required
 			if (!FS_Object.prop(tally_user)) return console.log(log, "missing: tally_user", type, prop, val, caller);
@@ -186,7 +186,7 @@ window.TallyData = (function() {
 	 */
 	function pushUpdate() {
 		try {
-			if (DEBUG) Debug.dataReportHeader("💾 < TallyData.pushUpdate()", "#", "before", 30);
+			if (DEBUG) Debug.dataReportHeader("💾 < TallyData.pushUpdate()", "#", "before");
 
 			// no need to send if not updated
 			if (backgroundUpdateEdits < 1) return;

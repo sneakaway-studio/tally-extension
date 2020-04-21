@@ -1,5 +1,18 @@
 "use strict";
 
+
+/**
+ *  ______     ____
+ * /_  __/__ _/ / /_ __
+ *  / / / _ `/ / / // /
+ * /_/  \_,_/_/_/\_, /
+ *              /___/
+ */
+
+
+
+
+
 /**
  *	TallyMain
  *	0. create global objects after all other scripts have loaded
@@ -85,7 +98,7 @@ window.TallyMain = (function() {
 	 */
 	async function contentStartChecks() {
 		try {
-			if (DEBUG) Debug.dataReportHeader("🧰 TallyMain.contentStartChecks()", "#", "before", 30);
+			if (DEBUG) Debug.dataReportHeader("🧰 TallyMain.contentStartChecks()", "#", "before");
 
 			// 2.1. Set the Page.mode
 			if (DEBUG) console.log('🧰 TallyMain.contentStartChecks() [2.1] -> SET Page.mode');
@@ -218,7 +231,7 @@ window.TallyMain = (function() {
 	 */
 	function startGameOnPage() {
 		try {
-			if (DEBUG) Debug.dataReportHeader("🧰 TallyMain.startGameOnPage()", "#", "before", 30);
+			if (DEBUG) Debug.dataReportHeader("🧰 TallyMain.startGameOnPage()", "#", "before");
 
 			// allow offline
 			if (Page.mode().notActive) return;
