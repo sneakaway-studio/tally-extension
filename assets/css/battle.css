@@ -204,12 +204,23 @@ svg.stats-display .stat-bar-circle-text { fill:white; font: 14px "Monaco", "Anda
 #battle-console-stream {
     box-sizing: border-box !important;
     font: 0.9em/1.4em "Lucida Console", "Monaco", monospace !important;
-    padding: 10px 0px 0 10px !important;
+    padding: 10px 0 0 10px !important;
     height: 120px !important;
     overflow-y: scroll !important;
     overflow-x: hidden !important;
     scrollbar-width: none;
 }
+#battle-console-prompt {
+    box-sizing: border-box !important;
+    font: 0.9em/1.4em "Lucida Console", "Monaco", monospace !important;
+    padding: 2px 0 0 !important;
+    height: 23px !important;
+}
+#battle-console-prompt #battle-console-prompt-content {
+    margin-left: 5px;
+    display: inline-block;
+}
+
 .tally_log_line { font: 0.9em/1.4em "Lucida Console", "Monaco", monospace !important; width:100% }
 /* weird scrollbar issue */
 #battle-console-stream::-webkit-scrollbar { background: rgba(0, 0, 0, 0); }
@@ -226,7 +237,7 @@ svg.stats-display .stat-bar-circle-text { fill:white; font: 14px "Monaco", "Anda
 #battle-console-stream .text-grey { color: #5b636f; }
 #battle-console-stream .text-ltgrey { color: #8f96a2; }
 /* blinking cursor */
-#battle-console-stream:last-child:after {
+#battle-console-cursor {
     content: "";
     /* position: absolute; */
     top: 0;

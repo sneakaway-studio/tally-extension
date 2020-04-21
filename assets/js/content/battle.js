@@ -184,6 +184,8 @@ window.Battle = (function() {
 				// display stats
 				StatsDisplay.updateDisplay("monster");
 				// log intro...
+				BattleConsole.log("Running Tally "+ tally_meta.version + " BattleConsole 0.1");
+				BattleConsole.log("#########################################");
 				BattleConsole.log("Battle started with " + details.monsterName + "!");
 				// wait for tally to attack first ...
 				BattleConsole.log("What will Tally do?", "showBattleOptions");
@@ -219,7 +221,7 @@ window.Battle = (function() {
 
 			// say something (also clears any leftover battle dialogue that exists)
 			let r = Math.random();
-			if (r < 0.5){
+			if (r < 0.5) {
 				Dialogue.showStr("There are likely other trackers nearby", "cautious", true, true);
 			} else {
 				Dialogue.showStr("The battle is over!", "happy", true, true);
@@ -259,7 +261,7 @@ window.Battle = (function() {
 			};
 
 			// remove monster and save tally_nearby_monsters
-			if (FS_Object.objLength(tally_nearby_monsters) && FS_Object.prop(tally_nearby_monsters[details.mid])){
+			if (FS_Object.objLength(tally_nearby_monsters) && FS_Object.prop(tally_nearby_monsters[details.mid])) {
 				delete tally_nearby_monsters[details.mid];
 				TallyStorage.saveData("tally_nearby_monsters", tally_nearby_monsters, "💥 Battle.end()");
 			}

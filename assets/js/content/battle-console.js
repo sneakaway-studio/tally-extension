@@ -156,6 +156,19 @@ window.BattleConsole = (function() {
 			console.error(err);
 		}
 	}
+	// remove cursor
+	function removeCursor() {
+		$('#battle-console-prompt').remove();
+	}
+
+	function addCursor() {
+		let str = "" +
+			"<div class='tally' id='battle-console-prompt'>" +
+			"<span class='tally' id='battle-console-cursor'></span>" +
+			"<span class='tally' id='battle-console-prompt-content'></span>" +
+			"</div>";
+		$('#battle-console-stream').append(str);
+	}
 
 	function showBattleOptions(lineSpeed = 150) {
 		try {
@@ -191,22 +204,23 @@ window.BattleConsole = (function() {
 					if (_attacks[key].description) title += _attacks[key].description;
 
 					str += "<span " +
-						" title='" + title + "' " +
+						// " title='" + title + "' " +
 						" data-attack='" + _attacks[key].name + "' " +
 						" class='tally battle-options battle-options-fire " + defenseOption + " attack-" + _attacks[key].name + "'>" +
 						"<span class='tally attack-icon attack-icon-" + _attacks[key].type + "' ></span>" +
 						_attacks[key].name + "</span>";
 				}
 			}
-			str += "<span class='tally battle-options battle-options-esc'>run [esc]</span></div>";
+			str += "<span class='tally battle-options battle-options-esc'>[esc]</span></div>";
 
 			if (DEBUG) console.log("🖥️ BattleConsole.showBattleOptions() step 2", str, _queue, _active);
 
 			// insert button
 			var ele = "<div class='tally tally_log_line'>" +
 				"<span id='tally_log" + (++logId) + "' class='tally tally_log_cursor'>" + str + "</span>" + "</div>";
+			removeCursor();
 			$("#battle-console-stream").append(ele);
-
+			addCursor();
 			// add icons
 			$(".attack-icon-attack").css({
 				"background-image": 'url(' + chrome.extension.getURL('assets/img/battles/sword-pixel-13sq.png') + ')'
@@ -215,13 +229,26 @@ window.BattleConsole = (function() {
 				"background-image": 'url(' + chrome.extension.getURL('assets/img/battles/shield-pixel-13sq.png') + ')'
 			});
 
-			// add only one listener
-			$(document).on("mouseover", '.battle-options-fire', function() {
-				// remove listener
-				//$(document).off("mouseover", '.battle-options-fire');
+			// first, remove listeners (from all)
+			$(document).off("mouseenter mouseleave click", '.battle-options-fire');
+			$(document).off("mouseenter mouseleave click", '.battle-options-esc');
+
+
+			// display attack description
+			$(document).on("mouseenter", '.battle-options-fire', function() {
 				let attackName = $(this).attr("data-attack");
-				if (DEBUG) console.log(attackName);
+				let str = attackName + " " + tally_user.attacks[attackName].type + "... ";
+				// if description field contains string
+				if (tally_user.attacks[attackName].description)
+					str = tally_user.attacks[attackName].description;
+				// console.log(attackName, tally_user.attacks[attackName], str);
+				$("#battle-console-prompt-content").html(str);
 			});
+			// hide
+			$(document).on("mouseleave", '.battle-options-fire', function() {
+				$("#battle-console-prompt-content").html("");
+			});
+
 			// add only one listener
 			$(document).on("click", '.battle-options-fire', function() {
 				console.log("🖥️ CLICK CALLED, attack =", $(this).attr("data-attack"), Battle.details);
@@ -246,21 +273,27 @@ window.BattleConsole = (function() {
 					BattleAttack.doAttack(tally_user.attacks[attackName], "tally", "monster");
 				}
 			});
-			// add "run" / "escape" listener
+			// add "run" / "escape" listeners
 			$(document).on("click", '.battle-options-esc', function() {
-				// remove listener
-				$(document).off("click", '.battle-options-esc');
 				// empty queue of any leftover dialogue
 				Dialogue.emptyQueue();
 				// end battle
 				Battle.end();
+			});
+			$(document).on("mouseenter", '.battle-options-esc', function() {
+				// show
+				$("#battle-console-prompt-content").html("Run from this battle?");
+			});
+			$(document).on("mouseleave", '.battle-options-esc', function() {
+				// show
+				$("#battle-console-prompt-content").html("");
 			});
 			// make sure console exists first
 			if (!$('#battle-console-stream')[0]) return;
 			// scroll to new placeholder
 			$('#battle-console-stream').stop().animate({
 				scrollTop: $('#battle-console-stream')[0].scrollHeight
-			}, 800);
+			}, 700);
 			// release active state
 			active(false);
 		} catch (err) {
@@ -314,20 +347,21 @@ window.BattleConsole = (function() {
 							// move to end
 							j = 1000;
 						}
+						removeCursor();
 						// update html
 						$("#" + ele).html(htmlOut);
-
+						addCursor();
 						// if there is more left in string
 						if (j < arr[i].length) {
 							setTimeout(function() {
 								// work on next character with slight pause
 								strLoop(i, ++j, arr);
-							}, 20);
+							}, 15);
 						} else {
 							setTimeout(function() {
 								// work on next array with slight pause
 								arrLoop(++i, 0, arr);
-							}, 20);
+							}, 15);
 							return;
 						}
 						// safety
@@ -400,7 +434,7 @@ window.BattleConsole = (function() {
 		str = str
 			.replace(/<span/g, '^<span')
 			.replace(/\/span>/g, '\/span>^');
-		console.log("#####", str);
+		// if (DEBUG) console.log("🖥️ BattleConsole.returnTagsAsArray()", "#####", str);
 		// split on delimeter
 		return str.split("^");
 	}
@@ -420,7 +454,7 @@ window.BattleConsole = (function() {
 				active(false);
 				// text is done writing so color it
 				colorText(ele);
-					if (DEBUG) console.log("🖥️ BattleConsole.lineComplete() [2]", ele);
+				if (DEBUG) console.log("🖥️ BattleConsole.lineComplete() [2]", ele);
 				// if queue is empty and there is a next string
 				if (_queue.length < 1 && _next != "") {
 					if (DEBUG) console.log("🖥️ BattleConsole.lineComplete() [3]", ele);
@@ -431,7 +465,7 @@ window.BattleConsole = (function() {
 					}
 					_next = "";
 				}
-			}, 250);
+			}, 200);
 		} catch (err) {
 			console.error(err);
 		}
