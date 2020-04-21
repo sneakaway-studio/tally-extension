@@ -462,9 +462,7 @@ window.Dialogue = (function() {
 		show: function(dialogue, playSound, addIfDialogueInProcess, instant) {
 			show(dialogue, playSound, addIfDialogueInProcess, instant);
 		},
-		showStr: function(str, mood, addIfDialogueInProcess, instant) {
-			showStr(str, mood, addIfDialogueInProcess, instant);
-		},
+		showStr: showStr,
 		emptyQueue: emptyQueue,
 		showTrackerDialogue: showTrackerDialogue,
 		random: random,

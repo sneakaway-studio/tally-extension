@@ -65,6 +65,10 @@ window.FS_String = (function() {
 		removeHTML: function(str = "") {
 			try {
 				if (!str) return;
+				// make sure it is a string
+				if (typeof str !== "string"){
+					console.warn ("FS_String.removeHTML() NOT A STRING");
+				}
 				// remove html and resulting whitespace
 				return str.replace(/<[^>]*>?/gm, ' ').replace(/\s+/g, ' ');
 			} catch (err) {

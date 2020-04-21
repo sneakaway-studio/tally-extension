@@ -293,7 +293,7 @@ window.BattleAttack = (function() {
 			if (!Battle.details.attackInProgress) return;
 
 			let winner = "",
-				endBattleMessage = "";
+				endBattleMessage = {};
 
 
 			// 2. check for winner
@@ -311,11 +311,11 @@ window.BattleAttack = (function() {
 			// did tally win?
 			else if (Stats.get("monster").health.val <= 0) {
 				winner = "tally";
-				endBattleMessage = "";
+				endBattleMessage = Dialogue.get(["battle", "monster-health-gone", null]);
 				tallyWins("The <span class='tally text-green'>monster's</span> health has been depleted. Tally wins!!!", "monster-health-gone");
 			} else if (Stats.get("monster").stamina.val <= 0) {
 				winner = "tally";
-				endBattleMessage = "";
+				endBattleMessage = Dialogue.get(["battle", "monster-stamina-gone", null]);
 				tallyWins("The <span class='tally text-green'>monster's</span> stamina has been depleted. Tally wins!!!", "monster-stamina-gone");
 			} else {
 
@@ -363,7 +363,7 @@ window.BattleAttack = (function() {
 				setTimeout(function() {
 					// show final dialogue
 					console.warn("endBattleMessage", endBattleMessage);
-					Dialogue.showStr(endBattleMessage, "neutral", true);
+					Dialogue.showStr(endBattleMessage.text, endBattleMessage.mood, true);
 					setTimeout(function() {
 						// if in demo then quit after a moment
 						if (tally_options.gameMode === "demo") {
