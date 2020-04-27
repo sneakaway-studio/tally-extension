@@ -104,7 +104,7 @@ window.TallyMain = (function() {
 			if (DEBUG) console.log('🧰 TallyMain.contentStartChecks() [2.1] -> SET Page.mode');
 
 			// stop if Page.data failed
-			if (!prop(Page.data)) return console.error("... Page.data NOT FOUND");
+			if (!prop(Page.data)) return console.warn("... Page.data NOT FOUND");
 			// check page mode before proceeding
 			Page.updateMode(getPageMode());
 			// stop if page mode marked notActive

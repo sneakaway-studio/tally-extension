@@ -40,7 +40,7 @@ window.Debug = (function() {
 			"Sound": false,
 			"StatsDisplay": false,
 			"Stats": false,
-			"Skin": false,
+			"Skin": true,
 
 			"Tally": true,
 			"TallyData": true,

@@ -421,7 +421,7 @@ window.Tally = (function() {
 				// Dialogue.skipToNext();
 
 
-TallyStorage.resetTallyUser();
+
 
 Dialogue.conversationTest();
 

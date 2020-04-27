@@ -13,6 +13,28 @@ window.Dialogue = (function() {
 
 
 
+	// for future change to a dialogue object
+
+	function returnDialogueReqObj() {
+
+		return {
+			"category": "",
+			"subcategory": "",
+			"index": "",
+			"mood": "",
+			"skin": "",
+			"eyes": "",
+			"callback": ""
+		};
+
+	}
+
+
+
+
+
+
+
 	// ********************* RANDOM / SPECIFIC DIALOGUE ********************* //
 
 	function random() {
@@ -240,7 +262,7 @@ window.Dialogue = (function() {
 			if (DEBUG) console.log("💭 Dialogue.skipToNext()");
 
 			// if queue contains dialogue then skip
-			if (_queue.length > 0) writeNextInQueue(150,true);
+			if (_queue.length > 0) writeNextInQueue(150, true);
 			// or hide it
 			else hide();
 
@@ -413,7 +435,7 @@ window.Dialogue = (function() {
 				result = category[subcategoryStr][r];
 			}
 			// if there is no subcategory, then get by index
-			else if (prop(arr[2])) {
+			if (prop(arr[2])) {
 				let index = arr[2];
 				result = category[index];
 			}
@@ -430,16 +452,65 @@ window.Dialogue = (function() {
 	}
 
 
-	function conversationTest(){
+
+	function get2(dialogueReq){
+
+
+	}
+
+
+	function conversationTest() {
 		try {
 			console.log("💭 Dialogue.conversationTest()");
 
-			Dialogue.show(Dialogue.get(["random", "conversation", null]), false, true);
 
 
-// add these later
+
+			var sounds = ['4-14-sad.mp3',
+				'4-14-question.mp3',
+				'4-14-beep.mp3',
+				'4-14-happy.wav',
+				'4-21-dialogue1.wav',
+				'4-21-dialogue2.wav',
+				'4-21-dialogue3.wav',
+				'4-21-dialogue4.wav',
+				'4-21-dialogue5.wav',
+				'4-26-question-4_mixdown.wav',
+				'4-26-happy-3.wav',
+				'4-26-happy-4.wav',
+				'4-26-question-3.wav',
+				'4-26-cautious-3.wav',
+				'4-26-cautious-4.wav',
+			];
+
+			let sound = sounds[Math.floor(Math.random()*sounds.length)];
+
+
+
+			let dialogue = get(["sound-test", sound, null]);
+			//
+			// let dialogue = {
+			// 	"text": str,
+			// 	"mood": mood
+			// };
+
+
+			console.log("💭 Dialogue.conversationTest()", sound, dialogue);
+
+
+			Dialogue.showStr(dialogue.text, false, true, true);
+Sound.playFile("tally/tests/"+sound, false, 0);
+
+
+
+
+
+
+
+
+			// add these later
 			// // show a random conversation item
-			// let r = Math.random();
+			//
 			// if (r > 0.9){
 			// 	Dialogue.show(Dialogue.get(["random", "conversation", null]), false, true);
 			// } else if (r > 0.8){
@@ -449,7 +520,7 @@ window.Dialogue = (function() {
 			// }
 
 
-		} catch(err){
+		} catch (err) {
 			console.error(err);
 		}
 	}
@@ -459,9 +530,7 @@ window.Dialogue = (function() {
 	// PUBLIC
 	return {
 		conversationTest: conversationTest,
-		show: function(dialogue, playSound, addIfDialogueInProcess, instant) {
-			show(dialogue, playSound, addIfDialogueInProcess, instant);
-		},
+		show: show,
 		showStr: showStr,
 		emptyQueue: emptyQueue,
 		showTrackerDialogue: showTrackerDialogue,
