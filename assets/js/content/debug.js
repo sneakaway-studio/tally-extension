@@ -22,6 +22,7 @@ window.Debug = (function() {
 			"Debug": true,
 			"Demo": true,
 			"Dialogue": true,
+			"Disguise": true,
 			"Effect": true,
 			"Flag": true,
 			"TallyEvents": true,

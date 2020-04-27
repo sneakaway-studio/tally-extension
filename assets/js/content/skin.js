@@ -233,13 +233,13 @@ window.Skin = (function() {
 			// type = PATTERN
 			// - add SVG to <pattern>
 			// - then store reference in fills
-			else if (currentSkinObj.type == "pattern") {
-				skinData.pattern = returnPatternStr("houndstooth");
-				skinData.frontFill = "url(#tallyPattern)";
-				skinData.backFill = "url(#tallyPattern)";
-			}
+			// else if (currentSkinObj.type == "pattern") {
+			// 	skinData.pattern = returnPatternStr("houndstooth");
+			// 	skinData.frontFill = "url(#tallyPattern)";
+			// 	skinData.backFill = "url(#tallyPattern)";
+			// }
 
-			// DEFAULT 
+			// DEFAULT
 			// otherwise default to magenta fill
 			else {
 				skinData.frontFill = currentSkinObj.front;

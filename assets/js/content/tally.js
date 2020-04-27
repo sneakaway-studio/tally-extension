@@ -424,7 +424,7 @@ window.Tally = (function() {
 
 
 Dialogue.conversationTest();
-
+Disguise.randomizer();
 
 				// Item.showManager();
 				Skin.random();
