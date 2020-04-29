@@ -11,6 +11,7 @@
 
 * Adds instructions for block list ("disabled domains")
 * Improves battle console usability
+* Adds Disguises and new consumables
 
 ### Version 0.2.17
 

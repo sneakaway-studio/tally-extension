@@ -233,6 +233,7 @@ window.Skin = (function() {
 			// type = PATTERN
 			// - add SVG to <pattern>
 			// - then store reference in fills
+			// TEMP COMMENT OUT - TALLY WAS INVISIBLE!?
 			// else if (currentSkinObj.type == "pattern") {
 			// 	skinData.pattern = returnPatternStr("houndstooth");
 			// 	skinData.frontFill = "url(#tallyPattern)";

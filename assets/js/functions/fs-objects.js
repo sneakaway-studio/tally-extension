@@ -29,6 +29,14 @@ window.FS_Object = (function() {
 	}
 
 	/**
+	 *	Return random key from an object
+	 */
+	function randomObjKey(obj) {
+		var keys = Object.keys(obj);
+		return keys[keys.length * Math.random() << 0];
+	}
+
+	/**
 	 *	Return random property from an object
 	 */
 	function randomObjProperty(obj) {
@@ -58,6 +66,7 @@ window.FS_Object = (function() {
 		objLength: function(obj){
 			return objLength(obj);
 		},
+		randomObjKey: randomObjKey,
 		randomObjProperty: function(obj) {
 			return randomObjProperty(obj);
 		},
