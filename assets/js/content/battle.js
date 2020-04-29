@@ -184,9 +184,10 @@ window.Battle = (function() {
 				// display stats
 				StatsDisplay.updateDisplay("monster");
 				// log intro...
+				BattleConsole.log("t:/game/battle/start...");
 				BattleConsole.log("Running Tally "+ tally_meta.version + " BattleConsole 0.1");
 				BattleConsole.log("#########################################");
-				BattleConsole.log("Battle started with " + details.monsterName + "!");
+				BattleConsole.log("Battle started with <span class='tally text-green'>" + MonsterData.dataById[mid].tier1 + " &gt; " + details.monsterName + "</span>!");
 				// wait for tally to attack first ...
 				BattleConsole.log("What will Tally do?", "showBattleOptions");
 			}, 100);
