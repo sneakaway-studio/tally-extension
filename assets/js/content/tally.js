@@ -116,9 +116,7 @@ window.Tally = (function() {
 				"<div class='tally' id='tally_slide_show_inner'></div>" +
 				"</div>" +
 				"<div class='tally' id='tally_character_inner'>" +
-				"<div class='tally' id='tally_body'>" +
-				Skin.returnTallySVG() +
-				"</div>" +
+				"<div class='tally' id='tally_body'>" + Skin.returnTallySVG() + "</div>" +
 				"<div class='tally' id='tally_eyes'>" +
 				"<span class='tally tally_lid'>" +
 				"<span class='tally tally_eye tally_eye_left'>" +
@@ -128,6 +126,7 @@ window.Tally = (function() {
 				"<span class='tally tally_eye_pupil'></span></span></span>" +
 				"</div>" +
 				"</div>" +
+				"<div class='tally tally_disguise'>" + Disguise.returnHtmlStr() + "</div>" +
 				"<div class='tally tally_stats'>" +
 				"<div class='tally tally_stats_bars'></div>" +
 				"<div class='tally tally_stats_table'></div>" +

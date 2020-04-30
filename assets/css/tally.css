@@ -226,7 +226,7 @@ svg#tally-svg * {
     padding: 2px 5px;
 }
 #tally_slide_show_inner div i {
-    
+
 }
 #tally_slide_show_inner div b {
     margin-left: 10px;
@@ -251,4 +251,16 @@ svg#tally-svg * {
     height: 100%;
     font: 12px/16px "Monaco", "Andale Mono", "Courier New", sans-serif;
     color: #fff
+}
+
+/*  DISGUISE
+ ******************************************************************************/
+.tally_disguise {
+    position: absolute;
+    max-width: 254px;
+    top: -79px;
+    left: 0px;
+}
+.tally_disguise img {
+    max-width: 100%;
 }
