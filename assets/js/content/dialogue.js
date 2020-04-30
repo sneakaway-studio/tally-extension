@@ -453,10 +453,31 @@ window.Dialogue = (function() {
 
 
 
-	function get2(dialogueReq){
 
 
+	function getDialogue(req) {
+		try {
+			console.log("💭 Dialogue.getDialogue()", req);
+
+			let dialogueObj = {
+				text: "",
+				mood: ""
+			};
+			if (req.category && req.subcategory)
+				dialogueObj = FS_Object.randomObjProperty(DialogueData.data[req.category][req.subcategory]);
+			else if (req.category && req.index)
+				dialogueObj = DialogueData.data[req.category][req.index];
+			else
+				console.console.error("No dialogue there");
+
+
+			return dialogueObj;
+
+		} catch (err) {
+			console.error(err);
+		}
 	}
+
 
 
 	function conversationTest() {
@@ -464,42 +485,35 @@ window.Dialogue = (function() {
 			console.log("💭 Dialogue.conversationTest()");
 
 
-
-
-			var sounds = ['4-14-sad.mp3',
-				'4-14-question.mp3',
-				'4-14-beep.mp3',
-				'4-14-happy.wav',
-				'4-21-dialogue1.wav',
-				'4-21-dialogue2.wav',
-				'4-21-dialogue3.wav',
-				'4-21-dialogue4.wav',
-				'4-21-dialogue5.wav',
-				'4-26-question-4_mixdown.wav',
-				'4-26-happy-3.wav',
-				'4-26-happy-4.wav',
-				'4-26-question-3.wav',
-				'4-26-cautious-3.wav',
-				'4-26-cautious-4.wav',
+			var moods = [
+				"happy",
+				"question",
+				"cautious"
 			];
+			// select a mood
+			let mood = FS_Object.randomArrayIndex(moods);
 
-			let sound = sounds[Math.floor(Math.random()*sounds.length)];
-
-
-
-			let dialogue = get(["sound-test", sound, null]);
-			//
-			// let dialogue = {
-			// 	"text": str,
-			// 	"mood": mood
-			// };
+			let dialogueReq = {
+				"category": "sound-test",
+				"subcategory": mood,
+				"index": ""
+			};
+			let dialogue = getDialogue(dialogueReq);
 
 
-			console.log("💭 Dialogue.conversationTest()", sound, dialogue);
+			// let mood = moods[Math.floor(Math.random() * moods.length)];
+
+
+
+			// let dialogue = get([dialogueReq.category, dialogueReq.subcategory, null]);
+
+
+
+			console.log("💭 Dialogue.conversationTest()", dialogue);
 
 
 			Dialogue.showStr(dialogue.text, false, true, true);
-Sound.playFile("tally/tests/"+sound, false, 0);
+			Sound.playFile("tally/tests/" + dialogue.mood, false, 0);
 
 
 
