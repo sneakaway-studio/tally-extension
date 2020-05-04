@@ -457,17 +457,17 @@ window.Dialogue = (function() {
 
 	function getDialogue(req) {
 		try {
-			console.log("💭 Dialogue.getDialogue()", req);
+			console.log("💭 Dialogue.getDialogue() req =", req);
 
 			let dialogueObj = {
 				text: "",
 				mood: ""
 			};
-			if (req.category && req.subcategory)
+			if (req.category && req.subcategory){
 				dialogueObj = FS_Object.randomObjProperty(DialogueData.data[req.category][req.subcategory]);
-			else if (req.category && req.index)
+			}else if (req.category && req.index){
 				dialogueObj = DialogueData.data[req.category][req.index];
-			else
+			}else
 				console.console.error("No dialogue there");
 
 

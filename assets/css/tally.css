@@ -42,10 +42,12 @@
 svg#tally-svg {
     background: none;
     width: 223px;
-    height: 222px;
+    /* height: 222px; OLD */
+    height: 196px;
     position: absolute;
     top: -10px;
     left: 0px;
+    overflow: hidden;
 }
 svg#tally-svg * {
     transition: all .9s;
@@ -258,8 +260,8 @@ svg#tally-svg * {
 .tally_disguise {
     position: absolute;
     max-width: 254px;
-    top: -79px;
-    left: 0px;
+    top: -12px;
+    left: -1px;
 }
 .tally_disguise img {
     max-width: 100%;

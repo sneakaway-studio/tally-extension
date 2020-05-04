@@ -126,7 +126,7 @@ window.Tally = (function() {
 				"<span class='tally tally_eye_pupil'></span></span></span>" +
 				"</div>" +
 				"</div>" +
-				"<div class='tally tally_disguise'>" + Disguise.returnHtmlStr() + "</div>" +
+				"<div class='tally tally_disguise'></div>" +
 				"<div class='tally tally_stats'>" +
 				"<div class='tally tally_stats_bars'></div>" +
 				"<div class='tally tally_stats_table'></div>" +
@@ -141,6 +141,8 @@ window.Tally = (function() {
 
 			// only proceed if active
 			if (!Page.mode().active) return;
+
+			Disguise.randomizer();
 
 			addStats();
 
@@ -191,40 +193,51 @@ window.Tally = (function() {
 	}
 
 	/**
-	 * listener to add Tally character if removed
+	 * 	listener to add Tally character if removed
 	 */
 	function onRemove(element, onDetachCallback) {
-		const observer = new MutationObserver(function() {
-			function isDetached(el) {
-				if (el.parentNode === document) {
-					//console.log("false");
-					return false;
-				} else if (el.parentNode === null) {
-					//console.log("true");
-					return true;
-				} else {
-					//console.log("detached = " + isDetached(el.parentNode));
-					return isDetached(el.parentNode);
+		try {
+			const observer = new MutationObserver(function() {
+				function isDetached(el) {
+					if (el.parentNode === document) {
+						//console.log("false");
+						return false;
+					} else if (el.parentNode === null) {
+						//console.log("true");
+						return true;
+					} else {
+						//console.log("detached = " + isDetached(el.parentNode));
+						return isDetached(el.parentNode);
+					}
 				}
-			}
-			if (isDetached(element)) {
-				observer.disconnect();
-				onDetachCallback();
-			}
-		});
-
-		observer.observe(document, {
-			childList: true,
-			subtree: true
-		});
+				if (isDetached(element)) {
+					observer.disconnect();
+					onDetachCallback();
+				}
+			});
+			// watch the dom
+			observer.observe(document, {
+				childList: true,
+				subtree: true
+			});
+		} catch (err) {
+			console.error(err);
+		}
 	}
 
 	function reloadIfRemoved() {
-		// load everything again
-		Interface.addBaseHTML();
-		// start tally again
-		addCharacter();
+		try {
+			// load everything again
+			Interface.addBaseHTML();
+			// start tally again
+			addCharacter();
+		} catch (err) {
+			console.error(err);
+		}
 	}
+
+
+
 
 
 
@@ -276,7 +289,7 @@ window.Tally = (function() {
 				if (DEBUG) console.log("%c   Tally.interactionHandler()", tallyConsoleIcon, interaction);
 
 				// the first time
-				if (Progress.update("mouseEnterTally", 1, "+") < 1){
+				if (Progress.update("mouseEnterTally", 1, "+") < 1) {
 					if (Progress.update("toldToDragTally", 1, "+") < 1) {
 						// tell them more
 						Dialogue.showStr("Did you know that you can drag me around the screen.", false, true);
@@ -305,7 +318,7 @@ window.Tally = (function() {
 				if (DEBUG) console.log("%c   Tally.interactionHandler()", tallyConsoleIcon, interaction);
 
 				// update progress
-				if (Progress.update("mouseLeaveTally", 1, "+") < 3){
+				if (Progress.update("mouseLeaveTally", 1, "+") < 3) {
 					if (Progress.get("clickTallyDouble") < 1)
 						Dialogue.showStr("Double click me to see a menu!", "happy", true);
 				}
@@ -356,7 +369,7 @@ window.Tally = (function() {
 		clickInterval = null,
 		clickIntervalTime = 10;
 	// listener
-	$(document).on('click', '#tally_body', function() {
+	$(document).on('click', '#tally_body, .tally_disguise', function() {
 		try {
 			// allow offline
 			if (Page.mode().notActive) return;
@@ -409,7 +422,7 @@ window.Tally = (function() {
 
 			// if server online but no token then show prompt
 			if (Page.mode().noToken && window.tallyTokenPrompt < 10) {
-				window.tallyTokenPrompt ++;
+				window.tallyTokenPrompt++;
 				Dialogue.showStr(Token.returnPrompt(), "sad", true);
 				return;
 			}
@@ -422,8 +435,8 @@ window.Tally = (function() {
 
 
 
-Dialogue.conversationTest();
-Disguise.randomizer();
+				Dialogue.conversationTest();
+				Disguise.randomizer();
 
 				// Item.showManager();
 				Skin.random();
