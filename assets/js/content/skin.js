@@ -141,29 +141,35 @@ window.Skin = (function() {
 			// old bitmap method
 			//svg = "<img class='tally-svg' src='" + chrome.extension.getURL('assets/img/tally/tally.svg') + "'>";
 
+
+
+
 			var svg = "";
-			svg += '<svg id="tally-svg" class="tally" viewBox="0 0 914 814"' +
-				'xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">';
+			svg += '<svg id="tally-svg" class="tally" viewBox="0 0 914 814" ' +
+				// 'xmlns:xlink="http://www.w3.org/1999/xlink" '+
+				'xmlns="http://www.w3.org/2000/svg" '+
+				' overflow="hidden" '+
+				'>';
 			svg += '<defs></defs>';
 			// svg += '<style type="text/css"> .tallySkinBack {fill:#C308C1;} .tallySkinFront {fill:#D32CF1;} </style>';
 
 
 
+
+
 			// back
 			svg += '<path class="tally tallySkinBack" fill="' + skinData.backFill + '"' +
-				' d="M652.5,793.8l255.5-281L565.2,127.6l-307.3,35L5,366l88.5,346.8L652.5,793.8z"/>';
+				' d="M652.5 793.8l255.5-281-342.8-385.2-307.3 35L5 366l88.5 346.8 559 81z"/>';
 			// back pattern
 			svg += '<path class="tally tallySkinBackPattern" fill="url(#tallyPattern)"' +
-				' d="M652.5,793.8l255.5-281L565.2,127.6l-307.3,35L5,366l88.5,346.8L652.5,793.8z"/>';
+				' d="M652.5 793.8l255.5-281-342.8-385.2-307.3 35L5 366l88.5 346.8 559 81z"/>';
 
 			// front
 			svg += '<path class="tally tallySkinFront" fill="' + skinData.frontFill + '"' +
-				' d="M199.8,809l419.9-139.2l126.5,10.1l161.9-319L690.5,14.1L509.8,36.2L450.2,' +
-				'4L258.3,66.9l-190,23.2 l-17.7,443L199.8,809z"/>';
+				' d="M199.8 809l419.9-139.2 126.5 10.1 161.9-319L690.5 14.1 509.8 36.2 450.2 4 258.3 66.9l-190 23.2-17.7 443L199.8 809z"/>';
 			// front pattern
 			svg += '<path class="tally tallySkinFrontPattern" fill="url(#tallyPattern)"' +
-				' d="M199.8,809l419.9-139.2l126.5,10.1l161.9-319L690.5,14.1L509.8,36.2L450.2,' +
-				'4L258.3,66.9l-190,23.2 l-17.7,443L199.8,809z"/>';
+				' d="M199.8 809l419.9-139.2 126.5 10.1 161.9-319L690.5 14.1 509.8 36.2 450.2 4 258.3 66.9l-190 23.2-17.7 443L199.8 809z"/>';
 
 
 			svg += '</svg>';
