@@ -110,6 +110,7 @@ window.Tally = (function() {
 				"<div class='tally' id='tally_dialogue'></div>" +
 				"</div>" +
 				"<div class='tally' id='tally_item_manager'>" +
+				"<div class='tally' id='tally_item_manager_menu'></div>" +
 				"<div class='tally' id='tally_item_manager_inner'></div>" +
 				"</div>" +
 				"<div class='tally' id='tally_slide_show'>" +
@@ -329,7 +330,8 @@ window.Tally = (function() {
 			else if (interaction === 'dragstart') {
 				if (DEBUG) console.log("%c   Tally.interactionHandler()", tallyConsoleIcon, interaction);
 				if (!dragging) {
-					Dialogue.showStr("Weeeeeeeee!", "happy", false);
+					Dialogue.show(Dialogue.get(["tally", "drag", null]), false, true);
+					// Dialogue.showStr("Weeeeeeeee!", "happy", false);
 					dragging = true;
 				}
 			} else if (interaction === 'drag') {
@@ -433,12 +435,11 @@ window.Tally = (function() {
 				// Dialogue.skipToNext();
 
 
+Item.showManager();
 
-
+				// tests
 				Dialogue.conversationTest();
 				Disguise.randomizer();
-
-				// Item.showManager();
 				Skin.random();
 				// update progress
 				if (Progress.update("clickTallySingle", 1, "+") < 1)
