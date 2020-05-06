@@ -11,11 +11,13 @@ window.Disguise = (function() {
 		currentDisguiseObj = DisguiseData.data[currentDisguiseName];
 
 
+/**
+ * 	Display a random disguise
+ */
 	function randomizer() {
 		try {
 			currentDisguiseObj = FS_Object.randomObjProperty(DisguiseData.data);
 			if (DEBUG) console.log("😎 Disguise.randomizer() [1] currentDisguiseObj =", currentDisguiseObj);
-
 			display();
 		} catch (err) {
 			console.error(err);
@@ -32,7 +34,7 @@ window.Disguise = (function() {
 				})) {
 				Dialogue.showData(Dialogue.getData({
 					category: "disguise",
-					subcategory: "random"
+					subcategory: currentDisguiseObj.name
 				}), {
 					addIfInProcess: false,
 					instant: true

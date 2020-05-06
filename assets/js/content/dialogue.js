@@ -45,14 +45,11 @@ window.Dialogue = (function() {
 			// if a category and it exists
 			if (dataReq.category && FS_Object.prop(DialogueData.data[dataReq.category])) {
 
-
-
 				// if a category && subcategory (and the combination exists)
 				if (dataReq.subcategory &&
 					FS_Object.prop(DialogueData.data[dataReq.category][dataReq.subcategory])) {
 					// get random cat + subcat
 					dialogueObj = FS_Object.randomObjProperty(DialogueData.data[dataReq.category][dataReq.subcategory]);
-
 				}
 				// else if a category and index (and the combination exists)
 				else if (dataReq.index &&
@@ -71,7 +68,6 @@ window.Dialogue = (function() {
 					text: "No dialogue found",
 					mood: "sad",
 				};
-				return dialogueObj;
 			}
 			return dialogueObj;
 		} catch (err) {
