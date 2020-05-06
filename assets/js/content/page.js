@@ -209,7 +209,7 @@ window.Page = (function() {
 		try {
 			var url = document.location.href;
 			// only run on web pages
-			if (!url || !url.match(/^http/)) return;
+			// if (!url || !url.match(/^http/)) return;
 			// object
 			let newData = {
 				browser: {

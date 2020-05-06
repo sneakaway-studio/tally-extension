@@ -53,7 +53,7 @@ window.Disguise = (function() {
 					instant: true
 				});
 			}
-			return "<img src='" + chrome.extension.getURL('assets/img/tally-disguises/' + currentDisguiseObj.name + currentDisguiseObj.ext) + "'>";
+			return "<img class='tally' src='" + chrome.extension.getURL('assets/img/tally-disguises/' + currentDisguiseObj.name + currentDisguiseObj.ext) + "'>";
 		} catch (err) {
 			console.error(err);
 		}

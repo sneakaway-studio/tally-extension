@@ -463,7 +463,7 @@ window.Dialogue = (function() {
 			// perform replacement
 			if (find != "" && replace != "")
 				str = str.replace(new RegExp('\{\{(?:\\s+)?(' + find + ')(?:\\s+)?\}\}'),
-					"<span class='tally-replace'>" + replace + "</span>");
+					"<span class='tally tally-replace'>" + replace + "</span>");
 			// return string
 			return str;
 		} catch (err) {

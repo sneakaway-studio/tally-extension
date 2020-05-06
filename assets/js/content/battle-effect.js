@@ -185,30 +185,6 @@ window.BattleEffect = (function() {
 		}
 	}
 
-	let explosions = [
-		// 'clouds-blue-red-stroke.png',
-		// 'clouds-ltblue-blue-stroke.png',
-		// 'clouds-orange-red-stroke.png',
-		// 'squares-green-pink.png',
-		// 'squares-green.png',
-		// 'squares-pink.png',
-		// 'squares-red-orange.png',
-		// 'squares-yellow-red-stroke.png',
-		// 'stars-pink.png',
-		// 'water-blue.png',
-
-		'defense-security-firewall.gif',
-		'defense-network-packetshield.gif',
-		'defense-computer.gif',
-		'attack-social-clickstrike.gif',
-		'attack-social-emailblitz.gif',
-		'attack-cryptography-triangulate.gif',
-		'attack-memory-memoryflare.gif',
-		'attack-cryptography-cryptcracker.gif',
-		'attack-computer.gif',
-
-	];
-
 
 
 	function showExplosion(attack, endPos, rumbleSize = "") {
