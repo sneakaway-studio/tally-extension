@@ -271,9 +271,15 @@ window.BattleAttack = (function() {
 				// show log and change in stats after a moment
 				setTimeout(function() {
 					if (positiveOutcomeTally == true)
-						Dialogue.show(Dialogue.get(["battle", "gained-stats", null]), true);
+						Dialogue.showData(Dialogue.getData({
+							category: "battle",
+							subcategory: "gained-stats"
+						}));
 					else if (positiveOutcomeTally == false)
-						Dialogue.show(Dialogue.get(["battle", "lost-stats", null]), true);
+						Dialogue.showData(Dialogue.getData({
+							category: "battle",
+							subcategory: "lost-stats"
+						}));
 				}, _logDelay + 300);
 			}
 		} catch (err) {
@@ -301,21 +307,21 @@ window.BattleAttack = (function() {
 			// did tally lose?
 			if (Stats.get("tally").health.val <= 0) {
 				winner = "monster";
-				endBattleMessage = Dialogue.get(["battle", "tally-health-gone", null]);
+				endBattleMessage = Dialogue.getData({ category: "battle", subcategory: "tally-health-gone"});
 				monsterWins("Tally's health has been depleted. Tally loses.", "tally-health-gone");
 			} else if (Stats.get("tally").stamina.val <= 0) {
 				winner = "monster";
-				endBattleMessage = Dialogue.get(["battle", "tally-stamina-gone", null]);
+				endBattleMessage = Dialogue.getData({ category: "battle", subcategory: "tally-stamina-gone"});
 				monsterWins("Tally's stamina has been depleted. Tally loses.", "tally-stamina-gone");
 			}
 			// did tally win?
 			else if (Stats.get("monster").health.val <= 0) {
 				winner = "tally";
-				endBattleMessage = Dialogue.get(["battle", "monster-health-gone", null]);
+				endBattleMessage = Dialogue.getData({ category: "battle", subcategory: "monster-health-gone"});
 				tallyWins("The <span class='tally text-green'>monster's</span> health has been depleted. Tally wins!!!", "monster-health-gone");
 			} else if (Stats.get("monster").stamina.val <= 0) {
 				winner = "tally";
-				endBattleMessage = Dialogue.get(["battle", "monster-stamina-gone", null]);
+				endBattleMessage = Dialogue.getData({ category: "battle", subcategory: "monster-stamina-gone"});
 				tallyWins("The <span class='tally text-green'>monster's</span> stamina has been depleted. Tally wins!!!", "monster-stamina-gone");
 			} else {
 
@@ -331,29 +337,61 @@ window.BattleAttack = (function() {
 				let progressMessage = "";
 
 				if (Battle.details.progress > 0.9) {
-					progressMessage = Dialogue.get(["battle", "progress9", null]);
+					progressMessage = Dialogue.getData({
+						category: "battle",
+						subcategory: "progress9"
+					});
 				} else if (Battle.details.progress > 0.8) {
-					progressMessage = Dialogue.get(["battle", "progress8", null]);
+					progressMessage = Dialogue.getData({
+						category: "battle",
+						subcategory: "progress8"
+					});
 				} else if (Battle.details.progress > 0.7) {
-					progressMessage = Dialogue.get(["battle", "progress7", null]);
+					progressMessage = Dialogue.getData({
+						category: "battle",
+						subcategory: "progress7"
+					});
 				} else if (Battle.details.progress > 0.6) {
-					progressMessage = Dialogue.get(["battle", "progress6", null]);
+					progressMessage = Dialogue.getData({
+						category: "battle",
+						subcategory: "progress6"
+					});
 				} else if (Battle.details.progress > 0.5) {
-					progressMessage = Dialogue.get(["battle", "progress5", null]);
+					progressMessage = Dialogue.getData({
+						category: "battle",
+						subcategory: "progress5"
+					});
 				} else if (Battle.details.progress > 0.4) {
-					progressMessage = Dialogue.get(["battle", "progress4", null]);
+					progressMessage = Dialogue.getData({
+						category: "battle",
+						subcategory: "progress4"
+					});
 				} else if (Battle.details.progress > 0.3) {
-					progressMessage = Dialogue.get(["battle", "progress3", null]);
+					progressMessage = Dialogue.getData({
+						category: "battle",
+						subcategory: "progress3"
+					});
 				} else if (Battle.details.progress > 0.2) {
-					progressMessage = Dialogue.get(["battle", "progress2", null]);
+					progressMessage = Dialogue.getData({
+						category: "battle",
+						subcategory: "progress2"
+					});
 				} else if (Battle.details.progress > 0.1) {
-					progressMessage = Dialogue.get(["battle", "progress1", null]);
+					progressMessage = Dialogue.getData({
+						category: "battle",
+						subcategory: "progress1"
+					});
 				} else {
-					progressMessage = Dialogue.get(["battle", "progress0", null]);
+					progressMessage = Dialogue.getData({
+						category: "battle",
+						subcategory: "progress0"
+					});
 				}
-				// n% of the time show a thought
+				// n% of the time show dialogue
 				if (Battle.active() && Math.random() > 0.5)
-					Dialogue.show(progressMessage, null, true);
+					Dialogue.showData(progressMessage, {
+						instant: true
+					});
 			}
 
 			// 3. check if battle over
@@ -363,7 +401,7 @@ window.BattleAttack = (function() {
 				setTimeout(function() {
 					// show final dialogue
 					console.log("endBattleMessage", endBattleMessage);
-					Dialogue.showStr(endBattleMessage.text, endBattleMessage.mood, true);
+					Dialogue.showStr(endBattleMessage.text, endBattleMessage.mood);
 					setTimeout(function() {
 						// if in demo then quit after a moment
 						if (tally_options.gameMode === "demo") {
@@ -376,15 +414,15 @@ window.BattleAttack = (function() {
 								Battle.end();
 							});
 							if (Progress.get("notifyToClickAfterBattle") < 1) {
-								Dialogue.showStr("Congratulations on completing your first battle!", "happy", true);
-								if (winner === "tally") Dialogue.showStr("You blocked a tracker!", "happy", true);
-								Dialogue.showStr("Click anywhere to continue!", "happy", true);
+								Dialogue.showStr("Congratulations on completing your first battle!", "happy");
+								if (winner === "tally") Dialogue.showStr("You blocked a tracker!", "happy");
+								Dialogue.showStr("Click anywhere to continue!", "happy");
 								Progress.update("notifyToClickAfterBattle", 1);
 							} else if (Progress.get("notifyToClickAfterBattle") < 2) {
-								Dialogue.showStr("You finished your second battle!", "happy", true);
-								if (winner === "tally") Dialogue.showStr("You blocked another tracker!", "happy", true);
-								Dialogue.showStr("Share a screenshot!", "happy", true);
-								Dialogue.showStr("Click anywhere to reset the page!", "happy", true);
+								Dialogue.showStr("You finished your second battle!", "happy");
+								if (winner === "tally") Dialogue.showStr("You blocked another tracker!", "happy");
+								Dialogue.showStr("Share a screenshot!", "happy");
+								Dialogue.showStr("Click anywhere to reset the page!", "happy");
 								Progress.update("notifyToClickAfterBattle", 2);
 							}
 						}
@@ -412,7 +450,10 @@ window.BattleAttack = (function() {
 			// log winning message
 			BattleConsole.log(message);
 			// show tally excited
-			Dialogue.show(Dialogue.get(["battle", dialogue, null]), "happy", true);
+			Dialogue.showData(Dialogue.getData({
+				category: "battle",
+				subcategory: dialogue
+			}));
 			// calculate and show award for beating the monster
 			let increase = FS_Number.round(Battle.details.monsterLevel * 10);
 			// save in background (and on server)
@@ -443,7 +484,10 @@ window.BattleAttack = (function() {
 			// log losing message
 			BattleConsole.log(message);
 			// show tally sad
-			Dialogue.show(Dialogue.get(["battle", dialogue, null]), "sad", true);
+			Dialogue.showData(Dialogue.getData({
+				category: "battle",
+				subcategory: dialogue
+			}), {});
 			// play lose sound
 			Sound.playFile("music/tally-battle-7-25/defeat.mp3", false, 0);
 			// notify to reset page

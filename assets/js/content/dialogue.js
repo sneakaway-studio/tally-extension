@@ -13,110 +13,211 @@ window.Dialogue = (function() {
 
 
 
-	// for future change to a dialogue object
-
-	function returnDialogueReqObj() {
-
-		return {
-			"category": "",
-			"subcategory": "",
-			"index": "",
-			"mood": "",
-			"skin": "",
-			"eyes": "",
-			"callback": ""
-		};
-
-	}
 
 
-
-
-
-
-
-	// ********************* RANDOM / SPECIFIC DIALOGUE ********************* //
-
-	function random() {
-		try {
-			// EXAMPLES
-
-			// Dialogue.show(get(["monster", "launch", null]),true);
-			// return;
-
-			let r = Math.random();
-			if (r < 0.25)
-				// show dialogue from data, ["category", "subcategory", 0], play sound, always add
-				show(get(["random", "greeting", null]), true, true);
-			else if (r < 0.5)
-				// show dialogue from data, [category/0/index], play sound
-				show(get(["tutorial", null, null]), true);
-			else if (r < 0.75)
-				// show dialogue from facts, trackers, play sound
-				show(getFact("trackers", false), "neutral", true);
-			else
-				// show dialogue <string>, play sound
-				showStr("this is just a string", "neutral", true);
-		} catch (err) {
-			console.error(err);
-		}
-	}
-
-	/**
-	 *	Show a comment about trackers
-	 */
-	function showTrackerDialogue() {
-		try {
-			let subcategory = "none";
-			if (Page.data.trackers.length > 0) subcategory = "few";
-			if (Page.data.trackers.length > 3) subcategory = "lots";
-			if (DEBUG) console.log("💭 Dialogue.showTrackerDialogue() subcategory=" + subcategory);
-			show(get(["tracker", subcategory, null]), true);
-		} catch (err) {
-			console.error(err);
-		}
-	}
 
 
 
 	// ************************** MAIN ROUTES ************************** //
 
+
+
+	/**
+	 *	getData() - Retrieves dialogue data (text, mood, and callback) from DialogueData.data
+	 */
+	function getData(dataReq) {
+		try {
+			if (DEBUG) console.log("💬 Dialogue.getData() dataReq = " + JSON.stringify(dataReq));
+
+			//  ** example ** dialogue data REQUEST
+			let exampleDataReq = {
+				category: "", // e.g. "random"
+				subcategory: "", // e.g. "greeting"
+				index: "", // e.g. "story1-1"
+			};
+			//  to store the dialogue data RESPONSE
+			let dialogueObj = {
+				text: "",
+				mood: "",
+				callback: ""
+			};
+
+			// if a category and it exists
+			if (dataReq.category && FS_Object.prop(DialogueData.data[dataReq.category])) {
+
+
+
+				// if a category && subcategory (and the combination exists)
+				if (dataReq.subcategory &&
+					FS_Object.prop(DialogueData.data[dataReq.category][dataReq.subcategory])) {
+					// get random cat + subcat
+					dialogueObj = FS_Object.randomObjProperty(DialogueData.data[dataReq.category][dataReq.subcategory]);
+
+				}
+				// else if a category and index (and the combination exists)
+				else if (dataReq.index &&
+					FS_Object.prop(DialogueData.data[dataReq.category][dataReq.index])) {
+					// get the specific cat + index
+					dialogueObj = DialogueData.data[dataReq.category][dataReq.index];
+				}
+				// else if a category only
+				else {
+					// get random cat + subcat
+					dialogueObj = FS_Object.randomObjProperty(DialogueData.data[dataReq.category]);
+				}
+			} else {
+				console.error("No dialogue found");
+				dialogueObj = {
+					text: "No dialogue found",
+					mood: "sad",
+				};
+				return dialogueObj;
+			}
+			return dialogueObj;
+		} catch (err) {
+			console.error(err);
+		}
+	}
+
+	/**
+	 *	Dialogue *Show* Request - Shows dialogue data (text, mood, and callback)
+	 */
+	function showData(dialogueObj, showReq = {}) {
+		try {
+			if (DEBUG) console.log("💬 Dialogue.addData() [1] dialogueObj =",
+				JSON.stringify(dialogueObj), ", showReq = " + JSON.stringify(showReq));
+
+			//  default show request (defines how the dialogue is displayed)
+			let showReqDefaults = {
+				addIfInProcess: true,
+				instant: false
+			};
+			// don't show if there is no text
+			if (dialogueObj.text === "" || dialogueObj.text === undefined) return;
+			// if defined and true, show instantly
+			if (FS_Object.prop(showReq.instant) && showReq.instant) return showInstant(dialogueObj);
+			// if defined and false, show regardless if Dialogue is already in progress
+			if (FS_Object.prop(showReq.addIfInProcess) && !showReq.addIfInProcess && _queue.length > 0) return;
+			// else add dialogueObj to queue
+			add(dialogueObj);
+
+		} catch (err) {
+			console.error(err);
+		}
+	}
+	/**
+	 *	Show dialogue bubble - create and pass an object to showData() from string
+	 */
+	function showStr(str = "", mood = false, addIfInProcess = true, instant = false) {
+		try {
+			if (DEBUG) console.log("💭 Dialogue.showStr()", str, mood, addIfInProcess, instant);
+
+			// don't show if there is no text
+			if (!prop(str) || str === "") return;
+			let dialogueObj = {
+					text: str,
+					mood: mood
+				},
+				showReq = {
+					addIfInProcess: addIfInProcess,
+					instant: instant
+				};
+			// pass to new funciton
+			showData(dialogueObj, showReq);
+		} catch (err) {
+			console.error(err);
+		}
+	}
+
+
+
+
+
+
+
+	// OLD - MARKED FOR DELETION
+	/**
+	 *	Return a dialogue {"text":"","mood":""}, arr = ["category", subcategory, "index"]
+	 */
+	// function get(arr) {
+	// 	try {
+	// 		// make sure it is an array
+	// 		if (!Array.isArray(arr)) return;
+	// 		// category is required
+	// 		if (!prop(arr[0])) return;
+	//
+	// 		if (DEBUG) console.log("💭 Dialogue.get() arr=" + JSON.stringify(arr));
+	//
+	// 		// get category
+	// 		let category,
+	// 			categoryStr,
+	// 			subcategoryStr,
+	// 			result = false;
+	//
+	// 		// get top category
+	// 		categoryStr = arr[0];
+	// 		category = DialogueData.data[categoryStr];
+	//
+	// 		// if (DEBUG) console.log("💭 Dialogue.get()", "categoryStr=" + categoryStr + ", category=" + JSON.stringify(category));
+	//
+	// 		// if there is a subcategory, then select random
+	// 		if (prop(arr[1])) {
+	// 			subcategoryStr = arr[1];
+	// 			if (DEBUG) console.log("💭 Dialogue.get()", "subcategoryStr=" + subcategoryStr);
+	// 			// if prop doesn't exist in Dialogue then don't show anything
+	// 			if (!prop(category[subcategoryStr]) || category[subcategoryStr].length < 1) return;
+	// 			// otherwise get a random one
+	// 			let r = Math.floor(Math.random() * category[subcategoryStr].length);
+	// 			if (DEBUG) console.log("💭 Dialogue.get()", "subcategoryStr=" + subcategoryStr + ", category[subcategoryStr]=" + JSON.stringify(category[subcategoryStr]));
+	// 			result = category[subcategoryStr][r];
+	// 		}
+	// 		// if there is no subcategory, then get by index
+	// 		if (prop(arr[2])) {
+	// 			let index = arr[2];
+	// 			result = category[index];
+	// 		}
+	// 		// if neither subcategory or index then get random from category
+	// 		else {
+	// 			if (category)
+	// 				result = FS_Object.randomObjProperty(category);
+	// 		}
+	//
+	// 		return result;
+	// 	} catch (err) {
+	// 		console.error(err);
+	// 	}
+	// }
+
 	/**
 	 *	Show dialogue bubble - send object to add()
 	 */
-	function show(dialogue, mood, addIfDialogueInProcess = true, instant = false) {
-		try {
-			if (DEBUG) console.log("💭 Dialogue.show()", dialogue, mood, addIfDialogueInProcess);
-			// don't show if there is no text
-			if (dialogue.text === "" || dialogue.text === undefined) return;
-			// show instant
-			if (instant) return showInstant(dialogue, mood);
-			// don't add if marked false
-			if (!addIfDialogueInProcess && _queue.length > 0) return;
-			add(dialogue);
-		} catch (err) {
-			console.error(err);
-		}
-	}
+	// OLD - MARKED FOR DELETION
+	// function show(dialogue, mood, addIfInProcess = true, instant = false) {
+	// 	try {
+	// 		if (DEBUG) console.log("💭 Dialogue.show()", dialogue, mood, addIfInProcess);
+	//
+	// 		// don't show if there is no text
+	// 		if (dialogue.text === "" || dialogue.text === undefined) return;
+	// 		// show instant
+	// 		if (instant) return showInstant(dialogue, mood);
+	// 		// don't add if marked false
+	// 		if (!addIfInProcess && _queue.length > 0) return;
+	// 		// else add dialogueObj to queue
+	// 		add(dialogue);
+	// 	} catch (err) {
+	// 		console.error(err);
+	// 	}
+	// }
 
-	function emptyQueue() {
-		try {
-			// erase queue
-			_queue = [];
-			// reset active
-			_active = false;
-			// reset hide timer
-			clearTimeout(hideTimeout);
-		} catch (err) {
-			console.error(err);
-		}
-	}
-
+	/**
+	 *	Show dialogue instantly (interrupting everything already queued)
+	 */
 	function showInstant(dialogue, mood) {
 		try {
 			if (DEBUG) console.log("💭 Dialogue.showInstant()", dialogue, mood);
-			emptyQueue();
-			// add this dialogue to end of _queue
+			// empty queue first...
+			emptyTheQueue();
+			// then add this dialogue to end of _queue
 			_queue.push(dialogue);
 			// start writing
 			writeNextInQueue();
@@ -125,40 +226,20 @@ window.Dialogue = (function() {
 		}
 	}
 
-	/**
-	 *	Show dialogue bubble - pass an object to add() from string
-	 */
-	function showStr(str = "", mood = false, addIfDialogueInProcess = true, instant = false) {
-		try {
-			if (DEBUG) console.log("💭 Dialogue.showStr()", str, mood, addIfDialogueInProcess);
-			// don't show if there is no text
-			if (!prop(str) || str === "") return;
-			// create dialogue obj
-			let dialogue = {
-				"text": str,
-				"mood": mood
-			};
-			// show instant
-			if (instant) return showInstant(dialogue, mood);
-			// don't add if marked false
-			if (!addIfDialogueInProcess && _queue.length > 0) return;
-			// add to queue
-			add(dialogue);
-		} catch (err) {
-			console.error(err);
-		}
-	}
+
+
+
 
 
 
 	// ********************* LOGGING / QUEUE SYTEM ********************* //
 
 	/**
-	 *	add a dialogue object to the queue
+	 *	Add a dialogue object to the queue
 	 */
 	function add(dialogue) {
 		try {
-			if (DEBUG) console.log("💭 Dialogue.add()", dialogue);
+			if (DEBUG) console.log("💭 Dialogue.add() [1]", dialogue);
 			if (dialogue.text === "" || dialogue.text === undefined) return; // don't show if there is no text
 			// add wait time for it to display
 			dialogue.wait = stringDuration(dialogue.text);
@@ -256,7 +337,24 @@ window.Dialogue = (function() {
 			console.error(err);
 		}
 	}
-
+	/**
+	 * 	Erase the queue
+	 */
+	function emptyTheQueue() {
+		try {
+			// erase queue
+			_queue = [];
+			// reset active
+			_active = false;
+			// reset hide timer
+			clearTimeout(hideTimeout);
+		} catch (err) {
+			console.error(err);
+		}
+	}
+	/**
+	 * 	Skip to next item in queue (called from clicks on Tally)
+	 */
 	function skipToNext() {
 		try {
 			if (DEBUG) console.log("💭 Dialogue.skipToNext()");
@@ -273,8 +371,12 @@ window.Dialogue = (function() {
 
 
 
+
+
+	// ********************* VISUAL ELEMENTS ********************* //
+
 	/**
-	 * 	Hide after player has time to read it
+	 * 	Hide  Dialogue bubble after player has time to read it
 	 */
 	function hide() {
 		try {
@@ -378,6 +480,58 @@ window.Dialogue = (function() {
 
 
 
+
+
+
+	// ********************* RANDOM / SPECIFIC DIALOGUE ********************* //
+
+	/**
+	 *	Show random example
+	 */
+	function random() {
+		try {
+			let r = Math.random();
+			if (r < 0.2) {
+				// show dialogue from data
+				// - pull from random category + subcategory
+				Dialogue.showData(Dialogue.getData({
+					category: "random",
+					subcategory: "greeting"
+				}));
+			} else if (r < 0.4) {
+				// show dialogue from data
+				// - pull from random category + subcategory
+				// - don't add to queue if in progress
+				// - play instantly
+				Dialogue.showData(Dialogue.getData({
+					category: "random",
+					subcategory: "conversation"
+				}), {
+					addIfInProcess: false,
+					instant: true
+				});
+			} else if (r < 0.6) {
+				// show dialogue from string
+				Dialogue.showStr("Double click me!", "happy");
+			} else if (r < 0.8) {
+				// show dialogue from string
+				// - pull from random fact
+				Dialogue.showStr(Dialogue.getFact("trackers", false), "neutral");
+			} else {
+				// show dialogue from string
+				// - play instantly
+				Dialogue.showData({
+					"text": "Congratulations on completing your first battle!",
+					"mood": "happy"
+				}, {
+					instant: true
+				});
+			}
+		} catch (err) {
+			console.error(err);
+		}
+	}
+
 	/**
 	 *	Get a random fact (by domain)
 	 */
@@ -399,53 +553,20 @@ window.Dialogue = (function() {
 		}
 	}
 
+
 	/**
-	 *	Return a dialogue {"text":"","mood":""}, arr = ["category", "subcategory", "index"]
+	 *	Show a comment about trackers
 	 */
-	function get(arr) {
+	function showTrackerDialogue() {
 		try {
-			// make sure it is an array
-			if (!Array.isArray(arr)) return;
-			// category is required
-			if (!prop(arr[0])) return;
-
-			if (DEBUG) console.log("💭 Dialogue.get() arr=" + JSON.stringify(arr));
-
-			// get category
-			let category,
-				categoryStr,
-				subcategoryStr,
-				result = false;
-
-			// get top category
-			categoryStr = arr[0];
-			category = DialogueData.data[categoryStr];
-
-			// if (DEBUG) console.log("💭 Dialogue.get()", "categoryStr=" + categoryStr + ", category=" + JSON.stringify(category));
-
-			// if there is a subcategory, then select random
-			if (prop(arr[1])) {
-				subcategoryStr = arr[1];
-				if (DEBUG) console.log("💭 Dialogue.get()", "subcategoryStr=" + subcategoryStr);
-				// if prop doesn't exist in Dialogue then don't show anything
-				if (!prop(category[subcategoryStr]) || category[subcategoryStr].length < 1) return;
-				// otherwise get a random one
-				let r = Math.floor(Math.random() * category[subcategoryStr].length);
-				if (DEBUG) console.log("💭 Dialogue.get()", "subcategoryStr=" + subcategoryStr + ", category[subcategoryStr]=" + JSON.stringify(category[subcategoryStr]));
-				result = category[subcategoryStr][r];
-			}
-			// if there is no subcategory, then get by index
-			if (prop(arr[2])) {
-				let index = arr[2];
-				result = category[index];
-			}
-			// if neither subcategory or index then get random from category
-			else {
-				if (category)
-					result = FS_Object.randomObjProperty(category);
-			}
-
-			return result;
+			let subcategory = "none";
+			if (Page.data.trackers.length > 0) subcategory = "few";
+			if (Page.data.trackers.length > 3) subcategory = "lots";
+			if (DEBUG) console.log("💭 Dialogue.showTrackerDialogue() subcategory=" + subcategory);
+			Dialogue.showData(Dialogue.getData({
+				category: "tracker",
+				subcategory: subcategory
+			}));
 		} catch (err) {
 			console.error(err);
 		}
@@ -453,33 +574,7 @@ window.Dialogue = (function() {
 
 
 
-
-
-	function getDialogue(req) {
-		try {
-			console.log("💭 Dialogue.getDialogue() req =", req);
-
-			let dialogueObj = {
-				text: "",
-				mood: ""
-			};
-			if (req.category && req.subcategory){
-				dialogueObj = FS_Object.randomObjProperty(DialogueData.data[req.category][req.subcategory]);
-			}else if (req.category && req.index){
-				dialogueObj = DialogueData.data[req.category][req.index];
-			}else
-				console.console.error("No dialogue there");
-
-
-			return dialogueObj;
-
-		} catch (err) {
-			console.error(err);
-		}
-	}
-
-
-
+	// to test different sounds
 	function conversationTest() {
 		try {
 			console.log("💭 Dialogue.conversationTest()");
@@ -494,11 +589,11 @@ window.Dialogue = (function() {
 			let mood = FS_Object.randomArrayIndex(moods);
 
 			let dialogueReq = {
-				"category": "sound-test",
-				"subcategory": mood,
-				"index": ""
+				category: "sound-test",
+				subcategory: mood,
+				index: ""
 			};
-			let dialogue = getDialogue(dialogueReq);
+			let dialogue = getData(dialogueReq);
 
 
 			// let mood = moods[Math.floor(Math.random() * moods.length)];
@@ -541,20 +636,26 @@ window.Dialogue = (function() {
 
 
 
+
+
+
+
+
 	// PUBLIC
 	return {
-		conversationTest: conversationTest,
-		show: show,
+		getData: getData,
+		showData: showData,
 		showStr: showStr,
-		emptyQueue: emptyQueue,
+
+
+		conversationTest: conversationTest,
+
+		emptyTheQueue: emptyTheQueue,
 		showTrackerDialogue: showTrackerDialogue,
 		random: random,
 		hide: hide,
 		getFact: function(domain, includeSource) {
 			return getFact(domain, includeSource);
-		},
-		get: function(arr) {
-			return get(arr);
 		},
 		stringDuration: function(str) {
 			return stringDuration(str);
@@ -562,7 +663,15 @@ window.Dialogue = (function() {
 		active: function() {
 			return _active;
 		},
-		skipToNext: skipToNext
+		skipToNext: skipToNext,
+
+
+
+		// // mark for deletion
+		// show: show,
+		// get: function(arr) {
+		// 	return get(arr);
+		// },
 
 	};
 })();

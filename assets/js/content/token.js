@@ -68,7 +68,7 @@ window.Token = (function() {
 			// don't bother them every time
 			if (tally_meta.token.prompts % 2 == 0) {
 				setTimeout(function() {
-					Dialogue.showStr(returnPrompt(), "sad", true);
+					Dialogue.showStr(returnPrompt(), "sad");
 				}, 500);
 			}
 			tally_meta.token.prompts++;

@@ -15,6 +15,7 @@ window.Disguise = (function() {
 		try {
 			currentDisguiseObj = FS_Object.randomObjProperty(DisguiseData.data);
 			if (DEBUG) console.log("😎 Disguise.randomizer() [1] currentDisguiseObj =", currentDisguiseObj);
+
 			display();
 		} catch (err) {
 			console.error(err);
@@ -23,8 +24,34 @@ window.Disguise = (function() {
 
 	function returnHtmlStr() {
 		try {
-		if (DEBUG) console.log("😎 Disguise.returnHtmlStr() [1] currentDisguiseObj =", currentDisguiseObj);
-			return "<img src='" + chrome.extension.getURL('assets/img/tally-disguises/'+ currentDisguiseObj.name + currentDisguiseObj.ext ) + "'>";
+			if (DEBUG) console.log("😎 Disguise.returnHtmlStr() [1] currentDisguiseObj =", currentDisguiseObj);
+			// if there is dialogue for this disguise
+			if (Dialogue.getData({
+					category: "disguise",
+					subcategory: currentDisguiseObj.name,
+				})) {
+				Dialogue.showData(Dialogue.getData({
+					category: "disguise",
+					subcategory: "random"
+				}), {
+					addIfInProcess: false,
+					instant: true
+				});
+			}
+			// otherwise play a random one
+			else if (Dialogue.getData({
+				category: "disguise",
+				subcategory: "random"
+			})) {
+				Dialogue.showData(Dialogue.getData({
+					category: "disguise",
+					subcategory: "random"
+				}), {
+					addIfInProcess: false,
+					instant: true
+				});
+			}
+			return "<img src='" + chrome.extension.getURL('assets/img/tally-disguises/' + currentDisguiseObj.name + currentDisguiseObj.ext) + "'>";
 		} catch (err) {
 			console.error(err);
 		}

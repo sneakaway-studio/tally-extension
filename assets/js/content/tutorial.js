@@ -41,7 +41,7 @@ window.Tutorial = (function() {
 			// loop through all the dialogue objects for this tutorial and add them
 			while (step > -1) {
 				// store each dialogue obj
-				dialogue = Dialogue.get(["tutorial", null, which + "-" + step]);
+				dialogue = Dialogue.getData({"category": "tutorial", "index": which + "-" + step});
 
 				// testing
 				if (DEBUG) console.log("📚 Tutorial.play() [2]", step, which, dialogue);
@@ -51,9 +51,16 @@ window.Tutorial = (function() {
 					// if (DEBUG) console.log("📚 Tutorial.play() [3]", step, which, dialogue);
 
 					// play first dialogue of tutorial, instantly
-					if (step === 1) Dialogue.show(dialogue, true, true, true);
+					if (step === 1)
+						Dialogue.showData(dialogue, {
+							instant: true
+						});
 					// otherwise add next dialogue to queue
-					else Dialogue.show(dialogue, true, true);
+					else 
+						Dialogue.showData(dialogue, {
+							instant: false
+						});
+
 
 				} else {
 					if (DEBUG) console.log("📚 Tutorial.play() [4] NO MORE DIALOGUE");

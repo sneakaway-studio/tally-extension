@@ -256,11 +256,11 @@ window.BattleConsole = (function() {
 				if (Battle.details.attackInProgress) {
 					let r = Math.random();
 					if (r < 0.2)
-						Dialogue.showStr("Hey, this is a turn based game. It's not your turn.", "neutral", true);
+						Dialogue.showStr("Hey, this is a turn based game. It's not your turn.", "neutral");
 					else if (r < 0.4)
-						Dialogue.showStr("Slow down speed racer.", "neutral", true);
+						Dialogue.showStr("Slow down speed racer.", "neutral");
 					else if (r < 0.6)
-						Dialogue.showStr("Wait your turn 😀", "neutral", true);
+						Dialogue.showStr("Wait your turn 😀", "neutral");
 					return;
 				} else {
 					// remove listener (from all)
@@ -276,7 +276,7 @@ window.BattleConsole = (function() {
 			// add "run" / "escape" listeners
 			$(document).on("click", '.battle-options-esc', function() {
 				// empty queue of any leftover dialogue
-				Dialogue.emptyQueue();
+				Dialogue.emptyTheQueue();
 				// end battle
 				Battle.end();
 			});

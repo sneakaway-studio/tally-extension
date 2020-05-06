@@ -39,7 +39,7 @@ window.Stats = (function() {
 
 			// get level
 			let level = getLevel(who);
-			if (!level){
+			if (!level) {
 				return console.error("📋 Stats.reset()", who, level, "NO LEVEL");
 			}
 			// for each resetStat
@@ -169,7 +169,7 @@ window.Stats = (function() {
 			// default
 			let level = 0;
 
-			if (who == "tally"){
+			if (who == "tally") {
 				level = tally_user.level;
 				if (DEBUG) console.log("📋 Stats.getLevel()", who + " => " + level);
 			} else if (Monster.currentMID > 0 || Monster.current().level > 0) {
@@ -200,7 +200,12 @@ window.Stats = (function() {
 			let originalStatVal = allStats[who][consumable.stat].val;
 			// if stat is already full
 			if (consumable.val > 0 && allStats[who][consumable.stat].val >= allStats[who][consumable.stat].max) {
-				Dialogue.showStr("Your " + consumable.stat + " is full!", "happy", true, true);
+				Dialogue.showData({
+					"text": "Your " + consumable.stat + " is full!",
+					"mood": "happy"
+				}, {
+					instant: true
+				});
 				return;
 			}
 			// else, add new stat
@@ -220,16 +225,16 @@ window.Stats = (function() {
 			console.log("📋 Stats.updateFromConsumable()", consumable, consumable.stat, allStats[who]);
 			// if stat is full
 			if (allStats[who][consumable.stat].val >= allStats[who][consumable.stat].max) {
-				Dialogue.showStr("Your " + consumable.stat + " is full!", "happy", true);
+				Dialogue.showStr("Your " + consumable.stat + " is full!", "happy");
 			} else {
 				setTimeout(function() {
 					// play sound
 					if (originalStatVal < allStats[who][consumable.stat].val) {
 						Sound.playRandomJump();
-						Dialogue.showStr("Yay! You increased your " + consumable.stat + "!", "happy", true);
+						Dialogue.showStr("Yay! You increased your " + consumable.stat + "!", "happy");
 					} else if (originalStatVal > allStats[who][consumable.stat].val) {
 						Sound.playRandomJumpReverse();
-						Dialogue.showStr("Dang, you lost some " + consumable.stat + "!", "sad", true);
+						Dialogue.showStr("Dang, you lost some " + consumable.stat + "!", "sad");
 					}
 				}, 500);
 

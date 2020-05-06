@@ -30,7 +30,12 @@ window.MonsterAward = (function() {
 	 */
 	function capture(_mid) {
 		// tell them they caught it
-		Dialogue.show(Dialogue.get(["monster", "captured", null]), true, true);
+		Dialogue.showData(Dialogue.getData({
+			category: "monster",
+			subcategory: "captured"
+		}), {
+			instant: true
+		});
 		// set vars
 		tally_nearby_monsters[_mid].captured = 1;
 		tally_nearby_monsters[_mid].missed = 0;
@@ -82,7 +87,12 @@ window.MonsterAward = (function() {
 	function miss(_mid) {
 		console.log("!!!!! Monster.miss()", _mid, tally_nearby_monsters[_mid]);
 		// tell them they missed
-		Dialogue.show(Dialogue.get(["monster", "missed", null]), true, true);
+		Dialogue.showData(Dialogue.getData({
+			category: "monster",
+			subcategory: "missed"
+		}), {
+			instant: true
+		});
 		// stop current animation
 		$('.tally_monster_sprite_container').css({
 			'animation-name': 'none',

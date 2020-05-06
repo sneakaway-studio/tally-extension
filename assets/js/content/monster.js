@@ -124,7 +124,10 @@ window.Monster = (function() {
 			onPage = monster.mid;
 
 			// show dialogue
-			Dialogue.show(Dialogue.get(["monster", "display", null]), true);
+			Dialogue.showData(Dialogue.getData({
+				category: "monster",
+				subcategory: "display"
+			}));
 			// reference to image file (moved to server )
 			var url = tally_meta.website + '/' + 'assets/img/monsters-300h/' + monster.mid + '-anim-sheet.png';
 			//var url = chrome.extension.getURL('assets/img/472-master-3d-test.png');
@@ -162,7 +165,10 @@ window.Monster = (function() {
 				let mid = Number($(this).attr('data-mid'));
 				//if (DEBUG) console.log(mid);
 				// show dialogue with sound but don't add to queue in case they click
-				Dialogue.show(Dialogue.get(["battle", "choose", null]), true, false);
+				Dialogue.showData(Dialogue.getData({
+					category: "battle",
+					subcategory: "choose"
+				}));
 			});
 			$(document).on("click", ".tally_monster_sprite_container", function() {
 				let mid = Number($(this).attr('data-mid'));
@@ -204,7 +210,10 @@ window.Monster = (function() {
 			TallyStorage.saveData("tally_nearby_monsters", tally_nearby_monsters, "👿 Monster.test()");
 			// check/reset skin
 			Skin.updateFromHighestMonsterStage();
-			Dialogue.show(Dialogue.get(["monster", "show", null]), true);
+			Dialogue.showData(Dialogue.getData({
+				category: "monster",
+				subcategory: "show"
+			}));
 			add();
 		} catch (err) {
 			console.error(err);

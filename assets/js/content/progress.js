@@ -5,24 +5,6 @@ window.Progress = (function() {
 	let DEBUG = Debug.ALL.Progress;
 
 	let defaults = {
-		// authentication
-		"tokenAdded": 0,
-		"tokenAddedWelcomeMessage": 0,
-		// tutorials
-		"viewTutorial1": 0,
-		"viewProfilePage": 0,
-		"viewDashboardPage": 0,
-		// interaction
-		"clickTallySingle": 0,
-		"clickTallyDouble": 0,
-		"clickTallyTriple": 0,
-		"clickTallyQuadruple": 0,
-		"dragTally": 0,
-		"mouseEnterTally": 0,
-		"mouseLeaveTally": 0,
-		// things to tell the player
-		"toldToDragTally": 0,
-		"toldToClickDouble": 0,
 		// attacks
 		"attacksAwarded": 0,
 		"attacksSelected": 0,
@@ -31,7 +13,27 @@ window.Progress = (function() {
 		"battlesWon": 0,
 		"battlesLost": 0,
 		"battleEscaped": 0,
-		"notifyToClickAfterBattle": 0
+		"notifyToClickAfterBattle": 0,
+		// interaction
+		"clickTallySingle": 0,
+		"clickTallyDouble": 0,
+		"clickTallyTriple": 0,
+		"clickTallyQuadruple": 0,
+		"dragTally": 0,
+		"mouseEnterTally": 0,
+		"mouseLeaveTally": 0,
+		// disguises
+		"disguisesAwarded": 0,
+		// things to tell the player
+		"toldToDragTally": 0,
+		"toldToClickDouble": 0,
+		// tutorials
+		"viewTutorial1": 0,
+		"viewProfilePage": 0,
+		"viewDashboardPage": 0,
+		// authentication
+		"tokenAdded": 0,
+		"tokenAddedWelcomeMessage": 0,
 	};
 
 

@@ -88,9 +88,9 @@ window.Battle = (function() {
 			// update progress
 			if (Progress.update("battlesFought", 1, "+") < 1) {
 				// if this is first battle inform them about RPG battling
-				Dialogue.showStr("This game is like a classic RPG.", "neutral", true);
-				Dialogue.showStr("You and the monster must battle by taking turns lauching attacks or defenses.", "neutral", true);
-				Dialogue.showStr("You go first!", "happy", true);
+				Dialogue.showStr("This game is like a classic RPG.", "neutral");
+				Dialogue.showStr("You and the monster must battle by taking turns lauching attacks or defenses.", "neutral");
+				Dialogue.showStr("You go first!", "happy");
 			}
 			// intro sound
 			Sound.playCategory('powerups', 'powerup1');
@@ -180,7 +180,9 @@ window.Battle = (function() {
 			BattleConsole.display();
 			// log intro message
 			setTimeout(function() {
-				Dialogue.show(Dialogue.get(["battle", "start", null]), true);
+				Dialogue.showData(Dialogue.getData({
+					category: "battle", subcategory: "start"
+				}));
 				// display stats
 				StatsDisplay.updateDisplay("monster");
 				// log intro...
@@ -223,9 +225,15 @@ window.Battle = (function() {
 			// say something (also clears any leftover battle dialogue that exists)
 			let r = Math.random();
 			if (r < 0.5) {
-				Dialogue.showStr("There are likely other trackers nearby", "cautious", true, true);
+				Dialogue.showData({
+					"text": "There are likely other trackers nearby",
+					"mood": "cautious"
+				}, { instant: true });
 			} else {
-				Dialogue.showStr("The battle is over!", "happy", true, true);
+				Dialogue.showData({
+					"text": "The battle is over!",
+					"mood": "happy"
+				}, { instant: true });
 			}
 
 			// hide monster

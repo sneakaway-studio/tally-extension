@@ -295,7 +295,7 @@ window.TallyMain = (function() {
 				// Stats.reset("tally");
 				// tell user
 				setTimeout(function() {
-					Dialogue.showStr(GameData.flags.levelUp.dialogue, GameData.flags.levelUp.mood, true);
+					Dialogue.showStr(GameData.flags.levelUp.dialogue, GameData.flags.levelUp.mood);
 					// remove flag once handled
 					remove("levelUp");
 				}, 300);

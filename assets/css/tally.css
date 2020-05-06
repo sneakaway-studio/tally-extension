@@ -137,7 +137,7 @@ svg#tally-svg * {
         animation-timing-function: ease-out;
     }
 }
-/*  TALLY THOUGHTS
+/*  TALLY DIALOGUE
  ******************************************************************************/
 #tally_dialogue_bubble {
     width: 220px;
@@ -193,7 +193,7 @@ svg#tally-svg * {
 
 
 
-/*  TALLY THOUGHTS > SLIDE SHOW
+/*  TALLY DIALOGUE > SLIDE SHOW
  ******************************************************************************/
 
 #tally_slide_show {
@@ -303,9 +303,9 @@ a:hover {color: #4ba9af; text-decoration: underline;} */
  ******************************************************************************/
 .tally_disguise {
     position: absolute;
-    max-width: 254px;
-    top: -12px;
-    left: -1px;
+    max-width: 253px;
+    top: -10px;
+    left: 1px;
 }
 .tally_disguise img {
     max-width: 100%;
