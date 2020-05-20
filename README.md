@@ -1,16 +1,16 @@
 
 
-## Tally
+## Tally Saves the Internet!
 
 ![Tally](https://tallygame.net/assets/img/tally-153w.png "Hi! I'm Tally.")
 
-Tally is a browser extension that transforms the data advertisers collect into a multiplayer game.
+Tally Saves the Internet! is a browser extension that transforms the data advertisers collect into a multiplayer game.
 Learn more at [tallygame.net](https://tallygame.net).
 
 
-### Chrome version is live
+### Get the extension
 
-https://chrome.google.com/webstore/detail/clidhbnhgfffjhooihemgfgmfhmojbfl/publish-accepted?authuser=0&hl=en
+[Click here to install for Chrome](https://chrome.google.com/webstore/detail/clidhbnhgfffjhooihemgfgmfhmojbfl/publish-accepted?authuser=0&hl=en)
 
 
 
