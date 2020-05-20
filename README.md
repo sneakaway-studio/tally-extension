@@ -8,6 +8,12 @@ Tally is a browser extension that transforms the data advertisers collect into a
 Learn more at [tallygame.net](https://tallygame.net).
 
 
+### Chrome version is live
+
+https://chrome.google.com/webstore/detail/clidhbnhgfffjhooihemgfgmfhmojbfl/publish-accepted?authuser=0&hl=en
+
+
+
 ### Chrome and Opera Development Installation
 
 1. Download and unzip the [extension](https://github.com/omprojects/tally-extension/archive/master.zip)
