@@ -271,6 +271,13 @@ window.Page = (function() {
 
 
 
+	// chrome.runtime.connect().onDisconnect.addListener(function() {
+	//     // clean up when content script gets disconnected
+	// 	console.warn("EXTENSION WAS UPDATED");
+	// });
+
+
+
 	/**
 	 *	MutationObserver to detect title element changes (e.g. youtube and other ajax sites)
 	 *	NOTE: This slows down the page

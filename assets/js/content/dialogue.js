@@ -573,42 +573,33 @@ window.Dialogue = (function() {
 
 
 	// to test different sounds
-	function conversationTest() {
+	function test() {
 		try {
-			console.log("💭 Dialogue.conversationTest()");
+			console.log("💬 Dialogue.test()");
 
-
+			// example moods to choose
 			var moods = [
+				"neutral",
 				"happy",
 				"question",
-				"cautious"
+				"cautious",
+				"excited",
+				"sad"
 			];
 			// select a mood
 			let mood = FS_Object.randomArrayIndex(moods);
-
+			// assemble the dialogue request
 			let dialogueReq = {
 				category: "sound-test",
-				subcategory: mood,
-				index: ""
+				subcategory: mood
 			};
 			let dialogue = getData(dialogueReq);
 
-
-			// let mood = moods[Math.floor(Math.random() * moods.length)];
-
+			console.log("💬 Dialogue.test()", dialogue);
 
 
-			// let dialogue = get([dialogueReq.category, dialogueReq.subcategory, null]);
-
-
-
-			console.log("💭 Dialogue.conversationTest()", dialogue);
-
-
-			Dialogue.showStr(dialogue.text, false, true, true);
-			Sound.playFile("tally/tests/" + dialogue.mood, false, 0);
-
-
+			// show
+			Dialogue.showData(dialogue);
 
 
 
@@ -644,13 +635,16 @@ window.Dialogue = (function() {
 		getData: getData,
 		showData: showData,
 		showStr: showStr,
+		random: random,
+		test: test,
 
 
-		conversationTest: conversationTest,
 
 		emptyTheQueue: emptyTheQueue,
 		showTrackerDialogue: showTrackerDialogue,
-		random: random,
+
+
+
 		hide: hide,
 		getFact: function(domain, includeSource) {
 			return getFact(domain, includeSource);

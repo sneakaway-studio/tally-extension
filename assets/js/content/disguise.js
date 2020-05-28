@@ -14,11 +14,11 @@ window.Disguise = (function() {
 /**
  * 	Display a random disguise
  */
-	function randomizer() {
+	function randomizer(playDialogue = true) {
 		try {
 			currentDisguiseObj = FS_Object.randomObjProperty(DisguiseData.data);
 			if (DEBUG) console.log("😎 Disguise.randomizer() [1] currentDisguiseObj =", currentDisguiseObj);
-			display();
+			display(playDialogue);
 		} catch (err) {
 			console.error(err);
 		}
@@ -27,6 +27,24 @@ window.Disguise = (function() {
 	function returnHtmlStr() {
 		try {
 			if (DEBUG) console.log("😎 Disguise.returnHtmlStr() [1] currentDisguiseObj =", currentDisguiseObj);
+			return "<img class='tally' src='" + chrome.extension.getURL('assets/img/tally-disguises/' + currentDisguiseObj.name + currentDisguiseObj.ext) + "'>";
+		} catch (err) {
+			console.error(err);
+		}
+	}
+
+	function display(playDialogue = true) {
+		try {
+			$(".tally_disguise").html(returnHtmlStr());
+			// should we play dialogue that comes with it?
+			if (playDialogue) includeDialogue();
+		} catch (err) {
+			console.error(err);
+		}
+	}
+
+	function includeDialogue() {
+		try {
 			// if there is dialogue for this disguise
 			if (Dialogue.getData({
 					category: "disguise",
@@ -53,19 +71,12 @@ window.Disguise = (function() {
 					instant: true
 				});
 			}
-			return "<img class='tally' src='" + chrome.extension.getURL('assets/img/tally-disguises/' + currentDisguiseObj.name + currentDisguiseObj.ext) + "'>";
 		} catch (err) {
 			console.error(err);
 		}
 	}
 
-	function display() {
-		try {
-			$(".tally_disguise").html(returnHtmlStr());
-		} catch (err) {
-			console.error(err);
-		}
-	}
+
 
 
 	// PUBLIC

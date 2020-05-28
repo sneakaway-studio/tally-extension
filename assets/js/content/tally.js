@@ -455,11 +455,11 @@ window.Tally = (function() {
 				// Item.showManager();
 
 				// tests
-				Disguise.randomizer();
+				Disguise.randomizer(false);
 				Skin.random();
-				// Dialogue.conversationTest();
+				Dialogue.test();
 				// Dialogue.showData(Dialogue.getData({ "category": "random", subcategory: "greeting" }), {});
-				Dialogue.random();
+				//Dialogue.random();
 
 
 
@@ -663,7 +663,7 @@ window.Tally = (function() {
 				Dialogue.random();
 			});
 			$(document).on('click', '#tally_randomConversation', function() {
-				Dialogue.conversationTest();
+				Dialogue.test();
 			});
 
 			$(document).on('click', '#tally_randomSkin', function() {
