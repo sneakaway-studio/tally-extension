@@ -1,11 +1,4 @@
-/* SKIN TESTS */
-/* .tallySkinBack {
-    fill: #C308C155;
-}
-.tallySkinFront {
-    fill: #D32CF155;
-}
- */
+
 /*  TALLY CHARACTER
  ******************************************************************************/
 /* TALLY CHARACTER */
@@ -306,6 +299,7 @@ a:hover {color: #4ba9af; text-decoration: underline;} */
     max-width: 253px;
     top: -10px;
     left: 1px;
+    pointer-events: none; /* ignore clicks  */
 }
 .tally_disguise img {
     max-width: 100%;

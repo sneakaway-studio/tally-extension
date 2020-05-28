@@ -127,7 +127,7 @@ window.Skin = (function() {
 	/*
 	 *	Return Tally SVG
 	 */
-	function returnTallySVG(defs = "") {
+	function returnTallySVG() {
 		try {
 			if (DEBUG) console.log("👚 Skin.returnTallySVG()");
 
@@ -147,25 +147,24 @@ window.Skin = (function() {
 			var svg = "";
 			svg += '<svg id="tally-svg" class="tally" viewBox="0 0 914 814" ' +
 				// 'xmlns:xlink="http://www.w3.org/1999/xlink" '+
-				'xmlns="http://www.w3.org/2000/svg" '+
-				' overflow="hidden" '+
+				'xmlns="http://www.w3.org/2000/svg" ' +
+				' overflow="hidden" ' +
 				'>';
-			svg += '<defs></defs>';
-			// svg += '<style type="text/css"> .tallySkinBack {fill:#C308C1;} .tallySkinFront {fill:#D32CF1;} </style>';
+			svg += '<defs>' + skinData.pattern + skinData.gradient + '</defs>';
+
+			// alt method: use CSS
+			// svg += '<style type="text/css"> .tallySkinBackFill {fill:#C308C1;} .tallySkinFrontFill {fill:#D32CF1;} </style>';
 
 
-
-
-
-			// back
-			svg += '<path class="tally tallySkinBack" fill="' + skinData.backFill + '"' +
+			// back fill (color or gradient)
+			svg += '<path class="tally tallySkinBackFill" fill="' + skinData.backFill + '"' +
 				' d="M652.5 793.8l255.5-281-342.8-385.2-307.3 35L5 366l88.5 346.8 559 81z"/>';
 			// back pattern
 			svg += '<path class="tally tallySkinBackPattern" fill="url(#tallyPattern)"' +
 				' d="M652.5 793.8l255.5-281-342.8-385.2-307.3 35L5 366l88.5 346.8 559 81z"/>';
 
-			// front
-			svg += '<path class="tally tallySkinFront" fill="' + skinData.frontFill + '"' +
+			// front fill (color or gradient)
+			svg += '<path class="tally tallySkinFrontFill" fill="' + skinData.frontFill + '"' +
 				' d="M199.8 809l419.9-139.2 126.5 10.1 161.9-319L690.5 14.1 509.8 36.2 450.2 4 258.3 66.9l-190 23.2-17.7 443L199.8 809z"/>';
 			// front pattern
 			svg += '<path class="tally tallySkinFrontPattern" fill="url(#tallyPattern)"' +
@@ -232,16 +231,20 @@ window.Skin = (function() {
 					'<image xlink:href="' + chrome.extension.getURL('assets/img/tally/skins/' + currentSkinObj.url) +
 					'" x="-10" y="-10" width="100%" height="100%" />' +
 					'</pattern>';
-				skinData.frontFill = "url(#tallyPattern)";
-				skinData.backFill = "url(#tallyPattern)";
+				// if an image then make fill transparent
+				skinData.frontFill = "rgba(0,0,0,0)";
+				skinData.backFill = "rgba(0,0,0,0)";
 			}
 
 			// type = PATTERN
 			// - add SVG to <pattern>
 			// - then store reference in fills
 			// TEMP COMMENT OUT - TALLY WAS INVISIBLE!?
+			// removed from spreadsheet, may eventually delete
+			// houndstooth	pattern			225	225	pattern-houndstooth.svg
 			// else if (currentSkinObj.type == "pattern") {
 			// 	skinData.pattern = returnPatternStr("houndstooth");
+			// 	// if an SVG pattern then make fill based on current
 			// 	skinData.frontFill = "url(#tallyPattern)";
 			// 	skinData.backFill = "url(#tallyPattern)";
 			// }
@@ -331,14 +334,11 @@ window.Skin = (function() {
 
 			// get skin data
 			let skinData = returnSkinData(newSkinName);
-			// set def and fill
+			// set defs (this also determines any patterns or images)
 			$('#tally-svg defs').html(skinData.pattern + skinData.gradient);
-			$('.tallySkinFront').attr("fill", skinData.frontFill);
-			$('.tallySkinBack').attr("fill", skinData.backFill);
-
-			// start pulse
-
-
+			// and fill
+			$('#tally-svg .tallySkinFrontFill').attr("fill", skinData.frontFill);
+			$('#tally-svg .tallySkinBackFill').attr("fill", skinData.backFill);
 
 		} catch (err) {
 			console.error(err);
