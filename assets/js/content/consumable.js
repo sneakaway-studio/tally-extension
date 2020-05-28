@@ -45,7 +45,7 @@ window.Consumable = (function() {
 					"img": "cookie-bad.gif",
 					"val": -FS_Number.round(Math.random() * 0.2, 2),
 					"stat": randomObjKey(Stats.resetStatsAll),
-					"sound": "danger",
+					"sound": "excited",
 				}
 			},
 			"junk": {
@@ -59,14 +59,14 @@ window.Consumable = (function() {
 					"sound": "cautious",
 				},
 			},
-			"cloud": {
-				"brown": {
-					"name": "brown",
-					"type": "cloud",
-					"ref": "a",
-					"img": "brown-cloud.gif",
+			"marketing": {
+				"cloud": {
+					"name": "cloud",
+					"type": "marketing",
+					"ref": "some",
+					"img": "marketing-cloud.gif",
 					"val": -FS_Number.round(Math.random() * 0.2, 2),
-					"stat": "health",
+					"stat": randomObjKey(Stats.resetStatsAll),
 					"sound": "cautious",
 				},
 			},
@@ -96,11 +96,11 @@ window.Consumable = (function() {
 			// pick random from type
 			if (r < 0.05) create("cookie", "", count);
 			else if (r < 0.06) create("junk", "", count);
-			else if (r < 0.07) create("cloud", "", count);
+			else if (r < 0.07) create("marketing", "", count);
 			// pick random type
 			else if (r < 0.08) create("", "", count);
 			// gameMode === testing
-			else if (r < 0.4 && ["demo","testing"].includes(tally_options.gameMode)) create("cloud", "", 1);
+			else if (r < 0.4 && ["demo","testing"].includes(tally_options.gameMode)) create("marketing", "", 1);
 
 		} catch (err) {
 			console.error(err);
@@ -133,7 +133,7 @@ window.Consumable = (function() {
 
 				// testing
 				//consumables.push(types.cookie.fortune);
-				// consumables.push(types.cloud.brown);
+				// consumables.push(types.marketing.cloud);
 			}
 			if (DEBUG) console.log("🍪 Consumable.create()", consumables);
 			add();
@@ -168,7 +168,7 @@ window.Consumable = (function() {
 				str = "<div data-consumable='" + i + "' class='tally_consumable_inner' id='" + id + "' style='" + css + "'>";
 				str += "<img src='" + imgStr + "'";
 				// make clouds semi-transparent
-				if (consumables[i].type == "cloud"){
+				if (consumables[i].name == "cloud"){
 					str += " style='opacity:.7';";
 				}
 				str += "></div>";
@@ -202,7 +202,7 @@ window.Consumable = (function() {
 		//if (DEBUG) console.log("🍪 Consumable.hover()", key, consumable);
 		if (!hovered) {
 			// tell them
-			Dialogue.showStr("Oh, you found " + consumable.ref + " " + consumable.name + " " + consumable.type + "!", consumable.sound);
+			Dialogue.showStr("Oh, " + consumable.ref + " " + consumable.name + " " + consumable.type + "!", consumable.sound);
 			if (consumable.name == "fortune")
 				Dialogue.showData({
 					"text": "Feeling lucky?",

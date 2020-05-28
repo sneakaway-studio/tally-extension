@@ -231,10 +231,10 @@ window.Stats = (function() {
 					// play sound
 					if (originalStatVal < allStats[who][consumable.stat].val) {
 						Sound.playRandomJump();
-						Dialogue.showStr("Yay! You increased your " + consumable.stat + "!", "happy");
+						Dialogue.showStr("Yay! You gained " + consumable.stat + "!", "happy");
 					} else if (originalStatVal > allStats[who][consumable.stat].val) {
 						Sound.playRandomJumpReverse();
-						Dialogue.showStr("Dang, you lost some " + consumable.stat + "!", "sad");
+						Dialogue.showStr("Dang, you lost " + consumable.stat + "!", "sad");
 					}
 				}, 500);
 
