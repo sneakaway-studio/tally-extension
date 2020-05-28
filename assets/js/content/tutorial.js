@@ -56,7 +56,7 @@ window.Tutorial = (function() {
 							instant: true
 						});
 					// otherwise add next dialogue to queue
-					else 
+					else
 						Dialogue.showData(dialogue, {
 							instant: false
 						});
@@ -70,6 +70,11 @@ window.Tutorial = (function() {
 					break;
 				}
 				step++;
+
+				if (step > 100) {
+					console.error("📚 Tutorial.play() ONLY 100 STEPS ALLOWED");
+					break;
+				}
 			}
 
 			setTimeout(function() {
