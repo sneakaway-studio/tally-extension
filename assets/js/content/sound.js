@@ -216,14 +216,7 @@ window.Sound = (function() {
 
 
 
-	let moods = {
-		cautious: 3,
-		danger: 3,
-		happy: 2,
-		neutral: 2,
-		question: 2,
-		sad: 1
-	};
+
 
 	function playRandomPowerup() {
 		try {
@@ -306,8 +299,12 @@ window.Sound = (function() {
 			console.error(err);
 		}
 	}
-	// play a mood
-	function playMood(mood) {
+
+
+	/**
+	 * 	Plays Tally's Voice based on a mood and the length of the string
+	 */
+	function playTallyVoice(dialogue) {
 		try {
 			// allow offline
 			if (Page.mode().notActive) return;
@@ -318,18 +315,43 @@ window.Sound = (function() {
 			// don't allow if playSounds disabled
 			if (!tally_options.playSounds) return;
 
+// previously received mood as a string
+
+			// let moods = {
+			// 	cautious: 3,
+			// 	danger: 3,
+			// 	happy: 2,
+			// 	neutral: 2,
+			// 	question: 2,
+			// 	sad: 1
+			// };
+			// // make sure mood exists
+			// if (!prop(mood)) return;
+			// if (mood == "award") mood = "happy";
+			// if (DEBUG) console.log("🎵 Sound.playTallyVoice()", mood);
+			// let r = Math.ceil(Math.random() * moods[mood]);
+			// let file = "tally/moods-v2/" + mood + "-" + r + "-2.mp3";
+			// play(file, 150);
+
+
+// now receives a dialogue obj
+
 			// make sure mood exists
-			if (!prop(mood)) return;
-			if (mood == "award") mood = "happy";
-			if (DEBUG) console.log("🎵 Sound.playMood()", mood);
-			let r = Math.ceil(Math.random() * moods[mood]);
-			let file = "tally/moods-v2/" + mood + "-" + r + "-2.mp3";
+			if (!prop(dialogue.mood)) return;
+			if (dialogue.mood == "award") dialogue.mood = "happy";
+			if (DEBUG) console.log("🎵 Sound.playTallyVoice()", JSON.stringify(dialogue));
+
+			// get number of spaces in the dialogue text
+			let words = (dialogue.text.match(/ /g)||[]).length + 1;
+			if (words > 5) words = 5;
+
+			// play the file
+			let file = "tally/moods-v3/" + dialogue.mood + "-" + words + "-1.wav";
 			play(file, 150);
 		} catch (err) {
 			console.error(err);
 		}
 	}
-
 
 
 	/**
@@ -411,25 +433,17 @@ window.Sound = (function() {
 	// PUBLIC
 	return {
 		playBattleMusic: playBattleMusic,
-		playMusic: function(file, loop, volumeModifier) {
-			playMusic(file, loop, volumeModifier);
-		},
+		playMusic: playMusic,
 		stopMusic: stopMusic,
-		playRandom: function(category, index, delay) {
-			playRandom(category, index, delay);
-		},
+		playRandom: playRandom,
 		playRandomPowerup: playRandomPowerup,
 		playRandomJump: playRandomJump,
 		playRandomJumpReverse: playRandomJumpReverse,
-		playCategory: function(category, index, delay) {
-			playCategory(category, index, delay);
-		},
+		playCategory: playCategory,
 		playFile: function(file, delay, volume) {
 			play(file, delay, volume);
 		},
-		playMood: function(mood) {
-			playMood(mood);
-		},
+		playTallyVoice: playTallyVoice,
 		sounds: sounds
 	};
 })();

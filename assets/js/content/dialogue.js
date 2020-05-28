@@ -316,7 +316,9 @@ window.Dialogue = (function() {
 			// add text
 			$('#tally_dialogue').html(dialogue.text);
 			// play sound (if exists)
-			if (prop(dialogue.mood)) Sound.playMood(dialogue.mood);
+			if (prop(dialogue.mood)) {
+				Sound.playTallyVoice(dialogue);
+			}
 			// adjust size of the box
 			$('#tally_dialogue_bubble').css({
 				'display': 'flex',
