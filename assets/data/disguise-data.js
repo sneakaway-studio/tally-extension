@@ -5,7 +5,8 @@ var DisguiseData = (function() {
     let DEBUG = Debug.ALL.DisguiseData;
 
 	return {
-		data: Disguises.data
+		data: Disguises.data,
+    	dataByLevel: DisguisesByLevel.data
 	};
 
 })();

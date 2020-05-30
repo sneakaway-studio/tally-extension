@@ -143,7 +143,7 @@ window.Tally = (function() {
 			// only proceed if active
 			if (!Page.mode().active) return;
 
-			Disguise.randomizer();
+			Disguise.displayIfTrackerBlocked();
 
 			addStats();
 
@@ -455,7 +455,8 @@ window.Tally = (function() {
 				// Item.showManager();
 
 				// tests
-				Disguise.randomizer(false);
+				// Disguise.randomizer(false);
+
 				Skin.random();
 				Dialogue.test();
 				// Dialogue.showData(Dialogue.getData({ "category": "random", subcategory: "greeting" }), {});

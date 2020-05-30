@@ -11,11 +11,13 @@ window.Disguise = (function() {
 		currentDisguiseObj = DisguiseData.data[currentDisguiseName];
 
 
-/**
- * 	Display a random disguise
- */
+
+
+	/**
+	 * 	Display a random disguise
+	 */
 	function randomizer(playDialogue = true) {
-		try { return;
+		try {
 			currentDisguiseObj = FS_Object.randomObjProperty(DisguiseData.data);
 			if (DEBUG) console.log("😎 Disguise.randomizer() [1] currentDisguiseObj =", currentDisguiseObj);
 			display(playDialogue);
@@ -24,10 +26,28 @@ window.Disguise = (function() {
 		}
 	}
 
+	/**
+	 * 	Display a disguise if tracker is blocked
+	 */
+	function displayIfTrackerBlocked(playDialogue = true) {
+		try {
+			// if there are trackers blocked and this page has a tracker
+			if (!tally_user.trackers || Page.data.trackers.length < 1) return;
+			// if there are trackers blocked
+			// if (FS_Object.prop(tally_user.trackers) && FS_Object.prop(tally_user.trackers[]))
+			currentDisguiseObj = FS_Object.randomObjProperty(tally_user.disguises);
+			if (DEBUG) console.log("😎 Disguise.displayIfTrackerBlocked() [1] currentDisguiseObj =", currentDisguiseObj);
+			display(playDialogue);
+		} catch (err) {
+			console.error(err);
+		}
+	}
+
 	function returnHtmlStr() {
 		try {
-			if (DEBUG) console.log("😎 Disguise.returnHtmlStr() [1] currentDisguiseObj =", currentDisguiseObj);
-			return "<img class='tally' src='" + chrome.extension.getURL('assets/img/tally-disguises/' + currentDisguiseObj.name + currentDisguiseObj.ext) + "'>";
+			// if (DEBUG) console.log("😎 Disguise.returnHtmlStr() [1] currentDisguiseObj =", currentDisguiseObj);
+			return "<img class='tally' src='" + chrome.extension.getURL('assets/img/tally-disguises/' +
+				currentDisguiseObj.name + DisguiseData.data[currentDisguiseObj.name].ext) + "'>";
 		} catch (err) {
 			console.error(err);
 		}
@@ -42,7 +62,7 @@ window.Disguise = (function() {
 			console.error(err);
 		}
 	}
-
+	// should dialogue be included? default = true
 	function includeDialogue() {
 		try {
 			// if there is dialogue for this disguise
@@ -60,9 +80,9 @@ window.Disguise = (function() {
 			}
 			// otherwise play a random one
 			else if (Dialogue.getData({
-				category: "disguise",
-				subcategory: "random"
-			})) {
+					category: "disguise",
+					subcategory: "random"
+				})) {
 				Dialogue.showData(Dialogue.getData({
 					category: "disguise",
 					subcategory: "random"
@@ -81,45 +101,32 @@ window.Disguise = (function() {
 	/**
 	 *	Check to see if we should reward Tally with a new disguise
 	 */
-	function reward() {
+	function checkAndReward() {
 		try {
-			if (DEBUG) console.log("😎 Disguise.reward() [1]");
+			if (DEBUG) console.log("😎 Disguise.checkAndReward() [1]");
 
-			// if ()
-			//
-			//
-			//
-			// // get random attack
-			// let attack = AttackData.returnAttack(name, type);
-			//
-			// // make sure tally doesn't already have that attack
-			// let safety = 0;
-			// while (prop(tally_user.attacks[attack.name])) {
-			// 	// if so get a new one, passing name and type if set
-			// 	attack = AttackData.returnAttack(name, type);
-			// 	// exit if all attacks have been rewarded
-			// 	if (++safety > 10) break;
-			// }
-			// if (DEBUG) console.log("💥 BattleAttack.rewardAttack() name=" + attack.name + ", type=" + attack.type);
-			//
-			//
-			// // attack is selected by default
-			// attack.selected = 1;
-			// // unless # selected is already >= to limit
-			// let selected = returnAttacksSelected();
-			// if (selected >= 4) {
-			// 	attack.selected = 0;
-			// } else {
-			// 	Progress.update("attacksSelected", selected + 1);
-			// }
-			//
-			// // update progress
-			// Progress.update("disguisesAwarded", FS_Object.objLength(tally_user.attacks));
-			// // save in background (and on server)
-			// TallyData.handle("itemData", "attacks", attack, "💥 BattleAttack.rewardAttack()");
-			//
-			// // tell user
-			// Dialogue.showStr("You earned a " + disguise.name + " " + disguise.type + "!", "happy");
+			let disguise = {};
+
+			// count down from current level ...
+			for (let i = parseInt(tally_user.level); i < 100; i--) {
+				// until we get to a disguise that has a leve that matches
+				if (FS_Object.prop(DisguiseData.dataByLevel[i])) {
+					console.log("😎 Disguise.checkAndReward() [2]", DisguiseData.dataByLevel[i]);
+					disguise = DisguiseData.dataByLevel[i];
+					break;
+				}
+			}
+			// if they DO NOT currently have that disguise then award it
+			if (!FS_Object.prop(tally_user.disguises[disguise.name])) {
+				console.log("😎 Disguise.checkAndReward() [3] - Disguise has not be received before", tally_user.disguises);
+
+				// save in background (and on server)
+				TallyData.handle("itemData", "disguises", disguise, "😎 Disguise.checkAndReward()");
+				// update progress
+				Progress.update("disguisesAwarded", FS_Object.objLength(tally_user.disguises));
+				// tell user
+				Dialogue.showStr("You earned a " + disguise.title + " disguise!", "happy");
+			}
 		} catch (err) {
 			console.error(err);
 		}
@@ -132,6 +139,7 @@ window.Disguise = (function() {
 	return {
 		randomizer: randomizer,
 		returnHtmlStr: returnHtmlStr,
-		reward: reward
+		checkAndReward: checkAndReward,
+		displayIfTrackerBlocked: displayIfTrackerBlocked
 	};
 })();

@@ -69,10 +69,10 @@ window.TallyMain = (function() {
 					getNearbyMonstersPromise, getStatsPromise, getTopMonstersPromise
 				])
 				.then(function() {
-					if (DEBUG) console.log('🧰 TallyMain.getDataFromBackground() -> all promises have resolved');
-					if (DEBUG) console.log("%ctally_user", Debug.styles.green, JSON.stringify(tally_user));
-					if (DEBUG) console.log("%ctally_options", Debug.styles.green, JSON.stringify(tally_options));
-					if (DEBUG) console.log("%ctally_meta", Debug.styles.green, JSON.stringify(tally_meta));
+					// if (DEBUG) console.log('🧰 TallyMain.getDataFromBackground() -> all promises have resolved');
+					// if (DEBUG) console.log("%ctally_user", Debug.styles.green, JSON.stringify(tally_user));
+					// if (DEBUG) console.log("%ctally_options", Debug.styles.green, JSON.stringify(tally_options));
+					// if (DEBUG) console.log("%ctally_meta", Debug.styles.green, JSON.stringify(tally_meta));
 					// tally_nearby_monsters, tally_top_monsters, tally_stats
 					if (callback) callback();
 				})

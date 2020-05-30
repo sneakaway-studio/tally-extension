@@ -10,6 +10,13 @@ window.Consumable = (function() {
 		consumables = [],
 		hovered = false,
 		types = {
+
+			// health cookie
+			// data junk
+			// cloud marketing
+			// unicorn incubator 
+			// startup incubator
+
 			"cookie": {
 				"health": {
 					"name": "health",

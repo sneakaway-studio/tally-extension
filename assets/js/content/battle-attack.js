@@ -463,6 +463,9 @@ window.BattleAttack = (function() {
 				Battle.details.monsterTracker + " tracker</span> from grabbing your data!");
 			// potentially award a new attack
 			if (Progress.get("attacksAwarded") >= 4) randomRewardAttack();
+			// potentially award a new disguise
+			Disguise.checkAndReward();
+			// after a moment ...
 			setTimeout(function() {
 				// show captured monster
 				BattleEffect.showCapturedMonster();

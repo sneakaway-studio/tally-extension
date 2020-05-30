@@ -48,8 +48,6 @@ window.Tracker = (function() {
 	// PUBLIC
 	return {
 		removeCaughtTrackers: removeCaughtTrackers,
-		addToRemoveList: function(tracker) {
-			addToRemoveList(tracker);
-		}
+		addToRemoveList: addToRemoveList
 	};
 }());

@@ -65,7 +65,7 @@
             "assets/js/functions/fs-strings.js",
             "assets/js/functions/fs-dates.js",
             "assets/js/functions/fs-environment.js",
-            
+
             "assets/data/disconnect-tracking-services.js",
             "assets/data/game-data.js",
             "assets/data/gradients-by-mid.js",
@@ -75,6 +75,7 @@
             "assets/data/dialogues.js",
             "assets/data/dialogue-data.js",
             "assets/data/disguises.js",
+            "assets/data/disguises-by-level.js",
             "assets/data/disguise-data.js",
             "assets/data/monsters-by-tag.js",
             "assets/data/monsters-by-id.js",

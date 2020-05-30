@@ -67,6 +67,7 @@ window.TallyData = (function() {
 					"attacks": [],
 					"badges": [],
 					"consumables": [],
+					"disguises": [],
 					"flags": [],
 					"monsters": [],
 					"progress": [],
@@ -102,12 +103,12 @@ window.TallyData = (function() {
 
 
 	/**
-	 *	Handle a basic unit of data
+	 *	Handle a basic unit of data *NOTE: prop must be defined above in createBackgroundUpdate()
 	 */
 	function handle(type = null, prop = null, val = null, caller = "") {
 		try {
 			let log = "💾 TallyData.handle()";
-
+			// if (DEBUG) console.log(log, "[0]", type, prop, val, caller);
 			if (DEBUG) Debug.dataReportHeader(log, type + "." + prop, "#", "before");
 
 			// everything is required
@@ -124,7 +125,7 @@ window.TallyData = (function() {
 				"caller": caller
 			};
 
-			if (DEBUG) console.log("💾 TallyData.handle() [1] backgroundUpdateEdits =", backgroundUpdateEdits, unit);
+			if (DEBUG) console.log(log, "[1] backgroundUpdateEdits =", backgroundUpdateEdits, unit);
 			// console.trace();
 
 

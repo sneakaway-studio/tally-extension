@@ -41,7 +41,7 @@ window.Debug = (function() {
 			"Sound": true,
 			"StatsDisplay": false,
 			"Stats": false,
-			"Skin": true,
+			"Skin": false,
 
 			"Tally": true,
 			"TallyData": true,
