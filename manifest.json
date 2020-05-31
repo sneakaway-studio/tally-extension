@@ -74,6 +74,8 @@
             "assets/data/facts.js",
             "assets/data/dialogues.js",
             "assets/data/dialogue-data.js",
+            "assets/data/badges.js",
+            "assets/data/badge-data.js",
             "assets/data/disguises.js",
             "assets/data/disguises-by-level.js",
             "assets/data/disguise-data.js",

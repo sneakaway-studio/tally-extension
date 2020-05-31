@@ -5,26 +5,34 @@ var GameData = (function() {
 
 	let socialDomains = [
 			"facebook.com",
+			"imqq.com",
 			"instagram.com",
+			"linkedin.com",
+			"pinterest.com",
 			"reddit.com",
+			"snapchat.com",
+			"tiktok.com",
+			"tumblr.com",
 			"twitter.com",
+			"wechat.com",
+			"weibo.com",
 			"youtube.com",
-			"linkedin.com"
 		],
 		commercialDomains = [
 			"amazon.com",
+			"apple.com",
+			"target.com",
 			"walmart.com",
-			"target.com"
 		],
 		trackerDomains = [
-			"alexa.com",
+			"acxiom.com",
+			"adcolony.com",
 			"ads.google.com/home/",
-			"www.adcolony.com/",
-			"airpush.com/",
-			"www.experian.com/",
-			"www.beckon.com/",
-			"www.blueconic.com/",
-			"www.acxiom.com/"
+			"airpush.com",
+			"alexa.com",
+			"beckon.com",
+			"blueconic.com",
+			"experian.com",
 		];
 
 	let domainKeywords = {

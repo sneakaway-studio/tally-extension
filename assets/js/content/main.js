@@ -254,7 +254,7 @@ window.TallyMain = (function() {
 			// potentially add a consumable
 			Consumable.randomizer();
 			// potentially add badge
-			Badge.randomizer();
+			Badge.check();
 			// check for, and potentially add monsters on the page
 			MonsterCheck.check();
 			// update debugger

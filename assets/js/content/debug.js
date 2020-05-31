@@ -9,6 +9,7 @@ window.Debug = (function() {
 	let DEBUG = true,
 		ALL = {
 			"Badge": true,
+
 			// battles
 			"BattleAttack": true,
 			"BattleConsole": false,
