@@ -74,8 +74,7 @@ window.Disguise = (function() {
 					category: "disguise",
 					subcategory: currentDisguiseObj.name
 				}), {
-					addIfInProcess: false,
-					instant: true
+					addIfInProcess: false
 				});
 			}
 			// otherwise play a random one
@@ -87,8 +86,7 @@ window.Disguise = (function() {
 					category: "disguise",
 					subcategory: "random"
 				}), {
-					addIfInProcess: false,
-					instant: true
+					addIfInProcess: false
 				});
 			}
 		} catch (err) {

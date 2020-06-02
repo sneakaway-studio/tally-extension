@@ -106,8 +106,8 @@ window.Tally = (function() {
 
 			let str =
 				"<div class='tally draggable' id='tally_character'>" + // style='transform:translateY(-350px);'
-				"<div class='tally tally_speech_bubble' id='tally_dialogue_bubble'>" +
-				"<div class='tally' id='tally_dialogue'></div>" +
+				"<div class='tally tally_speech_bubble' id='tally_dialogue_outer'>" +
+				"<div class='tally' id='tally_dialogue_inner'></div>" +
 				"</div>" +
 				"<div class='tally' id='tally_item_manager'>" +
 				"<div class='tally' id='tally_item_manager_menu'></div>" +

@@ -263,6 +263,8 @@ window.TallyMain = (function() {
 			Demo.start();
 
 
+
+
 			// ?
 			// should be done in bg?
 			// check for, and potentially execute and flags from server (from previous update)

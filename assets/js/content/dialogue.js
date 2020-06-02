@@ -206,7 +206,7 @@ window.Dialogue = (function() {
 	// }
 
 	/**
-	 *	Show dialogue instantly (interrupting everything already queued)
+	 *	Show dialogue instantly (delete everything already queued)
 	 */
 	function showInstant(dialogue, mood) {
 		try {
@@ -314,23 +314,45 @@ window.Dialogue = (function() {
 			}
 
 			// add text
-			$('#tally_dialogue').html(dialogue.text);
+			$('#tally_dialogue_inner').html(dialogue.text);
 			// play sound (if exists)
-			if (prop(dialogue.mood)) {
-				Sound.playTallyVoice(dialogue);
+			if (prop(dialogue.mood)) Sound.playTallyVoice(dialogue);
+
+			// if there is an image
+			if (dialogue.text.search("img") > -1) {
+				// wait until images load
+				$('#tally_dialogue_inner img').on('load', function() {
+					// if (DEBUG) console.log("💬 Dialogue.writeNextInQueue() [3.1] imgHeight =",
+					// 	$('#tally_dialogue_inner img').height());
+					// adjust size of the box
+					setDialoguBoxSize(dialogue.text, $('#tally_dialogue_inner img').height());
+				});
 			}
-			// adjust size of the box
-			$('#tally_dialogue_bubble').css({
-				'display': 'flex',
-				'height': (stringLines(dialogue.text) * 15) + 28 + "px",
-				'left': '10px',
-				'opacity': 1 // make it visible
-			});
+			// update dialogue box size
+			setDialoguBoxSize(dialogue.text);
+
 			// make Tally look at user
 			Tally.stare();
 			// hide after appropriate reading period
 			clearTimeout(hideTimeout);
 			hideTimeout = setTimeout(hide, queueWaitTime);
+		} catch (err) {
+			console.error(err);
+		}
+	}
+	/**
+	 * 	Set size of dialogue box
+	 */
+	function setDialoguBoxSize(text, imgHeight = 0) {
+		try {
+			// if (DEBUG) console.log("💬 Dialogue.setDialoguBoxSize()", text, imgHeight);
+			// adjust size of the box
+			$('#tally_dialogue_outer').css({
+				'display': 'flex',
+				'height': $('#tally_dialogue_inner').outerHeight(), //(stringLines(text) * 15) + 28 + imgHeight + "px",
+				'left': '10px',
+				'opacity': 1 // make it visible
+			});
 		} catch (err) {
 			console.error(err);
 		}
@@ -378,8 +400,9 @@ window.Dialogue = (function() {
 	 */
 	function hide() {
 		try {
-			if (DEBUG) console.log("💬 Dialogue.hide()", queueWaitTime);
-			$('#tally_dialogue_bubble').css({
+			return;
+			// if (DEBUG) console.log("💬 Dialogue.hide()", queueWaitTime);
+			$('#tally_dialogue_outer').css({
 				'left': '-500px',
 				'display': 'none',
 				'opacity': 0
@@ -397,7 +420,7 @@ window.Dialogue = (function() {
 	 */
 	function stringLines(str = "", measure = 26) {
 		try {
-			if (DEBUG) console.log("💬 Dialogue.stringLines() [1]", str, measure);
+			// if (DEBUG) console.log("💬 Dialogue.stringLines() [1]", str, measure);
 			let lines = 1;
 			// remove html from string count
 			str = FS_String.removeHTML(str);
@@ -418,8 +441,8 @@ window.Dialogue = (function() {
 	function stringDuration(str) {
 		try {
 			// set duration based on number lines
-			let duration = stringLines(str) * 1950;
-			if (DEBUG) console.log("💬 Dialogue.stringDuration() duration =", duration);
+			let duration = stringLines(str) * 1900;
+			// if (DEBUG) console.log("💬 Dialogue.stringDuration() duration =", duration);
 			return duration;
 		} catch (err) {
 			console.error(err);
@@ -488,6 +511,7 @@ window.Dialogue = (function() {
 	 */
 	function random() {
 		try {
+			return;
 			let r = Math.random();
 			if (r < 0.2) {
 				// show dialogue from data
@@ -525,6 +549,8 @@ window.Dialogue = (function() {
 					instant: true
 				});
 			}
+
+
 		} catch (err) {
 			console.error(err);
 		}
@@ -575,7 +601,7 @@ window.Dialogue = (function() {
 	// to test different sounds
 	function test() {
 		try {
-			console.log("💬 Dialogue.test()");
+			// console.log("💬 Dialogue.test()");
 
 			// example moods to choose
 			var moods = [
@@ -593,39 +619,22 @@ window.Dialogue = (function() {
 				category: "sound-test",
 				subcategory: mood
 			};
+			// // test image
+			// dialogueReq = {
+			// 	category: "image-test",
+			// 	subcategory: mood
+			// };
 			let dialogue = getData(dialogueReq);
 
-			console.log("💬 Dialogue.test()", dialogue);
-
+			// console.log("💬 Dialogue.test()", dialogue);
 
 			// show
 			Dialogue.showData(dialogue);
-
-
-
-
-
-
-			// add these later
-			// // show a random conversation item
-			//
-			// if (r > 0.9){
-			// 	Dialogue.show(Dialogue.get(["random", "conversation", null]), false, true);
-			// } else if (r > 0.8){
-			// 	setTimeout(function(){
-			// 		Dialogue.show(Dialogue.get(["random", "conversation", null]), false, true);
-			// 	}, 1000);
-			// }
-
 
 		} catch (err) {
 			console.error(err);
 		}
 	}
-
-
-
-
 
 
 
@@ -649,9 +658,7 @@ window.Dialogue = (function() {
 		getFact: function(domain, includeSource) {
 			return getFact(domain, includeSource);
 		},
-		stringDuration: function(str) {
-			return stringDuration(str);
-		},
+
 		active: function() {
 			return _active;
 		},

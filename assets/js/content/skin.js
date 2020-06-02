@@ -285,7 +285,7 @@ window.Skin = (function() {
 
 			// loop through stops in the gradient to get colors
 			for (const key in gradientObj.stops) {
-				console.log(key, gradientObj.stops[key]);
+				if (DEBUG) console.log("👚 Skin.assembleGradient()", key, gradientObj.stops[key]);
 				if (gradientObj.stops[key] !== undefined) {
 					gradientObj.front += '<stop offset="' + gradientObj.stops[key] + '%" stop-color="' +
 						gradientObj.stopColors[key] + '"></stop>';

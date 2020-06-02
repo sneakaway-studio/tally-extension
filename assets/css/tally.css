@@ -2,7 +2,7 @@
 /*  TALLY CHARACTER
  ******************************************************************************/
 /* TALLY CHARACTER */
-#tally_character, #tally_dialogue_bubble, #tally_slide_show {
+#tally_character, #tally_dialogue_outer, #tally_slide_show {
     position: absolute;
     z-index: 2147483646;
 }
@@ -132,7 +132,7 @@ svg#tally-svg * {
 }
 /*  TALLY DIALOGUE
  ******************************************************************************/
-#tally_dialogue_bubble {
+#tally_dialogue_outer {
     width: 220px;
     height: 80px;
     bottom: 270px;
@@ -141,17 +141,46 @@ svg#tally-svg * {
     display: flex;
     padding: 0;
 }
-#tally_dialogue_bubble #tally_dialogue {
-    padding: 10px 8px 12px;
+#tally_dialogue_outer img {
+    max-width: 200px;
+}
+#tally_dialogue_outer #tally_dialogue_inner {
+    padding: 10px 10px 11px 10px;
     text-align: center;
     margin: auto;
     font: 12px/16px "Monaco", "Andale Mono", "Courier New", sans-serif;
     color: #fff
 }
-#tally_dialogue_bubble #tally_dialogue .tally-replace {
+#tally_dialogue_outer #tally_dialogue_inner .tally-replace {
     color: #DE4929;
 }
-#tally_dialogue_bubble a {
+
+
+
+
+#tally_dialogue_outer #tally_dialogue_inner .tally-badge {
+    width: 185px;
+    border-radius: .9em;
+    background: #462795;
+    padding: 10px 10px;
+    margin: 5px 0;
+}
+#tally_dialogue_outer #tally_dialogue_inner .tally-badge .tally-badge-img {
+    width: 120px;
+    height: auto;
+}
+#tally_dialogue_outer #tally_dialogue_inner .tally-badge .tally-badge-text {
+    padding-top: 5px;
+    font-size: 92%;
+}
+#tally_dialogue_outer #tally_dialogue_inner .tally-badge .tally-badge-text-level {
+    font-size: 88%;
+    padding-top: 3px;
+    color: rgba(255,255,255,.7);
+}
+
+
+#tally_dialogue_outer #tally_dialogue_outer a {
     color: white;
     text-decoration: underline;
     cursor: pointer;
@@ -161,10 +190,10 @@ svg#tally-svg * {
     position: relative;
     background: #252525;
     border-radius: .4em;
+    z-index: 2147483646;
 }
 .tally_speech_bubble:after {
     content: '';
-    position: absolute;
     bottom: 0;
     left: 70%;
     width: 0;
@@ -174,6 +203,9 @@ svg#tally-svg * {
     border-bottom: 0;
     margin-left: -13px;
     margin-bottom: -13px;
+    /* create a new stacking context */
+    position: absolute;
+    z-index: -1;  /* to be below the parent element */
 }
 #tally_character button {
     padding: 0;
@@ -183,6 +215,10 @@ svg#tally-svg * {
     box-shadow: none;
     color: #fff;
 }
+
+
+
+
 
 
 
