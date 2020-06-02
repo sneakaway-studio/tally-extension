@@ -16,22 +16,30 @@ window.TallyData = (function() {
 		// interval to watch when pushUpdate() necessary
 		managerTimeout = {},
 		// time in millis to wait until sending update
-		managerWaitTime = 2000;
+		managerWaitTime = 2000,
+		// only allow one manager to be called
+		managerWorking = false;
 
 
 
 	/**
-	 * 	Count down and send after n milliseconds
+	 * 	Called after handle() - Send update to server after n milliseconds
 	 */
 	function manager() {
 		try {
+			// make sure manager isn't already waiting to send updates
+			if (managerWorking) return;
+			managerWorking = true;
+			// if (DEBUG) console.log("💾 TallyData.manager() CHECKING FOR UPDATE");
 			// start countdown
 			managerTimeout = setTimeout(function() {
-
 				// if there are no edits then kill interval
-				if (backgroundUpdateEdits == 0) clearTimeout(managerTimeout);
+				if (backgroundUpdateEdits == 0) {
+					clearTimeout(managerTimeout);
+					// if (DEBUG) console.log("💾 TallyData.manager() NO UPDATES FOUND ");
+				}
 				else {
-					if (DEBUG) console.log("💾 TallyData.managerLoop() SENDING");
+					if (DEBUG) console.log("💾 TallyData.manager() SENDING TO pushUpdate()");
 					// update background / server if anything has changed
 					pushUpdate();
 				}
@@ -51,7 +59,7 @@ window.TallyData = (function() {
 	 */
 	function createBackgroundUpdate(type = "update") {
 		try {
-			if (DEBUG) console.log("💾 TallyData.createBackgroundUpdate()");
+			// if (DEBUG) console.log("💾 TallyData.createBackgroundUpdate()");
 			// console.trace();
 
 			// if a backgroundUpdate is already in progress then return early
@@ -109,7 +117,7 @@ window.TallyData = (function() {
 		try {
 			let log = "💾 TallyData.handle()";
 			// if (DEBUG) console.log(log, "[0]", type, prop, val, caller);
-			if (DEBUG) Debug.dataReportHeader(log, type + "." + prop, "#", "before");
+			if (DEBUG) Debug.dataReportHeader(log + " [0] " + type + "." + prop, "#", "before");
 
 			// everything is required
 			if (!FS_Object.prop(tally_user)) return console.log(log, "missing: tally_user", type, prop, val, caller);
@@ -187,17 +195,18 @@ window.TallyData = (function() {
 	 */
 	function pushUpdate() {
 		try {
-			if (DEBUG) Debug.dataReportHeader("💾 < TallyData.pushUpdate()", "#", "before");
+			if (DEBUG) Debug.dataReportHeader("💾 < TallyData.pushUpdate() [0]", "#", "before");
 
 			// no need to send if not updated
 			if (backgroundUpdateEdits < 1) return;
 			// do not attempt if currently sending
 			if (backgroundUpdateInProgress === false) return;
+			// set to true to prevent additional sending
+			backgroundUpdateInProgress = true;
 
 			console.log("💾 TallyData.pushUpdate() [1]", backgroundUpdate);
 
-			// set to true to prevent additional sending
-			backgroundUpdateInProgress = true;
+
 
 			// send update to background (which will determine whether to send to server)
 			chrome.runtime.sendMessage({
@@ -223,7 +232,8 @@ window.TallyData = (function() {
 				clearTimeout(managerTimeout);
 				// create new backgroundUpdate after sending
 				createBackgroundUpdate();
-
+				// allow manager to begin working again
+				managerWorking = false;
 			});
 
 		} catch (err) {
@@ -238,7 +248,7 @@ window.TallyData = (function() {
 		manager: manager,
 		handle: handle,
 		backgroundUpdate: backgroundUpdate,
-		returnBackgroundUpdate: function(){
+		returnBackgroundUpdate: function() {
 			return backgroundUpdate;
 		},
 		createBackgroundUpdate: createBackgroundUpdate,

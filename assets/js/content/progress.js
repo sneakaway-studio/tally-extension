@@ -14,6 +14,9 @@ window.Progress = (function() {
 		"battlesLost": 0,
 		"battleEscaped": 0,
 		"notifyToClickAfterBattle": 0,
+		//
+		"consumables": 0,
+		"cookies": 0,
 		// interaction
 		"clickTallySingle": 0,
 		"clickTallyDouble": 0,

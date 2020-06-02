@@ -14,7 +14,7 @@ window.Consumable = (function() {
 			// health cookie
 			// data junk
 			// cloud marketing
-			// unicorn incubator 
+			// unicorn incubator
 			// startup incubator
 
 			"cookie": {
@@ -107,7 +107,9 @@ window.Consumable = (function() {
 			// pick random type
 			else if (r < 0.08) create("", "", count);
 			// gameMode === testing
-			else if (r < 0.4 && ["demo","testing"].includes(tally_options.gameMode)) create("marketing", "", 1);
+			else if (r < 0.4 && ["demo", "testing"].includes(tally_options.gameMode))
+				// create("marketing", "", 1);
+				create("cookie", "", 1);
 
 		} catch (err) {
 			console.error(err);
@@ -175,7 +177,7 @@ window.Consumable = (function() {
 				str = "<div data-consumable='" + i + "' class='tally_consumable_inner' id='" + id + "' style='" + css + "'>";
 				str += "<img src='" + imgStr + "'";
 				// make clouds semi-transparent
-				if (consumables[i].name == "cloud"){
+				if (consumables[i].name == "cloud") {
 					str += " style='opacity:.7';";
 				}
 				str += "></div>";
@@ -214,7 +216,9 @@ window.Consumable = (function() {
 				Dialogue.showData({
 					"text": "Feeling lucky?",
 					"mood": consumable.sound
-				}, { addIfInProcess: false });
+				}, {
+					addIfInProcess: false
+				});
 		}
 		// only show hover message once
 		hovered = true;
@@ -229,6 +233,9 @@ window.Consumable = (function() {
 			//if (DEBUG) console.log("🍪 Consumable.collect()", key, consumable);
 			// play sound
 			Sound.playRandomPowerup();
+			// update progress
+			Progress.update("consumables", count("all"));
+			if (consumable.type == "cookie") Progress.update("cookies", count("cookie"));
 			// save in background (and on server)
 			TallyData.handle("itemData", "consumables", consumable, "🍪 Consumables.collect()");
 			// delay then update stats
@@ -242,6 +249,30 @@ window.Consumable = (function() {
 			console.error(err);
 		}
 	}
+
+	function count(type = "all") {
+		try {
+			// console.log("🍪 Consumable.count()", type, tally_user.consumables);
+			// console.log("🍪 Consumable.count() tally_user.progress.consumables", tally_user.progress.consumables);
+			// console.log("🍪 Consumable.count() tally_user.progress.cookies", tally_user.progress.cookies);
+
+			// start by counting the new one
+			let total = 1;
+			for (var i in tally_user.consumables) {
+				// if (DEBUG) console.log("🍪 Consumable.count()", type, i, tally_user.consumables[i]);
+				if (type == "all" || tally_user.consumables[i].type == type) {
+					total += tally_user.consumables[i].count;
+				}
+			}
+			return total;
+		} catch (err) {
+			console.error(err);
+		}
+	}
+
+
+
+
 
 
 
