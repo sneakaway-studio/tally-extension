@@ -11,7 +11,7 @@
 
 * Adds instructions for block list ("disabled domains")
 * Improves BattleConsole usability, Dialogue system
-* Adds Disguises and new consumables
+* Adds Disguises, Badges, and new Consumables
 * Adds new Tally voice
 
 ### Version 0.2.17

@@ -253,14 +253,21 @@ window.TallyMain = (function() {
 
 			// potentially add a consumable
 			Consumable.randomizer();
-			// potentially add badge
-			Badge.check();
-			// check for, and potentially add monsters on the page
-			MonsterCheck.check();
 			// update debugger
 			Debug.update();
 			// start Demo if we are running in demo mode
 			Demo.start();
+
+
+            // checks to perform after user has interacted with page
+            setTimeout(function() {
+                // potentially add badge
+                Badge.check();
+                setTimeout(function() {
+                    // check for, and potentially add monsters on the page
+                    MonsterCheck.check();
+                }, 1000);
+            }, 500);
 
 
 

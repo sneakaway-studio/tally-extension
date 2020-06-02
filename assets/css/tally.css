@@ -130,8 +130,13 @@ svg#tally-svg * {
         animation-timing-function: ease-out;
     }
 }
+
+
+
+
 /*  TALLY DIALOGUE
  ******************************************************************************/
+
 #tally_dialogue_outer {
     width: 220px;
     height: 80px;
@@ -207,6 +212,11 @@ svg#tally-svg * {
     position: absolute;
     z-index: -1;  /* to be below the parent element */
 }
+
+
+
+
+
 #tally_character button {
     padding: 0;
     margin: 0;

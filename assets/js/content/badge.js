@@ -37,28 +37,8 @@ window.Badge = (function() {
 			// don't allow if mode disabled or stealth
 			if (tally_options.gameMode === "disabled" || tally_options.gameMode === "stealth") return;
 
-
-
-			// afterLoad
-			// scrollAction
-			// clickAction
-
-
-
-
-			// which things should we check?
-			let shouldCheck = {
-					social: 1, // (GameData.socialDomains.indexOf(Page.data.domain) > -1),
-					tags: false,
-					workday: true,
-					nighttime: true,
-					clickText: false,
-					scrolling: false
-				},
-				log = "🏆 Badge.check()";
-
-			// vars for checks below
-			let currentBadge, newBadgeLevel;
+			let log = "🏆 Badge.check()",
+				currentBadge, newBadgeLevel;
 			var startNewCheck = function(name) {
 				// the current badge or a "blank" one
 				currentBadge = get(name);
@@ -69,9 +49,38 @@ window.Badge = (function() {
 			};
 
 
+			
+
+			// afterLoad
+			// scrollAction
+			// clickAction
+
+
+
+			if (type == "clickAction"){
+
+			}
+
+
+
+
+
+			// which things should we check?
+			let shouldCheck = {
+				social: 1, // (GameData.socialDomains.indexOf(Page.data.domain) > -1),
+				tags: false,
+				workday: true,
+				nighttime: true,
+				clickText: false,
+				scrolling: false
+			};
+
+
+
+
+
+
 			/////////////// SOCIAL DOMAINS ///////////////
-
-
 
 			/////////////// filter-bubble -> based on (increasing) likes on social media
 			// get current badge (or a new default badge) and start new check
@@ -154,7 +163,7 @@ window.Badge = (function() {
 
 			if (DEBUG) console.log("🏆 Badge.award()", badge);
 
-			let awardText = "<div class='tally tally-badge' style='background-color: " + badge.color + "'>" +
+			let awardText = "<div class='tally tally-badge' style='background-color: " + (badge.color || "#111") + "'>" +
 				"<img class='tally tally-badge-img' src='";
 			// placeholder for badges not finished
 			if (badge.ext !== "") awardText += chrome.extension.getURL('assets/img/badges/' + badge.name + badge.ext);
@@ -190,127 +199,10 @@ window.Badge = (function() {
 			// save in background (and on server)
 			TallyData.handle("itemData", "badges", badge, "🏆 Badge.award()");
 
-
-
 		} catch (err) {
 			console.error(err);
 		}
 	}
-
-
-
-
-	// /**
-	//  *	2. if so, then make a new one from list
-	//  */
-	// function create(name = "") {
-	// 	try {
-	// 		if (DEBUG) console.log("🏆 Badge.create()", name);
-	//
-	// 		// if name is set
-	// 		if (name !== "") add(name);
-	//
-	// 	} catch (err) {
-	// 		console.error(err);
-	// 	}
-	// }
-	// /**
-	//  *	3. add badge to a page
-	//  */
-	// function add(name) {
-	// 	try {
-	// 		let badge = types[name];
-	// 		if (!prop(badge) || !prop(badge.name) || badge.name === "") return console.error(badge, types);
-	//
-	// 			if (DEBUG) console.log("🏆 Badge.add()", name, badge);
-	// 		let randomPos = [],
-	// 			imgStr = "",
-	// 			nameAttr = "",
-	// 			str = "";
-	//
-	// 		// new position
-	// 		randomPos = Core.returnRandomPositionFull('', 100, 100);
-	//
-	// 		// html
-	// 		imgStr = chrome.extension.getURL('assets/img/badges/' + badge.img);
-	// 		nameAttr = name + '_badge';
-	// 		str = "<div data-badge='" + name + "' class='tally tally_badge_inner' id='" + nameAttr + "'>" +
-	// 			"<img src='" + imgStr + "'></div>";
-	// 		$('.tally_badge').html(str);
-	// 		$('.tally_badge').css({
-	// 			"left": randomPos.x + "px",
-	// 			"top": randomPos.y + "px"
-	// 		});
-	//
-	// 		// add floating animation
-	// 		anime({
-	// 			targets: ".tally_badge",
-	// 			translateY: 5,
-	// 			// scale: 1.05,
-	// 			direction: 'alternate',
-	// 			loop: true,
-	// 			easing: 'easeInOutSine'
-	// 		});
-	//
-	// 		// add listeners
-	// 		$(document).on("mouseover", "#" + name, function() {
-	// 			if (DEBUG) console.log("🏆 Badge.add() mouseover", $(this));
-	// 			hover($(this).attr("data-badge"));
-	// 		});
-	// 		$(document).on("click", "#" + name, function() {
-	// 			if (DEBUG) console.log("🏆 Badge.add() click", $(this));
-	// 			// Math.random so gif replays
-	// 			let img = chrome.extension.getURL('assets/img/consumables/consumable-explosion.gif?' + Math.random());
-	// 			$(this).html("<img src='" + img + "'>");
-	// 			setTimeout(function() {
-	// 				// remove
-	// 				$(this).remove();
-	// 			}, 500);
-	// 			collect($(this).attr("data-badge"));
-	// 		});
-	//
-	// 	} catch (err) {
-	// 		console.error(err);
-	// 	}
-	// }
-	// /**
-	//  * 	4. user hovers over badge
-	//  */
-	// function hover(name) {
-	// 	let badge = types[name];
-	// 	if (DEBUG) console.log("🏆 Badge.hover()", name, badge);
-	// 	if (!hovered) {
-	// 		// tell them
-	// 		Dialogue.showData({
-	// 			"text": "Oh, you found " + badge.ref + " " + badge.name + " badge!",
-	// 			"mood": badge.sound
-	// 		}, {});
-	// 	}
-	// 	Dialogue.showData({
-	// 		"text": "Click to collect the badge!",
-	// 		"mood": badge.sound
-	// 	}, {
-	// 		addIfInProcess: false
-	// 	});
-	// 	// only show hover message once
-	// 	hovered = true;
-	// }
-	//
-	// /**
-	//  *	5. user clicks a badge
-	//  */
-	// function collect(name) {
-	// 	try {
-	// 		let badge = types[name];
-	// 		if (DEBUG) console.log("🏆 Badge.collect()", name, badge);
-	// 		// play sound
-	// 		Sound.playRandomPowerup();
-	// 		// save in background (and on server)
-	// 		TallyData.handle("itemData", "badges", badge, "🏆 Badge.collect()");
-	// 	} catch (err) {
-	// 		console.error(err);
-	// 	}
-	// }
 
 
 

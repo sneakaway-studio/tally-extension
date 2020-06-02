@@ -318,14 +318,14 @@ window.Dialogue = (function() {
 			// play sound (if exists)
 			if (prop(dialogue.mood)) Sound.playTallyVoice(dialogue);
 
+
 			// if there is an image
 			if (dialogue.text.search("img") > -1) {
 				// wait until images load
 				$('#tally_dialogue_inner img').on('load', function() {
-					// if (DEBUG) console.log("💬 Dialogue.writeNextInQueue() [3.1] imgHeight =",
-					// 	$('#tally_dialogue_inner img').height());
+					// if (DEBUG) console.log("💬 Dialogue.writeNextInQueue() [3.1] imgHeight =", $('#tally_dialogue_inner img').height());
 					// adjust size of the box
-					setDialoguBoxSize(dialogue.text, $('#tally_dialogue_inner img').height());
+					setDialoguBoxSize(dialogue.text, $('#tally_dialogue_inner img').height() + 48);
 				});
 			}
 			// update dialogue box size
@@ -345,14 +345,20 @@ window.Dialogue = (function() {
 	 */
 	function setDialoguBoxSize(text, imgHeight = 0) {
 		try {
-			// if (DEBUG) console.log("💬 Dialogue.setDialoguBoxSize()", text, imgHeight);
+
+			let inner = $('#tally_dialogue_inner').outerHeight(),
+				outer = $('#tally_dialogue_outer').outerHeight();
+
+			if (DEBUG) console.log("💬 Dialogue.setDialoguBoxSize()", text, imgHeight, inner, outer);
 			// adjust size of the box
 			$('#tally_dialogue_outer').css({
-				'display': 'flex',
-				'height': $('#tally_dialogue_inner').outerHeight(), //(stringLines(text) * 15) + 28 + imgHeight + "px",
 				'left': '10px',
-				'opacity': 1 // make it visible
+				'display': 'flex',
+				'opacity': 1,
+				'height': (stringLines(text) * 15) + 28 + imgHeight + "px",
 			});
+			// if (DEBUG) console.log("💬 Dialogue.setDialoguBoxSize()", inner,outer);
+			// if (DEBUG) console.log("💬 Dialogue.setDialoguBoxSize()", inner,outer);
 		} catch (err) {
 			console.error(err);
 		}
@@ -400,7 +406,6 @@ window.Dialogue = (function() {
 	 */
 	function hide() {
 		try {
-			return;
 			// if (DEBUG) console.log("💬 Dialogue.hide()", queueWaitTime);
 			$('#tally_dialogue_outer').css({
 				'left': '-500px',
@@ -511,7 +516,6 @@ window.Dialogue = (function() {
 	 */
 	function random() {
 		try {
-			return;
 			let r = Math.random();
 			if (r < 0.2) {
 				// show dialogue from data
