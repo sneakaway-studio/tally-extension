@@ -14,13 +14,13 @@ window.Badge = (function() {
 	 */
 	function get(name) {
 		try {
-			// start here
+			// start with blank data
 			let badge = BadgeData.data[name];
 			// if they have received one before
 			if (tally_user.badges && tally_user.badges[name])
 				// then update level
 				badge.level = tally_user.badges[name].level;
-			if (DEBUG) console.log('🏆 Badge.get() name =', name, badge);
+			// if (DEBUG) console.log('🏆 Badge.get() name =', name, badge);
 			return badge;
 		} catch (err) {
 			console.error(err);
@@ -40,7 +40,7 @@ window.Badge = (function() {
 			let log = "🏆 Badge.check()",
 				currentBadge, newBadgeLevel;
 			var startNewCheck = function(name) {
-				// the current badge or a "blank" one
+				// get the current badge or a "blank" one
 				currentBadge = get(name);
 				// reset new badge level (to compare to current one)
 				newBadgeLevel = 0;
@@ -71,9 +71,7 @@ window.Badge = (function() {
 
 			////////////////////////////// ECONOMY //////////////////////////////
 
-
-			/////////////// worker-bee -> 9a-5p M-F
-			if (shouldCheck.workday && FS_Date.isWorkday()) {
+			if (shouldCheck.workday && FS_Date.isWorkday()) { // 9a-5p M-F
 				// get current badge (or a new default badge) and start new check
 				startNewCheck("worker-bee");
 				// get new badge level and compare
@@ -84,9 +82,7 @@ window.Badge = (function() {
 					console.log(log, "newBadgeLevel > currentBadge.level", "currentBadge =", currentBadge);
 					if (1) return award(currentBadge);
 				}
-			}
-			///////////// night-owl -> 8p–6a
-			else if (shouldCheck.nighttime && FS_Date.isNight()) {
+			} else if (shouldCheck.nighttime && FS_Date.isNight()) { // 8p–6a
 				startNewCheck("night-owl");
 				newBadgeLevel = exp(tally_user.streamReport.tNight / 60 / 60 / 8); // ~ every 8 hours
 				if (newBadgeLevel > currentBadge.level) {
@@ -99,16 +95,67 @@ window.Badge = (function() {
 
 			////////////////////////////// COMPUTER //////////////////////////////
 
-
-			/////////////// big-clicker -> based on (increasing) clicks
 			startNewCheck("big-clicker");
 			newBadgeLevel = exp(tally_user.score.clicks / 250); // ~ every n clicks
-			console.log(log, "newBadgeLevel =", newBadgeLevel, "newBadgeLevel =", currentBadge.level);
+			// console.log(log, "newBadgeLevel =", newBadgeLevel, "newBadgeLevel =", currentBadge.level);
 			if (newBadgeLevel > currentBadge.level) {
 				currentBadge.level = newBadgeLevel;
 				console.log(log, "newBadgeLevel > currentBadge.level", "currentBadge =", currentBadge);
 				if (1) return award(currentBadge);
 			}
+
+
+			////////////////////////////// CRYPTOGRAPHY //////////////////////////////
+
+			startNewCheck("cryptomaniac");
+			newBadgeLevel = exp(Progress.get(currentBadge.progress) / 10); // # tags
+			// console.log(log, "newBadgeLevel =", newBadgeLevel, "newBadgeLevel =", currentBadge.level);
+			if (newBadgeLevel > currentBadge.level) {
+				currentBadge.level = newBadgeLevel;
+				console.log(log, "newBadgeLevel > currentBadge.level", "currentBadge =", currentBadge);
+				if (1) return award(currentBadge);
+			}
+
+
+			////////////////////////////// DATA //////////////////////////////
+
+			startNewCheck("cat-crazy");
+			newBadgeLevel = exp(Progress.get(currentBadge.progress) / 10); // # tags
+			// console.log(log, "newBadgeLevel =", newBadgeLevel, "newBadgeLevel =", currentBadge.level);
+			if (newBadgeLevel > currentBadge.level) {
+				currentBadge.level = newBadgeLevel;
+				console.log(log, "newBadgeLevel > currentBadge.level", "currentBadge =", currentBadge);
+				if (1) return award(currentBadge);
+			}
+
+
+
+			for (var badgeName in Badges.data) {
+				// if tags
+				if (!Badges.data[badgeName].tags) continue;
+
+
+				startNewCheck(Badges.data[badgeName].name);
+				newBadgeLevel = exp(Progress.get(currentBadge.progress) / 10); // # tags
+				console.log(log, "newBadgeLevel =", newBadgeLevel, "newBadgeLevel =", currentBadge.level);
+				if (newBadgeLevel > currentBadge.level) {
+					currentBadge.level = newBadgeLevel;
+					console.log(log, "newBadgeLevel > currentBadge.level", "currentBadge =", currentBadge);
+					if (1) return award(currentBadge);
+				}
+			}
+
+
+			// cryptomaniac
+			// photo-geek
+			// news-hound
+			// cat-crazy
+			// potty-mouth
+			// 404-scout
+			// net-artisan
+			// biggest-fan
+			// fine-print
+
 
 
 			////////////////////////////// SOCIAL DOMAINS //////////////////////////////
@@ -136,20 +183,22 @@ window.Badge = (function() {
 
 
 
+
+
 			// refresh
 			// https://stackoverflow.com/questions/5004978/check-if-page-gets-reloaded-or-refreshed-in-javascript
 			// if (performance.navigation.type == 1)
 
 
 
-			// test the exp function
-			for (let i = 0; i < 100; i++){
-				let str = (exp(i) / 250) + " = ";
-				for (let j = 0; j < i; j++){
-					str += ".";
-				}
-				console.log(str);
-			}
+			// // test the exp function
+			// for (let i = 0; i < 100; i++){
+			// 	let str = (exp(i) / 250) + " = ";
+			// 	for (let j = 0; j < i; j++){
+			// 		str += ".";
+			// 	}
+			// 	console.log(str);
+			// }
 
 		} catch (err) {
 			console.error(err);
@@ -160,7 +209,9 @@ window.Badge = (function() {
 		try {
 			// https://www.desmos.com/calculator
 			// f(x)=x * (x/4)
-			return Math.round(x * (x / 4));
+			let n = x * (x / 4);
+			console.log("Badge.exp() n =", n);
+			return Math.round(n);
 		} catch (err) {
 			console.error(err);
 		}
@@ -181,7 +232,8 @@ window.Badge = (function() {
 			let awardText = "<div class='tally tally-badge' style='background-color: " + (badge.color || "#111") + "'>" +
 				"<img class='tally tally-badge-img' src='";
 			// placeholder for badges not finished
-			if (badge.ext !== "") awardText += chrome.extension.getURL('assets/img/badges/' + badge.name + badge.ext);
+			if (badge.ext && badge.ext !== "")
+				awardText += chrome.extension.getURL('assets/img/badges/' + badge.name + badge.ext);
 			else awardText += chrome.extension.getURL('assets/img/badges/placeholder.gif');
 			awardText += "'>" +
 				"<div class='tally do-not-break tally-badge-text'>" +

@@ -14,7 +14,7 @@ window.Progress = (function() {
 		"battlesLost": 0,
 		"battleEscaped": 0,
 		"notifyToClickAfterBattle": 0,
-		//
+		// items
 		"consumables": 0,
 		"cookies": 0,
 		// interaction
@@ -27,6 +27,17 @@ window.Progress = (function() {
 		"mouseLeaveTally": 0,
 		// disguises
 		"disguisesAwarded": 0,
+
+		// page tags
+		"pageTagsCats": 0,
+		"pageTagsErrors": 0,
+		"pageTagsEncryption": 0,
+		"pageTagsLegal": 0,
+		"pageTagsNetworks": 0,
+		"pageTagsNews": 0,
+		"pageTagsPhotos": 0,
+		"pageTagsProfanity": 0,
+
 		// things to tell the player
 		"toldToDragTally": 0,
 		"toldToClickDouble": 0,
@@ -121,7 +132,8 @@ window.Progress = (function() {
 			// return if not found
 			if (!tally_user.progress) return;
 
-
+// count any relevant tags on the page
+countPageTags();
 
 			// AWARD ATTACK - 1st
 			if (get("attacksAwarded") <= 0 && tally_user.score.score > 1) {
@@ -154,6 +166,34 @@ window.Progress = (function() {
 		}
 	}
 
+
+	/**
+	 *	Count tags on the page
+	 */
+	function countPageTags() {
+		try {
+			// console.log("🕹️ Progress.countPageTags()", Page.data.tags);
+
+			let result = []; // an array of indexes of matching tags
+
+			// loop through all badges that have tags...
+			for (var progress in Badges.data) {
+				// if tags
+				if (!Badges.data[progress].tags) continue;
+				// compare Page.data.tags to badges' tags and perform any Progress.updates
+				result = Page.data.tags.filter(value => Badges.data[progress].tags.includes(value));
+				if (result.length) {
+					if (DEBUG) console.log("🕹️ Progress.countPageTags()", Page.data.tags, Badges.data[progress]);
+					// update their progress (adding *total* of all found tags on the page)
+					Progress.update(Badges.data[progress].progress, result.length, "+");
+				}
+
+			}
+
+		} catch (err) {
+			console.error(err);
+		}
+	}
 
 
 	/**

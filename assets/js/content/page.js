@@ -101,6 +101,7 @@ window.Page = (function() {
 	 */
 	function getPageTags(data) {
 		try {
+			console.log("🗒 Page.getPageTags()");
 			// create array
 			let tags = [],
 				str = data.description + " " +
@@ -118,6 +119,7 @@ window.Page = (function() {
 			console.error(err);
 		}
 	}
+
 
 
 
@@ -170,7 +172,7 @@ window.Page = (function() {
 				mouseY: 0,
 				mouseupFired: false,
 				subDomain: Environment.extractSubDomain(document.location.href) || "",
-				tags: "",
+				tags: [],
 				time: 0,
 				title: getTitle() || "",
 				tokenFound: false,
@@ -182,7 +184,7 @@ window.Page = (function() {
 			// add dimensions
 			newData.browser.center.x = newData.browser.width / 2;
 			newData.browser.center.y = newData.browser.height / 2;
-			// check page tags
+			// check and count page tags
 			newData.tags = getPageTags(newData);
 			// add trackers
 			newData.trackers = Tracker.blockOnPage(newData.domain) || "";
@@ -199,6 +201,9 @@ window.Page = (function() {
 			console.error(err);
 		}
 	}
+
+
+
 
 
 
