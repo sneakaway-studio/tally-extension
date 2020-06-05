@@ -9,30 +9,12 @@ window.Page = (function() {
 
 	/**
 	 *	Update the page mode for the current page
-	 *	- active = background, token, server, and everything else is good
-	 *	- noToken = no token or did not validate; tally can still point to trackers, prompt for token, save in bg
-	 *	- serverOffline = server is offline; tally can still point to trackers, save in bg
-	 * 	---------- *everything means the game can run using the background only -----------
-	 *	---------- for example, if token is broken or server is offline -----------
-	 *	- notActive = something really wrong with page; tally does not show at all, do not save in background
 	 */
-	function updateMode(state = "notActive") {
+	function updateMode(_mode) {
 		try {
-			// make a copy of the old mode
-			let oldMode = Object.assign({}, mode);
-			// reset current
-			mode = {
-				active: 0,
-				noToken: 0,
-				serverOffline: 0,
-				notActive: 0
-			};
-			// default
-			if (state === "active") mode.active = 1;
-			else if (state === "noToken") mode.noToken = 1;
-			else if (state === "serverOffline") mode.serverOffline = 1;
-			else if (state === "notActive") mode.notActive = 1;
-			if (DEBUG) console.log("🗒️ Page.updateMode()", state, "OLD =", oldMode, "NEW =", JSON.stringify(mode));
+			mode = _mode;
+
+			data.mode = _mode;
 		} catch (err) {
 			console.error(err);
 		}
@@ -168,6 +150,7 @@ window.Page = (function() {
 				domain: Environment.extractRootDomain(document.location.href) || "",
 				h1: getH1() || "",
 				keywords: getKeywords() || "",
+				mode: {},
 				mouseX: 0,
 				mouseY: 0,
 				mouseupFired: false,

@@ -140,8 +140,8 @@ window.Tally = (function() {
 				stop: function() {}
 			});
 
-			// only proceed if active
-			if (!Page.mode().active) return;
+			// do not allow unless fully active
+			if (!Page.data.mode.active) return;
 
 			Disguise.displayIfTrackerBlocked();
 

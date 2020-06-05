@@ -1,27 +1,18 @@
 "use strict";
 
-
 /**
  *  ______     ____
  * /_  __/__ _/ / /_ __
  *  / / / _ `/ / / // /
  * /_/  \_,_/_/_/\_, /
  *              /___/
+ *
+ *  https://tallysavestheinternet.com
+ *
  */
 
 
-
-
-
-/**
- *	TallyMain
- *	0. create global objects after all other scripts have loaded
- * 	1. get data from background
- *  2. perform start checks (data, token, Page.mode)
- */
-
-
-// 0. create global objects
+// 0. After all game scripts have loaded, create global objects
 
 // objects created on server, mirrored locally
 let tally_user = {},
@@ -125,7 +116,7 @@ window.TallyMain = (function() {
 			}
 
 			// remove trackers that have been caught
-// Tracker.removeCaughtTrackers();
+			// Tracker.removeCaughtTrackers();
 
 
 			// 2.3. Add stylesheets and debugger
@@ -172,54 +163,83 @@ window.TallyMain = (function() {
 
 
 	/**
-	 * 	Make sure Tally isn't disabled on this page | domain | subdomain | etc
+	 *	Get the page mode for the current page - Make sure Tally isn't disabled on this page | domain | subdomain | etc
+	 *
+	 *	- active =
+	 *	- noToken = no token or did not validate; tally can still point to trackers, prompt for token, save in bg
+
+	 *	- notActive =
 	 */
+
 	function getPageMode() {
 		try {
-			let str = "🧰 TallyMain.getPageMode() -> ";
+			let log = "🧰 TallyMain.getPageMode() -> ";
 
-			// the server is not online
-			if (!tally_meta.server.online) {
-				if (DEBUG) console.log(str + "Connection to Tally server is down");
-				return "serverOffline";
+			// start from scratch
+			let mode = {
+				active: 0,
+				noToken: 0,
+				serverOffline: 0,
+				notActive: 0
+			};
+
+            // NOT ACTIVE
+            // - something really wrong with page;
+            // - tally does not show at all, does not save in background or prompt for token
+
+			// Page.data failed - game cannot start at all
+			if (!prop(Page.data)) {
+				if (DEBUG) console.log(log + "No Page.data found");
+				mode.notActive = 1;
 			}
-			// Page.data failed
-			else if (!prop(Page.data)) {
-				if (DEBUG) console.log(str + "No Page.data found");
-				return "notActive";
-			}
-			// this is a disabled domain
+			// this is a disabled domain - user has added this to blocklist
 			else if (prop(tally_options.disabledDomains) && (
 					($.inArray(Page.data.domain, tally_options.disabledDomains) >= 0) ||
 					($.inArray(Page.data.subDomain, tally_options.disabledDomains) >= 0)
-                )
-            ) {
-				if (DEBUG) console.log(str + "Tally is disabled on this domain");
-				return "notActive";
+				)) {
+				if (DEBUG) console.log(log + "Tally is disabled on this domain");
+				mode.notActive = 1;
 			}
 			// this is not a web page (e.g. a PDF or image)
 			else if (Page.data.contentType != "text/html") {
-				if (DEBUG) console.log(str + "Tally is disabled on pages like " + Page.data.contentType);
-				return "notActive";
+				if (DEBUG) console.log(log + "Tally is disabled on pages like " + Page.data.contentType);
+				mode.notActive = 1;
 			}
 			// this is a file:// URI
 			else if (Page.data.url.indexOf("file://") > -1) {
-				if (DEBUG) console.log(str + "Tally is disabled on file:// urls");
-				return "notActive";
+				if (DEBUG) console.log(log + "Tally is disabled on file:// urls");
+				mode.notActive = 1;
 			}
 			// this is a popup / signin that is really small
 			else if (Page.data.browser.width < 600) {
-				if (DEBUG) console.log(str + "Tally is disabled on small windows");
-				return "notActive";
+				if (DEBUG) console.log(log + "Tally is disabled on small windows");
+				mode.notActive = 1;
 			}
-			// there is a problem with the token
+
+			// SERVER IS OFFLINE
+			// - tally can still point to trackers, save in bg
+			// - the game can run using the background only, for example, if token is broken or server is offline
+			if (!tally_meta.server.online) {
+				if (DEBUG) console.log(log + "Connection to Tally server is down");
+				mode.serverOffline = 1;
+			}
+
+            // NO TOKEN
+			// - there is a problem with the token, we may prompt the player later assuming server is online
 			else if (tally_meta.token.status !== "ok") {
-				if (DEBUG) console.log(str + "tally_meta.token.status =", tally_meta.token.status, tally_meta);
-				return "noToken";
-			} else {
-				if (DEBUG) console.log(str + "All is good, setting mode=active");
-				return "active";
+				if (DEBUG) console.log(log + "tally_meta.token.status =", tally_meta.token.status, tally_meta);
+				mode.noToken = 1;
 			}
+
+			// ACTIVE
+			// - background, token, server, and everything else (like the above) is good, let's roll
+			if (mode.notActive == 0 && mode.serverOffline == 0 && mode.noToken == 0) {
+				if (DEBUG) console.log(log + "All is good, setting mode=active");
+				mode.active = 1;
+			}
+
+            // return to save in Page.mode
+            return mode;
 
 		} catch (err) {
 			console.error(err);
@@ -234,14 +254,13 @@ window.TallyMain = (function() {
 			if (DEBUG) Debug.dataReportHeader("🧰 TallyMain.startGameOnPage()", "#", "before");
 
 			// allow offline
-			if (Page.mode().notActive) return;
+			if (Page.mode().notActive) return console.warn("🧰 TallyMain.startGameOnPage() Page.mode() =", Page.mode());
 			// don't allow if mode disabled
 			if (tally_options.gameMode === "disabled") return;
 
-			// if (DEBUG) console.log("🧰 TallyMain.startGameOnPage() [1]");
-
 
 			// 4.1. Progress and event checks
+			if (DEBUG) console.log("🧰 TallyMain.startGameOnPage() [4.1] -> Check progress");
 
 			// check for, and possibly complete any progress
 			Progress.check("TallyMain");
@@ -250,6 +269,7 @@ window.TallyMain = (function() {
 
 
 			// 4.2. Check and show items
+			if (DEBUG) console.log("🧰 TallyMain.startGameOnPage() [4.2] -> Add items");
 
 			// potentially add a consumable
 			Consumable.randomizer();
@@ -259,15 +279,22 @@ window.TallyMain = (function() {
 			Demo.start();
 
 
-            // checks to perform after user has interacted with page
-            setTimeout(function() {
-                // potentially add badge
-                Badge.check();
-                setTimeout(function() {
-                    // check for, and potentially add monsters on the page
-                    MonsterCheck.check();
-                }, 500);
-            }, 1000);
+			// checks to perform after user has interacted with page
+			setTimeout(function() {
+				if (DEBUG) console.log("🧰 TallyMain.startGameOnPage() [4.3] -> Check badges");
+				// potentially add badge
+				Badge.check();
+
+				// after a bit more time
+				setTimeout(function() {
+					if (DEBUG) console.log("🧰 TallyMain.startGameOnPage() [4.4] -> Check monsters");
+					// check for, and potentially add monsters on the page
+					MonsterCheck.check();
+
+					console.log("Progress.pageTagsProgressMatches()", Progress.pageTagsProgressMatches())
+				}, 500);
+
+			}, 1000);
 
 
 

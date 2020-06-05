@@ -157,7 +157,7 @@ window.TallyStorage = (function() {
 	 */
 	async function saveTokenFromDashboard(data) {
 		try {
-			// do not allow offline
+			// do not allow if server offline 
 			if (Page.mode().serverOffline) return;
 
 			if (DEBUG) console.log('🗄️ < TallyStorage.saveTokenFromDashboard() [1] 🔑 SAVING', data);

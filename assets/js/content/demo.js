@@ -21,8 +21,8 @@ window.Demo = (function() {
 	// (maybe) set demo mode "on"
 	function start() {
 		try {
-            // do not allow offline
-            if (!Page.mode().active) return;
+            // do not allow unless fully active
+            if (!Page.data.mode.active) return;
             // do not allow if mode !demo
             if (tally_options.gameMode !== "demo") return;
 
@@ -189,11 +189,11 @@ window.Demo = (function() {
 
 	function goToNewPage(now) {
 		try {
-            // do not allow offline
-            if (!Page.mode().active) return;
+            // do not allow unless fully active
+            if (!Page.data.mode.active) return;
             // do not allow if mode !demo
             if (tally_options.gameMode !== "demo") return;
-		
+
 			// occassionally go to new site
 			if (Math.random() > 0.5) alreadyTriedToFollowLink = true;
 			// always go to random for now so it doesn't open new tabs
