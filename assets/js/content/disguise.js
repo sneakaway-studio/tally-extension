@@ -31,6 +31,14 @@ window.Disguise = (function() {
 	 */
 	function displayIfTrackerBlocked(playDialogue = true) {
 		try {
+
+			if (DEBUG) console.log("😎 Disguise.displayIfTrackerBlocked() [1]",
+				"tally_user.trackers =", tally_user.trackers,
+					"Page.data.trackers =", Page.data.trackers
+			);
+
+
+
 			// if there are trackers blocked and this page has a tracker
 			if (!tally_user.trackers || Page.data.trackers.length < 1) return;
 			// if there are trackers blocked

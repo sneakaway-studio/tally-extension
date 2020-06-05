@@ -266,7 +266,7 @@ window.Battle = (function() {
 			let trackerUpdate = {
 				"name": Battle.details.monsterTracker,
 				"mid": Battle.details.mid,
-				"blocked": Battle.details.mid
+				"blocked": 0 // false be default
 			};
 
 			// remove monster and save tally_nearby_monsters

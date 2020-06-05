@@ -96,11 +96,13 @@ window.Monster = (function() {
 
 			// only proceed if mid is valid
 			if (!mid || mid <= 0) return;
+
 			// if it doesn't yet have a tracker then try to get one
 			if (tally_nearby_monsters[mid].tracker === "")
 				tally_nearby_monsters[mid].tracker = FS_Object.randomArrayIndex(Page.data.trackers) || "";
 			// return if we don't have one
 			if (tally_nearby_monsters[mid].tracker === "") return;
+
 			// make sure everything has loaded before running
 			setTimeout(function() {
 				// set currentMID
