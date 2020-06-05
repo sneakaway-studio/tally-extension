@@ -16,40 +16,9 @@ window.TallyData = (function() {
 		// interval to watch when pushUpdate() necessary
 		managerTimeout = {},
 		// time in millis to wait until sending update
-		managerWaitTime = 2000,
+		managerWaitTime = 3000,
 		// only allow one manager to be called
 		managerWorking = false;
-
-
-
-	/**
-	 * 	Called after handle() - Send update to server after n milliseconds
-	 */
-	function manager() {
-		try {
-			// make sure manager isn't already waiting to send updates
-			if (managerWorking) return;
-			managerWorking = true;
-			// if (DEBUG) console.log("💾 TallyData.manager() CHECKING FOR UPDATE");
-			// start countdown
-			managerTimeout = setTimeout(function() {
-				// if there are no edits then kill interval
-				if (backgroundUpdateEdits == 0) {
-					clearTimeout(managerTimeout);
-					// if (DEBUG) console.log("💾 TallyData.manager() NO UPDATES FOUND ");
-				}
-				else {
-					if (DEBUG) console.log("💾 TallyData.manager() SENDING TO pushUpdate()");
-					// update background / server if anything has changed
-					pushUpdate();
-				}
-
-			}, managerWaitTime);
-		} catch (err) {
-			console.error(err);
-		}
-	}
-
 
 
 
@@ -108,14 +77,13 @@ window.TallyData = (function() {
 		}
 	}
 
-
-
 	/**
-	 *	Handle a basic unit of data *NOTE: prop must be defined above in createBackgroundUpdate()
+	 *	Queue a basic unit of data inside backgroundUpdate
+	 *	** NOTE: prop must be defined above in createBackgroundUpdate()
 	 */
-	function handle(type = null, prop = null, val = null, caller = "") {
+	function queue(type = null, prop = null, val = null, caller = "") {
 		try {
-			let log = "💾 TallyData.handle()";
+			let log = "💾 TallyData.queue()";
 			// if (DEBUG) console.log(log, "[0]", type, prop, val, caller);
 			if (DEBUG) Debug.dataReportHeader(log + " [0] " + type + "." + prop, "#", "before");
 
@@ -136,7 +104,7 @@ window.TallyData = (function() {
 			if (DEBUG) console.log(log, "[1] backgroundUpdateEdits =", backgroundUpdateEdits, unit);
 			// console.trace();
 
-
+			// ??
 			// 1. saveData - so that it is visible immediately in game
 
 			// save local edits (even though these will be overwritten)
@@ -178,10 +146,10 @@ window.TallyData = (function() {
 
 			// if we made it this far then we know the backgroundUpdate was edited
 			backgroundUpdateEdits++;
-			// console.log("💾 TallyData.handle() [2]", backgroundUpdate);
+			// console.log("💾 TallyData.queue() [2]", backgroundUpdate);
 			// console.log(JSON.stringify(backgroundUpdate));
 
-			// start a timer to see if we need to send update soon
+			// start manager (a timer) to see if we need to send update soon
 			manager();
 
 		} catch (err) {
@@ -189,6 +157,34 @@ window.TallyData = (function() {
 		}
 	}
 
+
+	/**
+	 * 	Called after queue() - Sends update to server after n milliseconds and resets
+	 */
+	function manager() {
+		try {
+			// make sure manager isn't already waiting to send updates
+			if (managerWorking) return;
+			managerWorking = true;
+			// if (DEBUG) console.log("💾 TallyData.manager() CHECKING FOR UPDATE");
+			// start countdown
+			managerTimeout = setTimeout(function() {
+				// if there are no edits then kill interval
+				if (backgroundUpdateEdits == 0) {
+					clearTimeout(managerTimeout);
+					// if (DEBUG) console.log("💾 TallyData.manager() NO UPDATES FOUND ");
+				}
+				else {
+					if (DEBUG) console.log("💾 TallyData.manager() SENDING TO pushUpdate()");
+					// update background / server if anything has changed
+					pushUpdate();
+				}
+
+			}, managerWaitTime);
+		} catch (err) {
+			console.error(err);
+		}
+	}
 
 	/**
 	 *	Check and send backgroundUpdate if it has been edited
@@ -246,7 +242,7 @@ window.TallyData = (function() {
 	// PUBLIC
 	return {
 		manager: manager,
-		handle: handle,
+		queue: queue,
 		backgroundUpdate: backgroundUpdate,
 		returnBackgroundUpdate: function() {
 			return backgroundUpdate;

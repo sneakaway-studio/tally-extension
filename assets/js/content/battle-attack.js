@@ -457,7 +457,7 @@ window.BattleAttack = (function() {
 			// calculate and show award for beating the monster
 			let increase = FS_Number.round(Battle.details.monsterLevel * 10);
 			// save in background (and on server)
-			TallyData.handle("scoreData", "score", increase);
+			TallyData.queue("scoreData", "score", increase);
 			// show in log and tell player they blocked tracker
 			BattleConsole.log("You earned " + increase + " XP " + "and blocked the <span class='tally text-green'>" +
 				Battle.details.monsterTracker + " tracker</span> from grabbing your data!");
@@ -632,7 +632,7 @@ window.BattleAttack = (function() {
 			// update progress
 			Progress.update("attacksAwarded", FS_Object.objLength(tally_user.attacks));
 			// save in background (and on server)
-			TallyData.handle("itemData", "attacks", attack, "💥 BattleAttack.rewardAttack()");
+			TallyData.queue("itemData", "attacks", attack, "💥 BattleAttack.rewardAttack()");
 
 			// tell user
 			Dialogue.showStr("You earned the " + attack.name + " " + attack.type + "!", "happy");

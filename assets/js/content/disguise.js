@@ -127,7 +127,7 @@ window.Disguise = (function() {
 				console.log("😎 Disguise.checkAndReward() [3] - Disguise has not be received before", tally_user.disguises);
 
 				// save in background (and on server)
-				TallyData.handle("itemData", "disguises", disguise, "😎 Disguise.checkAndReward()");
+				TallyData.queue("itemData", "disguises", disguise, "😎 Disguise.checkAndReward()");
 				// update progress
 				Progress.update("disguisesAwarded", FS_Object.objLength(tally_user.disguises));
 				// tell user

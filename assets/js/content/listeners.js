@@ -162,7 +162,7 @@ window.TallyListeners = (function() {
 					eventData.action = "like";
 					scoreData.likes++;
 					// add to likes
-					TallyData.handle("scoreData", "likes", 1, caller);
+					TallyData.queue("scoreData", "likes", 1, caller);
 				}
 				// check if it is a stackoverflow
 				else if (target.className == "vote" || target.className == "vote-up-off") {
@@ -187,13 +187,13 @@ window.TallyListeners = (function() {
 				 */
 
 				// if we are this far it is a click
-				TallyData.handle("scoreData", "clicks", 1, caller);
+				TallyData.queue("scoreData", "clicks", 1, caller);
 				// store time
-				TallyData.handle("pageData", "time", Page.data.time, caller);
+				TallyData.queue("pageData", "time", Page.data.time, caller);
 				// reset page time
 				Page.data.time = 0;
 				// add and update score
-				TallyData.handle("scoreData", "score", GameData.clickScore[eventData.action], caller);
+				TallyData.queue("scoreData", "score", GameData.clickScore[eventData.action], caller);
 
 				// when a user clicks one of the following happens
 				// 1) dynamic page (react, etc.) and the url didn't changed

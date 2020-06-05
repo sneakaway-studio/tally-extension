@@ -125,7 +125,7 @@ window.TallyMain = (function() {
 			}
 
 			// remove trackers that have been caught
-			Tracker.removeCaughtTrackers();
+// Tracker.removeCaughtTrackers();
 
 
 			// 2.3. Add stylesheets and debugger
@@ -266,8 +266,8 @@ window.TallyMain = (function() {
                 setTimeout(function() {
                     // check for, and potentially add monsters on the page
                     MonsterCheck.check();
-                }, 1000);
-            }, 500);
+                }, 500);
+            }, 1000);
 
 
 
@@ -333,7 +333,7 @@ window.TallyMain = (function() {
 			// save in background
 			TallyStorage.saveData("tally_user", tally_user, "🧰 TallyMain.removeFlag()");
 			// save in background (and on server)
-			TallyData.handle("itemData", "flags", flag, "🧰 TallyMain.removeFlag()");
+			TallyData.queue("itemData", "flags", flag, "🧰 TallyMain.removeFlag()");
 		}
 	}
 

@@ -296,9 +296,9 @@ window.Battle = (function() {
 			}
 
 			// add monster to update
-			TallyData.handle("itemData", "monsters", monsterUpdate);
+			TallyData.queue("itemData", "monsters", monsterUpdate);
 			// add tracker to update
-			TallyData.handle("itemData", "trackers", trackerUpdate);
+			TallyData.queue("itemData", "trackers", trackerUpdate);
 			// update server immediately
 			TallyData.pushUpdate();
 

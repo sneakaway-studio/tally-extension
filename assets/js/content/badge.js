@@ -264,7 +264,7 @@ window.Badge = (function() {
 			// play sound
 			Sound.playRandomPowerup();
 			// save in background (and on server)
-			TallyData.handle("itemData", "badges", badge, "🏆 Badge.award()");
+			TallyData.queue("itemData", "badges", badge, "🏆 Badge.award()");
 
 		} catch (err) {
 			console.error(err);

@@ -237,7 +237,7 @@ window.Consumable = (function() {
 			Progress.update("consumables", count("all"));
 			if (consumable.type == "cookie") Progress.update("cookies", count("cookie"));
 			// save in background (and on server)
-			TallyData.handle("itemData", "consumables", consumable, "🍪 Consumables.collect()");
+			TallyData.queue("itemData", "consumables", consumable, "🍪 Consumables.collect()");
 			// delay then update stats
 			setTimeout(function() {
 				// update stats

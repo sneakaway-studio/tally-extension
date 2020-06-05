@@ -112,7 +112,7 @@ window.Progress = (function() {
 			// if an update happened
 			if (newVal !== currentVal) {
 				// save in background (and on server)
-				TallyData.handle("itemData", "progress", obj, "🕹️ Progress.update()");
+				TallyData.queue("itemData", "progress", obj, "🕹️ Progress.update()");
 			}
 
 			// return current value so we can use it in game logic too
