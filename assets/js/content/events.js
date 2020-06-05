@@ -45,7 +45,7 @@ window.TallyEvents = (function() {
 			// don't allow if mode disabled or stealth
 			if (tally_options.gameMode === "disabled" || tally_options.gameMode === "stealth") return;
 
-			console.log("🕗 TallyEvents.checkLastActiveAndRecharge()", "00:00:00",
+			if (DEBUG) console.log("🕗 TallyEvents.checkLastActiveAndRecharge()", "00:00:00",
 				FS_String.pad(FS_Date.diffHours("now", tally_user.lastActive), 2) + ":" +
 				FS_String.pad(FS_Date.diffMinutes("now", tally_user.lastActive), 2) + ":" +
 				FS_String.pad(FS_Date.diffSeconds("now", tally_user.lastActive), 2)
@@ -64,7 +64,7 @@ window.TallyEvents = (function() {
 			// update last active
 			tally_user.lastActive = moment().format();
 			TallyStorage.saveData('tally_user', tally_user, "🕗 TallyEvents.checkLastActiveAndRecharge()");
-			console.log("🕗 TallyEvents.checkLastActiveAndRecharge()", tally_user.lastActive);
+			// if (DEBUG) console.log("🕗 TallyEvents.checkLastActiveAndRecharge()", tally_user.lastActive);
 		} catch (err) {
 			console.error(err);
 		}

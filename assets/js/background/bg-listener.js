@@ -61,6 +61,8 @@ window.Listener = (function() {
 
 				/*  GENERIC "GETTER" / "SETTER"
 				 ******************************************************************************/
+
+				// get data from background
 				else if (request.action == "getData" && request.name) {
 					console.log("👂🏼 Listener.addListener() < getData 1", request.name);
 					// build response
@@ -73,6 +75,7 @@ window.Listener = (function() {
 					// send
 					sendResponse(resp);
 				}
+				// save data in background
 				if (request.action == "saveData" && request.name && request.data) {
 					console.log("👂🏼 Listener.addListener() < saveData", request.name, request.data);
 					// save data
@@ -188,6 +191,7 @@ window.Listener = (function() {
 				// receive and log debug messages from content
 				else if (request.action == "sendBackgroundDebugMessage") {
 					Background.dataReportHeader("🐞 " + request.caller, "<", "before");
+					if (DEBUG) console.log("url =", request.str);
 					Background.dataReportHeader("/ 🐞 " + request.caller, ">", "after");
 					sendResponse({
 						"action": request.action,
@@ -278,7 +282,7 @@ window.Listener = (function() {
 					Background.runStartChecks()
 						.then(function(result) {
 							if (DEBUG) console.log("👂🏼 Listener.addListener() > resetTallyUser [2] ", result);
-							console.log(store("tally_user"));
+							if (DEBUG) console.log(store("tally_user"));
 							if (DEBUG) console.log("👂🏼 Listener.addListener() > resetTallyUser [3] ", result);
 							// send response with latest
 							sendResponse({
@@ -303,7 +307,7 @@ window.Listener = (function() {
 				// - if server online and token good then send to server
 				// - receive and reply to content with tally_user
 				else if (request.action == "sendUpdateToBackground") {
-					if (DEBUG) console.log("👂🏼 Listener.addListener() < sendUpdateToBackground", JSON.stringify(request.data));
+					// if (DEBUG) console.log("👂🏼 Listener.addListener() < sendUpdateToBackground", JSON.stringify(request.data));
 
 					let _tally_meta = store("tally_meta"),
 						_tally_secret = store("tally_secret");
@@ -333,7 +337,7 @@ window.Listener = (function() {
 						data: JSON.stringify(request.data)
 					}).done(result => {
 						// result contains tally_user
-						console.log("👂🏼 Listener.addListener() > sendUpdateToBackground - RESULT =", JSON.stringify(result));
+						// if (DEBUG) console.log("👂🏼 Listener.addListener() > sendUpdateToBackground - RESULT =", JSON.stringify(result));
 
 						// merge attack data from server with game data properties
 						result.attacks = Server.mergeAttackDataFromServer(result.attacks);

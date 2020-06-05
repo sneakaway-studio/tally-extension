@@ -13,7 +13,10 @@ window.Tracker = (function() {
 	 */
 	function blockOnPage(domain) {
 		try {
-			if (DEBUG) console.log("🕷️ Tracker.blockOnPage() [0]");
+			let log = "🕷️ Tracker.blockOnPage()";
+
+			if (DEBUG) Debug.dataReportHeader(log, "#", "before");
+
 			let foundObj = {},
 				foundArr = [];
 
@@ -31,7 +34,7 @@ window.Tracker = (function() {
 					// skip
 					// continue;
 				}
-				if (DEBUG) console.log("🕷️ Tracker.blockOnPage() [1]",
+				if (DEBUG) console.log(log, "[1]",
 					"scriptSrc =", scripts[i].src,
 					"scriptDomain =", scriptDomain
 				);
@@ -39,7 +42,7 @@ window.Tracker = (function() {
 
 				// otherwise check disconnect services
 				 if (foundArr.indexOf(scriptDomain) < 0 && TrackersByUrl.data[scriptDomain] >= 0) {
-					if (DEBUG) console.log("🕷️ Tracker.blockOnPage() [2] 👀", scriptSrc, scriptDomain);
+					if (DEBUG) console.log(log, "[1]", scriptSrc, scriptDomain);
 					foundArr.push(scriptDomain);
 				}
 

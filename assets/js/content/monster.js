@@ -64,7 +64,7 @@ window.Monster = (function() {
 	 */
 	function returnNewMonsterLevel() {
 		try {
-			if (DEBUG) console.log("👿 Monster.returnNewMonsterLevel()", tally_user);
+			// if (DEBUG) console.log("👿 Monster.returnNewMonsterLevel()");
 			let userLevel = tally_user.level,
 				factor = 0.5;
 			// use factor to keep the level different but near the user's level
@@ -75,7 +75,8 @@ window.Monster = (function() {
 				max = Math.ceil(userLevel + (userLevel * factor));
 			let level = Math.floor(Math.random() * (max - min) + min) - 1;
 			if (level < 1) level = 1;
-			if (DEBUG) console.log("👿 Monster.returnNewMonsterLevel()", tally_user, userLevel, min, max, level);
+			if (DEBUG) console.log("👿 Monster.returnNewMonsterLevel()",
+				"userLevel =", userLevel, "min, max =", min, max, "level =", level);
 			return level;
 		} catch (err) {
 			console.error(err);

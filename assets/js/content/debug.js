@@ -65,14 +65,24 @@ window.Debug = (function() {
 	 *	Set all the debug props to...
 	 */
 	function setAll(state) {
-		for (var key in ALL) {
-			if (ALL.hasOwnProperty(key)) {
-				ALL[key] = state;
+		try {
+			if (DEBUG) console.log("🐞 Debug.setAll() state =",state);
+			for (var key in ALL) {
+				if (ALL.hasOwnProperty(key)) {
+					ALL[key] = state;
+				}
 			}
+		} catch (err) {
+			console.error(err);
 		}
 	}
 	// setAll(true);
 	// setAll(false);
+
+	if (!Config.options.debugging) {
+		DEBUG = false;
+		setAll(false);
+	}
 
 
 	/**
@@ -83,7 +93,7 @@ window.Debug = (function() {
 			// time the request
 			let startTime = new Date().getTime();
 
-			// if (DEBUG) console.log("🐞 Debug.sendBackgroundDebugMessage()", caller, str);
+			if (DEBUG) console.log("🐞 Debug.sendBackgroundDebugMessage()", caller, str);
 			let msg = {
 				'action': 'sendBackgroundDebugMessage',
 				'caller': caller,
@@ -91,7 +101,7 @@ window.Debug = (function() {
 			};
 			chrome.runtime.sendMessage(msg, function(response) {
 				let endTime = new Date().getTime();
-				if (DEBUG) console.log("🐞 Debug.sendBackgroundDebugMessage() time = " + (endTime - startTime) + "ms, RESPONSE =", JSON.stringify(response));
+				// if (DEBUG) console.log("🐞 Debug.sendBackgroundDebugMessage() time = " + (endTime - startTime) + "ms, RESPONSE =", JSON.stringify(response));
 			});
 		} catch (err) {
 			console.error(err);
@@ -130,14 +140,14 @@ window.Debug = (function() {
 			$("#tyd").draggable({
 				axis: "y",
 				drag: function() {
-					//console.log("🐞 Debug.add() draggable:drag");
+					//if (DEBUG) console.log("🐞 Debug.add() draggable:drag");
 					// var offset = $(this).offset();
 					// var xPos = offset.left;
 					// var yPos = offset.top - $(window).scrollTop();
 					// tally_options.debuggerPosition = [xPos,yPos];
 				},
 				stop: function() {
-					//console.log("🐞 Debug.add() draggable:stop");
+					//if (DEBUG) console.log("🐞 Debug.add() draggable:stop");
 					//TallyStorage.saveData("tally_options",tally_options,"tyd.draggable.stop");
 				}
 			});
@@ -203,14 +213,14 @@ window.Debug = (function() {
 			if (debugButtonListenersAdded) return;
 			debugButtonListenersAdded = true;
 
-			console.log("🐞 Debug.addDebugButtons()");
+			if (DEBUG) console.log("🐞 Debug.addDebugButtons()");
 
 			// add listener for reset buttons
 			$(document).on("click", '#resetTallyUserFromBackground', function() {
 				TallyMain.getDataFromBackground(TallyMain.contentStartChecks);
 			});
 			$(document).on("click", '#resetTallyUserFromServer', function() {
-				console.log("🐞 Debug.update() -> resetTallyUser()");
+				if (DEBUG) console.log("🐞 Debug.update() -> resetTallyUser()");
 				// call without token data (assume it is fine)
 				// TallyStorage.resetTallyUser();
 			});

@@ -11,6 +11,8 @@ window.TallyData = (function() {
 		backgroundUpdate = null,
 		// number of edits to backgroundUpdate
 		backgroundUpdateEdits = 0,
+		// callers of edits to backgroundUpdate
+		backgroundUpdateEditsCallers = [],
 		// if the current backgroundUpdate is being sent to background
 		backgroundUpdateInProgress = false,
 		// interval to watch when pushUpdate() necessary
@@ -85,7 +87,7 @@ window.TallyData = (function() {
 		try {
 			let log = "💾 TallyData.queue()";
 			// if (DEBUG) console.log(log, "[0]", type, prop, val, caller);
-			if (DEBUG) Debug.dataReportHeader(log + " [0] " + type + "." + prop, "#", "before");
+			if (DEBUG) Debug.dataReportHeader(log + " [0] " + " caller = " + caller + "; " + type + "." + prop, "#", "before");
 
 			// everything is required
 			if (!FS_Object.prop(tally_user)) return console.log(log, "missing: tally_user", type, prop, val, caller);
@@ -146,8 +148,10 @@ window.TallyData = (function() {
 
 			// if we made it this far then we know the backgroundUpdate was edited
 			backgroundUpdateEdits++;
-			// console.log("💾 TallyData.queue() [2]", backgroundUpdate);
-			// console.log(JSON.stringify(backgroundUpdate));
+			backgroundUpdateEditsCallers.push(caller);
+
+			// if (DEBUG) console.log("💾 TallyData.queue() [2]", backgroundUpdate);
+			// if (DEBUG) console.log(JSON.stringify(backgroundUpdate));
 
 			// start manager (a timer) to see if we need to send update soon
 			manager();
@@ -175,9 +179,9 @@ window.TallyData = (function() {
 					// if (DEBUG) console.log("💾 TallyData.manager() NO UPDATES FOUND ");
 				}
 				else {
-					if (DEBUG) console.log("💾 TallyData.manager() SENDING TO pushUpdate()");
+					// if (DEBUG) console.log("💾 TallyData.manager() SENDING TO pushUpdate()");
 					// update background / server if anything has changed
-					pushUpdate();
+					pushUpdate("💾 TallyData.manager()");
 				}
 
 			}, managerWaitTime);
@@ -189,9 +193,9 @@ window.TallyData = (function() {
 	/**
 	 *	Check and send backgroundUpdate if it has been edited
 	 */
-	function pushUpdate() {
+	function pushUpdate(caller) {
 		try {
-			if (DEBUG) Debug.dataReportHeader("💾 < TallyData.pushUpdate() [0]", "#", "before");
+			if (DEBUG) Debug.dataReportHeader("💾 < TallyData.pushUpdate() [0] caller = " + caller, "#", "before");
 
 			// no need to send if not updated
 			if (backgroundUpdateEdits < 1) return;
@@ -200,7 +204,9 @@ window.TallyData = (function() {
 			// set to true to prevent additional sending
 			backgroundUpdateInProgress = true;
 
-			console.log("💾 TallyData.pushUpdate() [1]", backgroundUpdate);
+			if (DEBUG) console.log("💾 TallyData.pushUpdate() [1]", backgroundUpdate,
+				"backgroundUpdateEditsCallers =",backgroundUpdateEditsCallers
+			);
 
 
 
@@ -220,8 +226,9 @@ window.TallyData = (function() {
 
 				// update debugger
 				Debug.update();
-				// set # edits back to zero
+				// set # edits and callers back to zero
 				backgroundUpdateEdits = 0;
+				backgroundUpdateEditsCallers = [];
 				// set "in progress" back to false
 				backgroundUpdateInProgress = false;
 				// remove any intervals / timeouts

@@ -202,7 +202,7 @@ window.TallyListeners = (function() {
 				// 4) we are headed to a new page
 				// in any case, check, send, and reset update for every click
 				// update server immediately
-				TallyData.pushUpdate();
+				TallyData.pushUpdate(caller);
 
 
 				/**

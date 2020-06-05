@@ -181,16 +181,16 @@ window.Server = (function() {
 					"token": _tally_secret.token
 				})
 			}).done(result => {
-				console.log("📟 Server.getTallyUser() DONE %c" + JSON.stringify(result.username), Debug.styles.green );
+				if (DEBUG) console.log("📟 Server.getTallyUser() DONE %c" + JSON.stringify(result.username), Debug.styles.green );
 				// merge attack data from server with tally_user data properties
 				result.attacks = Server.mergeAttackDataFromServer(result.attacks);
 
 			}).fail(error => {
-				console.error("📟 Server.getTallyUser() FAIL", JSON.stringify(error));
+				if (DEBUG) console.error("📟 Server.getTallyUser() FAIL", JSON.stringify(error));
 				// server might not be online
 				checkIfOnline();
 			}).always((result) => {
-				console.log("📟 Server.getTallyUser() ALWAYS", JSON.stringify(result.username));
+				if (DEBUG) console.log("📟 Server.getTallyUser() ALWAYS", JSON.stringify(result.username));
 				// store result
 				store("tally_user", result);
 			});
@@ -244,7 +244,7 @@ window.Server = (function() {
 				_tally_top_monsters = {},
 				username = "";
 
-			console.log("📟 Server.returnTopMonsters() [1]", _tally_meta, _tally_user);
+			if (DEBUG) console.log("📟 Server.returnTopMonsters() [1]", _tally_meta, _tally_user);
 
 			// return early if !server or !token
 			if (!_tally_meta.server.online || _tally_meta.token.status != "ok") return;
@@ -264,7 +264,7 @@ window.Server = (function() {
 				// treat all server data as master
 				_tally_top_monsters = convertArrayToObject(result.topMonsters, "mid");
 
-				console.log("📟 Server.returnTopMonsters() [2] RESULT =", JSON.stringify(_tally_top_monsters));
+				// if (DEBUG) console.log("📟 Server.returnTopMonsters() [2] RESULT =", JSON.stringify(_tally_top_monsters));
 
 				store("tally_user", _tally_user);
 				store("tally_top_monsters", _tally_top_monsters);

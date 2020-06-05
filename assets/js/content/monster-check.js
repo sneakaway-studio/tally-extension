@@ -35,7 +35,7 @@ window.MonsterCheck = (function() {
 	function checkNearbyMonsterTimes() {
 		try {
 			let log = "👿 MonsterCheck.checkNearbyMonsterTimes()";
-			if (DEBUG) Debug.dataReportHeader(log, "⊙", "before", 15);
+			if (DEBUG) Debug.dataReportHeader(log, "#", "before", 15);
 
 			let now = Date.now(),
 				deleteList = [];
@@ -60,9 +60,8 @@ window.MonsterCheck = (function() {
 				}
 			}
 			// log deleted to console
-			if (DEBUG)
-				if (deleteList.length > 0)
-					console.log(log, "[2] -> DELETING", deleteList);
+			if (DEBUG) if (deleteList.length > 0) console.log(log, "[2] -> DELETING", deleteList);
+			// save
 			TallyStorage.saveData("tally_nearby_monsters", tally_nearby_monsters, log);
 
 			// set the skin color
@@ -118,7 +117,7 @@ window.MonsterCheck = (function() {
 	function handleMatch(mid) {
 		try {
 			let log = "👿 MonsterCheck.handleMatch()";
-			if (DEBUG) console.log(log, '[1] mid=' + mid);
+			// if (DEBUG) console.log(log, '[1] mid=' + mid);
 			if (mid && mid > 0 && tally_nearby_monsters && MonsterData.dataById[mid] && tally_nearby_monsters[mid]) {
 				if (DEBUG) console.log(log, MonsterData.dataById[mid].slug,
 					"stage=" + tally_nearby_monsters[mid].stage);
@@ -129,7 +128,7 @@ window.MonsterCheck = (function() {
 
 			// if the monster id does not exist in nearby_monsters
 			if (!prop(tally_nearby_monsters[mid])) {
-				if (DEBUG) console.log(log, '[2] mid NOT IN nearby_monsters');
+				if (DEBUG) console.log(log, '[2] mid '+ mid +' NOT IN nearby_monsters');
 				// add it
 				tally_nearby_monsters[mid] = Monster.create(mid);
 			}
@@ -218,6 +217,7 @@ window.MonsterCheck = (function() {
 			// reset one
 			// if (tally_nearby_monsters[mid])
 			// 	delete tally_nearby_monsters[mid];
+
 			// reset them all
 			tally_nearby_monsters = {};
 			TallyStorage.saveData("tally_nearby_monsters", tally_nearby_monsters, "👿 MonsterCheck.reset()");

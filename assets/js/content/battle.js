@@ -206,7 +206,8 @@ window.Battle = (function() {
 	function end() {
 		try {
 			if (!_active) return;
-			console.log("💥 Battle.end()");
+			let log = "💥 Battle.end()";
+			console.log(log);
 			_active = false;
 			// hide console
 			BattleConsole.hide();
@@ -300,7 +301,7 @@ window.Battle = (function() {
 			// add tracker to update
 			TallyData.queue("itemData", "trackers", trackerUpdate);
 			// update server immediately
-			TallyData.pushUpdate();
+			TallyData.pushUpdate(log);
 
 			// reload page if tally won (because it was exploded)
 			if (Battle.details.winner === "tally") {

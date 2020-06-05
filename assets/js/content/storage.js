@@ -18,13 +18,13 @@ window.TallyStorage = (function() {
 	 */
 	function getDataFromServer(url, callback) {
 		try {
-			//if (DEBUG) console.log("💾 < TallyStorage.getDataFromServer()", url);
+			//if (DEBUG) console.log("🗄️ < TallyStorage.getDataFromServer()", url);
 			let msg = {
 				'action': 'getDataFromServer',
 				'url': url
 			};
 			chrome.runtime.sendMessage(msg, function(response) {
-				if (DEBUG) console.log("💾 > TallyStorage.getDataFromServer() RESPONSE =", JSON.stringify(response));
+				if (DEBUG) console.log("🗄️ > TallyStorage.getDataFromServer() RESPONSE =", JSON.stringify(response));
 				//TallyMain.sync(start);
 				callback(response);
 			});
@@ -38,13 +38,13 @@ window.TallyStorage = (function() {
 	 */
 	async function getData(name, caller = "") {
 		try {
-			if (DEBUG) console.log("💾 < TallyStorage.getData()", name, caller);
+			if (DEBUG) console.log("🗄️ < TallyStorage.getData()", name, caller);
 			let msg = {
 				'action': 'getData',
 				'name': name
 			};
 			chrome.runtime.sendMessage(msg, function(response) {
-				if (DEBUG) console.log("💾 > TallyStorage.getData() RESPONSE =", name, JSON.stringify(response));
+				if (DEBUG) console.log("🗄️ > TallyStorage.getData() RESPONSE =", name, JSON.stringify(response));
 				return response.data;
 			});
 		} catch (err) {
@@ -52,7 +52,7 @@ window.TallyStorage = (function() {
 		}
 	}
 	/**
-	 *	Generic saveData() function
+	 *	Generic saveData() function - saves in browser storage only
 	 */
 	function saveData(name, data, caller = "") {
 		try {
@@ -61,9 +61,10 @@ window.TallyStorage = (function() {
 				'name': name,
 				'data': data
 			};
-			if (DEBUG) console.log("💾 < TallyStorage.saveData()", name, msg, caller);
+			if (DEBUG) console.log("🗄️ < TallyStorage.saveData() <", caller, msg);
 			chrome.runtime.sendMessage(msg, function(response) {
-				if (DEBUG) console.log("💾 > TallyStorage.saveData() RESPONSE =", name, caller, JSON.stringify(response));
+				// if (DEBUG) console.log("🗄️ > TallyStorage.saveData() RESPONSE =", name, caller, JSON.stringify(response));
+				// no response needed
 				//return response.data;
 			});
 		} catch (err) {
@@ -80,9 +81,9 @@ window.TallyStorage = (function() {
 	 */
 	function saveTallyUser(name, obj, caller = "") {
 		try {
-			if (DEBUG) console.log("💾 < TallyStorage.saveTallyUser()", name, obj, caller, "tally_user =", tally_user);
+			if (DEBUG) console.log("🗄️ < TallyStorage.saveTallyUser()", name, obj, caller, "tally_user =", tally_user);
 			if (!FS_Object.prop(tally_user.progress)) {
-				console.error("💾 < TallyStorage.saveTallyUser() NO tally_user");
+				console.error("🗄️ < TallyStorage.saveTallyUser() NO tally_user");
 				return;
 			}
 			// get latest from background ? NO IDT this is required
@@ -96,7 +97,7 @@ window.TallyStorage = (function() {
 				'data': tally_user
 			};
 			chrome.runtime.sendMessage(msg, function(response) {
-				if (DEBUG) console.log("💾 > TallyStorage.saveTallyUser() RESPONSE =", JSON.stringify(response));
+				if (DEBUG) console.log("🗄️ > TallyStorage.saveTallyUser() RESPONSE =", JSON.stringify(response));
 				tally_user = response.data;
 			});
 		} catch (err) {
@@ -112,23 +113,23 @@ window.TallyStorage = (function() {
 	 */
 	function resetTallyUser(tokenOnPage = false, tokenData = {}) {
 		try {
-			if (DEBUG) console.log("💾 < TallyStorage.resetTallyUser()", tokenOnPage, tokenData);
+			if (DEBUG) console.log("🗄️ < TallyStorage.resetTallyUser()", tokenOnPage, tokenData);
 
 			// if we already ran
 			if (Page.data.resetTallyUserCalled)
-				return console.log("💾 TallyStorage.resetTallyUser() ALREADY PERFORMED");
+				return console.log("🗄️ TallyStorage.resetTallyUser() ALREADY PERFORMED");
 			// so we only check this once and don't check again
 			Page.data.resetTallyUserCalled = true;
 
 
-			if (DEBUG) console.log("💾 < TallyStorage.resetTallyUser()", tokenOnPage, tokenData);
+			if (DEBUG) console.log("🗄️ < TallyStorage.resetTallyUser()", tokenOnPage, tokenData);
 
 			chrome.runtime.sendMessage({
 				'action': 'resetTallyUser',
 				'tokenOnPage': tokenOnPage,
 				'tokenData': tokenData
 			}, function(response) {
-				if (DEBUG) console.log("💾 > TallyStorage.resetTallyUser() RESPONSE =", response);
+				if (DEBUG) console.log("🗄️ > TallyStorage.resetTallyUser() RESPONSE =", response);
 
 
 				// update all objects
@@ -159,7 +160,7 @@ window.TallyStorage = (function() {
 			// do not allow offline
 			if (Page.mode().serverOffline) return;
 
-			if (DEBUG) console.log('💾 < TallyStorage.saveTokenFromDashboard() [1] 🔑 SAVING', data);
+			if (DEBUG) console.log('🗄️ < TallyStorage.saveTokenFromDashboard() [1] 🔑 SAVING', data);
 
 			chrome.runtime.sendMessage({
 				'action': 'saveToken',
@@ -168,7 +169,7 @@ window.TallyStorage = (function() {
 
 				// if the token was different and it was updated ...
 				if (response.message === "new") {
-					if (DEBUG) console.log('💾 > TallyStorage.saveTokenFromDashboard() [2] 🔑 IS NEW', response);
+					if (DEBUG) console.log('🗄️ > TallyStorage.saveTokenFromDashboard() [2] 🔑 IS NEW', response);
 
 					// update all objects
 					tally_user = response.tally_user;
@@ -185,9 +186,9 @@ window.TallyStorage = (function() {
 					return true;
 
 				} else if (response.message === "same") {
-					if (DEBUG) console.log('💾 > TallyStorage.saveTokenFromDashboard() [3] 🔑 IS THE SAME', response);
+					if (DEBUG) console.log('🗄️ > TallyStorage.saveTokenFromDashboard() [3] 🔑 IS THE SAME', response);
 				} else {
-					if (DEBUG) console.log('💾 > TallyStorage.saveTokenFromDashboard() [4] 🔑 FAILED', response);
+					if (DEBUG) console.log('🗄️ > TallyStorage.saveTokenFromDashboard() [4] 🔑 FAILED', response);
 				}
 				return false;
 			});
@@ -292,7 +293,7 @@ const getUserPromise = new Promise(
 		chrome.runtime.sendMessage({
 			'action': 'getUser'
 		}, function(response) {
-			//if (DEBUG) console.log('💾 >>>>> getUserPromise()',JSON.stringify(response.data));
+			//if (DEBUG) console.log('🗄️ >>>>> getUserPromise()',JSON.stringify(response.data));
 			tally_user = response.data; // store data
 			resolve(response.data); // resolve promise
 		});
@@ -304,7 +305,7 @@ const getOptionsPromise = new Promise(
 		chrome.runtime.sendMessage({
 			'action': 'getOptions'
 		}, function(response) {
-			//if (DEBUG) console.log('💾 >>>>> getOptionsPromise()',response.data);
+			//if (DEBUG) console.log('🗄️ >>>>> getOptionsPromise()',response.data);
 			tally_options = response.data; // store data
 			resolve(response.data); // resolve promise
 		});
@@ -316,7 +317,7 @@ const getMetaPromise = new Promise(
 		chrome.runtime.sendMessage({
 			'action': 'getMeta'
 		}, function(response) {
-			//if (DEBUG) console.log('💾 >>>>> getMetaPromise()',response.data);
+			//if (DEBUG) console.log('🗄️ >>>>> getMetaPromise()',response.data);
 			tally_meta = response.data; // store data
 			resolve(response.data); // resolve promise
 		});
@@ -328,7 +329,7 @@ const getNearbyMonstersPromise = new Promise(
 		chrome.runtime.sendMessage({
 			'action': 'getNearbyMonsters'
 		}, function(response) {
-			//if (DEBUG) console.log('💾 >>>>> getNearbyMonsters()',response.data);
+			//if (DEBUG) console.log('🗄️ >>>>> getNearbyMonsters()',response.data);
 			tally_nearby_monsters = response.data; // store data
 			resolve(response.data); // resolve promise
 		});
@@ -340,7 +341,7 @@ const getStatsPromise = new Promise(
 		chrome.runtime.sendMessage({
 			'action': 'getStats'
 		}, function(response) {
-			//if (DEBUG) console.log('💾 >>>>> getStats()',response.data);
+			//if (DEBUG) console.log('🗄️ >>>>> getStats()',response.data);
 			// if stats is empty (game just installed)
 			if (FS_Object.isEmpty(response.data))
 				Stats.reset("tally");
@@ -353,11 +354,11 @@ const getStatsPromise = new Promise(
 // GET TOP MONSTERS
 const getTopMonstersPromise = new Promise(
 	(resolve, reject) => {
-		//if (DEBUG) console.log("💾 getTopMonstersPromise");
+		//if (DEBUG) console.log("🗄️ getTopMonstersPromise");
 		chrome.runtime.sendMessage({
 			'action': 'getTopMonstersPromise'
 		}, function(response) {
-			//if (DEBUG) console.log('💾 >>>>> getTopMonstersPromise()',response.data);
+			//if (DEBUG) console.log('🗄️ >>>>> getTopMonstersPromise()',response.data);
 			tally_top_monsters = response.data; // store data
 			resolve(response.data); // resolve promise
 		});

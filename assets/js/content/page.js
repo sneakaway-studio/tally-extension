@@ -101,7 +101,7 @@ window.Page = (function() {
 	 */
 	function getPageTags(data) {
 		try {
-			console.log("🗒 Page.getPageTags()");
+			// if (DEBUG) console.log("🗒 Page.getPageTags()");
 			// create array
 			let tags = [],
 				str = data.description + " " +
@@ -109,7 +109,7 @@ window.Page = (function() {
 				data.keywords + " " +
 				data.title;
 			tags = cleanStringReturnTagArray(str);
-			//console.log( "tags", JSON.stringify(tags) );
+			//if (DEBUG) console.log( "tags", JSON.stringify(tags) );
 			// delete duplicates
 			tags = removeDuplicates(tags);
 			tags = removeStopWords(null, tags);
@@ -193,7 +193,7 @@ window.Page = (function() {
 				// 	addMutationObserver();
 				addTitleChecker();
 
-			console.log("🗒 Page.getData()", newData);
+			if (DEBUG) console.log("🗒 Page.getData()", newData);
 			// show in background
 			Debug.sendBackgroundDebugMessage("🗒 Page.getData()", newData.url);
 			return newData;
@@ -227,7 +227,7 @@ window.Page = (function() {
 			if (tally_options.gameMode === "disabled") return;
 
 			new MutationObserver(function(mutations) {
-				console.log("title changed", mutations[0].target.nodeValue);
+				if (DEBUG) console.log("title changed", mutations[0].target.nodeValue);
 				restartAfterMutation("🗒 Page.addMutationObserver()");
 			}).observe(
 				document.querySelector('title'), {
@@ -246,10 +246,10 @@ window.Page = (function() {
 			let pageTitleInterval = setInterval(function() {
 				let title = getTitle();
 				if (title != data.title) {
-					//console.log("title changed", Page.data.title, " to: ",title);
+					//if (DEBUG) console.log("title changed", Page.data.title, " to: ",title);
 					restartAfterMutation("🗒 Page.addTitleChecker()");
 				} else {
-					//console.log("title is same", Page.data.title, " to: ",title);
+					//if (DEBUG) console.log("title is same", Page.data.title, " to: ",title);
 				}
 			}, 10000);
 		} catch (err) {

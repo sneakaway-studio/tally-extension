@@ -122,6 +122,8 @@ window.Consumable = (function() {
 		try {
 			// make sure there is a type
 			if (type === "") return;
+
+			if (DEBUG) Debug.dataReportHeader("🍪 Consumable.create()", "#", "before");
 			if (DEBUG) console.log("🍪 Consumable.create()", "type=" + type, "name=" + name, "num=" + num);
 
 			// store the consumable

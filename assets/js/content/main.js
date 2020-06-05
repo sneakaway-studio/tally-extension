@@ -180,12 +180,12 @@ window.TallyMain = (function() {
 
 			// the server is not online
 			if (!tally_meta.server.online) {
-				console.log(str + "Connection to Tally server is down");
+				if (DEBUG) console.log(str + "Connection to Tally server is down");
 				return "serverOffline";
 			}
 			// Page.data failed
 			else if (!prop(Page.data)) {
-				console.log(str + "No Page.data found");
+				if (DEBUG) console.log(str + "No Page.data found");
 				return "notActive";
 			}
 			// this is a disabled domain
@@ -194,30 +194,30 @@ window.TallyMain = (function() {
 					($.inArray(Page.data.subDomain, tally_options.disabledDomains) >= 0)
                 )
             ) {
-				console.log(str + "Tally is disabled on this domain");
+				if (DEBUG) console.log(str + "Tally is disabled on this domain");
 				return "notActive";
 			}
 			// this is not a web page (e.g. a PDF or image)
 			else if (Page.data.contentType != "text/html") {
-				console.log(str + "Tally is disabled on pages like " + Page.data.contentType);
+				if (DEBUG) console.log(str + "Tally is disabled on pages like " + Page.data.contentType);
 				return "notActive";
 			}
 			// this is a file:// URI
 			else if (Page.data.url.indexOf("file://") > -1) {
-				console.log(str + "Tally is disabled on file:// urls");
+				if (DEBUG) console.log(str + "Tally is disabled on file:// urls");
 				return "notActive";
 			}
 			// this is a popup / signin that is really small
 			else if (Page.data.browser.width < 600) {
-				console.log(str + "Tally is disabled on small windows");
+				if (DEBUG) console.log(str + "Tally is disabled on small windows");
 				return "notActive";
 			}
 			// there is a problem with the token
 			else if (tally_meta.token.status !== "ok") {
-				console.log(str + "tally_meta.token.status =", tally_meta.token.status, tally_meta);
+				if (DEBUG) console.log(str + "tally_meta.token.status =", tally_meta.token.status, tally_meta);
 				return "noToken";
 			} else {
-				console.log(str + "All is good, setting mode=active");
+				if (DEBUG) console.log(str + "All is good, setting mode=active");
 				return "active";
 			}
 

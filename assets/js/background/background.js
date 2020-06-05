@@ -109,6 +109,7 @@ window.Background = (function() {
 	}
 
 	function dataReportHeader(title, char, pos) {
+		// console.trace();
 		if (!DEBUG) return;
 		// make string
 		let line = "";
