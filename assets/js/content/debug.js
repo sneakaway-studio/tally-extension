@@ -93,7 +93,7 @@ window.Debug = (function() {
 			// time the request
 			let startTime = new Date().getTime();
 
-			if (DEBUG) console.log("🐞 Debug.sendBackgroundDebugMessage()", caller, str);
+			// if (DEBUG) console.log("🐞 Debug.sendBackgroundDebugMessage()", caller, str);
 			let msg = {
 				'action': 'sendBackgroundDebugMessage',
 				'caller': caller,

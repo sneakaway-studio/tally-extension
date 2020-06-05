@@ -27,26 +27,43 @@ window.Badge = (function() {
 		}
 	}
 
+
+	function startNewCheck(name) {
+		// get the current badge or a "blank" one
+		let currentBadge = get(name);
+		// reset new badge level (to compare to current one)
+		let newBadgeLevel = 0;
+		// log
+		if (DEBUG) console.log("🏆 Badge.startNewCheck()", name, currentBadge);
+
+		return [currentBadge,newBadgeLevel];
+	}
+
 	/**
 	 *	1. determine if player has earned a new badge
 	 */
-	function check(type = "afterLoad") {
+	function check() {
 		try {
-			// do not allow offline
-			if (!Page.mode().active) return;
+			// do not allow unless fully active
+			if (!Page.data.mode.active) return;
 			// don't allow if mode disabled or stealth
 			if (tally_options.gameMode === "disabled" || tally_options.gameMode === "stealth") return;
 
+
 			let log = "🏆 Badge.check()",
 				currentBadge, newBadgeLevel;
-			var startNewCheck = function(name) {
-				// get the current badge or a "blank" one
-				currentBadge = get(name);
-				// reset new badge level (to compare to current one)
-				newBadgeLevel = 0;
-				// log
-				console.log(log, "startNewCheck()", name, currentBadge);
-			};
+
+			if (DEBUG) Debug.dataReportHeader(log, "#", "before");
+
+			// var startNewCheck = function(name) {
+			// 	// get the current badge or a "blank" one
+			// 	currentBadge = get(name);
+			// 	// reset new badge level (to compare to current one)
+			// 	newBadgeLevel = 0;
+			// 	// log
+			// 	if (DEBUG) console.log(log, "startNewCheck()", name, currentBadge);
+			// };
+
 
 
 
@@ -58,36 +75,33 @@ window.Badge = (function() {
 
 			// which things should we check?
 			let shouldCheck = {
-				social: 1, // (GameData.socialDomains.indexOf(Page.data.domain) > -1),
-				tags: false,
-				workday: true,
-				nighttime: true,
+				social: GameData.socialDomains.indexOf(Page.data.domain),
+				tags: Page.data.tags.length, // only if tags found on this page
+				workday: FS_Date.isWorkday(),
+				nighttime: FS_Date.isNight(),
 				clickText: false,
 				scrolling: false
 			};
-
+			if (DEBUG) console.log(log, "startNewCheck() shouldCheck =", shouldCheck);
 
 
 
 			////////////////////////////// ECONOMY //////////////////////////////
 
-			if (shouldCheck.workday && FS_Date.isWorkday()) { // 9a-5p M-F
-				// get current badge (or a new default badge) and start new check
-				startNewCheck("worker-bee");
-				// get new badge level and compare
+			if (shouldCheck.workday) { // 9a-5p M-F
+				currentBadge = startNewCheck("worker-bee");
 				newBadgeLevel = exp(tally_user.streamReport.tWorkday / 60 / 60 / 8); // ~ every 8 hours
 				if (newBadgeLevel > currentBadge.level) {
-					// set new level and award new badge
 					currentBadge.level = newBadgeLevel;
-					console.log(log, "newBadgeLevel > currentBadge.level", "currentBadge =", currentBadge);
+					if (DEBUG) console.log(log, "newBadgeLevel > currentBadge.level", "currentBadge =", currentBadge);
 					if (1) return award(currentBadge);
 				}
-			} else if (shouldCheck.nighttime && FS_Date.isNight()) { // 8p–6a
-				startNewCheck("night-owl");
+			} else if (shouldCheck.nighttime) { // 8p–6a
+				currentBadge = startNewCheck("night-owl");
 				newBadgeLevel = exp(tally_user.streamReport.tNight / 60 / 60 / 8); // ~ every 8 hours
 				if (newBadgeLevel > currentBadge.level) {
 					currentBadge.level = newBadgeLevel;
-					console.log(log, "newBadgeLevel > currentBadge.level", "currentBadge =", currentBadge);
+					if (DEBUG) console.log(log, "newBadgeLevel > currentBadge.level", "currentBadge =", currentBadge);
 					if (1) return award(currentBadge);
 				}
 			}
@@ -95,89 +109,62 @@ window.Badge = (function() {
 
 			////////////////////////////// COMPUTER //////////////////////////////
 
-			startNewCheck("big-clicker");
-			newBadgeLevel = exp(tally_user.score.clicks / 250); // ~ every n clicks
-			// console.log(log, "newBadgeLevel =", newBadgeLevel, "newBadgeLevel =", currentBadge.level);
+			currentBadge = startNewCheck("big-clicker");
+			newBadgeLevel = exp(tally_user.score.clicks / 350); // ~ every n clicks
+			// if (DEBUG) console.log(log, "newBadgeLevel =", newBadgeLevel, "newBadgeLevel =", currentBadge.level);
 			if (newBadgeLevel > currentBadge.level) {
-				currentBadge.level = newBadgeLevel;
-				console.log(log, "newBadgeLevel > currentBadge.level", "currentBadge =", currentBadge);
+				currentBadge.level = currentBadge.level + 1; //newBadgeLevel;
+				if (DEBUG) console.log(log, "newBadgeLevel > currentBadge.level", "currentBadge =", currentBadge);
 				if (1) return award(currentBadge);
 			}
 
 
-			////////////////////////////// CRYPTOGRAPHY //////////////////////////////
+			////////////////////////////// CHECK ALL TAG BADGES //////////////////////////////
 
-			startNewCheck("cryptomaniac");
-			newBadgeLevel = exp(Progress.get(currentBadge.progress) / 10); // # tags
-			// console.log(log, "newBadgeLevel =", newBadgeLevel, "newBadgeLevel =", currentBadge.level);
-			if (newBadgeLevel > currentBadge.level) {
-				currentBadge.level = newBadgeLevel;
-				console.log(log, "newBadgeLevel > currentBadge.level", "currentBadge =", currentBadge);
-				if (1) return award(currentBadge);
-			}
-
-
-			////////////////////////////// DATA //////////////////////////////
-
-			startNewCheck("cat-crazy");
-			newBadgeLevel = exp(Progress.get(currentBadge.progress) / 10); // # tags
-			// console.log(log, "newBadgeLevel =", newBadgeLevel, "newBadgeLevel =", currentBadge.level);
-			if (newBadgeLevel > currentBadge.level) {
-				currentBadge.level = newBadgeLevel;
-				console.log(log, "newBadgeLevel > currentBadge.level", "currentBadge =", currentBadge);
-				if (1) return award(currentBadge);
-			}
-
-
-
-			for (var badgeName in Badges.data) {
-				// if tags
-				if (!Badges.data[badgeName].tags) continue;
-
-
-				startNewCheck(Badges.data[badgeName].name);
-				newBadgeLevel = exp(Progress.get(currentBadge.progress) / 10); // # tags
-				console.log(log, "newBadgeLevel =", newBadgeLevel, "newBadgeLevel =", currentBadge.level);
-				if (newBadgeLevel > currentBadge.level) {
-					currentBadge.level = newBadgeLevel;
-					console.log(log, "newBadgeLevel > currentBadge.level", "currentBadge =", currentBadge);
-					if (1) return award(currentBadge);
+			if (Progress.pageTagsProgressMatches > 0) {
+				for (var badgeName in Badges.data) {
+					if (DEBUG) console.log(log, "badgeName =", badgeName);
+					// if tags
+					if (!Badges.data[badgeName].tags) continue;
+					// get current badge (or a new default badge) and start new check
+					currentBadge = startNewCheck(Badges.data[badgeName].name);
+					// get new badge level and compare
+					newBadgeLevel = exp(Progress.get(currentBadge.progress) / 10); // # tags
+					// if (DEBUG) console.log(log, "newBadgeLevel =", newBadgeLevel, "newBadgeLevel =", currentBadge.level);
+					if (newBadgeLevel > currentBadge.level) {
+						// set new level and award new badge
+						currentBadge.level = newBadgeLevel;
+						if (DEBUG) console.log(log, "newBadgeLevel > currentBadge.level", "currentBadge =", currentBadge);
+						if (1) return award(currentBadge);
+					}
 				}
 			}
-
-
-			// cryptomaniac
-			// photo-geek
-			// news-hound
-			// cat-crazy
-			// potty-mouth
-			// 404-scout
-			// net-artisan
-			// biggest-fan
-			// fine-print
-
 
 
 			////////////////////////////// SOCIAL DOMAINS //////////////////////////////
 
 
 			/////////////// filter-bubble -> based on (increasing) likes on social media
-			startNewCheck("filter-bubble");
-			newBadgeLevel = exp(tally_user.score.likes / 25); // ~ every n likes
-			if (shouldCheck.social && newBadgeLevel > currentBadge.level) {
-				currentBadge.level = newBadgeLevel;
-				console.log(log, "newBadgeLevel > currentBadge.level", "currentBadge =", currentBadge);
-				if (1) return award(currentBadge);
-			}
-			/////////////// stalker -> based on (increasing) on social media but very few likes
-			startNewCheck("stalker");
-			newBadgeLevel = exp(tally_user.streamReport.pSocial / 60 / 30); // ~ every 30 min
-			if (shouldCheck.social && newBadgeLevel > currentBadge.level) {
-				currentBadge.level = newBadgeLevel;
-				console.log(log, "newBadgeLevel > currentBadge.level", "currentBadge =", currentBadge);
-				if (1) return award(currentBadge);
+			if (shouldCheck.social) {
+				currentBadge = startNewCheck("filter-bubble");
+				newBadgeLevel = exp(tally_user.score.likes / 25); // ~ every n likes
+				if (newBadgeLevel > currentBadge.level) {
+					currentBadge.level = newBadgeLevel;
+					if (DEBUG) console.log(log, "newBadgeLevel > currentBadge.level", "currentBadge =", currentBadge);
+					if (1) return award(currentBadge);
+				}
 			}
 
+			/////////////// stalker -> based on (increasing) on social media but very few likes
+			if (shouldCheck.social) {
+				currentBadge = startNewCheck("stalker");
+				newBadgeLevel = exp(tally_user.streamReport.pSocial / 60 / 30); // ~ every 30 min
+				if (shouldCheck.social && newBadgeLevel > currentBadge.level) {
+					currentBadge.level = newBadgeLevel;
+					if (DEBUG) console.log(log, "newBadgeLevel > currentBadge.level", "currentBadge =", currentBadge);
+					if (1) return award(currentBadge);
+				}
+			}
 
 
 
@@ -197,7 +184,7 @@ window.Badge = (function() {
 			// 	for (let j = 0; j < i; j++){
 			// 		str += ".";
 			// 	}
-			// 	console.log(str);
+			// 	if (DEBUG) console.log(str);
 			// }
 
 		} catch (err) {
@@ -210,7 +197,7 @@ window.Badge = (function() {
 			// https://www.desmos.com/calculator
 			// f(x)=x * (x/4)
 			let n = x * (x / 4);
-			console.log("Badge.exp() n =", n);
+			if (DEBUG) console.log("🏆 Badge.exp() n =", n);
 			return Math.round(n);
 		} catch (err) {
 			console.error(err);

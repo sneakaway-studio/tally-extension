@@ -50,9 +50,12 @@ window.Progress = (function() {
 		"tokenAddedWelcomeMessage": 0,
 	};
 
+	let pageTagsProgressMatches = 0 // whether or not page tags match progress items
+	;
+
 
 	/**
-	 *	Get value of an individual progress item
+	 *	Get value of an individual progress item   ** INTEGERS ONLY ? **
 	 */
 	function get(name) {
 		try {
@@ -61,6 +64,7 @@ window.Progress = (function() {
 			// console.log(tally_user, FS_Object.prop(tally_user));
 			// console.log(tally_user.progress, FS_Object.prop(tally_user.progress));
 			// console.log(tally_user.progress[name], FS_Object.prop(tally_user.progress[name]));
+			// console.log("🕹️ Progress.check()", typeof get("attacksAwarded"), typeof FS_Object.objLength(tally_user.attacks));
 
 			// if value exists in tally_user && is true | >0 | !""
 			if (FS_Object.prop(tally_user.progress[name])) {
@@ -126,37 +130,41 @@ window.Progress = (function() {
 	/**
 	 *	Checks to see if any progress events should be executed
 	 */
-	function check(caller = "Progress") {
+	async function check(caller = "Progress") {
 		try {
-			if (DEBUG) console.log("🕹️ Progress.check() caller =", caller, tally_user.progress);
+			if (DEBUG) console.log("🕹️ Progress.check() [1] caller =", caller, tally_user.progress);
 			// return if not found
 			if (!tally_user.progress) return;
 
-// count any relevant tags on the page
-countPageTags();
+
+			// count any relevant tags on the page
+			pageTagsProgressMatches = await countPageTags();
+			// console.log("🕹️ Progress.check() [2]", Page.data.tags.length, pageTagsProgressMatches);
+
+
+			////////////////////////////// ATTACKS //////////////////////////////
+
+			let attacksAwarded = get("attacksAwarded");
 
 			// AWARD ATTACK - 1st
-			if (get("attacksAwarded") <= 0 && tally_user.score.score > 1) {
+			if (attacksAwarded <= 0 && tally_user.score.score > 1) {
 				BattleAttack.rewardAttack("", "attack");
 			}
 			// AWARD ATTACK - 2nd
-			else if (get("attacksAwarded") <= 1 && tally_user.score.score > 10) {
+			else if (attacksAwarded <= 1 && tally_user.score.score > 10) {
 				BattleAttack.rewardAttack("", "attack");
 				Dialogue.showStr("Manage your attacks with the button at the top right of browser window.", "happy");
 			}
 			// AWARD ATTACK - 3rd
-			else if (get("attacksAwarded") <= 2 && get("battlesFought") > 0) {
+			else if (attacksAwarded <= 2 && get("battlesFought") > 0) {
 				BattleAttack.rewardAttack("", "defense");
 			}
 			// AWARD ATTACK - 4th
-			else if (get("attacksAwarded") <= 3 && tally_user.score.score > 100) {
+			else if (attacksAwarded <= 3 && tally_user.score.score > 100) {
 				BattleAttack.rewardAttack("", "attack");
 			}
-
-
-			if (DEBUG) console.log("🕹️ Progress.check()", typeof get("attacksAwarded"), typeof FS_Object.objLength(tally_user.attacks));
-
-			if (get("attacksAwarded") !== FS_Object.objLength(tally_user.attacks)) {
+			// ALWAYS UPDATE COUNT
+			if (attacksAwarded !== FS_Object.objLength(tally_user.attacks)) {
 				// update the attacksAwarded count
 				update("attacksAwarded", FS_Object.objLength(tally_user.attacks));
 			}
@@ -170,25 +178,27 @@ countPageTags();
 	/**
 	 *	Count tags on the page
 	 */
-	function countPageTags() {
+	async function countPageTags() {
 		try {
-			// console.log("🕹️ Progress.countPageTags()", Page.data.tags);
+			// if (DEBUG) console.log("🕹️ Progress.countPageTags() [1]", Page.data.tags);
 
-			let result = []; // an array of indexes of matching tags
-
+			let result = [], // an array of indexes of matching tags
+				matches = 0;
 			// loop through all badges that have tags...
-			for (var progress in Badges.data) {
+			for (var badgeName in Badges.data) {
 				// if tags
-				if (!Badges.data[progress].tags) continue;
+				if (!Badges.data[badgeName].tags) continue;
 				// compare Page.data.tags to badges' tags and perform any Progress.updates
-				result = Page.data.tags.filter(value => Badges.data[progress].tags.includes(value));
+				result = Page.data.tags.filter(value => Badges.data[badgeName].tags.includes(value));
 				if (result.length) {
-					if (DEBUG) console.log("🕹️ Progress.countPageTags()", Page.data.tags, Badges.data[progress]);
+					// if (DEBUG) console.log("🕹️ Progress.countPageTags() [2]", badgeName, Badges.data[badgeName], result);
 					// update their progress (adding *total* of all found tags on the page)
-					Progress.update(Badges.data[progress].progress, result.length, "+");
+					Progress.update(Badges.data[badgeName].progress, result.length, "+");
+					// update matches
+					matches += 1;
 				}
-
 			}
+			return matches; // send async back
 
 		} catch (err) {
 			console.error(err);
@@ -295,6 +305,9 @@ countPageTags();
 		get: get,
 		update: update,
 		check: check,
-		tokenAdded: tokenAdded
+		tokenAdded: tokenAdded,
+		pageTagsProgressMatches: function(){
+			return pageTagsProgressMatches;
+		}
 	};
 }());
