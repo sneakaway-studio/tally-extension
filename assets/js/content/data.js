@@ -87,7 +87,7 @@ window.TallyData = (function() {
 		try {
 			let log = "💾 TallyData.queue()";
 			// if (DEBUG) console.log(log, "[0]", type, prop, val, caller);
-			if (DEBUG) Debug.dataReportHeader(log + " [0] " + " caller = " + caller + "; " + type + "." + prop, "#", "before");
+			// if (DEBUG) Debug.dataReportHeader(log + " # edits = " + backgroundUpdateEdits + ", caller = " + caller + "; " + type + "." + prop, "#", "before");
 
 			// everything is required
 			if (!FS_Object.prop(tally_user)) return console.log(log, "missing: tally_user", type, prop, val, caller);
@@ -103,7 +103,7 @@ window.TallyData = (function() {
 				"caller": caller
 			};
 
-			if (DEBUG) console.log(log, "[1] backgroundUpdateEdits =", backgroundUpdateEdits, unit);
+			if (DEBUG) console.log(log, "backgroundUpdateEdits =", backgroundUpdateEdits, unit);
 			// console.trace();
 
 			// ??
@@ -205,7 +205,7 @@ window.TallyData = (function() {
 			backgroundUpdateInProgress = true;
 
 			if (DEBUG) console.log("💾 TallyData.pushUpdate() [1]", backgroundUpdate,
-				"backgroundUpdateEditsCallers =",backgroundUpdateEditsCallers
+				// "backgroundUpdateEditsCallers =",backgroundUpdateEditsCallers
 			);
 
 

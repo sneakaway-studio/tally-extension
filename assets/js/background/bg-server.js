@@ -36,7 +36,7 @@ window.Server = (function() {
 				_tally_meta.server.responseMillis = new Date().getTime() - _startTime;
 			}).fail(error => {
 				// server is not online
-				console.error("📟 Server.checkIfOnline() FAIL", _tally_meta.api,
+				console.warn("📟 Server.checkIfOnline() FAIL", _tally_meta.api,
 					"😢 NOT ONLINE", JSON.stringify(error));
 				// save state
 				_server.online = 0;

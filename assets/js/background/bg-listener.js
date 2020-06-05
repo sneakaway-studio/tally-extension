@@ -315,7 +315,10 @@ window.Listener = (function() {
 					// if there is no token or server is down then we are just saving in background
 					if (!_tally_secret.token || !_tally_meta.server.online) {
 
-						console.error("👂🏼 Listener.addListener() ! sendUpdateToBackground - NO TOKEN OR SERVER OFFLINE", _tally_secret);
+						console.warn("👂🏼 Listener.addListener() ! sendUpdateToBackground - NO TOKEN OR SERVER OFFLINE", _tally_secret);
+
+						// every once in a while check again
+						if (Math.random() > 0.3) Server.checkIfOnline();
 
 						// reply to contentscript with updated tally_user
 						sendResponse({
@@ -324,6 +327,7 @@ window.Listener = (function() {
 							"tally_user": store("tally_user")
 						});
 					}
+					else {
 
 					// otherwise add token
 					request.data.token = _tally_secret.token;
@@ -337,7 +341,7 @@ window.Listener = (function() {
 						data: JSON.stringify(request.data)
 					}).done(result => {
 						// result contains tally_user
-						// if (DEBUG) console.log("👂🏼 Listener.addListener() > sendUpdateToBackground - RESULT =", JSON.stringify(result));
+						if (DEBUG) console.log("👂🏼 Listener.addListener() > sendUpdateToBackground - DONE =", result);
 
 						// merge attack data from server with game data properties
 						result.attacks = Server.mergeAttackDataFromServer(result.attacks);
@@ -350,7 +354,7 @@ window.Listener = (function() {
 							"tally_user": result
 						});
 					}).fail(err => {
-						console.error("👂🏼 Listener.addListener() > sendUpdateToBackground RESULT =", JSON.stringify(err));
+						console.warn("👂🏼 Listener.addListener() > sendUpdateToBackground - FAIL =", JSON.stringify(err));
 						// server might not be reachable
 						Server.checkIfOnline();
 						sendResponse({
@@ -358,6 +362,7 @@ window.Listener = (function() {
 							"message": 0
 						});
 					});
+					}
 
 					// required so chrome knows this is asynchronous
 					return true;
