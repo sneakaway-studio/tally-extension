@@ -24,7 +24,7 @@ var GameData = (function() {
 			"target.com",
 			"walmart.com",
 		],
-		trackerDomains = [
+		dataDealerDomains = [
 			"acxiom.com",
 			"adcolony.com",
 			"ads.google.com/home/",
@@ -33,6 +33,12 @@ var GameData = (function() {
 			"beckon.com",
 			"blueconic.com",
 			"experian.com",
+		],
+		// the usual suspects, to speed up blacklist domain searches
+		whitelistScriptDomains = [
+			"bootstrapcdn.com",
+			"jquery.com",
+			"cloudflare.com",
 		];
 
 	let domainKeywords = {
@@ -170,7 +176,8 @@ var GameData = (function() {
 	return {
 		socialDomains: socialDomains,
 		commercialDomains: commercialDomains,
-		trackerDomains: trackerDomains,
+		dataDealerDomains: dataDealerDomains,
+		whitelistScriptDomains: whitelistScriptDomains,
 		clickScore: clickScore,
 		levels: levels,
 		flags: flags

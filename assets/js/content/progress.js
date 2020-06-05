@@ -234,13 +234,13 @@ window.Progress = (function() {
 			if (r < 0.33) {
 				Dialogue.showStr("Now, let's go find some trackers!", "happy");
 				Dialogue.showStr("I have a <a target='_blank' href='https://" +
-					FS_Object.randomArrayIndex(GameData.trackerDomains) + "'>good idea where there will be some</a>...", "happy");
+					FS_Object.randomArrayIndex(GameData.dataDealerDomains) + "'>good idea where there will be some</a>...", "happy");
 			} else if (r < 0.66) {
 				Dialogue.showStr("Let's go get some <a target='_blank' href='https://" +
-					FS_Object.randomArrayIndex(GameData.trackerDomains) + "'>trackers</a>!", "happy");
+					FS_Object.randomArrayIndex(GameData.dataDealerDomains) + "'>trackers</a>!", "happy");
 			} else {
 				Dialogue.showStr("Want to find some <a target='_blank' href='https://" +
-					FS_Object.randomArrayIndex(GameData.trackerDomains) + "'>trackers</a> with me?", "happy");
+					FS_Object.randomArrayIndex(GameData.dataDealerDomains) + "'>trackers</a> with me?", "happy");
 			}
 		} catch (err) {
 			console.error(err);

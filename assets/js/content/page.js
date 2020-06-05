@@ -123,74 +123,6 @@ window.Page = (function() {
 
 
 	/**
-	 *	Get all trackers hidden on this page
-	 */
-	function getTrackersOnPage(newData) {
-		try {
-			// if (DEBUG) console.log("🗒️ Page.getTrackersOnPage()");
-			var foundObj = {},
-				foundArr = [],
-				trackers = {
-					// this is only for testing, will be replaced
-					'Analytics': ['statcounter.com', '_gaq']
-				};
-			// get a much larger list
-			trackers = disconnectTrackingServices;
-			// get scripts on the page
-			var scripts = document.getElementsByTagName("script");
-			// loop through each script
-			for (var i = 0, l = scripts.length; i < l; i++) {
-				// get source of script
-				let str = "";
-				if (scripts[i].src !== "") str = scripts[i].src;
-				// not sure why this is here, why would we want textContent of script?
-				//else if (scripts[i].textContent) str = scripts[i].textContent;
-				// no script here
-				else continue;
-
-				// get root domain of scripts
-				let scriptDomain = Environment.extractRootDomain(str);
-				//console.log(scriptDomain);
-
-				// // this method loops through each tracker category
-				// for (var category in trackers) {
-				// 	var categoryArr = trackers[category];
-				// 	//console.log(catArr);
-				// 	if (categoryArr.indexOf(scriptDomain) >= 0){
-				// 		if (!prop(foundObj[category]))
-				// 			foundObj[category] = [];
-				// 		foundObj[category].push(scriptDomain);
-				// 	}
-				// }
-
-				// this method uses the single array (no categories)
-				// I think this may be the way to go in the end
-				if (foundArr.indexOf(scriptDomain) < 0 && trackers.indexOf(scriptDomain) >= 0) {
-					// if (DEBUG) console.log("🗒️ Page.getTrackersOnPage() 👀", str, scriptDomain);
-					foundArr.push(scriptDomain);
-				}
-
-			}
-			// if the domain is known for tracking then also add it
-			if (newData.domain) {
-				// console.log("newData.domain",newData.domain);
-				if (trackers.indexOf(newData.domain)) {
-					foundArr.push(newData.domain);
-				}
-			}
-			// set the number of trackers in the badge
-			TallyStorage.setBadgeText(foundArr.length);
-
-			//console.log("foundObj",foundObj);
-			//console.log("foundArr",foundArr);
-			return foundArr;
-		} catch (err) {
-			console.error(err);
-		}
-	}
-
-
-	/**
 	 *	Run getData again with refresh flag
 	 */
 	async function refreshData() {
@@ -253,7 +185,7 @@ window.Page = (function() {
 			// check page tags
 			newData.tags = getPageTags(newData);
 			// add trackers
-			newData.trackers = getTrackersOnPage(newData) || "";
+			newData.trackers = Tracker.blockOnPage(newData.domain) || "";
 			// if youtube
 			if (newData.domain == "youtube.com")
 				// 	addMutationObserver();
@@ -334,7 +266,7 @@ window.Page = (function() {
 			if (DEBUG) console.log("🗒 Page.restartAfterMutation() caller = " + caller);
 
 			// refresh Page.data
-			Page.refreshData().then(function(){
+			Page.refreshData().then(function() {
 				// check for monsters again
 				MonsterCheck.check();
 				Debug.update();

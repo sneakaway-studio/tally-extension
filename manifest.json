@@ -52,6 +52,7 @@
         "js": [
             "assets/js/content/debug.js",
             "assets/js/content/storage.js",
+
             "assets/libs/jquery-3.2.1.min.js",
             "assets/libs/jquery-ui.min.js",
             "assets/libs/store2.min.js",
@@ -60,13 +61,15 @@
             "assets/libs/moment.js",
             "assets/libs/svg.min.js",
             "assets/libs/anime-alt.js",
+
             "assets/js/functions/fs-objects.js",
             "assets/js/functions/fs-numbers.js",
             "assets/js/functions/fs-strings.js",
             "assets/js/functions/fs-dates.js",
             "assets/js/functions/fs-environment.js",
 
-            "assets/data/disconnect-tracking-services.js",
+            "assets/data/disconnect/services-by-name.js",
+            "assets/data/disconnect/services-by-url.js",
             "assets/data/game-data.js",
             "assets/data/gradients-by-mid.js",
             "assets/data/palettes-by-name.js",
@@ -92,6 +95,7 @@
             "assets/js/content/data.js",
             "assets/js/content/flag.js",
             "assets/js/content/core.js",
+            "assets/js/content/tracker.js",
             "assets/js/content/page.js",
             "assets/js/content/interface.js",
             "assets/js/content/monster-check.js",
@@ -105,7 +109,6 @@
             "assets/js/content/battle-attack.js",
             "assets/js/content/battle-console.js",
             "assets/js/content/battle.js",
-            "assets/js/content/tracker.js",
             "assets/js/content/effect.js",
             "assets/js/content/sound.js",
             "assets/js/content/listeners.js",
