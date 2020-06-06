@@ -20,7 +20,7 @@ window.TallyListeners = (function() {
 	function addMainClickEventListener() {
 		try {
 			// allow offline
-			if (Page.mode().notActive) return;
+			if (Page.data.mode.notActive) return;
 			// don't allow if mode disabled
 			if (tally_options.gameMode === "disabled") return;
 
@@ -77,7 +77,7 @@ window.TallyListeners = (function() {
 	var clickEventHandler = function(eventData, target) {
 		try {
 			// allow offline
-			if (Page.mode().notActive) return;
+			if (Page.data.mode.notActive) return;
 			// don't allow if mode disabled
 			if (tally_options.gameMode === "disabled") return;
 

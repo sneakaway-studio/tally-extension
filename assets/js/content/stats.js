@@ -33,7 +33,7 @@ window.Stats = (function() {
 	function reset(who) {
 		try {
 			// allow offline
-			if (Page.mode().notActive) return;
+			if (Page.data.mode.notActive) return;
 			// don't allow if mode disabled
 			if (tally_options.gameMode === "disabled") return;
 
@@ -82,7 +82,7 @@ window.Stats = (function() {
 	function save(who) {
 		try {
 			// allow offline
-			if (Page.mode().notActive) return;
+			if (Page.data.mode.notActive) return;
 			// don't allow if mode disabled
 			if (tally_options.gameMode === "disabled") return;
 
@@ -159,7 +159,7 @@ window.Stats = (function() {
 	function getLevel(who) {
 		try {
 			// allow offline
-			if (Page.mode().notActive) return;
+			if (Page.data.mode.notActive) return;
 			// don't allow if mode disabled
 			if (tally_options.gameMode === "disabled") return;
 
@@ -188,7 +188,7 @@ window.Stats = (function() {
 	function updateFromConsumable(consumable) {
 		try {
 			// allow offline
-			if (Page.mode().notActive) return;
+			if (Page.data.mode.notActive) return;
 			// don't allow if mode disabled
 			if (tally_options.gameMode === "disabled") return;
 

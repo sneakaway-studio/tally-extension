@@ -3,28 +3,8 @@
 window.Page = (function() {
 	// PRIVATE
 	let DEBUG = Debug.ALL.Page,
-		mode = {},
 		data = getData();
 
-
-	/**
-	 *	Update the page mode for the current page
-	 */
-	function updateMode(_mode) {
-		try {
-			mode = _mode;
-
-			data.mode = _mode;
-		} catch (err) {
-			console.error(err);
-		}
-	}
-	/**
-	 *	Return the current Page.mode
-	 */
-	function getMode() {
-		return mode;
-	}
 
 
 
@@ -170,7 +150,7 @@ window.Page = (function() {
 			// check and count page tags
 			newData.tags = getPageTags(newData);
 			// add trackers
-			newData.trackers = Tracker.blockOnPage(newData.domain) || "";
+			newData.trackers = Tracker.countAndBlock(newData.domain) || "";
 			// if youtube
 			if (newData.domain == "youtube.com")
 				// 	addMutationObserver();
@@ -205,7 +185,7 @@ window.Page = (function() {
 	function addMutationObserver() {
 		try {
 			// allow offline
-			if (Page.mode().notActive) return;
+			if (Page.data.mode.notActive) return;
 			// don't allow if mode disabled
 			if (tally_options.gameMode === "disabled") return;
 
@@ -247,7 +227,7 @@ window.Page = (function() {
 	function restartAfterMutation(caller) {
 		try {
 			// allow offline
-			if (Page.mode().notActive) return;
+			if (Page.data.mode.notActive) return;
 			// don't allow if mode disabled
 			if (tally_options.gameMode === "disabled") return;
 
@@ -269,8 +249,6 @@ window.Page = (function() {
 
 	// PUBLIC
 	return {
-		mode: getMode,
-		updateMode: updateMode,
 		refreshData: refreshData,
 		data: data
 	};

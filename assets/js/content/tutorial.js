@@ -25,7 +25,7 @@ window.Tutorial = (function() {
 	function play(which) {
 		try {
 			// allow offline
-			if (Page.mode().notActive) return;
+			if (Page.data.mode.notActive) return;
 			// don't allow if mode disabled or stealth
 			if (tally_options.gameMode === "disabled" || tally_options.gameMode === "stealth") return;
 
@@ -95,7 +95,7 @@ window.Tutorial = (function() {
 	function slideshowCallback(callback = null) {
 		try {
 			// allow offline
-			if (Page.mode().notActive) return;
+			if (Page.data.mode.notActive) return;
 			// don't allow if mode disabled or stealth
 			if (tally_options.gameMode === "disabled" || tally_options.gameMode === "stealth") return;
 

@@ -61,6 +61,9 @@ window.Skin = (function() {
 	function returnHighestMonsterStage() {
 		try {
 			let highestStage = 0;
+			// if no monster return early
+			if (!FS_Object.prop(tally_nearby_monsters[mid])) return highestStage;
+			
 			// loop through nearby monsters
 			for (var mid in tally_nearby_monsters) {
 				if (tally_nearby_monsters.hasOwnProperty(mid)) {
@@ -328,7 +331,7 @@ window.Skin = (function() {
 	function update(newSkinName) {
 		try {
 			// allow offline
-			if (Page.mode().notActive) return;
+			if (Page.data.mode.notActive) return;
 			// don't allow if mode disabled or stealth
 			if (tally_options.gameMode === "disabled" || tally_options.gameMode === "stealth") return;
 

@@ -41,7 +41,7 @@ window.TallyEvents = (function() {
 	function checkLastActiveAndRecharge() {
 		try {
 			// allow offline
-			if (Page.mode().notActive) return;
+			if (Page.data.mode.notActive) return;
 			// don't allow if mode disabled or stealth
 			if (tally_options.gameMode === "disabled" || tally_options.gameMode === "stealth") return;
 

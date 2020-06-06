@@ -17,7 +17,7 @@ window.Flag = (function() {
 	async function check() {
 		try {
 			// allow offline
-			if (Page.mode().notActive) return;
+			if (Page.data.mode.notActive) return;
 			// don't allow if mode disabled
 			if (tally_options.gameMode === "disabled") return;
 
@@ -31,7 +31,7 @@ window.Flag = (function() {
 
 				if ($("#token").length) {
 					// don't allow if serverOffline
-					if (Page.mode().serverOffline) return;
+					if (Page.data.mode.serverOffline) return;
 					// if we already found one on this page
 					if (Page.data.tokenFound) return console.log("🚩 Flag.check() 🔑 ALREADY CHECKED");
 					// so we only check this once and don't check again
@@ -59,7 +59,7 @@ window.Flag = (function() {
 
 				if ($("#tallyFlags").length && $("#resetTallyUser").length) {
 					// don't allow if serverOffline
-					if (Page.mode().serverOffline) return;
+					if (Page.data.mode.serverOffline) return;
 
 					if (DEBUG) console.log("🚩 Flag.check() resetTallyUser FLAG FOUND");
 

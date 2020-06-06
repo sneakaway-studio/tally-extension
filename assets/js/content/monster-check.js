@@ -16,7 +16,7 @@ window.MonsterCheck = (function() {
 	function check() {
 		try {
 			// allow offline
-			if (Page.mode().notActive) return;
+			if (Page.data.mode.notActive) return;
 			// don't allow if mode disabled or stealth
 			if (tally_options.gameMode === "disabled" || tally_options.gameMode === "stealth") return;
 			// don't check on our site
@@ -80,6 +80,12 @@ window.MonsterCheck = (function() {
 		try {
 			let log = "👿 MonsterCheck.checkForTagMatches()";
 			if (DEBUG) console.log(log, '[1] -> Page.data.tags =', Page.data.tags);
+
+			// only proceed if there are trackers
+			if (Page.data.trackers.length < 1){
+				if (DEBUG) console.log(log, "[1] NO TRACKERS ON THIS PAGE - Page.data.trackers" + Page.data.trackers);
+				return;
+			}
 
 			// loop through the tags on the page
 			for (var i = 0, l = Page.data.tags.length; i < l; i++) {

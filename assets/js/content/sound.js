@@ -71,7 +71,7 @@ window.Sound = (function() {
 	function playBattleMusic() {
 		try {
 			// allow offline
-			if (Page.mode().notActive) return;
+			if (Page.data.mode.notActive) return;
 			// don't allow if mode disabled or stealth
 			if (tally_options.gameMode === "disabled" || tally_options.gameMode === "stealth") return;
 			// don't allow if this page doesn't have focus
@@ -96,7 +96,7 @@ window.Sound = (function() {
 	function playMusic(file, loop, volumeModifier = 0) {
 		try {
 			// allow offline
-			if (Page.mode().notActive) return;
+			if (Page.data.mode.notActive) return;
 			// don't allow if mode disabled or stealth
 			if (tally_options.gameMode === "disabled" || tally_options.gameMode === "stealth") return;
 			// don't allow if this page doesn't have focus
@@ -145,7 +145,7 @@ window.Sound = (function() {
 	function startMusic() {
 		try {
 			// allow offline
-			if (Page.mode().notActive) return;
+			if (Page.data.mode.notActive) return;
 			// don't allow if mode disabled or stealth
 			if (tally_options.gameMode === "disabled" || tally_options.gameMode === "stealth") return;
 			// don't allow if this page doesn't have focus
@@ -252,7 +252,7 @@ window.Sound = (function() {
 	function playRandom(category, index, delay) {
 		try {
 			// allow offline
-			if (Page.mode().notActive) return;
+			if (Page.data.mode.notActive) return;
 			// don't allow if mode disabled or stealth
 			if (tally_options.gameMode === "disabled" || tally_options.gameMode === "stealth") return;
 			// don't allow if this page doesn't have focus
@@ -285,7 +285,7 @@ window.Sound = (function() {
 	function playCategory(category, index, delay) {
 		try {
 			// allow offline
-			if (Page.mode().notActive) return;
+			if (Page.data.mode.notActive) return;
 			// don't allow if mode disabled or stealth
 			if (tally_options.gameMode === "disabled" || tally_options.gameMode === "stealth") return;
 			// don't allow if this page doesn't have focus
@@ -307,7 +307,7 @@ window.Sound = (function() {
 	function playTallyVoice(dialogue) {
 		try {
 			// allow offline
-			if (Page.mode().notActive) return;
+			if (Page.data.mode.notActive) return;
 			// don't allow if mode disabled or stealth
 			if (tally_options.gameMode === "disabled" || tally_options.gameMode === "stealth") return;
 			// don't allow if this page doesn't have focus
@@ -384,7 +384,7 @@ window.Sound = (function() {
 	function play(soundFile, delay = 0, volumeModifier = 0) {
 		try {
 			// allow offline
-			if (Page.mode().notActive) return;
+			if (Page.data.mode.notActive) return;
 			// don't allow if mode disabled or stealth
 			if (tally_options.gameMode === "disabled" || tally_options.gameMode === "stealth") return;
 			// don't allow if this page doesn't have focus

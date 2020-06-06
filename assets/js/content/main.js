@@ -60,7 +60,7 @@ window.TallyMain = (function() {
 					getNearbyMonstersPromise, getStatsPromise, getTopMonstersPromise
 				])
 				.then(function() {
-					// if (DEBUG) console.log('🧰 TallyMain.getDataFromBackground() -> all promises have resolved');
+					if (DEBUG) console.log('🧰 TallyMain.getDataFromBackground() [1] all promises have resolved');
 					// if (DEBUG) console.log("%ctally_user", Debug.styles.green, JSON.stringify(tally_user));
 					// if (DEBUG) console.log("%ctally_options", Debug.styles.green, JSON.stringify(tally_options));
 					// if (DEBUG) console.log("%ctally_meta", Debug.styles.green, JSON.stringify(tally_meta));
@@ -91,15 +91,15 @@ window.TallyMain = (function() {
 		try {
 			if (DEBUG) Debug.dataReportHeader("🧰 TallyMain.contentStartChecks()", "#", "before");
 
-			// 2.1. Set the Page.mode
-			if (DEBUG) console.log('🧰 TallyMain.contentStartChecks() [2.1] -> SET Page.mode');
+			// 2.1. Set the Page.data.mode
+			if (DEBUG) console.log('🧰 TallyMain.contentStartChecks() [2.1] -> SET Page.data.mode');
 
 			// stop if Page.data failed
 			if (!prop(Page.data)) return console.warn("... Page.data NOT FOUND");
 			// check page mode before proceeding
-			Page.updateMode(getPageMode());
+			Page.data.mode = getPageMode();
 			// stop if page mode marked notActive
-			if (Page.mode().notActive) return console.log("... Page.mode = notActive", Page.mode());
+			if (Page.data.mode.notActive) return console.log(" NOT ACTIVE - Page.data.mode =", Page.data.mode);
 
 
 			// 2.2. Check for Flags (in case we need to pause and restart game with data)
@@ -114,10 +114,6 @@ window.TallyMain = (function() {
 				// let progress show game events
 				Progress.tokenAdded();
 			}
-
-			// remove trackers that have been caught
-			// Tracker.removeCaughtTrackers();
-
 
 			// 2.3. Add stylesheets and debugger
 			if (DEBUG) console.log('🧰 TallyMain.contentStartChecks() [2.3] -> Add game requirements');
@@ -234,11 +230,11 @@ window.TallyMain = (function() {
 			// ACTIVE
 			// - background, token, server, and everything else (like the above) is good, let's roll
 			if (mode.notActive == 0 && mode.serverOffline == 0 && mode.noToken == 0) {
-				if (DEBUG) console.log(log + "All is good, setting mode=active");
+				if (DEBUG) console.log(log + "All is good, setting mode.active = 1");
 				mode.active = 1;
 			}
 
-            // return to save in Page.mode
+            // return to save in Page.data.mode
             return mode;
 
 		} catch (err) {
@@ -254,7 +250,7 @@ window.TallyMain = (function() {
 			if (DEBUG) Debug.dataReportHeader("🧰 TallyMain.startGameOnPage()", "#", "before");
 
 			// allow offline
-			if (Page.mode().notActive) return console.warn("🧰 TallyMain.startGameOnPage() Page.mode() =", Page.mode());
+			if (Page.data.mode.notActive) return console.warn("🧰 TallyMain.startGameOnPage() Page.data.mode =", Page.data.mode);
 			// don't allow if mode disabled
 			if (tally_options.gameMode === "disabled") return;
 
@@ -290,8 +286,6 @@ window.TallyMain = (function() {
 					if (DEBUG) console.log("🧰 TallyMain.startGameOnPage() [4.4] -> Check monsters");
 					// check for, and potentially add monsters on the page
 					MonsterCheck.check();
-
-					console.log("Progress.pageTagsProgressMatches()", Progress.pageTagsProgressMatches())
 				}, 500);
 
 			}, 1000);
@@ -368,6 +362,7 @@ window.TallyMain = (function() {
 
 	// PUBLIC
 	return {
+        getPageMode: getPageMode,
 		getDataFromBackground: getDataFromBackground,
 		contentStartChecks: contentStartChecks,
 		startGameOnPage: startGameOnPage,

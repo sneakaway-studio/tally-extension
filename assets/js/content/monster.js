@@ -21,7 +21,7 @@ window.Monster = (function() {
 	function create(mid, _stage = 1) {
 		try {
 			// allow offline
-			if (Page.mode().notActive) return;
+			if (Page.data.mode.notActive) return;
 			// don't allow if mode disabled or stealth
 			if (tally_options.gameMode === "disabled" || tally_options.gameMode === "stealth") return;
 
@@ -31,8 +31,13 @@ window.Monster = (function() {
 			if (!prop(mid) || !prop(_stage) || !prop(MonsterData.dataById[mid])) return;
 			// if there are trackers on the page
 			let tracker = FS_Object.randomArrayIndex(Page.data.trackers) || "";
+			// only proceed if there are trackers 
+			if (tracker == ""){
+				if (DEBUG) console.log(log, "[1] NO TRACKERS ON THIS PAGE - Page.data.trackers" + Page.data.trackers);
+				return;
+			}
 
-			if (DEBUG) console.log(log, "[1] mid=" + mid, "_stage=" + _stage, MonsterData.dataById[mid]);
+			if (DEBUG) console.log(log, "[2] mid=" + mid, "_stage=" + _stage, MonsterData.dataById[mid]);
 
 			tally_nearby_monsters[mid] = {
 				"stage": _stage,
@@ -89,20 +94,28 @@ window.Monster = (function() {
 	function showOnPage(mid) {
 		try {
 			// allow offline
-			if (Page.mode().notActive) return;
+			if (Page.data.mode.notActive) return;
 			// don't allow if mode disabled or stealth
 			if (tally_options.gameMode === "disabled" || tally_options.gameMode === "stealth") return;
 
-			if (DEBUG) console.log('👿 Monster.showOnPage()', mid, tally_nearby_monsters[mid]);
+			if (DEBUG) console.log('👿 Monster.showOnPage() [1]', mid, tally_nearby_monsters[mid]);
 
 			// only proceed if mid is valid
-			if (!mid || mid <= 0) return;
+			if (!mid || mid <= 0) {
+				if (DEBUG) console.log('👿 Monster.showOnPage() [1.2] MID NOT VALID', mid);
+				return;
+			}
 
 			// if it doesn't yet have a tracker then try to get one
 			if (tally_nearby_monsters[mid].tracker === "")
 				tally_nearby_monsters[mid].tracker = FS_Object.randomArrayIndex(Page.data.trackers) || "";
 			// return if we don't have one
-			if (tally_nearby_monsters[mid].tracker === "") return;
+			if (tally_nearby_monsters[mid].tracker === "") {
+				if (DEBUG) console.log('👿 Monster.showOnPage() [1.3] NO TRACKER',
+					"Page.data.trackers =",Page.data.trackers,
+				);
+				return;
+			}
 
 			// make sure everything has loaded before running
 			setTimeout(function() {

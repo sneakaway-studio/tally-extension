@@ -41,11 +41,8 @@ window.Token = (function() {
 				// if token status not ok
 				// - expired || error || !ok
 				if (tally_meta.token.status != "ok") {
-					// set Page.mode
-					Page.updateMode("noToken");
-
-
-
+					// set Page.data.mode
+					Page.data.mode = TallyMain.getPageMode();
 				} else {
 					if (DEBUG) console.log("🔑 Token.checkStatus() TOKEN OK ");
 				}

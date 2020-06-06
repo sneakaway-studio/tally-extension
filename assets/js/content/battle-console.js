@@ -310,7 +310,7 @@ window.BattleConsole = (function() {
 	function typeWriter(ele, str = "", i = 0) {
 		try {
 			// allow offline
-			if (Page.mode().notActive) return;
+			if (Page.data.mode.notActive) return;
 			// don't allow if mode disabled or stealth
 			if (tally_options.gameMode === "disabled" || tally_options.gameMode === "stealth") return;
 			// don't allow if ele doesn't exist or str or arr is empty

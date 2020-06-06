@@ -136,8 +136,8 @@ window.TallyStorage = (function() {
 				tally_user = response.tally_user;
 				tally_options = response.tally_options;
 				tally_meta = response.tally_meta;
-				// update Page.mode()
-				Page.updateMode("active");
+				// update Page.data.mode
+				Page.data.mode = TallyMain.getPageMode();
 				// run game again
 				TallyMain.contentStartChecks();
 
@@ -157,8 +157,8 @@ window.TallyStorage = (function() {
 	 */
 	async function saveTokenFromDashboard(data) {
 		try {
-			// do not allow if server offline 
-			if (Page.mode().serverOffline) return;
+			// do not allow if server offline
+			if (Page.data.mode.serverOffline) return;
 
 			if (DEBUG) console.log('🗄️ < TallyStorage.saveTokenFromDashboard() [1] 🔑 SAVING', data);
 
@@ -177,8 +177,8 @@ window.TallyStorage = (function() {
 					tally_meta = response.tally_meta;
 
 
-					// update Page.mode()
-					Page.updateMode("active");
+					// update Page.data.mode
+					Page.data.mode = TallyMain.getPageMode();
 					// run game again
 					TallyMain.contentStartChecks();
 

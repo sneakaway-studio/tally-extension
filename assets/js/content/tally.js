@@ -33,7 +33,7 @@ window.Tally = (function() {
 	function moveEye(which, how, event) {
 		try {
 			// allow offline
-			if (Page.mode().notActive) return;
+			if (Page.data.mode.notActive) return;
 			// don't allow if mode disabled or stealth
 			if (tally_options.gameMode === "disabled" || tally_options.gameMode === "stealth") return;
 
@@ -86,7 +86,7 @@ window.Tally = (function() {
 	function addCharacter() {
 		try {
 			// allow offline
-			if (Page.mode().notActive) return;
+			if (Page.data.mode.notActive) return;
 			// don't allow if mode disabled or stealth
 			if (tally_options.gameMode === "disabled" || tally_options.gameMode === "stealth") return;
 
@@ -281,7 +281,7 @@ window.Tally = (function() {
 	function interactionHandler(interaction) {
 		try {
 			// allow offline
-			if (Page.mode().notActive) return;
+			if (Page.data.mode.notActive) return;
 			// don't allow if mode disabled
 			if (tally_options.gameMode === "disabled") return;
 
@@ -391,7 +391,7 @@ window.Tally = (function() {
 	$(document).on('click', '#tally_body, .tally_disguise', function() {
 		try {
 			// allow offline
-			if (Page.mode().notActive) return;
+			if (Page.data.mode.notActive) return;
 			// don't allow if mode disabled or stealth
 			if (tally_options.gameMode === "disabled" || tally_options.gameMode === "stealth") return;
 
@@ -440,7 +440,7 @@ window.Tally = (function() {
 			if (clickCount <= 0) return;
 
 			// if server online but no token then show prompt
-			if (Page.mode().noToken && window.tallyTokenPrompt < 10) {
+			if (Page.data.mode.noToken && window.tallyTokenPrompt < 10) {
 				window.tallyTokenPrompt++;
 				Dialogue.showStr(Token.returnPrompt(), "sad");
 				return;

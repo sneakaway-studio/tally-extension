@@ -80,7 +80,7 @@ Learn more at [tallygame.net](https://tallygame.net).
 * [jQuery](https://jquery.com/)
 * [jQuery Growl](http://ksylvest.github.io/jquery-growl/)
 * [Store2](https://www.npmjs.com/package/store2)
-
+* [Disconnect Tracking Protection](https://github.com/disconnectme/disconnect-tracking-protection)
 
 ### Notes on cross-browser compatibility
 
