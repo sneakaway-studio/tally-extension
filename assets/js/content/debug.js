@@ -40,13 +40,14 @@ window.Debug = (function() {
 			"Progress": true,
 
 			"Sound": true,
-			"StatsDisplay": false,
-			"Stats": false,
+			"StatsDisplay": true,
+			"Stats": true,
 			"Skin": false,
 
 			"Tally": true,
 			"TallyData": true,
 			"TallyListeners": false,
+			"TallyInit": true,
 			"TallyMain": true,
 			"TallyStorage": true,
 			"Token": true,
@@ -217,7 +218,7 @@ window.Debug = (function() {
 
 			// add listener for reset buttons
 			$(document).on("click", '#resetTallyUserFromBackground', function() {
-				TallyMain.getDataFromBackground(TallyMain.contentStartChecks);
+				// TallyInit.getDataFromBackground(TallyMain.contentStartChecks);
 			});
 			$(document).on("click", '#resetTallyUserFromServer', function() {
 				if (DEBUG) console.log("🐞 Debug.update() -> resetTallyUser()");

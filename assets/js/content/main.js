@@ -15,30 +15,44 @@
 // 0. After all game scripts have loaded, create global objects
 
 // objects created on server, mirrored locally
-let tally_user = {},
-	tally_top_monsters = {};
-// objects that only exist locally
-let tally_meta = {},
-	tally_options = {},
-	tally_nearby_monsters = {},
-	tally_stats = {};
+// let tally_user = {},
+// 	tally_top_monsters = {};
+// // objects that only exist locally
+// let tally_meta = {},
+// 	tally_options = {},
+// 	tally_nearby_monsters = {},
+// 	tally_stats = {};
 
 
 window.TallyMain = (function() {
 	// PRIVATE
 	let DEBUG = Debug.ALL.TallyMain;
 
-	// global error handler
-	window.onerror = function(message, source, lineno, colno, error) {
-		console.error("Tally", message, source, lineno, colno, error);
-	};
+	// // global error handler
+	// window.onerror = function(message, source, lineno, colno, error) {
+	// 	console.error("Tally", message, source, lineno, colno, error);
+	// };
 
 	$(function() {
 		try {
-			// welcome message for the curious
-			console.log("%c   Hello, I'm Tally!", Tally.tallyConsoleIcon);
+			// Config.logTimeSinceLoad("TallyMain.init() [1]");
+			// let safety = 0;
+			// while (!TallyInit.dataLoaded) {
+			// 	if (++safety > 1000) {
+			// 		console.log("🧰 TallyMain SAFETY FIRST!");
+			// 		console.log("🧰 TallyMain - >", tally_user);
+			// 		Config.logTimeSinceLoad("TallyMain.init() [2]");
+            //         contentStartChecks();
+			// 		break;
+			// 	}
+			// 	Config.logTimeSinceLoad("TallyMain.init() [3] TallyInit.dataLoaded =",TallyInit.dataLoaded);
+            //
+            //
+			// }
+
 			// get data from background, perform start checks
-			getDataFromBackground(contentStartChecks);
+			// getDataFromBackground(contentStartChecks);
+
 		} catch (err) {
 			console.error("🧰 TallyMain.getDataFromBackground() failed", err);
 		}
@@ -53,35 +67,35 @@ window.TallyMain = (function() {
 	 *  - if sent with contentStartChecks callback then resets game in content script
 	 *  - assumes background data is current (so does not sync with server)
 	 */
-	async function getDataFromBackground(callback = null) {
-		try {
-			Promise
-				.all([getUserPromise, getOptionsPromise, getMetaPromise,
-					getNearbyMonstersPromise, getStatsPromise, getTopMonstersPromise
-				])
-				.then(function() {
-					if (DEBUG) console.log('🧰 TallyMain.getDataFromBackground() [1] all promises have resolved');
-					// if (DEBUG) console.log("%ctally_user", Debug.styles.green, JSON.stringify(tally_user));
-					// if (DEBUG) console.log("%ctally_options", Debug.styles.green, JSON.stringify(tally_options));
-					// if (DEBUG) console.log("%ctally_meta", Debug.styles.green, JSON.stringify(tally_meta));
-					// tally_nearby_monsters, tally_top_monsters, tally_stats
-					if (callback) callback();
-				})
-				.catch(function(err) {
-					console.error('🧰 TallyMain.getDataFromBackground() -> ' +
-						'one or more promises have failed: ' + err,
-						"\n tally_user =", tally_user,
-						"\n tally_options =", tally_options,
-						"\n tally_meta =", tally_meta,
-						"\n tally_nearby_monsters =", tally_nearby_monsters,
-						"\n tally_top_monsters =", tally_top_monsters,
-						"\n tally_stats =", tally_stats
-					);
-				});
-		} catch (err) {
-			console.error(err);
-		}
-	}
+	// async function getDataFromBackground(callback = null) {
+	// 	try {
+	// 		Promise
+	// 			.all([getUserPromise, getOptionsPromise, getMetaPromise,
+	// 				getNearbyMonstersPromise, getStatsPromise, getTopMonstersPromise
+	// 			])
+	// 			.then(function() {
+	// 				if (DEBUG) console.log('🧰 TallyMain.getDataFromBackground() [1] all promises have resolved');
+	// 				// if (DEBUG) console.log("%ctally_user", Debug.styles.green, JSON.stringify(tally_user));
+	// 				// if (DEBUG) console.log("%ctally_options", Debug.styles.green, JSON.stringify(tally_options));
+	// 				// if (DEBUG) console.log("%ctally_meta", Debug.styles.green, JSON.stringify(tally_meta));
+	// 				// tally_nearby_monsters, tally_top_monsters, tally_stats
+	// 				if (callback) callback();
+	// 			})
+	// 			.catch(function(err) {
+	// 				console.error('🧰 TallyMain.getDataFromBackground() -> ' +
+	// 					'one or more promises have failed: ' + err,
+	// 					"\n tally_user =", tally_user,
+	// 					"\n tally_options =", tally_options,
+	// 					"\n tally_meta =", tally_meta,
+	// 					"\n tally_nearby_monsters =", tally_nearby_monsters,
+	// 					"\n tally_top_monsters =", tally_top_monsters,
+	// 					"\n tally_stats =", tally_stats
+	// 				);
+	// 			});
+	// 	} catch (err) {
+	// 		console.error(err);
+	// 	}
+	// }
 
 	/**
 	 *	2. Perform all start checks
@@ -89,7 +103,17 @@ window.TallyMain = (function() {
 	 */
 	async function contentStartChecks() {
 		try {
-			if (DEBUG) Debug.dataReportHeader("🧰 TallyMain.contentStartChecks()", "#", "before");
+			if (DEBUG) Debug.dataReportHeader("🧰 TallyMain.contentStartChecks() [1]", "#", "before");
+
+
+            if (DEBUG) console.log('🧰 TallyMain.contentStartChecks() [1.1] -> tally_user =',tally_user);
+            if (DEBUG) console.log('🧰 TallyMain.contentStartChecks() [1.1] -> tally_options =',tally_options);
+            if (DEBUG) console.log('🧰 TallyMain.contentStartChecks() [1.1] -> tally_meta =',tally_meta);
+            if (DEBUG) console.log('🧰 TallyMain.contentStartChecks() [1.1] -> tally_nearby_monsters =',tally_nearby_monsters);
+            if (DEBUG) console.log('🧰 TallyMain.contentStartChecks() [1.1] -> tally_stats =',tally_stats);
+            if (DEBUG) console.log('🧰 TallyMain.contentStartChecks() [1.1] -> tally_top_monsters =',tally_top_monsters);
+
+
 
 			// 2.1. Set the Page.data.mode
 			if (DEBUG) console.log('🧰 TallyMain.contentStartChecks() [2.1] -> SET Page.data.mode');
@@ -179,9 +203,9 @@ window.TallyMain = (function() {
 				notActive: 0
 			};
 
-            // NOT ACTIVE
-            // - something really wrong with page;
-            // - tally does not show at all, does not save in background or prompt for token
+			// NOT ACTIVE
+			// - something really wrong with page;
+			// - tally does not show at all, does not save in background or prompt for token
 
 			// Page.data failed - game cannot start at all
 			if (!prop(Page.data)) {
@@ -220,7 +244,7 @@ window.TallyMain = (function() {
 				mode.serverOffline = 1;
 			}
 
-            // NO TOKEN
+			// NO TOKEN
 			// - there is a problem with the token, we may prompt the player later assuming server is online
 			else if (tally_meta.token.status !== "ok") {
 				if (DEBUG) console.log(log + "tally_meta.token.status =", tally_meta.token.status, tally_meta);
@@ -234,8 +258,8 @@ window.TallyMain = (function() {
 				mode.active = 1;
 			}
 
-            // return to save in Page.data.mode
-            return mode;
+			// return to save in Page.data.mode
+			return mode;
 
 		} catch (err) {
 			console.error(err);
@@ -258,10 +282,7 @@ window.TallyMain = (function() {
 			// 4.1. Progress and event checks
 			if (DEBUG) console.log("🧰 TallyMain.startGameOnPage() [4.1] -> Check progress");
 
-			// check for, and possibly complete any progress
-			Progress.check("TallyMain");
-			// check last active status and potentially recharge
-			TallyEvents.checkLastActiveAndRecharge();
+
 
 
 			// 4.2. Check and show items
@@ -277,6 +298,12 @@ window.TallyMain = (function() {
 
 			// checks to perform after user has interacted with page
 			setTimeout(function() {
+
+				// check for, and possibly complete any progress
+				Progress.check("TallyMain");
+				// check last active status and potentially recharge
+				// TallyEvents.checkLastActiveAndRecharge();
+
 				if (DEBUG) console.log("🧰 TallyMain.startGameOnPage() [4.3] -> Check badges");
 				// potentially add badge
 				Badge.check();
@@ -362,8 +389,8 @@ window.TallyMain = (function() {
 
 	// PUBLIC
 	return {
-        getPageMode: getPageMode,
-		getDataFromBackground: getDataFromBackground,
+		getPageMode: getPageMode,
+		// getDataFromBackground: getDataFromBackground,
 		contentStartChecks: contentStartChecks,
 		startGameOnPage: startGameOnPage,
 		checkForServerFlags: checkForServerFlags

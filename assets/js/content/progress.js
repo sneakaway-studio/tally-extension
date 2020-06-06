@@ -6,48 +6,56 @@ window.Progress = (function() {
 
 	let defaults = {
 		// attacks
-		"attacksAwarded": 0,
-		"attacksSelected": 0,
+		attacksAwarded: 0,
+		attacksSelected: 0,
 		// battles
-		"battlesFought": 0,
-		"battlesWon": 0,
-		"battlesLost": 0,
-		"battleEscaped": 0,
-		"notifyToClickAfterBattle": 0,
+		battlesFought: 0,
+		battlesWon: 0,
+		battlesLost: 0,
+		battleEscaped: 0,
+		notifyToClickAfterBattle: 0,
+
 		// items
-		"consumables": 0,
-		"cookies": 0,
+		consumables: 0,
+		cookies: 0,
 		// interaction
-		"clickTallySingle": 0,
-		"clickTallyDouble": 0,
-		"clickTallyTriple": 0,
-		"clickTallyQuadruple": 0,
-		"dragTally": 0,
-		"mouseEnterTally": 0,
-		"mouseLeaveTally": 0,
+		clickTallySingle: 0,
+		clickTallyDouble: 0,
+		clickTallyTriple: 0,
+		clickTallyQuadruple: 0,
+		dragTally: 0,
+		mouseEnterTally: 0,
+		mouseLeaveTally: 0,
 		// disguises
-		"disguisesAwarded": 0,
+		disguisesAwarded: 0,
 
 		// page tags
-		"pageTagsCats": 0,
-		"pageTagsErrors": 0,
-		"pageTagsEncryption": 0,
-		"pageTagsLegal": 0,
-		"pageTagsNetworks": 0,
-		"pageTagsNews": 0,
-		"pageTagsPhotos": 0,
-		"pageTagsProfanity": 0,
+		pageTagsCats: 0,
+		pageTagsErrors: 0,
+		pageTagsEncryption: 0,
+		pageTagsLegal: 0,
+		pageTagsNetworks: 0,
+		pageTagsNews: 0,
+		pageTagsPhotos: 0,
+		pageTagsProfanity: 0,
 
 		// things to tell the player
-		"toldToDragTally": 0,
-		"toldToClickDouble": 0,
-		// tutorials
-		"viewTutorial1": 0,
-		"viewProfilePage": 0,
-		"viewDashboardPage": 0,
+		toldToDragTally: 0,
+		toldToClickDouble: 0,
+
+		// trackers
+		trackersSeen: 0,
+		trackersSeenMostOnePage: 0,
+		trackersBlocked: 0,
+
 		// authentication
-		"tokenAdded": 0,
-		"tokenAddedWelcomeMessage": 0,
+		tokenAdded: 0,
+		tokenAddedWelcomeMessage: 0,
+
+		// tutorials
+		viewTutorial1: 0,
+		viewProfilePage: 0,
+		viewDashboardPage: 0,
 	};
 
 	let pageTagsProgressMatches = 0 // whether or not page tags match progress items
@@ -61,10 +69,10 @@ window.Progress = (function() {
 		try {
 			// if (DEBUG) console.log("🕹️ Progress.get() [1]", name);
 
-			// console.log(tally_user, FS_Object.prop(tally_user));
-			// console.log(tally_user.progress, FS_Object.prop(tally_user.progress));
-			// console.log(tally_user.progress[name], FS_Object.prop(tally_user.progress[name]));
-			// console.log("🕹️ Progress.check()", typeof get("attacksAwarded"), typeof FS_Object.objLength(tally_user.attacks));
+			console.log("🕹️ Progress.get()", tally_user, FS_Object.prop(tally_user));
+			console.log("🕹️ Progress.get()", tally_user.progress, FS_Object.prop(tally_user.progress));
+			console.log("🕹️ Progress.get()", tally_user.progress[name], FS_Object.prop(tally_user.progress[name]));
+			console.log("🕹️ Progress.get()", typeof get("attacksAwarded"), typeof FS_Object.objLength(tally_user.attacks));
 
 			// if value exists in tally_user && is true | >0 | !""
 			if (FS_Object.prop(tally_user.progress[name])) {

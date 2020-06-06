@@ -30,7 +30,7 @@ window.Stats = (function() {
 	/**
 	 * 	Reset a player's stats - called when player levels up and for each new monster
 	 */
-	function reset(who) {
+	async function reset(who) {
 		try {
 			// allow offline
 			if (Page.data.mode.notActive) return;
@@ -38,7 +38,7 @@ window.Stats = (function() {
 			if (tally_options.gameMode === "disabled") return;
 
 			// get level
-			let level = getLevel(who);
+			let level = await getLevel(who);
 			if (!level) {
 				return console.error("📋 Stats.reset()", who, level, "NO LEVEL");
 			}
@@ -156,8 +156,10 @@ window.Stats = (function() {
 	/**
 	 *	Return the level of the player or monster
 	 */
-	function getLevel(who) {
+	async function getLevel(who) {
 		try {
+			if (DEBUG) console.log("📋 Stats.getLevel()", who, tally_user);
+
 			// allow offline
 			if (Page.data.mode.notActive) return;
 			// don't allow if mode disabled

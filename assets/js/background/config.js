@@ -16,10 +16,21 @@ var Config = (function() {
 			"debugging": true
 		};
 
+	/**
+	 *	Track loading time for scripts, backend data
+	 */
+	let then = new Date().getTime();
+	function logTimeSinceLoad(caller) {
+		let now = new Date().getTime();
+		if (true) console.log("🗜️ Config.logTimeSinceLoad() ELAPSED =", now - then, caller);
+	}
+	logTimeSinceLoad("Config [1]");
+
 	// PUBLIC
 	return {
 		options: options,
 		development: development,
 		production: production,
+		logTimeSinceLoad: logTimeSinceLoad
 	};
 })();

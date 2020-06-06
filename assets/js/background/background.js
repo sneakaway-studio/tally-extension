@@ -3,7 +3,8 @@
 window.Background = (function() {
 	// PRIVATE
 
-	let DEBUG = true;
+	let DEBUG = true,
+		gameReady = false;
 
 	/**
 	 *  1. Listen for first install, or updated (code or from web store) installation
@@ -11,6 +12,7 @@ window.Background = (function() {
 	chrome.runtime.onInstalled.addListener(function() {
 		try {
 			if (DEBUG) console.log("🧰 Background.onInstalled() -> new (or updated) installation detected");
+			Config.logTimeSinceLoad("Background chrome.runtime.onInstalled() [1]");
 			runStartChecks();
 		} catch (err) {
 			console.error(err);
@@ -26,6 +28,7 @@ window.Background = (function() {
 	async function runStartChecks() {
 		try {
 			dataReportHeader("🧰 Background.runStartChecks()", "@", "before");
+			Config.logTimeSinceLoad("Background.runStartChecks() [1]");
 
 			// if tally_meta not found, install objects
 			const newInstall = await Install.init();
@@ -37,6 +40,9 @@ window.Background = (function() {
 			await Install.setDevelopmentOptions();
 			// check the API status
 			const serverOnline = await Server.checkIfOnline();
+
+
+			Config.logTimeSinceLoad("Background.runStartChecks() [2]");
 
 			// if server online ...
 			if (serverOnline) {
@@ -138,6 +144,9 @@ window.Background = (function() {
 
 	// PUBLIC
 	return {
+		gameReady: function(){
+			return gameReady;
+		},
 		runStartChecks: runStartChecks,
 		dataReport: dataReport,
 		dataReportHeader: dataReportHeader
