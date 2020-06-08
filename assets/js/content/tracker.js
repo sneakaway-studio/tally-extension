@@ -70,16 +70,16 @@ window.Tracker = (function() {
 	function removeTracker() {
 		try {
 			// make sure there are trackers to remove
-			if (!tally_user.trackers || Page.data.trackers.length < 1) return;
+			if (!T.tally_user.trackers || Page.data.trackers.length < 1) return;
 
-			if (DEBUG) console.log("🕷️ Tracker.removeTracker() [1]", tally_user.trackers, Page.data.trackers);
+			if (DEBUG) console.log("🕷️ Tracker.removeTracker() [1]", T.tally_user.trackers, Page.data.trackers);
 
 			// loop through trackers on page and check if each is in block list
 			for (let i = 0, l = Page.data.trackers.length; i < l; i++) {
 				// if there is a match then block it
-				if (tally_user.trackers[Page.data.trackers[i]] && tally_user.trackers[Page.data.trackers[i]].blocked) {
+				if (T.tally_user.trackers[Page.data.trackers[i]] && T.tally_user.trackers[Page.data.trackers[i]].blocked) {
 
-					if (DEBUG) console.log("🕷️ Tracker.removeTracker() [2] ATTEMPT BLOCK", tally_user.trackers[i]);
+					if (DEBUG) console.log("🕷️ Tracker.removeTracker() [2] ATTEMPT BLOCK", T.tally_user.trackers[i]);
 
 					// reference to script element
 					var x = $("script[src*='" + Page.data.trackers[i] + "']");

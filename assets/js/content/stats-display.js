@@ -78,9 +78,11 @@ window.StatsDisplay = (function() {
 			let stats = Stats.get(who),
 				str = "",
 				blink = "";
+			// console.log("📈 StatsDisplay.returnFullTable() [1]", who, changed, str, blink);
 			str += "<div class='tally'><table class='tally stats-table'><tbody class='tally'>";
 			for (var key in stats) {
 				if (stats.hasOwnProperty(key)) {
+					// console.log("📈 StatsDisplay.returnFullTable() [2] loop ->", key +" => "+ stats[key]);
 					blink = "";
 					if (changed == key) blink = " stat-blink";
 					let title = key + ": " + stats[key].val + "/" + stats[key].max;
@@ -90,6 +92,7 @@ window.StatsDisplay = (function() {
 				}
 			}
 			str += "</tbody></table></div>";
+			// console.log("📈 StatsDisplay.returnFullTable() [3]", who, changed, str, blink);
 			return str;
 		} catch (err) {
 			console.error(err);
@@ -104,18 +107,20 @@ window.StatsDisplay = (function() {
 			// allow offline
 			if (Page.data.mode.notActive) return;
 			// don't allow if mode disabled or stealth
-			if (tally_options.gameMode === "disabled" || tally_options.gameMode === "stealth") return;
+			if (T.tally_options.gameMode === "disabled" || T.tally_options.gameMode === "stealth") return;
 
 			// get stats and level
 			let stats = Stats.get(who),
 				level = Stats.getLevel(who);
+
+
 			// if any problems return
 			if (level < 1) return console.error("📈 StatsDisplay.updateDisplay() ERROR -> level < 1");
 			if (stats === {}) return console.error("📈 StatsDisplay.updateDisplay() ERROR -> stats === {}");
-			if (!FS_Object.prop(tally_user)) return console.error("📈 StatsDisplay.updateDisplay() ERROR -> NO tally_user");
-			if (!FS_Object.prop(tally_user.score)) return console.error("📈 StatsDisplay.updateDisplay() ERROR -> NO tally_user.score", tally_user);
+			if (!FS_Object.prop(T.tally_user)) return console.error("📈 StatsDisplay.updateDisplay() ERROR -> NO T.tally_user");
+			if (!FS_Object.prop(T.tally_user.score)) return console.error("📈 StatsDisplay.updateDisplay() ERROR -> NO T.tally_user.score", T.tally_user);
 
-			if (DEBUG) console.log("📈 StatsDisplay.updateDisplay()", who, "=>", JSON.stringify(stats));
+			if (DEBUG) console.log("📈 StatsDisplay.updateDisplay() level =", level, who, "=>", JSON.stringify(stats));
 			// bars, circle, table
 			adjustStatsBar(who, "health");
 			adjustStatsBar(who, "stamina");
@@ -219,19 +224,19 @@ window.StatsDisplay = (function() {
 	 *	*circle circumference is normalized so xp needs to be 0–1
 	 */
 	function adjustStatsCircle(who, level, xpFactor = 0) {
-		if (DEBUG) console.log("📈 StatsDisplay.adjustStatsCircle() --> who=" + who, "level=" + level, "xpFactor=" + xpFactor);
+		if (DEBUG) console.log("📈 StatsDisplay.adjustStatsCircle() [1] who=" + who, "level=" + level, "xpFactor=" + xpFactor);
 		try {
 			// who is required
-			if (who === "") return console.warn("📈 StatsDisplay.adjustStatsCircle() --> who is required!!", who);
+			if (who === "") return console.warn("📈 StatsDisplay.adjustStatsCircle() [1.2] who is required!!", who);
 			// show text
 			adjustStatsCircleText(who, level);
 			// don't show xp, just text for monster
 			if (who == "monster") return;
 
-			if (DEBUG) console.log("📈 StatsDisplay.adjustStatsCircle() --> level=" + level);
+			if (DEBUG) console.log("📈 StatsDisplay.adjustStatsCircle() [2] level=" + level);
 
 
-			let currentXP = tally_user.score.score;
+			let currentXP = T.tally_user.score.score;
 			//let currentXP = GameData.levels[level].xp * xpFactor; // testing
 
 
@@ -257,7 +262,8 @@ window.StatsDisplay = (function() {
 
 
 
-			if (DEBUG) console.log("📈 StatsDisplay.adjustStatsCircle() --> level=" + level, "xpPrevious=" + xpPrevious, "currentXP=" + currentXP, "xpGoal=" + xpGoal, "xpNormalized=" + xpNormalized);
+			if (DEBUG) console.log("📈 StatsDisplay.adjustStatsCircle() [3] level=" + level, "xpPrevious=" + xpPrevious,
+				"currentXP=" + currentXP, "xpGoal=" + xpGoal, "xpNormalized=" + xpNormalized);
 
 			// save old values
 			let oldCircle = statsPoints[who].circle;
@@ -331,19 +337,9 @@ window.StatsDisplay = (function() {
 		// showStatsFull: function(who){
 		// 	showStatsFull(who);
 		// },
-		adjustStatsBar: function(who, bar) {
-			adjustStatsBar(who, bar);
-		},
-		adjustStatsCircle: function(who, val) {
-			adjustStatsCircle(who, val);
-		},
-
-
-		updateDisplay: function(who) {
-			updateDisplay(who);
-		},
-
-
+		adjustStatsBar: adjustStatsBar,
+		adjustStatsCircle: adjustStatsCircle,
+		updateDisplay: updateDisplay,
 
 	};
 })();

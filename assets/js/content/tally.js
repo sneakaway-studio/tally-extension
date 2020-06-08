@@ -33,7 +33,7 @@ window.Tally = (function() {
 			// allow offline
 			if (Page.data.mode.notActive) return;
 			// don't allow if mode disabled or stealth
-			if (tally_options.gameMode === "disabled" || tally_options.gameMode === "stealth") return;
+			if (T.tally_options.gameMode === "disabled" || T.tally_options.gameMode === "stealth") return;
 
 			if (!$(".tally")) return;
 			if (!followCursor) return;
@@ -86,12 +86,12 @@ window.Tally = (function() {
 			// allow offline
 			if (Page.data.mode.notActive) return;
 			// don't allow if mode disabled or stealth
-			if (tally_options.gameMode === "disabled" || tally_options.gameMode === "stealth") return;
+			if (T.tally_options.gameMode === "disabled" || T.tally_options.gameMode === "stealth") return;
 
 			if (DEBUG) console.log("%c   Tally.addCharacter()", TallyInit.tallyConsoleIcon);
 
 			// only show Tally if game mode == full
-			if (!prop(tally_options) || !tally_options.showTally) return;
+			if (!prop(T.tally_options) || !T.tally_options.showTally) return;
 
 			// maybe temp...
 			//Skin.preload(); // don't need now, replacing with svg
@@ -138,12 +138,10 @@ window.Tally = (function() {
 				stop: function() {}
 			});
 
+			if (DEBUG) console.log("%c   Tally.addCharacter()", TallyInit.tallyConsoleIcon, T.tally_user, T.tally_options, Page.data.mode );
+
 			// do not allow unless fully active
 			if (!Page.data.mode.active) return;
-
-			Disguise.displayIfTrackerBlocked();
-
-			addStats();
 
 			// for domains that rewrite body, add listener to add Tally back if removed
 			if (Page.data.domain == "baidu.com") {
@@ -156,11 +154,18 @@ window.Tally = (function() {
 
 
 	/**
-	 *	Add Tally character
+	 *	Add Tally's stats'
 	 */
 	function addStats() {
 		try {
-			if (DEBUG) console.log("%c   Tally.addStats()", TallyInit.tallyConsoleIcon);
+			if (DEBUG) console.log("%c   Tally.addStats()", TallyInit.tallyConsoleIcon, "T.tally_stats =", T.tally_stats);
+
+			// if stats is empty (game just installed)
+			if (FS_Object.isEmpty(T.tally_stats)) {
+				if (DEBUG) console.warn("%c   Tally.addStats() T.tally_stats EMPTY");
+				Stats.reset("tally");
+			} else Stats.set("tally", T.tally_stats); // store data
+
 
 			// insert SVG, stats table
 			$('.tally_stats').css({
@@ -281,7 +286,7 @@ window.Tally = (function() {
 			// allow offline
 			if (Page.data.mode.notActive) return;
 			// don't allow if mode disabled
-			if (tally_options.gameMode === "disabled") return;
+			if (T.tally_options.gameMode === "disabled") return;
 
 			// MOUSE ENTER
 			if (interaction === 'mouseenter') {
@@ -299,10 +304,6 @@ window.Tally = (function() {
 						});
 					}
 				} else {
-					// show random greeting once per page load
-					if (!FS_Object.prop(window.tallyFirstMouseEnterMessage)) return;
-					window.tallyFirstMouseEnterMessage = true;
-
 					// use random to determine what to do
 					let r = Math.random(),
 						// how often %
@@ -391,7 +392,7 @@ window.Tally = (function() {
 			// allow offline
 			if (Page.data.mode.notActive) return;
 			// don't allow if mode disabled or stealth
-			if (tally_options.gameMode === "disabled" || tally_options.gameMode === "stealth") return;
+			if (T.tally_options.gameMode === "disabled" || T.tally_options.gameMode === "stealth") return;
 
 			// if restarting or continuing
 			if ((clickCount >= 0 && clickCount <= clickCountMax) || clickInterval) {
@@ -532,7 +533,7 @@ window.Tally = (function() {
 
 	function showMoreOptions() {
 		try {
-			if (tally_user.admin <= 0) return;
+			if (T.tally_user.admin <= 0) return;
 
 			let str = "" +
 				// user-specific
@@ -565,13 +566,13 @@ window.Tally = (function() {
 
 			// launch profile
 			$(document).on('click', '.tally_profile_link', function() {
-				window.open(tally_meta.website + "/profile/" + tally_user.username);
+				window.open(T.tally_meta.website + "/profile/" + T.tally_user.username);
 			});
 			$(document).on('click', '#tally_dashboard', function() {
-				window.open(tally_meta.website + "/dashboard");
+				window.open(T.tally_meta.website + "/dashboard");
 			});
 			$(document).on('click', '#tally_leaderboard', function() {
-				window.open(tally_meta.website + "/leaderboards");
+				window.open(T.tally_meta.website + "/leaderboards");
 			});
 
 			// launch start screen
@@ -582,7 +583,7 @@ window.Tally = (function() {
 				});
 			});
 			$(document).on('click', '#tally_howToPlay', function() {
-				window.open(tally_meta.website + "/how-to-play");
+				window.open(T.tally_meta.website + "/how-to-play");
 			});
 			$(document).on('click', '#tally_gameTrailerBtn', function() {
 				window.open("https://www.youtube.com/watch?v=xfsbm1cI2uo");
@@ -590,7 +591,7 @@ window.Tally = (function() {
 
 			// nerd out
 			$(document).on('click', '#tally_privacyPolicy', function() {
-				window.open(tally_meta.website + "/privacy");
+				window.open(T.tally_meta.website + "/privacy");
 			});
 			$(document).on('click', '#tally_betaTestSurvey', function() {
 				window.open("https://docs.google.com/forms/d/e/1FAIpQLSeGx8zsF4aMQZH1eM0SzOvcpXijt8Bem1pzg4eni9eK8Jr-Lg/viewform");
@@ -614,7 +615,7 @@ window.Tally = (function() {
 
 	function showDevOptions() {
 		try {
-			if (tally_user.admin <= 0) return;
+			if (T.tally_user.admin <= 0) return;
 
 			let str = "Dev options: <br>" +
 				"Monster: <a class='tally' id='tally_testNearbyMonster'>test</a>; " +
@@ -682,8 +683,8 @@ window.Tally = (function() {
 		moveEye: moveEye,
 		setFollowCursor: setFollowCursor,
 		stare: stare,
-		addCharacter: addCharacter
-
+		addCharacter: addCharacter,
+		addStats: addStats
 	};
 
 })();

@@ -404,7 +404,7 @@ window.BattleAttack = (function() {
 					Dialogue.showStr(endBattleMessage.text, endBattleMessage.mood);
 					setTimeout(function() {
 						// if in demo then quit after a moment
-						if (tally_options.gameMode === "demo") {
+						if (T.tally_options.gameMode === "demo") {
 							setTimeout(function() {
 								Battle.end();
 							}, 500);
@@ -610,7 +610,7 @@ window.BattleAttack = (function() {
 
 			// make sure tally doesn't already have that attack
 			let safety = 0;
-			while (prop(tally_user.attacks[attack.name])) {
+			while (prop(T.tally_user.attacks[attack.name])) {
 				// if so get a new one, passing name and type if set
 				attack = AttackData.returnAttack(name, type);
 				// exit if all attacks have been rewarded
@@ -630,7 +630,7 @@ window.BattleAttack = (function() {
 			}
 
 			// update progress
-			Progress.update("attacksAwarded", FS_Object.objLength(tally_user.attacks));
+			Progress.update("attacksAwarded", FS_Object.objLength(T.tally_user.attacks));
 			// save in background (and on server)
 			TallyData.queue("itemData", "attacks", attack, "💥 BattleAttack.rewardAttack()");
 
@@ -649,9 +649,9 @@ window.BattleAttack = (function() {
 		try {
 			let selected = 0;
 			// count currently selected
-			for (let attackName in tally_user.attacks) {
-				console.log(tally_user.attacks[attackName]);
-				if (tally_user.attacks[attackName].selected == 1)
+			for (let attackName in T.tally_user.attacks) {
+				console.log(T.tally_user.attacks[attackName]);
+				if (T.tally_user.attacks[attackName].selected == 1)
 					selected++;
 			}
 			return selected;

@@ -33,17 +33,17 @@ window.Disguise = (function() {
 		try {
 
 			if (DEBUG) console.log("😎 Disguise.displayIfTrackerBlocked() [1]",
-				"tally_user.trackers =", tally_user.trackers,
+				"T.tally_user.trackers =", T.tally_user.trackers,
 					"Page.data.trackers =", Page.data.trackers
 			);
 
 
 
 			// if there are trackers blocked and this page has a tracker
-			if (!tally_user.trackers || Page.data.trackers.length < 1) return;
+			if (!T.tally_user.trackers || Page.data.trackers.length < 1) return;
 			// if there are trackers blocked
-			// if (FS_Object.prop(tally_user.trackers) && FS_Object.prop(tally_user.trackers[]))
-			currentDisguiseObj = FS_Object.randomObjProperty(tally_user.disguises);
+			// if (FS_Object.prop(T.tally_user.trackers) && FS_Object.prop(T.tally_user.trackers[]))
+			currentDisguiseObj = FS_Object.randomObjProperty(T.tally_user.disguises);
 			if (DEBUG) console.log("😎 Disguise.displayIfTrackerBlocked() [1] currentDisguiseObj =", currentDisguiseObj);
 			display(playDialogue);
 		} catch (err) {
@@ -114,7 +114,7 @@ window.Disguise = (function() {
 			let disguise = {};
 
 			// count down from current level ...
-			for (let i = parseInt(tally_user.level); i < 100; i--) {
+			for (let i = parseInt(T.tally_user.level); i < 100; i--) {
 				// until we get to a disguise that has a leve that matches
 				if (FS_Object.prop(DisguiseData.dataByLevel[i])) {
 					console.log("😎 Disguise.checkAndReward() [2]", DisguiseData.dataByLevel[i]);
@@ -123,13 +123,13 @@ window.Disguise = (function() {
 				}
 			}
 			// if they DO NOT currently have that disguise then award it
-			if (!FS_Object.prop(tally_user.disguises[disguise.name])) {
-				console.log("😎 Disguise.checkAndReward() [3] - Disguise has not be received before", tally_user.disguises);
+			if (!FS_Object.prop(T.tally_user.disguises[disguise.name])) {
+				console.log("😎 Disguise.checkAndReward() [3] - Disguise has not be received before", T.tally_user.disguises);
 
 				// save in background (and on server)
 				TallyData.queue("itemData", "disguises", disguise, "😎 Disguise.checkAndReward()");
 				// update progress
-				Progress.update("disguisesAwarded", FS_Object.objLength(tally_user.disguises));
+				Progress.update("disguisesAwarded", FS_Object.objLength(T.tally_user.disguises));
 				// tell user
 				Dialogue.showStr("You earned a " + disguise.title + " disguise!", "happy");
 			}

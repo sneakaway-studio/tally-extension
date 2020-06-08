@@ -24,7 +24,7 @@ window.Demo = (function() {
             // do not allow unless fully active
             if (!Page.data.mode.active) return;
             // do not allow if mode !demo
-            if (tally_options.gameMode !== "demo") return;
+            if (T.tally_options.gameMode !== "demo") return;
 
 			if (mode !== "off") return;
 			console.log('🎲 Demo.start() idleTime=' + idleTime);
@@ -44,7 +44,7 @@ window.Demo = (function() {
 					// only call restart once per event
 					if (listenerActive) return;
 					// double check we are in demo mode
-					if (tally_user && tally_user.admin > 0 && tally_options.gameMode === "demo") {
+					if (T.tally_user && T.tally_user.admin > 0 && T.tally_options.gameMode === "demo") {
 						listenerActive = true;
 						restart();
 						// set listenerActive back after a moment
@@ -192,7 +192,7 @@ window.Demo = (function() {
             // do not allow unless fully active
             if (!Page.data.mode.active) return;
             // do not allow if mode !demo
-            if (tally_options.gameMode !== "demo") return;
+            if (T.tally_options.gameMode !== "demo") return;
 
 			// occassionally go to new site
 			if (Math.random() > 0.5) alreadyTriedToFollowLink = true;

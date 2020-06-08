@@ -67,7 +67,7 @@ window.Debug = (function() {
 	 */
 	function setAll(state) {
 		try {
-			if (DEBUG) console.log("🐞 Debug.setAll() state =",state);
+			if (DEBUG) console.log("🐞 Debug.setAll() state =", state);
 			for (var key in ALL) {
 				if (ALL.hasOwnProperty(key)) {
 					ALL[key] = state;
@@ -130,7 +130,7 @@ window.Debug = (function() {
 	// add the debugger
 	function add() {
 		try {
-			if (!prop(tally_options) || !tally_options.showDebugger) return;
+			if (!prop(T.tally_options) || !T.tally_options.showDebugger) return;
 
 			// make sure it isn't already there
 			if ($("#tyd").length) return;
@@ -145,11 +145,11 @@ window.Debug = (function() {
 					// var offset = $(this).offset();
 					// var xPos = offset.left;
 					// var yPos = offset.top - $(window).scrollTop();
-					// tally_options.debuggerPosition = [xPos,yPos];
+					// T.tally_options.debuggerPosition = [xPos,yPos];
 				},
 				stop: function() {
 					//if (DEBUG) console.log("🐞 Debug.add() draggable:stop");
-					//TallyStorage.saveData("tally_options",tally_options,"tyd.draggable.stop");
+					//TallyStorage.saveData("tally_options",T.tally_options,"tyd.draggable.stop");
 				}
 			});
 		} catch (err) {
@@ -159,7 +159,7 @@ window.Debug = (function() {
 
 	function update() {
 		try {
-			if (!prop(tally_options) || !tally_options.showDebugger) return;
+			if (!prop(T.tally_options) || !T.tally_options.showDebugger) return;
 			if (!$("#tyd").length) return;
 
 			var str = "<div class='tally'>" +
@@ -167,22 +167,22 @@ window.Debug = (function() {
 				// "<button class='' id='resetTallyUserFromServer'>RESET FROM SERVER</button>"+
 				"";
 
-			// add tally_user.score
-			if (prop(tally_user.score))
-				str += "<b class='tally'>tally_user.score (XP)</b>: " + JSON.stringify(tally_user.score) + "<br>";
+			// add T.tally_user.score
+			if (prop(T.tally_user.score))
+				str += "<b class='tally'>T.tally_user.score (XP)</b>: " + JSON.stringify(T.tally_user.score) + "<br>";
 
-			// add tally_user.monsters
-			if (prop(tally_user.monsters))
-				str += "<b class='tally'>tally_user.monsters</b>: " + JSON.stringify(tally_user.monsters) + "<br>";
+			// add T.tally_user.monsters
+			if (prop(T.tally_user.monsters))
+				str += "<b class='tally'>T.tally_user.monsters</b>: " + JSON.stringify(T.tally_user.monsters) + "<br>";
 
-			// add tally_nearby_monsters
-			// if (prop(tally_nearby_monsters))
-			// 	str += "<b class='tally'>tally_nearby_monsters (" +
-			// 	FS_Object.objLength(tally_nearby_monsters) + ")</b>: " +JSON.stringify(tally_nearby_monsters) + "<br>";
+			// add T.tally_nearby_monsters
+			// if (prop(T.tally_nearby_monsters))
+			// 	str += "<b class='tally'>T.tally_nearby_monsters (" +
+			// 	FS_Object.objLength(T.tally_nearby_monsters) + ")</b>: " +JSON.stringify(T.tally_nearby_monsters) + "<br>";
 
-			// add tally_options
-			if (prop(tally_options))
-				str += "tally_options: " + JSON.stringify(tally_options) + "<br>";
+			// add T.tally_options
+			if (prop(T.tally_options))
+				str += "T.tally_options: " + JSON.stringify(T.tally_options) + "<br>";
 
 			// add Page.data
 			if (prop(Page.data))
@@ -218,14 +218,13 @@ window.Debug = (function() {
 
 			// add listener for reset buttons
 			$(document).on("click", '#resetTallyUserFromBackground', function() {
-				// TallyInit.getDataFromBackground(TallyMain.contentStartChecks);
+				TallyStorage.getDataFromBackground(TallyMain.contentStartChecks);
 			});
 			$(document).on("click", '#resetTallyUserFromServer', function() {
 				if (DEBUG) console.log("🐞 Debug.update() -> resetTallyUser()");
 				// call without token data (assume it is fine)
 				// TallyStorage.resetTallyUser();
 			});
-
 
 		} catch (err) {
 			console.error(err);
@@ -238,7 +237,7 @@ window.Debug = (function() {
 
 			let k = "`+1";
 			Mousetrap.bind(k + ' p', function() {
-				window.open('https://tallygame.net/profile/' + tally_user.username);
+				window.open('https://tallygame.net/profile/' + T.tally_user.username);
 			});
 			Mousetrap.bind(k + ' s', function() {
 				chrome.runtime.sendMessage({

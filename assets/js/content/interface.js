@@ -9,6 +9,8 @@ window.Interface = (function() {
 
 	function addBaseHTML() {
 		try {
+			if (DEBUG) console.log("🖥️ Interface.addBaseHTML() [1]");
+
 			let str = "<div id='tally_wrapper' class='tally reset-this-root reset-this no-print'>" +
 
 							// demo mode
@@ -56,10 +58,13 @@ window.Interface = (function() {
 						"</div>";
 			// in the case we are reseting the page
 			if ($("#tally_wrapper").length) {
+				if (DEBUG) console.log("🖥️ Interface.addBaseHTML() [2.1] reset");
 				$("#tally_wrapper").replaceWith(str);
-			}else {
+			} else {
+				if (DEBUG) console.log("🖥️ Interface.addBaseHTML() [2.1] new");
 				$('body').append(str);
 			}
+			// if (DEBUG) console.log("🖥️ Interface.addBaseHTML() [3]");
 
 		} catch (err) {
 			console.error(err);
@@ -72,7 +77,6 @@ window.Interface = (function() {
 	// PUBLIC
 	return {
 		addBaseHTML:addBaseHTML
-
 	};
 })();
 
@@ -80,13 +84,12 @@ window.Interface = (function() {
 
 $(function() {
 
-	Interface.addBaseHTML();
-
-
     // show/hide Tally in fullscreen mode
 	this.fullScreenMode = document.fullScreen || document.mozFullScreen || document.webkitIsFullScreen;
 	$(document).on('mozfullscreenchange webkitfullscreenchange fullscreenchange', function() {
 		try {
+			if (DEBUG) console.log("🖥️ Interface -> show/hide Tally in fullscreen mode");
+
 			this.fullScreenMode = !this.fullScreenMode;
 			console.log("this.fullScreenMode",this.fullScreenMode);
 

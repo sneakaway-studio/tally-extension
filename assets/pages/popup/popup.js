@@ -7,9 +7,9 @@
 /*  DATA
  ******************************************************************************/
 
-let tally_options = {},
-	tally_user = {},
-	tally_meta = {},
+let _tally_options = {},
+	_tally_user = {},
+	_tally_meta = {},
 	attacksMax = 4,
 	attacksSelected = 0,
 	popupUpdate = createPopupBackgroundUpdate();
@@ -37,13 +37,13 @@ function init() {
 			'action': 'getMeta'
 		}, function(response) {
 			console.log("getMeta()",JSON.stringify(response.data));
-			tally_meta = response.data;
-			if (tally_meta.token.status != "ok") {
+			_tally_meta = response.data;
+			if (_tally_meta.token.status != "ok") {
 				// display only the login
-				let str = "<a href='" + tally_meta.website + "/dashboard" + "' target='_blank'>Link your Tally account</a>";
+				let str = "<a href='" + _tally_meta.website + "/dashboard" + "' target='_blank'>Link your Tally account</a>";
 				$(".content").html(str);
 			} else {
-				if (tally_user.admin > 0)
+				if (_tally_user.admin > 0)
 					$(".hideUnlessAdmin").css({
 						'display': 'block'
 					});
@@ -67,15 +67,15 @@ function getUser(callback) {
 			'action': 'getUser'
 		}, function(response) {
 			//console.log("getUser()",JSON.stringify(response.data));
-			tally_user = response.data;
-			$("#username").html(tally_user.username);
-			$("#level").html(tally_user.level);
-			$("#score").html(tally_user.score.score);
-			$("#clicks").html(tally_user.score.clicks);
-			$("#likes").html(tally_user.score.likes);
-			$("#pages").html(tally_user.score.pages);
-			$("#time").html(moment.utc(tally_user.score.time * 1000).format('HH:mm:ss'));
-			$("#monsters").html(FS_Object.objLength(tally_user.monsters));
+			_tally_user = response.data;
+			$("#username").html(_tally_user.username);
+			$("#level").html(_tally_user.level);
+			$("#score").html(_tally_user.score.score);
+			$("#clicks").html(_tally_user.score.clicks);
+			$("#likes").html(_tally_user.score.likes);
+			$("#pages").html(_tally_user.score.pages);
+			$("#time").html(moment.utc(_tally_user.score.time * 1000).format('HH:mm:ss'));
+			$("#monsters").html(FS_Object.objLength(_tally_user.monsters));
 			// do a callback if exists
 			if (callback)
 				for (var i in callback)
@@ -92,17 +92,17 @@ function getAttacks(callback) {
 			'action': 'getUser'
 		}, function(response) {
 			//console.log("getAttacks()",JSON.stringify(response.data));
-			tally_user = response.data;
+			_tally_user = response.data;
 			// reset selected
 			attacksSelected = 0;
 			// start string
 			var str = "";
 			// for each attack
-			for (var key in tally_user.attacks) {
-				if (tally_user.attacks.hasOwnProperty(key)) {
+			for (var key in _tally_user.attacks) {
+				if (_tally_user.attacks.hasOwnProperty(key)) {
 					let checked = "";
 					// if below limit and it should be shown as selected
-					if (attacksSelected < attacksMax && tally_user.attacks[key].selected === 1) {
+					if (attacksSelected < attacksMax && _tally_user.attacks[key].selected === 1) {
 						checked = " checked ";
 						// track # of selected
 						attacksSelected++;
@@ -111,20 +111,20 @@ function getAttacks(callback) {
 					let defenseOption = "";
 
 					// if defense
-					if (tally_user.attacks[key].type === "defense") {
+					if (_tally_user.attacks[key].type === "defense") {
 						defenseOption = "battle-options-defense";
 					}
-					let title = tally_user.attacks[key].name + " [" + tally_user.attacks[key].category + " " + tally_user.attacks[key].type + "] ";
-					if (tally_user.attacks[key].description) title += tally_user.attacks[key].description;
+					let title = _tally_user.attacks[key].name + " [" + _tally_user.attacks[key].category + " " + _tally_user.attacks[key].type + "] ";
+					if (_tally_user.attacks[key].description) title += _tally_user.attacks[key].description;
 
 					str += "<li>";
 					str += '<input class="attack-checkbox" type="checkbox" id="' + key + '" name="attacks" ' + checked + ' />';
 					str += "<label " +
 						" for='" + key + "'" +
 						" title='" + title + "' " +
-						" data-attack='" + tally_user.attacks[key].name + "' " +
-						" class='tally battle-options battle-options-fire " + defenseOption + " attack-" + tally_user.attacks[key].name + "'>" +
-						"<span class='tally attack-icon attack-icon-" + tally_user.attacks[key].type + "' ></span>" +
+						" data-attack='" + _tally_user.attacks[key].name + "' " +
+						" class='tally battle-options battle-options-fire " + defenseOption + " attack-" + _tally_user.attacks[key].name + "'>" +
+						"<span class='tally attack-icon attack-icon-" + _tally_user.attacks[key].type + "' ></span>" +
 						key + '</label>';
 					str += "</li>";
 
@@ -162,8 +162,8 @@ function getAttacks(callback) {
 					return;
 				}
 				// set attack selected
-				if (this.checked) tally_user.attacks[name].selected = 1;
-				else tally_user.attacks[name].selected = 0;
+				if (this.checked) _tally_user.attacks[name].selected = 1;
+				else _tally_user.attacks[name].selected = 0;
 
 				// save user
 				saveUser();
@@ -212,11 +212,11 @@ function saveAttacks() {
 			// get name
 			let name = $(checkBoxes[i]).attr("id");
 			// double check this is a value
-			if (name && tally_user.attacks[name] && $("#" + name)) {
+			if (name && _tally_user.attacks[name] && $("#" + name)) {
 				// double check selected status in data
-				tally_user.attacks[name].selected = $("#" + name).prop('checked');
+				_tally_user.attacks[name].selected = $("#" + name).prop('checked');
 				//alert(name + "," + JSON.stringify(checkBoxes[i]));
-				attacks.push(tally_user.attacks[name]);
+				attacks.push(_tally_user.attacks[name]);
 			}
 		}
 		popupUpdate.itemData.attacks = attacks;
@@ -275,8 +275,8 @@ function sendUpdateToBackground() {
 			'data': popupUpdate
 		}, function(response) {
 			console.log('💾 > sendUpdateToBackground() RESPONSE =', response);
-			// update tally_user in content
-			tally_user = response.tally_user;
+			// update _tally_user in content
+			_tally_user = response.tally_user;
 			// reset
 			popupUpdate = createPopupBackgroundUpdate();
 		});
@@ -290,18 +290,18 @@ function getOptions() {
 	try {
 		chrome.runtime.sendMessage({
 			'action': 'getData',
-			'name': 'tally_options'
+			'name': "tally_options"
 		}, function(response) {
 			//console.log("getOptions()",JSON.stringify(response.data));
-			tally_options = response.data;
+			_tally_options = response.data;
 			// game
-			$("#gameMode").val(tally_options.gameMode);
-			$("#soundVolume").val(tally_options.soundVolume * 100);
+			$("#gameMode").val(_tally_options.gameMode);
+			$("#soundVolume").val(_tally_options.soundVolume * 100);
 			// privacy
-			document.getElementById("disabledDomains").value = tally_options.disabledDomains.join("\n");
+			document.getElementById("disabledDomains").value = _tally_options.disabledDomains.join("\n");
 			// debugging
-			document.getElementById("showDebugger").checked = tally_options.showDebugger;
-			//document.getElementById("debuggerPosition").value = tally_options.debuggerPosition;
+			document.getElementById("showDebugger").checked = _tally_options.showDebugger;
+			//document.getElementById("debuggerPosition").value = _tally_options.debuggerPosition;
 		});
 	} catch (err) {
 		console.error(err);
@@ -311,13 +311,13 @@ function getOptions() {
 function saveUser() {
 	try {
 
-		console.log("saveUser()", tally_user);
+		console.log("saveUser()", _tally_user);
 
 		// saveOptions in background.js
 		chrome.runtime.sendMessage({
 			'action': 'saveData',
-			'name': 'tally_user',
-			'data': tally_user
+			'name': "tally_user",
+			'data': _tally_user
 		}, function(response) {
 			console.log(response);
 			showStatus('Settings saved'); // display success message
@@ -341,20 +341,20 @@ function saveUser() {
 function saveOptions() {
 	try {
 		// game
-		tally_options.gameMode = $("#gameMode").val();
-		tally_options.soundVolume = $("#soundVolume").val() / 100;
+		_tally_options.gameMode = $("#gameMode").val();
+		_tally_options.soundVolume = $("#soundVolume").val() / 100;
 		// privacy
-		tally_options.disabledDomains = $('#disabledDomains').val().trim().replace(/\r\n/g, "\n").split("\n");
+		_tally_options.disabledDomains = $('#disabledDomains').val().trim().replace(/\r\n/g, "\n").split("\n");
 		// debugging
-		tally_options.showDebugger = $('#showDebugger').prop('checked');
-		tally_options.debuggerPosition = $("#debuggerPosition").val();
+		_tally_options.showDebugger = $('#showDebugger').prop('checked');
+		_tally_options.debuggerPosition = $("#debuggerPosition").val();
 
-		//console.log("saveOptions()",tally_options);
+		//console.log("saveOptions()",_tally_options);
 
 		// saveOptions in background.js
 		chrome.runtime.sendMessage({
 			'action': 'saveOptions',
-			'data': tally_options
+			'data': _tally_options
 		}, function(response) {
 			//console.log(response);
 			showStatus('Options saved'); // display success message
@@ -381,18 +381,18 @@ function getMeta(callback) {
 			'action': 'getMeta'
 		}, function(response) {
 			//console.log("getMeta()",JSON.stringify(response.data));
-			tally_meta = response.data;
+			_tally_meta = response.data;
 
-			$("#tokenStatus").html(tally_meta.token.status);
-			$("#tokenExpiresDate").html((tally_meta.token.expiresDate ? tally_meta.token.expiresDate : "null"));
-			$("#tokenExpiresInMillis").html((tally_meta.token.expiresInMillis ? tally_meta.token.expiresInMillis : "null"));
-			$("#serverStatus").html((tally_meta.server.online ? "yes" : "no"));
-			$("#currentAPI").html((tally_meta.currentAPI ? tally_meta.currentAPI : "null"));
-			$("#api").html((tally_meta.api ? tally_meta.api : "null"));
+			$("#tokenStatus").html(_tally_meta.token.status);
+			$("#tokenExpiresDate").html((_tally_meta.token.expiresDate ? _tally_meta.token.expiresDate : "null"));
+			$("#tokenExpiresInMillis").html((_tally_meta.token.expiresInMillis ? _tally_meta.token.expiresInMillis : "null"));
+			$("#serverStatus").html((_tally_meta.server.online ? "yes" : "no"));
+			$("#currentAPI").html((_tally_meta.currentAPI ? _tally_meta.currentAPI : "null"));
+			$("#api").html((_tally_meta.api ? _tally_meta.api : "null"));
 
 
-			$("#installedOn").html(tally_meta.installedOn);
-			$("#version").html(tally_meta.version);
+			$("#installedOn").html(_tally_meta.installedOn);
+			$("#version").html(_tally_meta.version);
 
 			// callback
 			if (callback) callback();
@@ -402,11 +402,11 @@ function getMeta(callback) {
 	}
 }
 
-// reset tally_user
+// reset _tally_user
 document.getElementById("opt_reset_user").onclick = function() {
-	window.open(tally_meta.website + "/dashboard");
+	window.open(_tally_meta.website + "/dashboard");
 };
-// reset tally_options
+// reset _tally_options
 document.getElementById("opt_reset_options").onclick = function() {
 	chrome.runtime.sendMessage({
 		action: "resetOptions"
@@ -493,11 +493,11 @@ function openTab(btn, tabName) {
 function updateSkins() {
 	try {
 		let str = "";
-		if (!tally_user.skins) return;
-		for (var key in tally_user.skins) {
+		if (!_tally_user.skins) return;
+		for (var key in _tally_user.skins) {
 			str += "<span class='skinThumb'><a href='#'>";
 			str += "<img src='";
-			str += chrome.extension.getURL('assets/img/tally/skins/skin-' + tally_user.skins[key] + ".png");
+			str += chrome.extension.getURL('assets/img/tally/skins/skin-' + _tally_user.skins[key] + ".png");
 			str += "'></a></span>";
 		}
 		$("#skinThumbs").html(str);
@@ -540,19 +540,19 @@ document.getElementById("opt_close").onclick = function() {
 
 // external links
 $(document).on('click', '#updateTokenBtn', function() {
-	window.open(tally_meta.website + "/signin");
+	window.open(_tally_meta.website + "/signin");
 });
 $(document).on('click', '#viewProfileBtn', function() {
-	window.open(tally_meta.website + "/profile/" + tally_user.username);
+	window.open(_tally_meta.website + "/profile/" + _tally_user.username);
 });
 $(document).on('click', '#editProfileBtn', function() {
-	window.open(tally_meta.website + "/dashboard");
+	window.open(_tally_meta.website + "/dashboard");
 });
 $(document).on('click', '#viewLeaderboardsBtn', function() {
-	window.open(tally_meta.website + "/leaderboards");
+	window.open(_tally_meta.website + "/leaderboards");
 });
 $(document).on('click', '#viewPrivacyPolicyBtn', function() {
-	window.open(tally_meta.website + "/privacy");
+	window.open(_tally_meta.website + "/privacy");
 });
 
 $(document).on('click', '#testerSurveyBtn', function() {

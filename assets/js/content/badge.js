@@ -17,9 +17,9 @@ window.Badge = (function() {
 			// start with blank data
 			let badge = BadgeData.data[name];
 			// if they have received one before
-			if (tally_user.badges && tally_user.badges[name])
+			if (T.tally_user.badges && T.tally_user.badges[name])
 				// then update level
-				badge.level = tally_user.badges[name].level;
+				badge.level = T.tally_user.badges[name].level;
 			// if (DEBUG) console.log('🏆 Badge.get() name =', name, badge);
 			return badge;
 		} catch (err) {
@@ -47,7 +47,7 @@ window.Badge = (function() {
 			// do not allow unless fully active
 			if (!Page.data.mode.active) return;
 			// don't allow if mode disabled or stealth
-			if (tally_options.gameMode === "disabled" || tally_options.gameMode === "stealth") return;
+			if (T.tally_options.gameMode === "disabled" || T.tally_options.gameMode === "stealth") return;
 
 
 			let log = "🏆 Badge.check()",
@@ -90,7 +90,7 @@ window.Badge = (function() {
 
 			if (shouldCheck.workday) { // 9a-5p M-F
 				currentBadge = startNewCheck("worker-bee");
-				newBadgeLevel = exp(tally_user.streamReport.tWorkday / 60 / 60 / 8); // ~ every 8 hours
+				newBadgeLevel = exp(T.tally_user.streamReport.tWorkday / 60 / 60 / 8); // ~ every 8 hours
 				if (newBadgeLevel > currentBadge.level) {
 					currentBadge.level = newBadgeLevel;
 					if (DEBUG) console.log(log, "newBadgeLevel > currentBadge.level", "currentBadge =", currentBadge);
@@ -98,7 +98,7 @@ window.Badge = (function() {
 				}
 			} else if (shouldCheck.nighttime) { // 8p–6a
 				currentBadge = startNewCheck("night-owl");
-				newBadgeLevel = exp(tally_user.streamReport.tNight / 60 / 60 / 8); // ~ every 8 hours
+				newBadgeLevel = exp(T.tally_user.streamReport.tNight / 60 / 60 / 8); // ~ every 8 hours
 				if (newBadgeLevel > currentBadge.level) {
 					currentBadge.level = newBadgeLevel;
 					if (DEBUG) console.log(log, "newBadgeLevel > currentBadge.level", "currentBadge =", currentBadge);
@@ -110,7 +110,7 @@ window.Badge = (function() {
 			////////////////////////////// COMPUTER //////////////////////////////
 
 			currentBadge = startNewCheck("big-clicker");
-			newBadgeLevel = exp(tally_user.score.clicks / 350); // ~ every n clicks
+			newBadgeLevel = exp(T.tally_user.score.clicks / 350); // ~ every n clicks
 			// if (DEBUG) console.log(log, "newBadgeLevel =", newBadgeLevel, "newBadgeLevel =", currentBadge.level);
 			if (newBadgeLevel > currentBadge.level) {
 				currentBadge.level = currentBadge.level + 1; //newBadgeLevel;
@@ -147,7 +147,7 @@ window.Badge = (function() {
 			/////////////// filter-bubble -> based on (increasing) likes on social media
 			if (shouldCheck.social) {
 				currentBadge = startNewCheck("filter-bubble");
-				newBadgeLevel = exp(tally_user.score.likes / 25); // ~ every n likes
+				newBadgeLevel = exp(T.tally_user.score.likes / 25); // ~ every n likes
 				if (newBadgeLevel > currentBadge.level) {
 					currentBadge.level = newBadgeLevel;
 					if (DEBUG) console.log(log, "newBadgeLevel > currentBadge.level", "currentBadge =", currentBadge);
@@ -158,7 +158,7 @@ window.Badge = (function() {
 			/////////////// stalker -> based on (increasing) on social media but very few likes
 			if (shouldCheck.social) {
 				currentBadge = startNewCheck("stalker");
-				newBadgeLevel = exp(tally_user.streamReport.pSocial / 60 / 30); // ~ every 30 min
+				newBadgeLevel = exp(T.tally_user.streamReport.pSocial / 60 / 30); // ~ every 30 min
 				if (shouldCheck.social && newBadgeLevel > currentBadge.level) {
 					currentBadge.level = newBadgeLevel;
 					if (DEBUG) console.log(log, "newBadgeLevel > currentBadge.level", "currentBadge =", currentBadge);
@@ -228,7 +228,7 @@ window.Badge = (function() {
 				"<div class='tally tally-badge-text-level'>level " + badge.level + "</div>" +
 				"</div></div>";
 			// if they already have that badge
-			if (tally_user.badges[badge.name] && badge.level > tally_user.badges[badge.name].level) {
+			if (T.tally_user.badges[badge.name] && badge.level > T.tally_user.badges[badge.name].level) {
 				awardText += "You leveled up!";
 			} else {
 				awardText += "You earned a new badge!";
@@ -247,7 +247,7 @@ window.Badge = (function() {
 			}));
 
 			// update progress
-			Progress.update("badgesAwarded", FS_Object.objLength(tally_user.badges));
+			Progress.update("badgesAwarded", FS_Object.objLength(T.tally_user.badges));
 			// play sound
 			Sound.playRandomPowerup();
 			// save in background (and on server)

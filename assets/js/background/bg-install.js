@@ -10,13 +10,13 @@ window.Install = (function() {
 	 */
 	async function init(fromReset = false, existingToken = {}) {
 		try {
-			// does tally_meta exists, or is this the first install?
+			// does T.tally_meta exists, or is this the first install?
 			if (prop(store("tally_meta"))) {
-				if (DEBUG) console.log("🔧 Install.init() -> tally_meta exists, need to check token");
+				if (DEBUG) console.log("🔧 Install.init() -> T.tally_meta exists, need to check token");
 				return false;
 			}
 
-			if (DEBUG) console.log("🔧 Install.init() -> no tally_meta found, creating app");
+			if (DEBUG) console.log("🔧 Install.init() -> no T.tally_meta found, creating app");
 			// Create all game objects
 			store("tally_user", createUser());
 			store("tally_options", createOptions());

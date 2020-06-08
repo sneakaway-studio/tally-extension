@@ -22,7 +22,7 @@ window.TallyListeners = (function() {
 			// allow offline
 			if (Page.data.mode.notActive) return;
 			// don't allow if mode disabled
-			if (tally_options.gameMode === "disabled") return;
+			if (T.tally_options.gameMode === "disabled") return;
 
 			// core mouseup listener
 			document.addEventListener("mouseup", function(e) {
@@ -79,7 +79,7 @@ window.TallyListeners = (function() {
 			// allow offline
 			if (Page.data.mode.notActive) return;
 			// don't allow if mode disabled
-			if (tally_options.gameMode === "disabled") return;
+			if (T.tally_options.gameMode === "disabled") return;
 
 
 			let caller = "👂 TallyListeners.clickEventHandler()";

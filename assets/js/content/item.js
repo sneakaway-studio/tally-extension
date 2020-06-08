@@ -44,7 +44,7 @@ window.Item = (function() {
 				menu = "",
 				attacksSelected = 0,
 				attacksMax = 4;
-			// html += JSON.stringify(tally_user.attacks)
+			// html += JSON.stringify(T.tally_user.attacks)
 
 
 			menu += `<div class="tally tab-button-group">
@@ -62,13 +62,13 @@ window.Item = (function() {
 
 
 			// attacks
-			if (tally_user.attacks) {
+			if (T.tally_user.attacks) {
 				str += '<div class="tally tab attacksTab">';
-				for (var key in tally_user.attacks) {
-					if (tally_user.attacks.hasOwnProperty(key)) {
+				for (var key in T.tally_user.attacks) {
+					if (T.tally_user.attacks.hasOwnProperty(key)) {
 						let checked = "";
 						// if below limit and it should be shown as selected
-						if (attacksSelected < attacksMax && tally_user.attacks[key].selected === 1) {
+						if (attacksSelected < attacksMax && T.tally_user.attacks[key].selected === 1) {
 							checked = " checked ";
 							// track # of selected
 							attacksSelected++;
@@ -77,20 +77,20 @@ window.Item = (function() {
 						let defenseOption = "";
 
 						// if defense
-						if (tally_user.attacks[key].type === "defense") {
+						if (T.tally_user.attacks[key].type === "defense") {
 							defenseOption = "battle-options-defense";
 						}
-						let title = tally_user.attacks[key].name + " [" + tally_user.attacks[key].category + " " + tally_user.attacks[key].type + "] ";
-						if (tally_user.attacks[key].description) title += tally_user.attacks[key].description;
+						let title = T.tally_user.attacks[key].name + " [" + T.tally_user.attacks[key].category + " " + T.tally_user.attacks[key].type + "] ";
+						if (T.tally_user.attacks[key].description) title += T.tally_user.attacks[key].description;
 
 						str += "<li>";
 						str += '<input class="attack-checkbox" type="checkbox" id="' + key + '" name="attacks" ' + checked + ' />';
 						str += "<label " +
 							" for='" + key + "'" +
 							" title='" + title + "' " +
-							" data-attack='" + tally_user.attacks[key].name + "' " +
-							" class='tally battle-options battle-options-fire " + defenseOption + " attack-" + tally_user.attacks[key].name + "'>" +
-							"<span class='tally attack-icon attack-icon-" + tally_user.attacks[key].type + "' ></span>" +
+							" data-attack='" + T.tally_user.attacks[key].name + "' " +
+							" class='tally battle-options battle-options-fire " + defenseOption + " attack-" + T.tally_user.attacks[key].name + "'>" +
+							"<span class='tally attack-icon attack-icon-" + T.tally_user.attacks[key].type + "' ></span>" +
 							key + '</label>';
 						str += "</li>";
 

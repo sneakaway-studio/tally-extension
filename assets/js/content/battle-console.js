@@ -180,8 +180,8 @@ window.BattleConsole = (function() {
 			// get list of attacks
 			var _attacks = {};
 			if (DEBUG) console.log("🖥️ BattleConsole.showBattleOptions() step 1.1", _active);
-			if (!FS_Object.isEmpty(tally_user.attacks))
-				_attacks = tally_user.attacks;
+			if (!FS_Object.isEmpty(T.tally_user.attacks))
+				_attacks = T.tally_user.attacks;
 			// return if no attacks available
 			else return;
 			if (DEBUG) console.log("🖥️ BattleConsole.showBattleOptions() step 1.2", _active);
@@ -237,11 +237,11 @@ window.BattleConsole = (function() {
 			// display attack description
 			$(document).on("mouseenter", '.battle-options-fire', function() {
 				let attackName = $(this).attr("data-attack");
-				let str = attackName + " " + tally_user.attacks[attackName].type + "... ";
+				let str = attackName + " " + T.tally_user.attacks[attackName].type + "... ";
 				// if description field contains string
-				if (tally_user.attacks[attackName].description)
-					str = tally_user.attacks[attackName].description;
-				// console.log(attackName, tally_user.attacks[attackName], str);
+				if (T.tally_user.attacks[attackName].description)
+					str = T.tally_user.attacks[attackName].description;
+				// console.log(attackName, T.tally_user.attacks[attackName], str);
 				$("#battle-console-prompt-content").html(str);
 			});
 			// hide
@@ -269,8 +269,8 @@ window.BattleConsole = (function() {
 					$('.battle-options-row').addClass("disabled");
 					// get attack name
 					let attackName = $(this).attr("data-attack");
-					if (DEBUG) console.log("🖥️ BattleConsole.showBattleOptions() attackName =", attackName, tally_user.attacks);
-					BattleAttack.doAttack(tally_user.attacks[attackName], "tally", "monster");
+					if (DEBUG) console.log("🖥️ BattleConsole.showBattleOptions() attackName =", attackName, T.tally_user.attacks);
+					BattleAttack.doAttack(T.tally_user.attacks[attackName], "tally", "monster");
 				}
 			});
 			// add "run" / "escape" listeners
@@ -312,7 +312,7 @@ window.BattleConsole = (function() {
 			// allow offline
 			if (Page.data.mode.notActive) return;
 			// don't allow if mode disabled or stealth
-			if (tally_options.gameMode === "disabled" || tally_options.gameMode === "stealth") return;
+			if (T.tally_options.gameMode === "disabled" || T.tally_options.gameMode === "stealth") return;
 			// don't allow if ele doesn't exist or str or arr is empty
 			if (!document.getElementById(ele) || str == "") return;
 

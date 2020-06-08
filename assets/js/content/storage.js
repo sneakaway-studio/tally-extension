@@ -73,28 +73,28 @@ window.TallyStorage = (function() {
 
 
 	/**
-	 *	Save tally_user in content / background
+	 *	Save T.tally_user in content / background
 	 */
 	function saveTallyUser(name, obj, caller = "") {
 		try {
-			if (DEBUG) console.log("🗄️ < TallyStorage.saveTallyUser()", name, obj, caller, "tally_user =", tally_user);
-			if (!FS_Object.prop(tally_user.progress)) {
-				console.error("🗄️ < TallyStorage.saveTallyUser() NO tally_user");
+			if (DEBUG) console.log("🗄️ < TallyStorage.saveTallyUser()", name, obj, caller, "T.tally_user =", T.tally_user);
+			if (!FS_Object.prop(T.tally_user.progress)) {
+				console.error("🗄️ < TallyStorage.saveTallyUser() NO T.tally_user");
 				return;
 			}
 			// get latest from background ? NO IDT this is required
-			//tally_user = TallyStorage.getData("tally_user");
+			//T.tally_user = TallyStorage.getData("tally_user");
 			// save in content
-			tally_user[name][obj.name] = obj;
+			T.tally_user[name][obj.name] = obj;
 			// save in background
 			let msg = {
 				'action': 'saveData',
-				'name': 'tally_user',
-				'data': tally_user
+				'name': "tally_user",
+				'data': T.tally_user
 			};
 			chrome.runtime.sendMessage(msg, function(response) {
 				if (DEBUG) console.log("🗄️ > TallyStorage.saveTallyUser() RESPONSE =", JSON.stringify(response));
-				tally_user = response.data;
+				T.tally_user = response.data;
 			});
 		} catch (err) {
 			console.error(err);
@@ -104,7 +104,7 @@ window.TallyStorage = (function() {
 
 
 	/**
-	 *	Save tally_user in content / background
+	 *	Save T.tally_user in content / background
 	 * 	- a.k.a. "resetUser", "resetGame"
 	 */
 	function resetTallyUser(tokenOnPage = false, tokenData = {}) {
@@ -129,9 +129,9 @@ window.TallyStorage = (function() {
 
 
 				// update all objects
-				tally_user = response.tally_user;
-				tally_options = response.tally_options;
-				tally_meta = response.tally_meta;
+				T.tally_user = response.tally_user;
+				T.tally_options = response.tally_options;
+				T.tally_meta = response.tally_meta;
 				// update Page.data.mode
 				Page.data.mode = TallyMain.getPageMode();
 				// run game again
@@ -168,9 +168,9 @@ window.TallyStorage = (function() {
 					if (DEBUG) console.log('🗄️ > TallyStorage.saveTokenFromDashboard() [2] 🔑 IS NEW', response);
 
 					// update all objects
-					tally_user = response.tally_user;
-					tally_options = response.tally_options;
-					tally_meta = response.tally_meta;
+					T.tally_user = response.tally_user;
+					T.tally_options = response.tally_options;
+					T.tally_meta = response.tally_meta;
 
 
 					// update Page.data.mode
@@ -200,7 +200,7 @@ window.TallyStorage = (function() {
 				'action': 'setBadgeText',
 				'data': data
 			}, function(response) {
-				// ?
+				console.log("🗄️ > TallyStorage.setBadgeText() response =", response);
 			});
 		} catch (err) {
 			console.error(err);
@@ -216,8 +216,8 @@ window.TallyStorage = (function() {
 	// 		}, function(response) {
 	// 			Config.logTimeSinceLoad("TallyStorage.getUserPromise() (response received) [2]");
 	// 			if (DEBUG) console.log('🗄️ >>>>> getUserPromise()', JSON.stringify(response.data));
-	// 			tally_user = response.data; // store data
-	// 			Config.logTimeSinceLoad("TallyStorage.getUserPromise() (tally_user stored) [3]");
+	// 			T.tally_user = response.data; // store data
+	// 			Config.logTimeSinceLoad("TallyStorage.getUserPromise() (T.tally_user stored) [3]");
 	// 			resolve(response.data); // resolve promise
 	// 			Config.logTimeSinceLoad("TallyStorage.getUserPromise() (promise resolved) [4]");
 	// 		});
@@ -226,142 +226,115 @@ window.TallyStorage = (function() {
 
 
 
-	//
-	// // A simple promise that resolves after a given time
-	// const timeOut = (t) => {
-	// 	return new Promise((resolve, reject) => {
-	// 		setTimeout(() => {
-	// 			if (t === 2000) {
-	// 				reject(`Rejected in ${t}`)
-	// 			} else {
-	// 				resolve(`Completed in ${t}`)
-	// 			}
-	// 		}, t)
-	// 	})
-	// }
-	//
-	// const durations = [1000, 2000, 3000]
-	//
-	// const promises = []
-	//
-	// durations.map((duration) => {
-	// 	promises.push(timeOut(duration))
-	// })
-	//
-	// // We are passing an array of pending promises to Promise.all
-	// Promise.all(promises)
-	// 	.then(response => console.log(response)) // Promise.all cannot be resolved, as one of the promises passed got rejected.
-	// 	.catch(error => console.log(`Error in executing ${error}`)) // Promise.all throws an error.
-	//
-	//
 
 
-	//
-	//
-	// // resolve runs the first function in .then
-	// promise.then(
-	// 	result => console.log(result), // shows "done!" after 1 second
-	// 	error => console.logalert(error) // doesn't run
-	// );
+	let startupPromises = [], // arrays to hold all startupPromises
+		startupPromiseNames = []; // data objects to load
+
+	/**
+	 *	Get all data from background
+	 *  - can be called multiple times, w/ or w/o callback
+	 *  - if sent with TallyMain.contentStartChecks callback then resets game in content script
+	 *  - assumes background data is current (so does not sync with server)
+	 */
+	async function getDataFromBackground(callback = null) {
+		try {
+			if (DEBUG) console.log('🗄️ TallyStorage.getDataFromBackground() [1]');
+
+			// reset arrays
+			startupPromises = [];
+			startupPromiseNames = [
+				"tally_user",
+				"tally_options",
+				"tally_meta",
+				"tally_nearby_monsters",
+				"tally_stats",
+				"tally_top_monsters"
+			];
+			// loop through all startupPromiseNames and create Promises
+			startupPromiseNames.map((name) => {
+				startupPromises.push(createStartupPromise(name));
+			});
+			// run callback if exists
+			if (callback) {
+				if (DEBUG) console.log('🗄️ TallyStorage.getDataFromBackground() [2] (running callback)');
+				callback();
+			}
+		} catch (err) {
+			console.error(err);
+		}
+	}
+	getDataFromBackground();
 
 
-
-
-	// arrays to hold all startupPromises, and their names
-	let startupPromises = [],
-		startupPromiseNames = [
-			'tally_user',
-			'tally_options',
-			'tally_meta',
-			'tally_nearby_monsters',
-			'tally_stats',
-			'tally_top_monsters'
-		];
-	// TallyStorage.getUserPromise, getOptionsPromise, getMetaPromise,
-	// 	getNearbyMonstersPromise, getStatsPromise, getTopMonstersPromise
-	// 	let tally_user = {},
-	// 		tally_top_monsters = {};
-	// 	// objects that only exist locally
-	// 	let tally_meta = {},
-	// 		tally_options = {},
-	// 		tally_nearby_monsters = {},
-	// 		tally_stats = {};
-
-
-
-
-
-
-
-	// loop through all startupPromiseNames and create Promises
-	// for (let i = 0; i < startupPromiseNames.length; i++) {
-	// Config.logTimeSinceLoad("TallyStorage.createStartupPromises() [1] (starting loop)");
-	// startupPromises.push(
-
-
-	startupPromiseNames.map((name) => {
-		startupPromises.push(createStartupPromise(name));
-	});
-
-
-	// return a promise
+	/**
+	 *	Return a promise
+	 */
 	function createStartupPromise(name) {
 		try {
 			// add new promise
 			return new Promise(
 				(resolve, reject) => {
-					Config.logTimeSinceLoad("😂 TallyStorage.createStartupPromise() [1] (create) " + name + " ");
+					Config.logTimeSinceLoad("🗄️ TallyStorage.createStartupPromise() [1] (create) " + name + " ");
 					// call background
 					chrome.runtime.sendMessage({
 						'action': 'getData',
 						'name': name
 					}, function(response) {
-						if (DEBUG) console.log('😂 TallyStorage.createStartupPromise()', name, JSON.stringify(response.data));
+						// log before storage
+						// if (DEBUG) console.log('🗄️ TallyStorage.createStartupPromise()', name, JSON.stringify(response.data));
 						Config.logTimeSinceLoad("TallyStorage.createStartupPromises() [3] (resolve) " + name + "");
-						// store data
-						window[name] = response.data;
 
-						if (DEBUG) console.log('😂 TallyStorage.createStartupPromise() -> window[name] =', window[name]);
+						// store data
+						T[name] = response.data;
+
+						// log after storage
+						// if (DEBUG) console.log('🗄️ TallyStorage.createStartupPromise() -> T[name] =', T[name]);
+						// if (DEBUG) console.log("%cT."+name, Debug.styles.green, JSON.stringify(T[name]));
 
 						// resolve promise
 						resolve(response.data);
 					});
 				}
 			);
-
 		} catch (err) {
 			console.error(err);
 		}
-
-
-
-
-
 	}
 
 
-	// DON"T NEED THIS BECAUSE THEY START AUTOMATICALLY??
-	// testing
-	Promise // after async functions then update
+	/**
+	 *	After all promises have resolved
+	 */
+	Promise
 		.all(startupPromises)
 		.then(function(result) {
-			console.log('😂  testPromise all data has loaded', "TallyInit.dataLoaded =", TallyInit.dataLoaded, result);
-
-			if (DEBUG) console.log('tally_user =', window["tally_user"]);
-			if (DEBUG) console.log('tally_options =', tally_options);
-			if (DEBUG) console.log('tally_meta =', tally_meta);
-			if (DEBUG) console.log('tally_nearby_monsters =', tally_nearby_monsters);
-			if (DEBUG) console.log('tally_stats =', tally_stats);
-			if (DEBUG) console.log('tally_top_monsters =', tally_top_monsters);
+			// if (DEBUG) console.log('🗄️ > TallyStorage all data has loaded', "TallyInit.dataLoaded =", TallyInit.dataLoaded, result);
+			// if (DEBUG) console.log('T.tally_user =', T.tally_user);
+			// if (DEBUG) console.log('T.tally_options =', T.tally_options);
+			// if (DEBUG) console.log('T.tally_meta =', T.tally_meta);
+			// if (DEBUG) console.log('T.tally_nearby_monsters =', T.tally_nearby_monsters);
+			// if (DEBUG) console.log('T.tally_stats =', T.tally_stats);
+			// if (DEBUG) console.log('T.tally_top_monsters =', T.tally_top_monsters);
+			Config.logTimeSinceLoad("TallyStorage.getDataFromBackground() resolved) [4]");
 
 			TallyInit.dataLoaded = true;
+
+			if (DEBUG) console.log('🗄️ > TallyStorage all data has loaded', "TallyInit.dataLoaded =", TallyInit.dataLoaded, result);
+
+			// run start checks
 			TallyMain.contentStartChecks();
-			console.log('😂  testPromise all data has loaded', "TallyInit.dataLoaded =", TallyInit.dataLoaded, result);
-
-
 		})
 		.catch(function(err) {
-			console.log('😂 one or more promises have failed: ' + err);
+			console.error('😂 TallyInit.getDataFromBackground() -> ' +
+				'one or more promises have failed: ' + err,
+				"\n T.tally_user =", T.tally_user,
+				"\n T.tally_options =", T.tally_options,
+				"\n T.tally_meta =", T.tally_meta,
+				"\n T.tally_nearby_monsters =", T.tally_nearby_monsters,
+				"\n T.tally_top_monsters =", T.tally_top_monsters,
+				"\n T.tally_stats =", T.tally_stats
+			);
 		});
 
 
@@ -373,6 +346,7 @@ window.TallyStorage = (function() {
 			return startupPromises;
 		},
 		getDataFromServer: getDataFromServer,
+		getDataFromBackground: getDataFromBackground,
 		getData: getData,
 		saveData: saveData,
 		saveTallyUser: saveTallyUser,
@@ -381,151 +355,3 @@ window.TallyStorage = (function() {
 		resetTallyUser: resetTallyUser
 	};
 })();
-
-
-
-
-
-
-
-/*  STARTUP PROMISES
- ******************************************************************************/
-
-// MARKED FOR DELETION
-
-// // arrays to hold all startupPromises, and their names
-// const startupPromises = [],
-// 	startupPromiseNames = [
-// 		'tally_user',
-// 		'tally_options',
-// 		'tally_meta',
-// 		'tally_nearby_monsters',
-// 		'tally_top_monsters'
-// 	];
-//
-// function createStartupPromises() {
-// 	try {
-// 		// loop through all startupPromisesNames and create Promises
-// 		for (let i = 0; i < startupPromiseNames.length; i++) {
-// 			let name = startupPromiseNames[i];
-// 			/*jshint loopfunc: true */
-// 			// add new promise
-// 			startupPromiseNames[i] = new Promise(
-// 				(resolve, reject) => {
-// 					//if (DEBUG) console.log('😂 >>>>> createStartupPromises()',name);
-// 					// call background
-// 					chrome.runtime.sendMessage({
-// 						'action': 'getData',
-// 						'name': name
-// 					}, function(response) {
-// 						//if (DEBUG) console.log('😂 >>>>> createStartupPromises()', name, JSON.stringify(response.data));
-// 						// store data
-// 						window[startupPromiseNames[i]] = response.data;
-// 						// resolve promise
-// 						resolve(response.data);
-// 					});
-// 				}
-// 			);
-// 		}
-// 	} catch (err) {
-// 		console.error(err);
-// 	}
-// }
-// createStartupPromises();
-//
-// // testing
-// Promise // after async functions then update
-// 	.all(startupPromises)
-// 	.then(function(result) {
-// 		console.log('😂  testPromise all data has loaded', result);
-// 	})
-// 	.catch(function(err) {
-// 		console.log('😂 one or more promises have failed: ' + err);
-// 	});
-
-
-
-/*  STARTUP PROMISES (WHY DO I STILL NEED THESE?)
- ******************************************************************************/
-
-// // USER
-// const getUserPromise = new Promise(
-// 	(resolve, reject) => {
-// 		Config.logTimeSinceLoad("getUserPromise [1]");
-// 		chrome.runtime.sendMessage({
-// 			'action': 'getUser'
-// 		}, function(response) {
-// 		Config.logTimeSinceLoad("getUserPromise [2]");
-// 			if (DEBUG) console.log('🗄️ >>>>> getUserPromise()',JSON.stringify(response.data));
-// 			tally_user = response.data; // store data
-// 			Config.logTimeSinceLoad("getUserPromise [3]");
-// 			resolve(response.data); // resolve promise
-// 			Config.logTimeSinceLoad("getUserPromise [4]");
-// 		});
-// 	}
-// );
-// OPTIONS
-// const getOptionsPromise = new Promise(
-// 	(resolve, reject) => {
-// 		chrome.runtime.sendMessage({
-// 			'action': 'getOptions'
-// 		}, function(response) {
-// 			//if (DEBUG) console.log('🗄️ >>>>> getOptionsPromise()',response.data);
-// 			tally_options = response.data; // store data
-// 			resolve(response.data); // resolve promise
-// 		});
-// 	}
-// );
-// // GET TALLY_META
-// const getMetaPromise = new Promise(
-// 	(resolve, reject) => {
-// 		chrome.runtime.sendMessage({
-// 			'action': 'getMeta'
-// 		}, function(response) {
-// 			//if (DEBUG) console.log('🗄️ >>>>> getMetaPromise()',response.data);
-// 			tally_meta = response.data; // store data
-// 			resolve(response.data); // resolve promise
-// 		});
-// 	}
-// );
-// // GET NEARBY MONSTERS
-// const getNearbyMonstersPromise = new Promise(
-// 	(resolve, reject) => {
-// 		chrome.runtime.sendMessage({
-// 			'action': 'getNearbyMonsters'
-// 		}, function(response) {
-// 			//if (DEBUG) console.log('🗄️ >>>>> getNearbyMonsters()',response.data);
-// 			tally_nearby_monsters = response.data; // store data
-// 			resolve(response.data); // resolve promise
-// 		});
-// 	}
-// );
-// // GET STATS
-// const getStatsPromise = new Promise(
-// 	(resolve, reject) => {
-// 		chrome.runtime.sendMessage({
-// 			'action': 'getStats'
-// 		}, function(response) {
-// 			//if (DEBUG) console.log('🗄️ >>>>> getStats()',response.data);
-// 			// if stats is empty (game just installed)
-// 			if (FS_Object.isEmpty(response.data))
-// 				Stats.reset("tally");
-// 			else
-// 				Stats.overwrite("tally", response.data); // store data
-// 			resolve(response.data); // resolve promise
-// 		});
-// 	}
-// );
-// // GET TOP MONSTERS
-// const getTopMonstersPromise = new Promise(
-// 	(resolve, reject) => {
-// 		//if (DEBUG) console.log("🗄️ getTopMonstersPromise");
-// 		chrome.runtime.sendMessage({
-// 			'action': 'getTopMonstersPromise'
-// 		}, function(response) {
-// 			//if (DEBUG) console.log('🗄️ >>>>> getTopMonstersPromise()',response.data);
-// 			tally_top_monsters = response.data; // store data
-// 			resolve(response.data); // resolve promise
-// 		});
-// 	}
-// );

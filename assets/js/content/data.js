@@ -90,7 +90,7 @@ window.TallyData = (function() {
 			// if (DEBUG) Debug.dataReportHeader(log + " # edits = " + backgroundUpdateEdits + ", caller = " + caller + "; " + type + "." + prop, "#", "before");
 
 			// everything is required
-			if (!FS_Object.prop(tally_user)) return console.log(log, "missing: tally_user", type, prop, val, caller);
+			if (!FS_Object.prop(T.tally_user)) return console.log(log, "missing: T.tally_user", type, prop, val, caller);
 			else if (!FS_Object.prop(type)) return console.log(log, "missing: type", type, prop, val, caller);
 			else if (!FS_Object.prop(prop)) return console.log(log, "missing: prop", type, prop, val, caller);
 			else if (!FS_Object.prop(val)) return console.log(log, "missing: val", type, prop, val, caller);
@@ -110,7 +110,7 @@ window.TallyData = (function() {
 			// 1. saveData - so that it is visible immediately in game
 
 			// save local edits (even though these will be overwritten)
-			// TallyStorage.saveData("tally_user", tally_user);
+			// TallyStorage.saveData("tally_user", T.tally_user);
 
 
 
@@ -125,15 +125,15 @@ window.TallyData = (function() {
 			if (unit.type === "itemData") {
 				// push the object to the array
 				backgroundUpdate[unit.type][unit.prop].push(unit.val);
-				// save in tally_user so visible before server reply
-				tally_user[unit.prop][val.name] = unit.val;
+				// save in T.tally_user so visible before server reply
+				T.tally_user[unit.prop][val.name] = unit.val;
 			}
 			// SCORE
 			else if (unit.type === "scoreData") {
 				// add the value
 				backgroundUpdate[unit.type][unit.prop] += unit.val;
-				// save in tally_user so visible before server reply
-				tally_user.score[unit.prop] += unit.val;
+				// save in T.tally_user so visible before server reply
+				T.tally_user.score[unit.prop] += unit.val;
 			}
 			// EVENT
 			else if (unit.type === "eventData") {
@@ -216,8 +216,8 @@ window.TallyData = (function() {
 				'data': backgroundUpdate
 			}, function(response) {
 				if (DEBUG) console.log('💾 > TallyData.pushUpdate() [2] RESPONSE =', response);
-				// update tally_user in content
-				tally_user = response.tally_user;
+				// update T.tally_user in content
+				T.tally_user = response.tally_user;
 
 				// it is also possible one of the following is true and we need to reset a few other things
 				// 1. during development switching users for testing

@@ -30,7 +30,7 @@ window.Background = (function() {
 			dataReportHeader("🧰 Background.runStartChecks()", "@", "before");
 			Config.logTimeSinceLoad("Background.runStartChecks() [1]");
 
-			// if tally_meta not found, install objects
+			// if T.tally_meta not found, install objects
 			const newInstall = await Install.init();
 			// check the version
 			await Install.setVersion();
@@ -57,7 +57,7 @@ window.Background = (function() {
 					// if token is valid
 					if (tokenResponse) {
 						console.log("🧰 Background.runStartChecks() -> TOKEN VALID");
-						// wait to refresh tally_user data from server
+						// wait to refresh T.tally_user data from server
 						const tallyUserResponse = await Server.getTallyUser();
 						// now we know the username and we can pass it to populate monsters
 						const _tally_top_monsters = await Server.returnTopMonsters();
@@ -99,15 +99,15 @@ window.Background = (function() {
 	 */
 	function dataReport() {
 		try {
-			let tally_user = store("tally_user"),
-				tally_options = store("tally_options"),
-				tally_meta = store("tally_meta"),
-				tally_secret = store("tally_secret");
+			let _tally_user = store("tally_user"),
+				_tally_options = store("tally_options"),
+				_tally_meta = store("tally_meta"),
+				_tally_secret = store("tally_secret");
 			dataReportHeader("🧰 Background.dataReport()", "#", "before");
-			if (DEBUG) console.log("%ctally_user", Debug.styles.green, JSON.stringify(tally_user));
-			if (DEBUG) console.log("%ctally_options", Debug.styles.green, JSON.stringify(tally_options));
-			if (DEBUG) console.log("%ctally_meta", Debug.styles.green, JSON.stringify(tally_meta));
-			if (DEBUG) console.log("%ctally_secret", Debug.styles.green, JSON.stringify(tally_secret));
+			if (DEBUG) console.log("%cT.tally_user", Debug.styles.green, JSON.stringify(_tally_user));
+			if (DEBUG) console.log("%cT.tally_options", Debug.styles.green, JSON.stringify(_tally_options));
+			if (DEBUG) console.log("%cT.tally_meta", Debug.styles.green, JSON.stringify(_tally_meta));
+			if (DEBUG) console.log("%ctally_secret", Debug.styles.green, JSON.stringify(_tally_secret));
 			dataReportHeader("/ 🧰 Background.dataReport()", "#", "after");
 		} catch (err) {
 			console.error("dataReport() failed");

@@ -18,7 +18,7 @@ window.MonsterCheck = (function() {
 			// allow offline
 			if (Page.data.mode.notActive) return;
 			// don't allow if mode disabled or stealth
-			if (tally_options.gameMode === "disabled" || tally_options.gameMode === "stealth") return;
+			if (T.tally_options.gameMode === "disabled" || T.tally_options.gameMode === "stealth") return;
 			// don't check on our site
 			if (Page.data.domain == "tallygame.net") return;
 
@@ -39,22 +39,22 @@ window.MonsterCheck = (function() {
 
 			let now = Date.now(),
 				deleteList = [];
-			// make sure tally_nearby_monsters exists
-			if (tally_nearby_monsters && FS_Object.objLength(tally_nearby_monsters) > 0) {
-				if (DEBUG) console.log(log, "[1] -> tally_nearby_monsters =", tally_nearby_monsters);
+			// make sure T.tally_nearby_monsters exists
+			if (T.tally_nearby_monsters && FS_Object.objLength(T.tally_nearby_monsters) > 0) {
+				if (DEBUG) console.log(log, "[1] -> T.tally_nearby_monsters =", T.tally_nearby_monsters);
 				// loop through them
-				for (var mid in tally_nearby_monsters) {
-					if (tally_nearby_monsters.hasOwnProperty(mid)) {
+				for (var mid in T.tally_nearby_monsters) {
+					if (T.tally_nearby_monsters.hasOwnProperty(mid)) {
 						// how long has it been since this monster was seen?
 						// if longer than 5 mins (300 secs) then delete
-						let seconds = ((now - tally_nearby_monsters[mid].updatedAt) / 1000);
+						let seconds = ((now - T.tally_nearby_monsters[mid].updatedAt) / 1000);
 						if ((seconds) > secondsBeforeDelete) {
 							deleteList.push(MonsterData.dataById[mid].slug);
-							delete tally_nearby_monsters[mid];
+							delete T.tally_nearby_monsters[mid];
 						}
 						// if there are any leftover stage 3's
-						else if (tally_nearby_monsters[mid].stage == 3) {
-							delete tally_nearby_monsters[mid];
+						else if (T.tally_nearby_monsters[mid].stage == 3) {
+							delete T.tally_nearby_monsters[mid];
 						}
 					}
 				}
@@ -62,7 +62,7 @@ window.MonsterCheck = (function() {
 			// log deleted to console
 			if (DEBUG) if (deleteList.length > 0) console.log(log, "[2] -> DELETING", deleteList);
 			// save
-			TallyStorage.saveData("tally_nearby_monsters", tally_nearby_monsters, log);
+			TallyStorage.saveData("tally_nearby_monsters", T.tally_nearby_monsters, log);
 
 			// set the skin color
 			Skin.updateFromHighestMonsterStage();
@@ -117,26 +117,26 @@ window.MonsterCheck = (function() {
 
 	/**
 	 *	A monster has been matched to page tags, either
-	 *	1. add it to tally_nearby_monsters
+	 *	1. add it to T.tally_nearby_monsters
 	 *	2. or, if it is already "nearby", then determine if its stage will advance
 	 */
 	function handleMatch(mid) {
 		try {
 			let log = "👿 MonsterCheck.handleMatch()";
 			// if (DEBUG) console.log(log, '[1] mid=' + mid);
-			if (mid && mid > 0 && tally_nearby_monsters && MonsterData.dataById[mid] && tally_nearby_monsters[mid]) {
+			if (mid && mid > 0 && T.tally_nearby_monsters && MonsterData.dataById[mid] && T.tally_nearby_monsters[mid]) {
 				if (DEBUG) console.log(log, MonsterData.dataById[mid].slug,
-					"stage=" + tally_nearby_monsters[mid].stage);
+					"stage=" + T.tally_nearby_monsters[mid].stage);
 			}
 
 			// will we add the monster
 			let addMonster = false;
 
 			// if the monster id does not exist in nearby_monsters
-			if (!prop(tally_nearby_monsters[mid])) {
+			if (!prop(T.tally_nearby_monsters[mid])) {
 				if (DEBUG) console.log(log, '[2] mid '+ mid +' NOT IN nearby_monsters');
 				// add it
-				tally_nearby_monsters[mid] = Monster.create(mid);
+				T.tally_nearby_monsters[mid] = Monster.create(mid);
 			}
 			// otherwise monster has been seen before
 			else {
@@ -144,21 +144,21 @@ window.MonsterCheck = (function() {
 				let r = Math.random();
 
 				// gameMode === testing
-				if (["demo", "testing"].includes(tally_options.gameMode)) {
-					tally_nearby_monsters[mid].stage = FS_Number.clamp(tally_nearby_monsters[mid].stage + 1, 0, 3);
-					if (tally_nearby_monsters[mid].stage >= 3) addMonster = true;
-					if (DEBUG) console.log(log, '[3] stage =', tally_nearby_monsters[mid].stage);
+				if (["demo", "testing"].includes(T.tally_options.gameMode)) {
+					T.tally_nearby_monsters[mid].stage = FS_Number.clamp(T.tally_nearby_monsters[mid].stage + 1, 0, 3);
+					if (T.tally_nearby_monsters[mid].stage >= 3) addMonster = true;
+					if (DEBUG) console.log(log, '[3] stage =', T.tally_nearby_monsters[mid].stage);
 				}
 				// stage 0
-				else if (tally_nearby_monsters[mid].stage == 0) {
+				else if (T.tally_nearby_monsters[mid].stage == 0) {
 					// do nothing
 					Dialogue.showTrackerDialogue();
 				}
 				// stage 1
-				else if (tally_nearby_monsters[mid].stage == 1) {
+				else if (T.tally_nearby_monsters[mid].stage == 1) {
 					if (r < 0.1) {
 						// go back to normal stage
-						tally_nearby_monsters[mid].stage = 0;
+						T.tally_nearby_monsters[mid].stage = 0;
 						Dialogue.showStr("Want to give feedback? Click the survey button in the top-right menu.", "question");
 					} else if (r < 0.4) {
 						// random dialogue, but don't change stage
@@ -171,7 +171,7 @@ window.MonsterCheck = (function() {
 						}));
 					} else {
 						// or prompt stage 2
-						tally_nearby_monsters[mid].stage = 2;
+						T.tally_nearby_monsters[mid].stage = 2;
 						Dialogue.showData(Dialogue.getData({
 							category: "monster",
 							subcategory: "close"
@@ -179,7 +179,7 @@ window.MonsterCheck = (function() {
 					}
 				}
 				// stage 2
-				else if (tally_nearby_monsters[mid].stage == 2) {
+				else if (T.tally_nearby_monsters[mid].stage == 2) {
 					if (r < 0.2) {
 						// do nothing
 					} else if (r < 0.4) {
@@ -193,15 +193,15 @@ window.MonsterCheck = (function() {
 						}));
 					} else {
 						// or prompt stage 3 - add
-						tally_nearby_monsters[mid].stage = 3;
+						T.tally_nearby_monsters[mid].stage = 3;
 						addMonster = true;
 					}
 				}
 				// save to log after code above
-				if (DEBUG) console.log(log, '[4] -> monster =', MonsterData.dataById[mid].slug, tally_nearby_monsters[mid]);
+				if (DEBUG) console.log(log, '[4] -> monster =', MonsterData.dataById[mid].slug, T.tally_nearby_monsters[mid]);
 			}
 			// save monsters
-			TallyStorage.saveData("tally_nearby_monsters", tally_nearby_monsters, log);
+			TallyStorage.saveData("tally_nearby_monsters", T.tally_nearby_monsters, log);
 			// should we show the monster on the page?
 			if (addMonster) {
 				// show monster on page
@@ -221,12 +221,12 @@ window.MonsterCheck = (function() {
 	function reset(mid) {
 		try {
 			// reset one
-			// if (tally_nearby_monsters[mid])
-			// 	delete tally_nearby_monsters[mid];
+			// if (T.tally_nearby_monsters[mid])
+			// 	delete T.tally_nearby_monsters[mid];
 
 			// reset them all
-			tally_nearby_monsters = {};
-			TallyStorage.saveData("tally_nearby_monsters", tally_nearby_monsters, "👿 MonsterCheck.reset()");
+			T.tally_nearby_monsters = {};
+			TallyStorage.saveData("tally_nearby_monsters", T.tally_nearby_monsters, "👿 MonsterCheck.reset()");
 
 			// check/reset skin
 			Skin.updateFromHighestMonsterStage();

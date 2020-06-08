@@ -23,7 +23,7 @@ window.Monster = (function() {
 			// allow offline
 			if (Page.data.mode.notActive) return;
 			// don't allow if mode disabled or stealth
-			if (tally_options.gameMode === "disabled" || tally_options.gameMode === "stealth") return;
+			if (T.tally_options.gameMode === "disabled" || T.tally_options.gameMode === "stealth") return;
 
 			let log = "👿 Monster.create()";
 
@@ -31,7 +31,7 @@ window.Monster = (function() {
 			if (!prop(mid) || !prop(_stage) || !prop(MonsterData.dataById[mid])) return;
 			// if there are trackers on the page
 			let tracker = FS_Object.randomArrayIndex(Page.data.trackers) || "";
-			// only proceed if there are trackers 
+			// only proceed if there are trackers
 			if (tracker == ""){
 				if (DEBUG) console.log(log, "[1] NO TRACKERS ON THIS PAGE - Page.data.trackers" + Page.data.trackers);
 				return;
@@ -39,7 +39,7 @@ window.Monster = (function() {
 
 			if (DEBUG) console.log(log, "[2] mid=" + mid, "_stage=" + _stage, MonsterData.dataById[mid]);
 
-			tally_nearby_monsters[mid] = {
+			T.tally_nearby_monsters[mid] = {
 				"stage": _stage,
 				"level": returnNewMonsterLevel(),
 				"name": MonsterData.dataById[mid].name,
@@ -53,12 +53,12 @@ window.Monster = (function() {
 				"updatedAt": Date.now()
 			};
 			// if it already exists then make it the number of captures +1
-			if (tally_user.monsters[mid])
-				tally_nearby_monsters[mid].totalCaptured = tally_user.monsters[mid].captured;
-			if (DEBUG) console.log(log, '[2]', mid, tally_nearby_monsters[mid], tally_user.monsters[mid]);
+			if (T.tally_user.monsters[mid])
+				T.tally_nearby_monsters[mid].totalCaptured = T.tally_user.monsters[mid].captured;
+			if (DEBUG) console.log(log, '[2]', mid, T.tally_nearby_monsters[mid], T.tally_user.monsters[mid]);
 			// save
-			TallyStorage.saveData("tally_nearby_monsters", tally_nearby_monsters, "👿 Monster.create()");
-			return tally_nearby_monsters[mid];
+			TallyStorage.saveData("tally_nearby_monsters", T.tally_nearby_monsters, "👿 Monster.create()");
+			return T.tally_nearby_monsters[mid];
 		} catch (err) {
 			console.error(err);
 		}
@@ -70,7 +70,7 @@ window.Monster = (function() {
 	function returnNewMonsterLevel() {
 		try {
 			// if (DEBUG) console.log("👿 Monster.returnNewMonsterLevel()");
-			let userLevel = tally_user.level,
+			let userLevel = T.tally_user.level,
 				factor = 0.5;
 			// use factor to keep the level different but near the user's level
 			if (userLevel > 15) factor = 0.4;
@@ -96,9 +96,9 @@ window.Monster = (function() {
 			// allow offline
 			if (Page.data.mode.notActive) return;
 			// don't allow if mode disabled or stealth
-			if (tally_options.gameMode === "disabled" || tally_options.gameMode === "stealth") return;
+			if (T.tally_options.gameMode === "disabled" || T.tally_options.gameMode === "stealth") return;
 
-			if (DEBUG) console.log('👿 Monster.showOnPage() [1]', mid, tally_nearby_monsters[mid]);
+			if (DEBUG) console.log('👿 Monster.showOnPage() [1]', mid, T.tally_nearby_monsters[mid]);
 
 			// only proceed if mid is valid
 			if (!mid || mid <= 0) {
@@ -107,10 +107,10 @@ window.Monster = (function() {
 			}
 
 			// if it doesn't yet have a tracker then try to get one
-			if (tally_nearby_monsters[mid].tracker === "")
-				tally_nearby_monsters[mid].tracker = FS_Object.randomArrayIndex(Page.data.trackers) || "";
+			if (T.tally_nearby_monsters[mid].tracker === "")
+				T.tally_nearby_monsters[mid].tracker = FS_Object.randomArrayIndex(Page.data.trackers) || "";
 			// return if we don't have one
-			if (tally_nearby_monsters[mid].tracker === "") {
+			if (T.tally_nearby_monsters[mid].tracker === "") {
 				if (DEBUG) console.log('👿 Monster.showOnPage() [1.3] NO TRACKER',
 					"Page.data.trackers =",Page.data.trackers,
 				);
@@ -124,7 +124,7 @@ window.Monster = (function() {
 				// reset / create new stats for monster
 				Stats.reset("monster");
 				// display it on the page
-				display(tally_nearby_monsters[mid]);
+				display(T.tally_nearby_monsters[mid]);
 			}, 500);
 		} catch (err) {
 			console.error(err);
@@ -145,21 +145,21 @@ window.Monster = (function() {
 				subcategory: "display"
 			}));
 			// reference to image file (moved to server )
-			var url = tally_meta.website + '/' + 'assets/img/monsters-300h/' + monster.mid + '-anim-sheet.png';
+			var url = T.tally_meta.website + '/' + 'assets/img/monsters-300h/' + monster.mid + '-anim-sheet.png';
 			//var url = chrome.extension.getURL('assets/img/472-master-3d-test.png');
 
 			// set monster image
 			$('.tally_monster_sprite_inner').css('background-image', 'url( ' + url + ')');
 
 			// turn monster to face Tally
-			if (prop(tally_nearby_monsters[monster.mid].facing) && tally_nearby_monsters[monster.mid].facing == "1")
+			if (prop(T.tally_nearby_monsters[monster.mid].facing) && T.tally_nearby_monsters[monster.mid].facing == "1")
 				$('.tally_monster_sprite_flip').css('transform', 'scale(-.5,.5)'); // left
 			else
 				$('.tally_monster_sprite_flip').css('transform', 'scale(.5,.5)'); // reset (right)
 
 			// get random position
 			let preference = "";
-			if (tally_user.level < 5) {
+			if (T.tally_user.level < 5) {
 				preference = "above-the-fold";
 			}
 			let pos = Core.returnRandomPositionFull('.tally_monster_sprite_container', null, null, preference);
@@ -200,7 +200,7 @@ window.Monster = (function() {
 			// });
 
 			// saveMonster
-			tally_nearby_monsters[monster.mid] = monster;
+			T.tally_nearby_monsters[monster.mid] = monster;
 		} catch (err) {
 			console.error(err);
 		}
@@ -213,17 +213,17 @@ window.Monster = (function() {
 	function test() {
 		try {
 			// make sure there are monsters nearby
-			if (!tally_nearby_monsters || FS_Object.objLength(tally_nearby_monsters) <= 0) return;
+			if (!T.tally_nearby_monsters || FS_Object.objLength(T.tally_nearby_monsters) <= 0) return;
 
 			// TESTING
-			let mid = randomObjKey(tally_nearby_monsters),
+			let mid = randomObjKey(T.tally_nearby_monsters),
 				_stage = 3;
-			tally_nearby_monsters[mid] = create(mid, _stage);
-			tally_nearby_monsters[mid].captured = 0;
-			tally_nearby_monsters[mid].missed = 0;
+			T.tally_nearby_monsters[mid] = create(mid, _stage);
+			T.tally_nearby_monsters[mid].captured = 0;
+			T.tally_nearby_monsters[mid].missed = 0;
 			if (DEBUG) console.log("👿 Monster.test()", MonsterData.dataById[mid]);
 			// save
-			TallyStorage.saveData("tally_nearby_monsters", tally_nearby_monsters, "👿 Monster.test()");
+			TallyStorage.saveData("tally_nearby_monsters", T.tally_nearby_monsters, "👿 Monster.test()");
 			// check/reset skin
 			Skin.updateFromHighestMonsterStage();
 			Dialogue.showData(Dialogue.getData({
@@ -246,12 +246,12 @@ window.Monster = (function() {
 	function reset(mid) {
 		try {
 			// reset one
-			// if (tally_nearby_monsters[mid])
-			// 	delete tally_nearby_monsters[mid];
+			// if (T.tally_nearby_monsters[mid])
+			// 	delete T.tally_nearby_monsters[mid];
 			// reset them all
-			tally_nearby_monsters = {};
+			T.tally_nearby_monsters = {};
 			monster = {};
-			TallyStorage.saveData("tally_nearby_monsters", tally_nearby_monsters, "👿 Monster.reset()");
+			TallyStorage.saveData("tally_nearby_monsters", T.tally_nearby_monsters, "👿 Monster.reset()");
 			// check/reset skin
 			Skin.updateFromHighestMonsterStage();
 		} catch (err) {
@@ -277,7 +277,7 @@ window.Monster = (function() {
 		showOnPage: showOnPage,
 		currentMID: currentMID,
 		current: function() {
-			return tally_nearby_monsters[currentMID];
+			return T.tally_nearby_monsters[currentMID];
 		},
 		saveAndPush: function(mid) {
 			return saveAndPush(mid);

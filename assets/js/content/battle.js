@@ -50,9 +50,9 @@ window.Battle = (function() {
 	function test() {
 		try {
 			if (_active) return;
-			if (FS_Object.objLength(tally_nearby_monsters) < 1) return;
+			if (FS_Object.objLength(T.tally_nearby_monsters) < 1) return;
 			// use random ...
-			let mid = randomObjKey(tally_nearby_monsters);
+			let mid = randomObjKey(T.tally_nearby_monsters);
 			// or pick from some favorites...
 			var r = Math.random();
 			if (r < 0.1) mid = 6;
@@ -68,7 +68,7 @@ window.Battle = (function() {
 			else if (r < 0.85) mid = 653;
 			else if (r < 1) mid = 681;
 			// move monster into position
-			Monster.display(tally_nearby_monsters[mid]);
+			Monster.display(T.tally_nearby_monsters[mid]);
 			start(63);
 		} catch (err) {
 			console.error(err);
@@ -127,15 +127,15 @@ window.Battle = (function() {
 			Core.setElementFixed('.tally_monster_sprite_container');
 			// set monster details
 			details.mid = mid;
-			details.monsterLevel = Monster.current().level; //Stats.getLevel("monster");
+			details.monsterLevel = Monster.current().level; 
 			details.monsterName = MonsterData.dataById[mid].name + " monster";
 			details.monsterAttacks = AttackData.returnRandomAttacks(3);
-			details.monsterTracker = tally_nearby_monsters[mid].tracker;
-			console.log("💥 Battle.start()", "details=", details, mid, tally_nearby_monsters[mid]);
+			details.monsterTracker = T.tally_nearby_monsters[mid].tracker;
+			console.log("💥 Battle.start()", "details=", details, mid, T.tally_nearby_monsters[mid]);
 			// rescale
 			let matrix = $('.tally_monster_sprite_flip').css('transform')
 				.replace('matrix(', "").replace(')', "").replace(' ', "").split(',');
-			// console.log("tally_nearby_monsters[mid]",tally_nearby_monsters[mid]);
+			// console.log("T.tally_nearby_monsters[mid]",T.tally_nearby_monsters[mid]);
 			// console.log("matrix",matrix);
 			$('.tally_monster_sprite_flip').css({
 				"transform": 'scale(' + matrix[0] * 2 + ',1)'
@@ -187,7 +187,7 @@ window.Battle = (function() {
 				StatsDisplay.updateDisplay("monster");
 				// log intro...
 				BattleConsole.log("t:/game/battle/start...");
-				BattleConsole.log("Running Tally "+ tally_meta.version + " BattleConsole 0.1");
+				BattleConsole.log("Running Tally "+ T.tally_meta.version + " BattleConsole 0.1");
 				BattleConsole.log("#########################################");
 				BattleConsole.log("Battle started with <span class='tally text-green'>" + MonsterData.dataById[mid].tier1 + " &gt; " + details.monsterName + "</span>!");
 				// wait for tally to attack first ...
@@ -270,10 +270,10 @@ window.Battle = (function() {
 				"blocked": 0 // false be default
 			};
 
-			// remove monster and save tally_nearby_monsters
-			if (FS_Object.objLength(tally_nearby_monsters) && FS_Object.prop(tally_nearby_monsters[details.mid])) {
-				delete tally_nearby_monsters[details.mid];
-				TallyStorage.saveData("tally_nearby_monsters", tally_nearby_monsters, "💥 Battle.end()");
+			// remove monster and save T.tally_nearby_monsters
+			if (FS_Object.objLength(T.tally_nearby_monsters) && FS_Object.prop(T.tally_nearby_monsters[details.mid])) {
+				delete T.tally_nearby_monsters[details.mid];
+				TallyStorage.saveData("tally_nearby_monsters", T.tally_nearby_monsters, "💥 Battle.end()");
 			}
 			// then check/reset skin
 			Skin.updateFromHighestMonsterStage();

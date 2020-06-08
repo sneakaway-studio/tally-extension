@@ -62,13 +62,13 @@ window.Skin = (function() {
 		try {
 			let highestStage = 0;
 			// if no monster return early
-			if (!FS_Object.prop(tally_nearby_monsters[mid])) return highestStage;
+			if (!FS_Object.prop(T.tally_nearby_monsters[mid])) return highestStage;
 			
 			// loop through nearby monsters
-			for (var mid in tally_nearby_monsters) {
-				if (tally_nearby_monsters.hasOwnProperty(mid)) {
+			for (var mid in T.tally_nearby_monsters) {
+				if (T.tally_nearby_monsters.hasOwnProperty(mid)) {
 					// skin should reflect highest stage
-					highestStage = Math.max(highestStage, parseInt(tally_nearby_monsters[mid].stage));
+					highestStage = Math.max(highestStage, parseInt(T.tally_nearby_monsters[mid].stage));
 				}
 			}
 			if (DEBUG) console.log("👚 Skin.returnHighestMonsterStage() highestStage =", highestStage);
@@ -191,8 +191,8 @@ window.Skin = (function() {
 			if (DEBUG) console.log("👚 Skin.returnSkinData() [1] newSkinName =", newSkinName);
 
 			// if skin doesn't exist set magenta default
-			if (!FS_Object.prop(tally_user.skins) ||
-				FS_Object.objLength(tally_user.skins) < 1 || tally_user.skins[newSkinName]) {
+			if (!FS_Object.prop(T.tally_user.skins) ||
+				FS_Object.objLength(T.tally_user.skins) < 1 || T.tally_user.skins[newSkinName]) {
 				newSkinName = "magenta";
 			}
 			// set current skin name and obj
@@ -333,7 +333,7 @@ window.Skin = (function() {
 			// allow offline
 			if (Page.data.mode.notActive) return;
 			// don't allow if mode disabled or stealth
-			if (tally_options.gameMode === "disabled" || tally_options.gameMode === "stealth") return;
+			if (T.tally_options.gameMode === "disabled" || T.tally_options.gameMode === "stealth") return;
 
 			// get skin data
 			let skinData = returnSkinData(newSkinName);

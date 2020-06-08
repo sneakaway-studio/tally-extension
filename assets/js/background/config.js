@@ -14,15 +14,17 @@ var Config = (function() {
 			"localhost": true,
 			"hotreload": true,
 			"debugging": true
-		};
+		},
+		DEBUG = false;
 
 	/**
 	 *	Track loading time for scripts, backend data
 	 */
 	let then = new Date().getTime();
+
 	function logTimeSinceLoad(caller) {
 		let now = new Date().getTime();
-		if (true) console.log("🗜️ Config.logTimeSinceLoad() ELAPSED =", now - then, caller);
+		if (DEBUG) console.log("🗜️ Config.logTimeSinceLoad() ELAPSED =", now - then, caller);
 	}
 	logTimeSinceLoad("Config [1]");
 

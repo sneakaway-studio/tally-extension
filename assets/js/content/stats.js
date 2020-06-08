@@ -20,32 +20,69 @@ window.Stats = (function() {
 			"normalized": 1.0,
 			"val": 0,
 		},
-		// all stats are stored here
+		// all stats are stored here, but then T.tally_stats is updated after
 		allStats = {
 			"monster": {},
 			"tally": {},
+		},
+		allLevels = {
+			"monster": 0,
+			"tally": T.tally_user.level, // pass this by value
 		};
 
 
+
 	/**
-	 * 	Reset a player's stats - called when player levels up and for each new monster
+	 * 	Get stats of self or opponent
 	 */
-	async function reset(who) {
+	function get(who) {
 		try {
-			// allow offline
-			if (Page.data.mode.notActive) return;
-			// don't allow if mode disabled
-			if (tally_options.gameMode === "disabled") return;
+			if (DEBUG) console.log("📋 Stats.get()", who, "allStats =", allStats, "allStats[who] =", allStats[who]);
+			// if (DEBUG) console.log("📋 Stats.get()", who, "T.tally_stats =", T.tally_stats);
+			// console.trace();
+			// if no stats found then initialize before returning
+			if (FS_Object.isEmpty(allStats[who])) init(who);
+			return allStats[who];
+		} catch (err) {
+			console.error(err);
+		}
+	}
+	/**
+	 *	Set
+	 */
+	function set(who, stats) {
+		try {
+			//if (DEBUG) console.log("📋 Stats.set()", who, stats);
+			allStats[who] = stats;
+		} catch (err) {
+			console.error(err);
+		}
+	}
+
+	/**
+	 *	Initialize and save a stats object for a player | monster
+	 */
+	function init(who) {
+		try {
+			if (DEBUG) console.log("📋 Stats.init() [1]", who);
+
+			// update level
+			if (who == "tally"){
+				allLevels.tally = T.tally_user.level;
+			} else if (who == "monster"){
+				allLevels.monster = Monster.current().level;
+			}
 
 			// get level
-			let level = await getLevel(who);
-			if (!level) {
-				return console.error("📋 Stats.reset()", who, level, "NO LEVEL");
-			}
+			let level = allLevels[who];
+			if (!level) return console.error("📋 Stats.reset()", who, level, "NO LEVEL");
+			if (DEBUG) console.log("📋 Stats.init() [2]", who, "level =", level);
+
 			// for each resetStat
 			for (var stat in resetStatsAll) {
 				// if valid prop
 				if (resetStatsAll.hasOwnProperty(stat)) {
+					// if (DEBUG) console.log("📋 Stats.init() [3.1]", who, "stat =",stat);
 					// copy single reset
 					allStats[who][stat] = JSON.parse(JSON.stringify(resetStatsSingle));
 					// compute max
@@ -58,8 +95,34 @@ window.Stats = (function() {
 					}
 					// set default value now based on max
 					allStats[who][stat].val = allStats[who][stat].max;
+					// if (DEBUG) console.log("📋 Stats.init() [3.2]", who, "stat =",stat);
 				}
 			}
+			if (DEBUG) console.log("📋 Stats.init() [final]", "allStats =", allStats);
+			if (DEBUG) console.log("📋 Stats.init() [final] same as above??", "T.tally_stats =", T.tally_stats); // same as above?
+
+			if (who === "tally") save(who);
+
+		} catch (err) {
+			console.error(err);
+		}
+	}
+
+
+	/**
+	 * 	Reset a player's stats - called when player levels up and for each new monster
+	 */
+	function reset(who) {
+		try {
+			// allow offline
+			if (Page.data.mode.notActive) return;
+			// don't allow if mode disabled
+			if (T.tally_options.gameMode === "disabled") return;
+
+			console.log("📋 Stats.reset()", who, JSON.stringify(allStats[who]), JSON.stringify(T.tally_stats));
+
+			init("tally");
+
 			// save if Tally
 			if (who == "tally") {
 				save('tally');
@@ -70,6 +133,7 @@ window.Stats = (function() {
 			else if (Battle.active())
 				// update display
 				StatsDisplay.updateDisplay('monster');
+
 			console.log("📋 Stats.reset()", who, level, JSON.stringify(allStats[who]));
 		} catch (err) {
 			console.error(err);
@@ -84,25 +148,13 @@ window.Stats = (function() {
 			// allow offline
 			if (Page.data.mode.notActive) return;
 			// don't allow if mode disabled
-			if (tally_options.gameMode === "disabled") return;
+			if (T.tally_options.gameMode === "disabled") return;
 
 			if (DEBUG) console.log("📋 Stats.save()", who);
-			TallyStorage.saveData('tally_stats', allStats.tally, "📋 Stats.save()");
-		} catch (err) {
-			console.error(err);
-		}
-	}
-
-
-	/**
-	 * 	Get stats of self or opponent
-	 */
-	function get(who, stat = "") {
-		try {
-			//if (DEBUG) console.log("📋 Stats.get()", who, stat, allStats[who]);
-			if (stat != "")
-				return allStats[who][stat];
-			return allStats[who];
+			if (who === "tally") {
+				T.tally_stats = allStats.tally;
+			}
+			TallyStorage.saveData("tally_stats", allStats.tally, "📋 Stats.save()");
 		} catch (err) {
 			console.error(err);
 		}
@@ -142,37 +194,27 @@ window.Stats = (function() {
 		}
 	}
 
-	/**
-	 *	For getting Tally stats from Storage
-	 */
-	function overwrite(who, stats) {
-		try {
-			//if (DEBUG) console.log("📋 Stats.overwrite()", who, stats);
-			allStats[who] = stats;
-		} catch (err) {
-			console.error(err);
-		}
-	}
+
 	/**
 	 *	Return the level of the player or monster
 	 */
-	async function getLevel(who) {
+	function getLevel(who) {
 		try {
-			if (DEBUG) console.log("📋 Stats.getLevel()", who, tally_user);
+			if (DEBUG) console.log("📋 Stats.getLevel()", who, "T.tally_user.level =", T.tally_user.level);
 
 			// allow offline
 			if (Page.data.mode.notActive) return;
 			// don't allow if mode disabled
-			if (tally_options.gameMode === "disabled") return;
+			if (T.tally_options.gameMode === "disabled") return;
 
 			// error checking
-			if (!prop(tally_user)) return;
+			if (!prop(T.tally_user)) return console.warn("📋 Stats.getLevel()", " no T.tally_user.level");
 
 			// default
 			let level = 0;
 
 			if (who == "tally") {
-				level = tally_user.level;
+				level = T.tally_user.level;
 				if (DEBUG) console.log("📋 Stats.getLevel()", who + " => " + level);
 			} else if (Monster.currentMID > 0 || Monster.current().level > 0) {
 				level = Monster.current().level;
@@ -192,7 +234,7 @@ window.Stats = (function() {
 			// allow offline
 			if (Page.data.mode.notActive) return;
 			// don't allow if mode disabled
-			if (tally_options.gameMode === "disabled") return;
+			if (T.tally_options.gameMode === "disabled") return;
 
 			let who = "tally";
 
@@ -254,14 +296,10 @@ window.Stats = (function() {
 	// PUBLIC
 	return {
 		resetStatsAll: resetStatsAll,
-		reset: function(who, level) {
-			reset(who, level);
-		},
-		overwrite: function(who, stats) {
-			overwrite(who, stats);
-		},
-		get: function(who, stat) {
-			return get(who, stat);
+		reset: reset,
+		set: set,
+		get: function(who) {
+			return get(who);
 		},
 		setVal: function(who, stat, change) {
 			return setVal(who, stat, change);
@@ -269,8 +307,7 @@ window.Stats = (function() {
 		getLevel: function(who) {
 			return getLevel(who);
 		},
-		updateFromConsumable: function(data) {
-			updateFromConsumable(data);
-		}
+		updateFromConsumable: updateFromConsumable,
+
 	};
 })();

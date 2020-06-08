@@ -150,7 +150,7 @@ window.Page = (function() {
 			// check and count page tags
 			newData.tags = getPageTags(newData);
 			// add trackers
-			newData.trackers = Tracker.countAndBlock(newData.domain) || "";
+			newData.trackers = "";// Tracker.countAndBlock(newData.domain) || "";
 			// if youtube
 			if (newData.domain == "youtube.com")
 				// 	addMutationObserver();
@@ -187,7 +187,7 @@ window.Page = (function() {
 			// allow offline
 			if (Page.data.mode.notActive) return;
 			// don't allow if mode disabled
-			if (tally_options.gameMode === "disabled") return;
+			if (T.tally_options.gameMode === "disabled") return;
 
 			new MutationObserver(function(mutations) {
 				if (DEBUG) console.log("title changed", mutations[0].target.nodeValue);
@@ -229,7 +229,7 @@ window.Page = (function() {
 			// allow offline
 			if (Page.data.mode.notActive) return;
 			// don't allow if mode disabled
-			if (tally_options.gameMode === "disabled") return;
+			if (T.tally_options.gameMode === "disabled") return;
 
 			if (DEBUG) console.log("🗒 Page.restartAfterMutation() caller = " + caller);
 

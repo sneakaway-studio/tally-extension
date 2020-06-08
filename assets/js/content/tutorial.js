@@ -27,7 +27,7 @@ window.Tutorial = (function() {
 			// allow offline
 			if (Page.data.mode.notActive) return;
 			// don't allow if mode disabled or stealth
-			if (tally_options.gameMode === "disabled" || tally_options.gameMode === "stealth") return;
+			if (T.tally_options.gameMode === "disabled" || T.tally_options.gameMode === "stealth") return;
 
 			if (DEBUG) console.log("📚 Tutorial.play() [1]", which);
 
@@ -97,7 +97,7 @@ window.Tutorial = (function() {
 			// allow offline
 			if (Page.data.mode.notActive) return;
 			// don't allow if mode disabled or stealth
-			if (tally_options.gameMode === "disabled" || tally_options.gameMode === "stealth") return;
+			if (T.tally_options.gameMode === "disabled" || T.tally_options.gameMode === "stealth") return;
 
 			if (DEBUG) console.log("📚 Tutorial.slideshowCallback() [1]", callback);
 
@@ -117,16 +117,16 @@ window.Tutorial = (function() {
 				frameStr = '<img src="' + chrome.extension.getURL('assets/img/tutorial/popup-ads.gif') + '">';
 			} else if (callback === "slideShowBrowserDetails") {
 				frameStr = '';
-				if (tally_meta.location.ip) {
+				if (T.tally_meta.location.ip) {
 					frameStr += '<div><i>Your location:</i></div> ';
-					if (tally_meta.location.ip) frameStr += "<div><b>IP address</b>: " + tally_meta.location.ip + "</div> ";
-					if (tally_meta.location.city) frameStr += "<div><b>City</b>: " + tally_meta.location.city + "</div> ";
-					if (tally_meta.location.region) frameStr += "<div><b>Region</b>: " + tally_meta.location.region + "</div> ";
-					if (tally_meta.location.country) frameStr += "<div><b>Country</b>: " + tally_meta.location.country + "</div> ";
-					if (tally_meta.location.continent) frameStr += "<div><b>Continent</b>: " + tally_meta.location.continent + "</div> ";
-					if (tally_meta.location.lat)
-						frameStr += "<div><b>Geolocation</b>: " + tally_meta.location.lat + "," + tally_meta.location.lng + "</div> ";
-					if (tally_meta.location.timezone) frameStr += "<div><b>timezone</b>: " + tally_meta.location.timezone + "</div> ";
+					if (T.tally_meta.location.ip) frameStr += "<div><b>IP address</b>: " + T.tally_meta.location.ip + "</div> ";
+					if (T.tally_meta.location.city) frameStr += "<div><b>City</b>: " + T.tally_meta.location.city + "</div> ";
+					if (T.tally_meta.location.region) frameStr += "<div><b>Region</b>: " + T.tally_meta.location.region + "</div> ";
+					if (T.tally_meta.location.country) frameStr += "<div><b>Country</b>: " + T.tally_meta.location.country + "</div> ";
+					if (T.tally_meta.location.continent) frameStr += "<div><b>Continent</b>: " + T.tally_meta.location.continent + "</div> ";
+					if (T.tally_meta.location.lat)
+						frameStr += "<div><b>Geolocation</b>: " + T.tally_meta.location.lat + "," + T.tally_meta.location.lng + "</div> ";
+					if (T.tally_meta.location.timezone) frameStr += "<div><b>timezone</b>: " + T.tally_meta.location.timezone + "</div> ";
 				}
 				if (Page.data.browser.platform) {
 					frameStr += '<div><i>Your computer</i></div> ';

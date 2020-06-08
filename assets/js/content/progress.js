@@ -68,16 +68,16 @@ window.Progress = (function() {
 	function get(name) {
 		try {
 			// if (DEBUG) console.log("🕹️ Progress.get() [1]", name);
+return;
+			console.log("🕹️ Progress.get()", T.tally_user, FS_Object.prop(T.tally_user));
+			console.log("🕹️ Progress.get()", T.tally_user.progress, FS_Object.prop(T.tally_user.progress));
+			console.log("🕹️ Progress.get()", T.tally_user.progress[name], FS_Object.prop(T.tally_user.progress[name]));
+			console.log("🕹️ Progress.get()", typeof get("attacksAwarded"), typeof FS_Object.objLength(T.tally_user.attacks));
 
-			console.log("🕹️ Progress.get()", tally_user, FS_Object.prop(tally_user));
-			console.log("🕹️ Progress.get()", tally_user.progress, FS_Object.prop(tally_user.progress));
-			console.log("🕹️ Progress.get()", tally_user.progress[name], FS_Object.prop(tally_user.progress[name]));
-			console.log("🕹️ Progress.get()", typeof get("attacksAwarded"), typeof FS_Object.objLength(tally_user.attacks));
-
-			// if value exists in tally_user && is true | >0 | !""
-			if (FS_Object.prop(tally_user.progress[name])) {
-				// if (DEBUG) console.log("🕹️ Progress.get() [2]", tally_user.progress[name]);
-				return parseInt(tally_user.progress[name].val);
+			// if value exists in T.tally_user && is true | >0 | !""
+			if (FS_Object.prop(T.tally_user.progress[name])) {
+				// if (DEBUG) console.log("🕹️ Progress.get() [2]", T.tally_user.progress[name]);
+				return parseInt(T.tally_user.progress[name].val);
 			} else {
 				// if (DEBUG) console.log("🕹️ Progress.get() [3]" + name + " NOT FOUND");
 				return false;
@@ -93,10 +93,11 @@ window.Progress = (function() {
 	 */
 	function update(name, val, operator = "=") {
 		try {
+			return;
 			// allow offline
 			if (Page.data.mode.notActive) return;
 			// don't allow if mode disabled or stealth
-			if (tally_options.gameMode === "disabled") return;
+			if (T.tally_options.gameMode === "disabled") return;
 
 			// get current value
 			let currentVal = get(name),
@@ -140,9 +141,9 @@ window.Progress = (function() {
 	 */
 	async function check(caller = "Progress") {
 		try {
-			if (DEBUG) console.log("🕹️ Progress.check() [1] caller =", caller, tally_user.progress);
+			if (DEBUG) console.log("🕹️ Progress.check() [1] caller =", caller, T.tally_user.progress);
 			// return if not found
-			if (!tally_user.progress) return;
+			if (!T.tally_user.progress) return;
 
 
 			// count any relevant tags on the page
@@ -155,11 +156,11 @@ window.Progress = (function() {
 			let attacksAwarded = get("attacksAwarded");
 
 			// AWARD ATTACK - 1st
-			if (attacksAwarded <= 0 && tally_user.score.score > 1) {
+			if (attacksAwarded <= 0 && T.tally_user.score.score > 1) {
 				BattleAttack.rewardAttack("", "attack");
 			}
 			// AWARD ATTACK - 2nd
-			else if (attacksAwarded <= 1 && tally_user.score.score > 10) {
+			else if (attacksAwarded <= 1 && T.tally_user.score.score > 10) {
 				BattleAttack.rewardAttack("", "attack");
 				Dialogue.showStr("Manage your attacks with the button at the top right of browser window.", "happy");
 			}
@@ -168,13 +169,13 @@ window.Progress = (function() {
 				BattleAttack.rewardAttack("", "defense");
 			}
 			// AWARD ATTACK - 4th
-			else if (attacksAwarded <= 3 && tally_user.score.score > 100) {
+			else if (attacksAwarded <= 3 && T.tally_user.score.score > 100) {
 				BattleAttack.rewardAttack("", "attack");
 			}
 			// ALWAYS UPDATE COUNT
-			if (attacksAwarded !== FS_Object.objLength(tally_user.attacks)) {
+			if (attacksAwarded !== FS_Object.objLength(T.tally_user.attacks)) {
 				// update the attacksAwarded count
-				update("attacksAwarded", FS_Object.objLength(tally_user.attacks));
+				update("attacksAwarded", FS_Object.objLength(T.tally_user.attacks));
 			}
 
 		} catch (err) {

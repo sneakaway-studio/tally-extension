@@ -73,11 +73,11 @@ window.Sound = (function() {
 			// allow offline
 			if (Page.data.mode.notActive) return;
 			// don't allow if mode disabled or stealth
-			if (tally_options.gameMode === "disabled" || tally_options.gameMode === "stealth") return;
+			if (T.tally_options.gameMode === "disabled" || T.tally_options.gameMode === "stealth") return;
 			// don't allow if this page doesn't have focus
 			if (!document.hasFocus()) return;
 			// don't allow if playSounds disabled
-			if (!tally_options.playSounds) return;
+			if (!T.tally_options.playSounds) return;
 
 			// play intro
 			//playMusic(battleMusicDir + "battle-intro.wav", false, 0);
@@ -98,11 +98,11 @@ window.Sound = (function() {
 			// allow offline
 			if (Page.data.mode.notActive) return;
 			// don't allow if mode disabled or stealth
-			if (tally_options.gameMode === "disabled" || tally_options.gameMode === "stealth") return;
+			if (T.tally_options.gameMode === "disabled" || T.tally_options.gameMode === "stealth") return;
 			// don't allow if this page doesn't have focus
 			if (!document.hasFocus()) return;
 			// don't allow if playSounds disabled
-			if (!tally_options.playSounds) return;
+			if (!T.tally_options.playSounds) return;
 			// don't allow if no soundFile
 			if (!FS_Object.prop(file)) return;
 
@@ -116,7 +116,7 @@ window.Sound = (function() {
 				musicAudioEl = document.querySelector('#tally_music');
 				$('#tally_music_source').attr("src", chrome.extension.getURL("assets/sounds/music/" + musicFile));
 				// set params
-				musicAudioEl.volume = FS_Number.clamp((tally_options.soundVolume || 0.3) + volumeModifier, 0, 1);
+				musicAudioEl.volume = FS_Number.clamp((T.tally_options.soundVolume || 0.3) + volumeModifier, 0, 1);
 				// some hacks for Chrome
 				musicAudioEl.muted = false;
 				musicAudioEl.loop = loop;
@@ -147,11 +147,11 @@ window.Sound = (function() {
 			// allow offline
 			if (Page.data.mode.notActive) return;
 			// don't allow if mode disabled or stealth
-			if (tally_options.gameMode === "disabled" || tally_options.gameMode === "stealth") return;
+			if (T.tally_options.gameMode === "disabled" || T.tally_options.gameMode === "stealth") return;
 			// don't allow if this page doesn't have focus
 			if (!document.hasFocus()) return;
 			// don't allow if playSounds disabled
-			if (!tally_options.playSounds) return;
+			if (!T.tally_options.playSounds) return;
 			// don't allow if no soundFile
 			if (!FS_Object.prop(musicFile)) return;
 
@@ -254,11 +254,11 @@ window.Sound = (function() {
 			// allow offline
 			if (Page.data.mode.notActive) return;
 			// don't allow if mode disabled or stealth
-			if (tally_options.gameMode === "disabled" || tally_options.gameMode === "stealth") return;
+			if (T.tally_options.gameMode === "disabled" || T.tally_options.gameMode === "stealth") return;
 			// don't allow if this page doesn't have focus
 			if (!document.hasFocus()) return;
 			// don't allow if playSounds disabled
-			if (!tally_options.playSounds) return;
+			if (!T.tally_options.playSounds) return;
 
 			//if(DEBUG) console.log("🎵 Sound.playRandom("+ category +","+ index +")");
 			var soundFile = "";
@@ -287,11 +287,11 @@ window.Sound = (function() {
 			// allow offline
 			if (Page.data.mode.notActive) return;
 			// don't allow if mode disabled or stealth
-			if (tally_options.gameMode === "disabled" || tally_options.gameMode === "stealth") return;
+			if (T.tally_options.gameMode === "disabled" || T.tally_options.gameMode === "stealth") return;
 			// don't allow if this page doesn't have focus
 			if (!document.hasFocus()) return;
 			// don't allow if playSounds disabled
-			if (!tally_options.playSounds) return;
+			if (!T.tally_options.playSounds) return;
 
 			let file = category + "/" + sounds[category][index];
 			play(file, delay);
@@ -309,11 +309,11 @@ window.Sound = (function() {
 			// allow offline
 			if (Page.data.mode.notActive) return;
 			// don't allow if mode disabled or stealth
-			if (tally_options.gameMode === "disabled" || tally_options.gameMode === "stealth") return;
+			if (T.tally_options.gameMode === "disabled" || T.tally_options.gameMode === "stealth") return;
 			// don't allow if this page doesn't have focus
 			if (!document.hasFocus()) return;
 			// don't allow if playSounds disabled
-			if (!tally_options.playSounds) return;
+			if (!T.tally_options.playSounds) return;
 
 // previously received mood as a string
 
@@ -364,7 +364,7 @@ window.Sound = (function() {
 	// 	var audio = new Audio(chrome.extension.getURL("assets/sounds/" + soundFile));
 	// 	audio.muted = true;
 	// 	audio.pause();
-	// 	audio.volume = (tally_options.soundVolume || 0.3) + volumeModifier;
+	// 	audio.volume = (T.tally_options.soundVolume || 0.3) + volumeModifier;
 	// 	if (delay > 0)
 	// 		setTimeout(function() {
 	// 			audio.muted = false;
@@ -386,11 +386,11 @@ window.Sound = (function() {
 			// allow offline
 			if (Page.data.mode.notActive) return;
 			// don't allow if mode disabled or stealth
-			if (tally_options.gameMode === "disabled" || tally_options.gameMode === "stealth") return;
+			if (T.tally_options.gameMode === "disabled" || T.tally_options.gameMode === "stealth") return;
 			// don't allow if this page doesn't have focus
 			if (!document.hasFocus()) return;
 			// don't allow if playSounds disabled
-			if (!tally_options.playSounds) return;
+			if (!T.tally_options.playSounds) return;
 			// don't allow if no soundFile
 			if (!FS_Object.prop(soundFile)) return;
 
@@ -400,10 +400,11 @@ window.Sound = (function() {
 			var audioEl = document.querySelector('#tally_audio');
 			// add source
 			$('#tally_audio_source').attr("src", chrome.extension.getURL("assets/sounds/" + soundFile));
+			if (!audioEl) return console.warn("🎵 Sound.play() audioEl does not exist",audioEl,$('#tally_audio_source'));
 			// update the source
 			audioEl.load();
 			// set volume
-			audioEl.volume = (tally_options.soundVolume || 0.3) + volumeModifier;
+			audioEl.volume = (T.tally_options.soundVolume || 0.3) + volumeModifier;
 			if (audioEl.volume < 0) audioEl.volume = 0;
 			audioEl.muted = false;
 			// pause

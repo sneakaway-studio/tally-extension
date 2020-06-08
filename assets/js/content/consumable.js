@@ -87,7 +87,7 @@ window.Consumable = (function() {
 			// allow offline
 			if (Page.data.mode.notActive) return;
 			// don't allow if mode disabled or stealth
-			if (tally_options.gameMode === "disabled" || tally_options.gameMode === "stealth") return;
+			if (T.tally_options.gameMode === "disabled" || T.tally_options.gameMode === "stealth") return;
 
 			let countR = Math.random(), // whether to create a consumable at all
 				r = Math.random(), // whether to create consumable of type
@@ -107,7 +107,7 @@ window.Consumable = (function() {
 			// pick random type
 			else if (r < 0.08) create("", "", count);
 			// gameMode === testing
-			else if (r < 0.4 && ["demo", "testing"].includes(tally_options.gameMode))
+			else if (r < 0.4 && ["demo", "testing"].includes(T.tally_options.gameMode))
 				// create("marketing", "", 1);
 				create("cookie", "", 1);
 
@@ -254,16 +254,16 @@ window.Consumable = (function() {
 
 	function count(type = "all") {
 		try {
-			// console.log("🍪 Consumable.count()", type, tally_user.consumables);
-			// console.log("🍪 Consumable.count() tally_user.progress.consumables", tally_user.progress.consumables);
-			// console.log("🍪 Consumable.count() tally_user.progress.cookies", tally_user.progress.cookies);
+			// console.log("🍪 Consumable.count()", type, T.tally_user.consumables);
+			// console.log("🍪 Consumable.count() T.tally_user.progress.consumables", T.tally_user.progress.consumables);
+			// console.log("🍪 Consumable.count() T.tally_user.progress.cookies", T.tally_user.progress.cookies);
 
 			// start by counting the new one
 			let total = 1;
-			for (var i in tally_user.consumables) {
-				// if (DEBUG) console.log("🍪 Consumable.count()", type, i, tally_user.consumables[i]);
-				if (type == "all" || tally_user.consumables[i].type == type) {
-					total += tally_user.consumables[i].count;
+			for (var i in T.tally_user.consumables) {
+				// if (DEBUG) console.log("🍪 Consumable.count()", type, i, T.tally_user.consumables[i]);
+				if (type == "all" || T.tally_user.consumables[i].type == type) {
+					total += T.tally_user.consumables[i].count;
 				}
 			}
 			return total;

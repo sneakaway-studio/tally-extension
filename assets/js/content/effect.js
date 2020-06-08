@@ -64,7 +64,7 @@ window.Effect = (function() {
 	 */
 	function showClickVisualText(eventData, str) {
 		try {
-			if (!tally_options.showClickVisuals) return;
+			if (!T.tally_options.showClickVisuals) return;
 			//console.log("showClickVisualText()", eventData, str);
 			// add the string
 			$('#tally_click_visual').html(str);

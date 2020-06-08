@@ -37,9 +37,9 @@ window.MonsterAward = (function() {
 			instant: true
 		});
 		// set vars
-		tally_nearby_monsters[_mid].captured = 1;
-		tally_nearby_monsters[_mid].missed = 0;
-		tally_nearby_monsters[_mid].totalCaptured += 1;
+		T.tally_nearby_monsters[_mid].captured = 1;
+		T.tally_nearby_monsters[_mid].missed = 0;
+		T.tally_nearby_monsters[_mid].totalCaptured += 1;
 		// move monster and show award
 		addAwardHtml();
 		moveMonsterToAward(_mid);
@@ -51,7 +51,7 @@ window.MonsterAward = (function() {
 	 *	Move monster down to award area
 	 */
 	function moveMonsterToAward(_mid) {
-		console.log("☆☆☆☆☆ Monster.moveMonsterToAward()", _mid, tally_nearby_monsters[_mid]);
+		console.log("☆☆☆☆☆ Monster.moveMonsterToAward()", _mid, T.tally_nearby_monsters[_mid]);
 
 		let _scale = Page.data.browser.width > 1200 ? 0.85 : 0.65; // increase scale w/larger screens
 
@@ -85,7 +85,7 @@ window.MonsterAward = (function() {
 	 *	User misses monster
 	 */
 	function miss(_mid) {
-		console.log("!!!!! Monster.miss()", _mid, tally_nearby_monsters[_mid]);
+		console.log("!!!!! Monster.miss()", _mid, T.tally_nearby_monsters[_mid]);
 		// tell them they missed
 		Dialogue.showData(Dialogue.getData({
 			category: "monster",
@@ -100,8 +100,8 @@ window.MonsterAward = (function() {
 		// remove the click listener
 		$('.tally_monster_sprite').unbind();
 		// set missed instead of captured
-		tally_nearby_monsters[_mid].captured = 0;
-		tally_nearby_monsters[_mid].missed = 1;
+		T.tally_nearby_monsters[_mid].captured = 0;
+		T.tally_nearby_monsters[_mid].missed = 1;
 		// save and push results to server
 		Monster.saveAndPush(_mid);
 	}
@@ -113,8 +113,8 @@ window.MonsterAward = (function() {
 	 * Play award animation
 	 */
 	function showAward(_mid) {
-		console.log("☆☆☆☆☆ Monster.showAward()", _mid, JSON.stringify(tally_top_monsters[_mid]),tally_nearby_monsters[_mid]);
-		if (!prop(tally_top_monsters[_mid])) return;
+		console.log("☆☆☆☆☆ Monster.showAward()", _mid, JSON.stringify(T.tally_top_monsters[_mid]),T.tally_nearby_monsters[_mid]);
+		if (!prop(T.tally_top_monsters[_mid])) return;
 
 		// insert text
 		$('.award_subtitle').html("You leveled up! <a href='https://tallygame.net/profile'> Check out your profile</a>");
@@ -124,18 +124,18 @@ window.MonsterAward = (function() {
 		let str = Dialogue.getFact("trackers",true);
 		let box_text = "Did you know?";
 
-		if (!prop(tally_top_monsters[_mid].top))
+		if (!prop(T.tally_top_monsters[_mid].top))
 			console.error(".top is undefined");
 
 		// 1. Are they already at the top of the leaderboard?
 		// IOW is the monster level they are at (level-1) >= the top monster level?
-		if (tally_nearby_monsters[_mid].totalCaptured > tally_top_monsters[_mid].top) {
+		if (T.tally_nearby_monsters[_mid].totalCaptured > T.tally_top_monsters[_mid].top) {
 			console.log("☆☆☆☆☆ YOU ARE *STILL* IN FIRST PLACE ☆☆☆☆☆");
 			additional_targets = ', .tally_award_explode_background-1, .tally_award_explode_background-2';
 			victory_text = "YOU ARE STILL IN FIRST!!!";
 		}
 		// 2. OR, are they just now coming to be on top?
-		else if ((tally_nearby_monsters[_mid].totalCaptured) == tally_top_monsters[_mid].top) {
+		else if ((T.tally_nearby_monsters[_mid].totalCaptured) == T.tally_top_monsters[_mid].top) {
 			console.log("☆☆☆☆☆ YOU JUST ARRIVED IN FIRST PLACE !!!! ☆☆☆☆☆");
 			Effect.explode();
 			additional_targets = ', .tally_award_explode_background-1, .tally_award_explode_background-2';
@@ -149,7 +149,7 @@ window.MonsterAward = (function() {
 		}
 		// 3. OR, are they below top
 		else {
-			console.log("☆☆☆☆☆ YOU ARE:", tally_top_monsters[_mid].top - tally_nearby_monsters[_mid].totalCaptured, "POINTS BEHIND THE LEADER");
+			console.log("☆☆☆☆☆ YOU ARE:", T.tally_top_monsters[_mid].top - T.tally_nearby_monsters[_mid].totalCaptured, "POINTS BEHIND THE LEADER");
 		}
 
 		// insert specific text
@@ -235,7 +235,7 @@ window.MonsterAward = (function() {
 			// add event listener to check when done
 			$(".tally_monster_sprite_container")
 				.one("animationend webkitAnimationEnd oAnimationEnd MSAnimationEnd", function() {
-					//console.log("animation done", tally_nearby_monsters[_mid]);
+					//console.log("animation done", T.tally_nearby_monsters[_mid]);
 					// code to execute after animation ends
 					$('.tally_monster_sprite_container').css({
 						'display': 'none'
@@ -247,19 +247,19 @@ window.MonsterAward = (function() {
 	}
 
 	function launchFrom(_mid, _pos) {
-		console.log("⊙⊙⊙⊙! Monster.launchFrom()", _mid, _pos, tally_nearby_monsters[_mid]);
+		console.log("⊙⊙⊙⊙! Monster.launchFrom()", _mid, _pos, T.tally_nearby_monsters[_mid]);
 
-		let _duration = ((Page.data.browser.width / 15) + 3800) /*+ (tally_nearby_monsters[_mid].level * 100)*/ , // animation duration
+		let _duration = ((Page.data.browser.width / 15) + 3800) /*+ (T.tally_nearby_monsters[_mid].level * 100)*/ , // animation duration
 			_direction = "normal", // default animation direction
 			_scale = Page.data.browser.width > 1200 ? 0.65 : 0.5; // increase scale w/larger screens
 
 		// set direction of monster (default is normal, i.e. right)
-		if (prop(tally_nearby_monsters[_mid].facing)) {
+		if (prop(T.tally_nearby_monsters[_mid].facing)) {
 			// set direction left
-			if (tally_nearby_monsters[_mid].facing == -1)
+			if (T.tally_nearby_monsters[_mid].facing == -1)
 				_direction = "reverse";
 			// pick random
-			else if (tally_nearby_monsters[_mid].facing == 0) {
+			else if (T.tally_nearby_monsters[_mid].facing == 0) {
 				let r = Math.random();
 				if (r < 0.5)
 					_direction = "reverse";
@@ -305,15 +305,15 @@ window.MonsterAward = (function() {
 		// add event listener to check when done
 		$(".tally_monster_sprite_container")
 			.one("animationend webkitAnimationEnd oAnimationEnd MSAnimationEnd", function() {
-				console.log("animation done", tally_nearby_monsters[_mid]);
+				console.log("animation done", T.tally_nearby_monsters[_mid]);
 				// code to execute after animation ends
-				if (prop(tally_nearby_monsters[_mid]) && tally_nearby_monsters[_mid].captured == 0)
+				if (prop(T.tally_nearby_monsters[_mid]) && T.tally_nearby_monsters[_mid].captured == 0)
 					MonsterAward.miss(_mid);
 			});
 
 		// add click handler
 		$(document).on('click', '.tally_monster_sprite', function() {
-			if (!prop(tally_nearby_monsters[_mid])) return;
+			if (!prop(T.tally_nearby_monsters[_mid])) return;
 			// remove the click listener from the monster
 			$('.tally_monster_sprite').off("click");
 			// capture the monster
@@ -330,11 +330,11 @@ window.MonsterAward = (function() {
 	 */
 	function reset(mid) {
 		// reset one
-		// if (tally_nearby_monsters[mid])
-		// 	delete tally_nearby_monsters[mid];
+		// if (T.tally_nearby_monsters[mid])
+		// 	delete T.tally_nearby_monsters[mid];
 		// reset them all
-		tally_nearby_monsters = {};
-		TallyStorage.saveData("tally_nearby_monsters",tally_nearby_monsters, "MonsterAward.reset()");
+		T.tally_nearby_monsters = {};
+		TallyStorage.saveData("tally_nearby_monsters",T.tally_nearby_monsters, "MonsterAward.reset()");
 		// check/reset skin
 		Skin.updateFromHighestMonsterStage();
 	}

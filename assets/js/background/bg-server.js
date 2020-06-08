@@ -141,7 +141,7 @@ window.Server = (function() {
 			// 	if (DEBUG) console.log("📟 Server.saveTokenStatus() 🔑 -> TOKEN EXPIRED");
 			// 	// prompts handled by content script
 			// }
-			// // 3. tally_meta exists but there is no token or there is an error
+			// // 3. T.tally_meta exists but there is no token or there is an error
 			// else {
 			// 	// launch signin / registration
 			// 	if (DEBUG) console.log("📟 Server.saveTokenStatus() 🔑 -> NO TOKEN FOUND");
@@ -155,7 +155,7 @@ window.Server = (function() {
 	}
 
 	/**
-	 *  Get latest tally_user data from API
+	 *  Get latest T.tally_user data from API
 	 */
 	async function getTallyUser() {
 		try {
@@ -171,7 +171,7 @@ window.Server = (function() {
 				return false;
 			}
 
-			// send token to server to get latest tally_user data
+			// send token to server to get latest T.tally_user data
 			return $.ajax({
 				type: "POST",
 				url: _tally_meta.api + "/user/returnTallyUser",
@@ -182,7 +182,7 @@ window.Server = (function() {
 				})
 			}).done(result => {
 				if (DEBUG) console.log("📟 Server.getTallyUser() DONE %c" + JSON.stringify(result.username), Debug.styles.green );
-				// merge attack data from server with tally_user data properties
+				// merge attack data from server with T.tally_user data properties
 				result.attacks = Server.mergeAttackDataFromServer(result.attacks);
 
 			}).fail(error => {
@@ -206,7 +206,7 @@ window.Server = (function() {
 			// get local objects to update them
 			let _tally_user = store("tally_user");
 
-			// treat all server data as master, store in tally_user
+			// treat all server data as master, store in T.tally_user
 			if (result.username) _tally_user.username = result.username;
 			if (result.admin) _tally_user.admin = result.admin;
 			if (result.level) _tally_user.level = result.level;
@@ -235,7 +235,7 @@ window.Server = (function() {
 
 
 	/**
-	 *  Refresh tally_top_monsters from API server
+	 *  Refresh T.tally_top_monsters from API server
 	 */
 	async function returnTopMonsters() {
 		try {
@@ -258,7 +258,7 @@ window.Server = (function() {
 			}).done(result => {
 				//console.log("📟 Server.returnTopMonsters() RESULT =", JSON.stringify(result));
 
-				// MARK FOR DELETION (NOW IN tally_user)
+				// MARK FOR DELETION (NOW IN T.tally_user)
 				// _tally_user.monsters = convertArrayToObject(result.userMonsters, "mid");
 
 				// treat all server data as master

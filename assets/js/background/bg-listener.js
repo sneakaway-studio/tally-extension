@@ -305,7 +305,7 @@ window.Listener = (function() {
 				// sendUpdateToBackground
 				// - receive and save score, event, page, etc. data in background
 				// - if server online and token good then send to server
-				// - receive and reply to content with tally_user
+				// - receive and reply to content with T.tally_user
 				else if (request.action == "sendUpdateToBackground") {
 					// if (DEBUG) console.log("👂🏼 Listener.addListener() < sendUpdateToBackground", JSON.stringify(request.data));
 
@@ -320,7 +320,7 @@ window.Listener = (function() {
 						// every once in a while check again
 						if (Math.random() > 0.3) Server.checkIfOnline();
 
-						// reply to contentscript with updated tally_user
+						// reply to contentscript with updated T.tally_user
 						sendResponse({
 							"action": request.action,
 							"message": 1,
@@ -340,14 +340,14 @@ window.Listener = (function() {
 						dataType: 'json',
 						data: JSON.stringify(request.data)
 					}).done(result => {
-						// result contains tally_user
+						// result contains T.tally_user
 						if (DEBUG) console.log("👂🏼 Listener.addListener() > sendUpdateToBackground - DONE =", result);
 
 						// merge attack data from server with game data properties
 						result.attacks = Server.mergeAttackDataFromServer(result.attacks);
 						// store result
 						store("tally_user", result);
-						// reply to contentscript with updated tally_user
+						// reply to contentscript with updated T.tally_user
 						sendResponse({
 							"action": request.action,
 							"message": 1,

@@ -43,15 +43,15 @@ window.TallyEvents = (function() {
 			// allow offline
 			if (Page.data.mode.notActive) return;
 			// don't allow if mode disabled or stealth
-			if (tally_options.gameMode === "disabled" || tally_options.gameMode === "stealth") return;
+			if (T.tally_options.gameMode === "disabled" || T.tally_options.gameMode === "stealth") return;
 
 			if (DEBUG) console.log("🕗 TallyEvents.checkLastActiveAndRecharge()", "00:00:00",
-				FS_String.pad(FS_Date.diffHours("now", tally_user.lastActive), 2) + ":" +
-				FS_String.pad(FS_Date.diffMinutes("now", tally_user.lastActive), 2) + ":" +
-				FS_String.pad(FS_Date.diffSeconds("now", tally_user.lastActive), 2)
+				FS_String.pad(FS_Date.diffHours("now", T.tally_user.lastActive), 2) + ":" +
+				FS_String.pad(FS_Date.diffMinutes("now", T.tally_user.lastActive), 2) + ":" +
+				FS_String.pad(FS_Date.diffSeconds("now", T.tally_user.lastActive), 2)
 			);
 			// if player hasn't been online for n minutes then recharge
-			if (FS_Date.diffMinutes("now", tally_user.lastActive) > 60) { // 0=testing
+			if (FS_Date.diffMinutes("now", T.tally_user.lastActive) > 60) { // 0=testing
 				setTimeout(function() {
 					// reset tally stats
 					Stats.reset("tally");
@@ -62,9 +62,9 @@ window.TallyEvents = (function() {
 				}, 700);
 			}
 			// update last active
-			tally_user.lastActive = moment().format();
-			TallyStorage.saveData('tally_user', tally_user, "🕗 TallyEvents.checkLastActiveAndRecharge()");
-			// if (DEBUG) console.log("🕗 TallyEvents.checkLastActiveAndRecharge()", tally_user.lastActive);
+			T.tally_user.lastActive = moment().format();
+			TallyStorage.saveData("tally_user", T.tally_user, "🕗 TallyEvents.checkLastActiveAndRecharge()");
+			// if (DEBUG) console.log("🕗 TallyEvents.checkLastActiveAndRecharge()", T.tally_user.lastActive);
 		} catch (err) {
 			console.error(err);
 		}
