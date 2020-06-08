@@ -11,9 +11,6 @@
  *
  */
 
-
-Config.logTimeSinceLoad("TallyInit (script loaded, game objects created) [1]");
-
 window.TallyInit = (function() {
 	// PRIVATE
 	let DEBUG = Debug.ALL.TallyInit,
@@ -21,13 +18,13 @@ window.TallyInit = (function() {
 		chrome.extension.getURL('assets/img/tally/tally-clear-20w.png') + '") no-repeat;',
 		dataLoaded = false;
 
+    console.log("%c   Hi, I'm Tally!", tallyConsoleIcon);
 	Config.logTimeSinceLoad("TallyInit (object created) [2]");
 
 	// global error handler
 	window.onerror = function(message, source, lineno, colno, error) {
 		console.error("Tally", message, source, lineno, colno, error);
 	};
-
 
 	// PUBLIC
 	return {

@@ -6,7 +6,8 @@
 window.Badge = (function() {
 	// PRIVATE
 
-	let DEBUG = Debug.ALL.Badge;
+	let DEBUG = Debug.ALL.Badge,
+		newBadgeLevel = 0;
 
 
 	/**
@@ -29,14 +30,14 @@ window.Badge = (function() {
 
 
 	function startNewCheck(name) {
+		// if (DEBUG) console.log("\n🏆 Badge.startNewCheck()", name);
 		// get the current badge or a "blank" one
 		let currentBadge = get(name);
-		// reset new badge level (to compare to current one)
-		let newBadgeLevel = 0;
+		// reset (global) new badge level (to compare to current one)
+		newBadgeLevel = 0;
 		// log
 		if (DEBUG) console.log("🏆 Badge.startNewCheck()", name, currentBadge);
-
-		return [currentBadge,newBadgeLevel];
+		return currentBadge;
 	}
 
 	/**
@@ -76,13 +77,13 @@ window.Badge = (function() {
 			// which things should we check?
 			let shouldCheck = {
 				social: GameData.socialDomains.indexOf(Page.data.domain),
-				tags: Page.data.tags.length, // only if tags found on this page
+				tags: Progress.pageTagsProgressMatches || 0, // only if tags found on this page
 				workday: FS_Date.isWorkday(),
 				nighttime: FS_Date.isNight(),
 				clickText: false,
 				scrolling: false
 			};
-			if (DEBUG) console.log(log, "startNewCheck() shouldCheck =", shouldCheck);
+			if (DEBUG) console.log(log, "shouldCheck =", shouldCheck);
 
 
 
@@ -121,16 +122,15 @@ window.Badge = (function() {
 
 			////////////////////////////// CHECK ALL TAG BADGES //////////////////////////////
 
-			if (Progress.pageTagsProgressMatches > 0) {
+			if (shouldCheck.tags > 0) {
 				for (var badgeName in Badges.data) {
-					if (DEBUG) console.log(log, "badgeName =", badgeName);
-					// if tags
+					// if this badge has tags
 					if (!Badges.data[badgeName].tags) continue;
 					// get current badge (or a new default badge) and start new check
-					currentBadge = startNewCheck(Badges.data[badgeName].name);
+					currentBadge = startNewCheck(badgeName);
 					// get new badge level and compare
 					newBadgeLevel = exp(Progress.get(currentBadge.progress) / 10); // # tags
-					// if (DEBUG) console.log(log, "newBadgeLevel =", newBadgeLevel, "newBadgeLevel =", currentBadge.level);
+					if (DEBUG) console.log(log, "newBadgeLevel =", newBadgeLevel, "currentBadge =", currentBadge);
 					if (newBadgeLevel > currentBadge.level) {
 						// set new level and award new badge
 						currentBadge.level = newBadgeLevel;

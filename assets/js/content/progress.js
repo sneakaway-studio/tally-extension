@@ -68,11 +68,10 @@ window.Progress = (function() {
 	function get(name) {
 		try {
 			// if (DEBUG) console.log("🕹️ Progress.get() [1]", name);
-return;
-			console.log("🕹️ Progress.get()", T.tally_user, FS_Object.prop(T.tally_user));
-			console.log("🕹️ Progress.get()", T.tally_user.progress, FS_Object.prop(T.tally_user.progress));
-			console.log("🕹️ Progress.get()", T.tally_user.progress[name], FS_Object.prop(T.tally_user.progress[name]));
-			console.log("🕹️ Progress.get()", typeof get("attacksAwarded"), typeof FS_Object.objLength(T.tally_user.attacks));
+			// if (DEBUG) console.log("🕹️ Progress.get()", name, T.tally_user, FS_Object.prop(T.tally_user));
+			// if (DEBUG) console.log("🕹️ Progress.get()", name, T.tally_user.progress, FS_Object.prop(T.tally_user.progress));
+			if (DEBUG) console.log("🕹️ Progress.get()", name, T.tally_user.progress[name], FS_Object.prop(T.tally_user.progress[name]));
+			// console.trace();
 
 			// if value exists in T.tally_user && is true | >0 | !""
 			if (FS_Object.prop(T.tally_user.progress[name])) {
@@ -93,7 +92,6 @@ return;
 	 */
 	function update(name, val, operator = "=") {
 		try {
-			return;
 			// allow offline
 			if (Page.data.mode.notActive) return;
 			// don't allow if mode disabled or stealth
@@ -114,7 +112,7 @@ return;
 				// update value
 				newVal = FS_Number.operation(currentVal, val, operator);
 			}
-			if (DEBUG) console.log("🕹️ Progress.update()", name, currentVal + " " + operator + " " + val + " = " + newVal);
+			// if (DEBUG) console.log("🕹️ Progress.update()", name, currentVal + " " + operator + " " + val + " = " + newVal);
 
 			// create progress object
 			let obj = {
@@ -136,10 +134,11 @@ return;
 		}
 	}
 
+
 	/**
 	 *	Checks to see if any progress events should be executed
 	 */
-	async function check(caller = "Progress") {
+	function check(caller = "Progress") {
 		try {
 			if (DEBUG) console.log("🕹️ Progress.check() [1] caller =", caller, T.tally_user.progress);
 			// return if not found
@@ -147,7 +146,7 @@ return;
 
 
 			// count any relevant tags on the page
-			pageTagsProgressMatches = await countPageTags();
+			pageTagsProgressMatches = countPageTags();
 			// console.log("🕹️ Progress.check() [2]", Page.data.tags.length, pageTagsProgressMatches);
 
 
@@ -187,9 +186,9 @@ return;
 	/**
 	 *	Count tags on the page
 	 */
-	async function countPageTags() {
+	function countPageTags() {
 		try {
-			// if (DEBUG) console.log("🕹️ Progress.countPageTags() [1]", Page.data.tags);
+			if (DEBUG) console.log("🕹️ Progress.countPageTags() [1]", Page.data.tags);
 
 			let result = [], // an array of indexes of matching tags
 				matches = 0;
@@ -200,14 +199,15 @@ return;
 				// compare Page.data.tags to badges' tags and perform any Progress.updates
 				result = Page.data.tags.filter(value => Badges.data[badgeName].tags.includes(value));
 				if (result.length) {
-					// if (DEBUG) console.log("🕹️ Progress.countPageTags() [2]", badgeName, Badges.data[badgeName], result);
+					if (DEBUG) console.log("🕹️ Progress.countPageTags() [2]", badgeName, /* Badges.data[badgeName], */ result);
 					// update their progress (adding *total* of all found tags on the page)
 					Progress.update(Badges.data[badgeName].progress, result.length, "+");
 					// update matches
 					matches += 1;
 				}
 			}
-			return matches; // send async back
+			if (DEBUG) console.log("🕹️ Progress.countPageTags() [3] matches =", matches);
+			return matches;
 
 		} catch (err) {
 			console.error(err);
@@ -315,7 +315,7 @@ return;
 		update: update,
 		check: check,
 		tokenAdded: tokenAdded,
-		pageTagsProgressMatches: function(){
+		get pageTagsProgressMatches() {
 			return pageTagsProgressMatches;
 		}
 	};

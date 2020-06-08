@@ -121,12 +121,12 @@
             "assets/js/content/listeners.js",
             "assets/js/content/dialogue.js",
             "assets/js/content/skin.js",
+            "assets/js/content/progress.js",
             "assets/js/content/consumable.js",
             "assets/js/content/badge.js",
             "assets/js/content/events.js",
             "assets/js/content/tally.js",
             "assets/js/content/tutorial.js",
-            "assets/js/content/progress.js",
             "assets/js/content/demo.js",
             "assets/js/content/main.js"
         ],

@@ -207,7 +207,7 @@ window.TallyStorage = (function() {
 		}
 	}
 
-	// // USER
+// MARKED FOR DELETION
 	// const getUserPromise = new Promise(
 	// 	(resolve, reject) => {
 	// 		Config.logTimeSinceLoad("TallyStorage.getUserPromise() (creating promise)[1]");
@@ -225,9 +225,6 @@ window.TallyStorage = (function() {
 	// );
 
 
-
-
-
 	let startupPromises = [], // arrays to hold all startupPromises
 		startupPromiseNames = []; // data objects to load
 
@@ -239,7 +236,7 @@ window.TallyStorage = (function() {
 	 */
 	async function getDataFromBackground(callback = null) {
 		try {
-			if (DEBUG) console.log('🗄️ TallyStorage.getDataFromBackground() [1]');
+			// if (DEBUG) console.log('🗄️ TallyStorage.getDataFromBackground() [1]');
 
 			// reset arrays
 			startupPromises = [];
