@@ -87,6 +87,9 @@ window.Badge = (function() {
 
 
 
+
+
+
 			////////////////////////////// ECONOMY //////////////////////////////
 
 			if (shouldCheck.workday) { // 9a-5p M-F
@@ -112,12 +115,27 @@ window.Badge = (function() {
 
 			currentBadge = startNewCheck("big-clicker");
 			newBadgeLevel = exp(T.tally_user.score.clicks / 350); // ~ every n clicks
-			// if (DEBUG) console.log(log, "newBadgeLevel =", newBadgeLevel, "newBadgeLevel =", currentBadge.level);
 			if (newBadgeLevel > currentBadge.level) {
-				currentBadge.level = currentBadge.level + 1; //newBadgeLevel;
+				currentBadge.level = newBadgeLevel;
 				if (DEBUG) console.log(log, "newBadgeLevel > currentBadge.level", "currentBadge =", currentBadge);
 				if (1) return award(currentBadge);
 			}
+
+
+
+
+
+			////////////////////////////// MEMORY //////////////////////////////
+
+			currentBadge = startNewCheck("refresh-king");
+			newBadgeLevel = exp(Progress.get("pageRefreshes") / 25); // # refreshes
+			if (newBadgeLevel > currentBadge.level) {
+				currentBadge.level = newBadgeLevel;
+				if (DEBUG) console.log(log, "newBadgeLevel > currentBadge.level", "currentBadge =", currentBadge);
+				if (1) return award(currentBadge);
+			}
+
+
 
 
 			////////////////////////////// CHECK ALL TAG BADGES //////////////////////////////
@@ -129,7 +147,7 @@ window.Badge = (function() {
 					// get current badge (or a new default badge) and start new check
 					currentBadge = startNewCheck(badgeName);
 					// get new badge level and compare
-					newBadgeLevel = exp(Progress.get(currentBadge.progress) / 10); // # tags
+					newBadgeLevel = exp(Progress.get(currentBadge.progress) / 25); // # tags
 					if (DEBUG) console.log(log, "newBadgeLevel =", newBadgeLevel, "currentBadge =", currentBadge);
 					if (newBadgeLevel > currentBadge.level) {
 						// set new level and award new badge
@@ -171,10 +189,6 @@ window.Badge = (function() {
 
 
 
-
-			// refresh
-			// https://stackoverflow.com/questions/5004978/check-if-page-gets-reloaded-or-refreshed-in-javascript
-			// if (performance.navigation.type == 1)
 
 
 

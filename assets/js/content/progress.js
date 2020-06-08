@@ -29,7 +29,8 @@ window.Progress = (function() {
 		// disguises
 		disguisesAwarded: 0,
 
-		// page tags
+		// page progress and tags
+		pageRefreshes: 0,
 		pageTagsCats: 0,
 		pageTagsErrors: 0,
 		pageTagsEncryption: 0,
@@ -70,7 +71,7 @@ window.Progress = (function() {
 			// if (DEBUG) console.log("🕹️ Progress.get() [1]", name);
 			// if (DEBUG) console.log("🕹️ Progress.get()", name, T.tally_user, FS_Object.prop(T.tally_user));
 			// if (DEBUG) console.log("🕹️ Progress.get()", name, T.tally_user.progress, FS_Object.prop(T.tally_user.progress));
-			if (DEBUG) console.log("🕹️ Progress.get()", name, T.tally_user.progress[name], FS_Object.prop(T.tally_user.progress[name]));
+			// if (DEBUG) console.log("🕹️ Progress.get()", name, T.tally_user.progress[name], FS_Object.prop(T.tally_user.progress[name]));
 			// console.trace();
 
 			// if value exists in T.tally_user && is true | >0 | !""
@@ -148,6 +149,11 @@ window.Progress = (function() {
 			// count any relevant tags on the page
 			pageTagsProgressMatches = countPageTags();
 			// console.log("🕹️ Progress.check() [2]", Page.data.tags.length, pageTagsProgressMatches);
+
+			// did user refresh page?
+			if (performance.navigation.type == 1) {
+				Progress.update("pageRefreshes", 1, "+");
+			}
 
 
 			////////////////////////////// ATTACKS //////////////////////////////
