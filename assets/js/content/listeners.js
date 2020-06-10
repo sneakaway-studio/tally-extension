@@ -188,10 +188,6 @@ window.TallyListeners = (function() {
 
 				// if we are this far it is a click
 				TallyData.queue("scoreData", "clicks", 1, caller);
-				// store time
-				TallyData.queue("pageData", "time", Page.data.time, caller);
-				// reset page time
-				Page.data.time = 0;
 				// add and update score
 				TallyData.queue("scoreData", "score", GameData.clickScore[eventData.action], caller);
 

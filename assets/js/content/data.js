@@ -12,30 +12,43 @@ window.TallyData = (function() {
 		// number of edits to backgroundUpdate
 		backgroundUpdateEdits = 0,
 		// callers of edits to backgroundUpdate
-		backgroundUpdateEditsCallers = [],
-		// if the current backgroundUpdate is being sent to background
+		backgroundUpdateEditors = [],
+		// if the current backgroundUpdate is being sent to background / server
 		backgroundUpdateInProgress = false,
 		// interval to watch when pushUpdate() necessary
-		managerTimeout = {},
-		// time in millis to wait until sending update
-		managerWaitTime = 3000,
-		// only allow one manager to be called
-		managerWorking = false;
-
-
+		managerInterval = null,
+		// seconds to wait until sending update
+		managerCountdown = 0;
 
 
 	/**
-	 * 	create the backgroundUpdate obj, default to type="update"
+	 *	Send server updates if user leaves
+	 */
+	$(window).on("beforeunload", function() {
+		try {
+			// if edits
+			if (backgroundUpdateEdits > 0) {
+				// push to server when user closes window
+				pushUpdate("💾 TallyData -> beforeunload()");
+			}
+
+		} catch (err) {
+			console.error(err);
+		}
+	});
+
+
+	/**
+	 * 	Create the backgroundUpdate object
 	 */
 	function createBackgroundUpdate(type = "update") {
 		try {
 			// if (DEBUG) console.log("💾 TallyData.createBackgroundUpdate()");
 			// console.trace();
 
-			// if a backgroundUpdate is already in progress then return early
+			// do not proceed if a backgroundUpdate already exists with edits
 			if (backgroundUpdateEdits > 0)
-				return console.log("💾 TallyData.createBackgroundUpdate() backgroundUpdateInProgress=true");
+				return console.log("💾 TallyData.createBackgroundUpdate() backgroundUpdateEdits =", backgroundUpdateEdits);
 
 			backgroundUpdate = {
 				// the type of update (e.g. "update" | "sync")
@@ -108,7 +121,6 @@ window.TallyData = (function() {
 
 			// ??
 			// 1. saveData - so that it is visible immediately in game
-
 			// save local edits (even though these will be overwritten)
 			// TallyStorage.saveData("tally_user", T.tally_user);
 
@@ -146,15 +158,11 @@ window.TallyData = (function() {
 				backgroundUpdate[unit.type][unit.prop] = unit.val;
 			}
 
-			// if we made it this far then we know the backgroundUpdate was edited
-			backgroundUpdateEdits++;
-			backgroundUpdateEditsCallers.push(caller);
-
 			// if (DEBUG) console.log("💾 TallyData.queue() [2]", backgroundUpdate);
 			// if (DEBUG) console.log(JSON.stringify(backgroundUpdate));
 
-			// start manager (a timer) to see if we need to send update soon
-			manager();
+			// start manager (or increment countdown) to see if we need to send update soon
+			startManager(caller);
 
 		} catch (err) {
 			console.error(err);
@@ -163,32 +171,55 @@ window.TallyData = (function() {
 
 
 	/**
-	 * 	Called after queue() - Sends update to server after n milliseconds and resets
+	 * 	Called after edits from queue()
+	 *	- Sends update to server after n milliseconds and resets
+	 *	- If called multiple times before pushUpdate() then increments wait time (limiting server calls)
 	 */
-	function manager() {
+	function startManager(caller) {
 		try {
-			// make sure manager isn't already waiting to send updates
-			if (managerWorking) return;
-			managerWorking = true;
-			// if (DEBUG) console.log("💾 TallyData.manager() CHECKING FOR UPDATE");
-			// start countdown
-			managerTimeout = setTimeout(function() {
-				// if there are no edits then kill interval
-				if (backgroundUpdateEdits == 0) {
-					clearTimeout(managerTimeout);
-					// if (DEBUG) console.log("💾 TallyData.manager() NO UPDATES FOUND ");
-				}
-				else {
-					// if (DEBUG) console.log("💾 TallyData.manager() SENDING TO pushUpdate()");
-					// update background / server if anything has changed
-					pushUpdate("💾 TallyData.manager()");
-				}
+			let log = "💾 TallyData.startManager()";
 
-			}, managerWaitTime);
+			// backgroundUpdate was edited so increment counter
+			backgroundUpdateEdits++;
+			backgroundUpdateEditors.push(caller);
+			// increment time to wait
+			managerCountdown += 5;
+			// keep countdown to max
+			if (managerCountdown > 10) managerCountdown = 5;
+
+			// make sure manager isn't already waiting to send updates
+			if (managerInterval !== null) return console.log("💾 TallyData.manager() IN-PROGRESS",
+				"managerCountdown =", managerCountdown,
+				"managerInterval =", managerInterval
+			);
+
+			// if (DEBUG) console.log("💾 TallyData.startManager() CHECKING FOR UPDATE");
+
+			// if not already running, start manager interval to count down until pushUpdate()
+			managerInterval = setInterval(function() {
+				if (DEBUG) console.log(log, "-> managerInterval() [1] managerCountdown =", managerCountdown);
+
+				// if there are no edits then kill interval and reset everything
+				if (backgroundUpdateEdits == 0) {
+					if (DEBUG) console.log(log, "-> managerInterval() [2] NO UPDATES FOUND -> RESETTING EVERYTHING");
+					clearTimeout(managerInterval);
+					resetManager();
+				} else {
+					// subtract time from counter
+					managerCountdown -= 1;
+					// if time complete then send update
+					if (managerCountdown < 0) {
+						if (DEBUG) console.log(log, "-> managerInterval() [3] SENDING TO pushUpdate()");
+						// update background / server if anything has changed
+						pushUpdate("💾 TallyData.startManager()");
+					}
+				}
+			}, 1000);
 		} catch (err) {
 			console.error(err);
 		}
 	}
+
 
 	/**
 	 *	Check and send backgroundUpdate if it has been edited
@@ -205,8 +236,14 @@ window.TallyData = (function() {
 			backgroundUpdateInProgress = true;
 
 			if (DEBUG) console.log("💾 TallyData.pushUpdate() [1]", backgroundUpdate,
-				// "backgroundUpdateEditsCallers =",backgroundUpdateEditsCallers
+				// "backgroundUpdateEditors =",backgroundUpdateEditors
 			);
+
+			// checks before sending the update
+
+			// update time
+			backgroundUpdate.pageData.time = Page.data.time;
+
 
 
 
@@ -226,19 +263,34 @@ window.TallyData = (function() {
 
 				// update debugger
 				Debug.update();
-				// set # edits and callers back to zero
-				backgroundUpdateEdits = 0;
-				backgroundUpdateEditsCallers = [];
-				// set "in progress" back to false
-				backgroundUpdateInProgress = false;
-				// remove any intervals / timeouts
-				clearTimeout(managerTimeout);
-				// create new backgroundUpdate after sending
-				createBackgroundUpdate();
-				// allow manager to begin working again
-				managerWorking = false;
+				// reset all manager vars
+				resetManager();
 			});
 
+		} catch (err) {
+			console.error(err);
+		}
+	}
+	/**
+	 *	Reset all manager vars
+	 */
+	function resetManager() {
+		try {
+			// set # edits and callers back to zero
+			backgroundUpdateEdits = 0;
+			backgroundUpdateEditors = [];
+			// set "in progress" back to false
+			backgroundUpdateInProgress = false;
+			// remove any intervals / timeouts
+			clearTimeout(managerInterval);
+			// allow manager to be started again
+			managerInterval = null;
+			// reset timer
+			managerCountdown = 0;
+			// create new backgroundUpdate after sending
+			createBackgroundUpdate();
+			// reset page time
+			Page.data.time = 0;
 		} catch (err) {
 			console.error(err);
 		}
@@ -248,14 +300,9 @@ window.TallyData = (function() {
 
 	// PUBLIC
 	return {
-		manager: manager,
 		queue: queue,
 		backgroundUpdate: backgroundUpdate,
-		returnBackgroundUpdate: function() {
-			return backgroundUpdate;
-		},
 		createBackgroundUpdate: createBackgroundUpdate,
-		backgroundUpdateInProgress: backgroundUpdateInProgress,
 		pushUpdate: pushUpdate,
 	};
 })();

@@ -30,7 +30,9 @@ window.Progress = (function() {
 		disguisesAwarded: 0,
 
 		// page progress and tags
-		pageRefreshes: 0,
+		pageActionRefreshes: 0,
+		pageActionScrollsMost: 0,
+		pageActionScrollDistance: 0,
 		pageTagsCats: 0,
 		pageTagsErrors: 0,
 		pageTagsEncryption: 0,
@@ -39,6 +41,7 @@ window.Progress = (function() {
 		pageTagsNews: 0,
 		pageTagsPhotos: 0,
 		pageTagsProfanity: 0,
+		pageTagsTally: 0,
 
 		// things to tell the player
 		toldToDragTally: 0,
@@ -59,8 +62,9 @@ window.Progress = (function() {
 		viewDashboardPage: 0,
 	};
 
-	let pageTagsProgressMatches = 0 // whether or not page tags match progress items
-	;
+	let pageTagsProgressMatches = 0, // whether or not page tags match progress items
+		pageActionScrollsMost = 0, // most # player has ever scrolled on page
+		pageActionScrollDistance = 0; // total distance player has scrolled, ever
 
 
 	/**
@@ -74,14 +78,19 @@ window.Progress = (function() {
 			// if (DEBUG) console.log("🕹️ Progress.get()", name, T.tally_user.progress[name], FS_Object.prop(T.tally_user.progress[name]));
 			// console.trace();
 
+			let val = 0;
+
 			// if value exists in T.tally_user && is true | >0 | !""
 			if (FS_Object.prop(T.tally_user.progress[name])) {
 				// if (DEBUG) console.log("🕹️ Progress.get() [2]", T.tally_user.progress[name]);
-				return parseInt(T.tally_user.progress[name].val);
+				val = parseInt(T.tally_user.progress[name].val);
 			} else {
 				// if (DEBUG) console.log("🕹️ Progress.get() [3]" + name + " NOT FOUND");
-				return false;
+				val = 0;
 			}
+			if (val === undefined) val = 0;
+			return val;
+
 		} catch (err) {
 			console.error(err);
 		}
@@ -98,12 +107,14 @@ window.Progress = (function() {
 			// don't allow if mode disabled or stealth
 			if (T.tally_options.gameMode === "disabled") return;
 
+			// if (DEBUG) console.log("🕹️ Progress.update() [1]", name);
+
 			// get current value
 			let currentVal = get(name),
 				newVal = 0;
 
-			// set default if does not exist
-			if (!currentVal) currentVal = defaults[name];
+			// set default if does not exist, default to zero if I forget to add it above
+			if (!currentVal) currentVal = defaults[name] || 0;
 
 			// instead of setting, we need to do an operation
 			if (operator === "=") {
@@ -113,7 +124,7 @@ window.Progress = (function() {
 				// update value
 				newVal = FS_Number.operation(currentVal, val, operator);
 			}
-			// if (DEBUG) console.log("🕹️ Progress.update()", name, currentVal + " " + operator + " " + val + " = " + newVal);
+			if (DEBUG) console.log("🕹️ Progress.update()", name, currentVal + " " + operator + " " + val + " = " + newVal);
 
 			// create progress object
 			let obj = {
@@ -146,14 +157,25 @@ window.Progress = (function() {
 			if (!T.tally_user.progress) return;
 
 
+
+			////////////////////////////// PAGE: CONTENT //////////////////////////////
+
 			// count any relevant tags on the page
 			pageTagsProgressMatches = countPageTags();
 			// console.log("🕹️ Progress.check() [2]", Page.data.tags.length, pageTagsProgressMatches);
 
+			////////////////////////////// PAGE: ACTIVITY: REFRESH //////////////////////////////
+
 			// did user refresh page?
 			if (performance.navigation.type == 1) {
-				Progress.update("pageRefreshes", 1, "+");
+				update("pageActionRefreshes", 1, "+");
 			}
+
+			////////////////////////////// PAGE: ACTIVITY: SCROLLS //////////////////////////////
+
+			// listeners created below
+
+
 
 
 			////////////////////////////// ATTACKS //////////////////////////////
@@ -188,6 +210,64 @@ window.Progress = (function() {
 		}
 	}
 
+	var t, // timeout function
+		d = (new Date()).getTime(), // previous date().getTime
+		scrolling = false; // whether or not player is scrolling
+
+	/**
+	 *	Count # times | total # player scrolls
+	 */
+	function createScrollListeners() {
+		try {
+			if (DEBUG) console.log("🕹️ Progress.createScrollListeners() [1]");
+
+			// on scroll
+			$(window).scroll(function() {
+				// console.log('scroll detected');
+				// if (DEBUG) console.log("🕹️ Progress.createScrollListeners() [2]",
+				// 	"pageActionScrollDistance =", pageActionScrollDistance
+				// );
+
+				// increase scroll distance
+				pageActionScrollDistance++;
+
+				var now = (new Date()).getTime();
+
+				if (now - d > 400 && !scrolling) {
+					$(this).trigger('scrollStart');
+					d = now;
+				}
+				clearTimeout(t);
+				t = setTimeout(function() {
+					if (scrolling)
+						$(window).trigger('scrollEnd');
+				}, 300);
+			});
+			// trigger for scroll start
+			$(window).bind('scrollStart', function() {
+				scrolling = true;
+				// console.log('scrollStart');
+			});
+			// trigger for scroll end
+			$(window).bind('scrollEnd', function() {
+				scrolling = false;
+				// console.log('scrollEnd');
+				// increase # most scrolls on page, compare against past
+				if (++pageActionScrollsMost > get("pageActionScrollsMost")) {
+					if (DEBUG) console.log("🕹️ Progress.check() [x] !!!!!!!!! ");
+					update("pageActionScrollsMost", pageActionScrollsMost);
+				}
+				update("pageActionScrollDistance", pageActionScrollDistance, "+");
+				if (DEBUG) console.log("🕹️ Progress.createScrollListeners()",
+					"pageActionScrollsMost =", pageActionScrollsMost,
+					"pageActionScrollDistance =", pageActionScrollDistance);
+			});
+
+		} catch (err) {
+			console.error(err);
+		}
+	}
+	createScrollListeners();
 
 	/**
 	 *	Count tags on the page
@@ -202,12 +282,12 @@ window.Progress = (function() {
 			for (var badgeName in Badges.data) {
 				// if tags
 				if (!Badges.data[badgeName].tags) continue;
-				// compare Page.data.tags to badges' tags and perform any Progress.updates
+				// compare Page.data.tags to badges' tags and perform any updates
 				result = Page.data.tags.filter(value => Badges.data[badgeName].tags.includes(value));
 				if (result.length) {
 					if (DEBUG) console.log("🕹️ Progress.countPageTags() [2]", badgeName, /* Badges.data[badgeName], */ result);
 					// update their progress (adding *total* of all found tags on the page)
-					Progress.update(Badges.data[badgeName].progress, result.length, "+");
+					update(Badges.data[badgeName].progress, result.length, "+");
 					// update matches
 					matches += 1;
 				}
