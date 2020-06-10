@@ -5,7 +5,7 @@ window.Dialogue = (function() {
 
 	let DEBUG = Debug.ALL.Dialogue,
 		dialogueBubbleOpen = false, // whether or not dialogue bubble currently open
-		_active, // is text currently being shown in the speech bubble
+		_active = false, // is text currently being shown in the speech bubble
 		queueWaitTime = 0,
 		hideTimeout = {},
 		_queue = []; // array of objects
@@ -208,9 +208,9 @@ window.Dialogue = (function() {
 	/**
 	 *	Show dialogue instantly (delete everything already queued)
 	 */
-	function showInstant(dialogue, mood) {
+	function showInstant(dialogue) {
 		try {
-			if (DEBUG) console.log("💬 Dialogue.showInstant()", dialogue, mood);
+			if (DEBUG) console.log("💬 Dialogue.showInstant()", dialogue);
 			// empty queue first...
 			emptyTheQueue();
 			// then add this dialogue to end of _queue
@@ -282,7 +282,9 @@ window.Dialogue = (function() {
 	 */
 	function writeNextInQueue(lineSpeed = 150, skipToNext = false) {
 		try {
-			if (DEBUG) console.log("💬 Dialogue.writeNextInQueue() [1]", _queue, _active, queueWaitTime);
+			if (_queue.length < 1) return console.log("💬 Dialogue.writeNextInQueue() [0] (no dialogue in _queue)");
+
+			// if (DEBUG) console.log("💬 Dialogue.writeNextInQueue() [1]", JSON.stringify(_queue), _active, queueWaitTime);
 
 			// if currently active, stop (unless we want to skip to next)
 			if (_active && !skipToNext) return;
@@ -325,7 +327,7 @@ window.Dialogue = (function() {
 				$('#tally_dialogue_inner img').on('load', function() {
 					// if (DEBUG) console.log("💬 Dialogue.writeNextInQueue() [3.1] imgHeight =", $('#tally_dialogue_inner img').height());
 					// adjust size of the box
-					setDialoguBoxSize(dialogue.text, $('#tally_dialogue_inner img').height() + 48);
+					setDialoguBoxSize(dialogue.text, $('#tally_dialogue_inner img').height() + 52);
 				});
 			}
 			// update dialogue box size
@@ -406,6 +408,7 @@ window.Dialogue = (function() {
 	 */
 	function hide() {
 		try {
+			return;
 			// if (DEBUG) console.log("💬 Dialogue.hide()", queueWaitTime);
 			$('#tally_dialogue_outer').css({
 				'left': '-500px',

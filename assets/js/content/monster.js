@@ -184,7 +184,9 @@ window.Monster = (function() {
 				Dialogue.showData(Dialogue.getData({
 					category: "battle",
 					subcategory: "choose"
-				}));
+				}),{
+					addIfInProcess: false
+				});
 			});
 			$(document).on("click", ".tally_monster_sprite_container", function() {
 				let mid = Number($(this).attr('data-mid'));
