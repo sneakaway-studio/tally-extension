@@ -591,8 +591,8 @@ window.Dialogue = (function() {
 	function showTrackerDialogue() {
 		try {
 			let subcategory = "none";
-			if (Page.data.trackers.length > 0) subcategory = "few";
-			if (Page.data.trackers.length > 3) subcategory = "lots";
+			if (FS_Object.objLength(Page.data.trackers.found) > 0) subcategory = "few";
+			if (FS_Object.objLength(Page.data.trackers.found) > 3) subcategory = "lots";
 			if (DEBUG) console.log("💬 Dialogue.showTrackerDialogue() subcategory=" + subcategory);
 			Dialogue.showData(Dialogue.getData({
 				category: "tracker",

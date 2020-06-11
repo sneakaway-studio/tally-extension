@@ -40,8 +40,8 @@ window.Debug = (function() {
 			"Progress": true,
 
 			"Sound": true,
-			"StatsDisplay": true,
-			"Stats": true,
+			"StatsDisplay": false,
+			"Stats": false,
 			"Skin": false,
 
 			"Tally": true,
@@ -195,7 +195,7 @@ window.Debug = (function() {
 
 			// add Page.data.trackers
 			// if (prop(Page.data.trackers))
-			// 	str += "<b class='tally'>Page.data.trackers (" + Page.data.trackers.length + ")</b>: " +
+			// 	str += "<b class='tally'>Page.data.trackers</b>: " +
 			// 	JSON.stringify(Page.data.trackers) + "<br>";
 
 			str += "</div>";

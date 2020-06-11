@@ -24,17 +24,17 @@ window.TallyMain = (function() {
 	 */
 	function test() {
 		try {
-			Config.logTimeSinceLoad("TallyMain.test() [1]");
+			TallyInit.logTimeSinceLoad("TallyMain.test() [1]");
 			let safety = 0;
 			while (!TallyInit.dataLoaded) {
 				if (++safety > 1000) {
 					console.log("🧰 TallyMain SAFETY FIRST!");
 					console.log("🧰 TallyMain - >", T.tally_user);
-					Config.logTimeSinceLoad("TallyMain.test() [1.2]");
+					TallyInit.logTimeSinceLoad("TallyMain.test() [1.2]");
 					contentStartChecks();
 					break;
 				}
-				Config.logTimeSinceLoad("TallyMain.test() [2] TallyInit.dataLoaded =", TallyInit.dataLoaded);
+				TallyInit.logTimeSinceLoad("TallyMain.test() [2] TallyInit.dataLoaded =", TallyInit.dataLoaded);
 			}
 		} catch (err) {
 			console.error("🧰 TallyMain.test() failed", err);
@@ -70,6 +70,14 @@ window.TallyMain = (function() {
 
 			// 2.2. Check for Flags (in case we need to pause and restart game with data)
 			if (DEBUG) console.log('🧰 TallyMain.contentStartChecks() [2.2] -> Check for flags');
+
+			// were trackers dealt with?
+			if (FS_Object.objLength(Page.data.trackers.found) > 0 && !Tracker.blockAttempted) {
+				// console.log("Page.data.trackers", Page.data.trackers);
+                // remove blocked trackers (and save in Page.data.trackers)
+                Tracker.removeBlocked();
+    			// console.log("Page.data.trackers", Page.data.trackers);
+			}
 
 			// check for, and possibly execute and flags
 			let newTokenFound = await Flag.check();

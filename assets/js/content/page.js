@@ -6,11 +6,8 @@ window.Page = (function() {
 		data = getData();
 
 
-
-
 	/*  HTML FUNCTIONS
 	 ******************************************************************************/
-
 
 	function getDescription() {
 		try {
@@ -103,6 +100,9 @@ window.Page = (function() {
 	 */
 	function getData(refresh = false) {
 		try {
+			let log = "🗒 Page.getData()";
+			if (DEBUG) Debug.dataReportHeader(log, "#", "before");
+
 			var url = document.location.href;
 			// only run on web pages
 			// if (!url || !url.match(/^http/)) return;
@@ -140,7 +140,10 @@ window.Page = (function() {
 				title: getTitle() || "",
 				tokenFound: false,
 				resetTallyUserCalled: false,
-				trackers: "",
+				trackers: {
+					blocked: {},
+					found: {},
+				},
 				previousUrl: "",
 				url: document.location.href || ""
 			};
@@ -149,16 +152,16 @@ window.Page = (function() {
 			newData.browser.center.y = newData.browser.height / 2;
 			// check and count page tags
 			newData.tags = getPageTags(newData);
-			// add trackers
-			newData.trackers = "";// Tracker.countAndBlock(newData.domain) || "";
+			// find trackers
+			newData.trackers.found = Tracker.findAll(newData.domain) || "";
 			// if youtube
 			if (newData.domain == "youtube.com")
 				// 	addMutationObserver();
 				addTitleChecker();
 
-			if (DEBUG) console.log("🗒 Page.getData()", newData);
+			if (DEBUG) console.log(log, newData);
 			// show in background
-			Debug.sendBackgroundDebugMessage("🗒 Page.getData()", newData.url);
+			Debug.sendBackgroundDebugMessage(log, newData.url);
 			return newData;
 		} catch (err) {
 			console.error(err);
@@ -250,6 +253,7 @@ window.Page = (function() {
 	// PUBLIC
 	return {
 		refreshData: refreshData,
+		getData: getData,
 		data: data
 	};
 })();

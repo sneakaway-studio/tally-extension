@@ -30,7 +30,7 @@ window.Monster = (function() {
 			// make sure we have required data
 			if (!prop(mid) || !prop(_stage) || !prop(MonsterData.dataById[mid])) return;
 			// if there are trackers on the page
-			let tracker = FS_Object.randomArrayIndex(Page.data.trackers) || "";
+			let tracker = FS_Object.randomObjProperty(Page.data.trackers.found) || "";
 			// only proceed if there are trackers
 			if (tracker == ""){
 				if (DEBUG) console.log(log, "[1] NO TRACKERS ON THIS PAGE - Page.data.trackers" + Page.data.trackers);
@@ -108,7 +108,7 @@ window.Monster = (function() {
 
 			// if it doesn't yet have a tracker then try to get one
 			if (T.tally_nearby_monsters[mid].tracker === "")
-				T.tally_nearby_monsters[mid].tracker = FS_Object.randomArrayIndex(Page.data.trackers) || "";
+				T.tally_nearby_monsters[mid].tracker = FS_Object.randomObjProperty(Page.data.trackers.found) || "";
 			// return if we don't have one
 			if (T.tally_nearby_monsters[mid].tracker === "") {
 				if (DEBUG) console.log('👿 Monster.showOnPage() [1.3] NO TRACKER',

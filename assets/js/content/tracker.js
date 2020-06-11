@@ -3,61 +3,54 @@
 window.Tracker = (function() {
 	// PRIVATE
 	let DEBUG = Debug.ALL.Tracker,
-		trackerOnPage = false;
-
+		blockAttempted = false;
 
 
 	/**
-	 *	Count trackers hidden on a page, then block if user has caught that monster
+	 *	Find trackers hidden on a page
 	 */
-	function countAndBlock(_domain) {
+	function findAll(_domain) {
 		try {
-			let log = "🕷️ Tracker.countAndBlock()";
+			let log = "🕷️ Tracker.findAll()";
+			if (DEBUG) console.log(log, "(looking for trackers)");
 
-			if (DEBUG) Debug.dataReportHeader(log, "#", "before");
-
-			let foundArr = [];
+			let found = {};
 
 			// get all scripts on the page
 			let scripts = document.getElementsByTagName("script");
 			// loop through each script
 			for (let i = 0, l = scripts.length; i < l; i++) {
-
 				// get source and domain of script
-				let scriptSrc = scripts[i].src || "",
-					scriptDomain = Environment.extractRootDomain(scriptSrc) || "";
+				let tracker = {
+					url: scripts[i].src || "",
+					domain: Environment.extractRootDomain(scripts[i].src) || ""
+				};
 
-				// skip if no scriptSrc or scriptDomain
-				if (scriptSrc === "" || scriptDomain === "") continue;
+				// skip if no url or domain
+				if (tracker.url === "" || tracker.domain === "") continue;
 				// if is whitelisted by user then skip
-				if (GameData.whitelistScriptDomains.includes(scriptDomain)) continue;
+				if (GameData.whitelistScriptDomains.includes(tracker.domain)) continue;
 
 				// otherwise check disconnect services
-				if (FS_Object.prop(TrackersByUrl.data[scriptDomain])) {
-					if (DEBUG) console.log(log, "[1]", "scriptDomain =", scriptDomain + ", scriptSrc =", scriptSrc);
-					foundArr.push(scriptDomain);
+				if (FS_Object.prop(TrackersByUrl.data[tracker.domain])) {
+					if (DEBUG) console.log("%c" + tracker.domain, Debug.styles.red, "=>", tracker.url);
+					found[tracker.domain] = tracker;
 				}
-
-				// if the domain is known for tracking then also add it
-				if (_domain && TrackersByUrl.data[_domain]) {
-					foundArr.push(_domain);
+				// if the domain is known for tracking then alternatively add it
+				else if (_domain && TrackersByUrl.data[_domain]) {
+					found[tracker.domain] = {
+						url: _domain,
+						domain: _domain
+					};
 				}
 			}
-
 			// set the number of trackers in the badge
-			TallyStorage.setBadgeText(foundArr.length);
+			TallyStorage.setBadgeText(FS_Object.objLength(found));
 
-			// update after load
-			setTimeout(function() {
-				// update progress
-				Progress.update("trackersSeen", foundArr.length, "+");
-				// are there more on this page than previously seen on one page?
-				if (foundArr.length > Progress.get("trackersSeenMostOnePage"))
-					Progress.update("trackersSeenMostOnePage", foundArr.length);
-			}, 1000);
+			if (DEBUG) console.log(log, "found", found);
 
-			//console.log("foundArr",foundArr);
-			return foundArr;
+			// add found to Page.data.trackers
+			return found;
 		} catch (err) {
 			console.error(err);
 		}
@@ -65,63 +58,74 @@ window.Tracker = (function() {
 
 
 	/**
-	 *	Remove a tracker from the page
+	 *	Remove blocked trackers from the page - called after T.tally_user loads
 	 */
-	function removeTracker() {
+	function removeBlocked() {
 		try {
+			let log = "🕷️ Tracker.removeBlocked()";
+			if (DEBUG) console.log(log, "[1] Page.data.trackers =", Page.data.trackers,
+				"T.tally_user.trackers =", T.tally_user.trackers);
+
+			let blocked = {};
+
 			// make sure there are trackers to remove
-			if (!T.tally_user.trackers || Page.data.trackers.length < 1) return;
+			if (FS_Object.objLength(Page.data.trackers.found) < 1 || FS_Object.objLength(T.tally_user.trackers) < 1) return;
 
-			if (DEBUG) console.log("🕷️ Tracker.removeTracker() [1]", T.tally_user.trackers, Page.data.trackers);
+			// loop through each found tracker
+			for (var domain in Page.data.trackers.found) {
+				// if (DEBUG) console.log(log, "[2]", Page.data.trackers.found[domain]);
 
-			// loop through trackers on page and check if each is in block list
-			for (let i = 0, l = Page.data.trackers.length; i < l; i++) {
-				// if there is a match then block it
-				if (T.tally_user.trackers[Page.data.trackers[i]] && T.tally_user.trackers[Page.data.trackers[i]].blocked) {
-
-					if (DEBUG) console.log("🕷️ Tracker.removeTracker() [2] ATTEMPT BLOCK", T.tally_user.trackers[i]);
+				// if there is a match and it is in the block list ...
+				if (T.tally_user.trackers[domain] && T.tally_user.trackers[domain].blocked > 0) {
+					if (DEBUG) console.log(log, "[3] ATTEMPT BLOCK", T.tally_user.trackers[domain]);
 
 					// reference to script element
-					var x = $("script[src*='" + Page.data.trackers[i] + "']");
-
-					// block it
+					var x = $("script[src*='" + domain + "']");
+					// ... then block it
 					if (FS_Object.prop(x[0]) && FS_Object.prop(x[0].src)) {
-						x[0].src = Page.data.trackers[i] + "-script-blocked-by-tally!!!";
-						if (DEBUG) console.log("🕷️ Tracker.removeTracker() [3] BLOCKED!", Page.data.trackers[i], x[0].src);
+						if (DEBUG) console.log(log, "[4] BLOCKED!", T.tally_user.trackers[domain], x[0].src);
+						x[0].src = domain + "-script-blocked-by-tally!!!";
+						blocked[domain] = Page.data.trackers.found[domain];
 					}
 				}
 			}
-		} catch (err) {
-			console.error(err);
-		}
-	}
-	/**
-	 *	Add a tracker to remove list
-	 */
-	function addToRemoveList(tracker) {
-		try {
+			// add blocked to Page.data.trackers
+			Page.data.trackers.blocked = blocked;
+			// remember the attempt
+			blockAttempted = true;
+			// update progress
+			updateProgress();
 
 		} catch (err) {
 			console.error(err);
 		}
 	}
+
 	/**
-	 *	Is there a tracker on this page?
+	 *	Update progress on trackers
 	 */
-	function onPage() {
+	function updateProgress() {
 		try {
-			return trackerOnPage;
+			// update progress
+			Progress.update("trackersSeen", FS_Object.objLength(Page.data.trackers.found), "+");
+			Progress.update("trackersBlocked", FS_Object.objLength(Page.data.trackers.blocked), "+");
+			// are there more on this page than previously seen on one page?
+			if (FS_Object.objLength(Page.data.trackers.found) > Progress.get("trackersSeenMostOnePage"))
+				Progress.update("trackersSeenMostOnePage", FS_Object.objLength(Page.data.trackers.found));
 		} catch (err) {
 			console.error(err);
 		}
 	}
-
 
 	// PUBLIC
 	return {
-		countAndBlock: countAndBlock,
-		removeTracker: removeTracker,
-		addToRemoveList: addToRemoveList,
-		onPage: onPage
+		findAll: findAll,
+		removeBlocked: removeBlocked,
+		set blockAttempted(value) {
+			blockAttempted = value;
+		},
+		get blockAttempted() {
+			return blockAttempted;
+		},
 	};
 }());
