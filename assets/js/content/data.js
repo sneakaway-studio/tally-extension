@@ -116,7 +116,9 @@ window.TallyData = (function() {
 				"caller": caller
 			};
 
-			if (DEBUG) console.log(log, "backgroundUpdateEdits =", backgroundUpdateEdits, unit);
+			if (DEBUG) console.log(log, "backgroundUpdateEdits =", backgroundUpdateEdits,
+				"backgroundUpdate =", backgroundUpdate, 
+				"unit =", unit);
 			// console.trace();
 
 			// ??
@@ -144,6 +146,7 @@ window.TallyData = (function() {
 					unit.prop === "progress") {
 					// make sure there isn't one already
 					for (let i = 0, l = backgroundUpdate[unit.type][unit.prop].length; i < l; i++) {
+						if (!backgroundUpdate[unit.type][unit.prop][i] || !unit.val) continue;
 						// console.log("DUPLICATE?", backgroundUpdate[unit.type][unit.prop][i].name, unit.val.name);
 						// if this one already there then delete it before we add new one
 						if (backgroundUpdate[unit.type][unit.prop][i].name == unit.val.name) {
