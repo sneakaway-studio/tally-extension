@@ -31,19 +31,20 @@ window.Disguise = (function() {
 	 */
 	function displayIfTrackerBlocked(playDialogue = true) {
 		try {
-
 			if (DEBUG) console.log("😎 Disguise.displayIfTrackerBlocked() [1]",
 				"T.tally_user.trackers =", T.tally_user.trackers,
-					"Page.data.trackers =", Page.data.trackers
+				"Page.data.trackers =", Page.data.trackers
 			);
+			// return early if there are no disguises, trackers caught, or no trackers blocked
+			if (FS_Object.objLength(T.tally_user.disguises < 1) || 
+				!FS_Object.prop(T.tally_user.trackers) ||
+				FS_Object.objLength(Page.data.trackers.found) < 1 ||
+				FS_Object.objLength(Page.data.trackers.blocked) < 1) return;
 
-
-
-			// if there are trackers blocked and this page has a tracker
-			if (!T.tally_user.trackers || Page.data.trackers.length < 1) return;
-			// if there are trackers blocked
-			// if (FS_Object.prop(T.tally_user.trackers) && FS_Object.prop(T.tally_user.trackers[]))
+			// currently picks a random one
+			//  ?? need to come back to this if we let players select their own
 			currentDisguiseObj = FS_Object.randomObjProperty(T.tally_user.disguises);
+
 			if (DEBUG) console.log("😎 Disguise.displayIfTrackerBlocked() [1] currentDisguiseObj =", currentDisguiseObj);
 			display(playDialogue);
 		} catch (err) {
