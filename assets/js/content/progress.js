@@ -31,8 +31,8 @@ window.Progress = (function() {
 
 		// page progress and tags
 		pageActionRefreshes: 0,
-		pageActionScrollsMost: 0,
 		pageActionScrollDistance: 0,
+		pageActionScrollDistanceOnePage: 0,
 		pageTagsCats: 0,
 		pageTagsErrors: 0,
 		pageTagsEncryption: 0,
@@ -63,7 +63,7 @@ window.Progress = (function() {
 	};
 
 	let pageTagsProgressMatches = 0, // whether or not page tags match progress items
-		pageActionScrollsMost = 0, // most # player has ever scrolled on page
+		pageActionScrollDistanceOnePage = 0, // most distance player has ever scrolled on one page
 		pageActionScrollDistance = 0; // total distance player has scrolled, ever
 
 
@@ -230,6 +230,7 @@ window.Progress = (function() {
 
 				// increase scroll distance
 				pageActionScrollDistance++;
+				pageActionScrollDistanceOnePage++;
 
 				var now = (new Date()).getTime();
 
@@ -253,13 +254,13 @@ window.Progress = (function() {
 				scrolling = false;
 				// console.log('scrollEnd');
 				// increase # most scrolls on page, compare against past
-				if (++pageActionScrollsMost > get("pageActionScrollsMost")) {
+				if (pageActionScrollDistanceOnePage > get("pageActionScrollDistanceOnePage")) {
 					if (DEBUG) console.log("🕹️ Progress.check() [x] !!!!!!!!! ");
-					update("pageActionScrollsMost", pageActionScrollsMost);
+					update("pageActionScrollDistanceOnePage", pageActionScrollDistanceOnePage);
 				}
 				update("pageActionScrollDistance", pageActionScrollDistance, "+");
 				if (DEBUG) console.log("🕹️ Progress.createScrollListeners()",
-					"pageActionScrollsMost =", pageActionScrollsMost,
+					"pageActionScrollDistanceOnePage =", pageActionScrollDistanceOnePage,
 					"pageActionScrollDistance =", pageActionScrollDistance);
 			});
 
