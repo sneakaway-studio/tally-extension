@@ -181,7 +181,7 @@ window.Server = (function() {
 					"token": _tally_secret.token
 				})
 			}).done(result => {
-				if (DEBUG) console.log("📟 Server.getTallyUser() DONE %c" + JSON.stringify(result.username), Debug.styles.green );
+				if (DEBUG) console.log("📟 Server.getTallyUser() DONE %c" + JSON.stringify(result.username), Debug.styles.greenbg );
 				// merge attack data from server with T.tally_user data properties
 				result.attacks = Server.mergeAttackDataFromServer(result.attacks);
 

@@ -69,7 +69,7 @@ window.Install = (function() {
 			let _tally_meta = store("tally_meta");
 			_tally_meta.api = Config[_tally_meta.currentAPI].api;
 			_tally_meta.website = Config[_tally_meta.currentAPI].website;
-			if (DEBUG) console.log("🔧 Install.setCurrentAPI() currentAPI=%c" + _tally_meta.currentAPI, Debug.styles.green,
+			if (DEBUG) console.log("🔧 Install.setCurrentAPI() currentAPI=%c" + _tally_meta.currentAPI, Debug.styles.greenbg,
 				"api=" + _tally_meta.api, "website=" + _tally_meta.website);
 			store("tally_meta", _tally_meta);
 			return true;
@@ -87,14 +87,14 @@ window.Install = (function() {
 			let _tally_meta = store("tally_meta");
 			if (Config.options.localhost){
 				if (DEBUG) console.log("🔧 Install.setDevelopmentOptions() Config.options=%c" +
-					JSON.stringify(Config.options), Debug.styles.green, "USING LOCALHOST");
+					JSON.stringify(Config.options), Debug.styles.greenbg, "USING LOCALHOST");
 				// testing installation
 				_tally_meta.currentAPI = "development";
 				_tally_meta.api = Config.development.api;
 				_tally_meta.website = Config.development.website;
 			} else {
 				if (DEBUG) console.log("🔧 Install.setDevelopmentOptions() Config.options=%c" +
-					JSON.stringify(Config.options), Debug.styles.green, "USING tallygame.net");
+					JSON.stringify(Config.options), Debug.styles.greenbg, "USING tallygame.net");
 				// testing installation
 				_tally_meta.currentAPI = "production";
 				_tally_meta.api = Config.production.api;

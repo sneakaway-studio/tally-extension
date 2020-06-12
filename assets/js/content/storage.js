@@ -287,7 +287,7 @@ window.TallyStorage = (function() {
 
 						// log after storage
 						// if (DEBUG) console.log('🗄️ TallyStorage.createStartupPromise() -> T[name] =', T[name]);
-						// if (DEBUG) console.log("%cT."+name, Debug.styles.green, JSON.stringify(T[name]));
+						// if (DEBUG) console.log("%cT."+name, Debug.styles.greenbg, JSON.stringify(T[name]));
 
 						// resolve promise
 						resolve(response.data);

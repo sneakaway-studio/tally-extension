@@ -10,9 +10,9 @@ var Config = (function() {
 			"api": "https://tallygame.net/api",
 			"website": "https://tallygame.net",
 		},
-		options = {
-			"localhost": true,
-			"hotreload": true,
+		options = { // true = development, false = production 
+			"localhost": true, // true
+			"hotreload": true, // false
 			"debugging": true
 		},
 		DEBUG = false;

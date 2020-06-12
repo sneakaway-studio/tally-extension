@@ -33,7 +33,7 @@ window.Tracker = (function() {
 
 				// otherwise check disconnect services
 				if (FS_Object.prop(TrackersByUrl.data[tracker.domain])) {
-					if (DEBUG) console.log("%c" + tracker.domain, Debug.styles.red, "=>", tracker.url);
+					if (DEBUG) console.log("%c" + tracker.domain, Debug.styles.redbg, "=>", tracker.url);
 					found[tracker.domain] = tracker;
 				}
 				// if the domain is known for tracking then alternatively add it

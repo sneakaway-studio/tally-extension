@@ -104,10 +104,10 @@ window.Background = (function() {
 				_tally_meta = store("tally_meta"),
 				_tally_secret = store("tally_secret");
 			dataReportHeader("🧰 Background.dataReport()", "#", "before");
-			if (DEBUG) console.log("%cT.tally_user", Debug.styles.green, JSON.stringify(_tally_user));
-			if (DEBUG) console.log("%cT.tally_options", Debug.styles.green, JSON.stringify(_tally_options));
-			if (DEBUG) console.log("%cT.tally_meta", Debug.styles.green, JSON.stringify(_tally_meta));
-			if (DEBUG) console.log("%ctally_secret", Debug.styles.green, JSON.stringify(_tally_secret));
+			if (DEBUG) console.log("%cT.tally_user", Debug.styles.greenbg, JSON.stringify(_tally_user));
+			if (DEBUG) console.log("%cT.tally_options", Debug.styles.greenbg, JSON.stringify(_tally_options));
+			if (DEBUG) console.log("%cT.tally_meta", Debug.styles.greenbg, JSON.stringify(_tally_meta));
+			if (DEBUG) console.log("%ctally_secret", Debug.styles.greenbg, JSON.stringify(_tally_secret));
 			dataReportHeader("/ 🧰 Background.dataReport()", "#", "after");
 		} catch (err) {
 			console.error("dataReport() failed");

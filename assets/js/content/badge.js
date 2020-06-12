@@ -12,7 +12,7 @@ window.Badge = (function() {
 	/**
 	 *	0. Get badge (from tally_user.badges) or new empty badge (from BadgeData)
 	 */
-	function get(name, newLevel = 0) {
+	function get(name, nextLevel = 0) {
 		try {
 			// start with blank data
 			let badge = BadgeData.data[name];
@@ -20,9 +20,9 @@ window.Badge = (function() {
 			// if they have received one before
 			if (T.tally_user.badges && T.tally_user.badges[name])
 				// then update level
-				badge.level = T.tally_user.badges[name].level;
+				badge.level = Number(T.tally_user.badges[name].level);
 			// add new level to badge
-			badge.newLevel = newLevel;
+			badge.nextLevel = nextLevel;
 			// if (DEBUG) console.log('🏆 Badge.get() name =', name, badge);
 			return badge;
 		} catch (err) {
@@ -57,6 +57,7 @@ window.Badge = (function() {
 			};
 			if (DEBUG) Debug.dataReportHeader(log, "#", "before");
 			if (DEBUG) console.log(log, "shouldCheck =", shouldCheck);
+			if (DEBUG) console.log(log, "T.tally_user.streamReport", T.tally_user.streamReport);
 
 
 
@@ -67,17 +68,17 @@ window.Badge = (function() {
 
 			if (shouldCheck.workday) { // 9a-5p M-F
 				badge = get("worker-bee"); // tWorkday (seconds) / mins / hours / 8 = every 8 hours
-				badge.newLevel = nextLevelRound(badge, T.tally_user.streamReport.tWorkday / 60 / 60 / 8);
+				badge.nextLevel = nextLevelRound(badge, T.tally_user.streamReport.tWorkday / 60 / 60 / 8);
 				// if the new level we have reached is > the current level
-				if (badge.newLevel > badge.level) {
-					badge.level = badge.newLevel;
+				if (badge.nextLevel > badge.level) {
+					badge.level = badge.nextLevel;
 					if (1) return award(badge);
 				}
 			} else if (shouldCheck.nighttime) { // 8p–6a
 				badge = get("night-owl"); // tNight (seconds) / mins / hours / 8 = every 8 hours
-				badge.newLevel = nextLevelRound(badge, T.tally_user.streamReport.tNight / 60 / 60 / 8);
-				if (badge.newLevel > badge.level) {
-					badge.level = badge.newLevel;
+				badge.nextLevel = nextLevelRound(badge, T.tally_user.streamReport.tNight / 60 / 60 / 8);
+				if (badge.nextLevel > badge.level) {
+					badge.level = badge.nextLevel;
 					if (1) return award(badge);
 				}
 			}
@@ -86,15 +87,15 @@ window.Badge = (function() {
 			////////////////////////////// COMPUTER //////////////////////////////
 
 			badge = get("big-clicker");
-			badge.newLevel = nextLevelExp(badge, T.tally_user.score.clicks / 350); // ~ every n clicks
-			if (badge.newLevel > badge.level) {
-				badge.level = badge.newLevel;
+			badge.nextLevel = nextLevelExp(badge, T.tally_user.score.clicks / 350); // ~ every n clicks
+			if (badge.nextLevel > badge.level) {
+				badge.level = badge.nextLevel;
 				if (1) return award(badge);
 			}
 			badge = get("long-distance-scroller"); // ~ 1 wheel click = 1 mm * 1,000,000 = 1 km
-			badge.newLevel = nextLevelRound(badge, Progress.get("pageActionScrollDistance") / 1000000);
-			if (badge.newLevel > badge.level) {
-				badge.level = badge.newLevel;
+			badge.nextLevel = nextLevelRound(badge, Progress.get("pageActionScrollDistance") / 1000000);
+			if (badge.nextLevel > badge.level) {
+				badge.level = badge.nextLevel;
 				if (1) return award(badge);
 			}
 
@@ -104,9 +105,9 @@ window.Badge = (function() {
 			////////////////////////////// MEMORY //////////////////////////////
 
 			badge = get("refresh-king");
-			badge.newLevel = nextLevelExp(badge, Progress.get("pageActionRefreshes") / 35); // # refreshes
-			if (badge.newLevel > badge.level) {
-				badge.level = badge.newLevel;
+			badge.nextLevel = nextLevelExp(badge, Progress.get("pageActionRefreshes") / 35); // # refreshes
+			if (badge.nextLevel > badge.level) {
+				badge.level = badge.nextLevel;
 				if (1) return award(badge);
 			}
 
@@ -153,9 +154,9 @@ window.Badge = (function() {
 			/////////////// filter-bubble -> based on (increasing) likes on social media
 			if (shouldCheck.social) {
 				badge = get("filter-bubble");
-				badge.newLevel = nextLevelExp(badge, T.tally_user.score.likes / 25); // ~ every n likes
-				if (badge.newLevel > badge.level) {
-					badge.level = badge.newLevel;
+				badge.nextLevel = nextLevelExp(badge, T.tally_user.score.likes / 25); // ~ every n likes
+				if (badge.nextLevel > badge.level) {
+					badge.level = badge.nextLevel;
 					if (1) return award(badge);
 				}
 			}
@@ -163,16 +164,12 @@ window.Badge = (function() {
 			/////////////// stalker -> based on (increasing) on social media but very few likes
 			if (shouldCheck.social) {
 				badge = get("stalker");
-				badge.newLevel = nextLevelExp(badge, T.tally_user.streamReport.pSocial / 60 / 30); // ~ every 30 min
-				if (badge.newLevel > badge.level) {
-					badge.level = badge.newLevel;
+				badge.nextLevel = nextLevelExp(badge, T.tally_user.streamReport.tSocial / 60 / 30); // ~ every 30 min
+				if (badge.nextLevel > badge.level) {
+					badge.level = badge.nextLevel;
 					if (1) return award(badge);
 				}
 			}
-
-
-
-
 
 
 
@@ -181,6 +178,15 @@ window.Badge = (function() {
 			console.error(err);
 		}
 	}
+
+
+
+
+
+
+
+
+
 
 	/**
 	 *	Round and log the value (nextLevel) and return (NO EXPONENT)
@@ -192,16 +198,16 @@ window.Badge = (function() {
 			let nextLevelRounded = Math.round(nextLevel);
 
 			// show and format results in console.log
-			let displayCondition = " <= ",
+			let displayCondition = "<=",
 				winnerStr = "";
 			if (nextLevelRounded > badge.level) {
-				displayCondition = " > ";
+				displayCondition = ">";
 				winnerStr = '🏆🏆🏆';
 			}
-			if (DEBUG) console.log("🏆 Badge.nextLevelRound() name =", badge.name +
-				", (nextLevelRounded" + displayCondition + "level) " +
-				"(" + nextLevelRounded + displayCondition + badge.level + ")",
-				"(nextLevel =", nextLevel + ")",
+			if (DEBUG) console.log("🏆 Badge.nextLevelRound() %c"+ badge.name, Debug.styles.blue,
+				"(nextLevelRounded " + displayCondition + " level) " +
+				"", nextLevelRounded, displayCondition, badge.level, "",
+				"nextLevel =", nextLevel, "",
 				winnerStr
 			);
 			return Math.round(nextLevel);
@@ -215,24 +221,27 @@ window.Badge = (function() {
 	 */
 	function nextLevelExp(badge, adjustedPoints) {
 		try {
+			// if (DEBUG) console.log("🏆 Badge.nextLevelExp() %c"+ badge.name, Debug.styles.blue,
+			// 	", adjustedPoints =", adjustedPoints
+			// );
 			// https://www.desmos.com/calculator
 			// f(x)=x * (x/4)
-			let nextLevel = FS_Number.round(adjustedPoints * (adjustedPoints / 4), 2),
+			let nextLevel = FS_Number.round(adjustedPoints * (adjustedPoints / 4), 2) || 1,
 				nextLevelRounded = Math.round(nextLevel);
 			adjustedPoints = FS_Number.round(adjustedPoints, 2);
 
 			// show and format results in console.log
-			let displayCondition = " <= ",
+			let displayCondition = "<=",
 				winnerStr = "";
 			if (nextLevelRounded > badge.level) {
-				displayCondition = " > ";
+				displayCondition = ">";
 				winnerStr = '🏆🏆🏆';
 			}
-			if (DEBUG) console.log("🏆 Badge.nextLevelExp()   name =", badge.name +
-				", adjustedPoints =", adjustedPoints +
-				", (nextLevelRounded" + displayCondition + "level) " +
-				"(" + nextLevelRounded + displayCondition + badge.level + ")",
-				"(nextLevel =", nextLevel + ")",
+			if (DEBUG) console.log("🏆 Badge.nextLevelExp() %c"+ badge.name, Debug.styles.blue,
+				"adjustedPoints =", adjustedPoints,
+				", (nextLevelRounded " + displayCondition + " level) " +
+				"", nextLevelRounded, displayCondition, badge.level, "",
+				"nextLevel =", nextLevel, "",
 				winnerStr
 			);
 			return nextLevelRounded;
@@ -260,20 +269,20 @@ window.Badge = (function() {
 			// nextPoints = Math.round((4 * (badge.currentLevel * badge.currentLevel * badge.currentLevel)) / 5);
 
 			// currently using
-			nextPoints = Math.round(4.5 * ((badge.level + 0.1) * (badge.level + 0.1))) || 0;
+			nextPoints = Math.round(4.5 * ((badge.level + 0.1) * (badge.level + 0.1))) || 1;
 
 			// show and format results in console.log
-			let displayCondition = " <= ",
+			let displayCondition = "<=",
 				winnerStr = "";
 			if (badge.currentPoints > nextPoints) {
-				displayCondition = " > ";
+				displayCondition = ">";
 				winnerStr = '🏆🏆🏆';
 			}
 
-			if (DEBUG) console.log("🏆 Badge.nextPointsExp()  name =", String(badge.name) +
-				", level =", badge.level +
-				", (currentPoints" + displayCondition + "nextPoints) " +
-				"(" + badge.currentPoints + displayCondition + nextPoints + ")",
+			if (DEBUG) console.log("🏆 Badge.nextPointsExp() %c"+ badge.name, Debug.styles.blue,
+				"level =", badge.level +
+				", (currentPoints " + displayCondition + " nextPoints) " +
+				"", badge.currentPoints, displayCondition, nextPoints, "",
 				winnerStr
 			);
 
@@ -295,7 +304,6 @@ window.Badge = (function() {
 				}
 				// if (DEBUG) console.log(str);
 			}
-
 		} catch (err) {
 			console.error(err);
 		}
