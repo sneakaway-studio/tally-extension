@@ -16,6 +16,7 @@ window.Badge = (function() {
 		try {
 			// start with blank data
 			let badge = BadgeData.data[name];
+			// if (DEBUG) console.log('🏆 Badge.get() name =', name, badge);
 			// if they have received one before
 			if (T.tally_user.badges && T.tally_user.badges[name])
 				// then update level
@@ -117,14 +118,14 @@ window.Badge = (function() {
 			if (shouldCheck.tags > 0) {
 				for (let name in Badges.data) {
 					// if this badge has tags
-					if (!Badges.data[name].tags) continue;
+					if (!Badges.data[name].tags || !Badges.data[name].tagProgress) continue;
 					// get current badge (or a new default badge)
 					badge = get(name);
 
 					// console.log("\n🏆 Badge -> tags", "badge =", badge);
 
 					// store current points
-					badge.currentPoints = Progress.get(badge.progress);
+					badge.currentPoints = Progress.get(badge.tagProgress);
 					// store points required to advance to next level
 					badge.nextPoints = nextPointsExp(badge);
 					// if currentPoints > nextPoints
@@ -259,7 +260,7 @@ window.Badge = (function() {
 			// nextPoints = Math.round((4 * (badge.currentLevel * badge.currentLevel * badge.currentLevel)) / 5);
 
 			// currently using
-			nextPoints = Math.round(4.5 * ((badge.level + 0.1) * (badge.level + 0.1)));
+			nextPoints = Math.round(4.5 * ((badge.level + 0.1) * (badge.level + 0.1))) || 0;
 
 			// show and format results in console.log
 			let displayCondition = " <= ",
@@ -271,7 +272,7 @@ window.Badge = (function() {
 
 			if (DEBUG) console.log("🏆 Badge.nextPointsExp()  name =", String(badge.name) +
 				", level =", badge.level +
-				", (currentPoints " + displayCondition + " nextPoints) " +
+				", (currentPoints" + displayCondition + "nextPoints) " +
 				"(" + badge.currentPoints + displayCondition + nextPoints + ")",
 				winnerStr
 			);

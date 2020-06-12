@@ -34,14 +34,19 @@ window.Progress = (function() {
 		pageActionScrollDistance: 0,
 		pageActionScrollDistanceOnePage: 0,
 		pageTagsCats: 0,
+		pageTagsAnimals: 0,
 		pageTagsErrors: 0,
 		pageTagsEncryption: 0,
 		pageTagsLegal: 0,
-		pageTagsNetworks: 0,
+		pageTagsOpenSource: 0,
+		pageTagsNetArt: 0,
 		pageTagsNews: 0,
+		pageTagsNineties: 0,
 		pageTagsPhotos: 0,
 		pageTagsProfanity: 0,
 		pageTagsTally: 0,
+		pageTagsUtopianism: 0,
+		pageTagsWhisteblower: 0,
 
 		// things to tell the player
 		toldToDragTally: 0,
@@ -281,14 +286,15 @@ window.Progress = (function() {
 				matches = 0;
 			// loop through all badges that have tags...
 			for (var badgeName in Badges.data) {
-				// if tags
-				if (!Badges.data[badgeName].tags) continue;
+				// if (DEBUG) console.log("🕹️ Progress.countPageTags() [2] badgeName =", badgeName, "Badges.data[badgeName] =", Badges.data[badgeName]);
+				// if tags AND tagProgress
+				if (!Badges.data[badgeName].tags || !Badges.data[badgeName].tagProgress) continue;
 				// compare Page.data.tags to badges' tags and perform any updates
 				result = Page.data.tags.filter(value => Badges.data[badgeName].tags.includes(value));
 				if (result.length) {
 					if (DEBUG) console.log("🕹️ Progress.countPageTags() [2]", badgeName, /* Badges.data[badgeName], */ result);
 					// update their progress (adding *total* of all found tags on the page)
-					update(Badges.data[badgeName].progress, result.length, "+");
+					update(Badges.data[badgeName].tagProgress, result.length, "+");
 					// update matches
 					matches += 1;
 				}
