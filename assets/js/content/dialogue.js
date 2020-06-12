@@ -408,7 +408,7 @@ window.Dialogue = (function() {
 	 */
 	function hide() {
 		try {
-			return;
+			// return;
 			// if (DEBUG) console.log("💬 Dialogue.hide()", queueWaitTime);
 			$('#tally_dialogue_outer').css({
 				'left': '-500px',

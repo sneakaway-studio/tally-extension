@@ -318,7 +318,7 @@ window.Badge = (function() {
 			// placeholder for badges not finished
 			if (badge.ext && badge.ext !== "")
 				awardText += chrome.extension.getURL('assets/img/badges/' + badge.name + badge.ext);
-			else awardText += chrome.extension.getURL('assets/img/badges/placeholder.gif');
+			else awardText += chrome.extension.getURL('assets/img/badges/placeholder.png');
 			awardText += "'>" +
 				"<div class='tally do-not-break tally-badge-text'>" +
 				"<span class='tally do-not-break'>" + badge.title + "</span>" +
