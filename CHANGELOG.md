@@ -6,6 +6,10 @@
 ## Development Versions
 
 
+### Version 0.2.19
+
+*
+
 
 ### Version 0.2.18
 
