@@ -74,9 +74,9 @@ window.TallyMain = (function() {
 			// were trackers dealt with?
 			if (FS_Object.objLength(Page.data.trackers.found) > 0 && !Tracker.blockAttempted) {
 				// console.log("Page.data.trackers", Page.data.trackers);
-                // remove blocked trackers (and save in Page.data.trackers)
-                Tracker.removeBlocked();
-    			// console.log("Page.data.trackers", Page.data.trackers);
+				// remove blocked trackers (and save in Page.data.trackers)
+				Tracker.removeBlocked();
+				// console.log("Page.data.trackers", Page.data.trackers);
 			}
 
 			// check for, and possibly execute and flags
@@ -242,6 +242,8 @@ window.TallyMain = (function() {
 			Consumable.randomizer();
 			// update debugger
 			Debug.update();
+			// add key debugging
+			Debug.addKeys();
 			// start Demo if we are running in demo mode
 			Demo.start();
 
@@ -249,23 +251,26 @@ window.TallyMain = (function() {
 			// checks to perform after user has interacted with page
 			setTimeout(function() {
 
+				if (DEBUG) console.log("🧰 TallyMain.startGameOnPage() [4.3] -> Check progress");
 				// check for, and possibly complete any progress
 				Progress.check("TallyMain");
+
 				// check last active status and potentially recharge
 				// TallyEvents.checkLastActiveAndRecharge();
 
-				if (DEBUG) console.log("🧰 TallyMain.startGameOnPage() [4.3] -> Check badges");
+
+				if (DEBUG) console.log("🧰 TallyMain.startGameOnPage() [4.4] -> Check badges");
 				// potentially add badge
 				Badge.check();
 
 				// after a bit more time
 				setTimeout(function() {
-					if (DEBUG) console.log("🧰 TallyMain.startGameOnPage() [4.4] -> Check monsters");
+					if (DEBUG) console.log("🧰 TallyMain.startGameOnPage() [4.5] -> Check monsters");
 					// check for, and potentially add monsters on the page
-					MonsterCheck.check();
-				}, 500);
+					// MonsterCheck.check();
+				}, 2000);
 
-			}, 1000);
+			}, 10);
 
 
 

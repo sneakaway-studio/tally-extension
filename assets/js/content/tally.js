@@ -7,7 +7,8 @@ window.Tally = (function() {
 	// PRIVATE
 	let DEBUG = Debug.ALL.Tally,
 		followCursor = false, // is eye following currently active? on page load, no
-		tallyMenuOpen = false;
+		tallyMenuOpen = false,
+		draggedOnce = false; // have we dragged once on this page load?
 
 
 	/*  TALLY EYES
@@ -138,7 +139,12 @@ window.Tally = (function() {
 				stop: function() {}
 			});
 
-			if (DEBUG) console.log("%c   Tally.addCharacter()", TallyInit.tallyConsoleIcon, T.tally_user, T.tally_options, Page.data.mode );
+			$(document).on("click", "#tally_dialogue_outer", function() {
+				// if dialogue open let them click through it
+				Dialogue.skipToNext();
+			});
+
+			if (DEBUG) console.log("%c   Tally.addCharacter()", TallyInit.tallyConsoleIcon, T.tally_user, T.tally_options, Page.data.mode);
 
 			// do not allow unless fully active
 			if (!Page.data.mode.active) return;
@@ -288,6 +294,12 @@ window.Tally = (function() {
 			// don't allow if mode disabled
 			if (T.tally_options.gameMode === "disabled") return;
 
+
+			if (Tutorial.active == true) {
+				if (DEBUG) console.log("%c   Tally.interactionHandler()", TallyInit.tallyConsoleIcon, interaction, "Tutorial.active");
+				return;
+			}
+
 			// MOUSE ENTER
 			if (interaction === 'mouseenter') {
 				if (DEBUG) console.log("%c   Tally.interactionHandler()", TallyInit.tallyConsoleIcon, interaction);
@@ -341,13 +353,16 @@ window.Tally = (function() {
 			else if (interaction === 'dragstart') {
 				if (DEBUG) console.log("%c   Tally.interactionHandler()", TallyInit.tallyConsoleIcon, interaction);
 				if (!dragging) {
-					Dialogue.showData(Dialogue.getData({
-						"category": "tally",
-						subcategory: "drag"
-					}), {
-						addIfInProcess: false,
-						instant: true
-					});
+					if (!draggedOnce) {
+						Dialogue.showData(Dialogue.getData({
+							"category": "tally",
+							subcategory: "drag"
+						}), {
+							addIfInProcess: false,
+							instant: true
+						});
+						draggedOnce = true;
+					}
 					dragging = true;
 				}
 			} else if (interaction === 'drag') {
@@ -447,19 +462,35 @@ window.Tally = (function() {
 
 			// ONE CLICK
 			if (clickCount === 1) {
-				// if dialogue open let them click through it
-				// Dialogue.skipToNext();
+
+				// initiate a disguise
+				let disguiseCount = FS_Object.objLength(T.tally_user.disguises);
+
+				if (disguiseCount < 1){
+					Dialogue.showStr("We need to beat monsters to earn disguises.", "sad");
+				} else if (disguiseCount === 1){
+					Dialogue.showStr("We only have one disguise.", "sad");
+					Disguise.selector(false);
+				} else if (disguiseCount === 2){
+					if (Progress.update("toldToBeatMonstersForDisguises", 1, "+") < 1)
+						Dialogue.showStr("Beat monsters to earn more disguises!", "neutral");
+					Disguise.selector(true);
+				} else if (disguiseCount >= 3){
+					if (Progress.update("toldToBeatMonstersForDisguises", 1, "+") < 2)
+						Dialogue.showStr("Like my new disguise?", "question");
+					Disguise.selector(true);
+				}
 
 
+
+				// in-progress
 				// Item.showManager();
 
 				// tests
-				// Disguise.randomizer(false);
-
-				Skin.random();
-				Dialogue.test();
+				// Skin.random();
+				// Dialogue.test();
 				// Dialogue.showData(Dialogue.getData({ "category": "random", subcategory: "greeting" }), {});
-				//Dialogue.random();
+				// Dialogue.random();
 
 
 

@@ -187,7 +187,6 @@ window.Badge = (function() {
 
 
 
-
 	/**
 	 *	Round and log the value (nextLevel) and return (NO EXPONENT)
 	 */
@@ -204,7 +203,7 @@ window.Badge = (function() {
 				displayCondition = ">";
 				winnerStr = '🏆🏆🏆';
 			}
-			if (DEBUG) console.log("🏆 Badge.nextLevelRound() %c"+ badge.name, Debug.styles.blue,
+			if (DEBUG) console.log("🏆 Badge.nextLevelRound() %c" + badge.name, Debug.styles.blue,
 				"(nextLevelRounded " + displayCondition + " level) " +
 				"", nextLevelRounded, displayCondition, badge.level, "",
 				"nextLevel =", nextLevel, "",
@@ -237,7 +236,7 @@ window.Badge = (function() {
 				displayCondition = ">";
 				winnerStr = '🏆🏆🏆';
 			}
-			if (DEBUG) console.log("🏆 Badge.nextLevelExp() %c"+ badge.name, Debug.styles.blue,
+			if (DEBUG) console.log("🏆 Badge.nextLevelExp() %c" + badge.name, Debug.styles.blue,
 				"adjustedPoints =", adjustedPoints,
 				", (nextLevelRounded " + displayCondition + " level) " +
 				"", nextLevelRounded, displayCondition, badge.level, "",
@@ -279,7 +278,7 @@ window.Badge = (function() {
 				winnerStr = '🏆🏆🏆';
 			}
 
-			if (DEBUG) console.log("🏆 Badge.nextPointsExp() %c"+ badge.name, Debug.styles.blue,
+			if (DEBUG) console.log("🏆 Badge.nextPointsExp() %c" + badge.name, Debug.styles.blue,
 				"level =", badge.level +
 				", (currentPoints " + displayCondition + " nextPoints) " +
 				"", badge.currentPoints, displayCondition, nextPoints, "",
@@ -321,27 +320,54 @@ window.Badge = (function() {
 
 			if (DEBUG) console.log("🏆 Badge.award()", badge);
 
-			let awardText = "<div class='tally tally-badge' style='background-color: " + (badge.color || "#111") + "'>" +
-				"<img class='tally tally-badge-img' src='";
-			// placeholder for badges not finished
+			if (!badge.color1 || badge.color1 == "") badge.color1 = "rgb(70,24,153,1)";
+			if (!badge.color2 || badge.color2 == "") badge.color2 = "rgba(170,24,153,1)";
+
+			// background: rgb(255, 0, 0);
+			// background: linear - gradient(180 deg, rgba(255, 0, 0, 1) 0 % , rgba(56, 255, 0, 1) 100 % );
+
+			// string for dialogue box
+			let str = "";
+			str += "<div class='tally tally-dialogue-with-img' style=' " +
+				"background: " + badge.color1 + ";" +
+				"background: linear-gradient(180deg, " + badge.color1 + " 0%, " + badge.color2 + "100%);" +
+				"'>";
+			str += "<div class='tally-badge-award-wrapper'>";
+
+			// add the badge image
+			str += "<img class='tally tally-badge-img-wrapper' src='";
 			if (badge.ext && badge.ext !== "")
-				awardText += chrome.extension.getURL('assets/img/badges/' + badge.name + badge.ext);
-			else awardText += chrome.extension.getURL('assets/img/badges/placeholder.png');
-			awardText += "'>" +
-				"<div class='tally do-not-break tally-badge-text'>" +
-				"<span class='tally do-not-break'>" + badge.title + "</span>" +
-				"<div class='tally tally-badge-text-level'>level " + badge.level + "</div>" +
-				"</div></div>";
-			// if they already have that badge
+				// placeholder for badges not finished
+				str += chrome.extension.getURL('assets/img/badges/' + badge.name + badge.ext);
+			else
+				str += chrome.extension.getURL('assets/img/badges/placeholder.png');
+			str += "'>";
+
+			// add award text
+			str += "<div class='tally do-not-break tally-badge-text'>";
+			str += "<div class='tally do-not-break'>" + badge.title + "</div>";
+			str += "<div class='tally tally-badge-text-level'>level " + badge.level + "</div>";
+			str += "</div>";
+
+			str += "</div>"; // close tally-badge-award-wrapper
+			str += "</div>"; // close tally-dialogue-with-img
+
+			// the text tally says
+			str += "<div class='dialogue_text_after_image'>";
 			if (T.tally_user.badges[badge.name] && badge.level > T.tally_user.badges[badge.name].level) {
-				awardText += "You leveled up!";
+				// if they already have that badge
+				str += "You leveled up!";
 			} else {
-				awardText += "You earned a new badge!";
+				str += "You earned a new badge!";
 			}
+			str += "</div>";
+
+
+
 
 			// show dialogue with badge image
 			Dialogue.showData({
-				text: awardText,
+				text: str,
 				mood: badge.sound
 			}, {
 				instant: true
@@ -353,19 +379,19 @@ window.Badge = (function() {
 
 			// add floating animation
 			let badgeFloatingAnim = anime({
-				targets: ".tally-badge-img",
-				translateY: -4,
+				targets: ".tally-badge-img-wrapper",
+				// translateY: -4,
 				rotateZ: [{
-						value: -8
+						value: -5
 					},
 					{
-						value: 8
+						value: 5
 					}
 				],
 				direction: 'alternate',
 				loop: true,
 				easing: 'easeInOutSine',
-				duration: 500
+				duration: 600
 			});
 
 			// update progress

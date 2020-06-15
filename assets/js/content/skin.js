@@ -62,8 +62,8 @@ window.Skin = (function() {
 		try {
 			let highestStage = 0;
 			// if no monster return early
-			if (!FS_Object.prop(T.tally_nearby_monsters[mid])) return highestStage;
-			
+			if (FS_Object.objLength(T.tally_nearby_monsters) < 0) return highestStage;
+
 			// loop through nearby monsters
 			for (var mid in T.tally_nearby_monsters) {
 				if (T.tally_nearby_monsters.hasOwnProperty(mid)) {
@@ -197,9 +197,14 @@ window.Skin = (function() {
 			}
 			// set current skin name and obj
 			currentSkinName = newSkinName;
+
+		// currentSkinName = "magenta";
+
 			currentSkinObj = SkinData.data[currentSkinName];
 			if (DEBUG) console.log("👚 Skin.returnSkinData() [2] currentSkinName = " + currentSkinName +
 				", currentSkinObj = " + JSON.stringify(currentSkinObj));
+
+
 
 			// object to hold / pass strings
 			let skinData = {
@@ -367,9 +372,9 @@ window.Skin = (function() {
 		update: update,
 		returnTallySVG: returnTallySVG,
 		updateFromHighestMonsterStage: updateFromHighestMonsterStage,
+		returnSkinNameFromStage: returnSkinNameFromStage,
 		returnHighestMonsterStage: returnHighestMonsterStage,
 		random: random,
-
 
 		// returnSkin: function(skin) {
 		// 	return returnSkin(skin);

@@ -42,7 +42,7 @@ window.Debug = (function() {
 			"Sound": true,
 			"StatsDisplay": false,
 			"Stats": false,
-			"Skin": false,
+			"Skin": true,
 
 			"Tally": true,
 			"TallyData": true,
@@ -319,6 +319,7 @@ window.Debug = (function() {
 		sendBackgroundDebugMessage: sendBackgroundDebugMessage,
 		dataReportHeader: dataReportHeader,
 		add: add,
-		update: update
+		update: update,
+		addKeys: addKeys
 	};
 })();

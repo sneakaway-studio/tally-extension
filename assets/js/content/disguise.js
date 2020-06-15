@@ -7,8 +7,14 @@ window.Disguise = (function() {
 	// PRIVATE
 
 	let DEBUG = Debug.ALL.Disguise,
-		currentDisguiseName = "glasses-3d",
-		currentDisguiseObj = DisguiseData.data[currentDisguiseName];
+		disguiseKeysToIndex = [],
+		disguiseCount = 0,
+		currentDisguiseIndex = -1,
+		currentDisguiseName = "", // currentDisguiseName
+		currentDisguiseObj = {}; //DisguiseData.data[currentDisguiseName];
+
+
+
 
 
 
@@ -16,11 +22,49 @@ window.Disguise = (function() {
 	/**
 	 * 	Display a random disguise
 	 */
-	function randomizer(playDialogue = true) {
+	function selector(playDialogue = true) {
 		try {
-			currentDisguiseObj = FS_Object.randomObjProperty(DisguiseData.data);
-			if (DEBUG) console.log("😎 Disguise.randomizer() [1] currentDisguiseObj =", currentDisguiseObj);
-			display(playDialogue);
+			disguiseCount = FS_Object.objLength(T.tally_user.disguises);
+			if (disguiseCount > 0) {
+				if (DEBUG) console.log("😎 Disguise.selector() [1] currentDisguiseObj =", currentDisguiseObj);
+
+				// running at page load
+				if (currentDisguiseIndex < 0) {
+					// pick a random one
+					currentDisguiseObj = FS_Object.randomObjProperty(T.tally_user.disguises);
+					currentDisguiseName = currentDisguiseObj.name;
+					// get index
+					Object.keys(T.tally_user.disguises).forEach(function(key, index) {
+						// if (DEBUG) console.log("😎 Disguise.selector() [1.1] key =", key, ", index =", index, T.tally_user.disguises[index]);
+						// save index of randomly selected disguise
+						if (key === currentDisguiseName) {
+							currentDisguiseIndex = index;
+						}
+						// save all indexes
+						disguiseKeysToIndex.push(key);
+					});
+					// if (DEBUG) console.log("😎 Disguise.selector() [1.2] disguiseKeysToIndex =", disguiseKeysToIndex);
+				}
+				// else they clicked
+				else {
+					// if (DEBUG) console.log("😎 Disguise.selector() [2.1] currentDisguiseIndex =", currentDisguiseIndex,
+					// 	", currentDisguiseObj =", currentDisguiseObj);
+					currentDisguiseIndex++;
+					// start index at zero if needed
+					if (currentDisguiseIndex >= disguiseCount) currentDisguiseIndex = 0;
+					currentDisguiseName = disguiseKeysToIndex[currentDisguiseIndex];
+					currentDisguiseObj = T.tally_user.disguises[currentDisguiseName];
+					// if (DEBUG) console.log("😎 Disguise.selector() [2.2] currentDisguiseIndex =", currentDisguiseIndex,
+					// 	", currentDisguiseObj =", currentDisguiseObj);
+				}
+
+
+				if (DEBUG) console.log("😎 Disguise.selector() [2] currentDisguiseObj =", currentDisguiseObj);
+				// then display the chosen one
+				display(playDialogue);
+			}
+			// use the count to do something
+			return disguiseCount;
 		} catch (err) {
 			console.error(err);
 		}
@@ -36,17 +80,20 @@ window.Disguise = (function() {
 				"Page.data.trackers =", Page.data.trackers
 			);
 			// return early if there are no disguises, trackers caught, or no trackers blocked
-			if (FS_Object.objLength(T.tally_user.disguises < 1) || 
+			if (FS_Object.objLength(T.tally_user.disguises < 1) ||
 				!FS_Object.prop(T.tally_user.trackers) ||
 				FS_Object.objLength(Page.data.trackers.found) < 1 ||
 				FS_Object.objLength(Page.data.trackers.blocked) < 1) return;
 
 			// currently picks a random one
 			//  ?? need to come back to this if we let players select their own
-			currentDisguiseObj = FS_Object.randomObjProperty(T.tally_user.disguises);
+			// currentDisguiseObj = FS_Object.randomObjProperty(T.tally_user.disguises);
 
-			if (DEBUG) console.log("😎 Disguise.displayIfTrackerBlocked() [1] currentDisguiseObj =", currentDisguiseObj);
-			display(playDialogue);
+			// selects a random one
+			selector(false);
+
+			// if (DEBUG) console.log("😎 Disguise.displayIfTrackerBlocked() [1] currentDisguiseObj =", currentDisguiseObj);
+			// display(playDialogue);
 		} catch (err) {
 			console.error(err);
 		}
@@ -144,7 +191,7 @@ window.Disguise = (function() {
 
 	// PUBLIC
 	return {
-		randomizer: randomizer,
+		selector: selector,
 		returnHtmlStr: returnHtmlStr,
 		checkAndReward: checkAndReward,
 		displayIfTrackerBlocked: displayIfTrackerBlocked

@@ -32,7 +32,7 @@ window.Monster = (function() {
 			// if there are trackers on the page
 			let tracker = FS_Object.randomObjProperty(Page.data.trackers.found) || "";
 			// only proceed if there are trackers
-			if (tracker == ""){
+			if (tracker == "") {
 				if (DEBUG) console.log(log, "[1] NO TRACKERS ON THIS PAGE - Page.data.trackers" + Page.data.trackers);
 				return;
 			}
@@ -112,7 +112,7 @@ window.Monster = (function() {
 			// return if we don't have one
 			if (T.tally_nearby_monsters[mid].tracker === "") {
 				if (DEBUG) console.log('👿 Monster.showOnPage() [1.3] NO TRACKER',
-					"Page.data.trackers =",Page.data.trackers,
+					"Page.data.trackers =", Page.data.trackers,
 				);
 				return;
 			}
@@ -130,6 +130,25 @@ window.Monster = (function() {
 			console.error(err);
 		}
 	}
+
+
+
+	/**
+	 *	Return 
+	 */
+	function returnInnerHtml(monster) {
+		try {} catch (err) {
+			console.error(err);
+		}
+	}
+
+
+
+
+
+
+
+
 	/**
 	 *	Display a monster on the page (call add() first)
 	 */
@@ -145,7 +164,7 @@ window.Monster = (function() {
 				subcategory: "display"
 			}));
 			// reference to image file (moved to server )
-			var url = T.tally_meta.website + '/' + 'assets/img/monsters-300h/' + monster.mid + '-anim-sheet.png';
+			var url = T.tally_meta.website + '/' + 'assets/img/monsters/monsters-300h/' + monster.mid + '-anim-sheet.png';
 			//var url = chrome.extension.getURL('assets/img/472-master-3d-test.png');
 
 			// set monster image
@@ -184,7 +203,7 @@ window.Monster = (function() {
 				Dialogue.showData(Dialogue.getData({
 					category: "battle",
 					subcategory: "choose"
-				}),{
+				}), {
 					addIfInProcess: false
 				});
 			});

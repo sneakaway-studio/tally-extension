@@ -160,31 +160,6 @@ svg#tally-svg * {
     color: #DE4929;
 }
 
-
-
-
-#tally_dialogue_outer #tally_dialogue_inner .tally-badge {
-    width: 185px;
-    border-radius: .9em;
-    background: #462795;
-    padding: 10px 10px;
-    margin: 5px 0;
-}
-#tally_dialogue_outer #tally_dialogue_inner .tally-badge .tally-badge-img {
-    width: 120px;
-    height: auto;
-}
-#tally_dialogue_outer #tally_dialogue_inner .tally-badge .tally-badge-text {
-    padding-top: 5px;
-    font-size: 92%;
-}
-#tally_dialogue_outer #tally_dialogue_inner .tally-badge .tally-badge-text-level {
-    font-size: 88%;
-    padding-top: 3px;
-    color: rgba(255,255,255,.7);
-}
-
-
 #tally_dialogue_outer #tally_dialogue_outer a {
     color: white;
     text-decoration: underline;
@@ -212,6 +187,37 @@ svg#tally-svg * {
     position: absolute;
     z-index: -1;  /* to be below the parent element */
 }
+
+
+
+/*  TALLY DIALOGUE > DIALOGUE WITH IMAGE
+ ******************************************************************************/
+
+#tally_dialogue_outer #tally_dialogue_inner .tally-dialogue-with-img {
+    /* width: 185px; */
+    width: 100%;
+    border-radius: .9em;
+    background: #462795;
+
+}
+#tally_dialogue_outer #tally_dialogue_inner .tally-dialogue-with-img .tally-badge-award-wrapper {
+    padding: 10px 10px;
+    margin: 5px 0;
+}
+#tally_dialogue_outer #tally_dialogue_inner .tally-dialogue-with-img .tally-badge-img-wrapper {
+    width: 120px;
+    height: auto;
+}
+#tally_dialogue_outer #tally_dialogue_inner .tally-dialogue-with-img .tally-badge-text {
+    padding-top: 5px;
+    font-size: 92%;
+}
+#tally_dialogue_outer #tally_dialogue_inner .tally-dialogue-with-img .tally-badge-text-level {
+    font-size: 88%;
+    padding-top: 3px;
+    color: rgba(255,255,255,.7);
+}
+
 
 
 

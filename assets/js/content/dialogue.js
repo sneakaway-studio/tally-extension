@@ -81,7 +81,8 @@ window.Dialogue = (function() {
 	function showData(dialogueObj, showReq = {}) {
 		try {
 			if (DEBUG) console.log("💬 Dialogue.addData() [1] dialogueObj =",
-				JSON.stringify(dialogueObj), ", showReq = " + JSON.stringify(showReq));
+				// JSON.stringify(dialogueObj),
+				", showReq = " + JSON.stringify(showReq));
 
 			//  default show request (defines how the dialogue is displayed)
 			let showReqDefaults = {
@@ -323,15 +324,22 @@ window.Dialogue = (function() {
 
 			// if there is an image
 			if (dialogue.text.search("img") > -1) {
+				// if (DEBUG) console.log("💬 Dialogue.writeNextInQueue() [3] IMG found");
+
 				// wait until images load
 				$('#tally_dialogue_inner img').on('load', function() {
-					// if (DEBUG) console.log("💬 Dialogue.writeNextInQueue() [3.1] imgHeight =", $('#tally_dialogue_inner img').height());
+					// if (DEBUG) console.log("💬 Dialogue.setDialoguBoxSize() imgHeight =", $('#tally_dialogue_inner img').height());
 					// adjust size of the box
-					setDialoguBoxSize(dialogue.text, $('#tally_dialogue_inner img').height() + 52);
+					setDialoguBoxSize(dialogue.text, $('#tally_dialogue_inner').outerHeight());
+				});
+				$('.monster_sprite_dialogue_loader').on('load', function() {
+					// if (DEBUG) console.log("💬 Dialogue.setDialoguBoxSize() imgHeight =", $('.monster_sprite_outer_dialogue').height());
+					// adjust size of the box
+					setDialoguBoxSize(dialogue.text, $('#tally_dialogue_inner').outerHeight());
 				});
 			}
 			// update dialogue box size
-			setDialoguBoxSize(dialogue.text);
+			setDialoguBoxSize(dialogue.text, 0);
 
 			// make Tally look at user
 			Tally.stare();
@@ -351,13 +359,16 @@ window.Dialogue = (function() {
 			let inner = $('#tally_dialogue_inner').outerHeight(),
 				outer = $('#tally_dialogue_outer').outerHeight();
 
-			if (DEBUG) console.log("💬 Dialogue.setDialoguBoxSize()", text, imgHeight, inner, outer);
+
+			if (DEBUG) console.log("💬 Dialogue.setDialoguBoxSize() [1]", "imgHeight =", imgHeight, "inner =", inner, "outer =", outer);
+			if (imgHeight === 0) imgHeight = (stringLines(text) * 15) + 28;
+			if (DEBUG) console.log("💬 Dialogue.setDialoguBoxSize() [2]", "imgHeight =", imgHeight, "inner =", inner, "outer =", outer);
 			// adjust size of the box
 			$('#tally_dialogue_outer').css({
 				'left': '10px',
 				'display': 'flex',
 				'opacity': 1,
-				'height': (stringLines(text) * 15) + 28 + imgHeight + "px",
+				'height': imgHeight + "px",
 			});
 			// if (DEBUG) console.log("💬 Dialogue.setDialoguBoxSize()", inner,outer);
 			// if (DEBUG) console.log("💬 Dialogue.setDialoguBoxSize()", inner,outer);
@@ -586,18 +597,12 @@ window.Dialogue = (function() {
 
 
 	/**
-	 *	Show a comment about trackers
+	 *	Show a prompt for survey
 	 */
-	function showTrackerDialogue() {
+	function showSurveyPrompt() {
 		try {
-			let subcategory = "none";
-			if (FS_Object.objLength(Page.data.trackers.found) > 0) subcategory = "few";
-			if (FS_Object.objLength(Page.data.trackers.found) > 3) subcategory = "lots";
-			if (DEBUG) console.log("💬 Dialogue.showTrackerDialogue() subcategory=" + subcategory);
-			Dialogue.showData(Dialogue.getData({
-				category: "tracker",
-				subcategory: subcategory
-			}));
+			if (DEBUG) console.log("💬 Dialogue.showSurveyPrompt() subcategory=" + subcategory);
+			Dialogue.showStr("Want to give feedback? Click the survey button in the top-right menu.", "question");
 		} catch (err) {
 			console.error(err);
 		}
@@ -653,14 +658,9 @@ window.Dialogue = (function() {
 		showStr: showStr,
 		random: random,
 		test: test,
-
-
+		showSurveyPrompt: showSurveyPrompt,
 
 		emptyTheQueue: emptyTheQueue,
-		showTrackerDialogue: showTrackerDialogue,
-
-
-
 		hide: hide,
 		getFact: function(domain, includeSource) {
 			return getFact(domain, includeSource);

@@ -198,9 +198,8 @@ window.Tutorial = (function() {
 
 	// PUBLIC
 	return {
-		active: function(state) {
-			return active(state);
-		},
+		set active (value) { _active = value; },
+		get active () { return _active; },
 		play: play,
 		slideshowCallback: slideshowCallback,
 		skip: skip

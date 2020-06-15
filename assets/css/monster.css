@@ -1,15 +1,16 @@
 /*  GLOBAL
 ******************************************************************************/
-
-.tally_monster_sprite_container {
+.tally_monster_sprite_container, .tally_monster_sprite_container_dialogue {
     box-sizing: border-box;
     top: -500px;
     left: 55%;
     opacity: 0;
     position: fixed;
     z-index: 99999999999999;
-    height: 300px; /* formerly 400 */
-    width: 375px; /* formerly 500 */
+    height: 300px;
+    /* formerly 400 */
+    width: 375px;
+    /* formerly 500 */
     cursor: pointer;
 }
 .tally_monster_sprite_flip {
@@ -27,30 +28,48 @@
 }
 .tally_monster_sprite_inner {
     position: absolute;
-    left: 0; top: 0;
-    height: 100%; width: 100%;
+    left: 0;
+    top: 0;
+    height: 100%;
+    width: 100%;
     background: left center no-repeat;
     animation: monster_keyframes 0.4s steps(3) infinite;
 }
 @keyframes monster_keyframes {
     100% {
-        background-position: -1125px; /* formerly 1500 */
+        background-position: -1125px;
+        /* formerly 1500 */
     }
 }
-
-
-
-
-
-
-
-
-
+/* to display monster animation in dialogue box  */
+.monster_sprite_outer_dialogue {
+    z-index: 99999999999999;
+    top: 0;
+    left: 0;
+    display: block;
+    /* background-color: rgba(255, 0, 0, .3); */
+    height: 140px;
+    width: 175px;
+    margin: 0 auto;
+}
+.monster_sprite_inner_dialogue {
+    /* background-color: rgba(0, 0, 255, .3); */
+    width: 100%;
+    height: 100%;
+    background: left center no-repeat;
+    animation: monster_keyframes_dialogue 0.4s steps(3) infinite;
+}
+@keyframes monster_keyframes_dialogue {
+    100% {
+        background-position: -525px;
+    }
+}
+.dialogue_text_after_image {
+    margin-top: 10px;
+}
 /*  MONSTER AWARD
 ******************************************************************************/
-.tally_award_wrapper {
-
-}
+.tally_award_wrapper {}
 .tally_award_background {
     width: 4000px;
     height: 750px;
@@ -81,7 +100,6 @@
     background-color: #FCD067;
     z-index: 99999996;
 }
-
 /* .tally_award_text_wrapper {
     width: 28%;
     height: 40%;
@@ -153,46 +171,44 @@
     overflow: auto;
     z-index: 30;
 } */
-
-
-
-
-
 /* owen's attempt */
 .tally_award_text_wrapper {
-  font: normal 1.3vmax/1.618vmax Arial, sans-serif;
-  position: fixed;
-  top: .3rem;
-  bottom: .8rem;
-  /* right: .8rem; */
-  right: -2000px;
-  width: 40%;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-end;
-  z-index: 99999999;
+    font: normal 1.3vmax/1.618vmax Arial, sans-serif;
+    position: fixed;
+    top: .3rem;
+    bottom: .8rem;
+    /* right: .8rem; */
+    right: -2000px;
+    width: 40%;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    z-index: 99999999;
 }
 .tally_award_text {
-  color:#fff;
-  margin: 0;
-  padding: .8em;
-/* background: #462795; */
-  text-align:center;
+    color: #fff;
+    margin: 0;
+    padding: .8em;
+    /* background: #462795; */
+    text-align: center;
 }
 .award_title {
-  font: normal 3.3vmax/3.9vmax "Futura", "Trebuchet MS", Arial, sans-serif;
-  padding: 0;
-  text-shadow: 3px 3px 0px rgba(70, 39, 149, 1);
+    font: normal 3.3vmax/3.9vmax "Futura", "Trebuchet MS", Arial, sans-serif;
+    padding: 0;
+    text-shadow: 3px 3px 0px rgba(70, 39, 149, 1);
 }
 .award_subtitle {}
 .award_did_you_know {
-  background-color: #DE4929;
-  font-size: 1.7vmax;
-  width: 40%;
-  margin:0 auto;
-  font-family: "Futura", "Trebuchet MS", Arial, sans-serif;
-  font-style:italic;
-  transform:translate(0,1.12vmax);
-  padding:.5em;
+    background-color: #DE4929;
+    font-size: 1.7vmax;
+    width: 40%;
+    margin: 0 auto;
+    font-family: "Futura", "Trebuchet MS", Arial, sans-serif;
+    font-style: italic;
+    transform: translate(0, 1.12vmax);
+    padding: .5em;
 }
-.award_fact { border:1px solid #ddd; padding-top:1.2em; }
+.award_fact {
+    border: 1px solid #ddd;
+    padding-top: 1.2em;
+}
