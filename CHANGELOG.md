@@ -8,7 +8,9 @@
 
 ### Version 0.2.19
 
-*
+* Adds Badge selector
+* Tally can now show images in Dialogue
+* Adds monster silhouettes
 
 
 ### Version 0.2.18

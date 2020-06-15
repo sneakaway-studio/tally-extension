@@ -133,8 +133,15 @@ window.Badge = (function() {
 					if (badge.currentPoints > badge.nextPoints) {
 						// console.log("🏆 Badge.tags 🏆🏆🏆", "badge.currentPoints > badge.nextPoints (" +
 						// 	badge.currentPoints, ">", badge.nextPoints + ")");
+
+						// marked for deletion
 						// set new level and award or level-up the badge
-						badge.level += 1;
+						// badge.level += 1;
+
+						// if this is a new badge and we want to jump straight to the highest level
+						badge.nextLevel = Math.round(Math.sqrt(badge.currentPoints / 4.5) - 1.3) + 1;
+						// get the level from the nextPoints
+						badge.level = badge.nextLevel || 1;
 						if (1) return award(badge);
 					}
 					// else {
@@ -268,7 +275,7 @@ window.Badge = (function() {
 			// nextPoints = Math.round((4 * (badge.currentLevel * badge.currentLevel * badge.currentLevel)) / 5);
 
 			// currently using
-			nextPoints = Math.round(4.5 * ((badge.level + 0.1) * (badge.level + 0.1))) || 1;
+			nextPoints = Math.round(4.5 * ((badge.level + 1) * (badge.level + 1))) || 2;
 
 			// show and format results in console.log
 			let displayCondition = "<=",
