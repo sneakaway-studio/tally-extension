@@ -1,6 +1,6 @@
 "use strict";
 
-window.Dialogue = (function() {
+window.Dialogue = (function () {
 	// PRIVATE
 
 	let DEBUG = Debug.ALL.Dialogue,
@@ -271,7 +271,7 @@ window.Dialogue = (function() {
 			// else, if not currently active then start a new one
 			if (!_active) writeNextInQueue();
 			// if currently active, check again in a bit in case there are more
-			setTimeout(function() {
+			setTimeout(function () {
 				queueChecker();
 			}, 200);
 		} catch (err) {
@@ -327,12 +327,12 @@ window.Dialogue = (function() {
 				// if (DEBUG) console.log("💬 Dialogue.writeNextInQueue() [3] IMG found");
 
 				// wait until images load
-				$('#tally_dialogue_inner img').on('load', function() {
+				$('#tally_dialogue_inner img').on('load', function () {
 					// if (DEBUG) console.log("💬 Dialogue.setDialoguBoxSize() imgHeight =", $('#tally_dialogue_inner img').height());
 					// adjust size of the box
 					setDialoguBoxSize(dialogue.text, $('#tally_dialogue_inner').outerHeight());
 				});
-				$('.monster_sprite_dialogue_loader').on('load', function() {
+				$('.monster_sprite_dialogue_loader').on('load', function () {
 					// if (DEBUG) console.log("💬 Dialogue.setDialoguBoxSize() imgHeight =", $('.monster_sprite_outer_dialogue').height());
 					// adjust size of the box
 					setDialoguBoxSize(dialogue.text, $('#tally_dialogue_inner').outerHeight());
@@ -420,7 +420,7 @@ window.Dialogue = (function() {
 	function hide() {
 		try {
 			// return;
-			// if (DEBUG) console.log("💬 Dialogue.hide()", queueWaitTime);
+			if (DEBUG) console.log("💬 Dialogue.hide()", queueWaitTime);
 			$('#tally_dialogue_outer').css({
 				'left': '-500px',
 				'display': 'none',
@@ -461,6 +461,8 @@ window.Dialogue = (function() {
 		try {
 			// set duration based on number lines
 			let duration = stringLines(str) * 1900;
+			// increase if new player
+			if (T.tally_user.level < 10) duration = duration * 1.2;
 			// if (DEBUG) console.log("💬 Dialogue.stringDuration() duration =", duration);
 			return duration;
 		} catch (err) {
@@ -662,11 +664,11 @@ window.Dialogue = (function() {
 
 		emptyTheQueue: emptyTheQueue,
 		hide: hide,
-		getFact: function(domain, includeSource) {
+		getFact: function (domain, includeSource) {
 			return getFact(domain, includeSource);
 		},
 
-		active: function() {
+		active: function () {
 			return _active;
 		},
 		skipToNext: skipToNext,

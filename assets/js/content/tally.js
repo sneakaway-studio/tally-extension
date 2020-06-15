@@ -294,9 +294,9 @@ window.Tally = (function() {
 			// don't allow if mode disabled
 			if (T.tally_options.gameMode === "disabled") return;
 
-
-			if (Tutorial.active == true) {
-				if (DEBUG) console.log("%c   Tally.interactionHandler()", TallyInit.tallyConsoleIcon, interaction, "Tutorial.active");
+			if (DEBUG) console.log("%c   Tally.interactionHandler()", TallyInit.tallyConsoleIcon, interaction,
+				"Tutorial.sequenceActive", Tutorial.sequenceActive);
+			if (Tutorial.sequenceActive == true) {
 				return;
 			}
 

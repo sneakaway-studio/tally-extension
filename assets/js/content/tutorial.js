@@ -1,9 +1,11 @@
 "use strict";
 
-window.Tutorial = (function() {
+window.Tutorial = (function () {
 	// PRIVATE
 	let DEBUG = Debug.ALL.Tutorial,
-		_active = false;
+		_active = false, // are we playing a tutorial?
+		_sequenceActive = false // are we playing some other sequence that should stop all interactions?
+	;
 
 
 	/**
@@ -13,6 +15,8 @@ window.Tutorial = (function() {
 		try {
 			if (state != undefined && (state === true || state === false))
 				_active = state;
+			// also account for sequences
+			if (_active === true) _sequenceActive = true;
 			return _active;
 		} catch (err) {
 			console.error(err);
@@ -41,7 +45,10 @@ window.Tutorial = (function() {
 			// loop through all the dialogue objects for this tutorial and add them
 			while (step > -1) {
 				// store each dialogue obj
-				dialogue = Dialogue.getData({"category": "tutorial", "index": which + "-" + step});
+				dialogue = Dialogue.getData({
+					"category": "tutorial",
+					"index": which + "-" + step
+				});
 
 				// testing
 				if (DEBUG) console.log("📚 Tutorial.play() [2]", step, which, dialogue);
@@ -77,7 +84,7 @@ window.Tutorial = (function() {
 				}
 			}
 
-			setTimeout(function() {
+			setTimeout(function () {
 				active(false);
 			}, 500);
 
@@ -151,7 +158,14 @@ window.Tutorial = (function() {
 				slideshowVisible(true);
 			}
 			// otherwise hide the slideshow
-			else slideshowVisible(false);
+			else {
+				// set sequence back to false
+				setTimeout(function(){
+					// set tutorial sequence active
+					_sequenceActive = false;
+				}, 1000);
+				slideshowVisible(false);
+			}
 
 
 		} catch (err) {
@@ -198,8 +212,19 @@ window.Tutorial = (function() {
 
 	// PUBLIC
 	return {
-		set active (value) { _active = value; },
-		get active () { return _active; },
+		set active(value) {
+			_active = value;
+		},
+		get active() {
+			return _active;
+		},
+		set sequenceActive(value) {
+			_sequenceActive = value;
+		},
+		get sequenceActive() {
+			return _sequenceActive;
+		},
+
 		play: play,
 		slideshowCallback: slideshowCallback,
 		skip: skip

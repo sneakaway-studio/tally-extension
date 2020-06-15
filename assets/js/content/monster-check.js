@@ -264,8 +264,8 @@ window.MonsterCheck = (function() {
 
 			// console.log(monster);
 
-			// set tutorial active
-			Tutorial.active = true;
+			// set tutorial sequence active
+			Tutorial.sequenceActive = true;
 
 			// set monster image
 			let url = T.tally_meta.website + '/' + 'assets/img/monsters/monsters-140h-solid-lt-purple/' + monster.mid + '-anim-sheet.png';
@@ -305,6 +305,11 @@ window.MonsterCheck = (function() {
 			}, {
 				instant: true
 			});
+
+			setTimeout(function(){
+				// set tutorial sequence active
+				Tutorial.sequenceActive = false;
+			}, 2000);
 
 
 		} catch (err) {
