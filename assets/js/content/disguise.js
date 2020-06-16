@@ -191,6 +191,9 @@ window.Disguise = (function() {
 
 	// PUBLIC
 	return {
+		get currentDisguiseObj() {
+			return currentDisguiseObj;
+		},
 		selector: selector,
 		returnHtmlStr: returnHtmlStr,
 		checkAndReward: checkAndReward,

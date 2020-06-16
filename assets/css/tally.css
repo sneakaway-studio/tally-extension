@@ -21,6 +21,10 @@
     -moz-box-sizing: border-box;
     -webkit-box-sizing: border-box;
 }
+#tally_character_inner {
+    max-height: 100%;
+    max-width: 100%;
+}
 #tally_body {
     position: absolute;
     margin: 0;

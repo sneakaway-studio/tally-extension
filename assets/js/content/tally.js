@@ -3,7 +3,7 @@
 /*  TALLY
  ******************************************************************************/
 
-window.Tally = (function() {
+window.Tally = (function () {
 	// PRIVATE
 	let DEBUG = Debug.ALL.Tally,
 		followCursor = false, // is eye following currently active? on page load, no
@@ -65,7 +65,7 @@ window.Tally = (function() {
 		try {
 			moveEye(".tally_eye_left", "stare");
 			moveEye(".tally_eye_right", "stare");
-			setTimeout(function() {
+			setTimeout(function () {
 				followCursor = true;
 			}, 400);
 		} catch (err) {
@@ -97,7 +97,7 @@ window.Tally = (function() {
 			// maybe temp...
 			//Skin.preload(); // don't need now, replacing with svg
 
-			$(document).on("mousemove", function(event) {
+			$(document).on("mousemove", function (event) {
 				Tally.setFollowCursor(true);
 				Tally.moveEye(".tally_eye_left", "mouse", event);
 				Tally.moveEye(".tally_eye_right", "mouse", event);
@@ -135,11 +135,11 @@ window.Tally = (function() {
 			$('#tally_wrapper').append(str);
 
 			$("#tally_character").draggable({
-				drag: function() {},
-				stop: function() {}
+				drag: function () {},
+				stop: function () {}
 			});
 
-			$(document).on("click", "#tally_dialogue_outer", function() {
+			$(document).on("click", "#tally_dialogue_outer", function () {
 				// if dialogue open let them click through it
 				Dialogue.skipToNext();
 			});
@@ -181,7 +181,7 @@ window.Tally = (function() {
 			$('.tally_stats_table').html(StatsDisplay.returnFullTable("tally"));
 
 			// show / hide stats on click
-			$('.tally_stats').on("click", function(e) {
+			$('.tally_stats').on("click", function (e) {
 				//console.log("hi",$('.tally_stats_table').css("display"));
 				if ($('.tally_stats_table').css("display") == "none")
 					$('.tally_stats_table').css({
@@ -207,7 +207,7 @@ window.Tally = (function() {
 	 */
 	function onRemove(element, onDetachCallback) {
 		try {
-			const observer = new MutationObserver(function() {
+			const observer = new MutationObserver(function () {
 				function isDetached(el) {
 					if (el.parentNode === document) {
 						//console.log("false");
@@ -260,24 +260,23 @@ window.Tally = (function() {
 	 *	- Placed outside of functions so they are only added once.
 	 */
 
-	// let mouseEnterMessage1 = false;
 	// MOUSEENTER | MOUSELEAVE
-	$(document).on('mouseenter', '#tally_character', function() {
+	$(document).on('mouseenter', '#tally_character_inner', function () {
 		interactionHandler('mouseenter');
 	});
-	$(document).on('mouseleave', '#tally_character', function() {
+	$(document).on('mouseleave', '#tally_character_inner', function () {
 		interactionHandler('mouseleave');
 	});
 
 	// ON DRAG START | DRAG | DRAG STOP
 	let dragging = false;
-	$(document).on('dragstart', '#tally_character', function() {
+	$(document).on('dragstart', '#tally_character', function () {
 		interactionHandler('dragstart');
 	});
-	$(document).on('drag', '#tally_character', function() {
+	$(document).on('drag', '#tally_character', function () {
 		// interactionHandler('drag'); // fires too often
 	});
-	$(document).on('dragstop', '#tally_character', function() {
+	$(document).on('dragstop', '#tally_character', function () {
 		interactionHandler('dragstop');
 	});
 
@@ -316,19 +315,25 @@ window.Tally = (function() {
 						});
 					}
 				} else {
-					// use random to determine what to do
-					let r = Math.random(),
-						// how often %
-						often = 1,
-						// sample dialogue
-						dialogue = {
-							"text": "Oh hi! I'm Tally!",
-							"mood": "happy"
-						};
+
+					let // % chance any dialog will show
+						chance = Math.random(),
+						// which dialogue will show
+						which = Math.random();
 					// check/update progress, after the first time then only show half the time
-					if (Progress.get("mouseEnterTally") > 0) often = 0.5;
-					// if random is > % show dialogue
-					if (r > often)
+					if (Progress.get("mouseEnterTally") > 0)
+						if (which < 0.5) chance = true;
+						else chance = false;
+					// if wearing a disguise then say something about it
+					if (chance && which < 0.25 && FS_Object.objLength(T.tally_user.disguises)) {
+						Dialogue.showData(Dialogue.getData({
+							"category": "disguise",
+							subcategory: Disguise.currentDisguiseObj.name
+						}), {
+							addIfInProcess: false,
+							instant: true
+						});
+					} else if (chance && which < 0.5)
 						Dialogue.showData(Dialogue.getData({
 							"category": "random",
 							subcategory: "greeting"
@@ -402,7 +407,7 @@ window.Tally = (function() {
 		clickInterval = null,
 		clickIntervalTime = 10;
 	// listener
-	$(document).on('click', '#tally_body, .tally_disguise', function() {
+	$(document).on('click', '#tally_body, .tally_disguise', function () {
 		try {
 			// allow offline
 			if (Page.data.mode.notActive) return;
@@ -466,16 +471,16 @@ window.Tally = (function() {
 				// initiate a disguise
 				let disguiseCount = FS_Object.objLength(T.tally_user.disguises);
 
-				if (disguiseCount < 1){
+				if (disguiseCount < 1) {
 					Dialogue.showStr("We need to beat monsters to earn disguises.", "sad");
-				} else if (disguiseCount === 1){
+				} else if (disguiseCount === 1) {
 					Dialogue.showStr("We only have one disguise.", "sad");
 					Disguise.selector(false);
-				} else if (disguiseCount === 2){
+				} else if (disguiseCount === 2) {
 					if (Progress.update("toldToBeatMonstersForDisguises", 1, "+") < 1)
 						Dialogue.showStr("Beat monsters to earn more disguises!", "neutral");
 					Disguise.selector(true);
-				} else if (disguiseCount >= 3){
+				} else if (disguiseCount >= 3) {
 					if (Progress.update("toldToBeatMonstersForDisguises", 1, "+") < 2)
 						Dialogue.showStr("Like my new disguise?", "question");
 					Disguise.selector(true);
@@ -549,13 +554,13 @@ window.Tally = (function() {
 	 *****************************************************************************/
 
 	// MENU ITEM LISTENERS
-	$(document).on('click', '.tally_showStory1', function() {
+	$(document).on('click', '.tally_showStory1', function () {
 		Tutorial.play("story1");
 	});
-	$(document).on('click', '.tally_showTutorial1', function() {
+	$(document).on('click', '.tally_showTutorial1', function () {
 		Tutorial.play("tutorial1");
 	});
-	$(document).on('click', '#tally_showMoreOptions', function() {
+	$(document).on('click', '#tally_showMoreOptions', function () {
 		showMoreOptions();
 	});
 
@@ -596,35 +601,35 @@ window.Tally = (function() {
 			 */
 
 			// launch profile
-			$(document).on('click', '.tally_profile_link', function() {
+			$(document).on('click', '.tally_profile_link', function () {
 				window.open(T.tally_meta.website + "/profile/" + T.tally_user.username);
 			});
-			$(document).on('click', '#tally_dashboard', function() {
+			$(document).on('click', '#tally_dashboard', function () {
 				window.open(T.tally_meta.website + "/dashboard");
 			});
-			$(document).on('click', '#tally_leaderboard', function() {
+			$(document).on('click', '#tally_leaderboard', function () {
 				window.open(T.tally_meta.website + "/leaderboards");
 			});
 
 			// launch start screen
-			$(document).on('click', '#tally_startScreen', function() {
+			$(document).on('click', '#tally_startScreen', function () {
 				chrome.runtime.sendMessage({
 					'action': 'openPage',
 					'url': chrome.extension.getURL('assets/pages/startScreen/startScreen.html')
 				});
 			});
-			$(document).on('click', '#tally_howToPlay', function() {
+			$(document).on('click', '#tally_howToPlay', function () {
 				window.open(T.tally_meta.website + "/how-to-play");
 			});
-			$(document).on('click', '#tally_gameTrailerBtn', function() {
+			$(document).on('click', '#tally_gameTrailerBtn', function () {
 				window.open("https://www.youtube.com/watch?v=xfsbm1cI2uo");
 			});
 
 			// nerd out
-			$(document).on('click', '#tally_privacyPolicy', function() {
+			$(document).on('click', '#tally_privacyPolicy', function () {
 				window.open(T.tally_meta.website + "/privacy");
 			});
-			$(document).on('click', '#tally_betaTestSurvey', function() {
+			$(document).on('click', '#tally_betaTestSurvey', function () {
 				window.open("https://docs.google.com/forms/d/e/1FAIpQLSeGx8zsF4aMQZH1eM0SzOvcpXijt8Bem1pzg4eni9eK8Jr-Lg/viewform");
 			});
 
@@ -671,33 +676,33 @@ window.Tally = (function() {
 			if (devOptionListenersAdded) return;
 			devOptionListenersAdded = true;
 
-			$(document).on('click', '#tally_testNearbyMonster', function() {
+			$(document).on('click', '#tally_testNearbyMonster', function () {
 				Monster.test(); // launch one of the nearby monsters
 			});
-			$(document).on('click', '#tally_battleStart', function() {
+			$(document).on('click', '#tally_battleStart', function () {
 				Battle.test();
 			});
-			$(document).on('click', '#tally_battleRumbleSmall', function() {
+			$(document).on('click', '#tally_battleRumbleSmall', function () {
 				BattleEffect.showRumble("small");
 			});
-			$(document).on('click', '#tally_battleRumbleMedium', function() {
+			$(document).on('click', '#tally_battleRumbleMedium', function () {
 				BattleEffect.showRumble("medium");
 			});
-			$(document).on('click', '#tally_battleRumbleLarge', function() {
+			$(document).on('click', '#tally_battleRumbleLarge', function () {
 				BattleEffect.showRumble("large");
 			});
-			$(document).on('click', '#tally_explodePage', function() {
+			$(document).on('click', '#tally_explodePage', function () {
 				Effect.explode();
 			});
 
-			$(document).on('click', '#tally_randomDialogue', function() {
+			$(document).on('click', '#tally_randomDialogue', function () {
 				Dialogue.random();
 			});
-			$(document).on('click', '#tally_randomConversation', function() {
+			$(document).on('click', '#tally_randomConversation', function () {
 				Dialogue.test();
 			});
 
-			$(document).on('click', '#tally_randomSkin', function() {
+			$(document).on('click', '#tally_randomSkin', function () {
 				Skin.random();
 			});
 
