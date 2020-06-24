@@ -237,7 +237,7 @@ window.Listener = (function() {
 
 					// if they don't match
 					if (_tally_secret.token != request.data.token) {
-						if (DEBUG) console.log("👂🏼 Listener.addListener() < saveToken 🔑 FOUND [1]", request.data);
+						if (DEBUG) console.log("👂🏼 Listener.addListener() < saveToken NEW 🔑 FOUND [1]", request.data);
 
 						// save new token and tokenExpires
 						_tally_secret.token = request.data.token;
@@ -256,6 +256,9 @@ window.Listener = (function() {
 									"tally_user": store("tally_user"),
 									"tally_options": store("tally_options"),
 									"tally_meta": store("tally_meta"),
+									"tally_nearby_monsters": store("tally_nearby_monsters"),
+									"tally_stats": store("tally_stats"),
+									"tally_top_monsters": store("tally_top_monsters"),
 									"message": "new"
 								});
 							});
@@ -335,7 +338,8 @@ window.Listener = (function() {
 					// and (attempt to) send data to server, response to callback
 					$.ajax({
 						type: "PUT",
-						url: _tally_meta.api + "/user/extensionUpdate",
+						// url: _tally_meta.api + "/user/extensionUpdate",
+						url: _tally_meta.api + "/user/updateTallyUser",
 						contentType: 'application/json',
 						dataType: 'json',
 						data: JSON.stringify(request.data)

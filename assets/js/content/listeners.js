@@ -11,7 +11,7 @@ window.TallyListeners = (function() {
 	SVGAnimatedString.prototype.indexOf = function() {
 		return this.baseVal.indexOf.apply(this.baseVal, arguments);
 	};
-
+ 
 
 
 	/**

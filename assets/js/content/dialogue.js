@@ -357,18 +357,21 @@ window.Dialogue = (function () {
 		try {
 
 			let inner = $('#tally_dialogue_inner').outerHeight(),
-				outer = $('#tally_dialogue_outer').outerHeight();
+				outer = $('#tally_dialogue_outer').outerHeight(),
+				boxHeight = (stringLines(text) * 15) + 28;
 
 
-			if (DEBUG) console.log("💬 Dialogue.setDialoguBoxSize() [1]", "imgHeight =", imgHeight, "inner =", inner, "outer =", outer);
-			if (imgHeight === 0) imgHeight = (stringLines(text) * 15) + 28;
-			if (DEBUG) console.log("💬 Dialogue.setDialoguBoxSize() [2]", "imgHeight =", imgHeight, "inner =", inner, "outer =", outer);
+			if (imgHeight > 0) {
+				boxHeight = imgHeight;
+				if (DEBUG) console.log("💬 Dialogue.setDialoguBoxSize() [1]", "imgHeight =", imgHeight, "inner =", inner, "outer =", outer);
+			}
+
 			// adjust size of the box
 			$('#tally_dialogue_outer').css({
 				'left': '10px',
 				'display': 'flex',
 				'opacity': 1,
-				'height': imgHeight + "px",
+				'height': boxHeight + "px",
 			});
 			// if (DEBUG) console.log("💬 Dialogue.setDialoguBoxSize()", inner,outer);
 			// if (DEBUG) console.log("💬 Dialogue.setDialoguBoxSize()", inner,outer);

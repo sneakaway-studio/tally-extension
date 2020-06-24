@@ -11,11 +11,11 @@
  *
  */
 
-window.TallyMain = (function() {
+window.TallyMain = (function () {
 	// PRIVATE
 	let DEBUG = Debug.ALL.TallyMain;
 
-	$(function() {
+	$(function () {
 		// test();
 	});
 
@@ -47,18 +47,19 @@ window.TallyMain = (function() {
 	 */
 	async function contentStartChecks() {
 		try {
-			if (DEBUG) Debug.dataReportHeader("🧰 TallyMain.contentStartChecks() [1]", "#", "before");
-			if (DEBUG) console.log('🧰 TallyMain.contentStartChecks() [1.1] -> T.tally_user.username =', T.tally_user.username);
-			// if (DEBUG) console.log('🧰 TallyMain.contentStartChecks() [1.1] -> T.tally_user =',T.tally_user);
-			// if (DEBUG) console.log('🧰 TallyMain.contentStartChecks() [1.1] -> T.tally_options =',T.tally_options);
-			// if (DEBUG) console.log('🧰 TallyMain.contentStartChecks() [1.1] -> T.tally_meta =',T.tally_meta);
-			// if (DEBUG) console.log('🧰 TallyMain.contentStartChecks() [1.1] -> T.tally_nearby_monsters =',T.tally_nearby_monsters);
-			// if (DEBUG) console.log('🧰 TallyMain.contentStartChecks() [1.1] -> T.tally_stats =',T.tally_stats);
-			// if (DEBUG) console.log('🧰 TallyMain.contentStartChecks() [1.1] -> T.tally_top_monsters =',T.tally_top_monsters);
+			let log = "🧰 TallyMain.contentStartChecks()";
+			if (DEBUG) Debug.dataReportHeader(log + " [1]", "#", "before");
+			if (DEBUG) console.log(log, '[1.1] -> T.tally_user.username =', T.tally_user.username);
+			// if (DEBUG) console.log(log, '[1.1] -> T.tally_user =',T.tally_user);
+			// if (DEBUG) console.log(log, '[1.1] -> T.tally_options =',T.tally_options);
+			// if (DEBUG) console.log(log, '[1.1] -> T.tally_meta =',T.tally_meta);
+			// if (DEBUG) console.log(log, '[1.1] -> T.tally_nearby_monsters =',T.tally_nearby_monsters);
+			// if (DEBUG) console.log(log, '[1.1] -> T.tally_stats =',T.tally_stats);
+			// if (DEBUG) console.log(log, '[1.1] -> T.tally_top_monsters =',T.tally_top_monsters);
 
 
 			// 2.1. Set the Page.data.mode
-			if (DEBUG) console.log('🧰 TallyMain.contentStartChecks() [2.1] -> SET Page.data.mode');
+			if (DEBUG) console.log(log, '[2.1] -> SET Page.data.mode');
 
 			// stop if Page.data failed
 			if (!prop(Page.data)) return console.warn("... Page.data NOT FOUND");
@@ -68,8 +69,8 @@ window.TallyMain = (function() {
 			if (Page.data.mode.notActive) return console.log(" NOT ACTIVE - Page.data.mode =", Page.data.mode);
 
 
-			// 2.2. Check for Flags (in case we need to pause and restart game with data)
-			if (DEBUG) console.log('🧰 TallyMain.contentStartChecks() [2.2] -> Check for flags');
+			// 2.2. Remove blocked trackers
+			if (DEBUG) console.log(log, '[2.2] -> Check and block trackers');
 
 			// were trackers dealt with?
 			if (FS_Object.objLength(Page.data.trackers.found) > 0 && !Tracker.blockAttempted) {
@@ -79,18 +80,27 @@ window.TallyMain = (function() {
 				// console.log("Page.data.trackers", Page.data.trackers);
 			}
 
-			// check for, and possibly execute and flags
-			let newTokenFound = await Flag.check();
-			// if token flag found we should allow restart to happen
-			if (newTokenFound) return false;
+
+			// 2.3. Check for Flags (in case we need to pause and restart game with data)
+			if (DEBUG) console.log(log, '[2.3] -> Check for flags');
+
+			// check for token on page
+			let newTokenStatus = await Flag.checkForNewToken();
+			// if token is new
+			if (newTokenStatus === "new") {
+                // stop and start game again
+                contentStartChecks();
+                return;
+            }
 			// if this is the second run after a new token found
-			else if (Page.data.tokenFound == true) {
+			else if (newTokenStatus == "updated" && Page.data.tokenFound == true) {
 				// let progress show game events
-				Progress.tokenAdded();
+				Progress.newTokenAdded();
 			}
 
+
 			// 2.3. Add stylesheets and debugger
-			if (DEBUG) console.log('🧰 TallyMain.contentStartChecks() [2.3] -> Add game requirements');
+			if (DEBUG) console.log(log, '[2.3] -> Add game requirements');
 
 			// add required CSS for game
 			FS_String.insertStylesheets();
@@ -160,7 +170,7 @@ window.TallyMain = (function() {
 			// - the game can run using the background only, for example, if token is broken or server is offline
 			if (!T.tally_meta.server.online) {
 				if (DEBUG) console.log(log + "Connection to Tally server is down");
-				mode.serverOffline = 1;
+				mode.serverOffline = 1; 
 			}
 
 			// NO TOKEN
@@ -249,7 +259,7 @@ window.TallyMain = (function() {
 
 
 			// checks to perform after user has interacted with page
-			setTimeout(function() {
+			setTimeout(function () {
 
 				if (DEBUG) console.log("🧰 TallyMain.startGameOnPage() [4.3] -> Check progress");
 				// check for, and possibly complete any progress
@@ -264,7 +274,7 @@ window.TallyMain = (function() {
 				Badge.check();
 
 				// after a bit more time
-				setTimeout(function() {
+				setTimeout(function () {
 					if (DEBUG) console.log("🧰 TallyMain.startGameOnPage() [4.5] -> Check monsters");
 					// check for, and potentially add monsters on the page
 					// MonsterCheck.check();
@@ -278,7 +288,7 @@ window.TallyMain = (function() {
 			// ?
 			// should be done in bg?
 			// check for, and potentially execute and flags from server (from previous update)
-			// checkForServerFlags();
+			// Flag.checkFromServer();
 
 
 		} catch (err) {
@@ -288,57 +298,6 @@ window.TallyMain = (function() {
 
 
 
-	/**
-	 *	Check for flags from server
-	 */
-	function checkForServerFlags() {
-		try {
-			// are there flags?
-			if (!FS_Object.prop(T.tally_user.flags) || FS_Object.isEmpty(T.tally_user.flags)) return;
-			if (DEBUG) console.log("🧰 TallyMain.checkForServerFlags() 🚩", T.tally_user.flags);
-			// address individual flags...
-
-			// SERVER SAYS: we have leveled up!
-			if (FS_Object.prop(T.tally_user.flags.levelUp)) {
-				// make sure we have this flag in GameData
-				if (!FS_Object.prop(GameData.flags.levelUp))
-					return console.warn("Flag does not exist in GameData.");
-				// // update stats
-				// Stats.reset("tally");
-				// tell user
-				setTimeout(function() {
-					Dialogue.showStr(GameData.flags.levelUp.dialogue, GameData.flags.levelUp.mood);
-					// remove flag once handled
-					remove("levelUp");
-				}, 300);
-			}
-			// SERVER SAYS: we have received a new attack
-			// might do this locally instead
-			if (FS_Object.prop(T.tally_user.flags.newAttack)) {
-				// remove flag once handled
-			}
-
-		} catch (err) {
-			console.error(err);
-		}
-	}
-
-
-	function removeFlag(name) {
-		// confirm it exists
-		if (FS_Object.prop(T.tally_user.flags[name])) {
-			// get flag
-			let flag = T.tally_user.flags[name];
-			// mark as deleted
-			flag.status = "delete";
-			// remove it from T.tally_user
-			delete T.tally_user.flags[name];
-			// save in background
-			TallyStorage.saveData("tally_user", T.tally_user, "🧰 TallyMain.removeFlag()");
-			// save in background (and on server)
-			TallyData.queue("itemData", "flags", flag, "🧰 TallyMain.removeFlag()");
-		}
-	}
 
 
 
@@ -346,7 +305,6 @@ window.TallyMain = (function() {
 	return {
 		getPageMode: getPageMode,
 		contentStartChecks: contentStartChecks,
-		startGameOnPage: startGameOnPage,
-		checkForServerFlags: checkForServerFlags
+		startGameOnPage: startGameOnPage
 	};
 }());

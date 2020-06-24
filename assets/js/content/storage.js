@@ -156,37 +156,37 @@ window.TallyStorage = (function() {
 			// do not allow if server offline
 			if (Page.data.mode.serverOffline) return;
 
-			if (DEBUG) console.log('🗄️ < TallyStorage.saveTokenFromDashboard() [1] 🔑 SAVING', data);
+			if (DEBUG) console.log('🗄️ < TallyStorage.saveTokenFromDashboard() [1] 🔑 CHECKING ...', data);
 
 			chrome.runtime.sendMessage({
 				'action': 'saveToken',
 				'data': data
 			}, function(response) {
+				if (DEBUG) console.log('🗄️ > TallyStorage.saveTokenFromDashboard() [2] 🔑 response =', response);
 
 				// if the token was different and it was updated ...
 				if (response.message === "new") {
-					if (DEBUG) console.log('🗄️ > TallyStorage.saveTokenFromDashboard() [2] 🔑 IS NEW', response);
+					if (DEBUG) console.log('🗄️ > TallyStorage.saveTokenFromDashboard() [3] 🔑 IS NEW response.message =', response.message);
 
 					// update all objects
 					T.tally_user = response.tally_user;
 					T.tally_options = response.tally_options;
 					T.tally_meta = response.tally_meta;
+					T.tally_nearby_monsters = response.tally_nearby_monsters;
+					T.tally_stats = response.tally_stats;
+					T.tally_top_monsters = response.tally_top_monsters;
 
 
-					// update Page.data.mode
-					Page.data.mode = TallyMain.getPageMode();
-					// run game again
-					TallyMain.contentStartChecks();
-
-					// let caller know to restart
-					return true;
+					// let caller know to stop
+					return "new";
 
 				} else if (response.message === "same") {
-					if (DEBUG) console.log('🗄️ > TallyStorage.saveTokenFromDashboard() [3] 🔑 IS THE SAME', response);
+					if (DEBUG) console.log('🗄️ > TallyStorage.saveTokenFromDashboard() [4] 🔑 IS THE SAME response.message =', response.message);
+					return "same";
 				} else {
-					if (DEBUG) console.log('🗄️ > TallyStorage.saveTokenFromDashboard() [4] 🔑 FAILED', response);
+					if (DEBUG) console.log('🗄️ > TallyStorage.saveTokenFromDashboard() [5] 🔑 FAILED response.message =', response.message);
+					return "error";
 				}
-				return false;
 			});
 		} catch (err) {
 			console.error(err);
@@ -329,8 +329,8 @@ window.TallyStorage = (function() {
 				"\n T.tally_options =", T.tally_options,
 				"\n T.tally_meta =", T.tally_meta,
 				"\n T.tally_nearby_monsters =", T.tally_nearby_monsters,
-				"\n T.tally_top_monsters =", T.tally_top_monsters,
-				"\n T.tally_stats =", T.tally_stats
+				"\n T.tally_stats =", T.tally_stats,
+				"\n T.tally_top_monsters =", T.tally_top_monsters
 			);
 		});
 

@@ -23,11 +23,12 @@ window.Background = (function() {
 	/**
 	 *  2. Run start checks
 	 *	- always called on new install or update
-	 * 	- checks for previous install, verifies token, gets latest server data
+	 * 	- checks for previous install, verifies user, gets latest server data
 	 */
 	async function runStartChecks() {
 		try {
-			dataReportHeader("🧰 Background.runStartChecks()", "@", "before");
+			let log = "🧰 Background.runStartChecks()";
+			dataReportHeader(log, "@", "before");
 			Config.logTimeSinceLoad("Background.runStartChecks() [1]");
 
 			// if T.tally_meta not found, install objects
@@ -42,13 +43,14 @@ window.Background = (function() {
 			const serverOnline = await Server.checkIfOnline();
 
 
-			Config.logTimeSinceLoad("Background.runStartChecks() [2]");
+			Config.logTimeSinceLoad(log, "[2]");
 
 			// if server online ...
 			if (serverOnline) {
-				console.log("🧰 Background.runStartChecks() -> SERVER ONLINE!");
+				console.log(log, "-> SERVER ONLINE!");
 
 				let tally_secret = await store("tally_secret");
+				console.log(log, "-> CHECKING TOKEN ...");
 
 				// if a token exists
 				if (tally_secret.token) {
@@ -56,35 +58,35 @@ window.Background = (function() {
 					const tokenResponse = await Server.verifyToken();
 					// if token is valid
 					if (tokenResponse) {
-						console.log("🧰 Background.runStartChecks() -> TOKEN VALID");
+						console.log(log, "-> TOKEN VALID");
 						// wait to refresh T.tally_user data from server
 						const tallyUserResponse = await Server.getTallyUser();
 						// now we know the username and we can pass it to populate monsters
 						const _tally_top_monsters = await Server.returnTopMonsters();
 
-						dataReportHeader("END 🧰 Background.runStartChecks()", "@", "after");
+						dataReportHeader("END " + log, "@", "after");
 						// return true to send data back to content
 						if (tallyUserResponse) return true;
 						return false;
 					} else {
-						console.log("🧰 Background.runStartChecks() -> TOKEN NOT VALID");
+						console.log(log, "-> TOKEN NOT VALID");
 						// token not valid
-						dataReportHeader("/ 🧰 Background.runStartChecks()", "@", "after");
+						dataReportHeader("/ " + log, "@", "after");
 					}
 				}
 				// no token exists because it is a new install
 				else if (newInstall) {
-					console.log("🧰 Background.runStartChecks() -> NEW INSTALL, LAUNCH START SCREEN");
+					console.log(log, "-> NEW INSTALL, LAUNCH START SCREEN");
 					// prompt to get token
 					const response = await Install.launchStartScreen();
-					dataReportHeader("/ 🧰 Background.runStartChecks()", "@", "after");
+					dataReportHeader("/ " + log, "@", "after");
 				} else {
-					console.log("🧰 Background.runStartChecks() -> NO TOKEN");
-					dataReportHeader("END 🧰 Background.runStartChecks()", "@", "after");
+					console.log(log, "-> NO TOKEN");
+					dataReportHeader("END " + log, "@", "after");
 				}
 			} else {
-				console.error("🧰 Background.runStartChecks() -> API SERVER NOT ONLINE");
-				dataReportHeader("END 🧰 Background.runStartChecks()", "@", "after");
+				console.error(log, "-> API SERVER NOT ONLINE");
+				dataReportHeader("END " + log, "@", "after");
 			}
 			console.log("END OF runStartChecks()");
 

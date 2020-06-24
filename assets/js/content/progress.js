@@ -311,16 +311,16 @@ window.Progress = (function() {
 	/**
 	 *	User adds or updates token
 	 */
-	function tokenAdded() {
+	function newTokenAdded() {
 		try {
-			if (DEBUG) console.log("🕹️ Progress.tokenAdded() [1] -> 🔑 SAVED");
+			if (DEBUG) console.log("🕹️ Progress.newTokenAdded() [1] -> 🔑");
 
 			// increment counter
 			let tokenCount = update("tokenAdded", 1, "+");
 
 			// 1. if this is the first time user is saving a token
 			if (update("tokenAddedWelcomeMessage", 1, "+") < 1 && tokenCount < 1) {
-				if (DEBUG) console.log("🕹️ Progress.tokenAdded() [2] -> 🔑 FIRST");
+				if (DEBUG) console.log("🕹️ Progress.newTokenAdded() [2] -> 🔑 FIRST");
 				playIntroduction();
 				playTokenUpdated();
 				playDashboardIntro();
@@ -328,7 +328,7 @@ window.Progress = (function() {
 			}
 			// if user has been here before
 			else {
-				if (DEBUG) console.log("🕹️ Progress.tokenAdded() [3] -> 🔑 RENEW");
+				if (DEBUG) console.log("🕹️ Progress.newTokenAdded() [3] -> 🔑 UPDATED");
 				playTokenUpdated();
 				playLetsGetTrackers();
 			}
@@ -407,7 +407,7 @@ window.Progress = (function() {
 		get: get,
 		update: update,
 		check: check,
-		tokenAdded: tokenAdded,
+		newTokenAdded: newTokenAdded,
 		get pageTagsProgressMatches() {
 			return pageTagsProgressMatches;
 		}

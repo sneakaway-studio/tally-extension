@@ -1,6 +1,6 @@
 "use strict";
 
-window.Server = (function() {
+window.Server = (function () {
 	// PRIVATE
 
 	let DEBUG = true;
@@ -65,13 +65,17 @@ window.Server = (function() {
 				"prompts": 0,
 				"status": ""
 			};
+		console.log("📟 Server.verifyToken() [1]", JSON.stringify(_tally_secret));
 
 		// return early if !server
-		if (!_tally_meta.server.online) return false;
+		if (!_tally_meta.server.online) {
+			console.log("📟 Server.verifyToken() [2] SERVER NOT ONLINE");
+			return false;
+		}
 
 		// if a token does not exist
 		if (!_tally_secret.token || _tally_secret.token == "") {
-			console.log("📟 Server.verifyToken() 🔑 -> NO TOKEN", JSON.stringify(_tally_secret), _tally_meta);
+			console.log("📟 Server.verifyToken() [3] 🔑 -> NO TOKEN", JSON.stringify(_tally_secret), _tally_meta);
 			_tally_meta.token = _token;
 			await store("tally_meta", _tally_meta);
 			return false;
@@ -85,10 +89,11 @@ window.Server = (function() {
 			contentType: 'application/json',
 			dataType: 'json',
 			data: JSON.stringify({
-				"token": _tally_secret.token
+				"token": _tally_secret.token,
+				"found": "dashboard"
 			})
 		}).done(result => {
-			console.log("📟 Server.verifyToken() DONE 🔑 -> result", result);
+			console.log("📟 Server.verifyToken() [4] DONE 🔑 -> result", result);
 
 			// check and save milliseconds until expires
 			if (result.tokenExpires) {
@@ -111,7 +116,7 @@ window.Server = (function() {
 				// console.log("📟 Server.verifyToken() DONE 🔑 -> EXPIRED", _token);
 			}
 			return true;
-		}).fail(function(jqXHR, textStatus, errorThrown) {
+		}).fail(function (jqXHR, textStatus, errorThrown) {
 			_token.status = "fail";
 			console.error("📟 Server.verifyToken() FAIL 🔑 -> result =", jqXHR, textStatus, errorThrown, _token);
 			return false;
@@ -181,7 +186,7 @@ window.Server = (function() {
 					"token": _tally_secret.token
 				})
 			}).done(result => {
-				if (DEBUG) console.log("📟 Server.getTallyUser() DONE %c" + JSON.stringify(result.username), Debug.styles.greenbg );
+				if (DEBUG) console.log("📟 Server.getTallyUser() DONE %c" + JSON.stringify(result.username), Debug.styles.greenbg);
 				// merge attack data from server with T.tally_user data properties
 				result.attacks = Server.mergeAttackDataFromServer(result.attacks);
 
