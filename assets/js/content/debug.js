@@ -8,60 +8,60 @@ window.Debug = (function() {
 
 	let DEBUG = true,
 		ALL = {
-			"Badge": true,
+			Account: true,
+			Badge: true,
 
 			// battles
-			"BattleAttack": true,
-			"BattleConsole": false,
-			"BattleEffect": false,
-			"BattleMath": true,
-			"BattleTest": true,
-			"Battle": true,
+			BattleAttack: true,
+			BattleConsole: false,
+			BattleEffect: false,
+			BattleMath: true,
+			BattleTest: true,
+			Battle: true,
 
-			"Consumable": true,
-			"Core": false,
-			"Debug": true,
-			"Demo": true,
-			"Dialogue": true,
-			"Disguise": true,
-			"Effect": true,
-			"Flag": true,
-			"TallyEvents": true,
-			"Interface": true,
-			"Item": true,
+			Consumable: true,
+			Core: false,
+			Debug: true,
+			Demo: true,
+			Dialogue: true,
+			Disguise: true,
+			Effect: true,
+			Flag: true,
+			TallyEvents: true,
+			Interface: true,
+			Item: true,
 
 			// monsters
-			"MonsterAward": false,
-			"MonsterCheck": true,
-			"Monster": true,
+			MonsterAward: false,
+			MonsterCheck: true,
+			Monster: true,
 
-			"Onboarding": true,
-			"Page": true,
-			"Progress": true,
+			Onboarding: true,
+			Page: true,
+			Progress: true,
 
-			"Sound": true,
-			"StatsDisplay": false,
-			"Stats": false,
-			"Skin": true,
+			Sound: true,
+			StatsDisplay: false,
+			Stats: false,
+			Skin: true,
 
-			"Tally": true,
-			"TallyData": true,
-			"TallyListeners": false,
-			"TallyInit": true,
-			"TallyMain": true,
-			"TallyStorage": true,
-			"Token": true,
-			"Tracker": true,
-			"Tutorial": true
+			Tally: true,
+			TallyData: true,
+			TallyListeners: false,
+			TallyInit: true,
+			TallyMain: true,
+			TallyStorage: true,
+			Tracker: true,
+			Tutorial: true
 		},
 		debugButtonListenersAdded = false;
 
 	// https://coderwall.com/p/fskzdw/colorful-console-log
 	let styles = {
-		"redbg": 'background: red; color: white; display: block;',
-		"greenbg": 'background: green; color: white; display: block;',
-		"blue": 'color: blue; display: block;',
-		"purple": 'color: purple; display: block;'
+		redbg: 'background: red; color: white; display: block;',
+		greenbg: 'background: green; color: white; display: block;',
+		blue: 'color: blue; display: block;',
+		purple: 'color: purple; display: block;'
 	};
 
 	/**
@@ -224,8 +224,8 @@ window.Debug = (function() {
 			});
 			$(document).on("click", '#resetTallyUserFromServer', function() {
 				if (DEBUG) console.log("🐞 Debug.update() -> resetTallyUser()");
-				// call without token data (assume it is fine)
-				// TallyStorage.resetTallyUser();
+				// attempt reset
+				TallyStorage.resetTallyUser();
 			});
 
 		} catch (err) {

@@ -10,7 +10,7 @@ window.TallyStorage = (function() {
 
 
 	/**
-	 *	Get data from API
+	 *	Get data from API - used for random urls for demo 
 	 */
 	function getDataFromServer(url, callback) {
 		try {
@@ -107,9 +107,9 @@ window.TallyStorage = (function() {
 	 *	Save T.tally_user in content / background
 	 * 	- a.k.a. "resetUser", "resetGame"
 	 */
-	function resetTallyUser(tokenOnPage = false, tokenData = {}) {
+	function resetTallyUser() {
 		try {
-			if (DEBUG) console.log("🗄️ < TallyStorage.resetTallyUser()", tokenOnPage, tokenData);
+			if (DEBUG) console.log("🗄️ < TallyStorage.resetTallyUser() [1]");
 
 			// if we already ran
 			if (Page.data.resetTallyUserCalled)
@@ -117,16 +117,10 @@ window.TallyStorage = (function() {
 			// so we only check this once and don't check again
 			Page.data.resetTallyUserCalled = true;
 
-
-			if (DEBUG) console.log("🗄️ < TallyStorage.resetTallyUser()", tokenOnPage, tokenData);
-
 			chrome.runtime.sendMessage({
-				'action': 'resetTallyUser',
-				'tokenOnPage': tokenOnPage,
-				'tokenData': tokenData
+				'action': 'resetTallyUser'
 			}, function(response) {
-				if (DEBUG) console.log("🗄️ > TallyStorage.resetTallyUser() RESPONSE =", response);
-
+				if (DEBUG) console.log("🗄️ > TallyStorage.resetTallyUser() [2] RESPONSE =", response);
 
 				// update all objects
 				T.tally_user = response.tally_user;
@@ -146,54 +140,6 @@ window.TallyStorage = (function() {
 
 
 
-
-	/**
-	 *	Save token in background and run
-	 * 	- Runs Background.runStartChecks()
-	 */
-	async function saveTokenFromDashboard(data) {
-		try {
-			// do not allow if server offline
-			if (Page.data.mode.serverOffline) return;
-
-			if (DEBUG) console.log('🗄️ < TallyStorage.saveTokenFromDashboard() [1] 🔑 CHECKING ...', data);
-
-			chrome.runtime.sendMessage({
-				'action': 'saveToken',
-				'data': data
-			}, function(response) {
-				if (DEBUG) console.log('🗄️ > TallyStorage.saveTokenFromDashboard() [2] 🔑 response =', response);
-
-				// if the token was different and it was updated ...
-				if (response.message === "new") {
-					if (DEBUG) console.log('🗄️ > TallyStorage.saveTokenFromDashboard() [3] 🔑 IS NEW response.message =', response.message);
-
-					// update all objects
-					T.tally_user = response.tally_user;
-					T.tally_options = response.tally_options;
-					T.tally_meta = response.tally_meta;
-					T.tally_nearby_monsters = response.tally_nearby_monsters;
-					T.tally_stats = response.tally_stats;
-					T.tally_top_monsters = response.tally_top_monsters;
-
-
-					// let caller know to stop
-					return "new";
-
-				} else if (response.message === "same") {
-					if (DEBUG) console.log('🗄️ > TallyStorage.saveTokenFromDashboard() [4] 🔑 IS THE SAME response.message =', response.message);
-					return "same";
-				} else {
-					if (DEBUG) console.log('🗄️ > TallyStorage.saveTokenFromDashboard() [5] 🔑 FAILED response.message =', response.message);
-					return "error";
-				}
-			});
-		} catch (err) {
-			console.error(err);
-		}
-	}
-
-
 	function setBadgeText(data) {
 		try {
 			chrome.runtime.sendMessage({
@@ -207,25 +153,8 @@ window.TallyStorage = (function() {
 		}
 	}
 
-// MARKED FOR DELETION
-	// const getUserPromise = new Promise(
-	// 	(resolve, reject) => {
-	// 		Config.logTimeSinceLoad("TallyStorage.getUserPromise() (creating promise)[1]");
-	// 		chrome.runtime.sendMessage({
-	// 			'action': 'getUser'
-	// 		}, function(response) {
-	// 			Config.logTimeSinceLoad("TallyStorage.getUserPromise() (response received) [2]");
-	// 			if (DEBUG) console.log('🗄️ >>>>> getUserPromise()', JSON.stringify(response.data));
-	// 			T.tally_user = response.data; // store data
-	// 			Config.logTimeSinceLoad("TallyStorage.getUserPromise() (T.tally_user stored) [3]");
-	// 			resolve(response.data); // resolve promise
-	// 			Config.logTimeSinceLoad("TallyStorage.getUserPromise() (promise resolved) [4]");
-	// 		});
-	// 	}
-	// );
 
-
-	let startupPromises = [], // arrays to hold all startupPromises
+	let startupPromises = [], // array to hold all startupPromises
 		startupPromiseNames = []; // data objects to load
 
 	/**
@@ -347,7 +276,6 @@ window.TallyStorage = (function() {
 		getData: getData,
 		saveData: saveData,
 		saveTallyUser: saveTallyUser,
-		saveTokenFromDashboard: saveTokenFromDashboard,
 		setBadgeText: setBadgeText,
 		resetTallyUser: resetTallyUser
 	};

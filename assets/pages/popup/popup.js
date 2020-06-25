@@ -38,7 +38,7 @@ function init() {
 		}, function(response) {
 			console.log("getMeta()",JSON.stringify(response.data));
 			_tally_meta = response.data;
-			if (_tally_meta.token.status != "ok") {
+			if (!_tally_meta.userLoggedIn) {
 				// display only the login
 				let str = "<a href='" + _tally_meta.website + "/dashboard" + "' target='_blank'>Link your Tally account</a>";
 				$(".content").html(str);
@@ -258,8 +258,7 @@ function createPopupBackgroundUpdate() {
 				"trackers": [],
 			},
 			"scoreData": {},
-			"pageData": {},
-			"token": "INSERT_IN_BACKGROUND",
+			"pageData": {}
 		};
 	} catch (err) {
 		console.error(err);
@@ -383,15 +382,13 @@ function getMeta(callback) {
 			//console.log("getMeta()",JSON.stringify(response.data));
 			_tally_meta = response.data;
 
-			$("#tokenStatus").html(_tally_meta.token.status);
-			$("#tokenExpiresDate").html((_tally_meta.token.expiresDate ? _tally_meta.token.expiresDate : "null"));
-			$("#tokenExpiresInMillis").html((_tally_meta.token.expiresInMillis ? _tally_meta.token.expiresInMillis : "null"));
 			$("#serverStatus").html((_tally_meta.server.online ? "yes" : "no"));
+			$("#loggedInStatus").html((_tally_meta.userLoggedIn ? "yes" : "no"));
 			$("#currentAPI").html((_tally_meta.currentAPI ? _tally_meta.currentAPI : "null"));
 			$("#api").html((_tally_meta.api ? _tally_meta.api : "null"));
 
 
-			$("#installedOn").html(_tally_meta.installedOn);
+			$("#installedOn").html(_tally_meta.install.date);
 			$("#version").html(_tally_meta.version);
 
 			// callback
@@ -539,9 +536,6 @@ document.getElementById("opt_close").onclick = function() {
 };
 
 // external links
-$(document).on('click', '#updateTokenBtn', function() {
-	window.open(_tally_meta.website + "/signin");
-});
 $(document).on('click', '#viewProfileBtn', function() {
 	window.open(_tally_meta.website + "/profile/" + _tally_user.username);
 });

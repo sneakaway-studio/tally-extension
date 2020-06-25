@@ -98,7 +98,7 @@
             "assets/data/skin-data.js",
 
             "assets/js/content/item.js",
-            "assets/js/content/token.js",
+            "assets/js/content/account.js",
             "assets/js/content/data.js",
             "assets/js/content/flag.js",
             "assets/js/content/core.js",

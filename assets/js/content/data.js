@@ -84,7 +84,6 @@ window.TallyData = (function() {
 					"url": Page.data.url
 				},
 				"timezone": Intl.DateTimeFormat().resolvedOptions().timeZone || "",
-				"token": "INSERT_IN_BACKGROUND",
 				"userAgent": navigator.userAgent || "",
 			};
 		} catch (err) {
@@ -117,7 +116,7 @@ window.TallyData = (function() {
 			};
 
 			if (DEBUG) console.log(log, "backgroundUpdateEdits =", backgroundUpdateEdits,
-				"backgroundUpdate =", backgroundUpdate, 
+				"backgroundUpdate =", backgroundUpdate,
 				"unit =", unit);
 			// console.trace();
 

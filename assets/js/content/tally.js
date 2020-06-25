@@ -458,10 +458,10 @@ window.Tally = (function () {
 		try {
 			if (clickCount <= 0) return;
 
-			// if server online but no token then show prompt
-			if (Page.data.mode.noToken && window.tallyTokenPrompt < 10) {
-				window.tallyTokenPrompt++;
-				Dialogue.showStr(Token.returnPrompt(), "sad");
+			// if server online but they aren't logged in then show prompt
+			if (!Page.data.mode.loggedIn && window.tallyLoginPrompts < 10) {
+				window.tallyLoginPrompts++;
+				Dialogue.showStr(Account.returnPrompt(), "sad");
 				return;
 			}
 
