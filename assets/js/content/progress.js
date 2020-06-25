@@ -79,6 +79,8 @@ window.Progress = (function () {
 	 */
 	function get(name) {
 		try {
+			if (!T.tally_user || !T.tally_user.progress) return 0;
+
 			// if (DEBUG) console.log("🕹️ Progress.get() [1]", name);
 			// if (DEBUG) console.log("🕹️ Progress.get()", name, T.tally_user, FS_Object.prop(T.tally_user));
 			// if (DEBUG) console.log("🕹️ Progress.get()", name, T.tally_user.progress, FS_Object.prop(T.tally_user.progress));
@@ -113,6 +115,7 @@ window.Progress = (function () {
 			if (Page.data.mode.notActive) return;
 			// don't allow if mode disabled or stealth
 			if (T.tally_options.gameMode === "disabled") return;
+			if (!T.tally_user || !T.tally_user.progress) return 0;
 
 			// if (DEBUG) console.log("🕹️ Progress.update() [1]", name);
 
@@ -275,7 +278,7 @@ window.Progress = (function () {
 			console.error(err);
 		}
 	}
-	createScrollListeners();
+
 
 	/**
 	 *	Count tags on the page
@@ -288,6 +291,7 @@ window.Progress = (function () {
 				matches = 0;
 			// loop through all badges that have tags...
 			for (var badgeName in Badges.data) {
+				/* jshint loopfunc: true */
 				// if (DEBUG) console.log("🕹️ Progress.countPageTags() [2] badgeName =", badgeName, "Badges.data[badgeName] =", Badges.data[badgeName]);
 				// if tags AND tagProgress
 				if (!Badges.data[badgeName].tags || !Badges.data[badgeName].tagProgress) continue;
@@ -315,14 +319,12 @@ window.Progress = (function () {
 	 */
 	function accountLogin() {
 		try {
-			if (DEBUG) console.log("🕹️ Progress.accountLogin() [1] -> 🔑");
-
 			// increment counter
 			let accountLogins = update("accountLogins", 1, "+");
+			if (DEBUG) console.log("🕹️ Progress.accountLogin() -> accountLogins =", accountLogins);
 
 			// 1. if this is the first time user is logging in
-			if (update("accountCreatedWelcomeMessage", 1, "+") < 1 && accountLogins < 3) {
-				if (DEBUG) console.log("🕹️ Progress.accountLogin() [2] -> 🔑 FIRST");
+			if (accountLogins < 3 && update("accountCreatedWelcomeMessage", 1, "+")) {
 				playIntroduction();
 				playAccountUpdated();
 				playDashboardIntro();
@@ -330,7 +332,6 @@ window.Progress = (function () {
 			}
 			// if user has been here before
 			else {
-				if (DEBUG) console.log("🕹️ Progress.accountLogin() [3] -> 🔑 UPDATED");
 				playAccountUpdated();
 				playLetsGetTrackers();
 			}
@@ -412,6 +413,7 @@ window.Progress = (function () {
 		accountLogin: accountLogin,
 		get pageTagsProgressMatches() {
 			return pageTagsProgressMatches;
-		}
+		},
+		createScrollListeners: createScrollListeners
 	};
 }());

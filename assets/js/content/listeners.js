@@ -11,7 +11,7 @@ window.TallyListeners = (function() {
 	SVGAnimatedString.prototype.indexOf = function() {
 		return this.baseVal.indexOf.apply(this.baseVal, arguments);
 	};
- 
+
 
 
 	/**
@@ -214,9 +214,6 @@ window.TallyListeners = (function() {
 				// update stats display
 				StatsDisplay.updateDisplay("tally");
 
-				return;
-								// check progress
-								Progress.check("TallyListeners");
 
 
 			}

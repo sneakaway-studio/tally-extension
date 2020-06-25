@@ -89,7 +89,7 @@ window.Tally = (function () {
 			// don't allow if mode disabled or stealth
 			if (T.tally_options.gameMode === "disabled" || T.tally_options.gameMode === "stealth") return;
 
-			if (DEBUG) console.log("%c   Tally.addCharacter()", TallyInit.tallyConsoleIcon);
+			if (DEBUG) console.log("%c   Tally.addCharacter()", Debug.tallyConsoleIcon);
 
 			// only show Tally if game mode == full
 			if (!prop(T.tally_options) || !T.tally_options.showTally) return;
@@ -144,7 +144,7 @@ window.Tally = (function () {
 				Dialogue.skipToNext();
 			});
 
-			if (DEBUG) console.log("%c   Tally.addCharacter()", TallyInit.tallyConsoleIcon, T.tally_user, T.tally_options, Page.data.mode);
+			if (DEBUG) console.log("%c   Tally.addCharacter()", Debug.tallyConsoleIcon, T.tally_user, T.tally_options, Page.data.mode);
 
 			// do not allow unless fully active
 			if (!Page.data.mode.active) return;
@@ -164,7 +164,7 @@ window.Tally = (function () {
 	 */
 	function addStats() {
 		try {
-			if (DEBUG) console.log("%c   Tally.addStats()", TallyInit.tallyConsoleIcon, "T.tally_stats =", T.tally_stats);
+			if (DEBUG) console.log("%c   Tally.addStats()", Debug.tallyConsoleIcon, "T.tally_stats =", T.tally_stats);
 
 			// if stats is empty (game just installed)
 			if (FS_Object.isEmpty(T.tally_stats)) {
@@ -293,7 +293,7 @@ window.Tally = (function () {
 			// don't allow if mode disabled
 			if (T.tally_options.gameMode === "disabled") return;
 
-			if (DEBUG) console.log("%c   Tally.interactionHandler()", TallyInit.tallyConsoleIcon, interaction,
+			if (DEBUG) console.log("%c   Tally.interactionHandler()", Debug.tallyConsoleIcon, interaction,
 				"Tutorial.sequenceActive", Tutorial.sequenceActive);
 			if (Tutorial.sequenceActive == true) {
 				return;
@@ -301,7 +301,7 @@ window.Tally = (function () {
 
 			// MOUSE ENTER
 			if (interaction === 'mouseenter') {
-				if (DEBUG) console.log("%c   Tally.interactionHandler()", TallyInit.tallyConsoleIcon, interaction);
+				if (DEBUG) console.log("%c   Tally.interactionHandler()", Debug.tallyConsoleIcon, interaction);
 
 				// the first time
 				if (Progress.update("mouseEnterTally", 1, "+") < 1) {
@@ -344,7 +344,7 @@ window.Tally = (function () {
 				}
 
 			} else if (interaction === 'mouseleave') {
-				if (DEBUG) console.log("%c   Tally.interactionHandler()", TallyInit.tallyConsoleIcon, interaction);
+				if (DEBUG) console.log("%c   Tally.interactionHandler()", Debug.tallyConsoleIcon, interaction);
 
 				// update progress
 				if (Progress.update("mouseLeaveTally", 1, "+") < 3) {
@@ -356,7 +356,7 @@ window.Tally = (function () {
 
 			// do allow dragging though
 			else if (interaction === 'dragstart') {
-				if (DEBUG) console.log("%c   Tally.interactionHandler()", TallyInit.tallyConsoleIcon, interaction);
+				if (DEBUG) console.log("%c   Tally.interactionHandler()", Debug.tallyConsoleIcon, interaction);
 				if (!dragging) {
 					if (!draggedOnce) {
 						Dialogue.showData(Dialogue.getData({
@@ -373,7 +373,7 @@ window.Tally = (function () {
 			} else if (interaction === 'drag') {
 				// called repeately
 			} else if (interaction === 'dragstop') {
-				if (DEBUG) console.log("%c   Tally.interactionHandler()", TallyInit.tallyConsoleIcon, interaction);
+				if (DEBUG) console.log("%c   Tally.interactionHandler()", Debug.tallyConsoleIcon, interaction);
 				// reset flag
 				dragging = false;
 				// update progress

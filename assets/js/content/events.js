@@ -26,8 +26,9 @@ window.TallyEvents = (function() {
 
 				// check if user is online
 				userOnlineInt: setInterval(function() {
-
-				}, 5 * 1000),
+					T.tally_meta.userOnline = navigator.onLine;
+					TallyStorage.saveData("tally_meta", T.tally_meta);
+				}, 60 * 60 * 1000),
 
 			};
 		} catch (err) {

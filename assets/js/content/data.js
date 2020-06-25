@@ -274,6 +274,7 @@ window.TallyData = (function() {
 
 			if (DEBUG) console.log("💾 TallyData.pushUpdate() [1]", backgroundUpdate,
 				// "backgroundUpdateEditors =",backgroundUpdateEditors
+				"T.tally_meta.userLoggedIn =",T.tally_meta.userLoggedIn
 			);
 
 			// checks before sending the update
@@ -287,14 +288,31 @@ window.TallyData = (function() {
 				'data': backgroundUpdate
 			}, function(response) {
 				if (DEBUG) console.log('💾 > TallyData.pushUpdate() [2] RESPONSE =', response);
-				// update T.tally_user in content
-				T.tally_user = response.tally_user;
 
-				// ??
-				// it is also possible one of the following is true and we need to reset a few other things
-				// 1. during development switching users for testing
-				// 2. a user resets their data but continues to play
-				// Stats.reset("tally");
+				// if update was successful
+				if (response.message === 1 || response.tally_user.username ){
+					// update T.tally_user in content
+					T.tally_user = response.tally_user;
+				}
+				// otherwise one of the following may be true
+				// - user may have lost connection
+				// - user logged out
+				// - user reset their data
+				// - player switched user accounts (probably in development only)
+				else {
+					T.tally_meta.userLoggedIn = 0;
+					// set Page.data.mode
+					Page.data.mode = TallyMain.getPageMode();
+						// Stats.reset("tally");
+				}
+
+
+
+				if (DEBUG) console.log("💾 TallyData.pushUpdate() [3]", 
+					// "backgroundUpdateEditors =",backgroundUpdateEditors
+					"T.tally_meta.userLoggedIn =",T.tally_meta.userLoggedIn
+				);
+
 
 				// update debugger
 				Debug.update();

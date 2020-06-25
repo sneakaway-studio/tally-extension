@@ -1,6 +1,6 @@
 "use strict";
 
-window.Page = (function() {
+window.Page = (function () {
 	// PRIVATE
 	let DEBUG = Debug.ALL.Page,
 		data = getData();
@@ -138,7 +138,7 @@ window.Page = (function() {
 				tags: [],
 				time: 0,
 				title: getTitle() || "",
-				resetTallyUserCalled: false,
+				resetTallyUserFromServerCalled: false,
 				trackers: {
 					blocked: {},
 					found: {},
@@ -191,7 +191,7 @@ window.Page = (function() {
 			// don't allow if mode disabled
 			if (T.tally_options.gameMode === "disabled") return;
 
-			new MutationObserver(function(mutations) {
+			new MutationObserver(function (mutations) {
 				if (DEBUG) console.log("title changed", mutations[0].target.nodeValue);
 				restartAfterMutation("🗒 Page.addMutationObserver()");
 			}).observe(
@@ -208,7 +208,7 @@ window.Page = (function() {
 	// alternate observer, simply listens for title change
 	function addTitleChecker() {
 		try {
-			let pageTitleInterval = setInterval(function() {
+			let pageTitleInterval = setInterval(function () {
 				let title = getTitle();
 				if (title != data.title) {
 					//if (DEBUG) console.log("title changed", Page.data.title, " to: ",title);
@@ -236,7 +236,7 @@ window.Page = (function() {
 			if (DEBUG) console.log("🗒 Page.restartAfterMutation() caller = " + caller);
 
 			// refresh Page.data
-			Page.refreshData().then(function() {
+			Page.refreshData().then(function () {
 				// check for monsters again
 				MonsterCheck.check();
 				Debug.update();

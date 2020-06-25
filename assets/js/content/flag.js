@@ -13,20 +13,22 @@ window.Flag = (function () {
 
 
 		/**
-		 *	Check for new login / dashboard activity
+		 *	Check for new login / dashboard activity - to start syncing to server again
 		 */
 		async function checkForNewLogin(what = "all") {
 			try {
-				// allow offline
-				if (Page.data.mode.notActive) return;
-				// don't allow if mode disabled
-				if (T.tally_options.gameMode === "disabled") return;
+				// always allow?
+				// // allow offline
+				// if (Page.data.mode.notActive) return;
+				// // don't allow if mode disabled
+				// if (T.tally_options.gameMode === "disabled") return;
 
 				// only if user is on dashboard...
 				if (!Page.data.url.includes("/dashboard")) return;
 				if (DEBUG) console.log("🚩 Flag.checkForNewLogin() *** DASHBOARD *** ", Page.data.url);
 
-				// not sure if we need this anymore
+
+				return true;
 
 			} catch (err) {
 				console.error(err);
@@ -39,7 +41,7 @@ window.Flag = (function () {
 	/**
 	 *	Check data reset on dashboard
 	 */
-	async function checkForDataReset(what = "all") {
+	async function checkForUserAccountReset(what = "all") {
 		try {
 			// allow offline
 			if (Page.data.mode.notActive) return;
@@ -47,21 +49,23 @@ window.Flag = (function () {
 			if (T.tally_options.gameMode === "disabled") return;
 
 			// only if user is on dashboard...
-			if (!Page.data.url.includes("dashboard")) return;
-			if (DEBUG) console.log("🚩 Flag.checkForDataReset() *** DASHBOARD *** ", Page.data.url);
+			if (!Page.data.url.includes("/dashboard")) return;
+			if (DEBUG) console.log("🚩 Flag.checkForUserAccountReset() *** DASHBOARD *** ", Page.data.url);
 
 
-
-			if ($("#tallyFlags").length && $("#resetTallyUser").length) {
+			if ($(".tallyFlags").length && $("#resetUserAccountSuccess").length) {
 				// don't allow if serverOffline
 				if (Page.data.mode.serverOffline) return;
 
-				if (DEBUG) console.log("🚩 Flag.checkForDataReset() resetTallyUser FLAG FOUND");
+				if (DEBUG) console.log("🚩 Flag.checkForUserAccountReset() resetUserAccountSuccess FLAG FOUND");
 
 				// tell user
-				Dialogue.showStr("You have reset your account. One moment while the game resets...", "neutral");
+				Dialogue.showData(Dialogue.getData({
+					category: "account",
+					subcategory: "reset"
+				}));
 				// reset game
-				TallyStorage.resetTallyUser();
+				TallyStorage.resetTallyUserFromServer();
 			}
 
 		} catch (err) {
@@ -137,7 +141,7 @@ window.Flag = (function () {
 	// PUBLIC
 	return {
 		checkForNewLogin: checkForNewLogin,
-		checkForDataReset: checkForDataReset,
+		checkForUserAccountReset: checkForUserAccountReset,
 		checkFromServer: checkFromServer
 	};
 })();

@@ -4,13 +4,15 @@
  ******************************************************************************/
 // load this script first in manifest so data is available
 
-window.TallyStorage = (function() {
+window.TallyStorage = (function () {
 
 	let DEBUG = Debug.ALL.TallyStorage;
 
+	console.log("%c   Hi, I'm Tally!", Debug.tallyConsoleIcon);
+
 
 	/**
-	 *	Get data from API - used for random urls for demo 
+	 *	Get data from API - currently only uses for random urls for demo
 	 */
 	function getDataFromServer(url, callback) {
 		try {
@@ -19,7 +21,7 @@ window.TallyStorage = (function() {
 				'action': 'getDataFromServer',
 				'url': url
 			};
-			chrome.runtime.sendMessage(msg, function(response) {
+			chrome.runtime.sendMessage(msg, function (response) {
 				if (DEBUG) console.log("🗄️ > TallyStorage.getDataFromServer() RESPONSE =", JSON.stringify(response));
 				//TallyMain.sync(start);
 				callback(response);
@@ -30,7 +32,7 @@ window.TallyStorage = (function() {
 	}
 
 	/**
-	 *	Generic getData() function
+	 *	Generic getData() function - retrieve a key from the background (local storage)
 	 */
 	async function getData(name, caller = "") {
 		try {
@@ -39,7 +41,7 @@ window.TallyStorage = (function() {
 				'action': 'getData',
 				'name': name
 			};
-			chrome.runtime.sendMessage(msg, function(response) {
+			chrome.runtime.sendMessage(msg, function (response) {
 				if (DEBUG) console.log("🗄️ > TallyStorage.getData() RESPONSE =", name, JSON.stringify(response));
 				return response.data;
 			});
@@ -48,7 +50,7 @@ window.TallyStorage = (function() {
 		}
 	}
 	/**
-	 *	Generic saveData() function - saves in browser storage only
+	 *	Generic saveData() function - saves in background (local storage) only
 	 */
 	function saveData(name, data, caller = "") {
 		try {
@@ -58,7 +60,7 @@ window.TallyStorage = (function() {
 				'data': data
 			};
 			if (DEBUG) console.log("🗄️ < TallyStorage.saveData() <", caller, msg);
-			chrome.runtime.sendMessage(msg, function(response) {
+			chrome.runtime.sendMessage(msg, function (response) {
 				// if (DEBUG) console.log("🗄️ > TallyStorage.saveData() RESPONSE =", name, caller, JSON.stringify(response));
 				// no response needed
 				//return response.data;
@@ -70,68 +72,37 @@ window.TallyStorage = (function() {
 
 
 
-
-
 	/**
-	 *	Save T.tally_user in content / background
+	 *	Get new tally_user data from server and reset game
 	 */
-	function saveTallyUser(name, obj, caller = "") {
+	function resetTallyUserFromServer() {
 		try {
-			if (DEBUG) console.log("🗄️ < TallyStorage.saveTallyUser()", name, obj, caller, "T.tally_user =", T.tally_user);
-			if (!FS_Object.prop(T.tally_user.progress)) {
-				console.error("🗄️ < TallyStorage.saveTallyUser() NO T.tally_user");
-				return;
-			}
-			// get latest from background ? NO IDT this is required
-			//T.tally_user = TallyStorage.getData("tally_user");
-			// save in content
-			T.tally_user[name][obj.name] = obj;
-			// save in background
-			let msg = {
-				'action': 'saveData',
-				'name': "tally_user",
-				'data': T.tally_user
-			};
-			chrome.runtime.sendMessage(msg, function(response) {
-				if (DEBUG) console.log("🗄️ > TallyStorage.saveTallyUser() RESPONSE =", JSON.stringify(response));
-				T.tally_user = response.data;
-			});
-		} catch (err) {
-			console.error(err);
-		}
-	}
-
-
-
-	/**
-	 *	Save T.tally_user in content / background
-	 * 	- a.k.a. "resetUser", "resetGame"
-	 */
-	function resetTallyUser() {
-		try {
-			if (DEBUG) console.log("🗄️ < TallyStorage.resetTallyUser() [1]");
+			if (DEBUG) console.log("🗄️ < TallyStorage.resetTallyUserFromServer() [1]");
 
 			// if we already ran
-			if (Page.data.resetTallyUserCalled)
-				return console.log("🗄️ TallyStorage.resetTallyUser() ALREADY PERFORMED");
+			if (Page.data.resetTallyUserFromServerCalled)
+				return console.log("🗄️ TallyStorage.resetTallyUserFromServer() ALREADY PERFORMED");
 			// so we only check this once and don't check again
-			Page.data.resetTallyUserCalled = true;
+			Page.data.resetTallyUserFromServerCalled = true;
 
 			chrome.runtime.sendMessage({
-				'action': 'resetTallyUser'
-			}, function(response) {
-				if (DEBUG) console.log("🗄️ > TallyStorage.resetTallyUser() [2] RESPONSE =", response);
+				'action': 'resetTallyUserFromServer'
+			}, function (response) {
+				if (DEBUG) console.log("🗄️ > TallyStorage.resetTallyUserFromServer() [2] RESPONSE =", response);
 
 				// update all objects
 				T.tally_user = response.tally_user;
 				T.tally_options = response.tally_options;
 				T.tally_meta = response.tally_meta;
+				T.tally_top_monsters = response.tally_top_monsters;
+				T.tally_nearby_monsters = response.tally_nearby_monsters;
+				T.tally_stats = response.tally_stats;
+
+
 				// update Page.data.mode
 				Page.data.mode = TallyMain.getPageMode();
-				// run game again
+				// start game (again)
 				TallyMain.contentStartChecks();
-
-				// return response.data;
 			});
 		} catch (err) {
 			console.error(err);
@@ -140,18 +111,6 @@ window.TallyStorage = (function() {
 
 
 
-	function setBadgeText(data) {
-		try {
-			chrome.runtime.sendMessage({
-				'action': 'setBadgeText',
-				'data': data
-			}, function(response) {
-				console.log("🗄️ > TallyStorage.setBadgeText() response =", response);
-			});
-		} catch (err) {
-			console.error(err);
-		}
-	}
 
 
 	let startupPromises = [], // array to hold all startupPromises
@@ -165,7 +124,7 @@ window.TallyStorage = (function() {
 	 */
 	async function getDataFromBackground(callback = null) {
 		try {
-			// if (DEBUG) console.log('🗄️ TallyStorage.getDataFromBackground() [1]');
+			if (DEBUG) console.log('🗄️ TallyStorage.getDataFromBackground() [1] -> CREATE STARTUP PROMISES');
 
 			// reset arrays
 			startupPromises = [];
@@ -179,11 +138,11 @@ window.TallyStorage = (function() {
 			];
 			// loop through all startupPromiseNames and create Promises
 			startupPromiseNames.map((name) => {
-				startupPromises.push(createStartupPromise(name));
+				startupPromises.push(returnNewStartupPromise(name));
 			});
 			// run callback if exists
 			if (callback) {
-				if (DEBUG) console.log('🗄️ TallyStorage.getDataFromBackground() [2] (running callback)');
+				if (DEBUG) console.log('🗄️ TallyStorage.getDataFromBackground() [2] -> RUN CALLBACK');
 				callback();
 			}
 		} catch (err) {
@@ -196,33 +155,31 @@ window.TallyStorage = (function() {
 	/**
 	 *	Return a promise
 	 */
-	function createStartupPromise(name) {
+	function returnNewStartupPromise(name) {
 		try {
 			// add new promise
-			return new Promise(
-				(resolve, reject) => {
-					Config.logTimeSinceLoad("🗄️ TallyStorage.createStartupPromise() [1] (create) " + name + " ");
-					// call background
-					chrome.runtime.sendMessage({
-						'action': 'getData',
-						'name': name
-					}, function(response) {
-						// log before storage
-						// if (DEBUG) console.log('🗄️ TallyStorage.createStartupPromise()', name, JSON.stringify(response.data));
-						Config.logTimeSinceLoad("TallyStorage.createStartupPromises() [3] (resolve) " + name + "");
+			return new Promise((resolve, reject) => {
+				Debug.elapsedTime("🗄️ TallyStorage.returnNewStartupPromise() [1] (create) " + name + " ");
+				// call background
+				chrome.runtime.sendMessage({
+					'action': 'getData',
+					'name': name
+				}, function (response) {
+					// log before storage
+					// if (DEBUG) console.log('🗄️ TallyStorage.returnNewStartupPromise()', name, JSON.stringify(response.data));
+					Debug.elapsedTime("TallyStorage.returnNewStartupPromises() [2] (resolve) " + name + "");
 
-						// store data
-						T[name] = response.data;
+					// store data
+					T[name] = response.data;
 
-						// log after storage
-						// if (DEBUG) console.log('🗄️ TallyStorage.createStartupPromise() -> T[name] =', T[name]);
-						// if (DEBUG) console.log("%cT."+name, Debug.styles.greenbg, JSON.stringify(T[name]));
+					// log after storage
+					// if (DEBUG) console.log('🗄️ TallyStorage.returnNewStartupPromise() -> T[name] =', T[name]);
+					// if (DEBUG) console.log("%cT."+name, Debug.styles.greenbg, JSON.stringify(T[name]));
 
-						// resolve promise
-						resolve(response.data);
-					});
-				}
-			);
+					// resolve promise
+					resolve(response.data);
+				});
+			});
 		} catch (err) {
 			console.error(err);
 		}
@@ -230,29 +187,46 @@ window.TallyStorage = (function() {
 
 
 	/**
-	 *	After all promises have resolved
+	 *	After all promises have resolved, essentially a listener but allows data to be fetched in parallel
 	 */
 	Promise
 		.all(startupPromises)
-		.then(function(result) {
-			// if (DEBUG) console.log('🗄️ > TallyStorage all data has loaded', "TallyInit.dataLoaded =", TallyInit.dataLoaded, result);
-			// if (DEBUG) console.log('T.tally_user =', T.tally_user);
-			// if (DEBUG) console.log('T.tally_options =', T.tally_options);
-			// if (DEBUG) console.log('T.tally_meta =', T.tally_meta);
-			// if (DEBUG) console.log('T.tally_nearby_monsters =', T.tally_nearby_monsters);
-			// if (DEBUG) console.log('T.tally_stats =', T.tally_stats);
-			// if (DEBUG) console.log('T.tally_top_monsters =', T.tally_top_monsters);
-			Config.logTimeSinceLoad("TallyStorage.getDataFromBackground() resolved) [4]");
+		.then(function (result) {
+			Debug.elapsedTime("TallyStorage.getDataFromBackground() (promises resolved)");
+			// if (DEBUG) console.log("🗄️ > TallyStorage STARTUP PROMISES -> T.startUpPromisesResolved =",T.startUpPromisesResolved);
 
-			TallyInit.dataLoaded = true;
+			// if all is good with account
+			if (result[0] && result[0].username) {
 
-			if (DEBUG) console.log('🗄️ > TallyStorage all data has loaded', "TallyInit.dataLoaded =", TallyInit.dataLoaded, result);
+				// if (DEBUG) console.log('T.tally_user =', T.tally_user);
+				// if (DEBUG) console.log('T.tally_options =', T.tally_options);
+				// if (DEBUG) console.log('T.tally_meta =', T.tally_meta);
+				// if (DEBUG) console.log('T.tally_nearby_monsters =', T.tally_nearby_monsters);
+				// if (DEBUG) console.log('T.tally_stats =', T.tally_stats);
+				// if (DEBUG) console.log('T.tally_top_monsters =', T.tally_top_monsters);
 
-			// run start checks
+				if (DEBUG) console.log("🗄️ > TallyStorage STARTUP PROMISES -> result.username = %c" + JSON.stringify(result[0].username), Debug.styles.greenbg);
+
+				// set status
+				T.startUpPromisesResolved = true;
+				// we can also assume this
+				T.tally_meta.userLoggedIn = true;
+			} else {
+				if (DEBUG) console.log("🗄️ > TallyStorage STARTUP PROMISES -> result[0] = %c" + JSON.stringify(result[0]), Debug.styles.redbg);
+				// set status
+				T.startUpPromisesResolved = false;
+				// we can also assume this
+				T.tally_meta.userLoggedIn = false;
+			}
+			if (DEBUG) console.log('🗄️ > TallyStorage STARTUP PROMISES ->', "T.startUpPromisesResolved =", T.startUpPromisesResolved, result);
+
+			// start game (again) regardless whether server is running
 			TallyMain.contentStartChecks();
 		})
-		.catch(function(err) {
-			console.error('😂 TallyInit.getDataFromBackground() -> ' +
+		.catch(function (err) {
+			T.startUpPromisesResolved = false;
+
+			console.error('😂 TallyStorage.getDataFromBackground() -> ' +
 				'one or more promises have failed: ' + err,
 				"\n T.tally_user =", T.tally_user,
 				"\n T.tally_options =", T.tally_options,
@@ -275,8 +249,6 @@ window.TallyStorage = (function() {
 		getDataFromBackground: getDataFromBackground,
 		getData: getData,
 		saveData: saveData,
-		saveTallyUser: saveTallyUser,
-		setBadgeText: setBadgeText,
-		resetTallyUser: resetTallyUser
+		resetTallyUserFromServer: resetTallyUserFromServer
 	};
 })();

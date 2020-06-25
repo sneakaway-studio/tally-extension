@@ -13,6 +13,8 @@ window.Listener = (function () {
 			try {
 				// console.log("👂🏼 Listener.addListener() onMessage.request =", JSON.stringify(request), sender, sendResponse);
 
+				// needed for several conditions below
+				let _tally_meta = store("tally_meta");
 
 
 				/**
@@ -20,8 +22,6 @@ window.Listener = (function () {
 				 */
 				if (request.action == "getDataFromServer" && request.url) {
 					console.log("👂🏼 Listener.addListener() < getData 1", request.name);
-
-					let _tally_meta = store("tally_meta");
 
 					// (attempt to) get data from server, response to callback
 					$.ajax({
@@ -173,9 +173,9 @@ window.Listener = (function () {
 
 				// receive and log debug messages from content
 				else if (request.action == "sendBackgroundDebugMessage") {
-					Background.dataReportHeader("🐞 " + request.caller, "<", "before");
+					Background.dataReportHeader("🗜️ " + request.caller, "<", "before");
 					if (DEBUG) console.log("url =", request.str);
-					Background.dataReportHeader("/ 🐞 " + request.caller, ">", "after");
+					Background.dataReportHeader("/ 🗜️ " + request.caller, ">", "after");
 					sendResponse({
 						"action": request.action,
 						"message": 1
@@ -208,28 +208,40 @@ window.Listener = (function () {
 
 				/*  DATA MANAGEMENT
 				 ******************************************************************************/
+ 
 
-
-				// resetTallyUser
+				// resetTallyUserFromServer
+				// - called when user is logging in
 				// - get latest data from server; run start checks
 				// - a.k.a. "resetUser", "resetGame"
-				else if (request.action == "resetTallyUser") {
-					if (DEBUG) console.log("👂🏼 Listener.addListener() < resetTallyUser [1] ");
+				else if (request.action == "resetTallyUserFromServer") {
+					if (DEBUG) console.log("👂🏼 Listener.addListener() < resetTallyUserFromServer [1] ");
 
-					// (re)start app to pull in data
+					// (re)start app to pull in data, run checks, and return control back to content
 					Background.runStartChecks()
 						.then(function (result) {
-							if (DEBUG) console.log("👂🏼 Listener.addListener() > resetTallyUser [2] ", result);
+							if (DEBUG) console.log("👂🏼 Listener.addListener() > resetTallyUserFromServer [2.1] ", result);
 							if (DEBUG) console.log(store("tally_user"));
-							if (DEBUG) console.log("👂🏼 Listener.addListener() > resetTallyUser [3] ", result);
+							if (DEBUG) console.log("👂🏼 Listener.addListener() > resetTallyUserFromServer [2.2] ", result);
+
+							// force reset
+							_tally_meta.userLoggedIn = 1;
+							store("tally_meta", _tally_meta);
+
 							// send response with latest
 							sendResponse({
 								"action": request.action,
 								"tally_user": store("tally_user"),
 								"tally_options": store("tally_options"),
 								"tally_meta": store("tally_meta"),
-								"message": "new"
+								"tally_nearby_monsters": store("tally_nearby_monsters"),
+								"tally_top_monsters": store("tally_top_monsters"),
+								"tally_stats": store("tally_stats"),
+								"message": 1
 							});
+						}).catch(function (err) {
+							if (DEBUG) console.log("👂🏼 Listener.addListener() > resetTallyUserFromServer [3.1] ", result);
+
 						});
 
 					// required so chrome knows this is asynchronous
@@ -246,8 +258,6 @@ window.Listener = (function () {
 				// - receive and reply to content with T.tally_user only
 				else if (request.action == "sendUpdateToBackground") {
 					// if (DEBUG) console.log("👂🏼 Listener.addListener() < sendUpdateToBackground", JSON.stringify(request.data));
-
-					let _tally_meta = store("tally_meta");
 
 					// if user is not logged-in or server is down then we are just saving in background
 					if (!_tally_meta.userLoggedIn || !_tally_meta.server.online) {
@@ -276,14 +286,22 @@ window.Listener = (function () {
 							// result contains T.tally_user
 							if (DEBUG) console.log("👂🏼 Listener.addListener() > sendUpdateToBackground - DONE =", result);
 
-							// merge attack data from server with game data properties
-							result.attacks = Server.mergeAttackDataFromServer(result.attacks);
-							// store result
-							store("tally_user", result);
+							// if tally_user returned
+							if (result.username) {
+								// merge attack data from server with game data properties
+								result.attacks = Server.mergeAttackDataFromServer(result.attacks);
+								// store result
+								store("tally_user", result);
+							} else {
+								// else update tally_meta
+								_tally_meta.userLoggedIn = 0;
+								store("tally_meta", _tally_meta);
+							}
+
 							// reply to contentscript with updated T.tally_user
 							sendResponse({
 								"action": request.action,
-								"message": 1,
+								"message": _tally_meta.userLoggedIn,
 								"tally_user": result
 							});
 						}).fail(err => {

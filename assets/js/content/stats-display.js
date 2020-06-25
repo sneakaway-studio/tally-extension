@@ -115,10 +115,10 @@ window.StatsDisplay = (function() {
 
 
 			// if any problems return
-			if (level < 1) return console.error("📈 StatsDisplay.updateDisplay() ERROR -> level < 1");
-			if (stats === {}) return console.error("📈 StatsDisplay.updateDisplay() ERROR -> stats === {}");
-			if (!FS_Object.prop(T.tally_user)) return console.error("📈 StatsDisplay.updateDisplay() ERROR -> NO T.tally_user");
-			if (!FS_Object.prop(T.tally_user.score)) return console.error("📈 StatsDisplay.updateDisplay() ERROR -> NO T.tally_user.score", T.tally_user);
+			if (level < 1) return console.log("📈 StatsDisplay.updateDisplay() ERROR -> level < 1");
+			if (stats === {}) return console.log("📈 StatsDisplay.updateDisplay() ERROR -> stats === {}");
+			if (!FS_Object.prop(T.tally_user)) return console.log("📈 StatsDisplay.updateDisplay() ERROR -> NO T.tally_user");
+			if (!FS_Object.prop(T.tally_user.score)) return console.log("📈 StatsDisplay.updateDisplay() ERROR -> NO T.tally_user.score", T.tally_user);
 
 			if (DEBUG) console.log("📈 StatsDisplay.updateDisplay() level =", level, who, "=>", JSON.stringify(stats));
 			// bars, circle, table

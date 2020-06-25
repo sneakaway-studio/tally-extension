@@ -3,7 +3,7 @@
 /*  BADGE
  ******************************************************************************/
 
-window.Badge = (function() {
+window.Badge = (function () {
 	// PRIVATE
 
 	let DEBUG = Debug.ALL.Badge;
@@ -41,7 +41,8 @@ window.Badge = (function() {
 			if (!Page.data.mode.active) return;
 			// don't allow if mode disabled or stealth
 			if (T.tally_options.gameMode === "disabled" || T.tally_options.gameMode === "stealth") return;
-
+			// don't allow on dashboard
+			if (Page.data.url.includes("/dashboard")) return;
 
 			let log = "🏆 Badge.check()",
 				badge = {};
@@ -205,16 +206,15 @@ window.Badge = (function() {
 
 			// show and format results in console.log
 			let displayCondition = "<=",
-				winnerStr = "";
+				winnerStr = " ";
 			if (nextLevelRounded > badge.level) {
 				displayCondition = ">";
-				winnerStr = '🏆🏆🏆';
+				winnerStr = ' ✅ ';
 			}
-			if (DEBUG) console.log("🏆 Badge.nextLevelRound() %c" + badge.name, Debug.styles.blue,
+			if (DEBUG) console.log("🏆" + winnerStr + "Badge.nextLevelRound() %c" + badge.name, Debug.styles.blue,
 				"(nextLevelRounded " + displayCondition + " level) " +
 				"", nextLevelRounded, displayCondition, badge.level, "",
-				"nextLevel =", nextLevel, "",
-				winnerStr
+				"nextLevel =", nextLevel
 			);
 			return Math.round(nextLevel);
 		} catch (err) {
@@ -238,17 +238,16 @@ window.Badge = (function() {
 
 			// show and format results in console.log
 			let displayCondition = "<=",
-				winnerStr = "";
+				winnerStr = " ";
 			if (nextLevelRounded > badge.level) {
 				displayCondition = ">";
-				winnerStr = '🏆🏆🏆';
+				winnerStr = ' ✅ ';
 			}
-			if (DEBUG) console.log("🏆 Badge.nextLevelExp() %c" + badge.name, Debug.styles.blue,
+			if (DEBUG) console.log("🏆" + winnerStr + "Badge.nextLevelExp() %c" + badge.name, Debug.styles.blue,
 				"adjustedPoints =", adjustedPoints,
 				", (nextLevelRounded " + displayCondition + " level) " +
 				"", nextLevelRounded, displayCondition, badge.level, "",
-				"nextLevel =", nextLevel, "",
-				winnerStr
+				"nextLevel =", nextLevel, ""
 			);
 			return nextLevelRounded;
 		} catch (err) {
@@ -279,17 +278,16 @@ window.Badge = (function() {
 
 			// show and format results in console.log
 			let displayCondition = "<=",
-				winnerStr = "";
+				winnerStr = " ";
 			if (badge.currentPoints > nextPoints) {
 				displayCondition = ">";
-				winnerStr = '🏆🏆🏆';
+				winnerStr = ' ✅ ';
 			}
 
-			if (DEBUG) console.log("🏆 Badge.nextPointsExp() %c" + badge.name, Debug.styles.blue,
+			if (DEBUG) console.log("🏆" + winnerStr + "Badge.nextPointsExp() %c" + badge.name, Debug.styles.blue,
 				"level =", badge.level +
 				", (currentPoints " + displayCondition + " nextPoints) " +
-				"", badge.currentPoints, displayCondition, nextPoints, "",
-				winnerStr
+				"", badge.currentPoints, displayCondition, nextPoints
 			);
 
 			return nextPoints;

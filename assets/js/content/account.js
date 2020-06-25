@@ -53,11 +53,18 @@ window.Account = (function() {
 
 
 
+
+
+
+
+
+
+
 	function promptHandler() {
 		try {
 
 
-			if (DEBUG) console.log("🔑 Account.checkStatus() ACCOUNT (STILL) BROKEN " +
+			if (DEBUG) console.log("🔑 Account.promptHandler() ACCOUNT (STILL) BROKEN " +
 				JSON.stringify(T.tally_meta),
 				"T.tally_meta.install.prompts = " + T.tally_meta.install.prompts);
 
@@ -68,7 +75,7 @@ window.Account = (function() {
 				}, 500);
 			}
 			T.tally_meta.install.prompts++;
-			TallyStorage.saveData("tally_meta", T.tally_meta, "🔑 Account.checkStatus()");
+			TallyStorage.saveData("tally_meta", T.tally_meta, "🔑 Account.promptHandler()");
 		} catch (err) {
 			console.error(err);
 		}

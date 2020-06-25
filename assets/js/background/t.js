@@ -1,6 +1,6 @@
 "use strict";
 
-var T = (function() {
+var T = (function () {
 	// PRIVATE
 
 	// objects created on server, mirrored locally
@@ -12,8 +12,34 @@ var T = (function() {
 		tally_nearby_monsters = {},
 		tally_stats = {};
 
+	// global vars
+	let startUpPromisesResolved = false; // has all data loaded from background?
+
+	// options for development / production
+	let options = {
+			development: {
+				api: "http://localhost:5000/api",
+				website: "http://localhost:5000",
+			},
+			production: {
+				api: "https://tallygame.net/api",
+				website: "https://tallygame.net",
+			},
+			// true = development, false = production
+			localhost: true, // change to false to quickly shift to production server
+			hotreload: true,
+			debugging: true
+		},
+		DEBUG = true;
+
+
 	// PUBLIC
 	return {
+
+		options: options,
+
+		set startUpPromisesResolved (value) { startUpPromisesResolved = value; },
+		get startUpPromisesResolved () { return startUpPromisesResolved; },
 
 		set tally_user (value) { tally_user = value; },
 		get tally_user () { return tally_user; },

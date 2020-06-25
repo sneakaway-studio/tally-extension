@@ -1,6 +1,6 @@
 "use strict";
 
-window.Install = (function() {
+window.Install = (function () {
 	// PRIVATE
 
 	let DEBUG = true;
@@ -66,45 +66,28 @@ window.Install = (function() {
 	async function setCurrentAPI() {
 		try {
 			let _tally_meta = store("tally_meta");
-			_tally_meta.api = Config[_tally_meta.currentAPI].api;
-			_tally_meta.website = Config[_tally_meta.currentAPI].website;
-			if (DEBUG) console.log("🔧 Install.setCurrentAPI() currentAPI=%c" + _tally_meta.currentAPI, Debug.styles.greenbg,
-				"api=" + _tally_meta.api, "website=" + _tally_meta.website);
-			store("tally_meta", _tally_meta);
-			return true;
-		} catch (err) {
-			console.error(err);
-		}
-	}
+			// if (DEBUG) console.log("🔧 Install.setCurrentAPI() [1] currentAPI=%c" + _tally_meta.currentAPI, Debug.styles.greenbg);
 
-
-	/**
-	 *  Set options for development
-	 */
-	async function setDevelopmentOptions() {
-		try {
-			let _tally_meta = store("tally_meta");
-			if (Config.options.localhost){
-				if (DEBUG) console.log("🔧 Install.setDevelopmentOptions() Config.options=%c" +
-					JSON.stringify(Config.options), Debug.styles.greenbg, "USING LOCALHOST");
-				// testing installation
+			// if T.options.localhost == true
+			if (T.options.localhost)
 				_tally_meta.currentAPI = "development";
-				_tally_meta.api = Config.development.api;
-				_tally_meta.website = Config.development.website;
-			} else {
-				if (DEBUG) console.log("🔧 Install.setDevelopmentOptions() Config.options=%c" +
-					JSON.stringify(Config.options), Debug.styles.greenbg, "USING tallygame.net");
-				// testing installation
+			else
 				_tally_meta.currentAPI = "production";
-				_tally_meta.api = Config.production.api;
-				_tally_meta.website = Config.production.website;
-			}
+			// if (DEBUG) console.log("🔧 Install.setCurrentAPI() [2] currentAPI=%c" + _tally_meta.currentAPI, Debug.styles.greenbg);
+
+			_tally_meta.api = T.options[_tally_meta.currentAPI].api;
+			_tally_meta.website = T.options[_tally_meta.currentAPI].website;
+
+			if (DEBUG) console.log("🔧 Install.setCurrentAPI() [3] currentAPI=%c" + _tally_meta.currentAPI, Debug.styles.greenbg,
+				"api=" + _tally_meta.api, "website=" + _tally_meta.website);
+
 			store("tally_meta", _tally_meta);
 			return true;
 		} catch (err) {
 			console.error(err);
 		}
 	}
+
 
 
 
@@ -128,7 +111,7 @@ window.Install = (function() {
 			chrome.tabs.query({
 				active: true,
 				currentWindow: true
-			}, function(tabs) {
+			}, function (tabs) {
 				var tab = tabs[0];
 				if (DEBUG) console.log("🔧 Install.launchStartScreen() current tab =", tab);
 
@@ -140,7 +123,7 @@ window.Install = (function() {
 				chrome.tabs.create({
 					// url: chrome.extension.getURL('assets/pages/startScreen/startScreen.html')
 					url: _tally_meta.website + "/anonyname"
-				}, function(newTab) {
+				}, function (newTab) {
 					// increment, check # prompts
 					if (++_tally_meta.install.prompts <= 3) {}
 					store("tally_meta", _tally_meta);
@@ -272,9 +255,9 @@ window.Install = (function() {
 					online: 1,
 					responseMillis: -1
 				},
-				currentAPI: "production", // production or development;
-				api: Config.production.api, // default to production
-				website: Config.production.website,
+				currentAPI: "production", // default to production on new installation
+				api: T.options.production.api,
+				website: T.options.production.website,
 				browser: Environment.getBrowserName(),
 				location: {}
 			};
@@ -292,7 +275,7 @@ window.Install = (function() {
 	async function saveLocation() {
 		try {
 			let _tally_meta = store("tally_meta");
-			return $.getJSON('http://www.geoplugin.net/json.gp', function(data) {
+			return $.getJSON('http://www.geoplugin.net/json.gp', function (data) {
 				// console.log(JSON.stringify(data, null, 2));
 				_tally_meta.location = {
 					ip: data.geoplugin_request,
@@ -316,10 +299,9 @@ window.Install = (function() {
 	return {
 		init: init,
 		setVersion: setVersion,
-		setCurrentAPI: setCurrentAPI,
-		setDevelopmentOptions: setDevelopmentOptions,
+		setCurrentAPI: setCurrentAPI,  
 		createOptions: createOptions,
-		setOptions: function(obj) {
+		setOptions: function (obj) {
 			return setOptions(obj);
 		},
 		saveLocation: saveLocation,

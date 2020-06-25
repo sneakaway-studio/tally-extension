@@ -51,7 +51,7 @@ window.Item = (function() {
 				<button class="tally tab-button active attacksBtn">Attacks</button>
 				<button class="tally tab-button itemsBtn">Items</button>
 				<button class="tally tab-button optionsBtn">Options</button>
-				<button class="tally tab-button hideUnlessAdmin debuggingBtn">🐞</button>
+				<button class="tally tab-button hideUnlessAdmin debuggingBtn">🗜️</button>
 			</div>`;
 
 			// update menu

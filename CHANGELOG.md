@@ -11,6 +11,7 @@
 * Adds Badge selector
 * Tally can now show images in Dialogue
 * Adds monster silhouettes
+* Improves authentication
 
 
 ### Version 0.2.18
@@ -22,7 +23,7 @@
 
 ### Version 0.2.17
 
-* Fixes resetTallyUser
+* Fixes resetTallyUserFromServer
 * Improvements to server / client synching
 * Improvements to development mode (hotreload, etc.)
 

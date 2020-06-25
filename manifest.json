@@ -24,13 +24,12 @@
     "background": {
         "scripts": [
             "assets/js/background/t.js",
+            "assets/js/content/debug.js",
+
             "assets/libs/jquery-3.2.1.min.js",
             "assets/libs/store2.min.js",
             "assets/libs/moment.js",
             "assets/libs/hot-reload.js",
-
-            "assets/js/background/config.js",
-            "assets/js/content/debug.js",
 
             "assets/data/game-data.js",
             "assets/data/monsters-by-tag.js",
@@ -55,9 +54,7 @@
         "matches": ["<all_urls>"],
         "js": [
             "assets/js/background/t.js",
-            "assets/js/background/config.js",
             "assets/js/content/debug.js",
-            "assets/js/content/init.js",
             "assets/js/content/storage.js",
 
             "assets/libs/jquery-3.2.1.min.js",

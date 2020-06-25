@@ -1,6 +1,6 @@
 "use strict";
 
-window.Tracker = (function() {
+window.Tracker = (function () {
 	// PRIVATE
 	let DEBUG = Debug.ALL.Tracker,
 		blockAttempted = false;
@@ -45,7 +45,7 @@ window.Tracker = (function() {
 				}
 			}
 			// set the number of trackers in the badge
-			TallyStorage.setBadgeText(FS_Object.objLength(found));
+			setBadgeText(FS_Object.objLength(found));
 
 			if (DEBUG) console.log(log, "found", found);
 
@@ -62,6 +62,13 @@ window.Tracker = (function() {
 	 */
 	function removeBlocked() {
 		try {
+			// allow offline
+			if (Page.data.mode.notActive) return;
+			// don't allow if mode disabled
+			if (T.tally_options.gameMode === "disabled") return;
+
+
+
 			let log = "🕷️ Tracker.removeBlocked()";
 			if (DEBUG) console.log(log, "[1] Page.data.trackers =", Page.data.trackers,
 				"T.tally_user.trackers =", T.tally_user.trackers);
@@ -69,7 +76,7 @@ window.Tracker = (function() {
 			let blocked = {};
 
 			// make sure there are trackers to remove
-			if (FS_Object.objLength(Page.data.trackers.found) < 1 || FS_Object.objLength(T.tally_user.trackers) < 1) return;
+			if (!T.tally_user.trackers || FS_Object.objLength(Page.data.trackers.found) < 1 || FS_Object.objLength(T.tally_user.trackers) < 1) return;
 
 			// loop through each found tracker
 			for (var domain in Page.data.trackers.found) {
@@ -117,10 +124,29 @@ window.Tracker = (function() {
 		}
 	}
 
+	/**
+	 *	Show # trackers in badge
+	 */
+	function setBadgeText(data) {
+		try {
+			chrome.runtime.sendMessage({
+				'action': 'setBadgeText',
+				'data': data
+			}, function (response) {
+				console.log("🕷️ Tracker.setBadgeText() response =", response);
+			});
+		} catch (err) {
+			console.error(err);
+		}
+	}
+
+
+
 	// PUBLIC
 	return {
 		findAll: findAll,
 		removeBlocked: removeBlocked,
+		setBadgeText: setBadgeText,
 		set blockAttempted(value) {
 			blockAttempted = value;
 		},

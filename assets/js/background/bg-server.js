@@ -28,21 +28,18 @@ window.Server = (function () {
 				console.log("📟 Server.checkIfOnline() SUCCESS", JSON.stringify(result));
 				// save state
 				_server.online = 1;
-				_tally_meta.userOnline = 1;
-				_tally_meta.server.responseMillis = new Date().getTime() - _startTime;
+				_server.responseMillis = new Date().getTime() - _startTime;
 			}).fail(error => {
 				// server is not online
-				console.warn("📟 Server.checkIfOnline() FAIL", _tally_meta.api,
-					"😢 NOT ONLINE", JSON.stringify(error));
+				console.warn("📟 Server.checkIfOnline() FAIL", _tally_meta.api, "😢 NOT ONLINE", JSON.stringify(error));
 				// save state
 				_server.online = 0;
-				_tally_meta.userOnline = 0;
-				_tally_meta.server.responseMillis = -1;
+				_server.responseMillis = -1;
 			}).always(() => {
 				// console.log("📟 Server.checkIfOnline() ALWAYS store results");
 				// save result
+				_server.lastChecked = moment().format();
 				_tally_meta.server = _server;
-				_tally_meta.server.lastChecked = moment().format();
 				store("tally_meta", _tally_meta);
 			});
 	}
@@ -67,11 +64,18 @@ window.Server = (function () {
 				url: _tally_meta.api + "/user/getTallyUser",
 				contentType: 'application/json'
 			}).done(result => {
-				if (DEBUG) console.log("📟 Server.getTallyUser() DONE %c" + JSON.stringify(result.username), Debug.styles.greenbg);
-				// merge attack data from server with T.tally_user data properties
-				result.attacks = Server.mergeAttackDataFromServer(result.attacks);
-				// update account status
-				_tally_meta.userLoggedIn = 1;
+				// make sure user was returned
+				if (result && result.username){
+					if (DEBUG) console.log("📟 Server.getTallyUser() DONE result.username = %c" + JSON.stringify(result.username), Debug.styles.greenbg);
+					// merge attack data from server with T.tally_user data properties
+					result.attacks = Server.mergeAttackDataFromServer(result.attacks);
+					// update account status
+					_tally_meta.userLoggedIn = 1;
+				} else {
+					if (DEBUG) console.log("📟 Server.getTallyUser() DONE result.username = %c" + JSON.stringify(result.username), Debug.styles.redbg);
+					// update account status
+					_tally_meta.userLoggedIn = 0;
+				}
 			}).fail(error => {
 				if (DEBUG) console.error("📟 Server.getTallyUser() FAIL", JSON.stringify(error));
 				// server might not be online
@@ -135,29 +139,25 @@ window.Server = (function () {
 				_tally_top_monsters = {},
 				username = "";
 
-			if (DEBUG) console.log("📟 Server.returnTopMonsters() [1]", _tally_meta, _tally_user);
+			// if (DEBUG) console.log("📟 Server.returnTopMonsters() [1]", _tally_meta, _tally_user);
 
-			// return early if !server
+			// return early if !server or no account
 			if (!_tally_meta.server.online || !_tally_meta.userLoggedIn) return;
-
+			// return early if no username
 			if (prop(_tally_user.username) && _tally_user.username != "") username = _tally_user.username;
+			else return;
+
 			$.ajax({
 				type: "GET",
 				url: _tally_meta.api + "/monsters/" + username,
 				contentType: 'application/json',
 				dataType: 'json',
 			}).done(result => {
-				//console.log("📟 Server.returnTopMonsters() RESULT =", JSON.stringify(result));
-
-				// MARK FOR DELETION (NOW IN T.tally_user)
-				// _tally_user.monsters = convertArrayToObject(result.userMonsters, "mid");
-
 				// treat all server data as master
+				// if (DEBUG) console.log("📟 Server.returnTopMonsters() [1] RESULT =", JSON.stringify(result));
 				_tally_top_monsters = convertArrayToObject(result.topMonsters, "mid");
-
 				// if (DEBUG) console.log("📟 Server.returnTopMonsters() [2] RESULT =", JSON.stringify(_tally_top_monsters));
-
-				store("tally_user", _tally_user);
+				// store top monsters
 				store("tally_top_monsters", _tally_top_monsters);
 			}).fail(error => {
 				console.error("📟 Server.returnTopMonsters() [3] RESULT =", JSON.stringify(error));

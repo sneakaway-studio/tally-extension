@@ -20,21 +20,29 @@ window.TallyMain = (function () {
 	});
 
 	/**
-	 *	1. Perform test - wait until dataLoaded
+	 *	0. Script loading order:
+	 *  - t.js, debug.js, storage.js",
+	 *  - everything else ...
+	 *  - main.js
+	 */
+
+
+	/**
+	 *	1. Perform test - wait until startUpPromisesResolved (data loads from background)
 	 */
 	function test() {
 		try {
-			TallyInit.logTimeSinceLoad("TallyMain.test() [1]");
+			Debug.elapsedTime("TallyMain.test() [1]");
 			let safety = 0;
-			while (!TallyInit.dataLoaded) {
+			while (!T.startUpPromisesResolved) {
 				if (++safety > 1000) {
 					console.log("🧰 TallyMain SAFETY FIRST!");
 					console.log("🧰 TallyMain - >", T.tally_user);
-					TallyInit.logTimeSinceLoad("TallyMain.test() [1.2]");
+					Debug.elapsedTime("TallyMain.test() [1.2]");
 					contentStartChecks();
 					break;
 				}
-				TallyInit.logTimeSinceLoad("TallyMain.test() [2] TallyInit.dataLoaded =", TallyInit.dataLoaded);
+				Debug.elapsedTime("TallyMain.test() [2] T.startUpPromisesResolved =", T.startUpPromisesResolved);
 			}
 		} catch (err) {
 			console.error("🧰 TallyMain.test() failed", err);
@@ -44,12 +52,14 @@ window.TallyMain = (function () {
 	/**
 	 *	2. Perform all start checks
 	 *	- confirm it is safe to run game; then add all required elements to DOM
+	 *  - runs every time
 	 */
 	async function contentStartChecks() {
 		try {
 			let log = "🧰 TallyMain.contentStartChecks()";
 			if (DEBUG) Debug.dataReportHeader(log + " [1]", "#", "before");
 			if (DEBUG) console.log(log, '[1.1] -> T.tally_user.username =', T.tally_user.username);
+
 			// if (DEBUG) console.log(log, '[1.1] -> T.tally_user =',T.tally_user);
 			// if (DEBUG) console.log(log, '[1.1] -> T.tally_options =',T.tally_options);
 			// if (DEBUG) console.log(log, '[1.1] -> T.tally_meta =',T.tally_meta);
@@ -84,23 +94,33 @@ window.TallyMain = (function () {
 			// 2.3. Check for Flags (in case we need to pause and restart game with data)
 			if (DEBUG) console.log(log, '[2.3] -> Check for flags');
 
-			// check to see if user is logging into account (should we respond appropriately?)
-			// let newLogin = await Flag.checkForNewLogin();
-			// if new loginw
-			// if (newLogin == "firstTime") {
-            //     // stop and start game again
-            //     contentStartChecks();
-            //     return;
-            // }
-			// // if this is the second run after a new login
-			// else {
-			// 	// let progress show game events
-			// 	Progress.accountLogin();
-			// }
+			// if user is logging into account on Tally website
+			let newLogin = await Flag.checkForNewLogin();
+			// ... and we aren't currently syncing to server
+			if (newLogin && !T.tally_meta.userLoggedIn) {
+				// update tally_meta in content and background
+				T.tally_meta.userLoggedIn = true;
+				TallyStorage.saveData("tally_meta", T.tally_meta, log);
+				// console.log("T.tally_meta.userLoggedIn",T.tally_meta.userLoggedIn);
+
+				// let progress show game events
+				// Progress.accountLogin();
+
+			 	// setInterval(function () {
+					// so that we can stop, get data from server, and start game again
+					TallyStorage.resetTallyUserFromServer();
+					return;
+				// }, 500);
+
+			}
+
+            // if user is reseting their data
+            Flag.checkForUserAccountReset();
 
 
-			// 2.3. Add stylesheets and debugger
-			if (DEBUG) console.log(log, '[2.3] -> Add game requirements');
+
+			// 2.4. Add stylesheets and debugger
+			if (DEBUG) console.log(log, '[2.4] -> Add game requirements');
 
 			// add required CSS for game
 			FS_String.insertStylesheets();
@@ -176,8 +196,8 @@ window.TallyMain = (function () {
 			// NOT LOGGED IN OR NO ACCOUNT
 			// - no account or did not validate;
 			// - tally can still point to trackers, prompt for login (assuming server is online), save in bg
-			else if (!T.tally_meta.userLoggedIn) {
-				if (DEBUG) console.log(log + "T.tally_meta.userLoggedIn =", T.tally_meta.userLoggedIn, T.tally_meta);
+			else if (T.tally_meta.userLoggedIn) {
+				if (DEBUG) console.log(log + "T.tally_meta.userLoggedIn =", T.tally_meta.userLoggedIn);
 				mode.loggedIn = 1;
 			}
 
@@ -211,6 +231,8 @@ window.TallyMain = (function () {
 			TallyEvents.startTimeEvents();
 			// add main click listener
 			TallyListeners.addMainClickEventListener();
+			// add scroll listener
+			Progress.createScrollListeners();
 			// create a fresh background update
 			TallyData.createBackgroundUpdate();
 			// add stats
@@ -239,14 +261,9 @@ window.TallyMain = (function () {
 			if (T.tally_options.gameMode === "disabled") return;
 
 
-			// 4.1. Progress and event checks
-			if (DEBUG) console.log("🧰 TallyMain.startGameOnPage() [4.1] -> Check progress");
 
-
-
-
-			// 4.2. Check and show items
-			if (DEBUG) console.log("🧰 TallyMain.startGameOnPage() [4.2] -> Add items");
+			// Check and show items
+			if (DEBUG) console.log("🧰 TallyMain.startGameOnPage() [4.1] -> Add items");
 
 			// potentially add a consumable
 			Consumable.randomizer();
@@ -261,7 +278,7 @@ window.TallyMain = (function () {
 			// checks to perform after user has interacted with page
 			setTimeout(function () {
 
-				if (DEBUG) console.log("🧰 TallyMain.startGameOnPage() [4.3] -> Check progress");
+				if (DEBUG) console.log("🧰 TallyMain.startGameOnPage() [4.2] -> Check progress");
 				// check for, and possibly complete any progress
 				Progress.check("TallyMain");
 
@@ -269,13 +286,13 @@ window.TallyMain = (function () {
 				// TallyEvents.checkLastActiveAndRecharge();
 
 
-				if (DEBUG) console.log("🧰 TallyMain.startGameOnPage() [4.4] -> Check badges");
+				if (DEBUG) console.log("🧰 TallyMain.startGameOnPage() [4.3] -> Check badges");
 				// potentially add badge
 				Badge.check();
 
 				// after a bit more time
 				setTimeout(function () {
-					if (DEBUG) console.log("🧰 TallyMain.startGameOnPage() [4.5] -> Check monsters");
+					if (DEBUG) console.log("🧰 TallyMain.startGameOnPage() [4.4] -> Check monsters");
 					// check for, and potentially add monsters on the page
 					// MonsterCheck.check();
 				}, 2000);

@@ -3,7 +3,7 @@
 /*  DEBUGGER
  ******************************************************************************/
 
-window.Debug = (function() {
+window.Debug = (function () {
 	// PRIVATE
 
 	let DEBUG = true,
@@ -48,13 +48,31 @@ window.Debug = (function() {
 			Tally: true,
 			TallyData: true,
 			TallyListeners: false,
-			TallyInit: true,
 			TallyMain: true,
 			TallyStorage: true,
 			Tracker: true,
 			Tutorial: true
 		},
-		debugButtonListenersAdded = false;
+		debugButtonListenersAdded = false,
+		tallyConsoleIcon = 'font-size:12px; background:url("' + chrome.extension.getURL('assets/img/tally/tally-clear-20w.png') + '") no-repeat;';
+
+
+	/**
+	 *	Track loading time for scripts, backend data
+	 */
+	let then = new Date().getTime();
+
+	function elapsedTime(caller) {
+		try {
+			if (1) return;
+			let now = new Date().getTime();
+			if (DEBUG) console.log("🗜️ Debug.elapsedTime() ELAPSED =", now - then, caller);
+		} catch (err) {
+			console.error(err);
+		}
+	}
+	elapsedTime("");
+
 
 	// https://coderwall.com/p/fskzdw/colorful-console-log
 	let styles = {
@@ -69,7 +87,7 @@ window.Debug = (function() {
 	 */
 	function setAll(state) {
 		try {
-			if (DEBUG) console.log("🐞 Debug.setAll() state =", state);
+			if (DEBUG) console.log("🗜️ Debug.setAll() state =", state);
 			for (var key in ALL) {
 				if (ALL.hasOwnProperty(key)) {
 					ALL[key] = state;
@@ -82,7 +100,7 @@ window.Debug = (function() {
 	// setAll(true);
 	// setAll(false);
 
-	if (!Config.options.debugging) {
+	if (!T.options.debugging) {
 		DEBUG = false;
 		setAll(false);
 	}
@@ -96,15 +114,15 @@ window.Debug = (function() {
 			// time the request
 			let startTime = new Date().getTime();
 
-			// if (DEBUG) console.log("🐞 Debug.sendBackgroundDebugMessage()", caller, str);
+			// if (DEBUG) console.log("🗜️ Debug.sendBackgroundDebugMessage()", caller, str);
 			let msg = {
 				'action': 'sendBackgroundDebugMessage',
 				'caller': caller,
 				'str': str
 			};
-			chrome.runtime.sendMessage(msg, function(response) {
+			chrome.runtime.sendMessage(msg, function (response) {
 				let endTime = new Date().getTime();
-				// if (DEBUG) console.log("🐞 Debug.sendBackgroundDebugMessage() time = " + (endTime - startTime) + "ms, RESPONSE =", JSON.stringify(response));
+				// if (DEBUG) console.log("🗜️ Debug.sendBackgroundDebugMessage() time = " + (endTime - startTime) + "ms, RESPONSE =", JSON.stringify(response));
 			});
 		} catch (err) {
 			console.error(err);
@@ -142,15 +160,15 @@ window.Debug = (function() {
 			// make it draggable
 			$("#tyd").draggable({
 				axis: "y",
-				drag: function() {
-					//if (DEBUG) console.log("🐞 Debug.add() draggable:drag");
+				drag: function () {
+					//if (DEBUG) console.log("🗜️ Debug.add() draggable:drag");
 					// var offset = $(this).offset();
 					// var xPos = offset.left;
 					// var yPos = offset.top - $(window).scrollTop();
 					// T.tally_options.debuggerPosition = [xPos,yPos];
 				},
-				stop: function() {
-					//if (DEBUG) console.log("🐞 Debug.add() draggable:stop");
+				stop: function () {
+					//if (DEBUG) console.log("🗜️ Debug.add() draggable:stop");
 					//TallyStorage.saveData("tally_options",T.tally_options,"tyd.draggable.stop");
 				}
 			});
@@ -165,8 +183,8 @@ window.Debug = (function() {
 			if (!$("#tyd").length) return;
 
 			var str = "<div class='tally'>" +
-				// "<button class='' id='resetTallyUserFromBackground'>RESET FROM BACKGROUND</button> " +
-				// "<button class='' id='resetTallyUserFromServer'>RESET FROM SERVER</button>"+
+				"<button class='tally' id='resetTallyUserFromBackground'>RESET FROM BACKGROUND</button> " +
+				"<button class='tally' id='resetTallyUserFromServer'>RESET FROM SERVER</button>" +
 				"";
 
 			// add T.tally_user.score
@@ -203,7 +221,7 @@ window.Debug = (function() {
 			str += "</div>";
 			$('#tyd').html(str);
 
-			// addDebugButtonListeners();
+			addDebugButtonListeners();
 
 		} catch (err) {
 			console.error(err);
@@ -216,16 +234,14 @@ window.Debug = (function() {
 			if (debugButtonListenersAdded) return;
 			debugButtonListenersAdded = true;
 
-			if (DEBUG) console.log("🐞 Debug.addDebugButtons()");
+			if (DEBUG) console.log("🗜️ Debug.addDebugButtons()");
 
 			// add listener for reset buttons
-			$(document).on("click", '#resetTallyUserFromBackground', function() {
+			$(document).on("click", '#resetTallyUserFromBackground', function () {
 				TallyStorage.getDataFromBackground(TallyMain.contentStartChecks);
 			});
-			$(document).on("click", '#resetTallyUserFromServer', function() {
-				if (DEBUG) console.log("🐞 Debug.update() -> resetTallyUser()");
-				// attempt reset
-				TallyStorage.resetTallyUser();
+			$(document).on("click", '#resetTallyUserFromServer', function () {
+				TallyStorage.resetTallyUserFromServer();
 			});
 
 		} catch (err) {
@@ -238,71 +254,71 @@ window.Debug = (function() {
 		try {
 
 			let k = "`+1";
-			Mousetrap.bind(k + ' p', function() {
+			Mousetrap.bind(k + ' p', function () {
 				window.open('https://tallygame.net/profile/' + T.tally_user.username);
 			});
-			Mousetrap.bind(k + ' s', function() {
+			Mousetrap.bind(k + ' s', function () {
 				chrome.runtime.sendMessage({
 					'action': 'openPage',
 					'url': chrome.extension.getURL('assets/pages/startScreen/startScreen.html')
 				});
 			});
-			Mousetrap.bind(k + ' t', function() {
+			Mousetrap.bind(k + ' t', function () {
 				Dialogue.random();
 			});
-			Mousetrap.bind(k + ' w', function() {
+			Mousetrap.bind(k + ' w', function () {
 				Skin.random();
 			});
-			Mousetrap.bind(k + ' m', function() {
+			Mousetrap.bind(k + ' m', function () {
 				Sound.stopMusic();
 				BattleAttack.tallyWins("The monster's health has been depleted. Tally wins!!!", "monster-health-gone");
 				// BattleEffect.showCapturedMonster();
 				// Monster.test();
 			});
-			Mousetrap.bind(k + ' b', function() {
+			Mousetrap.bind(k + ' b', function () {
 				// Battle.test();
 				Sound.playFile("explosions/explode.mp3", false, 0);
 			});
-			Mousetrap.bind(k + ' 0', function() {
+			Mousetrap.bind(k + ' 0', function () {
 				BattleEffect.showRumble("small");
 			});
-			Mousetrap.bind(k + ' 1', function() {
+			Mousetrap.bind(k + ' 1', function () {
 				BattleEffect.showRumble("medium");
 			});
-			Mousetrap.bind(k + ' 2', function() {
+			Mousetrap.bind(k + ' 2', function () {
 				BattleEffect.showRumble("large");
 			});
-			Mousetrap.bind(k + ' 7', function() {
+			Mousetrap.bind(k + ' 7', function () {
 
 			});
-			Mousetrap.bind(k + ' 8', function() {
+			Mousetrap.bind(k + ' 8', function () {
 				BattleConsole.log("What will Tally do?", "showBattleOptions");
 			});
-			Mousetrap.bind(k + ' 9', function() {
+			Mousetrap.bind(k + ' 9', function () {
 
 			});
-			Mousetrap.bind(k + ' q', function() {
+			Mousetrap.bind(k + ' q', function () {
 				Battle.end();
 			});
 
-			Mousetrap.bind(k + ' e', function() {
+			Mousetrap.bind(k + ' e', function () {
 				Effect.explode();
 			});
 
 
-			Mousetrap.bind(k + ' z', function() {
+			Mousetrap.bind(k + ' z', function () {
 				StatsDisplay.adjustStatsBar("tally", "health", Math.random());
 			});
-			Mousetrap.bind(k + ' x', function() {
+			Mousetrap.bind(k + ' x', function () {
 				StatsDisplay.adjustStatsBar("tally", "stamina", Math.random());
 			});
-			Mousetrap.bind(k + ' v', function() {
+			Mousetrap.bind(k + ' v', function () {
 				StatsDisplay.adjustStatsCircle("tally", Math.random());
 			});
-			Mousetrap.bind(k + ' r', function() {
+			Mousetrap.bind(k + ' r', function () {
 
 			});
-			Mousetrap.bind(k + ' v', function() {
+			Mousetrap.bind(k + ' v', function () {
 				BattleTest.test();
 			});
 
@@ -310,6 +326,12 @@ window.Debug = (function() {
 			console.error(err);
 		}
 	}
+
+	// global error handler
+	window.onerror = function (message, source, lineno, colno, error) {
+		console.error("Tally", message, source, lineno, colno, error);
+	};
+
 
 	// PUBLIC
 	return {
@@ -320,6 +342,8 @@ window.Debug = (function() {
 		dataReportHeader: dataReportHeader,
 		add: add,
 		update: update,
-		addKeys: addKeys
+		addKeys: addKeys,
+		elapsedTime: elapsedTime,
+		tallyConsoleIcon: tallyConsoleIcon
 	};
 })();
