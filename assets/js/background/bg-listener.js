@@ -1,6 +1,6 @@
 "use strict";
 
-window.Listener = (function() {
+window.Listener = (function () {
 	// PRIVATE
 
 	let DEBUG = true;
@@ -9,7 +9,7 @@ window.Listener = (function() {
 	 ******************************************************************************/
 
 	chrome.runtime.onMessage.addListener(
-		function(request, sender, sendResponse) {
+		function (request, sender, sendResponse) {
 			try {
 				// console.log("👂🏼 Listener.addListener() onMessage.request =", JSON.stringify(request), sender, sendResponse);
 
@@ -21,18 +21,13 @@ window.Listener = (function() {
 				if (request.action == "getDataFromServer" && request.url) {
 					console.log("👂🏼 Listener.addListener() < getData 1", request.name);
 
-					// add token
-					let _tally_meta = store("tally_meta"),
-						_tally_secret = store("tally_secret");
-					request.token = _tally_secret.token;
+					let _tally_meta = store("tally_meta");
 
 					// (attempt to) get data from server, response to callback
 					$.ajax({
 						type: "GET",
 						url: _tally_meta.api + request.url,
-						contentType: 'application/json',
-						dataType: 'json',
-						data: JSON.stringify(request.data)
+						dataType: 'json'
 					}).done(result => {
 						console.log("👂🏼 Listener.getDataFromServer() > RESULT =", JSON.stringify(result));
 						// reply to contentscript
@@ -64,20 +59,20 @@ window.Listener = (function() {
 
 				// get data from background
 				else if (request.action == "getData" && request.name) {
-					console.log("👂🏼 Listener.addListener() < getData 1", request.name);
+					// console.log("👂🏼 Listener.addListener() < getData [1]", request.name);
 					// build response
 					let resp = {
 						"action": request.action,
 						"message": 1,
 						"data": store(request.name)
 					};
-					console.log("👂🏼 Listener.addListener() > getData 2", request.name, resp);
+					console.log("👂🏼 Listener.addListener() > getData [2]", request.name, resp);
 					// send
 					sendResponse(resp);
 				}
 				// save data in background
 				if (request.action == "saveData" && request.name && request.data) {
-					console.log("👂🏼 Listener.addListener() < saveData", request.name, request.data);
+					console.log("👂🏼 Listener.addListener() < saveData [1]", request.name, request.data);
 					// save data
 					let success = 0;
 					if (store(request.name, request.data))
@@ -176,18 +171,6 @@ window.Listener = (function() {
 				/*  CUSTOM FUNCTIONS
 				 ******************************************************************************/
 
-				// // launchStartScreen
-				// else if (request.action == "launchStartScreen") {
-				// 	Install.launchStartScreen();
-				// 	sendResponse({
-				// 		"action": request.action,
-				// 		"message": 1
-				// 	});
-				// }
-
-
-
-
 				// receive and log debug messages from content
 				else if (request.action == "sendBackgroundDebugMessage") {
 					Background.dataReportHeader("🐞 " + request.caller, "<", "before");
@@ -226,54 +209,6 @@ window.Listener = (function() {
 				/*  DATA MANAGEMENT
 				 ******************************************************************************/
 
-				// saveToken
-				// - called from content script
-				// - if token is new resets all game data
-				else if (request.action == "saveToken") {
-
-					// get current token data
-					let _tally_secret = store("tally_secret"),
-						_tally_meta = store("tally_meta");
-
-					// if they don't match
-					if (_tally_secret.token != request.data.token) {
-						if (DEBUG) console.log("👂🏼 Listener.addListener() < saveToken NEW 🔑 FOUND [1]", request.data);
-
-						// save new token and tokenExpires
-						_tally_secret.token = request.data.token;
-						_tally_secret.tokenExpires = request.data.tokenExpires;
-						store("tally_secret", _tally_secret);
-
-						// (re)start app to pull in data
-						Background.runStartChecks()
-							.then(function(result) {
-								if (DEBUG) console.log("👂🏼 Listener.addListener() > saveToken 🔑 NEW [2] ", result);
-								console.log(store("tally_user"));
-								if (DEBUG) console.log("👂🏼 Listener.addListener() > saveToken 🔑 NEW [3] ", result);
-								// send response with latest
-								sendResponse({
-									"action": request.action,
-									"tally_user": store("tally_user"),
-									"tally_options": store("tally_options"),
-									"tally_meta": store("tally_meta"),
-									"tally_nearby_monsters": store("tally_nearby_monsters"),
-									"tally_stats": store("tally_stats"),
-									"tally_top_monsters": store("tally_top_monsters"),
-									"message": "new"
-								});
-							});
-					} else if (_tally_secret.token === request.data.token) {
-						if (DEBUG) console.log("👂🏼 Listener.addListener() > saveToken 🔑 SAME", request.data);
-						// they are the same
-						sendResponse({
-							"action": request.action,
-							"message": "same"
-						});
-					}
-					// required so chrome knows this is asynchronous
-					return true;
-				}
-
 
 				// resetTallyUser
 				// - get latest data from server; run start checks
@@ -283,7 +218,7 @@ window.Listener = (function() {
 
 					// (re)start app to pull in data
 					Background.runStartChecks()
-						.then(function(result) {
+						.then(function (result) {
 							if (DEBUG) console.log("👂🏼 Listener.addListener() > resetTallyUser [2] ", result);
 							if (DEBUG) console.log(store("tally_user"));
 							if (DEBUG) console.log("👂🏼 Listener.addListener() > resetTallyUser [3] ", result);
@@ -307,21 +242,20 @@ window.Listener = (function() {
 
 				// sendUpdateToBackground
 				// - receive and save score, event, page, etc. data in background
-				// - if server online and token good then send to server
-				// - receive and reply to content with T.tally_user
+				// - if server online and account good then send to server
+				// - receive and reply to content with T.tally_user only
 				else if (request.action == "sendUpdateToBackground") {
 					// if (DEBUG) console.log("👂🏼 Listener.addListener() < sendUpdateToBackground", JSON.stringify(request.data));
 
-					let _tally_meta = store("tally_meta"),
-						_tally_secret = store("tally_secret");
+					let _tally_meta = store("tally_meta");
 
-					// if there is no token or server is down then we are just saving in background
-					if (!_tally_secret.token || !_tally_meta.server.online) {
+					// if user is not logged-in or server is down then we are just saving in background
+					if (!_tally_meta.userLoggedIn || !_tally_meta.server.online) {
 
-						console.warn("👂🏼 Listener.addListener() ! sendUpdateToBackground - NO TOKEN OR SERVER OFFLINE", _tally_secret);
+						console.warn("👂🏼 Listener.addListener() ! sendUpdateToBackground - NO ACCOUNT OR SERVER OFFLINE");
 
 						// every once in a while check again
-						if (Math.random() > 0.3) Server.checkIfOnline();
+						if (Math.random() > 0.5) Server.checkIfOnline();
 
 						// reply to contentscript with updated T.tally_user
 						sendResponse({
@@ -329,43 +263,38 @@ window.Listener = (function() {
 							"message": 1,
 							"tally_user": store("tally_user")
 						});
-					}
-					else {
+					} else {
 
-					// otherwise add token
-					request.data.token = _tally_secret.token;
+						// and (attempt to) send data to server, response to callback
+						$.ajax({
+							type: "PUT",
+							url: _tally_meta.api + "/user/updateTallyUser",
+							contentType: 'application/json', // content we are sending
+							dataType: 'json',
+							data: JSON.stringify(request.data)
+						}).done(result => {
+							// result contains T.tally_user
+							if (DEBUG) console.log("👂🏼 Listener.addListener() > sendUpdateToBackground - DONE =", result);
 
-					// and (attempt to) send data to server, response to callback
-					$.ajax({
-						type: "PUT",
-						// url: _tally_meta.api + "/user/extensionUpdate",
-						url: _tally_meta.api + "/user/updateTallyUser",
-						contentType: 'application/json',
-						dataType: 'json',
-						data: JSON.stringify(request.data)
-					}).done(result => {
-						// result contains T.tally_user
-						if (DEBUG) console.log("👂🏼 Listener.addListener() > sendUpdateToBackground - DONE =", result);
-
-						// merge attack data from server with game data properties
-						result.attacks = Server.mergeAttackDataFromServer(result.attacks);
-						// store result
-						store("tally_user", result);
-						// reply to contentscript with updated T.tally_user
-						sendResponse({
-							"action": request.action,
-							"message": 1,
-							"tally_user": result
+							// merge attack data from server with game data properties
+							result.attacks = Server.mergeAttackDataFromServer(result.attacks);
+							// store result
+							store("tally_user", result);
+							// reply to contentscript with updated T.tally_user
+							sendResponse({
+								"action": request.action,
+								"message": 1,
+								"tally_user": result
+							});
+						}).fail(err => {
+							console.warn("👂🏼 Listener.addListener() > sendUpdateToBackground - FAIL =", JSON.stringify(err));
+							// server might not be reachable
+							Server.checkIfOnline();
+							sendResponse({
+								"action": request.action,
+								"message": 0
+							});
 						});
-					}).fail(err => {
-						console.warn("👂🏼 Listener.addListener() > sendUpdateToBackground - FAIL =", JSON.stringify(err));
-						// server might not be reachable
-						Server.checkIfOnline();
-						sendResponse({
-							"action": request.action,
-							"message": 0
-						});
-					});
 					}
 
 					// required so chrome knows this is asynchronous

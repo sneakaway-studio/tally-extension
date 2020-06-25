@@ -84,19 +84,19 @@ window.TallyMain = (function () {
 			// 2.3. Check for Flags (in case we need to pause and restart game with data)
 			if (DEBUG) console.log(log, '[2.3] -> Check for flags');
 
-			// check for token on page
-			let newTokenStatus = await Flag.checkForNewToken();
-			// if token is new
-			if (newTokenStatus === "new") {
-                // stop and start game again
-                contentStartChecks();
-                return;
-            }
-			// if this is the second run after a new token found
-			else if (newTokenStatus == "updated" && Page.data.tokenFound == true) {
-				// let progress show game events
-				Progress.newTokenAdded();
-			}
+			// check to see if user is logging into account (should we respond appropriately?)
+			// let newLogin = await Flag.checkForNewLogin();
+			// if new loginw
+			// if (newLogin == "firstTime") {
+            //     // stop and start game again
+            //     contentStartChecks();
+            //     return;
+            // }
+			// // if this is the second run after a new login
+			// else {
+			// 	// let progress show game events
+			// 	Progress.accountLogin();
+			// }
 
 
 			// 2.3. Add stylesheets and debugger
@@ -127,14 +127,14 @@ window.TallyMain = (function () {
 			// start from scratch
 			let mode = {
 				active: 0,
-				noToken: 0,
+				loggedIn: 0,
 				serverOffline: 0,
 				notActive: 0
 			};
 
 			// NOT ACTIVE
 			// - something really wrong with page;
-			// - tally does not show at all, does not save in background or prompt for token
+			// - tally does not show at all, does not save in background or prompt for login
 
 			// Page.data failed - game cannot start at all
 			if (!prop(Page.data)) {
@@ -167,23 +167,23 @@ window.TallyMain = (function () {
 
 			// SERVER IS OFFLINE
 			// - tally can still point to trackers, save in bg
-			// - the game can run using the background only, for example, if token is broken or server is offline
+			// - the game can run using the background only, for example, if user not logged-in or server is offline
 			if (!T.tally_meta.server.online) {
 				if (DEBUG) console.log(log + "Connection to Tally server is down");
-				mode.serverOffline = 1; 
+				mode.serverOffline = 1;
 			}
 
-			// NO TOKEN
-			// - there is a problem with the token; no token or did not validate;
-			// - tally can still point to trackers, prompt for token (assuming server is online), save in bg
-			else if (T.tally_meta.token.status !== "ok") {
-				if (DEBUG) console.log(log + "T.tally_meta.token.status =", T.tally_meta.token.status, T.tally_meta);
-				mode.noToken = 1;
+			// NOT LOGGED IN OR NO ACCOUNT
+			// - no account or did not validate;
+			// - tally can still point to trackers, prompt for login (assuming server is online), save in bg
+			else if (!T.tally_meta.userLoggedIn) {
+				if (DEBUG) console.log(log + "T.tally_meta.userLoggedIn =", T.tally_meta.userLoggedIn, T.tally_meta);
+				mode.loggedIn = 1;
 			}
 
 			// ACTIVE
-			// - background, token, server, and everything else (like the above) is good, let's roll
-			if (mode.notActive == 0 && mode.serverOffline == 0 && mode.noToken == 0) {
+			// - background, login, server, and everything else (like the above) is good, let's roll
+			if (mode.notActive == 0 && mode.serverOffline == 0 && mode.loggedIn === 1) {
 				if (DEBUG) console.log(log + "All is good, setting mode.active = 1");
 				mode.active = 1;
 			}

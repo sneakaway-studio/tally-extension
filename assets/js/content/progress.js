@@ -1,10 +1,16 @@
 "use strict";
 
-window.Progress = (function() {
+window.Progress = (function () {
 	// PRIVATE
 	let DEBUG = Debug.ALL.Progress;
 
 	let defaults = {
+
+		// authentication
+		accountCreated: 0,
+		accountCreatedWelcomeMessage: 0,
+		accountLogins: 0,
+
 		// attacks
 		attacksAwarded: 0,
 		attacksSelected: 0,
@@ -56,10 +62,6 @@ window.Progress = (function() {
 		trackersSeen: 0,
 		trackersSeenMostOnePage: 0,
 		trackersBlocked: 0,
-
-		// authentication
-		tokenAdded: 0,
-		tokenAddedWelcomeMessage: 0,
 
 		// tutorials
 		viewTutorial1: 0,
@@ -227,7 +229,7 @@ window.Progress = (function() {
 			if (DEBUG) console.log("🕹️ Progress.createScrollListeners() [1]");
 
 			// on scroll
-			$(window).scroll(function() {
+			$(window).scroll(function () {
 				// console.log('scroll detected');
 				// if (DEBUG) console.log("🕹️ Progress.createScrollListeners() [2]",
 				// 	"pageActionScrollDistance =", pageActionScrollDistance
@@ -244,18 +246,18 @@ window.Progress = (function() {
 					d = now;
 				}
 				clearTimeout(t);
-				t = setTimeout(function() {
+				t = setTimeout(function () {
 					if (scrolling)
 						$(window).trigger('scrollEnd');
 				}, 300);
 			});
 			// trigger for scroll start
-			$(window).bind('scrollStart', function() {
+			$(window).bind('scrollStart', function () {
 				scrolling = true;
 				// console.log('scrollStart');
 			});
 			// trigger for scroll end
-			$(window).bind('scrollEnd', function() {
+			$(window).bind('scrollEnd', function () {
 				scrolling = false;
 				// console.log('scrollEnd');
 				// increase # most scrolls on page, compare against past
@@ -309,27 +311,27 @@ window.Progress = (function() {
 
 
 	/**
-	 *	User adds or updates token
+	 *	User logs-in or creates account
 	 */
-	function newTokenAdded() {
+	function accountLogin() {
 		try {
-			if (DEBUG) console.log("🕹️ Progress.newTokenAdded() [1] -> 🔑");
+			if (DEBUG) console.log("🕹️ Progress.accountLogin() [1] -> 🔑");
 
 			// increment counter
-			let tokenCount = update("tokenAdded", 1, "+");
+			let accountLogins = update("accountLogins", 1, "+");
 
-			// 1. if this is the first time user is saving a token
-			if (update("tokenAddedWelcomeMessage", 1, "+") < 1 && tokenCount < 1) {
-				if (DEBUG) console.log("🕹️ Progress.newTokenAdded() [2] -> 🔑 FIRST");
+			// 1. if this is the first time user is logging in
+			if (update("accountCreatedWelcomeMessage", 1, "+") < 1 && accountLogins < 3) {
+				if (DEBUG) console.log("🕹️ Progress.accountLogin() [2] -> 🔑 FIRST");
 				playIntroduction();
-				playTokenUpdated();
+				playAccountUpdated();
 				playDashboardIntro();
 				playLetsGetTrackers();
 			}
 			// if user has been here before
 			else {
-				if (DEBUG) console.log("🕹️ Progress.newTokenAdded() [3] -> 🔑 UPDATED");
-				playTokenUpdated();
+				if (DEBUG) console.log("🕹️ Progress.accountLogin() [3] -> 🔑 UPDATED");
+				playAccountUpdated();
 				playLetsGetTrackers();
 			}
 
@@ -355,7 +357,7 @@ window.Progress = (function() {
 		}
 	}
 
-	function playTokenUpdated() {
+	function playAccountUpdated() {
 		try {
 			let r = Math.random();
 			if (r < 0.33) {
@@ -407,7 +409,7 @@ window.Progress = (function() {
 		get: get,
 		update: update,
 		check: check,
-		newTokenAdded: newTokenAdded,
+		accountLogin: accountLogin,
 		get pageTagsProgressMatches() {
 			return pageTagsProgressMatches;
 		}

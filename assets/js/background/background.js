@@ -42,46 +42,32 @@ window.Background = (function() {
 			// check the API status
 			const serverOnline = await Server.checkIfOnline();
 
-
 			Config.logTimeSinceLoad(log, "[2]");
 
 			// if server online ...
 			if (serverOnline) {
 				console.log(log, "-> SERVER ONLINE!");
 
-				let tally_secret = await store("tally_secret");
-				console.log(log, "-> CHECKING TOKEN ...");
+				// refresh T.tally_user data from server
+				const tallyUserResponse = await Server.getTallyUser();
+				// now we know the username and we can pass it to populate monsters
+				const _tally_top_monsters = await Server.returnTopMonsters();
 
-				// if a token exists
-				if (tally_secret.token) {
-					// check token
-					const tokenResponse = await Server.verifyToken();
-					// if token is valid
-					if (tokenResponse) {
-						console.log(log, "-> TOKEN VALID");
-						// wait to refresh T.tally_user data from server
-						const tallyUserResponse = await Server.getTallyUser();
-						// now we know the username and we can pass it to populate monsters
-						const _tally_top_monsters = await Server.returnTopMonsters();
+				// if user logged in ...
+				console.log(log, "-> SERVER ONLINE! tallyUserResponse =",tallyUserResponse);
+				dataReportHeader("END " + log, "@", "after");
+				// return true to send data back to content
+				if (tallyUserResponse) return true;
 
-						dataReportHeader("END " + log, "@", "after");
-						// return true to send data back to content
-						if (tallyUserResponse) return true;
-						return false;
-					} else {
-						console.log(log, "-> TOKEN NOT VALID");
-						// token not valid
-						dataReportHeader("/ " + log, "@", "after");
-					}
-				}
-				// no token exists because it is a new install
+
+				// they are not logged in because it is a new install
 				else if (newInstall) {
 					console.log(log, "-> NEW INSTALL, LAUNCH START SCREEN");
-					// prompt to get token
+					// prompt to install
 					const response = await Install.launchStartScreen();
 					dataReportHeader("/ " + log, "@", "after");
 				} else {
-					console.log(log, "-> NO TOKEN");
+					console.log(log, "-> NOT LOGGED IN");
 					dataReportHeader("END " + log, "@", "after");
 				}
 			} else {
@@ -103,13 +89,11 @@ window.Background = (function() {
 		try {
 			let _tally_user = store("tally_user"),
 				_tally_options = store("tally_options"),
-				_tally_meta = store("tally_meta"),
-				_tally_secret = store("tally_secret");
+				_tally_meta = store("tally_meta");
 			dataReportHeader("🧰 Background.dataReport()", "#", "before");
 			if (DEBUG) console.log("%cT.tally_user", Debug.styles.greenbg, JSON.stringify(_tally_user));
 			if (DEBUG) console.log("%cT.tally_options", Debug.styles.greenbg, JSON.stringify(_tally_options));
 			if (DEBUG) console.log("%cT.tally_meta", Debug.styles.greenbg, JSON.stringify(_tally_meta));
-			if (DEBUG) console.log("%ctally_secret", Debug.styles.greenbg, JSON.stringify(_tally_secret));
 			dataReportHeader("/ 🧰 Background.dataReport()", "#", "after");
 		} catch (err) {
 			console.error("dataReport() failed");

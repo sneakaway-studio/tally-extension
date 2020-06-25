@@ -138,7 +138,6 @@ window.Page = (function() {
 				tags: [],
 				time: 0,
 				title: getTitle() || "",
-				tokenFound: false,
 				resetTallyUserCalled: false,
 				trackers: {
 					blocked: {},

@@ -8,11 +8,11 @@ window.Install = (function() {
 	/**
 	 *  Create all objects for game from scratch
 	 */
-	async function init(fromReset = false, existingToken = {}) {
+	async function init() {
 		try {
 			// does T.tally_meta exists, or is this the first install?
 			if (prop(store("tally_meta"))) {
-				if (DEBUG) console.log("🔧 Install.init() -> T.tally_meta exists, need to check token");
+				if (DEBUG) console.log("🔧 Install.init() -> T.tally_meta exists, need to check account");
 				return false;
 			}
 
@@ -23,7 +23,6 @@ window.Install = (function() {
 			store("tally_nearby_monsters", {});
 			store("tally_meta", createMeta());
 			store("tally_stats", {});
-			store("tally_secret", createSecret());
 			store("tally_top_monsters", {});
 
 			// get user's geolocation
@@ -110,7 +109,7 @@ window.Install = (function() {
 
 
 	/**
-	 *  Launch Start Screen - call after token 1) not found 2) not working
+	 *  Launch Start Screen - call if getTallyUser fails
 	 */
 	async function launchStartScreen() {
 		try {
@@ -121,9 +120,9 @@ window.Install = (function() {
 			if (!_tally_meta.server.online)
 				return console.log("🔧 Install.launchStartScreen() 🛑 SERVER OFFLINE");
 
-			// don't launch if !token
-			if (_tally_meta.token.status === "ok")
-				return console.log("🔧 Install.launchStartScreen() 🛑 NO TOKEN");
+			// don't launch if they are logged in
+			if (_tally_meta.userLoggedIn)
+				return console.log("🔧 Install.launchStartScreen() 🛑 ALREADY LOGGED IN");
 
 			// get current page
 			chrome.tabs.query({
@@ -139,10 +138,11 @@ window.Install = (function() {
 				}
 				//launch install page
 				chrome.tabs.create({
-					url: chrome.extension.getURL('assets/pages/startScreen/startScreen.html')
+					// url: chrome.extension.getURL('assets/pages/startScreen/startScreen.html')
+					url: _tally_meta.website + "/anonyname"
 				}, function(newTab) {
 					// increment, check # prompts
-					if (++_tally_meta.token.prompts <= 3) {}
+					if (++_tally_meta.install.prompts <= 3) {}
 					store("tally_meta", _tally_meta);
 					if (DEBUG) console.log("🔧 Install.launchStartScreen() 👍 launching", newTab);
 					return true;
@@ -178,29 +178,29 @@ window.Install = (function() {
 	function createUser() {
 		try {
 			var obj = {
-				"achievements": {},
-				"admin": 0,
-				"attacks": {},
-				"badges": {},
-				"consumables": {},
-				"flags": {},
-				"confirmFlags": {},
-				"lastActive": moment().format(),
-				"level": 1,
-				"monsters": {},
-				"progress": {},
-				"score": {
-					"clicks": 0,
-					"domains": 0,
-					"likes": 0,
-					"pages": 0,
-					"score": 0,
-					"time": 0,
+				achievements: {},
+				admin: 0,
+				attacks: {},
+				badges: {},
+				consumables: {},
+				flags: {},
+				confirmFlags: {},
+				lastActive: moment().format(),
+				level: 1,
+				monsters: {},
+				progress: {},
+				score: {
+					clicks: 0,
+					domains: 0,
+					likes: 0,
+					pages: 0,
+					score: 0,
+					time: 0,
 				},
-				"skins": ["magenta"],
-				"timezone": "",
-				"trackers": {},
-				"username": "",
+				skins: ["magenta"],
+				timezone: "",
+				trackers: {},
+				username: "",
 			};
 			return obj;
 		} catch (err) {
@@ -211,21 +211,21 @@ window.Install = (function() {
 	function createOptions() {
 		try {
 			var obj = {
-				"showTally": true,
-				"showClickVisuals": true,
-				"playSounds": true,
-				"soundVolume": 0.2,
-				"showAnimations": true,
-				"gameMode": "full", // "demo" | "testing" | "full" | "stealth" | "disabled"
-				"disabledDomains": [
+				showTally: true,
+				showClickVisuals: true,
+				playSounds: true,
+				soundVolume: 0.2,
+				showAnimations: true,
+				gameMode: "full", // demo | testing | full | stealth | disabled
+				disabledDomains: [
 					"drive.google.com",
 					"docs.google.com",
 					"gmail.com",
 					"mail.google.com",
 					"moodle.davidson.edu",
 				],
-				"showDebugger": false,
-				"debuggerPosition": [0, 300]
+				showDebugger: false,
+				debuggerPosition: [0, 300]
 			};
 			obj = setOptions(obj);
 			return obj;
@@ -260,26 +260,23 @@ window.Install = (function() {
 		try {
 			var manifestData = chrome.runtime.getManifest();
 			var obj = {
-				"version": manifestData.version, // set in manifest
-				"installedOn": moment().format(),
-				"lastSyncedToServer": 0,
-				"token": {
-					"expiresDate": 0, // date expires
-					"expiresInMillis": -1, // milliseconds until expires
-					"prompts": 0, // number prompts given to user
-					"status": "", // status = ok | expired
+				version: manifestData.version, // set in manifest
+				install: {
+					date: moment().format(),
+					prompts: 0 // number prompts given to user
 				},
-				"server": {
-					"lastSyncedDate": 0,
-					"online": 1,
-					"responseMillis": -1
+				userLoggedIn: 0,
+				userOnline: navigator.onLine,
+				server: {
+					lastChecked: 0,
+					online: 1,
+					responseMillis: -1
 				},
-				"userOnline": navigator.onLine,
-				"currentAPI": "production", // "production" or "development";
-				"api": Config.production.api, // default to production
-				"website": Config.production.website,
-				"browser": Environment.getBrowserName(),
-				"location": {}
+				currentAPI: "production", // production or development;
+				api: Config.production.api, // default to production
+				website: Config.production.website,
+				browser: Environment.getBrowserName(),
+				location: {}
 			};
 
 			return obj;
@@ -288,20 +285,6 @@ window.Install = (function() {
 		}
 	}
 
-	/**
-	 *  Create Secret object on installation
-	 */
-	function createSecret() {
-		try {
-			var obj = {
-				"token": "",
-				"tokenExpires": "",
-			};
-			return obj;
-		} catch (err) {
-			console.error(err);
-		}
-	}
 
 	/**
 	 *  Get location
@@ -312,14 +295,14 @@ window.Install = (function() {
 			return $.getJSON('http://www.geoplugin.net/json.gp', function(data) {
 				// console.log(JSON.stringify(data, null, 2));
 				_tally_meta.location = {
-					"ip": data.geoplugin_request,
-					"city": data.geoplugin_city,
-					"region": data.geoplugin_region,
-					"country": data.geoplugin_countryName,
-					"continent": data.geoplugin_continentName,
-					"lat": data.geoplugin_latitude,
-					"lng": data.geoplugin_longitude,
-					"timezone": data.geoplugin_timezone
+					ip: data.geoplugin_request,
+					city: data.geoplugin_city,
+					region: data.geoplugin_region,
+					country: data.geoplugin_countryName,
+					continent: data.geoplugin_continentName,
+					lat: data.geoplugin_latitude,
+					lng: data.geoplugin_longitude,
+					timezone: data.geoplugin_timezone
 				};
 				store("tally_meta", _tally_meta);
 			});
