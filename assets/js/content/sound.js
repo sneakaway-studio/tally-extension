@@ -1,6 +1,6 @@
 "use strict";
 
-window.Sound = (function() {
+window.Sound = (function () {
 	// PRIVATE
 	var DEBUG = Debug.ALL.Sound,
 		sounds = {
@@ -83,7 +83,7 @@ window.Sound = (function() {
 			//playMusic(battleMusicDir + "battle-intro.wav", false, 0);
 			playMusic(battleMusicDir + "intro-with-loop.mp3", false, 0);
 			// then call again so it switches to the loop
-			setTimeout(function() {
+			setTimeout(function () {
 				//playMusic(battleMusicDir + "battle-loop.wav", true, 0);
 				playMusic(battleMusicDir + "loop.mp3", true, 0);
 			}, 500);
@@ -126,7 +126,7 @@ window.Sound = (function() {
 				startMusic();
 
 				// add listener to make sure loop happens
-				musicAudioEl.addEventListener('ended', function() {
+				musicAudioEl.addEventListener('ended', function () {
 					startMusic();
 				}, false);
 
@@ -315,7 +315,7 @@ window.Sound = (function() {
 			// don't allow if playSounds disabled
 			if (!T.tally_options.playSounds) return;
 
-// previously received mood as a string
+			// previously received mood as a string
 
 			// let moods = {
 			// 	cautious: 3,
@@ -334,7 +334,7 @@ window.Sound = (function() {
 			// play(file, 150);
 
 
-// now receives a dialogue obj
+			// now receives a dialogue obj
 
 			// make sure mood exists
 			if (!prop(dialogue.mood)) return;
@@ -342,7 +342,7 @@ window.Sound = (function() {
 			if (DEBUG) console.log("🎵 Sound.playTallyVoice()", JSON.stringify(dialogue));
 
 			// get number of spaces in the dialogue text
-			let words = (dialogue.text.match(/ /g)||[]).length + 1;
+			let words = (dialogue.text.match(/ /g) || []).length + 1;
 			if (words > 5) words = 5;
 
 			// play the file
@@ -396,16 +396,18 @@ window.Sound = (function() {
 
 			if (DEBUG) console.log("🎵 Sound.play(" + soundFile + "," + delay + "," + volumeModifier + ")");
 
+
 			// reference to audio element
 			var audioEl = document.querySelector('#tally_audio');
 			// add source
 			$('#tally_audio_source').attr("src", chrome.extension.getURL("assets/sounds/" + soundFile));
-			if (!audioEl) return console.warn("🎵 Sound.play() audioEl does not exist",audioEl,$('#tally_audio_source'));
+			if (!audioEl) return console.warn("🎵 Sound.play() audioEl does not exist", audioEl, $('#tally_audio_source'));
 			// update the source
 			audioEl.load();
 			// set volume
-			audioEl.volume = (T.tally_options.soundVolume || 0.3) + volumeModifier;
-			if (audioEl.volume < 0) audioEl.volume = 0;
+			audioEl.volume = FS_Number.clamp((T.tally_options.soundVolume || 0.3) + volumeModifier, 0, 1);
+
+			// some hacks for Chrome
 			audioEl.muted = false;
 			// pause
 			if (!audioEl.paused && !audioEl.ended) {
@@ -441,7 +443,7 @@ window.Sound = (function() {
 		playRandomJump: playRandomJump,
 		playRandomJumpReverse: playRandomJumpReverse,
 		playCategory: playCategory,
-		playFile: function(file, delay, volume) {
+		playFile: function (file, delay, volume) {
 			play(file, delay, volume);
 		},
 		playTallyVoice: playTallyVoice,
