@@ -87,6 +87,8 @@ window.TallyMain = (function () {
 			// 2.2. Remove blocked trackers
 			if (DEBUG) console.log(log, '[2.2] -> Check and block trackers');
 
+            // show the number of trackers in the badge
+            Tracker.setBadgeText(FS_Object.objLength(Page.data.trackers.found));
 			// were trackers dealt with?
 			if (FS_Object.objLength(Page.data.trackers.found) > 0 && !Tracker.blockAttempted) {
 				// console.log("Page.data.trackers", Page.data.trackers);

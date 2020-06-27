@@ -257,12 +257,6 @@ window.Debug = (function () {
 			Mousetrap.bind(k + ' p', function () {
 				window.open('https://tallygame.net/profile/' + T.tally_user.username);
 			});
-			Mousetrap.bind(k + ' s', function () {
-				chrome.runtime.sendMessage({
-					'action': 'openPage',
-					'url': chrome.extension.getURL('assets/pages/startScreen/startScreen.html')
-				});
-			});
 			Mousetrap.bind(k + ' t', function () {
 				Dialogue.random();
 			});

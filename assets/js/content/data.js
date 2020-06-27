@@ -308,7 +308,7 @@ window.TallyData = (function() {
 
 
 
-				if (DEBUG) console.log("💾 TallyData.pushUpdate() [3]", 
+				if (DEBUG) console.log("💾 TallyData.pushUpdate() [3]",
 					// "backgroundUpdateEditors =",backgroundUpdateEditors
 					"T.tally_meta.userLoggedIn =",T.tally_meta.userLoggedIn
 				);

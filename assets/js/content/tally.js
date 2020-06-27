@@ -577,8 +577,7 @@ window.Tally = (function () {
 				"<a class='tally' id='tally_dashboard'>dashboard</a>, " +
 				"or <a class='tally' id='tally_leaderboard'>leaderboards</a>.<br>" +
 				// promo material
-				"Check out the <a class='tally' id='tally_startScreen'>start screen</a>, " +
-				"the <a class='tally' id='tally_howToPlay'>how to play page</a>, " +
+				"Check out the <a class='tally' id='tally_howToPlay'>how to play page</a>, " +
 				"or the <a class='tally' id='tally_gameTrailerBtn'>game trailer</a>. " +
 				// nerd out
 				// "Read our <a class='tally' id='tally_privacyPolicy'>privacy policy</a> " +
@@ -611,13 +610,7 @@ window.Tally = (function () {
 				window.open(T.tally_meta.website + "/leaderboards");
 			});
 
-			// launch start screen
-			$(document).on('click', '#tally_startScreen', function () {
-				chrome.runtime.sendMessage({
-					'action': 'openPage',
-					'url': chrome.extension.getURL('assets/pages/startScreen/startScreen.html')
-				});
-			});
+			// web pages
 			$(document).on('click', '#tally_howToPlay', function () {
 				window.open(T.tally_meta.website + "/how-to-play");
 			});

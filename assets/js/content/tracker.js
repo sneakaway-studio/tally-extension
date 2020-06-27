@@ -42,10 +42,14 @@ window.Tracker = (function () {
 						url: _domain,
 						domain: _domain
 					};
+				} else {
+					// add it anyway
+					found[_domain] = {
+						url: _domain,
+						domain: _domain
+					};
 				}
 			}
-			// set the number of trackers in the badge
-			setBadgeText(FS_Object.objLength(found));
 
 			if (DEBUG) console.log(log, "found", found);
 
@@ -130,7 +134,7 @@ window.Tracker = (function () {
 	function setBadgeText(data) {
 		try {
 			// icons are too small and covers Tally icon in Opera
-			if (Page.browser.name === "Opera") return;
+			if (Page.data.browser.name === "Opera") return;
 			chrome.runtime.sendMessage({
 				'action': 'setBadgeText',
 				'data': data

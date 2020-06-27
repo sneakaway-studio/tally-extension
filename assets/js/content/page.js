@@ -183,6 +183,9 @@ window.Page = (function () {
 	// chrome.runtime.connect().onDisconnect.addListener(function() {
 	//     // clean up when content script gets disconnected
 	// 	console.warn("EXTENSION WAS UPDATED");
+	//
+	// 	// something went wrong
+	// 	// if(chrome.runtime.lastError) console.warn("chrome.runtime.connect().onDisconnect", JSON.stringify(chrome.runtime.lastError));
 	// });
 
 
