@@ -27,12 +27,12 @@ window.TallyListeners = (function() {
 			// core mouseup listener
 			document.addEventListener("mouseup", function(e) {
 				// a bit of throttling: if mouseup was just fired ignore this click
-				if (Page.data.mouseupFired != true) {
+				if (Page.data.actions.mouseupFired != true) {
 					// set to true
-					Page.data.mouseupFired = true;
+					Page.data.actions.mouseupFired = true;
 					// and reset timer
 					setTimeout(function() {
-						Page.data.mouseupFired = false;
+						Page.data.actions.mouseupFired = false;
 					}, 500);
 					// update
 					Debug.update();

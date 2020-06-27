@@ -12,6 +12,8 @@
 * Tally can now show images in Dialogue
 * Adds monster silhouettes
 * Improves authentication
+* Players can now delete all their data
+* Tally now works in Opera browser
 
 
 ### Version 0.2.18
@@ -23,7 +25,7 @@
 
 ### Version 0.2.17
 
-* Fixes resetTallyUserFromServer
+* Fixes tally_user reset from server
 * Improvements to server / client synching
 * Improvements to development mode (hotreload, etc.)
 

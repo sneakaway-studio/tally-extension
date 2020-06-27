@@ -12,61 +12,58 @@ window.Flag = (function () {
 
 
 
-		/**
-		 *	Check for new login / dashboard activity - to start syncing to server again
-		 */
-		async function checkForNewLogin(what = "all") {
-			try {
-				// always allow?
-				// // allow offline
-				// if (Page.data.mode.notActive) return;
-				// // don't allow if mode disabled
-				// if (T.tally_options.gameMode === "disabled") return;
+	/**
+	 *	Check for new login / dashboard activity - to start (or continue) syncing to server
+	 */
+	async function checkForDashboardLogin() {
+		try {
+			// always allow unless mode disabled
+			if (T.tally_options.gameMode === "disabled") return;
 
-				// only if user is on dashboard...
-				if (!Page.data.url.includes("/dashboard")) return;
-				if (DEBUG) console.log("🚩 Flag.checkForNewLogin() *** DASHBOARD *** ", Page.data.url);
+			// only run if they aren't already logged in AND if user is on dashboard
+			if (T.tally_meta.userLoggedIn && !Page.data.actions.onDashboard) return;
 
+			// update tally_meta in content and background - !IMPORTANT OR BACKGROUND WON'T CONTACT SERVER
+			T.tally_meta.userLoggedIn = true;
+			TallyStorage.saveData("tally_meta", T.tally_meta);
 
+			// user just connected their account
+			if (!Page.data.actions.checkForDashboardLoginCalled) {
+				// so return true to interrupt startup flow
+				Page.data.actions.checkForDashboardLoginCalled = true;
 				return true;
-
-			} catch (err) {
-				console.error(err);
 			}
+			// extension just reloaded data so let Progress show game events
+			else Progress.dashboardLogin();
+
+		} catch (err) {
+			console.error(err);
 		}
-
-
+	}
 
 
 	/**
-	 *	Check data reset on dashboard
+	 *	Check for data reset on dashboard
 	 */
-	async function checkForUserAccountReset(what = "all") {
+	async function checkForAccountReset(what = "all") {
 		try {
-			// allow offline
-			if (Page.data.mode.notActive) return;
+			// don't allow if serverOffline
+			if (Page.data.mode.serverOffline) return;
 			// don't allow if mode disabled
 			if (T.tally_options.gameMode === "disabled") return;
 
-			// only if user is on dashboard...
-			if (!Page.data.url.includes("/dashboard")) return;
-			if (DEBUG) console.log("🚩 Flag.checkForUserAccountReset() *** DASHBOARD *** ", Page.data.url);
+			// only proceed if user is on dashboard and account reset flag elements exist
+			if (!Page.data.actions.onDashboard || $(".tallyFlags").length < 1 && $("#resetUserAccountSuccess").length < 1) return;
+			if (DEBUG) console.log("🚩 Flag.checkForAccountReset() resetUserAccountSuccess FLAG FOUND");
 
-
-			if ($(".tallyFlags").length && $("#resetUserAccountSuccess").length) {
-				// don't allow if serverOffline
-				if (Page.data.mode.serverOffline) return;
-
-				if (DEBUG) console.log("🚩 Flag.checkForUserAccountReset() resetUserAccountSuccess FLAG FOUND");
-
-				// tell user
-				Dialogue.showData(Dialogue.getData({
-					category: "account",
-					subcategory: "reset"
-				}));
-				// reset game
-				TallyStorage.resetTallyUserFromServer();
+			// user just reset their account data
+			if (!Page.data.actions.checkForAccountResetCalled) {
+				// so return true to interrupt startup flow
+				Page.data.actions.checkForAccountResetCalled = true;
+				return true;
 			}
+			// extension just reloaded data so let Progress show game events
+			else Progress.resetUserAccount();
 
 		} catch (err) {
 			console.error(err);
@@ -140,8 +137,8 @@ window.Flag = (function () {
 
 	// PUBLIC
 	return {
-		checkForNewLogin: checkForNewLogin,
-		checkForUserAccountReset: checkForUserAccountReset,
+		checkForDashboardLogin: checkForDashboardLogin,
+		checkForAccountReset: checkForAccountReset,
 		checkFromServer: checkFromServer
 	};
 })();

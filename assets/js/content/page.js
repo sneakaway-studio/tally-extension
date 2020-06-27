@@ -133,18 +133,25 @@ window.Page = (function () {
 				mode: {},
 				mouseX: 0,
 				mouseY: 0,
-				mouseupFired: false,
 				subDomain: Environment.extractSubDomain(document.location.href) || "",
 				tags: [],
 				time: 0,
 				title: getTitle() || "",
-				resetTallyUserFromServerCalled: false,
 				trackers: {
 					blocked: {},
 					found: {},
 				},
 				previousUrl: "",
-				url: document.location.href || ""
+				url: document.location.href || "",
+				// things that might need to change how we start the game on each page
+				actions: {
+					onDashboard: false,
+					onTallyWebsite: false,
+					mouseupFired: false, // throttle click listener
+					checkForDashboardLoginCalled: false, // in case we are connecting the first time
+					checkForAccountResetCalled: false, // in case we are connecting the first time
+					resetTallyUserFromServerCalled: 0, // monitor # game resets
+				}
 			};
 			// add dimensions
 			newData.browser.center.x = newData.browser.width / 2;

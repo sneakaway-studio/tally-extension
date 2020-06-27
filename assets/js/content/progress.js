@@ -9,7 +9,8 @@ window.Progress = (function () {
 		// authentication
 		accountCreated: 0,
 		accountCreatedWelcomeMessage: 0,
-		accountLogins: 0,
+		accountResets: 0,
+		dashboardLogins: 0, // number of times they landed on the dashboard
 
 		// attacks
 		attacksAwarded: 0,
@@ -167,7 +168,6 @@ window.Progress = (function () {
 			if (!T.tally_user.progress) return;
 
 
-
 			////////////////////////////// PAGE: CONTENT //////////////////////////////
 
 			// count any relevant tags on the page
@@ -184,7 +184,6 @@ window.Progress = (function () {
 			////////////////////////////// PAGE: ACTIVITY: SCROLLS //////////////////////////////
 
 			// listeners created below
-
 
 
 
@@ -317,30 +316,72 @@ window.Progress = (function () {
 	/**
 	 *	User logs-in or creates account
 	 */
-	function accountLogin() {
+	function dashboardLogin() {
 		try {
 			// increment counter
-			let accountLogins = update("accountLogins", 1, "+");
-			if (DEBUG) console.log("🕹️ Progress.accountLogin() -> accountLogins =", accountLogins);
+			let dashboardLogins = update("dashboardLogins", 1, "+");
+			if (DEBUG) console.log("🕹️ Progress.dashboardLogin() -> dashboardLogins =", dashboardLogins);
 
-			// 1. if this is the first time user is logging in
-			if (accountLogins < 3 && update("accountCreatedWelcomeMessage", 1, "+")) {
-				playIntroduction();
-				playAccountUpdated();
-				playDashboardIntro();
-				playLetsGetTrackers();
-			}
-			// if user has been here before
-			else {
-				playAccountUpdated();
-				playLetsGetTrackers();
-			}
+			// called at beginning of page load so add delay before game things (dialogue, sound, etc.)
+			setTimeout(function () {
+				// 1. if this is the first time user is logging in
+				if (dashboardLogins < 3 && update("accountCreatedWelcomeMessage", 1, "+")) {
+					playIntroduction();
+					Dialogue.showData(Dialogue.getData({
+						category: "account",
+						subcategory: "updated"
+					}));
+					playDashboardIntro();
+					playLetsGetTrackers();
+				}
+				// if user has been here before
+				else {
+					// sometimes we should run this
+					let r = Math.random();
+					if (r < 0.2) {
+						Dialogue.showData(Dialogue.getData({
+							category: "account",
+							subcategory: "updated"
+						}));
+						playLetsGetTrackers();
+					} else if (r < 0.4) {
+						Dialogue.showData(Dialogue.getData({
+							category: "help",
+							subcategory: "dashboard"
+						}));
+					}
+
+				}
+			}, 500);
 
 		} catch (err) {
 			console.error(err);
 		}
 	}
+	/**
+	 *	User resets data in their account
+	 */
+	function resetUserAccount() {
+		try {
+			// increment counter
+			let accountResets = update("accountResets", 1, "+");
+			if (DEBUG) console.log("🕹️ Progress.resetUserAccount() -> accountResets =", accountResets);
 
+			// called at beginning of page load so add delay before game things (dialogue, sound, etc.)
+			setTimeout(function () {
+
+				// tell user with random message
+				Dialogue.showData(Dialogue.getData({
+					category: "account",
+					subcategory: "reset"
+				}));
+
+			}, 500);
+
+		} catch (err) {
+			console.error(err);
+		}
+	}
 
 	function playIntroduction() {
 		try {
@@ -358,20 +399,7 @@ window.Progress = (function () {
 		}
 	}
 
-	function playAccountUpdated() {
-		try {
-			let r = Math.random();
-			if (r < 0.33) {
-				Dialogue.showStr("Your account has been updated!", "happy");
-			} else if (r < 0.66) {
-				Dialogue.showStr("Your account is now active and you are ready to play!", "happy");
-			} else {
-				Dialogue.showStr("Your account is active!", "happy");
-			}
-		} catch (err) {
-			console.error(err);
-		}
-	}
+
 
 	function playDashboardIntro() {
 		try {
@@ -410,7 +438,8 @@ window.Progress = (function () {
 		get: get,
 		update: update,
 		check: check,
-		accountLogin: accountLogin,
+		dashboardLogin: dashboardLogin,
+		resetUserAccount: resetUserAccount,
 		get pageTagsProgressMatches() {
 			return pageTagsProgressMatches;
 		},

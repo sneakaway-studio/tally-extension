@@ -2,7 +2,6 @@
 
 /*  BACKGROUND STORAGE
  ******************************************************************************/
-// load this script first in manifest so data is available
 
 window.TallyStorage = (function () {
 
@@ -72,19 +71,23 @@ window.TallyStorage = (function () {
 
 
 
+
+
 	/**
 	 *	Get new tally_user data from server and reset game
 	 */
-	function resetTallyUserFromServer() {
+	async function resetTallyUserFromServer() {
 		try {
-			if (DEBUG) console.log("🗄️ < TallyStorage.resetTallyUserFromServer() [1]");
+			if (DEBUG) console.log("< 🗄️ TallyStorage.resetTallyUserFromServer() [1.1]",
+				"Page.data.actions.resetTallyUserFromServerCalled =", Page.data.actions.resetTallyUserFromServerCalled);
 
-			// if we already ran
-			if (Page.data.resetTallyUserFromServerCalled)
-				return console.log("🗄️ TallyStorage.resetTallyUserFromServer() ALREADY PERFORMED");
 			// so we only check this once and don't check again
-			Page.data.resetTallyUserFromServerCalled = true;
+			Page.data.actions.resetTallyUserFromServerCalled++;
 
+			if (DEBUG) console.log("< 🗄️ TallyStorage.resetTallyUserFromServer() [1.2]",
+				"Page.data.actions.resetTallyUserFromServerCalled =", Page.data.actions.resetTallyUserFromServerCalled);
+
+			// send message
 			chrome.runtime.sendMessage({
 				'action': 'resetTallyUserFromServer'
 			}, function (response) {
@@ -97,7 +100,6 @@ window.TallyStorage = (function () {
 				T.tally_top_monsters = response.tally_top_monsters;
 				T.tally_nearby_monsters = response.tally_nearby_monsters;
 				T.tally_stats = response.tally_stats;
-
 
 				// update Page.data.mode
 				Page.data.mode = TallyMain.getPageMode();

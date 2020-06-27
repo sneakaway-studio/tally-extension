@@ -68,8 +68,8 @@ window.TallyMain = (function () {
 			// if (DEBUG) console.log(log, '[1.1] -> T.tally_top_monsters =',T.tally_top_monsters);
 
 
-			// 2.1. Set the Page.data.mode
-			if (DEBUG) console.log(log, '[2.1] -> SET Page.data.mode');
+			// 2.1. Check Page.data
+			if (DEBUG) console.log(log, '[2.1] -> SET Page.data');
 
 			// stop if Page.data failed
 			if (!prop(Page.data)) return console.warn("... Page.data NOT FOUND");
@@ -77,6 +77,11 @@ window.TallyMain = (function () {
 			Page.data.mode = getPageMode();
 			// stop if page mode marked notActive
 			if (Page.data.mode.notActive) return console.log(" NOT ACTIVE - Page.data.mode =", Page.data.mode);
+			// are we on the tally website
+			Page.data.actions.onTallyWebsite = Page.data.url.includes(T.tally_meta.website) || false;
+			// if so are we on the dashboard?
+			if (Page.data.actions.onTallyWebsite)
+				Page.data.actions.onDashboard = Page.data.url.includes(T.tally_meta.website + "/dashboard") || false;
 
 
 			// 2.2. Remove blocked trackers
@@ -94,29 +99,21 @@ window.TallyMain = (function () {
 			// 2.3. Check for Flags (in case we need to pause and restart game with data)
 			if (DEBUG) console.log(log, '[2.3] -> Check for flags');
 
-			// if user is logging into account on Tally website
-			let newLogin = await Flag.checkForNewLogin();
-			// ... and we aren't currently syncing to server
-			if (newLogin && !T.tally_meta.userLoggedIn) {
-				// update tally_meta in content and background
-				T.tally_meta.userLoggedIn = true;
-				TallyStorage.saveData("tally_meta", T.tally_meta, log);
-				// console.log("T.tally_meta.userLoggedIn",T.tally_meta.userLoggedIn);
+			// if user has just logged into their account on Tally website
+			let dashboardLogin = await Flag.checkForDashboardLogin();
+			// if user resets their data on the dashboard
+			let accountReset = await Flag.checkForAccountReset();
 
-				// let progress show game events
-				// Progress.accountLogin();
-
-			 	// setInterval(function () {
-					// so that we can stop, get data from server, and start game again
-					TallyStorage.resetTallyUserFromServer();
-					return;
-				// }, 500);
-
+			// handle this first - most important
+			if (dashboardLogin) {
+				// stop, get data from server, and start game again
+				await TallyStorage.resetTallyUserFromServer();
+				return;
+			} else if (accountReset) {
+				// stop, get data from server, and start game again
+				await TallyStorage.resetTallyUserFromServer();
+				return;
 			}
-
-            // if user is reseting their data
-            Flag.checkForUserAccountReset();
-
 
 
 			// 2.4. Add stylesheets and debugger
@@ -131,6 +128,7 @@ window.TallyMain = (function () {
 			Debug.update();
 			// now safe to add Tally
 			addTallyToPage();
+
 
 		} catch (err) {
 			console.error(err);
@@ -294,7 +292,7 @@ window.TallyMain = (function () {
 				setTimeout(function () {
 					if (DEBUG) console.log("🧰 TallyMain.startGameOnPage() [4.4] -> Check monsters");
 					// check for, and potentially add monsters on the page
-					// MonsterCheck.check();
+					MonsterCheck.check();
 				}, 2000);
 
 			}, 10);
