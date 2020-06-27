@@ -4,10 +4,11 @@ var Environment = (function() {
 	// PRIVATE
 
 	function getBrowserName() {
-		if (navigator.userAgent.indexOf("Chrome") != -1) {
-			return "Chrome";
-		} else if (navigator.userAgent.indexOf("Opera") != -1) {
+		// check opera first 
+		if (navigator.userAgent.match(/Opera|OPR\//)) {
 			return "Opera";
+		} else if (navigator.userAgent.indexOf("Chrome") != -1) {
+			return "Chrome";
 		} else if (navigator.userAgent.indexOf("MSIE") != -1) {
 			return "IE";
 		} else if (navigator.userAgent.indexOf("Firefox") != -1) {

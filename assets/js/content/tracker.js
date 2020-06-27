@@ -129,6 +129,8 @@ window.Tracker = (function () {
 	 */
 	function setBadgeText(data) {
 		try {
+			// icons are too small and covers Tally icon in Opera
+			if (Page.browser.name === "Opera") return;
 			chrome.runtime.sendMessage({
 				'action': 'setBadgeText',
 				'data': data
