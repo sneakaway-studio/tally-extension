@@ -25,7 +25,8 @@ var GameData = (function() {
 			"walmart.com",
 		],
 		dataDealerDomains = [
-			"acxiom.com",
+
+			"www.acxiom.com",
 			"adcolony.com",
 			"ads.google.com/home/",
 			"airpush.com",

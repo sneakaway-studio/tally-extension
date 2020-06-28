@@ -8,10 +8,17 @@ Tally Saves the Internet! is a browser extension that transforms the data advert
 Learn more at [tallygame.net](https://tallygame.net).
 
 
-### Get the extension
+### Install the extension
 
-[Click here to install for Chrome](https://chrome.google.com/webstore/detail/clidhbnhgfffjhooihemgfgmfhmojbfl/publish-accepted?authuser=0&hl=en)
+* [Chrome](https://chrome.google.com/webstore/detail/tally/clidhbnhgfffjhooihemgfgmfhmojbfl)
+* [Opera](https://addons.opera.com/en/extensions/) (coming soon) - currently available using Opera's [Install Chrome Extensions addon](https://addons.opera.com/en/extensions/details/install-chrome-extensions/)
+* Firefox (coming soon)
+* [Brave](https://chrome.google.com/webstore/detail/tally/clidhbnhgfffjhooihemgfgmfhmojbfl) - [available via Chrome Web Store](https://support.brave.com/hc/en-us/articles/360017909112-How-can-I-add-extensions-to-Brave-)
 
+
+
+
+## Development
 
 
 ### Chrome and Opera Development Installation
@@ -40,9 +47,6 @@ Learn more at [tallygame.net](https://tallygame.net).
 
 
 
-## Development
-
-
 ### Demo Mode ("Gallery Version")
 
 * Switch to a user account with admin privileges
@@ -60,7 +64,10 @@ Learn more at [tallygame.net](https://tallygame.net).
 
 ### Publishing
 
-* [Chrome Web Store Developer Console](https://chrome.google.com/u/1/webstore/devconsole) (upload zip file)
+* [Chrome Web Store Developer Console](https://chrome.google.com/u/1/webstore/devconsole) - upload ZIP file
+* Opera - Upload CRX
+* Firefox - [upload ZIP of extension files themselves, not the containing directory](https://mzl.la/2r2McKv)
+* Brave - uses Chrome Web Store version
 
 
 ### Development How-to

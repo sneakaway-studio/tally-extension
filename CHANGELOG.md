@@ -8,6 +8,9 @@
 
 ### Version 0.2.20
 
+* Tally now works in Brave browser
+* Big improvements to Badge math and new badges
+
 
 ### Version 0.2.19
 
@@ -17,7 +20,6 @@
 * Improves authentication
 * Players can now delete all their data
 * Tally now works in Opera browser
-* Big improvements to Badge math and new badges
 
 ### Version 0.2.18
 

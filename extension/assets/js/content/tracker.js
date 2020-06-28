@@ -60,9 +60,9 @@ window.Tracker = (function () {
 					};
 				}
 
-				if (DEBUG) console.log(log, " CHECKING CATEGORIES",  TrackersByUrl.data[tracker.domain].cats);
 				// mark the categories
-				if (TrackersByUrl.data[tracker.domain].cats){
+				if (TrackersByUrl.data[tracker.domain] && TrackersByUrl.data[tracker.domain].cats.length){
+					if (DEBUG) console.log(log, " CHECKING CATEGORIES",  TrackersByUrl.data[tracker.domain].cats);
 					for (let j=0;j < TrackersByUrl.data[tracker.domain].cats.length; j++){
 						// increment categories
 						categories[TrackersByUrl.data[tracker.domain].cats[j]]++;
