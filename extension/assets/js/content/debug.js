@@ -255,7 +255,7 @@ window.Debug = (function () {
 
 			let k = "`+1";
 			Mousetrap.bind(k + ' p', function () {
-				window.open('https://tallygame.net/profile/' + T.tally_user.username);
+				window.open('https://tallysavestheinternet.com/profile/' + T.tally_user.username);
 			});
 			Mousetrap.bind(k + ' t', function () {
 				Dialogue.random();

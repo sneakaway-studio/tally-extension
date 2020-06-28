@@ -21,7 +21,7 @@ window.MonsterCheck = (function() {
 			// don't allow if mode disabled or stealth
 			if (T.tally_options.gameMode === "disabled" || T.tally_options.gameMode === "stealth") return;
 			// don't check on our site
-			if (Page.data.domain == "tallygame.net") return;
+			if (Page.data.domain == "tallygame.net" || Page.data.domain == "tallysavestheinternet.com") return;
 
 			checkNearbyMonsterTimes();
 

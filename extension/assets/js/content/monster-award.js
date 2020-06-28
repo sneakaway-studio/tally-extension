@@ -117,7 +117,7 @@ window.MonsterAward = (function() {
 		if (!prop(T.tally_top_monsters[_mid])) return;
 
 		// insert text
-		$('.award_subtitle').html("You leveled up! <a href='https://tallygame.net/profile'> Check out your profile</a>");
+		$('.award_subtitle').html("You leveled up! <a href='https://tallysavestheinternet.com/profile'> Check out your profile</a>");
 		let additional_targets = '';
 		let victory_text = "YOU CONTAINED THE MONSTER!!!!!";
 

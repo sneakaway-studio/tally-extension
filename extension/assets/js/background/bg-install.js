@@ -116,7 +116,9 @@ window.Install = (function () {
 				if (DEBUG) console.log("🔧 Install.launchStartScreen() current tab =", tab);
 
 				// are we in the process resetting user's data?
-				if (tab.url !== undefined && (tab.url.includes("dashboard") || tab.url.includes("tallygame.net"))) {
+				if (tab.url !== undefined && (tab.url.includes("dashboard") ||
+					tab.url.includes("tallygame.net") || tab.url.includes("tallysavestheinternet.com")
+				)) {
 					return console.log("🔧 Install.launchStartScreen() 🛑 ON DASHBOARD");
 				}
 				//launch install page
@@ -299,7 +301,7 @@ window.Install = (function () {
 	return {
 		init: init,
 		setVersion: setVersion,
-		setCurrentAPI: setCurrentAPI,  
+		setCurrentAPI: setCurrentAPI,
 		createOptions: createOptions,
 		setOptions: function (obj) {
 			return setOptions(obj);

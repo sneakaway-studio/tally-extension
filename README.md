@@ -2,10 +2,10 @@
 
 ## Tally Saves the Internet!
 
-![Tally](https://tallygame.net/assets/img/tally/tally-153w.png "Hi! I'm Tally.")
+![Tally](https://tallysavestheinternet.com/assets/img/tally/tally-153w.png "Hi! I'm Tally.")
 
 Tally Saves the Internet! is a browser extension that transforms the data advertisers collect into a multiplayer game.
-Learn more at [tallygame.net](https://tallygame.net).
+Learn more at [tallysavestheinternet.com](https://tallysavestheinternet.com).
 
 
 ### Install the extension
