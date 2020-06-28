@@ -18,12 +18,16 @@ var T = (function () {
 	// options for development / production
 	let options = {
 			development: {
-				api: "http://localhost:5000/api",
-				website: "http://localhost:5000",
+				// api: "http://localhost:5000/api",
+				// website: "http://localhost:5000",
+				api: "http://127.0.0.1:5000/api",
+				website: "http://127.0.0.1:5000",
 			},
 			production: {
-				api: "https://tallygame.net/api",
-				website: "https://tallygame.net",
+				// api: "https://tallygame.net/api",
+				// website: "https://tallygame.net",
+				api: "https://tallysavestheinternet.com/api",
+				website: "https://tallysavestheinternet.com",
 			},
 			// true = development, false = production
 			localhost: true, // change to false to quickly shift to production server

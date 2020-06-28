@@ -3,7 +3,17 @@
 window.Tracker = (function () {
 	// PRIVATE
 	let DEBUG = Debug.ALL.Tracker,
-		blockAttempted = false;
+		blockAttempted = false,
+		// track the categories of trackers
+		categories = {
+			Advertising:0,
+			Analytics:0,
+			Content:0,
+			Social:0,
+			Disconnect:0,
+			Fingerprinting:0,
+			Cryptomining:0
+		};
 
 
 	/**
@@ -49,6 +59,15 @@ window.Tracker = (function () {
 						domain: _domain
 					};
 				}
+
+				if (DEBUG) console.log(log, " CHECKING CATEGORIES",  TrackersByUrl.data[tracker.domain].cats);
+				// mark the categories
+				if (TrackersByUrl.data[tracker.domain].cats){
+					for (let j=0;j < TrackersByUrl.data[tracker.domain].cats.length; j++){
+						// increment categories
+						categories[TrackersByUrl.data[tracker.domain].cats[j]]++;
+					}
+				}
 			}
 
 			if (DEBUG) console.log(log, "found", found);
@@ -71,6 +90,11 @@ window.Tracker = (function () {
 			// don't allow if mode disabled
 			if (T.tally_options.gameMode === "disabled") return;
 
+
+			// mark progress
+			if (categories.Fingerprinting > 0){
+				Progress.update("trackersSeenFingerprinting", categories.Fingerprinting, "+");
+			}
 
 
 			let log = "🕷️ Tracker.removeBlocked()";

@@ -2,7 +2,7 @@
 
 ## Tally Saves the Internet!
 
-![Tally](https://tallygame.net/assets/img/tally-153w.png "Hi! I'm Tally.")
+![Tally](https://tallygame.net/assets/img/tally/tally-153w.png "Hi! I'm Tally.")
 
 Tally Saves the Internet! is a browser extension that transforms the data advertisers collect into a multiplayer game.
 Learn more at [tallygame.net](https://tallygame.net).
@@ -52,8 +52,8 @@ Learn more at [tallygame.net](https://tallygame.net).
 
 ### Packaging
 
-1. Change config `options.hotreload` to `false` (prevents `hot-reload.js` from running)
-2. Change config `options.localhost` to `false` (so extension uses production server)
+1. Change T `options.hotreload` to `false` (prevents `hot-reload.js` from running)
+2. Change T `options.localhost` to `false` (so extension uses production server)
 3. Zip only files needed for extension (`assets/`,`LICENSE`,`manifest.json`,`README.md`)
 4. Rename extension zip file and upload to live server
 
@@ -63,7 +63,7 @@ Learn more at [tallygame.net](https://tallygame.net).
 1. Install GIT and Github Desktop
 2. Create a Github account
 3. Clone the project
-4. If using remote API, change config `options.localhost` to `false`
+4. If using remote API, change T `options.localhost` to `false`
 5. Install in Chrome per above instructions
 6. Change options as needed in popup
 

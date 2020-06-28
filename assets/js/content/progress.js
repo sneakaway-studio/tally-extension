@@ -63,6 +63,7 @@ window.Progress = (function () {
 		trackersSeen: 0,
 		trackersSeenMostOnePage: 0,
 		trackersBlocked: 0,
+		trackersSeenFingerprinting: 0,
 
 		// tutorials
 		viewTutorial1: 0,
