@@ -1,0 +1,19 @@
+<svg id="monster_capture_cage" class="monster_capture_cage" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 470 388.6">
+  <style>
+    .cage_svg{fill:#000}
+  </style>
+  <path class="cage_svg" d="M.3.7H470v15.6H.3z"/>
+  <path transform="rotate(-90 14.857 194.5)" class="cage_svg" d="M-174 189.4h377.7v10.3H-174z"/>
+  <path transform="rotate(-90 54.857 194.5)" class="cage_svg" d="M-134 189.4h377.7v10.3H-134z"/>
+  <path transform="rotate(-90 94.857 194.5)" class="cage_svg" d="M-94 189.4h377.7v10.3H-94z"/>
+  <path transform="rotate(-90 134.857 194.5)" class="cage_svg" d="M-54 189.4h377.7v10.3H-54z"/>
+  <path transform="rotate(-90 174.857 194.5)" class="cage_svg" d="M-14 189.4h377.7v10.3H-14z"/>
+  <path transform="rotate(-90 214.857 194.5)" class="cage_svg" d="M26 189.4h377.7v10.3H26z"/>
+  <path transform="rotate(-90 254.857 194.5)" class="cage_svg" d="M66 189.4h377.7v10.3H66z"/>
+  <path transform="rotate(-90 294.857 194.5)" class="cage_svg" d="M106 189.4h377.7v10.3H106z"/>
+  <path transform="rotate(-90 334.857 194.5)" class="cage_svg" d="M146 189.4h377.7v10.3H146z"/>
+  <path transform="rotate(-90 374.857 194.5)" class="cage_svg" d="M186 189.4h377.7v10.3H186z"/>
+  <path transform="rotate(-90 414.857 194.5)" class="cage_svg" d="M226 189.4h377.7v10.3H226z"/>
+  <path transform="rotate(-90 454.857 194.5)" class="cage_svg" d="M266 189.4h377.7v10.3H266z"/>
+  <path class="cage_svg" d="M.3 372.1H470v15.6H.3z"/>
+</svg>

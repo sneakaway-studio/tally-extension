@@ -1,0 +1,214 @@
+/*  GLOBAL
+******************************************************************************/
+.tally_monster_sprite_container, .tally_monster_sprite_container_dialogue {
+    box-sizing: border-box;
+    top: -500px;
+    left: 55%;
+    opacity: 0;
+    position: fixed;
+    z-index: 99999999999999;
+    height: 300px;
+    /* formerly 400 */
+    width: 375px;
+    /* formerly 500 */
+    cursor: pointer;
+}
+.tally_monster_sprite_flip {
+    box-sizing: border-box;
+    height: 300px;
+    width: 375px;
+}
+.tally_monster_sprite {
+    position: relative;
+    display: inline-block;
+    margin: 0 auto;
+    width: 100%;
+    height: 100%;
+    /* animation: monster_keyframes 0.4s steps(3) infinite; */
+}
+.tally_monster_sprite_inner {
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 100%;
+    width: 100%;
+    background: left center no-repeat;
+    animation: monster_keyframes 0.4s steps(3) infinite;
+}
+@keyframes monster_keyframes {
+    100% {
+        background-position: -1125px;
+        /* formerly 1500 */
+    }
+}
+/* to display monster animation in dialogue box  */
+.monster_sprite_outer_dialogue {
+    z-index: 99999999999999;
+    top: 0;
+    left: 0;
+    display: block;
+    /* background-color: rgba(255, 0, 0, .3); */
+    height: 140px;
+    width: 175px;
+    margin: 0 auto;
+}
+.monster_sprite_inner_dialogue {
+    /* background-color: rgba(0, 0, 255, .3); */
+    width: 100%;
+    height: 100%;
+    background: left center no-repeat;
+    animation: monster_keyframes_dialogue 0.4s steps(3) infinite;
+}
+@keyframes monster_keyframes_dialogue {
+    100% {
+        background-position: -525px;
+    }
+}
+.dialogue_text_after_image {
+    margin-top: 10px;
+}
+/*  MONSTER AWARD
+******************************************************************************/
+.tally_award_wrapper {}
+.tally_award_background {
+    width: 4000px;
+    height: 750px;
+    transform: rotate(-20deg);
+    position: fixed;
+    bottom: -1420px;
+    left: 20%;
+    background-color: #462795;
+    z-index: 99999998;
+}
+.tally_award_explode_background-1 {
+    width: 4000px;
+    height: 750px;
+    transform: rotate(-20.5deg);
+    position: fixed;
+    bottom: -1400px;
+    left: 20%;
+    background-color: #F25132;
+    z-index: 99999997;
+}
+.tally_award_explode_background-2 {
+    width: 4000px;
+    height: 750px;
+    transform: rotate(-21deg);
+    position: fixed;
+    bottom: -1380px;
+    left: 20%;
+    background-color: #FCD067;
+    z-index: 99999996;
+}
+/* .tally_award_text_wrapper {
+    width: 28%;
+    height: 40%;
+    position: fixed;
+    bottom: 0%;
+    right: -2000px;
+    font-family: "Futura", "Trebuchet MS", Arial, sans-serif;
+    color: #FFF;
+    text-align: center;
+    z-index: 99999999;
+    visibility: visible;
+} */
+/*
+.tally_award_text {
+    font: 1.3vw/1.6vw Arial, sans-serif;
+    font-weight: normal;
+    color: white;
+    position: relative;
+    width: 30%;
+    height: 100%;
+    left: 79%;
+    z-index: 6;
+    visibility: visible;
+}
+*/
+.tally_award_text a:link, .tally_award_text a:hover, .tally_award_text a:visited, .tally_award_text a:active {
+    color: #DE4929;
+    text-decoration: none;
+}
+/* .award_title {
+    width: 100%;
+    height: 40%;
+    position: relative;
+    font-size: 2.5vmax;
+}
+.award_subtitle {
+    width: 100%;
+    height: 20%;
+    bottom: 9%;
+    position: relative;
+    font-size: 2vmin;
+}
+.award_did_you_know {
+    position: relative;
+    right: -20%;
+    width: 60%;
+    height: 20%;
+    z-index: 32;
+    top: -15%;
+}
+.award_did_you_know h6 {
+    font-family: "Futura", "Trebuchet MS", Arial, sans-serif;
+    position: relative;
+    color: #FFF;
+    background-color: #DE4929;
+    padding-top: 2%;
+    padding-bottom: 1.75%;
+    font-size: 2vmin;
+}
+.award_fact {
+    position: relative;
+    bottom: 30%;
+    border: 1px solid white;
+    padding: 7vmin;
+    left: 10%;
+    width: 80%;
+    height: 20%;
+    background-color: #462795;
+    overflow: auto;
+    z-index: 30;
+} */
+/* owen's attempt */
+.tally_award_text_wrapper {
+    font: normal 1.3vmax/1.618vmax Arial, sans-serif;
+    position: fixed;
+    top: .3rem;
+    bottom: .8rem;
+    /* right: .8rem; */
+    right: -2000px;
+    width: 40%;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    z-index: 99999999;
+}
+.tally_award_text {
+    color: #fff;
+    margin: 0;
+    padding: .8em;
+    /* background: #462795; */
+    text-align: center;
+}
+.award_title {
+    font: normal 3.3vmax/3.9vmax "Futura", "Trebuchet MS", Arial, sans-serif;
+    padding: 0;
+    text-shadow: 3px 3px 0px rgba(70, 39, 149, 1);
+}
+.award_subtitle {}
+.award_did_you_know {
+    background-color: #DE4929;
+    font-size: 1.7vmax;
+    width: 40%;
+    margin: 0 auto;
+    font-family: "Futura", "Trebuchet MS", Arial, sans-serif;
+    font-style: italic;
+    transform: translate(0, 1.12vmax);
+    padding: .5em;
+}
+.award_fact {
+    border: 1px solid #ddd;
+    padding-top: 1.2em;
+}

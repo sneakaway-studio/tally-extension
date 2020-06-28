@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<svg version="1.1" id="body" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+	 viewBox="0 0 914 814" style="enable-background:new 0 0 914 814;" xml:space="preserve">
+<style type="text/css">
+	.tallySkinBack {fill:#C308C1;}
+	.tallySkinFront {fill:#D32CF1;}
+</style>
+<def></def>
+<path class="tallySkinBack" d="M652.5,793.8l255.5-281L565.2,127.6l-307.3,35L5,366l88.5,346.8L652.5,793.8z"/>
+<path class="tallySkinFront" d="M199.8,809l419.9-139.2l126.5,10.1l161.9-319L690.5,14.1L509.8,36.2L450.2,4L258.3,66.9l-190,23.2
+	l-17.7,443L199.8,809z"/>
+</svg>

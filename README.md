@@ -58,6 +58,11 @@ Learn more at [tallygame.net](https://tallygame.net).
 4. Rename extension zip file and upload to live server
 
 
+### Publishing
+
+* [Chrome Web Store Developer Console](https://chrome.google.com/u/1/webstore/devconsole) (upload zip file)
+
+
 ### Development How-to
 
 1. Install GIT and Github Desktop

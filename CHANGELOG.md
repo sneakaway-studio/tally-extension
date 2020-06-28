@@ -6,15 +6,18 @@
 ## Development Versions
 
 
+### Version 0.2.20
+
+
 ### Version 0.2.19
 
-* Adds Badge selector
+* Adds Badge selector to Tally
 * Tally can now show images in Dialogue
 * Adds monster silhouettes
 * Improves authentication
 * Players can now delete all their data
 * Tally now works in Opera browser
-
+* Big improvements to Badge math and new badges
 
 ### Version 0.2.18
 
