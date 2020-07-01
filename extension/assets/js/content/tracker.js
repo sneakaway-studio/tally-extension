@@ -6,13 +6,13 @@ window.Tracker = (function () {
 		blockAttempted = false,
 		// track the categories of trackers
 		categories = {
-			Advertising:0,
-			Analytics:0,
-			Content:0,
-			Social:0,
-			Disconnect:0,
-			Fingerprinting:0,
-			Cryptomining:0
+			Advertising: 0,
+			Analytics: 0,
+			Content: 0,
+			Social: 0,
+			Disconnect: 0,
+			Fingerprinting: 0,
+			Cryptomining: 0
 		};
 
 
@@ -24,56 +24,63 @@ window.Tracker = (function () {
 			let log = "🕷️ Tracker.findAll()";
 			if (DEBUG) console.log(log, "(looking for trackers)");
 
-			let found = {};
+			let foundArr = {};
 
 			// get all scripts on the page
 			let scripts = document.getElementsByTagName("script");
 			// loop through each script
 			for (let i = 0, l = scripts.length; i < l; i++) {
-				// get source and domain of script
-				let tracker = {
-					url: scripts[i].src || "",
-					domain: Environment.extractRootDomain(scripts[i].src) || ""
-				};
+				if (DEBUG) console.log(log, "[1] _domain =", _domain, ", script =", scripts[i].src);
 
-				// skip if no url or domain
+				// get source and domain of script
+				let found = false,
+					tracker = {
+						url: scripts[i].src || "",
+						domain: Environment.extractRootDomain(scripts[i].src) || ""
+					};
+
+				// skip if no url or domain or if is whitelisted by user
 				if (tracker.url === "" || tracker.domain === "") continue;
-				// if is whitelisted by user then skip
 				if (GameData.whitelistScriptDomains.includes(tracker.domain)) continue;
 
 				// otherwise check disconnect services
 				if (FS_Object.prop(TrackersByUrl.data[tracker.domain])) {
-					if (DEBUG) console.log("%c" + tracker.domain, Debug.styles.redbg, "=>", tracker.url);
-					found[tracker.domain] = tracker;
+					if (DEBUG) console.log(log + " [2.1] FOUND %c" + tracker.domain, Debug.styles.redbg, "=>", tracker.url);
+					// add to arr
+					found = true;
+					foundArr[tracker.domain] = tracker;
 				}
 				// if the domain is known for tracking then alternatively add it
 				else if (_domain && TrackersByUrl.data[_domain]) {
-					found[tracker.domain] = {
+					if (DEBUG) console.log(log, " [2.2] [DOMAIN] FOUND %c" + tracker.domain, Debug.styles.redbg, "=>", tracker.url);
+					found = true;
+					foundArr[tracker.domain] = {
 						url: _domain,
 						domain: _domain
 					};
 				} else {
-					// add it anyway
-					found[_domain] = {
-						url: _domain,
-						domain: _domain
-					};
+					// if (DEBUG) console.log(log, " [2.3] [ANY] FOUND %c" + tracker.domain, Debug.styles.redbg, "=>", tracker.url);
+					// // add it anyway
+					// foundArr[_domain] = {
+					// 	url: _domain,
+					// 	domain: _domain
+					// };
 				}
 
 				// mark the categories
-				if (TrackersByUrl.data[tracker.domain] && TrackersByUrl.data[tracker.domain].cats.length){
-					if (DEBUG) console.log(log, " CHECKING CATEGORIES",  TrackersByUrl.data[tracker.domain].cats);
-					for (let j=0;j < TrackersByUrl.data[tracker.domain].cats.length; j++){
+				if (found && FS_Object.prop(TrackersByUrl.data[tracker.domain]) && TrackersByUrl.data[tracker.domain].cats.length) {
+					if (DEBUG) console.log(log, "CHECKING CATEGORIES", TrackersByUrl.data[tracker.domain].cats);
+					for (let j = 0; j < TrackersByUrl.data[tracker.domain].cats.length; j++) {
 						// increment categories
 						categories[TrackersByUrl.data[tracker.domain].cats[j]]++;
 					}
 				}
 			}
 
-			if (DEBUG) console.log(log, "found", found);
+			if (DEBUG) console.log(log, "foundArr", foundArr);
 
-			// add found to Page.data.trackers
-			return found;
+			// add found arr to Page.data.trackers
+			return foundArr;
 		} catch (err) {
 			console.error(err);
 		}
@@ -92,7 +99,7 @@ window.Tracker = (function () {
 
 
 			// mark progress
-			if (categories.Fingerprinting > 0){
+			if (categories.Fingerprinting > 0) {
 				Progress.update("trackersSeenFingerprinting", categories.Fingerprinting, "+");
 			}
 
