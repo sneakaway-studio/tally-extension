@@ -152,6 +152,24 @@ window.TallyMain = (function () {
 				notActive: 0
 			};
 
+            // SERVER IS OFFLINE
+			// - tally can still point to trackers, save in bg
+			// - the game can run using the background only, for example, if user not logged-in or server is offline
+			if (!T.tally_meta.server.online) {
+				if (DEBUG) console.log(log + "Connection to Tally server is down");
+				mode.serverOffline = 1;
+			}
+
+
+            // NOT LOGGED IN OR NO ACCOUNT
+			// - no account or did not validate;
+			// - tally can still point to trackers, prompt for login (assuming server is online), save in bg
+			else if (T.tally_meta.userLoggedIn) {
+				if (DEBUG) console.log(log + "T.tally_meta.userLoggedIn =", T.tally_meta.userLoggedIn);
+				mode.loggedIn = 1;
+			}
+
+
 			// NOT ACTIVE
 			// - something really wrong with page;
 			// - tally does not show at all, does not save in background or prompt for login
@@ -184,26 +202,17 @@ window.TallyMain = (function () {
 				if (DEBUG) console.log(log + "Tally is disabled on small windows");
 				mode.notActive = 1;
 			}
+            //
+            else if (T.tally_options.gameMode === "disabled") {
+                if (DEBUG) console.log(log + "gamemode === disabled");
+                mode.notActive = 1;
+            }
 
-			// SERVER IS OFFLINE
-			// - tally can still point to trackers, save in bg
-			// - the game can run using the background only, for example, if user not logged-in or server is offline
-			if (!T.tally_meta.server.online) {
-				if (DEBUG) console.log(log + "Connection to Tally server is down");
-				mode.serverOffline = 1;
-			}
 
-			// NOT LOGGED IN OR NO ACCOUNT
-			// - no account or did not validate;
-			// - tally can still point to trackers, prompt for login (assuming server is online), save in bg
-			else if (T.tally_meta.userLoggedIn) {
-				if (DEBUG) console.log(log + "T.tally_meta.userLoggedIn =", T.tally_meta.userLoggedIn);
-				mode.loggedIn = 1;
-			}
 
 			// ACTIVE
 			// - background, login, server, and everything else (like the above) is good, let's roll
-			if (mode.notActive == 0 && mode.serverOffline == 0 && mode.loggedIn === 1) {
+			if (mode.notActive === 0 && mode.serverOffline === 0 && mode.loggedIn === 1) {
 				if (DEBUG) console.log(log + "All is good, setting mode.active = 1");
 				mode.active = 1;
 			}
