@@ -75,8 +75,7 @@ window.TallyMain = (function () {
 			if (!prop(Page.data)) return console.warn("... Page.data NOT FOUND");
 			// check page mode before proceeding
 			Page.data.mode = getPageMode();
-			// stop if page mode marked notActive
-			if (Page.data.mode.notActive) return console.log(" NOT ACTIVE - Page.data.mode =", Page.data.mode);
+
 			// are we on the tally website
 			Page.data.actions.onTallyWebsite = Page.data.url.includes(T.tally_meta.website) || false;
 			// if so are we on the dashboard?
@@ -84,22 +83,8 @@ window.TallyMain = (function () {
 				Page.data.actions.onDashboard = Page.data.url.includes(T.tally_meta.website + "/dashboard") || false;
 
 
-			// 2.2. Remove blocked trackers
-			if (DEBUG) console.log(log, '[2.2] -> Check and block trackers');
-
-            // show the number of trackers in the badge
-            Tracker.setBadgeText(FS_Object.objLength(Page.data.trackers.found));
-			// were trackers dealt with?
-			if (FS_Object.objLength(Page.data.trackers.found) > 0 && !Tracker.blockAttempted) {
-				// console.log("Page.data.trackers", Page.data.trackers);
-				// remove blocked trackers (and save in Page.data.trackers)
-				Tracker.removeBlocked();
-				// console.log("Page.data.trackers", Page.data.trackers);
-			}
-
-
-			// 2.3. Check for Flags (in case we need to pause and restart game with data)
-			if (DEBUG) console.log(log, '[2.3] -> Check for flags');
+			// 2.2. Check for Flags (in case we need to pause and restart game with data)
+			if (DEBUG) console.log(log, '[2.2] -> Check for flags');
 
 			// if user has just logged into their account on Tally website
 			let dashboardLogin = await Flag.checkForDashboardLogin();
@@ -116,6 +101,25 @@ window.TallyMain = (function () {
 				await TallyStorage.resetTallyUserFromServer();
 				return;
 			}
+
+
+
+			// stop if page mode marked notActive
+			if (Page.data.mode.notActive) return console.log(" NOT ACTIVE - Page.data.mode =", Page.data.mode);
+
+			// 2.3. Remove blocked trackers
+			if (DEBUG) console.log(log, '[2.3] -> Check and block trackers');
+
+			// show the number of trackers in the badge
+			Tracker.setBadgeText(FS_Object.objLength(Page.data.trackers.found));
+			// were trackers dealt with?
+			if (FS_Object.objLength(Page.data.trackers.found) > 0 && !Tracker.blockAttempted) {
+				// console.log("Page.data.trackers", Page.data.trackers);
+				// remove blocked trackers (and save in Page.data.trackers)
+				Tracker.removeBlocked();
+				// console.log("Page.data.trackers", Page.data.trackers);
+			}
+
 
 
 			// 2.4. Add stylesheets and debugger
@@ -152,7 +156,7 @@ window.TallyMain = (function () {
 				notActive: 0
 			};
 
-            // SERVER IS OFFLINE
+			// SERVER IS OFFLINE
 			// - tally can still point to trackers, save in bg
 			// - the game can run using the background only, for example, if user not logged-in or server is offline
 			if (!T.tally_meta.server.online) {
@@ -161,7 +165,7 @@ window.TallyMain = (function () {
 			}
 
 
-            // NOT LOGGED IN OR NO ACCOUNT
+			// NOT LOGGED IN OR NO ACCOUNT
 			// - no account or did not validate;
 			// - tally can still point to trackers, prompt for login (assuming server is online), save in bg
 			else if (T.tally_meta.userLoggedIn) {
@@ -202,11 +206,11 @@ window.TallyMain = (function () {
 				if (DEBUG) console.log(log + "Tally is disabled on small windows");
 				mode.notActive = 1;
 			}
-            //
-            else if (T.tally_options.gameMode === "disabled") {
-                if (DEBUG) console.log(log + "gamemode === disabled");
-                mode.notActive = 1;
-            }
+			//
+			else if (T.tally_options.gameMode === "disabled") {
+				if (DEBUG) console.log(log + "gamemode === disabled");
+				mode.notActive = 1;
+			}
 
 
 
