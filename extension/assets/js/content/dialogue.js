@@ -408,7 +408,7 @@ window.Dialogue = (function () {
 	 */
 	function skipToNext() {
 		try {
-			if (DEBUG) console.log("💬 Dialogue.skipToNext()");
+			if (DEBUG) console.log("💬 Dialogue.skipToNext()", _queue);
 
 			// if queue contains dialogue then skip
 			if (_queue.length > 0) writeNextInQueue(150, true);

@@ -106,6 +106,7 @@ window.Tally = (function () {
 			let str =
 				"<div class='tally draggable' id='tally_character'>" + // style='transform:translateY(-350px);'
 				"<div class='tally tally_speech_bubble' id='tally_dialogue_outer'>" +
+				"<div class='tally tally_dialogue_skipToNext'></div>" +
 				"<div class='tally' id='tally_dialogue_inner'></div>" +
 				"</div>" +
 				"<div class='tally' id='tally_item_manager'>" +
@@ -139,7 +140,7 @@ window.Tally = (function () {
 				stop: function () {}
 			});
 
-			$(document).on("click", "#tally_dialogue_outer", function () {
+			$(document).on("click", ".tally_dialogue_skipToNext", function () {
 				// if dialogue open let them click through it
 				Dialogue.skipToNext();
 			});
@@ -515,7 +516,7 @@ window.Tally = (function () {
 				// build string and show
 				let str = "Want to hear <a class='tally tally_showStory1'>my story</a>,<br>" +
 					" see a <a class='tally tally_showTutorial1'>game tutorial</a>,<br> " +
-					"or view <a class='tally' id='tally_showMoreOptions'>options</a>?";
+					"or view <a class='tally tally_showMoreOptions'>options</a>?";
 				Dialogue.showData({
 					"text": str,
 					"mood": "happy"
@@ -560,7 +561,7 @@ window.Tally = (function () {
 	$(document).on('click', '.tally_showTutorial1', function () {
 		Tutorial.play("tutorial1");
 	});
-	$(document).on('click', '#tally_showMoreOptions', function () {
+	$(document).on('click', '.tally_showMoreOptions', function () {
 		showMoreOptions();
 	});
 

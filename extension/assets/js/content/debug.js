@@ -40,7 +40,7 @@ window.Debug = (function () {
 			Page: true,
 			Progress: true,
 
-			Sound: true,
+			Sound: false,
 			StatsDisplay: false,
 			Stats: false,
 			Skin: true,
