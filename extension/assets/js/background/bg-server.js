@@ -65,7 +65,7 @@ window.Server = (function () {
 				contentType: 'application/json'
 			}).done(result => {
 				// make sure user was returned
-				if (result && result.username){
+				if (result && result.username && result.message !== 0){
 					if (DEBUG) console.log("📟 Server.getTallyUser() DONE result.username = %c" + JSON.stringify(result.username), Debug.styles.greenbg);
 					// merge attack data from server with T.tally_user data properties
 					result.attacks = Server.mergeAttackDataFromServer(result.attacks);

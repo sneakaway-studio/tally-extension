@@ -212,7 +212,7 @@ window.TallyStorage = (function () {
 				// set status
 				T.startUpPromisesResolved = true;
 				// we can also assume this
-				T.tally_meta.userLoggedIn = true;
+				// T.tally_meta.userLoggedIn = true;
 			} else {
 				if (DEBUG) console.log("🗄️ > TallyStorage STARTUP PROMISES -> result[0] = %c" + JSON.stringify(result[0]), Debug.styles.redbg);
 				// set status

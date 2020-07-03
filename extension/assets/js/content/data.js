@@ -3,7 +3,7 @@
 /*  TALLY DATA MANAGER
  ******************************************************************************/
 
-window.TallyData = (function() {
+window.TallyData = (function () {
 	// PRIVATE
 
 	let DEBUG = Debug.ALL.TallyData,
@@ -24,7 +24,7 @@ window.TallyData = (function() {
 	/**
 	 *	Send server updates if user leaves
 	 */
-	$(window).on("beforeunload", function() {
+	$(window).on("beforeunload", function () {
 		try {
 			// if edits
 			if (backgroundUpdateEdits > 0) {
@@ -211,7 +211,7 @@ window.TallyData = (function() {
 			// if (DEBUG) console.log("💾 TallyData.startManager() CHECKING FOR UPDATE");
 
 			// if not already running, start manager interval
-			managerInterval = setInterval(function() {
+			managerInterval = setInterval(function () {
 				// run until pushUpdate()
 				manager();
 			}, 1000);
@@ -246,7 +246,7 @@ window.TallyData = (function() {
 
 			}
 			// safety - else kill interval and reset everything
-			if (managerCountdown < -2){
+			if (managerCountdown < -2) {
 				if (DEBUG) console.log(log, " [3] SAFETY FIRST");
 				// clearTimeout(managerInterval);
 				resetManager();
@@ -274,7 +274,7 @@ window.TallyData = (function() {
 
 			if (DEBUG) console.log("💾 TallyData.pushUpdate() [1]", backgroundUpdate,
 				// "backgroundUpdateEditors =",backgroundUpdateEditors
-				"T.tally_meta.userLoggedIn =",T.tally_meta.userLoggedIn
+				"T.tally_meta.userLoggedIn =", T.tally_meta.userLoggedIn
 			);
 
 			// checks before sending the update
@@ -286,13 +286,14 @@ window.TallyData = (function() {
 			chrome.runtime.sendMessage({
 				'action': 'sendUpdateToBackground',
 				'data': backgroundUpdate
-			}, function(response) {
+			}, function (response) {
 				if (DEBUG) console.log('💾 > TallyData.pushUpdate() [2] RESPONSE =', response);
 
 				// if update was successful
-				if (response.message === 1 || response.tally_user.username ){
+				if (response.message === 1 || response.tally_user.username) {
 					// update T.tally_user in content
 					T.tally_user = response.tally_user;
+					T.tally_meta.userLoggedIn = 1;
 				}
 				// otherwise one of the following may be true
 				// - user may have lost connection
@@ -303,14 +304,14 @@ window.TallyData = (function() {
 					T.tally_meta.userLoggedIn = 0;
 					// set Page.data.mode
 					Page.data.mode = TallyMain.getPageMode();
-						// Stats.reset("tally");
+					// Stats.reset("tally");
 				}
-
+				TallyStorage.saveData("tally_meta", T.tally_meta);
 
 
 				if (DEBUG) console.log("💾 TallyData.pushUpdate() [3]",
 					// "backgroundUpdateEditors =",backgroundUpdateEditors
-					"T.tally_meta.userLoggedIn =",T.tally_meta.userLoggedIn
+					"T.tally_meta.userLoggedIn =", T.tally_meta.userLoggedIn
 				);
 
 

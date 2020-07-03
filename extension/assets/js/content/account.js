@@ -28,28 +28,6 @@ window.Account = (function() {
 	}
 
 
-	/**
-	 *	Make sure user's account is current
-	 */
-	function checkStatus() {
-		try {
-			if (DEBUG) console.log("🔑 Account.checkStatus() T.tally_meta = " + JSON.stringify(T.tally_meta));
-
-			// if not on the dashboard
-			if (Page.data.url !== T.tally_meta.website + "/dashboard") {
-
-				// if not logged in
-				if (T.tally_meta.userLoggedIn) {
-					// set Page.data.mode
-					Page.data.mode = TallyMain.getPageMode();
-				} else {
-					if (DEBUG) console.log("🔑 Account.checkStatus() ACCOUNT OK ");
-				}
-			}
-		} catch (err) {
-			console.error(err);
-		}
-	}
 
 
 
@@ -86,7 +64,6 @@ window.Account = (function() {
 
 	// PUBLIC
 	return {
-		returnPrompt: returnPrompt,
-		checkStatus: checkStatus
+		returnPrompt: returnPrompt
 	};
 })();

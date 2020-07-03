@@ -23,6 +23,8 @@ window.Flag = (function () {
 			// only run if they aren't already logged in AND if user is on dashboard
 			if (T.tally_meta.userLoggedIn && !Page.data.actions.onDashboard) return;
 
+			console.log("🚩 Flag.checkForDashboardLogin() -> ON DASHBOARD");
+
 			// update tally_meta in content and background - !IMPORTANT OR BACKGROUND WON'T CONTACT SERVER
 			T.tally_meta.userLoggedIn = true;
 			TallyStorage.saveData("tally_meta", T.tally_meta);

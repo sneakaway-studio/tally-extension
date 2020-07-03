@@ -43,7 +43,7 @@ window.Debug = (function () {
 			Sound: false,
 			StatsDisplay: false,
 			Stats: false,
-			Skin: true,
+			Skin: false,
 
 			Tally: true,
 			TallyData: true,
