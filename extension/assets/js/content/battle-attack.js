@@ -112,7 +112,8 @@ window.BattleAttack = (function() {
 				// 2. check for and handle any special attacks
 
 				for (let i = 0; i < outcomeDetails.outcomes.length; i++) {
-					if (FS_Object.prop(outcomeDetails.outcomes[i].special)) {
+					// if outcome defined
+					if (FS_Object.prop(outcomeDetails.outcomes[i]) && FS_Object.prop(outcomeDetails.outcomes[i].special)) {
 						if (DEBUG) console.log("💥 BattleAttack.handleAttackOutcomes()", outcomeDetails.outcomes, selfStr, oppStr);
 
 						// SPECIAL ATTACK: opp-loses-1-turn
@@ -137,7 +138,7 @@ window.BattleAttack = (function() {
 							// set flag to skip turn at end
 							specialSkipTurn = true;
 						}
-
+						// TO ADD: SPECIAL ATTACK: qte (quick time event)
 					}
 				}
 

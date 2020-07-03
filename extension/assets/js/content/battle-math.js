@@ -3,7 +3,7 @@
 /*  (BATTLE) MATH
  ******************************************************************************/
 
-window.BattleMath = (function() {
+window.BattleMath = (function () {
 	// PRIVATE VARS;
 
 	let DEBUG = Debug.ALL.BattleMath,
@@ -86,7 +86,7 @@ window.BattleMath = (function() {
 			}
 		};
 
-	function logOutcome(which, outcome, who="", stat=0) {
+	function logOutcome(which, outcome, who = "", stat = 0) {
 		if (!DEBUG) return;
 		console.log("🔢 BattleMath.logOutcome() attack." + which,
 			"\n --> outcome=", JSON.stringify(outcome) +
@@ -136,9 +136,10 @@ window.BattleMath = (function() {
 				return "missed";
 			}
 			// was it a special attack?
-			else if (prop(attack.special)) {
+			else if (FS_Object.prop(attack.special)) {
 				console.log("🔢 BattleMath.returnAttackOutcomes() SPECIAL ATTACK !", attack.special);
 
+//  MARKED FOR DELETION - HANDLED IN SIDE battle-attack now
 				// // types...
 				// if (attack.special === "opp-loses-1-turn") {
 				// 	return "opp-loses-1-turn";
@@ -150,9 +151,11 @@ window.BattleMath = (function() {
 
 
 				outcome = outcomeData[attack.special]; // get data
-				attackOutcomes.push(outcome); // store outcome
-				logOutcome(attack.special, outcome); // log
-
+				// make sure its defined
+				if (outcome) {
+					attackOutcomes.push(outcome); // store outcome
+					logOutcome(attack.special, outcome); // log
+				}
 			}
 
 			if (DEBUG) console.log("🔢 BattleMath.returnAttackOutcomes()", selfStr + " 🧨 " + oppStr, attack,
@@ -183,11 +186,11 @@ window.BattleMath = (function() {
 				outcome = outcomeData[affectsStat];
 				outcome.change = -(FS_Number.round(opp[stat].max * attack[affectsStat], 3));
 				if (DEBUG) console.log(
-					"outcome.change ["+outcome.change + "] = -(FS_Number.round(" +
-					"opp[stat].max ["+ opp[stat].max +"] *",
-					"attack[affectsStat] ["+ attack[affectsStat] +"] , 1))"
+					"outcome.change [" + outcome.change + "] = -(FS_Number.round(" +
+					"opp[stat].max [" + opp[stat].max + "] *",
+					"attack[affectsStat] [" + attack[affectsStat] + "] , 1))"
 				);
-				if (DEBUG) console.log("opp[stat].val ["+ opp[stat].val +"] + outcome.change ["+ outcome.change +"] = " +
+				if (DEBUG) console.log("opp[stat].val [" + opp[stat].val + "] + outcome.change [" + outcome.change + "] = " +
 					(opp[stat].val + outcome.change));
 
 				opp[stat].val = Stats.setVal(oppStr, outcome.stat, opp[stat].val + outcome.change);
@@ -351,7 +354,7 @@ window.BattleMath = (function() {
 
 	// PUBLIC
 	return {
-		returnAttackOutcomes: function(attack, selfStr, oppStr) {
+		returnAttackOutcomes: function (attack, selfStr, oppStr) {
 			return returnAttackOutcomes(attack, selfStr, oppStr);
 		}
 	};

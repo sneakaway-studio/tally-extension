@@ -298,7 +298,6 @@ window.TallyMain = (function () {
 				// check last active status and potentially recharge
 				// TallyEvents.checkLastActiveAndRecharge();
 
-
 				if (DEBUG) console.log("🧰 TallyMain.startGameOnPage() [4.3] -> Check badges");
 				// potentially add badge
 				Badge.check();
@@ -308,7 +307,7 @@ window.TallyMain = (function () {
 					if (DEBUG) console.log("🧰 TallyMain.startGameOnPage() [4.4] -> Check monsters");
 					// check for, and potentially add monsters on the page
 					MonsterCheck.check();
-				}, 2000);
+				}, 3000);
 
 			}, 10);
 

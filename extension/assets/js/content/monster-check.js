@@ -290,7 +290,7 @@ window.MonsterCheck = (function () {
 
 			// set background color
 			let bgColor = Skin.currentSkinObj.front || "rgba(70,24,153,1)";
-	
+
 			// turn monster to face Tally
 			let scale = 1,
 				flipStyle = "transform:scale(" + scale + "," + scale + ");"; // default
@@ -298,7 +298,7 @@ window.MonsterCheck = (function () {
 				flipStyle = "transform:scale(-" + scale + "," + scale + ");"; // left
 
 			// string for dialogue box
-			str += "<div class='tally tally-dialogue-with-img' style='background-color: " + bgColor + "'>";
+			str += "<div class='tally tally-dialogue-with-img' style='display:hidden; left:-500px; background-color: " + bgColor + "'>";
 			str += "<div class='tally monster_sprite_outer_dialogue' style='" + flipStyle + "''>";
 			str += "<div class='tally monster_sprite_inner_dialogue' style='background-image:url( " + url + " )'></div>";
 			str += "<img src='" + url + "' class='monster_sprite_dialogue_loader' style='display:none'>"; // load here so we can check it is loaded in Dialogue

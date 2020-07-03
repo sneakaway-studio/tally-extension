@@ -337,9 +337,11 @@ window.Dialogue = (function () {
 					// adjust size of the box
 					setDialoguBoxSize(dialogue.text, $('#tally_dialogue_inner').outerHeight());
 				});
+			} else {
+				// update dialogue box size
+				setDialoguBoxSize(dialogue.text, 0);
 			}
-			// update dialogue box size
-			setDialoguBoxSize(dialogue.text, 0);
+
 
 			// make Tally look at user
 			Tally.stare();
@@ -358,9 +360,10 @@ window.Dialogue = (function () {
 
 			let inner = $('#tally_dialogue_inner').outerHeight(),
 				outer = $('#tally_dialogue_outer').outerHeight(),
+				// default size of box with text only
 				boxHeight = (stringLines(text) * 15) + 28;
 
-
+			// if image exists then increase size
 			if (imgHeight > 0) {
 				boxHeight = imgHeight;
 				if (DEBUG) console.log("💬 Dialogue.setDialoguBoxSize() [1]", "imgHeight =", imgHeight, "inner =", inner, "outer =", outer);
@@ -373,6 +376,12 @@ window.Dialogue = (function () {
 				'opacity': 1,
 				'height': boxHeight + "px",
 			});
+			// now show image
+			$('.tally-dialogue-with-img').css({
+				'display': 'flex',
+				'left': 0
+			});
+
 			// if (DEBUG) console.log("💬 Dialogue.setDialoguBoxSize()", inner,outer);
 			// if (DEBUG) console.log("💬 Dialogue.setDialoguBoxSize()", inner,outer);
 		} catch (err) {
@@ -388,7 +397,7 @@ window.Dialogue = (function () {
 			_queue = [];
 			// reset active
 			_active = false;
-			// reset hide timer
+			// reset timer
 			clearTimeout(hideTimeout);
 		} catch (err) {
 			console.error(err);
@@ -403,7 +412,7 @@ window.Dialogue = (function () {
 
 			// if queue contains dialogue then skip
 			if (_queue.length > 0) writeNextInQueue(150, true);
-			// or hide it
+			// or remove
 			else hide();
 
 		} catch (err) {
