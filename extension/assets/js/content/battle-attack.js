@@ -16,17 +16,6 @@ window.BattleAttack = (function() {
 
 
 	/**
-	 * 	Get outcomeDetails
-	 */
-	function getOutcomeDetails() {
-		try {
-			return outcomeDetails;
-		} catch (err) {
-			console.error(err);
-		}
-	}
-
-	/**
 	 *	Perform the attack
 	 */
 	function doAttack(attack, selfStr, oppStr, extraDelay = 0) {
@@ -682,21 +671,16 @@ window.BattleAttack = (function() {
 
 	// PUBLIC
 	return {
-		doAttack: function(attack, self, opp, extraDelay) {
-			doAttack(attack, self, opp, extraDelay);
-		},
-		handleAttackOutcomes: function(attack, selfStr, oppStr) {
-			handleAttackOutcomes(attack, selfStr, oppStr);
-		},
-		getOutcomeDetails: function() {
-			return getOutcomeDetails();
-		},
+		doAttack: doAttack,
+		handleAttackOutcomes: handleAttackOutcomes,
+
+		set outcomeDetails (value) { outcomeDetails = value; },
+		get outcomeDetails () { return outcomeDetails; },
+
 		rewardAttack: function(name, type) {
 			return rewardAttack(name, type);
 		},
-		tallyWins: function(message, dialogue) {
-			tallyWins(message, dialogue);
-		}
+		tallyWins: tallyWins
 
 	};
 })();

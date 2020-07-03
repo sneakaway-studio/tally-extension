@@ -96,7 +96,7 @@ window.BattleEffect = (function() {
 	function startAttackEffects(attack, selfStr, oppStr, rumbleSize = "small") {
 		try {
 			if (DEBUG) console.log("🧨 BattleEffect.startAttackEffects() > ", attack,
-				BattleAttack.getOutcomeDetails().outcomes, selfStr, oppStr, rumbleSize);
+				BattleAttack.outcomeDetails.outcomes, selfStr, oppStr, rumbleSize);
 
 			// is an attack not in progress ATM?
 			if (!Battle.details.attackInProgress) return;
@@ -111,7 +111,7 @@ window.BattleEffect = (function() {
 			) {
 				startPos = Core.getCenterPosition(".tally_monster_sprite_container");
 				endPos = Core.getCenterPosition("#tally_character");
-				if (BattleAttack.getOutcomeDetails().outcomes === "missed") {
+				if (BattleAttack.outcomeDetails.outcomes === "missed") {
 					// add to pos and time
 					endPos.left = -200;
 					addToDuration = 500;
@@ -123,7 +123,7 @@ window.BattleEffect = (function() {
 			) {
 				startPos = Core.getCenterPosition("#tally_character");
 				endPos = Core.getCenterPosition(".tally_monster_sprite_container");
-				if (BattleAttack.getOutcomeDetails().outcomes === "missed") {
+				if (BattleAttack.outcomeDetails.outcomes === "missed") {
 					// add to pos and time
 					endPos.left = Page.data.browser.width + 200;
 					addToDuration = 1000;
@@ -190,11 +190,11 @@ window.BattleEffect = (function() {
 	function showExplosion(attack, endPos, rumbleSize = "") {
 		try {
 			// make sure attack hit
-			if (BattleAttack.getOutcomeDetails().outcomes === "missed" ||
-				BattleAttack.getOutcomeDetails().outcomes === "noEffect" ||
-				BattleAttack.getOutcomeDetails().outcomes.length <= 0) return;
+			if (BattleAttack.outcomeDetails.outcomes === "missed" ||
+				BattleAttack.outcomeDetails.outcomes === "noEffect" ||
+				BattleAttack.outcomeDetails.outcomes.length <= 0) return;
 
-			if (DEBUG) console.log("🧨 BattleEffect.showExplosion()", attack, BattleAttack.getOutcomeDetails().outcomes, endPos, rumbleSize);
+			if (DEBUG) console.log("🧨 BattleEffect.showExplosion()", attack, BattleAttack.outcomeDetails.outcomes, endPos, rumbleSize);
 
 			// make sure attack was not a defense
 			if (rumbleSize !== "" && attack.type !== "defense")
