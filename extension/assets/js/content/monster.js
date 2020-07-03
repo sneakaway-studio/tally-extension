@@ -1,6 +1,6 @@
 "use strict";
 
-window.Monster = (function() {
+window.Monster = (function () {
 
 	/**
 	 *	1. MonsterCheck determines which monsters are nearby and calls Monster.create(mid)
@@ -50,7 +50,8 @@ window.Monster = (function() {
 				"captured": 0,
 				"missed": 0,
 				"facing": MonsterData.dataById[mid].facing,
-				"updatedAt": Date.now()
+				"updatedAt": Date.now(),
+				"tier1id": MonsterData.dataById[mid].tier1id
 			};
 			// if it already exists then make it the number of captures +1
 			if (T.tally_user.monsters[mid])
@@ -118,7 +119,7 @@ window.Monster = (function() {
 			}
 
 			// make sure everything has loaded before running
-			setTimeout(function() {
+			setTimeout(function () {
 				// set currentMID
 				currentMID = mid;
 				// reset / create new stats for monster
@@ -196,7 +197,7 @@ window.Monster = (function() {
 			$('.tally_monster_sprite_container').attr('data-mid', monster.mid);
 
 			// add listeners
-			$(document).on("mouseover", ".tally_monster_sprite_container", function() {
+			$(document).on("mouseover", ".tally_monster_sprite_container", function () {
 				let mid = Number($(this).attr('data-mid'));
 				//if (DEBUG) console.log(mid);
 				// show dialogue with sound but don't add to queue in case they click
@@ -207,7 +208,7 @@ window.Monster = (function() {
 					addIfInProcess: false
 				});
 			});
-			$(document).on("click", ".tally_monster_sprite_container", function() {
+			$(document).on("click", ".tally_monster_sprite_container", function () {
 				let mid = Number($(this).attr('data-mid'));
 				//console.log(mid);
 				// launch battle
@@ -289,18 +290,18 @@ window.Monster = (function() {
 
 	// PUBLIC
 	return {
-		onPage: function(state) {
+		onPage: function (state) {
 			return returnOnPage(state);
 		},
-		create: function(mid) {
+		create: function (mid) {
 			return create(mid);
 		},
 		showOnPage: showOnPage,
 		currentMID: currentMID,
-		current: function() {
+		current: function () {
 			return T.tally_nearby_monsters[currentMID];
 		},
-		saveAndPush: function(mid) {
+		saveAndPush: function (mid) {
 			return saveAndPush(mid);
 		},
 		test: test,

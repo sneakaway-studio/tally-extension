@@ -376,11 +376,10 @@ window.Skin = (function() {
 		returnHighestMonsterStage: returnHighestMonsterStage,
 		random: random,
 
-		// returnSkin: function(skin) {
-		// 	return returnSkin(skin);
-		// }
-
-		//preload: preload
+		set currentSkinName (value) { currentSkinName = value; },
+		get currentSkinName () { return currentSkinName; },
+		set currentSkinObj (value) { currentSkinObj = value; },
+		get currentSkinObj () { return currentSkinObj; },
 
 	};
 })();

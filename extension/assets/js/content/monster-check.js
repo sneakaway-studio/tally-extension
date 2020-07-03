@@ -1,10 +1,10 @@
 "use strict";
 
-window.MonsterCheck = (function() {
+window.MonsterCheck = (function () {
 
 	let DEBUG = Debug.ALL.MonsterCheck,
 		highestStage = 0,
-		potential = 0, // potential a monster will appear
+		potential = 0.5, // potential a monster will appear
 		secondsBeforeDelete = 300; // 60 seconds for testing
 
 
@@ -22,6 +22,12 @@ window.MonsterCheck = (function() {
 			if (T.tally_options.gameMode === "disabled" || T.tally_options.gameMode === "stealth") return;
 			// don't check on our site
 			if (Page.data.domain == "tallygame.net" || Page.data.domain == "tallysavestheinternet.com") return;
+
+			// set potential based on level
+			if (T.tally_user.level < 5) {
+				// increase potential
+				potential = 0.95;
+			}
 
 			checkNearbyMonsterTimes();
 
@@ -131,7 +137,8 @@ window.MonsterCheck = (function() {
 
 			// will we show monster on the page
 			let showMonster = false,
-			distance = "";
+				distance = "",
+				advance = false;
 
 			// if the monster id does not exist in nearby_monsters
 			if (!prop(T.tally_nearby_monsters[mid])) {
@@ -158,30 +165,40 @@ window.MonsterCheck = (function() {
 				}
 				// STAGE == 1
 				else if (T.tally_nearby_monsters[mid].stage == 1) {
-					if (r < 0.1) {
+					if (r < 0.05) {
 						// go back to normal stage
 						T.tally_nearby_monsters[mid].stage = 0;
 						// Dialogue.showSurveyPrompt();
-					} else if (r < 0.3) {
+					} else if (r < 0.2) {
 						// random dialogue, but don't change stage
 						showDialogueAboutQuantity();
-					} else if (r < 0.5) {
+					} else if (r < 0.4) {
 						// random dialogue, but don't change stage
 						distance = "far";
 					} else {
-						// or prompt stage 2
+						// 60%
+						advance = true;
+					}
+					// additional chance for new players
+					if (advance || potential > 0.5) {
+						// advance to stage 2
 						T.tally_nearby_monsters[mid].stage = 2;
 					}
 				}
 				// STAGE == 2
 				else if (T.tally_nearby_monsters[mid].stage == 2) {
 					// random dialogue, but don't change stage
-					if (r < 0.4) {
+					if (r < 0.2) {
 						showDialogueAboutQuantity();
-					} else if (r < 0.7) {
+					} else if (r < 0.4) {
 						distance = "close";
 					} else {
-						// or prompt stage 3 - add
+						// 60%
+						advance = true;
+					}
+					// additional chance for new players
+					if (advance || potential > 0.5) {
+						// advance to stage 3 - add
 						T.tally_nearby_monsters[mid].stage = 3;
 						showMonster = true;
 					}
@@ -193,8 +210,7 @@ window.MonsterCheck = (function() {
 
 
 
-			// always show something
-			showSilhouetteDialogue(mid, distance);
+
 
 			// save monsters
 			TallyStorage.saveData("tally_nearby_monsters", T.tally_nearby_monsters, log);
@@ -202,6 +218,8 @@ window.MonsterCheck = (function() {
 			if (showMonster) Monster.showOnPage(mid);
 			// check/reset skin
 			Skin.updateFromHighestMonsterStage();
+			// always show something (after the skin has updated)
+			showSilhouetteDialogue(mid, distance);
 		} catch (err) {
 			console.error(err);
 		}
@@ -270,10 +288,9 @@ window.MonsterCheck = (function() {
 			// set monster image
 			let url = T.tally_meta.website + '/' + 'assets/img/monsters/monsters-140h-solid-lt-purple/' + monster.mid + '-anim-sheet.png';
 
-
-			let bgColor = Skin.returnSkinNameFromStage(Skin.returnHighestMonsterStage()); // rgba(70,24,153,.4)
-
-
+			// set background color
+			let bgColor = Skin.currentSkinObj.front || "rgba(70,24,153,1)";
+	
 			// turn monster to face Tally
 			let scale = 1,
 				flipStyle = "transform:scale(" + scale + "," + scale + ");"; // default
@@ -293,9 +310,9 @@ window.MonsterCheck = (function() {
 			if (monster.stage === 3)
 				str += "There's a level " + monster.level + " " + monster.name + " monster on this page!";
 			else if (distance !== "" && distance == "close")
-				str += "There's a " + monster.name + " monster close by!";
+				str += "A " + monster.name + " monster is hiding on this website!";
 			else
-				str += "I saw a " + monster.name + " monster!";
+				str += "There is a " + monster.name + " monster on this site!";
 			str += "</div>";
 
 			// show dialogue with badge image
@@ -306,7 +323,7 @@ window.MonsterCheck = (function() {
 				instant: true
 			});
 
-			setTimeout(function(){
+			setTimeout(function () {
 				// set tutorial sequence active
 				Tutorial.sequenceActive = false;
 			}, 2000);
