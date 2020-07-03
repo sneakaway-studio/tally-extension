@@ -8,9 +8,9 @@
 
 ### Version 0.2.20
 
-* Tally now works in Brave browser
+* Lots of interface improvements 
 * Big improvements to Badge math and new badges
-
+* Tally now works in Brave browser
 
 ### Version 0.2.19
 

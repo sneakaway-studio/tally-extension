@@ -449,7 +449,7 @@ window.Dialogue = (function () {
 	/**
 	 * 	Estimate number of lines for a string
 	 */
-	function stringLines(str = "", measure = 26) {
+	function stringLines(str = "", measure = 27) {
 		try {
 			// if (DEBUG) console.log("💬 Dialogue.stringLines() [1]", str, measure);
 			let lines = 1;
