@@ -6,9 +6,13 @@
 ## Development Versions
 
 
+### Version 0.2.21
+
+* Coming soon 
+
 ### Version 0.2.20
 
-* Lots of interface improvements 
+* Lots of interface improvements
 * Big improvements to Badge math and new badges
 * Tally now works in Brave browser
 
