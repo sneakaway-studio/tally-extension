@@ -320,20 +320,25 @@ window.Progress = (function () {
 	function dashboardLogin() {
 		try {
 			// increment counter
-			let dashboardLogins = update("dashboardLogins", 1, "+");
+			let dashboardLogins = update("dashboardLogins", 1, "+"),
+				accountCreatedWelcomeMessage = update("accountCreatedWelcomeMessage", 1, "+");
 			if (DEBUG) console.log("🕹️ Progress.dashboardLogin() -> dashboardLogins =", dashboardLogins);
 
 			// called at beginning of page load so add delay before game things (dialogue, sound, etc.)
 			setTimeout(function () {
 				// 1. if this is the first time user is logging in
-				if (dashboardLogins < 3 && update("accountCreatedWelcomeMessage", 1, "+")) {
-					playIntroduction();
+				if (dashboardLogins < 3 && accountCreatedWelcomeMessage < 3) {
+					playGreeting();
 					Dialogue.showData(Dialogue.getData({
 						category: "account",
 						subcategory: "updated"
 					}));
 					playDashboardIntro();
-					playLetsGetTrackers();
+					Dialogue.showData(Dialogue.getData({
+						category: "help",
+						subcategory: "how-to-play"
+					}));
+					playLetsFindTrackers();
 				}
 				// if user has been here before
 				else {
@@ -344,11 +349,16 @@ window.Progress = (function () {
 							category: "account",
 							subcategory: "updated"
 						}));
-						playLetsGetTrackers();
+						playLetsFindTrackers();
 					} else if (r < 0.4) {
 						Dialogue.showData(Dialogue.getData({
 							category: "help",
 							subcategory: "dashboard"
+						}));
+					} else {
+						Dialogue.showData(Dialogue.getData({
+							category: "help",
+							subcategory: "how-to-play"
 						}));
 					}
 
@@ -360,7 +370,7 @@ window.Progress = (function () {
 		}
 	}
 	/**
-	 *	User resets data in their account
+	 *	User resets data in their account - called externally
 	 */
 	function resetUserAccount() {
 		try {
@@ -376,6 +386,10 @@ window.Progress = (function () {
 					category: "account",
 					subcategory: "reset"
 				}));
+				Dialogue.showData(Dialogue.getData({
+					category: "help",
+					subcategory: "how-to-play"
+				}));
 
 			}, 500);
 
@@ -384,7 +398,7 @@ window.Progress = (function () {
 		}
 	}
 
-	function playIntroduction() {
+	function playGreeting() {
 		try {
 			let r = Math.random();
 			if (r < 0.33) {
@@ -412,20 +426,31 @@ window.Progress = (function () {
 		}
 	}
 
-	function playLetsGetTrackers() {
+	function playLetsFindTrackers() {
 		try {
 			let r = Math.random();
-			if (r < 0.33) {
-				Dialogue.showStr("Now, let's go find some trackers!", "happy");
+			if (r < 0.2) {
+				Dialogue.showStr("Let's go find some trackers!", "happy");
 				Dialogue.showStr("I have a <a target='_blank' href='https://" +
 					FS_Object.randomArrayIndex(GameData.dataDealerDomains) + "'>good idea where there will be some</a>...", "happy");
-			} else if (r < 0.66) {
+			} else if (r < 0.4) {
 				Dialogue.showStr("Let's go get some <a target='_blank' href='https://" +
 					FS_Object.randomArrayIndex(GameData.dataDealerDomains) + "'>trackers</a>!", "happy");
-			} else {
+			} else if (r < 0.6) {
 				Dialogue.showStr("Want to find some <a target='_blank' href='https://" +
 					FS_Object.randomArrayIndex(GameData.dataDealerDomains) + "'>trackers</a> with me?", "happy");
+			} else if (r < 0.8) {
+				Dialogue.showStr("Want to know how to find a lot of trackers?", "question");
+				Dialogue.showStr("<a target='_blank'" +
+					" href='https://www.nytimes.com/interactive/2019/08/23/opinion/data-internet-privacy-tracking.html'>" +
+					"This article</a> has a lot of links.", "happy");
+			} else {
+				Dialogue.showStr("Just for fun, want to visit sites with the most trackers? <a target='_blank'" +
+					" href='https://www.eff.org/press/releases/eff-report-exposes-explains-big-techs-personal-data-trackers-lurk-social-media'>" +
+					"Check out this article</a>", "question");
 			}
+
+
 		} catch (err) {
 			console.error(err);
 		}
