@@ -20,8 +20,11 @@ window.Flag = (function () {
 			// always allow unless mode disabled
 			if (T.tally_options.gameMode === "disabled") return;
 
-			// only run if they aren't already logged in AND if user is on dashboard
-			if (T.tally_meta.userLoggedIn && !Page.data.actions.onDashboard) return;
+			// if they are already loggedin then return
+			if (T.tally_meta.userLoggedIn) return;
+
+			// only continue if user is on dashboard
+			if (!Page.data.actions.onDashboard) return;
 
 			console.log("🚩 Flag.checkForDashboardLogin() -> ON DASHBOARD");
 
@@ -49,8 +52,8 @@ window.Flag = (function () {
 	 */
 	async function checkForAccountReset(what = "all") {
 		try {
-			// don't allow if serverOffline
-			if (Page.data.mode.serverOffline) return;
+			// only allow if serverOnline
+			if (!Page.data.mode.serverOnline) return;
 			// don't allow if mode disabled
 			if (T.tally_options.gameMode === "disabled") return;
 

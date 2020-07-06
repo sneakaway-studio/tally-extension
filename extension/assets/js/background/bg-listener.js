@@ -208,7 +208,7 @@ window.Listener = (function () {
 
 				/*  DATA MANAGEMENT
 				 ******************************************************************************/
- 
+
 
 				// resetTallyUserFromServer
 				// - called when user is logging in
@@ -295,14 +295,14 @@ window.Listener = (function () {
 							} else {
 								// else update tally_meta
 								_tally_meta.userLoggedIn = 0;
-								store("tally_meta", _tally_meta);
 							}
 
 							// reply to contentscript with updated T.tally_user
 							sendResponse({
 								"action": request.action,
 								"message": _tally_meta.userLoggedIn,
-								"tally_user": result
+								"tally_user": result,
+								"tally_meta": _tally_meta
 							});
 						}).fail(err => {
 							console.warn("👂🏼 Listener.addListener() > sendUpdateToBackground - FAIL =", JSON.stringify(err));
@@ -312,6 +312,11 @@ window.Listener = (function () {
 								"action": request.action,
 								"message": 0
 							});
+						}).always(result => {
+							if (DEBUG) console.log("👂🏼 Listener.addListener() > sendUpdateToBackground - ALWAYS");
+							// save result
+							store("tally_meta", result);
+							store("tally_meta", _tally_meta);
 						});
 					}
 

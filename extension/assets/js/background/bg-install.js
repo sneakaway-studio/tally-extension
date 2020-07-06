@@ -116,12 +116,13 @@ window.Install = (function () {
 				if (DEBUG) console.log("🔧 Install.launchStartScreen() current tab =", tab);
 
 				// are we in the process resetting user's data?
-				if (tab.url !== undefined && (tab.url.includes("dashboard") ||
+				if (tab.url !== undefined && (tab.url.includes("/dashboard") ||
 					tab.url.includes("tallygame.net") || tab.url.includes("tallysavestheinternet.com")
 				)) {
 					return console.log("🔧 Install.launchStartScreen() 🛑 ON DASHBOARD");
 				}
-				//launch install page
+
+				// else launch install page
 				chrome.tabs.create({
 					// url: chrome.extension.getURL('assets/pages/startScreen/startScreen.html')
 					url: _tally_meta.website + "/anonyname"
@@ -137,20 +138,6 @@ window.Install = (function () {
 			console.error(err);
 		}
 	}
-
-	/**
-	 *  Launch registration page
-	 */
-	// function launchRegistrationPage() {
-	// 	chrome.tabs.create({
-	// 		url: _tally_meta.website + "/signin"
-	// 	}, function(tab) {
-	// 		if (DEBUG) console.log("🔧 Install.launchRegistrationPage() -> launching registration page", tab.url);
-	// 	});
-	// }
-
-
-
 
 
 

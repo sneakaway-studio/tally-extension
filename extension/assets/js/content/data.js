@@ -291,9 +291,9 @@ window.TallyData = (function () {
 
 				// if update was successful
 				if (response.message === 1 || response.tally_user.username) {
-					// update T.tally_user in content
+					// update T.tally_user and T.tally_meta in content
 					T.tally_user = response.tally_user;
-					T.tally_meta.userLoggedIn = 1;
+					T.tally_meta = response.tally_meta;
 				}
 				// otherwise one of the following may be true
 				// - user may have lost connection
@@ -301,12 +301,10 @@ window.TallyData = (function () {
 				// - user reset their data
 				// - player switched user accounts (probably in development only)
 				else {
-					T.tally_meta.userLoggedIn = 0;
-					// set Page.data.mode
-					Page.data.mode = TallyMain.getPageMode();
+					// re-check Page.data.mode
+					TallyMain.savePageMode();
 					// Stats.reset("tally");
 				}
-				TallyStorage.saveData("tally_meta", T.tally_meta);
 
 
 				if (DEBUG) console.log("💾 TallyData.pushUpdate() [3]",

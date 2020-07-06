@@ -78,10 +78,11 @@ window.Server = (function () {
 				}
 			}).fail(error => {
 				if (DEBUG) console.error("📟 Server.getTallyUser() FAIL", JSON.stringify(error));
-				// server might not be online
-				checkIfOnline();
 				// update account status
 				_tally_meta.userLoggedIn = 0;
+				store("tally_meta", _tally_meta);
+				// server might not be online
+				checkIfOnline();
 			}).always((result) => {
 				// if (DEBUG) console.log("📟 Server.getTallyUser() ALWAYS", JSON.stringify(result.username));
 				// store result
@@ -93,39 +94,6 @@ window.Server = (function () {
 		}
 	}
 
-
-	//  MARK FOR DELETION
-	//
-	// function handleSync(result) {
-	// 	try {
-	// 		// get local objects to update them
-	// 		let _tally_user = store("tally_user");
-	//
-	// 		// treat all server data as master, store in T.tally_user
-	// 		if (result.username) _tally_user.username = result.username;
-	// 		if (result.admin) _tally_user.admin = result.admin;
-	// 		if (result.level) _tally_user.level = result.level;
-	// 		//
-	// 		if (result.clicks) _tally_user.score.clicks = result.clicks;
-	// 		if (result.likes) _tally_user.score.likes = result.likes;
-	// 		if (result.pages) _tally_user.score.pages = result.pages;
-	// 		if (result.score) _tally_user.score.score = result.score;
-	// 		if (result.time) _tally_user.score.time = result.time;
-	// 		if (result.attacks) _tally_user.attacks = result.attacks;
-	// 		if (result.consumables) _tally_user.consumables = result.consumables;
-	// 		if (result.badges) _tally_user.badges = result.badges;
-	// 		store("tally_user", _tally_user);
-	// 		// store any flags from server
-	// 		if (result.flags && result.flags.length > 0) {
-	// 			console.log("🚩 Server.handleSync() FLAGS =", JSON.stringify(result.flags));
-	// 			// store
-	// 			// !!!! THIS SHOULD BE INSIDE backgroundUpdate now
-	// 		}
-	// 	} catch (err) {
-	// 		console.error(err);
-	// 	}
-	// }
-	//
 
 
 

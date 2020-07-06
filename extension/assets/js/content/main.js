@@ -74,7 +74,7 @@ window.TallyMain = (function () {
 			// stop if Page.data failed
 			if (!prop(Page.data)) return console.warn("... Page.data NOT FOUND");
 			// check page mode before proceeding
-			Page.data.mode = getPageMode();
+			savePageMode();
 
 			// are we on the tally website
 			Page.data.actions.onTallyWebsite = Page.data.url.includes(T.tally_meta.website) || false;
@@ -113,7 +113,7 @@ window.TallyMain = (function () {
 			// show the number of trackers in the badge
 			Tracker.setBadgeText(FS_Object.objLength(Page.data.trackers.found));
 			// were trackers dealt with?
-			if (FS_Object.objLength(Page.data.trackers.found) > 0 && !Tracker.blockAttempted) {
+			if (T.tally_user.trackers && FS_Object.objLength(Page.data.trackers.found) > 0 && !Tracker.blockAttempted) {
 				// console.log("Page.data.trackers", Page.data.trackers);
 				// remove blocked trackers (and save in Page.data.trackers)
 				Tracker.removeBlocked();
@@ -132,6 +132,8 @@ window.TallyMain = (function () {
 			// add debugger to page and update
 			Debug.add();
 			Debug.update();
+
+
 			// now safe to add Tally
 			addTallyToPage();
 
@@ -144,24 +146,24 @@ window.TallyMain = (function () {
 	/**
 	 *	Get the page mode for the current page - Make sure Tally isn't disabled on this page | domain | subdomain | etc
 	 */
-	function getPageMode() {
+	function savePageMode() {
 		try {
-			let log = "🧰 TallyMain.getPageMode() -> ";
+			let log = "🧰 TallyMain.savePageMode() -> ";
 
 			// start from scratch
 			let mode = {
-				active: 0,
-				loggedIn: 0,
-				serverOffline: 0,
-				notActive: 0
+				active: false,
+				loggedIn: false,
+				serverOnline: false,
+				notActive: false
 			};
 
-			// SERVER IS OFFLINE
-			// - tally can still point to trackers, save in bg
-			// - the game can run using the background only, for example, if user not logged-in or server is offline
-			if (!T.tally_meta.server.online) {
-				if (DEBUG) console.log(log + "Connection to Tally server is down");
-				mode.serverOffline = 1;
+			// SERVER IS ONLINE
+			// - if not, tally can still point to trackers, save in bg
+			// - if not, the game can run using the background only
+			if (T.tally_meta.server.online) {
+				if (DEBUG) console.log(log + "Connection to Tally server is 👍");
+				mode.serverOnline = true;
 			}
 
 
@@ -170,7 +172,7 @@ window.TallyMain = (function () {
 			// - tally can still point to trackers, prompt for login (assuming server is online), save in bg
 			else if (T.tally_meta.userLoggedIn) {
 				if (DEBUG) console.log(log + "T.tally_meta.userLoggedIn =", T.tally_meta.userLoggedIn);
-				mode.loggedIn = 1;
+				mode.loggedIn = true;
 			}
 
 
@@ -181,7 +183,7 @@ window.TallyMain = (function () {
 			// Page.data failed - game cannot start at all
 			if (!prop(Page.data)) {
 				if (DEBUG) console.log(log + "No Page.data found");
-				mode.notActive = 1;
+				mode.notActive = true;
 			}
 			// this is a disabled domain - user has added this to blocklist
 			else if (prop(T.tally_options.disabledDomains) && (
@@ -189,40 +191,43 @@ window.TallyMain = (function () {
 					($.inArray(Page.data.subDomain, T.tally_options.disabledDomains) >= 0)
 				)) {
 				if (DEBUG) console.log(log + "Tally is disabled on this domain");
-				mode.notActive = 1;
+				mode.notActive = true;
 			}
 			// this is not a web page (e.g. a PDF or image)
 			else if (Page.data.contentType != "text/html") {
 				if (DEBUG) console.log(log + "Tally is disabled on pages like " + Page.data.contentType);
-				mode.notActive = 1;
+				mode.notActive = true;
 			}
 			// this is a file:// URI
 			else if (Page.data.url.indexOf("file://") > -1) {
 				if (DEBUG) console.log(log + "Tally is disabled on file:// urls");
-				mode.notActive = 1;
+				mode.notActive = true;
 			}
 			// this is a popup / signin that is really small
 			else if (Page.data.browser.width < 600) {
 				if (DEBUG) console.log(log + "Tally is disabled on small windows");
-				mode.notActive = 1;
+				mode.notActive = true;
 			}
 			//
 			else if (T.tally_options.gameMode === "disabled") {
 				if (DEBUG) console.log(log + "gamemode === disabled");
-				mode.notActive = 1;
+				mode.notActive = true;
 			}
 
 
 
 			// ACTIVE
 			// - background, login, server, and everything else (like the above) is good, let's roll
-			if (mode.notActive === 0 && mode.serverOffline === 0 && mode.loggedIn === 1) {
+			if (mode.notActive === false && mode.serverOnline === true && mode.loggedIn === false) {
 				if (DEBUG) console.log(log + "All is good, setting mode.active = 1");
-				mode.active = 1;
+				mode.active = true;
 			}
 
+
+			console.log("Page.data.mode", Page.data.mode);
 			// return to save in Page.data.mode
-			return mode;
+			Page.data.mode = mode;
+			console.log("Page.data.mode", Page.data.mode);
 
 		} catch (err) {
 			console.error(err);
@@ -268,11 +273,10 @@ window.TallyMain = (function () {
 		try {
 			if (DEBUG) Debug.dataReportHeader("🧰 TallyMain.startGameOnPage()", "#", "before");
 
-			// allow offline
-			if (Page.data.mode.notActive) return console.warn("🧰 TallyMain.startGameOnPage() Page.data.mode =", Page.data.mode);
+			// stop if page mode is not active
+			if (!Page.data.mode.active) return console.log("🧰 TallyMain.startGameOnPage() Page.data.mode =", Page.data.mode);
 			// don't allow if mode disabled
 			if (T.tally_options.gameMode === "disabled") return;
-
 
 
 			// Check and show items
@@ -332,7 +336,7 @@ window.TallyMain = (function () {
 
 	// PUBLIC
 	return {
-		getPageMode: getPageMode,
+		savePageMode: savePageMode,
 		contentStartChecks: contentStartChecks,
 		startGameOnPage: startGameOnPage
 	};

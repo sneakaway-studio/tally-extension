@@ -102,7 +102,7 @@ window.TallyStorage = (function () {
 				T.tally_stats = response.tally_stats;
 
 				// update Page.data.mode
-				Page.data.mode = TallyMain.getPageMode();
+				TallyMain.savePageMode();
 				// start game (again)
 				TallyMain.contentStartChecks();
 			});

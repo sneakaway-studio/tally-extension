@@ -294,6 +294,17 @@ window.Tally = (function () {
 			// don't allow if mode disabled
 			if (T.tally_options.gameMode === "disabled") return;
 
+			// MOUSE ENTER ( NOT LOGGED-IN VERSION )
+			// if mode !== active - AND - server online - AND - they aren't logged in then show prompt
+			if (!Page.data.mode.active && Page.data.mode.serverOnline && !Page.data.mode.loggedIn) {
+				if (interaction === 'mouseenter') {
+					Account.playLoginPrompt();
+				}
+				return;
+			}
+			// ELSE CONTINUE...
+
+
 			if (DEBUG) console.log("%c   Tally.interactionHandler()", Debug.tallyConsoleIcon, interaction,
 				"Tutorial.sequenceActive", Tutorial.sequenceActive);
 			if (Tutorial.sequenceActive == true) {
@@ -393,11 +404,6 @@ window.Tally = (function () {
 
 
 
-
-
-
-
-
 	/*  TALLY MULTI CLICK SYSTEM
 	 *****************************************************************************/
 
@@ -414,6 +420,12 @@ window.Tally = (function () {
 			if (Page.data.mode.notActive) return;
 			// don't allow if mode disabled or stealth
 			if (T.tally_options.gameMode === "disabled" || T.tally_options.gameMode === "stealth") return;
+
+			// if mode !== active - AND - server online - AND - they aren't logged in then show prompt
+			if (!Page.data.mode.active && Page.data.mode.serverOnline && !Page.data.mode.loggedIn) {
+				Account.playLoginPrompt();
+				return;
+			}
 
 			// if restarting or continuing
 			if ((clickCount >= 0 && clickCount <= clickCountMax) || clickInterval) {
@@ -458,13 +470,6 @@ window.Tally = (function () {
 	function multiclickAction() {
 		try {
 			if (clickCount <= 0) return;
-
-			// if server online but they aren't logged in then show prompt
-			if (!Page.data.mode.loggedIn && window.tallyLoginPrompts < 10) {
-				window.tallyLoginPrompts++;
-				Dialogue.showStr(Account.returnPrompt(), "sad");
-				return;
-			}
 
 			// ONE CLICK
 			if (clickCount === 1) {

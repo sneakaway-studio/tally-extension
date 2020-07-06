@@ -6,7 +6,8 @@
 window.Account = (function() {
 	// PRIVATE
 
-	let DEBUG = Debug.ALL.Account;
+	let DEBUG = Debug.ALL.Account,
+		tallyLoginPrompts = 0;
 
 
 
@@ -27,6 +28,20 @@ window.Account = (function() {
 		}
 	}
 
+	/**
+	 *	Tally says a login prompt
+	 */
+	function playLoginPrompt() {
+		try {
+			console.log("tallyLoginPrompts",tallyLoginPrompts);
+			// only play a few times per load
+			if (++tallyLoginPrompts > 5) return;
+			Dialogue.showStr(returnPrompt(), "sad");
+
+		} catch (err) {
+			console.error(err);
+		}
+	}
 
 
 
@@ -36,8 +51,9 @@ window.Account = (function() {
 
 
 
-
-
+	/**
+	 *	Tally says a login prompt
+	 */
 	function promptHandler() {
 		try {
 
@@ -64,6 +80,7 @@ window.Account = (function() {
 
 	// PUBLIC
 	return {
-		returnPrompt: returnPrompt
+		returnPrompt: returnPrompt,
+		playLoginPrompt: playLoginPrompt
 	};
 })();

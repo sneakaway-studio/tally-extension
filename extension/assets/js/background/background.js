@@ -48,7 +48,7 @@ window.Background = (function () {
 			if (serverOnline) {
 				console.log(log, "-> SERVER ONLINE!");
 
-				// refresh T.tally_user data from server
+				// FIRST ATTEMPT TO GET T.tally_user data from server
 				const tallyUserResponse = await Server.getTallyUser();
 				console.log(log, "-> tallyUserResponse =", tallyUserResponse);
 
