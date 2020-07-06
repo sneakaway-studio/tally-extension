@@ -19,10 +19,10 @@ window.TallyEvents = (function() {
 				pageTimerInterval: setInterval(function() {
 					// if this page is visible
 					if (document.hasFocus()) {
-						Page.data.time = Page.data.time + 0.5;
+						Page.data.time = Page.data.time + 1;
 						Debug.update();
 					}
-				}, 500),
+				}, 1000),
 
 				// check if user is online
 				userOnlineInt: setInterval(function() {

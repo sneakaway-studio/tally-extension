@@ -396,13 +396,9 @@ window.BattleAttack = (function() {
 						// if in demo then quit after a moment
 						if (T.tally_options.gameMode === "demo") {
 							setTimeout(function() {
-								Battle.end();
+								Battle.end(true);
 							}, 500);
 						} else {
-							// add click event so user ends themselves
-							$(document).on("click", function() {
-								Battle.end();
-							});
 							if (Progress.get("notifyToClickAfterBattle") < 1) {
 								Dialogue.showStr("Congratulations on completing your first battle!", "happy");
 								if (winner === "tally") Dialogue.showStr("You blocked a tracker!", "happy");
@@ -415,6 +411,12 @@ window.BattleAttack = (function() {
 								Dialogue.showStr("Click anywhere to reset the page!", "happy");
 								Progress.update("notifyToClickAfterBattle", 2);
 							}
+							// clean up all battle data
+							Battle.end();
+							// add click event so user quits the visual part themselves
+							$(document).on("click", function() {
+								Battle.quit();
+							});
 						}
 					}, _logDelay + 2000);
 				}, _logDelay + 4000);

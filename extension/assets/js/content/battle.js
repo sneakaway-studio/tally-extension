@@ -122,15 +122,17 @@ window.Battle = (function() {
 			});
 			// hide current dialogue
 			Dialogue.hide();
+			// empty the dialogue queue
+			Dialogue.emptyTheQueue();
 
 			// change monster element back to fixed
 			Core.setElementFixed('.tally_monster_sprite_container');
 			// set monster details
 			details.mid = mid;
-			details.monsterLevel = Monster.current().level; 
+			details.monsterLevel = Monster.current().level;
 			details.monsterName = MonsterData.dataById[mid].name + " monster";
 			details.monsterAttacks = AttackData.returnRandomAttacks(3);
-			details.monsterTracker = T.tally_nearby_monsters[mid].tracker;
+			details.monsterTracker = T.tally_nearby_monsters[mid].tracker.domain;
 			console.log("💥 Battle.start()", "details=", details, mid, T.tally_nearby_monsters[mid]);
 			// rescale
 			let matrix = $('.tally_monster_sprite_flip').css('transform')
@@ -199,16 +201,77 @@ window.Battle = (function() {
 	}
 
 	Mousetrap.bind('escape', function() {
-		Battle.end();
+		Battle.end(true);
 	});
 
-	// end battle
-	function end() {
+	/**
+	 *	Run all the battle finish scripts
+	 */
+	function end(quit=false) {
 		try {
 			if (!_active) return;
 			let log = "💥 Battle.end()";
 			console.log(log);
+
+			// create monster update object
+			let monsterUpdate = {
+				"mid": details.mid,
+				"level": details.monsterLevel,
+				"tracker": details.monsterTracker,
+				"captured": 0,
+				"missed": 0,
+			};
+
+			// create tracker update object
+			let trackerUpdate = {
+				"name": Battle.details.monsterTracker,
+				"mid": Battle.details.mid,
+				"blocked": 0 // false be default
+			};
+
+
+			// set winner
+			if (Battle.details.winner === "tally") {
+				monsterUpdate.captured = 1;
+				trackerUpdate.blocked = 1;
+				Progress.update("battlesWon", 1, "+");
+			} else if (Battle.details.winner === "monster") {
+				monsterUpdate.missed = 1;
+				trackerUpdate.blocked = 0;
+				Progress.update("battlesLost", 1, "+");
+			}
+			// if no winner then player ended early
+			else {
+				monsterUpdate.missed = 1;
+				trackerUpdate.blocked = 0;
+				// tally must have run
+				Progress.update("battleEscaped", 1, "+");
+			}
+
+			// add monster to update
+			TallyData.queue("itemData", "monsters", monsterUpdate);
+			// add tracker to update
+			TallyData.queue("itemData", "trackers", trackerUpdate);
+			// update server immediately
+			TallyData.pushUpdate(log);
+
+			if (quit) Battle.quit();
+		} catch (err) {
+			console.error(err);
+		}
+	}
+
+
+	/**
+	 *	Actually exit the battle in the interface
+	 */
+	function quit() {
+		try {
+			if (!_active) return;
+			let log = "💥 Battle.quit()";
+			console.log(log);
 			_active = false;
+
 			// hide console
 			BattleConsole.hide();
 			// put tally back
@@ -254,54 +317,14 @@ window.Battle = (function() {
 			Monster.onPage(false);
 			// stop music
 			Sound.stopMusic();
-			// create monster update object
-			let monsterUpdate = {
-				"mid": details.mid,
-				"level": details.monsterLevel,
-				"tracker": details.monsterTracker,
-				"captured": 0,
-				"missed": 0,
-			};
 
-			// create tracker update object
-			let trackerUpdate = {
-				"name": Battle.details.monsterTracker,
-				"mid": Battle.details.mid,
-				"blocked": 0 // false be default
-			};
-
-			// remove monster and save T.tally_nearby_monsters
+			// remove monster from T.tally_nearby_monsters and save
 			if (FS_Object.objLength(T.tally_nearby_monsters) && FS_Object.prop(T.tally_nearby_monsters[details.mid])) {
 				delete T.tally_nearby_monsters[details.mid];
 				TallyStorage.saveData("tally_nearby_monsters", T.tally_nearby_monsters, "💥 Battle.end()");
 			}
 			// then check/reset skin
 			Skin.updateFromHighestMonsterStage();
-
-			// set winner
-			if (Battle.details.winner === "tally") {
-				monsterUpdate.captured = 1;
-				trackerUpdate.blocked = 1;
-				Progress.update("battlesWon", 1, "+");
-			} else if (Battle.details.winner === "monster") {
-				monsterUpdate.missed = 1;
-				trackerUpdate.blocked = 0;
-				Progress.update("battlesLost", 1, "+");
-			}
-			// if no winner then player ended early
-			else {
-				monsterUpdate.missed = 1;
-				trackerUpdate.blocked = 0;
-				// tally must have run
-				Progress.update("battleEscaped", 1, "+");
-			}
-
-			// add monster to update
-			TallyData.queue("itemData", "monsters", monsterUpdate);
-			// add tracker to update
-			TallyData.queue("itemData", "trackers", trackerUpdate);
-			// update server immediately
-			TallyData.pushUpdate(log);
 
 			// reload page if tally won (because it was exploded)
 			if (Battle.details.winner === "tally") {
@@ -310,19 +333,17 @@ window.Battle = (function() {
 					location.reload();
 				}, 800);
 			}
+
 		} catch (err) {
 			console.error(err);
 		}
 	}
 
-
-
-
-
 	// PUBLIC
 	return {
 		start: start,
 		end: end,
+		quit: quit,
 		test: test,
 		active: function(state) {
 			return active(state);

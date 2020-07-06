@@ -130,7 +130,7 @@ window.Debug = (function () {
 	}
 
 
-	function dataReportHeader(title, char, pos, count = 20) {
+	function dataReportHeader(title, char, pos, count = 15) {
 		try {
 			if (!DEBUG) return;
 			// make string
@@ -159,18 +159,18 @@ window.Debug = (function () {
 			$('#tally_wrapper').append(str);
 			// make it draggable
 			$("#tyd").draggable({
-				axis: "y",
-				drag: function () {
+				axis: "y"
+				// ,drag: function () {
 					//if (DEBUG) console.log("🗜️ Debug.add() draggable:drag");
 					// var offset = $(this).offset();
 					// var xPos = offset.left;
 					// var yPos = offset.top - $(window).scrollTop();
 					// T.tally_options.debuggerPosition = [xPos,yPos];
-				},
-				stop: function () {
+				// },
+				// stop: function () {
 					//if (DEBUG) console.log("🗜️ Debug.add() draggable:stop");
 					//TallyStorage.saveData("tally_options",T.tally_options,"tyd.draggable.stop");
-				}
+				// }
 			});
 		} catch (err) {
 			console.error(err);
@@ -182,9 +182,11 @@ window.Debug = (function () {
 			if (!prop(T.tally_options) || !T.tally_options.showDebugger) return;
 			if (!$("#tyd").length) return;
 
-			var str = "<div class='tally'>" +
-				"<button class='tally' id='resetTallyUserFromBackground'>RESET FROM BACKGROUND</button> " +
-				"<button class='tally' id='resetTallyUserFromServer'>RESET FROM SERVER</button>" +
+			var str =
+				// "<div class='tally'>" +
+				"<button class='tally clickable' id='showRandomUrl'>SHOW RANDOM URL</button> " +
+				"<button class='tally clickable' id='resetTallyUserFromBackground'>RESET FROM BACKGROUND</button> " +
+				"<button class='tally clickable' id='resetTallyUserFromServer'>RESET FROM SERVER</button>" +
 				"";
 
 			// add T.tally_user.score
@@ -201,12 +203,10 @@ window.Debug = (function () {
 			// 	FS_Object.objLength(T.tally_nearby_monsters) + ")</b>: " +JSON.stringify(T.tally_nearby_monsters) + "<br>";
 
 			// add T.tally_options
-			if (prop(T.tally_options))
-				str += "T.tally_options: " + JSON.stringify(T.tally_options) + "<br>";
+			if (prop(T.tally_options)) str += "T.tally_options: " + JSON.stringify(T.tally_options) + "<br>";
 
 			// add Page.data
-			if (prop(Page.data))
-				str += "<b>Page.data</b>: " + JSON.stringify(Page.data) + "<br>";
+			if (prop(Page.data)) str += "<b>Page.data</b>: " + JSON.stringify(Page.data) + "<br>";
 
 			// add Page.data.tags
 			// if (prop(Page.data.tags))
@@ -218,7 +218,7 @@ window.Debug = (function () {
 			// 	str += "<b class='tally'>Page.data.trackers</b>: " +
 			// 	JSON.stringify(Page.data.trackers) + "<br>";
 
-			str += "</div>";
+			// str += "</div>";
 			$('#tyd').html(str);
 
 			addDebugButtonListeners();
@@ -242,6 +242,12 @@ window.Debug = (function () {
 			});
 			$(document).on("click", '#resetTallyUserFromServer', function () {
 				TallyStorage.resetTallyUserFromServer();
+			});
+			$(document).on("click", '#showRandomUrl', function (e) {
+				e.preventDefault();
+				TallyStorage.getDataFromServer("/url/random", function (response) {
+					console.log("🗜️ Debug #showRandomUrl", response.data.urls[0]);
+				});
 			});
 
 		} catch (err) {
@@ -292,7 +298,7 @@ window.Debug = (function () {
 
 			});
 			Mousetrap.bind(k + ' q', function () {
-				Battle.end();
+				Battle.end(true);
 			});
 
 			Mousetrap.bind(k + ' e', function () {

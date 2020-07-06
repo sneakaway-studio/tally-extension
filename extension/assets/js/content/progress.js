@@ -65,6 +65,10 @@ window.Progress = (function () {
 		trackersBlocked: 0,
 		trackersSeenFingerprinting: 0,
 
+		// trolls
+		trollsSeen: 0,
+		trollsDisguisesStolen: 0,
+
 		// tutorials
 		viewTutorial1: 0,
 		viewProfilePage: 0,
@@ -214,6 +218,13 @@ window.Progress = (function () {
 				// update the attacksAwarded count
 				update("attacksAwarded", FS_Object.objLength(T.tally_user.attacks));
 			}
+
+
+			////////////////////////////// TROLLS //////////////////////////////
+
+
+
+
 
 		} catch (err) {
 			console.error(err);

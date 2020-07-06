@@ -278,7 +278,7 @@ window.BattleConsole = (function() {
 				// empty queue of any leftover dialogue
 				Dialogue.emptyTheQueue();
 				// end battle
-				Battle.end();
+				Battle.end(true);
 			});
 			$(document).on("mouseenter", '.battle-options-esc', function() {
 				// show
