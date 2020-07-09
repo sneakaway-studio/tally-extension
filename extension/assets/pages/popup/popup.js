@@ -30,7 +30,7 @@ function init() {
 	try {
 		// show tally image
 		$('.container').css({
-			'background-image': 'url(' + chrome.runtime.getURL("assets/img/tally/tally-logo-clear-1600w.png") + ')'
+			'background-image': 'url(' + chrome.runtime.getURL("assets/img/tally/tally-logo-clear-600w.png") + ')'
 		});
 
 		chrome.runtime.sendMessage({
@@ -509,8 +509,8 @@ function updateSkins() {
  ******************************************************************************/
 
 // set default
-openTab("itemsBtn", "itemsTab");
-//openTab("statusBtn", "statusTab");
+openTab("statusBtn", "statusTab");
+// openTab("itemsBtn", "itemsTab");
 //openTab("optionsBtn","optionsTab");
 
 // tab buttons
@@ -526,6 +526,9 @@ document.getElementById("optionsBtn").onclick = function() {
 document.getElementById("aboutBtn").onclick = function() {
 	openTab("aboutBtn", "aboutTab");
 };
+document.getElementById("feedbackBtn").onclick = function() {
+	openTab("feedbackBtn", "feedbackTab");
+};
 document.getElementById("debuggingBtn").onclick = function() {
 	openTab("debuggingBtn", "debuggingTab");
 };
@@ -536,6 +539,9 @@ document.getElementById("opt_close").onclick = function() {
 };
 
 // external links
+$(document).on('click', '#gameTrailerBtn', function() {
+	window.open("https://www.youtube.com/watch?v=xfsbm1cI2uo");
+});
 $(document).on('click', '#viewProfileBtn', function() {
 	window.open(_tally_meta.website + "/profile/" + _tally_user.username);
 });
@@ -545,16 +551,21 @@ $(document).on('click', '#editProfileBtn', function() {
 $(document).on('click', '#viewLeaderboardsBtn', function() {
 	window.open(_tally_meta.website + "/leaderboards");
 });
+$(document).on('click', '#howToPlayBtn', function() {
+	window.open(_tally_meta.website + "/how-to-play");
+});
 $(document).on('click', '#viewPrivacyPolicyBtn', function() {
 	window.open(_tally_meta.website + "/privacy");
 });
 
+// surveys
 $(document).on('click', '#testerSurveyBtn', function() {
-	window.open("https://docs.google.com/forms/d/e/1FAIpQLSeGx8zsF4aMQZH1eM0SzOvcpXijt8Bem1pzg4eni9eK8Jr-Lg/viewform");
+	window.open("https://docs.google.com/forms/d/e/1FAIpQLSdhftpXZHrnU1RXZ-yQ0LZovCp84ShZEicZpy__mOt621-Q2w/viewform");
 });
-$(document).on('click', '#gameTrailerBtn', function() {
-	window.open("https://www.youtube.com/watch?v=xfsbm1cI2uo");
+$(document).on('click', '#bugReportSurveyBtn', function() {
+	window.open("https://docs.google.com/forms/d/e/1FAIpQLScUG923UhVtFWzLaV5gOsd0e1grdS9iKeNLjdwPixKEJkn4bQ/viewform");
 });
+
 
 
 

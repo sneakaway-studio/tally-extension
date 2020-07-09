@@ -1,15 +1,20 @@
-/************************************************************************/
-/******************************** GLOBAL ********************************/
-/************************************************************************/
+
+
+/* GLOBAL
+-------------------------------------------------- */
+
 *:not(.fab) { font: 0.85rem/1.4rem "Lucida Console", Monaco, monospace !important; }
+
 html, body { background: #461899; margin: 0; padding: 0; box-sizing: border-box; }
+
 .container {
     width: 460px; height: 400px;
     background-repeat: no-repeat;
     background-position: 15px 10px;
-    background-size: 200px 62px;
+    background-size: 350px 85px;
 }
-.content { padding: 80px 15px 15px 15px; }
+
+.content { padding: 110px 15px 15px 15px; }
 a:link, a:active, a:visited { color: #5698ae; text-decoration: none;}
 a:hover {color: #4ba9af; text-decoration: underline;}
 h1, h2, h3, h4, h5, h6 { color: #d32cf1; }
@@ -17,9 +22,10 @@ h1, h2, h3, h4, h5, h6 { color: #d32cf1; }
 
 .center-vertical { display: flex; justify-content: center; align-items: center; }
 
-/************************************************************************/
-/********************************* TABS *********************************/
-/************************************************************************/
+
+
+/* TABS
+-------------------------------------------------- */
 
 .tab-button-group { overflow: hidden; }
 .tab-button {
@@ -43,11 +49,11 @@ div.tabSection { float: none; margin: 10px 0 25px 0; clear: both; }
 
 
 
-/************************************************************************/
-/******************************** BUTTONS *******************************/
-/************************************************************************/
+/* BUTTONS
+-------------------------------------------------- */
 
-.btn {
+.btn, .btn:link, .btn:visited {
+    display: inline-block;
     text-align: center;
     text-decoration: none;
     border: none;
@@ -56,10 +62,11 @@ div.tabSection { float: none; margin: 10px 0 25px 0; clear: both; }
     box-shadow: 2px 2px #41d728;
     padding: 5px 6px;
     background-color: #d32cf1;
-    color: #eee0f7;
+    color: #eee0f7 !important;
+    text-decoration: none !important;
     font-size: 93%;
 }
-.btn:hover, .btn:active { background: #6ebff9; border: none;text-shadow: 0; }
+.btn:hover, .btn:active { background: #6ebff9; border: none;text-shadow: 0; text-decoration: none !important; }
 
 
 .closeBtn {
@@ -78,9 +85,8 @@ div.tabSection { float: none; margin: 10px 0 25px 0; clear: both; }
 
 
 
-/************************************************************************/
-/********************************* FORMS ********************************/
-/************************************************************************/
+/* FORMS
+-------------------------------------------------- */
 
 #status {
     background: #9cc;
@@ -100,9 +106,8 @@ input[type=range] { margin-top: 8px; }
 
 
 
-/************************************************************************/
-/********************************* DATA *********************************/
-/************************************************************************/
+/* DATA
+-------------------------------------------------- */
 
 
 /* table */
