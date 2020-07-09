@@ -6,9 +6,16 @@
 ## Development Versions
 
 
+
+### Version 0.2.22
+
+* Increase monster chance
+* Remove host permission `"*://*/*"` from manifest
+
 ### Version 0.2.21
 
-* Coming soon 
+* Improves authentication
+* Fixes bugs in battles
 
 ### Version 0.2.20
 

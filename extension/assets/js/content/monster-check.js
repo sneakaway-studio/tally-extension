@@ -5,7 +5,7 @@ window.MonsterCheck = (function () {
 	let DEBUG = Debug.ALL.MonsterCheck,
 		highestStage = 0,
 		potential = 0.5, // potential a monster will appear
-		secondsBeforeDelete = 300; // 60 seconds for testing
+		secondsBeforeDelete = 600; // if longer than 10 mins (600 secs) then delete
 
 
 
@@ -53,7 +53,6 @@ window.MonsterCheck = (function () {
 				for (var mid in T.tally_nearby_monsters) {
 					if (T.tally_nearby_monsters.hasOwnProperty(mid)) {
 						// how long has it been since this monster was seen?
-						// if longer than 5 mins (300 secs) then delete
 						let seconds = ((now - T.tally_nearby_monsters[mid].updatedAt) / 1000);
 						if ((seconds) > secondsBeforeDelete) {
 							deleteList.push(MonsterData.dataById[mid].slug);
@@ -175,8 +174,9 @@ window.MonsterCheck = (function () {
 					} else if (r < 0.4) {
 						// random dialogue, but don't change stage
 						distance = "far";
-					} else {
-						// 60%
+					}
+					// set advance - 70%
+					if (r < 0.7) {
 						advance = true;
 					}
 					// additional chance for new players
@@ -192,8 +192,9 @@ window.MonsterCheck = (function () {
 						showDialogueAboutQuantity();
 					} else if (r < 0.4) {
 						distance = "close";
-					} else {
-						// 60%
+					}
+					// set advance - 70%
+					if (r < 0.7) {
 						advance = true;
 					}
 					// additional chance for new players
