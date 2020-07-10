@@ -567,6 +567,8 @@ window.Tally = (function () {
 		Tutorial.play("tutorial1");
 	});
 	$(document).on('click', '.tally_showMoreOptions', function () {
+		// disabled - troubled getting this to work 
+		// TallyMain.openPopup();
 		showMoreOptions();
 	});
 

@@ -192,6 +192,21 @@ window.Listener = (function () {
 					});
 				}
 
+
+				// setBadgeText
+				else if (request.action == "openPopup") {
+					if (DEBUG) console.log("👂🏼 Listener.addListener() openPopup",
+						"sender =", sender,
+						"sender.tab =", sender.tab,
+						"sender.tab.id =", sender.tab.id
+					);
+					openPopup(sender.tab.id);
+					sendResponse({
+						"action": request.action,
+						"message": 1
+					});
+				}
+
 				// openPage
 				else if (request.action == "openPage") {
 					if (request.url)
@@ -355,6 +370,40 @@ window.Listener = (function () {
 			chrome.browserAction.setBadgeText({
 				text: "" + _text
 			});
+		} catch (err) {
+			console.error(err);
+		}
+	}
+
+	// attempt to open options
+	// disabled - troubled getting this to work
+	function openPopup(tabId) {
+		try {
+			let tab = null;
+
+			// if (DEBUG) console.log("👂🏼 Listener.openPopup() [1] tabId =", tabId);
+			//
+			// // get current page
+			// chrome.tabs.query({
+			// 	active: true,
+			// 	currentWindow: true
+			// }, function (tabs) {
+			// 	tab = tabs[0];
+			// 	if (DEBUG) console.log("👂🏼 Listener.openPopup() [1] tab =", tab);
+			//
+			// 	chrome.browserAction.setPopup({
+			// 		tabId: tab.id,
+			// 		popup: "assets/pages/popup/popup.html"
+			// 	});
+			// });
+
+			chrome.browserAction.getPopup({}, function (result) {
+				if (DEBUG) console.log("👂🏼 Listener.getPopup() [1] result =", result);
+				chrome.browserAction.setPopup({
+					popup: result
+				});
+			});
+
 		} catch (err) {
 			console.error(err);
 		}

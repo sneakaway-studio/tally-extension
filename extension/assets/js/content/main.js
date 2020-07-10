@@ -329,7 +329,20 @@ window.TallyMain = (function () {
 		}
 	}
 
-
+	/**
+	 *	Open Popup // disabled - troubled getting this to work
+	 */
+	function openPopup() {
+		try {
+			chrome.runtime.sendMessage({
+				'action': 'openPopup'
+			}, function (response) {
+				console.log("🧰 TallyMain.openPopup() response =", response);
+			});
+		} catch (err) {
+			console.error(err);
+		}
+	}
 
 
 
@@ -338,6 +351,7 @@ window.TallyMain = (function () {
 	return {
 		savePageMode: savePageMode,
 		contentStartChecks: contentStartChecks,
-		startGameOnPage: startGameOnPage
+		startGameOnPage: startGameOnPage,
+		openPopup: openPopup
 	};
 }());
