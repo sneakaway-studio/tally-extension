@@ -211,7 +211,7 @@ window.Dialogue = (function () {
 	 */
 	function showInstant(dialogue) {
 		try {
-			if (DEBUG) console.log("💬 Dialogue.showInstant()", dialogue);
+			// if (DEBUG) console.log("💬 Dialogue.showInstant()", dialogue);
 			// empty queue first...
 			emptyTheQueue();
 			// then add this dialogue to end of _queue

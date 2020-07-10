@@ -521,7 +521,7 @@ window.Tally = (function () {
 				// build string and show
 				let str = "Want to hear <a class='tally tally_showStory1'>my story</a>,<br>" +
 					" see a <a class='tally tally_showTutorial1'>game tutorial</a>,<br> " +
-					"or view <a class='tally tally_showMoreOptions'>options</a>?";
+					"or <a class='tally tally_showMoreOptions'>something else</a>?";
 				Dialogue.showData({
 					"text": str,
 					"mood": "happy"
@@ -567,7 +567,7 @@ window.Tally = (function () {
 		Tutorial.play("tutorial1");
 	});
 	$(document).on('click', '.tally_showMoreOptions', function () {
-		// disabled - troubled getting this to work 
+		// disabled - troubled getting this to work
 		// TallyMain.openPopup();
 		showMoreOptions();
 	});
