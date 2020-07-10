@@ -140,10 +140,17 @@
         "run_at": "document_end"
     }],
     "permissions": [
+
+        "https://www.google-analytics.com/*",
+        "http://localhost/*",
+        "http://127.0.0.1/*",
+        "https://127.0.0.1/*",
+        "https://tallysavestheinternet.com/*",
+        "https://*.tallysavestheinternet.com/*",
+
         "activeTab",
         "storage",
-        "management",
-        "https://www.google-analytics.com/"
+        "management"
     ],
     "web_accessible_resources": [
         "*.svg", "*.png",
