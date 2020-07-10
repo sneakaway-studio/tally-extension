@@ -37,7 +37,7 @@ Learn more at [tallysavestheinternet.com](https://tallysavestheinternet.com).
 
 ### Other notes
 
-* [Development](DEVELOPMENT.md)
+* [Extension Development](DEVELOPMENT.md)
 * [Changelog](CHANGELOG.md)
 
 

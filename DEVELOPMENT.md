@@ -28,7 +28,9 @@ General information and references for cross-browser extension development
 
 1. Change `T.options.hotreload` to `false` (prevents `hot-reload.js` from running)
 2. Change `T.options.localhost` to `false` (so extension uses production server)
-3. Chrome: Zip `extension/` directory. Firefox: Zip only files *inside* extension directory (`assets/` and `manifest.json`)
+3. Zip the files
+* Chrome: Zip `extension/` directory
+* Firefox: Zip only files *inside* extension directory (`assets/` and `manifest.json`)
 4. Rename extension zip file and upload respective web stores
 
 
@@ -41,8 +43,41 @@ General information and references for cross-browser extension development
 * Brave - uses Chrome Web Store version
 
 
+## Platform References & Notes
 
-### Notes on cross-browser compatibility
+
+
+### Chrome Browser
+
+* [Download](https://www.google.com/chrome/)
+
+
+### Chromium Browser
+
+* [Download](https://www.chromium.org/getting-involved/download-chromium)
+
+
+
+### Firefox Browser
+
+* [Addons Store](https://addons.mozilla.org/en-US/firefox/)
+* [Developer Hub](https://addons.mozilla.org/en-US/developers/)
+* [Documentation](https://extensionworkshop.com/)
+
+
+### Opera Browser
+
+* Based on Chromium browser
+* [Developer portal](https://addons.opera.com/developer/)
+
+
+### Brave Browser
+
+* [Based on Chromium browser](https://support.brave.com/hc/en-us/articles/360017909112-How-can-I-add-extensions-to-Brave- )
+
+
+
+### Cross-browser compatibility
 
 * [Porting a Google Chrome extension](https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/Porting_a_Google_Chrome_extension)
 * [Mozilla > Chrome incompatibilities](https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/Chrome_incompatibilities)
