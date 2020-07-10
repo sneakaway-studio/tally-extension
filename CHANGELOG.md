@@ -7,10 +7,11 @@
 
 
 
-### Version 0.2.22
+### Version 0.3.0
 
 * Increase monster chance
-* Remove host permission `"*://*/*"` from manifest
+* Remove broad host permission `"*://*/*"` from manifest
+* Start using regular cookies
 
 ### Version 0.2.21
 
