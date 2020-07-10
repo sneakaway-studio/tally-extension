@@ -170,7 +170,7 @@ window.TallyMain = (function () {
 			// NOT LOGGED IN OR NO ACCOUNT
 			// - no account or did not validate;
 			// - tally can still point to trackers, prompt for login (assuming server is online), save in bg
-			else if (T.tally_meta.userLoggedIn) {
+			if (T.tally_meta.userLoggedIn) {
 				if (DEBUG) console.log(log + "T.tally_meta.userLoggedIn =", T.tally_meta.userLoggedIn);
 				mode.loggedIn = true;
 			}
@@ -218,7 +218,7 @@ window.TallyMain = (function () {
 
 			// ACTIVE
 			// - background, login, server, and everything else (like the above) is good, let's roll
-			if (mode.notActive === false && mode.serverOnline === true && mode.loggedIn === false) {
+			if (mode.notActive === false && mode.serverOnline === true && mode.loggedIn === true) {
 				if (DEBUG) console.log(log + "All is good, setting mode.active = 1");
 				mode.active = true;
 			}

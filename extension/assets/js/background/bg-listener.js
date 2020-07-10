@@ -225,7 +225,7 @@ window.Listener = (function () {
 							if (DEBUG) console.log("👂🏼 Listener.addListener() > resetTallyUserFromServer [2.2] ", result);
 
 							// force reset
-							_tally_meta.userLoggedIn = 1;
+							_tally_meta.userLoggedIn = true;
 							store("tally_meta", _tally_meta);
 
 							// send response with latest
@@ -294,7 +294,7 @@ window.Listener = (function () {
 								store("tally_user", result);
 							} else {
 								// else update tally_meta
-								_tally_meta.userLoggedIn = 0;
+								_tally_meta.userLoggedIn = false;
 							}
 
 							// reply to contentscript with updated T.tally_user

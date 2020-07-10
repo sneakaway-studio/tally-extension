@@ -237,7 +237,7 @@ window.Install = (function () {
 					date: moment().format(),
 					prompts: 0 // number prompts given to user
 				},
-				userLoggedIn: 0,
+				userLoggedIn: false,
 				userOnline: navigator.onLine,
 				server: {
 					lastChecked: 0,

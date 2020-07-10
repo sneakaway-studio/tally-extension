@@ -105,12 +105,12 @@ window.Background = (function () {
 		if (!DEBUG) return;
 		// make string
 		let line = "";
-		for (let i = 0; i < 50; i++) {
+		for (let i = 0; i < 30; i++) {
 			line += char;
 		}
-		if (pos == "before") console.log("");
+		if (pos == "before") console.log("\n");
 		console.log(line + " " + title + " " + line);
-		if (pos == "after") console.log("");
+		if (pos == "after") console.log("\n");
 	}
 
 

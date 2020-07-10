@@ -70,16 +70,16 @@ window.Server = (function () {
 					// merge attack data from server with T.tally_user data properties
 					result.attacks = Server.mergeAttackDataFromServer(result.attacks);
 					// update account status
-					_tally_meta.userLoggedIn = 1;
+					_tally_meta.userLoggedIn = true;
 				} else {
 					if (DEBUG) console.log("📟 Server.getTallyUser() DONE result.username = %c" + JSON.stringify(result.username), Debug.styles.redbg);
 					// update account status
-					_tally_meta.userLoggedIn = 0;
+					_tally_meta.userLoggedIn = false;
 				}
 			}).fail(error => {
-				if (DEBUG) console.error("📟 Server.getTallyUser() FAIL", JSON.stringify(error));
+				if (DEBUG) console.error("📟 Server.getTallyUser() FAIL", this.url, JSON.stringify(error));
 				// update account status
-				_tally_meta.userLoggedIn = 0;
+				_tally_meta.userLoggedIn = false;
 				store("tally_meta", _tally_meta);
 				// server might not be online
 				checkIfOnline();
