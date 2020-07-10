@@ -40,18 +40,37 @@ const watchChanges = (dir, lastTimestamp) => {
 			setTimeout(() => watchChanges(dir, timestamp), 1000);
 		} else {
 			if (!document.location.href.includes("docs.google.com")) {
-                if (T.options.hotreload){
-                    console.log(T.options, "RELOADING!!!!");
-                    reload();
-                }
+				if (T.options.hotreload) {
+					console.log(T.options, "RELOADING!!!!");
+					reload();
+				}
 			}
 		}
 	});
 };
 
 chrome.management.getSelf(self => {
-	//console.log(self);
+	console.log(self);
 	if (self.installType === 'development') {
-		chrome.runtime.getPackageDirectoryEntry(dir => watchChanges(dir));
+        if (browserName() === "Chrome")
+            chrome.runtime.getPackageDirectoryEntry(dir => watchChanges(dir));
 	}
 });
+
+
+
+function browserName() {
+	if ((navigator.userAgent.indexOf("Opera") || navigator.userAgent.indexOf('OPR')) != -1) {
+		return 'Opera';
+	} else if (navigator.userAgent.indexOf("Chrome") != -1) {
+		return 'Chrome';
+	} else if (navigator.userAgent.indexOf("Safari") != -1) {
+		return 'Safari';
+	} else if (navigator.userAgent.indexOf("Firefox") != -1) {
+		return 'Firefox';
+	} else if ((navigator.userAgent.indexOf("MSIE") != -1) || (!!document.documentMode == true)) {
+		return 'IE';
+	} else {
+		return 'unknown';
+	}
+}
