@@ -32,7 +32,7 @@ Learn more at [tallysavestheinternet.com](https://tallysavestheinternet.com).
 
 ### Firefox Development Installation
 
-1. Open Firefox browser and navigate to `about:debugging`
+1. Open Firefox browser and navigate to `about:debugging#/runtime/this-firefox`
 2. Click the "Load Temporary Add-on" button.
 3. Select the directory containing your unpacked extension.
 4. Then select the manifest file.

@@ -20,8 +20,8 @@ var T = (function () {
 			development: {
 				// api: "http://localhost:5000/api",
 				// website: "http://localhost:5000",
-				api: "http://127.0.0.1:5000/api",
-				website: "http://127.0.0.1:5000",
+				api: "https://127.0.0.1/api",
+				website: "https://127.0.0.1",
 			},
 			production: {
 				// api: "https://tallygame.net/api",

@@ -52,7 +52,8 @@ window.Server = (function () {
 	async function getTallyUser() {
 		try {
 			let _tally_meta = store("tally_meta");
-
+			let _url = _tally_meta.api + "/user/getTallyUser"
+			console.log(_url);
 			// return early if !server
 			if (!_tally_meta.server.online) {
 				console.error("📟 Server.getTallyUser() *** SERVER NOT ONLINE ***");
@@ -61,8 +62,9 @@ window.Server = (function () {
 			// go to server to get latest T.tally_user data
 			return $.ajax({
 				type: "GET",
-				url: _tally_meta.api + "/user/getTallyUser",
-				contentType: 'application/json'
+				url: _url,
+				contentType: 'application/json',
+				dataType: 'json', // type of data you expect to receive
 			}).done(result => {
 				// make sure user was returned
 				if (result && result.username && result.message !== 0){
