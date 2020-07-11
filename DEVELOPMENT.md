@@ -29,8 +29,8 @@ General information and references for cross-browser extension development
 1. Change `T.options.hotreload` to `false` (prevents `hot-reload.js` from running)
 2. Change `T.options.localhost` to `false` (so extension uses production server)
 3. Zip the files
-* Chrome: Zip `extension/` directory
-* Firefox: Zip only files *inside* extension directory (`assets/` and `manifest.json`)
+    a. Chrome: Zip `extension/` directory
+    b. Firefox: Zip only files *inside* extension directory (`assets/` and `manifest.json`)
 4. Rename extension zip file and upload respective web stores
 
 
