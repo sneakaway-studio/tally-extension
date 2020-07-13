@@ -294,7 +294,7 @@ window.Listener = (function () {
 						// reply to contentscript with updated T.tally_user
 						sendResponse({
 							"action": request.action,
-							"message": 1,
+							"message": 0,
 							"tally_user": store("tally_user")
 						});
 					} else {

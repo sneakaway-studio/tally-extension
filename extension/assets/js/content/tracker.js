@@ -30,7 +30,7 @@ window.Tracker = (function () {
 			let scripts = document.getElementsByTagName("script");
 			// loop through each script
 			for (let i = 0, l = scripts.length; i < l; i++) {
-				if (DEBUG) console.log(log, "[1] _domain =", _domain, ", script =", scripts[i].src);
+				// if (DEBUG) console.log(log, "[1] _domain =", _domain, ", script =", scripts[i].src);
 
 				// get source and domain of script
 				let found = false,

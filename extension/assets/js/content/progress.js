@@ -246,7 +246,7 @@ window.Progress = (function () {
 			if (T.tally_options.gameMode === "disabled") return;
 
 			if (DEBUG) console.log("🕹️ Progress.createScrollListeners() [1]");
-			
+
 			// on scroll
 			$(window).scroll(function () {
 				// console.log('scroll detected');
@@ -390,9 +390,8 @@ window.Progress = (function () {
 	 */
 	function resetUserAccount() {
 		try {
-			// increment counter
-			let accountResets = update("accountResets", 1, "+");
-			if (DEBUG) console.log("🕹️ Progress.resetUserAccount() -> accountResets =", accountResets);
+			// increment this on server instead
+			if (DEBUG) console.log("🕹️ Progress.resetUserAccount()");
 
 			// called at beginning of page load so add delay before game things (dialogue, sound, etc.)
 			setTimeout(function () {

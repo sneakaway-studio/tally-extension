@@ -18,7 +18,9 @@ window.TallyData = (function () {
 		// interval to watch when pushUpdate() necessary
 		managerInterval = null,
 		// seconds to wait until sending update
-		managerCountdown = 0;
+		managerCountdown = 0,
+		// has page been pushed already? i.e. don't send tags again
+		pageHasBeenPushedToServer = false;
 
 
 	/**
@@ -279,8 +281,15 @@ window.TallyData = (function () {
 
 			// checks before sending the update
 
-			// update time
+			// update and reset time
 			backgroundUpdate.pageData.time = Page.data.time;
+			Page.data.time = 0;
+
+			// don't send tags again
+			if (pageHasBeenPushedToServer)
+				backgroundUpdate.pageData.tags = [];
+
+			pageHasBeenPushedToServer = true;
 
 			// send update to background (which will determine whether to send to server)
 			chrome.runtime.sendMessage({
