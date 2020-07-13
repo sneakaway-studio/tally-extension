@@ -6,6 +6,13 @@
 ## Development Versions
 
 
+### Version 0.3.2
+
+
+### Version 0.3.1
+
+* Fixes issues with server flags, tags, level ups
+* Fixes install init issue
 
 ### Version 0.3.0
 
