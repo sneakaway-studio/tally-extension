@@ -449,13 +449,13 @@ window.Dialogue = (function () {
 	/**
 	 * 	Estimate number of lines for a string
 	 */
-	function stringLines(str = "", measure = 27) {
+	function stringLines(str = "", measure = 26) {
 		try {
 			// if (DEBUG) console.log("💬 Dialogue.stringLines() [1]", str, measure);
 			let lines = 1;
 			// remove html from string count
 			str = FS_String.removeHTML(str);
-			// 28 characters per line * 2
+			// n characters per line * 2
 			if (str.length > 0)
 				// set number of lines based on length of text
 				lines = Math.ceil(str.length / measure);
