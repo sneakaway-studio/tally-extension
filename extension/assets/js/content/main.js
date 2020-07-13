@@ -278,7 +278,7 @@ window.TallyMain = (function () {
 			// Check and show items
 			if (DEBUG) console.log("🧰 TallyMain.startGameOnPage() [4.1] -> Add items");
 
-            // add stats
+			// add stats
 			Tally.addStats();
 			// add disguise
 			Disguise.displayIfTrackerBlocked();
@@ -291,6 +291,8 @@ window.TallyMain = (function () {
 			// start Demo if we are running in demo mode
 			Demo.start();
 
+			// run checks on the page
+			inPageChecks();
 
 			// checks to perform after user has interacted with page
 			setTimeout(function () {
@@ -300,7 +302,7 @@ window.TallyMain = (function () {
 				Progress.check("TallyMain");
 
 				// check last active status and potentially recharge
-				// TallyEvents.checkLastActiveAndRecharge();
+				TallyEvents.checkLastActiveAndRecharge();
 
 				if (DEBUG) console.log("🧰 TallyMain.startGameOnPage() [4.3] -> Check badges");
 				// potentially add badge
@@ -317,17 +319,30 @@ window.TallyMain = (function () {
 
 
 
+		} catch (err) {
+			console.error(err);
+		}
+	}
 
-			// ?
-			// should be done in bg?
+
+
+
+	/**
+	 *	Checks to run in a page (on load or when we get new data from server
+	 */
+	function inPageChecks() {
+		try {
+			if (DEBUG) console.log("🧰 TallyMain.inPageChecks() [5.1] -> Check for serverFlags");
 			// check for, and potentially execute and flags from server (from previous update)
-			// Flag.checkFromServer();
-
+			Flag.checkFromServer();
 
 		} catch (err) {
 			console.error(err);
 		}
 	}
+
+
+
 
 	/**
 	 *	Open Popup // disabled - troubled getting this to work
@@ -352,6 +367,7 @@ window.TallyMain = (function () {
 		savePageMode: savePageMode,
 		contentStartChecks: contentStartChecks,
 		startGameOnPage: startGameOnPage,
+		inPageChecks: inPageChecks,
 		openPopup: openPopup
 	};
 }());

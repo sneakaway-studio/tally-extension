@@ -86,30 +86,30 @@ window.Flag = (function () {
 	 */
 	function checkFromServer() {
 		try {
-			// are there flags?
-			if (!FS_Object.prop(T.tally_user.flags) || FS_Object.isEmpty(T.tally_user.flags)) return;
-			if (DEBUG) console.log("🧰 TallyMain.checkForServerFlags() 🚩", T.tally_user.flags);
-			// address individual flags...
+			// are there serverFlags?
+			if (!FS_Object.prop(T.tally_user.serverFlags) || FS_Object.isEmpty(T.tally_user.serverFlags)) return;
+			if (DEBUG) console.log("🧰 TallyMain.checkForServerFlags() 🚩", T.tally_user.serverFlags);
+			// address individual serverFlags...
 
 			// SERVER SAYS: we have leveled up!
-			if (FS_Object.prop(T.tally_user.flags.levelUp)) {
+			if (FS_Object.prop(T.tally_user.serverFlags.levelUp)) {
 				// make sure we have this flag in GameData
-				if (!FS_Object.prop(GameData.flags.levelUp))
+				if (!FS_Object.prop(GameData.serverFlags.levelUp))
 					return console.warn("Flag does not exist in GameData.");
 				// // update stats
 				// Stats.reset("tally");
 				// tell user
 				setTimeout(function () {
-					Dialogue.showStr(GameData.flags.levelUp.dialogue, GameData.flags.levelUp.mood);
+					Dialogue.showStr(GameData.serverFlags.levelUp.dialogue, GameData.serverFlags.levelUp.mood);
 					// remove flag once handled
-					remove("levelUp");
+					delete T.tally_user.serverFlags.levelUp;
 				}, 300);
 			}
-			// SERVER SAYS: we have received a new attack
-			// might do this locally instead
-			if (FS_Object.prop(T.tally_user.flags.newAttack)) {
-				// remove flag once handled
-			}
+			// // SERVER SAYS: we have received a new attack
+			// // might do this locally instead
+			// if (FS_Object.prop(T.tally_user.serverFlags.newAttack)) {
+			// 	// remove flag once handled
+			// }
 
 		} catch (err) {
 			console.error(err);
@@ -117,26 +117,6 @@ window.Flag = (function () {
 	}
 
 
-	function removeFlag(name) {
-		try {
-			// confirm it exists
-			if (FS_Object.prop(T.tally_user.flags[name])) {
-				// get flag
-				let flag = T.tally_user.flags[name];
-				// mark as deleted
-				flag.status = "delete";
-				// remove it from T.tally_user
-				delete T.tally_user.flags[name];
-				// save in background
-				TallyStorage.saveData("tally_user", T.tally_user, "🧰 TallyMain.removeFlag()");
-				// save in background (and on server)
-				TallyData.queue("itemData", "flags", flag, "🧰 TallyMain.removeFlag()");
-			}
-
-		} catch (err) {
-			console.error(err);
-		}
-	}
 
 
 

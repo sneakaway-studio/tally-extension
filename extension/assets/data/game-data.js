@@ -165,7 +165,7 @@ var GameData = (function() {
 	];
 
 
-	let flags = {
+	let serverFlags = {
 		"levelUp": {
 			"name": "levelUp",
 			"dialogue": "You just leveled up!",
@@ -181,6 +181,6 @@ var GameData = (function() {
 		whitelistScriptDomains: whitelistScriptDomains,
 		clickScore: clickScore,
 		levels: levels,
-		flags: flags
+		serverFlags: serverFlags
 	};
 })();

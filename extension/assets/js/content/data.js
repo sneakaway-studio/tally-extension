@@ -303,6 +303,8 @@ window.TallyData = (function () {
 					// update T.tally_user and T.tally_meta in content
 					T.tally_user = response.tally_user;
 					T.tally_meta = response.tally_meta;
+					// check for level updates, etc.
+					TallyMain.inPageChecks();
 				}
 				// otherwise one of the following may be true
 				// - user may have lost connection
