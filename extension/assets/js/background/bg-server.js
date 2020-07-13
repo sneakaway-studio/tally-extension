@@ -51,9 +51,9 @@ window.Server = (function () {
 	 */
 	async function getTallyUser() {
 		try {
-			let _tally_meta = store("tally_meta");
-			let _url = _tally_meta.api + "/user/getTallyUser"
-			console.log(_url);
+			let _tally_meta = store("tally_meta"),
+				_url = _tally_meta.api + "/user/getTallyUser";
+			// console.log(_url);
 			// return early if !server
 			if (!_tally_meta.server.online) {
 				console.error("📟 Server.getTallyUser() *** SERVER NOT ONLINE ***");
@@ -67,7 +67,7 @@ window.Server = (function () {
 				dataType: 'json', // type of data you expect to receive
 			}).done(result => {
 				// make sure user was returned
-				if (result && result.username && result.message !== 0){
+				if (result && result.username && result.message !== 0) {
 					if (DEBUG) console.log("📟 Server.getTallyUser() DONE result.username = %c" + JSON.stringify(result.username), Debug.styles.greenbg);
 					// merge attack data from server with T.tally_user data properties
 					result.attacks = Server.mergeAttackDataFromServer(result.attacks);
@@ -79,7 +79,7 @@ window.Server = (function () {
 					_tally_meta.userLoggedIn = false;
 				}
 			}).fail(error => {
-				if (DEBUG) console.error("📟 Server.getTallyUser() FAIL", this.url, JSON.stringify(error));
+				if (DEBUG) console.warn("📟 Server.getTallyUser() FAIL", this.url, JSON.stringify(error));
 				// update account status
 				_tally_meta.userLoggedIn = false;
 				store("tally_meta", _tally_meta);

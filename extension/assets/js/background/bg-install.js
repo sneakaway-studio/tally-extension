@@ -125,7 +125,7 @@ window.Install = (function () {
 				// else launch install page
 				chrome.tabs.create({
 					// url: chrome.extension.getURL('assets/pages/startScreen/startScreen.html')
-					url: _tally_meta.website + "/anonyname"
+					url: _tally_meta.website + "/signin"
 				}, function (newTab) {
 					// increment, check # prompts
 					if (++_tally_meta.install.prompts <= 3) {}

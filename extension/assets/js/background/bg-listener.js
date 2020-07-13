@@ -14,14 +14,23 @@ window.Listener = (function () {
 				// console.log("👂🏼 Listener.addListener() onMessage.request =", JSON.stringify(request), sender, sendResponse);
 
 				// needed for several conditions below
-				let _tally_meta = store("tally_meta");
+				let _tally_user = store("tally_user"),
+					_tally_meta = store("tally_meta");
 
 
 				/**
 				 *	A generic server data grabber - currently in use for random urls only
 				 */
 				if (request.action == "getDataFromServer" && request.url) {
-					console.log("👂🏼 Listener.addListener() < getData 1", request.name);
+					// only connect if logged in
+					if (!_tally_meta || !_tally_meta.userLoggedIn) {
+						sendResponse({
+							"action": request.action,
+							"message": 0
+						});
+						return false;
+					}
+					console.log("👂🏼 Listener.addListener() < getData [1]", request.name);
 
 					// (attempt to) get data from server, response to callback
 					$.ajax({
@@ -233,7 +242,7 @@ window.Listener = (function () {
 					if (DEBUG) console.log("👂🏼 Listener.addListener() < resetTallyUserFromServer [1] ");
 
 					// (re)start app to pull in data, run checks, and return control back to content
-					Background.runStartChecks()
+					Background.runInstallChecks()
 						.then(function (result) {
 							if (DEBUG) console.log("👂🏼 Listener.addListener() > resetTallyUserFromServer [2.1] ", result);
 							if (DEBUG) console.log(store("tally_user"));

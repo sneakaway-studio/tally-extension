@@ -13,7 +13,7 @@ window.Background = (function () {
 		try {
 			if (DEBUG) console.log("🧰 Background.onInstalled() -> new (or updated) installation detected");
 			Debug.elapsedTime("Background chrome.runtime.onInstalled() [1]");
-			runStartChecks();
+			runInstallChecks();
 		} catch (err) {
 			console.error(err);
 		}
@@ -21,60 +21,59 @@ window.Background = (function () {
 
 
 	/**
-	 *  2. Run start checks
+	 *  2. Run installation checks
 	 *	- always called on new install or update
 	 * 	- checks for previous install, verifies user, gets latest server data
 	 */
-	async function runStartChecks() {
+	async function runInstallChecks() {
 		try {
-			let log = "🧰 Background.runStartChecks()";
+			let log = "🧰 Background.runInstallChecks()";
 			dataReportHeader(log, "@", "before");
-			Debug.elapsedTime("Background.runStartChecks() [1]");
+			Debug.elapsedTime("Background.runInstallChecks() [1]");
 
-			// return status of this function
-			let status = false;
-			// if T.tally_meta not found, install objects
-			const newInstall = await Install.init();
+			// if T.tally_meta not found, install all objects
+			const promptLogin = await Install.init();
 			// check the version
 			await Install.setVersion();
 			// set server/api production | development
 			await Install.setCurrentAPI();
+
 			// check the API status
 			const serverOnline = await Server.checkIfOnline();
-
+			// if server NOT online ...
+			if (!serverOnline) {
+				console.warn(log, "-> API SERVER NOT ONLINE");
+				return false;
+			}
+			// else continue
+			console.log(log, "-> SERVER ONLINE!");
 			Debug.elapsedTime(log, "[2]");
 
-			// if server online ...
-			if (serverOnline) {
-				console.log(log, "-> SERVER ONLINE!");
-
-				// FIRST ATTEMPT TO GET T.tally_user data from server
-				const tallyUserResponse = await Server.getTallyUser();
-				console.log(log, "-> tallyUserResponse =", tallyUserResponse);
-
-				// if user logged in ...
-				if (tallyUserResponse && tallyUserResponse.username) {
-					console.log(log, "-> RETURN TOP MONSTERS");
-					// now username is stored in T.tally_user and we can pass it to populate monsters
-					const _tally_top_monsters = await Server.returnTopMonsters();
-					// return true to send data back to content
-					status = true;
-				}
-				// user not logged in - because it is a new install
-				else if (newInstall) {
-					console.log(log, "-> NEW INSTALL, LAUNCH START SCREEN");
-					// prompt to install
-					const response = await Install.launchStartScreen();
-				} else {
-					console.log(log, "-> NOT LOGGED IN");
-				}
-			} else {
-				console.error(log, "-> API SERVER NOT ONLINE");
+			// if this is a new install and they aren't already logged-in
+			if (promptLogin) {
+				console.log(log, "-> NEW INSTALL, LAUNCH START SCREEN");
+				// prompt to install
+				const response = await Install.launchStartScreen();
 			}
 
-			// return status
-			dataReportHeader("END " + log, "@", "after");
-			return status;
+
+			// FIRST ATTEMPT TO GET T.tally_user data from server
+			const tallyUserResponse = await Server.getTallyUser();
+			console.log(log, "-> tallyUserResponse =", tallyUserResponse);
+
+			// if user logged in ...
+			if (tallyUserResponse && tallyUserResponse.username) {
+				console.log(log, "-> RETURN TOP MONSTERS");
+				// now username is stored in T.tally_user and we can pass it to populate monsters
+				const _tally_top_monsters = await Server.returnTopMonsters();
+				// return true to send data back to content
+				return true;
+			}
+			// user not logged in - because it is a new install
+			else {
+				console.log(log, "-> NOT LOGGED IN");
+				return false;
+			}
 
 		} catch (err) {
 			console.error(err);
@@ -133,7 +132,7 @@ window.Background = (function () {
 		gameReady: function () {
 			return gameReady;
 		},
-		runStartChecks: runStartChecks,
+		runInstallChecks: runInstallChecks,
 		dataReport: dataReport,
 		dataReportHeader: dataReportHeader
 	};
