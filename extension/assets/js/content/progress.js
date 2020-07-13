@@ -240,8 +240,13 @@ window.Progress = (function () {
 	 */
 	function createScrollListeners() {
 		try {
-			if (DEBUG) console.log("🕹️ Progress.createScrollListeners() [1]");
+			// do not allow offline
+			if (!Page.data.mode.loggedIn) return;
+			// don't allow if mode disabled
+			if (T.tally_options.gameMode === "disabled") return;
 
+			if (DEBUG) console.log("🕹️ Progress.createScrollListeners() [1]");
+			
 			// on scroll
 			$(window).scroll(function () {
 				// console.log('scroll detected');

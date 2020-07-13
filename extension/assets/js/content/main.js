@@ -253,10 +253,6 @@ window.TallyMain = (function () {
 			Progress.createScrollListeners();
 			// create a fresh background update
 			TallyData.createBackgroundUpdate();
-			// add stats
-			Tally.addStats();
-			// add disguise
-			Disguise.displayIfTrackerBlocked();
 
 			// start game on the page
 			startGameOnPage();
@@ -282,6 +278,10 @@ window.TallyMain = (function () {
 			// Check and show items
 			if (DEBUG) console.log("🧰 TallyMain.startGameOnPage() [4.1] -> Add items");
 
+            // add stats
+			Tally.addStats();
+			// add disguise
+			Disguise.displayIfTrackerBlocked();
 			// potentially add a consumable
 			Consumable.randomizer();
 			// update debugger

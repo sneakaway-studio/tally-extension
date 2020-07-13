@@ -19,8 +19,8 @@ window.TallyListeners = (function() {
 	 */
 	function addMainClickEventListener() {
 		try {
-			// allow offline
-			if (Page.data.mode.notActive) return;
+			// do not allow offline
+			if (!Page.data.mode.loggedIn) return;
 			// don't allow if mode disabled
 			if (T.tally_options.gameMode === "disabled") return;
 
