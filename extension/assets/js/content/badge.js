@@ -146,7 +146,7 @@ window.Badge = (function () {
 						// 	badge.currentPoints, ">=", badge.nextPoints + ")");
 
 						// if this is a new badge and we want to jump straight to the highest level
-						badge.nextLevel = Math.round(Math.sqrt(badge.currentPoints / 5.5));
+						badge.nextLevel = Math.round(Math.sqrt(badge.currentPoints / 4.5));
 						// get the level from the nextPoints
 						badge.level = badge.nextLevel || 1;
 						if (1) return award(badge);
@@ -240,7 +240,7 @@ window.Badge = (function () {
 			}
 
 			// if nextLevelFloat received then use it (rounded to nearest 100th)
-			badge.nextLevelFloat = FS_Number.round(nextLevelFloat, 2);
+			badge.nextLevelFloat = FS_Number.round(nextLevelFloat, 4);
 
 			// get rounded level from nextLevelFloat
 			badge.nextLevel = Math.round(badge.nextLevelFloat);
@@ -273,20 +273,21 @@ window.Badge = (function () {
 	 */
 	function nextPointsExp(badge, currentPoints) {
 		try {
-			// if (DEBUG) console.log("\n🏆 Badge.nextPointsExp() badge =", badge);
+			// if (DEBUG) console.log("\n🏆 Badge.nextPointsExp() [1] badge =", badge);
 
 			// only if > 0
-			if (currentPoints <= 0)  {
+			if (currentPoints <= 0) {
 				badge.currentPoints = -1000;
 				return badge;
 			}
 
 			// get the next highest level to compare to
-			badge.nextLevel = Math.round(badge.level + 1) || 1;
+			badge.nextLevel = badge.level + 1;
 
 			// if currentPoints received then use it (rounded to nearest 100th)
 			if (currentPoints > 0) badge.currentPoints = FS_Number.round(currentPoints, 2);
 
+			// if (DEBUG) console.log("🏆 Badge.nextPointsExp() [2] badge =", badge);
 
 			// // first one = (x * 30) * (x / 4) === f(x)=(x * 30) * (x / 4)
 			// nextPoints = Math.round((badge.currentLevel * 30) * (badge.currentLevel / 4));
