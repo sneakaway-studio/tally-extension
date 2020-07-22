@@ -131,7 +131,7 @@ window.Battle = (function() {
 			details.mid = mid;
 			details.monsterLevel = Monster.current().level;
 			details.monsterName = MonsterData.dataById[mid].name + " monster";
-			details.monsterAttacks = AttackData.returnRandomAttacks(3);
+			details.monsterAttacks = AttackData.returnRandomAttacks(4);
 			details.monsterTracker = T.tally_nearby_monsters[mid].tracker.domain;
 			console.log("💥 Battle.start()", "details=", details, mid, T.tally_nearby_monsters[mid]);
 			// rescale

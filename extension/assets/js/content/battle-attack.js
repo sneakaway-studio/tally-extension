@@ -628,6 +628,11 @@ window.BattleAttack = (function() {
 
 			// tell user
 			Dialogue.showStr("You earned the " + attack.name + " " + attack.type + "!", "happy");
+			if (Progress.update("attacksChooserNotify", 1, "+") < 20 && Math.random() > 0.5)
+				Dialogue.showData(Dialogue.getData({
+					category: "attack",
+					subcategory: "reward"
+				}));
 		} catch (err) {
 			console.error(err);
 		}

@@ -15,6 +15,7 @@ window.Progress = (function () {
 		// attacks
 		attacksAwarded: 0,
 		attacksSelected: 0,
+		attacksChooserNotify: 0,
 		// battles
 		battlesFought: 0,
 		battlesWon: 0,
