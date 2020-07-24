@@ -6,7 +6,14 @@
 ## Development Versions
 
 
+### Version 0.3.3
+
+*
+
 ### Version 0.3.2
+
+* Adds new consumables
+* Fixes many small bugs
 
 
 ### Version 0.3.1
