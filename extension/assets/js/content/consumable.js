@@ -30,7 +30,7 @@ window.Consumable = (function () {
 				consumable = ConsumableData.data[slug];
 			}
 			// if only type is set
-			else if (slug && slug !== "") {
+			else if (type && type !== "") {
 				consumable = FS_Object.randomObjProperty(ConsumableData.data);
 				while (consumable.type !== type) {
 					if (++safety > 30) {
@@ -98,7 +98,8 @@ window.Consumable = (function () {
 
 
 			// test
-			create("", "", 10);
+			// create("", "", 10);
+			// create("", "data", 2);
 			return;
 
 
@@ -112,13 +113,13 @@ window.Consumable = (function () {
 			// TYPE TO CREATE?
 
 			// pick random from type
-			if (r < 0.05) create("cookie", "", count);
-			else if (r < 0.06) create("data", "", count);
-			else if (r < 0.07) create("marketing", "", count);
+			if (rType < 0.05) create("cookie", "", count);
+			else if (rType < 0.06) create("data", "", count);
+			else if (rType < 0.07) create("marketing", "", count);
 			// pick random type
-			else if (r < 0.08) create("", "", count);
+			else if (rType < 0.08) create("", "", count);
 			// gameMode === testing
-			else if (r < 0.4 && ["demo", "testing"].includes(T.tally_options.gameMode))
+			else if (rType < 0.4 && ["demo", "testing"].includes(T.tally_options.gameMode))
 				// create("marketing", "", 1);
 				create("cookie", "", 1);
 
