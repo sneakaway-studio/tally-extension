@@ -88,7 +88,7 @@ window.Flag = (function () {
 		try {
 			// are there serverFlags?
 			if (!FS_Object.prop(T.tally_user.serverFlags) || FS_Object.isEmpty(T.tally_user.serverFlags)) return;
-			if (DEBUG) console.log("🧰 TallyMain.checkForServerFlags() 🚩", T.tally_user.serverFlags);
+			if (DEBUG) console.log("🚩 Flag.checkFromServer()", T.tally_user.serverFlags);
 			// address individual serverFlags...
 
 			// SERVER SAYS: we have leveled up!
@@ -105,6 +105,33 @@ window.Flag = (function () {
 					delete T.tally_user.serverFlags.levelUp;
 				}, 300);
 			}
+
+
+			// SERVER SAYS: new version notification
+			if (FS_Object.prop(T.tally_user.serverFlags.versionNotification)) {
+				// if current version isn't the same or higher
+				let versionCompare = FS_Number.compareVersionStrings(T.tally_meta.version,
+					T.tally_user.serverFlags.versionNotification.latestVersion);
+				if (DEBUG) console.log("🚩 Flag.checkFromServer()", "compareVersionStrings()", versionCompare);
+				if (versionCompare < 0) {
+					let r = Math.random();
+					// tell user every third page
+					if (r > 0.075) {
+						setTimeout(function () {
+							Dialogue.showStr(T.tally_user.serverFlags.versionNotification.message, "excited");
+						}, 2000);
+						setTimeout(function () {
+							Dialogue.showStr("Your extension (" + T.tally_meta.version + ") is " +
+								(0 - versionCompare) + " behind the latest. <a href='" + T.tally_meta.website +
+								"/get-tally'>Please update soon</a>.", "excited");
+						}, 2100);
+					}
+				}
+
+
+			}
+
+
 			// // SERVER SAYS: we have received a new attack
 			// // might do this locally instead
 			// if (FS_Object.prop(T.tally_user.serverFlags.newAttack)) {
