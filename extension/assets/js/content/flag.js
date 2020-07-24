@@ -116,7 +116,7 @@ window.Flag = (function () {
 				if (versionCompare < 0) {
 					let r = Math.random();
 					// tell user every third page
-					if (r > 0.075) {
+					if (r > 0.66) {
 						setTimeout(function () {
 							Dialogue.showStr(T.tally_user.serverFlags.versionNotification.message, "excited");
 						}, 2000);
@@ -127,16 +127,23 @@ window.Flag = (function () {
 						}, 2100);
 					}
 				}
+			}
 
+			// SERVER SAYS: special alert
+			if (FS_Object.prop(T.tally_user.serverFlags.alert)) {
+				if (DEBUG) console.log("🚩 Flag.checkFromServer()", "alert()", alert);
 
+				let r = Math.random(),
+					chance = T.tally_user.serverFlags.alert.chance;
+				// tell user every third page
+				if (r > chance) {
+					setTimeout(function () {
+						Dialogue.showStr(T.tally_user.serverFlags.alert.message, "excited");
+					}, 2000);
+				}
 			}
 
 
-			// // SERVER SAYS: we have received a new attack
-			// // might do this locally instead
-			// if (FS_Object.prop(T.tally_user.serverFlags.newAttack)) {
-			// 	// remove flag once handled
-			// }
 
 		} catch (err) {
 			console.error(err);
