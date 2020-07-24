@@ -113,15 +113,15 @@ window.Consumable = (function () {
 			// TYPE TO CREATE?
 
 			// pick random from type
-			if (rType < 0.05) create("cookie", "", count);
-			else if (rType < 0.06) create("data", "", count);
-			else if (rType < 0.07) create("marketing", "", count);
+			if (rType < 0.05) create("", "cookie", count);
+			else if (rType < 0.06) create("", "data", count);
+			else if (rType < 0.07) create("", "marketing", count);
 			// pick random type
 			else if (rType < 0.08) create("", "", count);
 			// gameMode === testing
 			else if (rType < 0.4 && ["demo", "testing"].includes(T.tally_options.gameMode))
 				// create("marketing", "", 1);
-				create("cookie", "", 1);
+				create("", "cookie", 1);
 
 		} catch (err) {
 			console.error(err);
@@ -136,7 +136,7 @@ window.Consumable = (function () {
 			// if (type === "") return;
 
 			if (DEBUG) Debug.dataReportHeader("🍪 Consumable.create()", "#", "before");
-			if (DEBUG) console.log("🍪 Consumable.create()", "type=" + type, "name=" + name, "count=" + count);
+			if (DEBUG) console.log("🍪 Consumable.create()", "slug=" + slug, "type=" + type, "count=" + count);
 
 			// store the consumable
 			let consumable = {};
@@ -180,8 +180,7 @@ window.Consumable = (function () {
 				if (DEBUG) console.log("🍪 Consumable.add()", randomPos, css);
 
 				// html
-				imgStr = chrome.extension.getURL('assets/img/consumables/' +
-					consumables[i].type + "/" + consumables[i].slug + consumables[i].ext);
+				imgStr = chrome.extension.getURL('assets/img/consumables/' + consumables[i].slug + consumables[i].ext);
 				id = 'tally_consumable_' + i;
 				str = "<div data-consumable='" + i + "' class='tally_consumable_inner " + consumables[i].type +
 					"' id='" + id + "' style='" + css + "'>";
