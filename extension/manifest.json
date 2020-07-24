@@ -83,6 +83,8 @@
             "assets/data/dialogue-data.js",
             "assets/data/badges.js",
             "assets/data/badge-data.js",
+            "assets/data/consumables.js",
+            "assets/data/consumable-data.js",
             "assets/data/disguises.js",
             "assets/data/disguises-by-level.js",
             "assets/data/disguise-data.js",

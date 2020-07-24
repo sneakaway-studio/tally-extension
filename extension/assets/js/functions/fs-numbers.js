@@ -42,6 +42,13 @@ window.FS_Number = (function() {
 				console.error(err);
 			}
 		},
+		randomFloatBetween: function(min = 0, max = 0) {
+			try {
+				return Math.random() * (Number(max) - Number(min)) + Number(min);
+			} catch (err) {
+				console.error(err);
+			}
+		},
 		randomIntBetween: function(min, max) {
 			return Math.floor(Math.random() * (max - min + 1) + min);
 		},

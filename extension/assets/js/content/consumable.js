@@ -3,81 +3,77 @@
 /*  CONSUMABLE
  ******************************************************************************/
 
-window.Consumable = (function() {
+window.Consumable = (function () {
 	// PRIVATE
 
 	let DEBUG = Debug.ALL.Consumable,
 		consumables = [],
-		hovered = false,
-		types = {
+		hovered = false
+		;
 
-			// health cookie
-			// data junk
-			// cloud marketing
-			// unicorn incubator
-			// startup incubator
 
-			"cookie": {
-				"health": {
-					"name": "health",
-					"type": "cookie",
-					"ref": "a",
-					"img": "cookie-dots.gif",
-					"val": FS_Number.round(Math.random() * 0.2, 2),
-					"stat": "health",
-					"sound": "happy",
-				},
-				"stamina": {
-					"name": "stamina",
-					"type": "cookie",
-					"ref": "a",
-					"img": "cookie-waffle.gif",
-					"val": FS_Number.round(Math.random() * 0.2, 2),
-					"stat": "stamina",
-					"sound": "happy",
-				},
-				"fortune": {
-					"name": "fortune",
-					"type": "cookie",
-					"ref": "a",
-					"img": "cookie-fortune.gif",
-					"val": FS_Number.round(FS_Number.randomPosNeg(0.2), 2),
-					"stat": randomObjKey(Stats.resetStatsAll),
-					"sound": "cautious",
-				},
-				"bad": {
-					"name": "bad",
-					"type": "cookie",
-					"ref": "a",
-					"img": "cookie-bad.gif",
-					"val": -FS_Number.round(Math.random() * 0.2, 2),
-					"stat": randomObjKey(Stats.resetStatsAll),
-					"sound": "excited",
+
+	/**
+	 *	0. Get consumable or new empty random one (from ConsumableData)
+	 */
+	function get(slug = "", type = "") {
+		try {
+			let consumable = {},
+				safety = 0;
+			// if slug is set
+			if (slug && slug !== "") {
+				consumable = ConsumableData.data[slug];
+			}
+			// if only type is set
+			else if (slug && slug !== "") {
+				consumable = FS_Object.randomObjProperty(ConsumableData.data);
+				while (consumable.type !== type) {
+					if (++safety > 30) {
+						console.log("🧰 TallyMain SAFETY FIRST!");
+						break;
+					}
+					// try again
+					consumable = FS_Object.randomObjProperty(ConsumableData.data);
 				}
-			},
-			"junk": {
-				"data": {
-					"name": "data",
-					"type": "junk",
-					"ref": "some",
-					"img": "junk-data.gif",
-					"val": -FS_Number.round(Math.random() * 0.2, 2),
-					"stat": "stamina",
-					"sound": "cautious",
-				},
-			},
-			"marketing": {
-				"cloud": {
-					"name": "cloud",
-					"type": "marketing",
-					"ref": "some",
-					"img": "marketing-cloud.gif",
-					"val": -FS_Number.round(Math.random() * 0.2, 2),
-					"stat": randomObjKey(Stats.resetStatsAll),
-					"sound": "cautious",
-				},
-			},
-		};
+			}
+			// nothing set
+			else {
+				//select a new random consumable and populate with data
+				consumable = FS_Object.randomObjProperty(ConsumableData.data);
+			}
+
+			// after selecting...
+			consumable.val = Number(consumable.val);
+
+			// SET STAT
+			if (consumable.stat === "r" || consumable.stat === "") {
+				consumable.stat = randomObjKey(Stats.resetStatsAll);
+			}
+			// SET VALUE
+			if (consumable.val == 0 || consumable.val == "") {
+				if (!consumable.min) consumable.min = 0;
+				if (!consumable.max) consumable.max = 0;
+
+				safety = 0;
+				while (consumable.val == 0 || isNaN(consumable.val)) {
+					if (++safety > 30) {
+						console.log("🧰 TallyMain SAFETY FIRST!");
+						break;
+					}
+					consumable.val = FS_Number.round(FS_Number.randomFloatBetween(consumable.min, consumable.max), 4);
+				}
+			}
+
+			// if (DEBUG) console.log('🍪 Consumable.get() consumable =', consumable);
+
+			return consumable;
+		} catch (err) {
+			console.error(err);
+		}
+	}
+
+
+
 
 	/**
 	 *	1. determine if we will generate a consumable on this page
@@ -89,11 +85,17 @@ window.Consumable = (function() {
 			// don't allow if mode disabled or stealth
 			if (T.tally_options.gameMode === "disabled" || T.tally_options.gameMode === "stealth") return;
 
-			let countR = Math.random(), // whether to create a consumable at all
+			let countR = Math.random(), // whether to create a consumable
 				r = Math.random(), // whether to create consumable of type
 				type = "", // default type
 				count = 1, // number to create
 				chosen = false;
+
+
+			// test
+			// create("", "", 10);
+			// return;
+
 
 			// add three on one page every 1000 loads
 			if (countR < 0.001) count = 3;
@@ -102,7 +104,7 @@ window.Consumable = (function() {
 
 			// pick random from type
 			if (r < 0.05) create("cookie", "", count);
-			else if (r < 0.06) create("junk", "", count);
+			else if (r < 0.06) create("data", "", count);
 			else if (r < 0.07) create("marketing", "", count);
 			// pick random type
 			else if (r < 0.08) create("", "", count);
@@ -118,35 +120,27 @@ window.Consumable = (function() {
 	/**
 	 *	2. if so, then make a new one from list
 	 */
-	function create(type = "", name = "", num = 1) {
+	function create(slug = "", type = "", count = 1) {
 		try {
-			// make sure there is a type
-			if (type === "") return;
+			// // make sure there is a type
+			// if (type === "") return;
 
 			if (DEBUG) Debug.dataReportHeader("🍪 Consumable.create()", "#", "before");
-			if (DEBUG) console.log("🍪 Consumable.create()", "type=" + type, "name=" + name, "num=" + num);
+			if (DEBUG) console.log("🍪 Consumable.create()", "type=" + type, "name=" + name, "count=" + count);
 
 			// store the consumable
 			let consumable = {};
-			for (var i = 0; i < num; i++) {
+			for (var i = 0; i < count; i++) {
 
-				// if type and name are set, be specific
-				if (type !== "" && name !== "") consumable = types[type][name];
-				// if only type is set, get random from that type
-				else if (type !== "") consumable = FS_Object.randomObjProperty(types[type]);
-				// if nothing is set, get random
-				else consumable = FS_Object.randomObjProperty(types[randomObjKey(types)]);
+				consumable = get(slug,type);
 
 				// if a consumable was selected push it to array
 				if (consumable != {}) consumables.push(consumable);
 
-				if (DEBUG) console.log("🍪 Consumable.create()", type, i + "/" + num, consumable);
-
-				// testing
-				//consumables.push(types.cookie.fortune);
-				// consumables.push(types.marketing.cloud);
+				if (DEBUG) console.log("🍪 Consumable.create()", type, i + "/" + count, consumable);
 			}
 			if (DEBUG) console.log("🍪 Consumable.create()", consumables);
+			// add all the consumables
 			add();
 		} catch (err) {
 			console.error(err);
@@ -168,13 +162,15 @@ window.Consumable = (function() {
 				/*jshint loopfunc: true */
 				if (DEBUG) console.log("🍪 Consumable.add()", i, consumables[i]);
 
+				if (!consumables[i].ext) continue;
+
 				// new position
 				randomPos = Core.returnRandomPositionFull('', 100, 100, "below-the-fold");
 				css = "left:" + randomPos.x + "px;top:" + randomPos.y + "px;";
 				if (DEBUG) console.log("🍪 Consumable.add()", randomPos, css);
 
 				// html
-				imgStr = chrome.extension.getURL('assets/img/consumables/' + consumables[i].type + "/" + consumables[i].img);
+				imgStr = chrome.extension.getURL('assets/img/consumables/' + consumables[i].type + "/" + consumables[i].slug + consumables[i].ext);
 				id = 'tally_consumable_' + i;
 				str = "<div data-consumable='" + i + "' class='tally_consumable_inner' id='" + id + "' style='" + css + "'>";
 				str += "<img src='" + imgStr + "'";
@@ -186,15 +182,15 @@ window.Consumable = (function() {
 				$('.tally_consumable_wrapper').append(str);
 
 				// add listeners
-				$(document).on("mouseover", "#" + id, function() {
+				$(document).on("mouseover", "#" + id, function () {
 					//if (DEBUG) console.log($(this));
 					hover($(this).attr("data-consumable"));
 				});
-				$(document).on("click", "#" + id, function() {
+				$(document).on("click", "#" + id, function () {
 					// Math.random so gif replays
 					let img = chrome.extension.getURL('assets/img/consumables/consumable-explosion.gif?' + Math.random());
 					$(this).html("<img src='" + img + "'>");
-					setTimeout(function() {
+					setTimeout(function () {
 						// remove
 						$(this).remove();
 					}, 500);
@@ -241,7 +237,7 @@ window.Consumable = (function() {
 			// save in background (and on server)
 			TallyData.queue("itemData", "consumables", consumable, "🍪 Consumables.collect()");
 			// delay then update stats
-			setTimeout(function() {
+			setTimeout(function () {
 				// update stats
 				Stats.updateFromConsumable(consumable);
 				// hide
@@ -281,6 +277,7 @@ window.Consumable = (function() {
 
 	// PUBLIC
 	return {
+		get: get,
 		randomizer: randomizer,
 		add: add,
 	};
