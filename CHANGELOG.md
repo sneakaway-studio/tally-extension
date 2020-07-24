@@ -8,7 +8,8 @@
 
 ### Version 0.3.3
 
-*
+* Improvements to and new consumables
+* Checks to make sure player has latest version
 
 ### Version 0.3.2
 
