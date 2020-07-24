@@ -8,8 +8,13 @@ window.Consumable = (function () {
 
 	let DEBUG = Debug.ALL.Consumable,
 		consumables = [],
-		hovered = false
-		;
+		hovered = false,
+		statsToAffect = [
+			'accuracy',
+			'stamina',
+			'health',
+			'evasion'
+		];
 
 
 
@@ -47,7 +52,7 @@ window.Consumable = (function () {
 
 			// SET STAT
 			if (consumable.stat === "r" || consumable.stat === "") {
-				consumable.stat = randomObjKey(Stats.resetStatsAll);
+				consumable.stat = FS_Object.randomArrayIndex(statsToAffect);
 			}
 			// SET VALUE
 			if (consumable.val == 0 || consumable.val == "") {
@@ -85,22 +90,26 @@ window.Consumable = (function () {
 			// don't allow if mode disabled or stealth
 			if (T.tally_options.gameMode === "disabled" || T.tally_options.gameMode === "stealth") return;
 
-			let countR = Math.random(), // whether to create a consumable
-				r = Math.random(), // whether to create consumable of type
-				type = "", // default type
-				count = 1, // number to create
-				chosen = false;
+			let count = 1, // number to create
+				rCount = Math.random(), // whether to create a consumable
+				type = "", // default type to create
+				rType = Math.random() // whether to create consumable of type
+			;
 
 
 			// test
-			// create("", "", 10);
-			// return;
+			create("", "", 10);
+			return;
 
+
+			// HOW MANY TO CREATE?
 
 			// add three on one page every 1000 loads
-			if (countR < 0.001) count = 3;
+			if (rCount < 0.001) count = 3;
 			// add two on one page every 200 loads
-			else if (countR < 0.005) count = 2;
+			else if (rCount < 0.005) count = 2;
+
+			// TYPE TO CREATE?
 
 			// pick random from type
 			if (r < 0.05) create("cookie", "", count);
@@ -132,7 +141,7 @@ window.Consumable = (function () {
 			let consumable = {};
 			for (var i = 0; i < count; i++) {
 
-				consumable = get(slug,type);
+				consumable = get(slug, type);
 
 				// if a consumable was selected push it to array
 				if (consumable != {}) consumables.push(consumable);
@@ -170,9 +179,11 @@ window.Consumable = (function () {
 				if (DEBUG) console.log("🍪 Consumable.add()", randomPos, css);
 
 				// html
-				imgStr = chrome.extension.getURL('assets/img/consumables/' + consumables[i].type + "/" + consumables[i].slug + consumables[i].ext);
+				imgStr = chrome.extension.getURL('assets/img/consumables/' +
+					consumables[i].type + "/" + consumables[i].slug + consumables[i].ext);
 				id = 'tally_consumable_' + i;
-				str = "<div data-consumable='" + i + "' class='tally_consumable_inner' id='" + id + "' style='" + css + "'>";
+				str = "<div data-consumable='" + i + "' class='tally_consumable_inner " + consumables[i].type +
+					"' id='" + id + "' style='" + css + "'>";
 				str += "<img src='" + imgStr + "'";
 				// make clouds semi-transparent
 				if (consumables[i].name == "cloud") {
@@ -204,9 +215,9 @@ window.Consumable = (function () {
 	/**
 	 * 	4. user hovers over consumable
 	 */
-	function hover(key) {
-		let consumable = consumables[key];
-		//if (DEBUG) console.log("🍪 Consumable.hover()", key, consumable);
+	function hover(index) {
+		let consumable = consumables[index];
+		//if (DEBUG) console.log("🍪 Consumable.hover()", index, consumable);
 		if (!hovered) {
 			// tell them
 			Dialogue.showStr("Oh, " + consumable.ref + " " + consumable.name + " " + consumable.type + "!", consumable.sound);
@@ -225,10 +236,10 @@ window.Consumable = (function () {
 	/**
 	 *	5. user clicks a consumable
 	 */
-	function collect(key) {
+	function collect(index) {
 		try {
-			let consumable = consumables[key];
-			//if (DEBUG) console.log("🍪 Consumable.collect()", key, consumable);
+			let consumable = consumables[index];
+			//if (DEBUG) console.log("🍪 Consumable.collect()", index, consumable);
 			// play sound
 			Sound.playRandomPowerup();
 			// update progress
@@ -241,13 +252,18 @@ window.Consumable = (function () {
 				// update stats
 				Stats.updateFromConsumable(consumable);
 				// hide
-				$('.tally_consumable_wrapper').html("");
+				// $('.tally_consumable_wrapper').html("");
+				// hide one
+				$('.' + consumable.slug).remove();
 			}, 700);
 		} catch (err) {
 			console.error(err);
 		}
 	}
 
+	/**
+	 *	Count all collected consumables
+	 */
 	function count(type = "all") {
 		try {
 			// console.log("🍪 Consumable.count()", type, T.tally_user.consumables);
