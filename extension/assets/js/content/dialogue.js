@@ -64,10 +64,7 @@ window.Dialogue = (function () {
 				}
 			} else {
 				console.error("No dialogue found");
-				dialogueObj = {
-					text: "No dialogue found",
-					mood: "sad",
-				};
+				dialogueObj = false;
 			}
 			return dialogueObj;
 		} catch (err) {

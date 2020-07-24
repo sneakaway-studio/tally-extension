@@ -51,7 +51,7 @@ window.Consumable = (function () {
 			consumable.val = Number(consumable.val);
 
 			// SET STAT
-			if (consumable.stat === "r" || consumable.stat === "") {
+			if (!consumable.stat || consumable.stat === "" || consumable.stat === "r") {
 				consumable.stat = FS_Object.randomArrayIndex(statsToAffect);
 			}
 			// SET VALUE
@@ -100,7 +100,7 @@ window.Consumable = (function () {
 			// test
 			// create("", "", 10);
 			// create("", "data", 2);
-			return;
+			// return;
 
 
 			// HOW MANY TO CREATE?
@@ -222,13 +222,26 @@ window.Consumable = (function () {
 		if (!hovered) {
 			// tell them
 			Dialogue.showStr("Oh, " + consumable.ref + " " + consumable.name + " " + consumable.type + "!", consumable.sound);
-			if (consumable.name == "fortune")
-				Dialogue.showData({
-					"text": "Feeling lucky?",
-					"mood": consumable.sound
-				}, {
+
+			let dia1 = Dialogue.getData({
+				category: "consumable",
+				subcategory: consumable.slug
+			});
+			let dia2 = Dialogue.getData({
+				category: "consumable",
+				subcategory: consumable.type
+			});
+			// if dialogue for slug exists (more specific)
+			if (dia1)
+				Dialogue.showData(dia1, {
 					addIfInProcess: false
 				});
+			// if dialogue for type exists
+			else if (dia2)
+				Dialogue.showData(dia1, {
+					addIfInProcess: false
+				});
+
 		}
 		// only show hover message once
 		hovered = true;
