@@ -21,7 +21,7 @@ window.Flag = (function () {
 			if (T.tally_options.gameMode === "disabled") return;
 
 			// if they are already loggedin then return
-			if (T.tally_meta.userLoggedIn) return;
+			// if (T.tally_meta.userLoggedIn) return;
 
 			// only continue if user is on dashboard
 			if (!Page.data.actions.onDashboard) return;

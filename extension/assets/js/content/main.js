@@ -76,15 +76,16 @@ window.TallyMain = (function () {
 			// check page mode before proceeding
 			savePageMode();
 
-			// are we on the tally website
+
+			// 2.2. Check for Flags (in case we need to pause and restart game with data)
+			if (DEBUG) console.log(log, '[2.2] -> Check for flags');
+
+			// are we on the tally website?
 			Page.data.actions.onTallyWebsite = Page.data.url.includes(T.tally_meta.website) || false;
 			// if so are we on the dashboard?
 			if (Page.data.actions.onTallyWebsite)
 				Page.data.actions.onDashboard = Page.data.url.includes(T.tally_meta.website + "/dashboard") || false;
 
-
-			// 2.2. Check for Flags (in case we need to pause and restart game with data)
-			if (DEBUG) console.log(log, '[2.2] -> Check for flags');
 
 			// if user has just logged into their account on Tally website
 			let dashboardLogin = await Flag.checkForDashboardLogin();
@@ -223,9 +224,8 @@ window.TallyMain = (function () {
 				mode.active = true;
 			}
 
-
-			console.log("Page.data.mode", Page.data.mode);
-			// return to save in Page.data.mode
+			// save in Page.data.mode
+			// console.log("Page.data.mode", Page.data.mode);
 			Page.data.mode = mode;
 			console.log("Page.data.mode", Page.data.mode);
 

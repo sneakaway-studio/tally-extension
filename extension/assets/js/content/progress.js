@@ -344,7 +344,7 @@ window.Progress = (function () {
 			// called at beginning of page load so add delay before game things (dialogue, sound, etc.)
 			setTimeout(function () {
 				// 1. if this is the first time user is logging in
-				if (dashboardLogins < 3 && accountCreatedWelcomeMessage < 3) {
+				if (dashboardLogins < 10 && (accountCreatedWelcomeMessage <= 1 || accountCreatedWelcomeMessage % 3 === 0)) {
 					playGreeting();
 					Dialogue.showData(Dialogue.getData({
 						category: "account",

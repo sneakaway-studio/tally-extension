@@ -90,7 +90,7 @@ window.MonsterCheck = (function () {
 
 			// only proceed if there are trackers
 			if (FS_Object.objLength(Page.data.trackers.found) < 1) {
-				if (DEBUG) console.log(log, "[1] NO TRACKERS ON THIS PAGE - Page.data.trackers" + Page.data.trackers);
+				if (DEBUG) console.log(log, "[1] NO TRACKERS ON THIS PAGE - Page.data.trackers =", Page.data.trackers);
 				// return;
 			}
 			// loop through the tags on the page
