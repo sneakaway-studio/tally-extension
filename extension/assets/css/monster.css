@@ -8,9 +8,7 @@
     position: fixed;
     z-index: 99999999999999;
     height: 300px;
-    /* formerly 400 */
     width: 375px;
-    /* formerly 500 */
     cursor: pointer;
 }
 .tally_monster_sprite_flip {
@@ -24,7 +22,6 @@
     margin: 0 auto;
     width: 100%;
     height: 100%;
-    /* animation: monster_keyframes 0.4s steps(3) infinite; */
 }
 .tally_monster_sprite_inner {
     position: absolute;
@@ -33,14 +30,36 @@
     height: 100%;
     width: 100%;
     background: left center no-repeat;
-    animation: monster_keyframes 0.4s steps(3) infinite;
+    animation: monster_keyframes_300h 0.4s steps(3) infinite;
 }
-@keyframes monster_keyframes {
-    100% {
-        background-position: -1125px;
-        /* formerly 1500 */
-    }
-}
+
+
+
+/* 200 h */
+.monster_sprite_200h { height: 200px; width: 250px; }
+.monster_sprite_200h_anim { animation: monster_keyframes_200h 0.4s steps(3) infinite; }
+@keyframes monster_keyframes_200h { 100% { background-position: -750px; } }
+/* 300 h */
+.monster_sprite_300h { height: 300px; width: 375px; }
+.monster_sprite_300h_anim { animation: monster_keyframes_300h 0.4s steps(3) infinite; }
+@keyframes monster_keyframes_300h { 100% { background-position: -1125px; } }
+/* 400 h */
+.monster_sprite_400h { height: 400px; width: 500px; }
+.monster_sprite_400h_anim { animation: monster_keyframes_400h 0.4s steps(3) infinite; }
+@keyframes monster_keyframes_400h { 100% { background-position: -1500px; } }
+
+
+
+
+
+
+
+
+
+
+
+
+
 /* to display monster animation in dialogue box  */
 .monster_sprite_outer_dialogue {
     z-index: 99999999999999;
