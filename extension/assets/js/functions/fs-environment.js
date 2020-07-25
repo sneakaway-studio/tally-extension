@@ -3,20 +3,28 @@
 var Environment = (function() {
 	// PRIVATE
 
-	function getBrowserName() {
-		// check opera first 
-		if (navigator.userAgent.match(/Opera|OPR\//)) {
-			return "Opera";
-		} else if (navigator.userAgent.indexOf("Chrome") != -1) {
-			return "Chrome";
-		} else if (navigator.userAgent.indexOf("MSIE") != -1) {
-			return "IE";
-		} else if (navigator.userAgent.indexOf("Firefox") != -1) {
-			return "Firefox";
-		} else {
-			return "unknown";
+	async function getBrowserName() {
+		try {
+			// check brave, then opera first
+			if (navigator.brave && await navigator.brave.isBrave()) {
+				return "Brave";
+			} else if (navigator.userAgent.match(/Opera|OPR\//)) {
+				return "Opera";
+			} else if (navigator.userAgent.indexOf("Chrome") != -1) {
+				return "Chrome";
+			} else if (navigator.userAgent.indexOf("MSIE") != -1) {
+				return "IE";
+			} else if (navigator.userAgent.indexOf("Firefox") != -1) {
+				return "Firefox";
+			} else {
+				return false;
+			}
+		} catch (err) {
+			console.error(err);
 		}
 	}
+
+
 	function getBrowserLanguage(){
 		let lang = "";
 		if (navigator.languages.length > 0)
