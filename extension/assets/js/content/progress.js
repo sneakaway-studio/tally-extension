@@ -71,6 +71,8 @@ window.Progress = (function () {
 		trollsDisguisesStolen: 0,
 
 		// tutorials
+		viewOnboardingHowto1: 0,
+		viewOnboardingFaq1: 0,
 		viewTutorial1: 0,
 		viewProfilePage: 0,
 		viewDashboardPage: 0,
@@ -174,26 +176,37 @@ window.Progress = (function () {
 			if (!T.tally_user.progress) return;
 
 
-			////////////////////////////// PAGE: CONTENT //////////////////////////////
+			///////// GENERAL: ONBOARDING /////////////////////////////////////////////
+
+			// NOTE: tutorials increment their own progress
+			if (Page.data.url.includes("/how-to-play") && get("viewOnboardingHowto1") < 2) {
+				Tutorial.play("tutorial","onboardingHowto1");
+			}
+			if (Page.data.url.includes("/faq") && get("viewOnboardingFaq1") < 2) {
+				Tutorial.play("tutorial","onboardingFaq1");
+			}
+
+
+			///////// PAGE: CONTENT ///////////////////////////////////////////////////
 
 			// count any relevant tags on the page
 			pageTagsProgressMatches = countPageTags();
 			// console.log("🕹️ Progress.check() [2]", Page.data.tags.length, pageTagsProgressMatches);
 
-			////////////////////////////// PAGE: ACTIVITY: REFRESH //////////////////////////////
+			///////// PAGE: ACTIVITY: REFRESH ////////////////////////////////////////
 
 			// did user refresh page?
 			if (performance.navigation.type == 1) {
 				update("pageActionRefreshes", 1, "+");
 			}
 
-			////////////////////////////// PAGE: ACTIVITY: SCROLLS //////////////////////////////
+			///////// PAGE: ACTIVITY: SCROLLS ////////////////////////////////////////
 
 			// listeners created below
 
 
 
-			////////////////////////////// ATTACKS //////////////////////////////
+			///////// ATTACKS ///////////////////////////////////////////////////////
 
 			let attacksAwarded = get("attacksAwarded");
 
@@ -221,7 +234,7 @@ window.Progress = (function () {
 			}
 
 
-			////////////////////////////// TROLLS //////////////////////////////
+			///////// TROLLS ////////////////////////////////////////////////////////
 
 
 

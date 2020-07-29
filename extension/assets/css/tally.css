@@ -235,6 +235,10 @@ svg#tally-svg * {
     color: rgba(255,255,255,.7);
 }
 
+#tally_dialogue_outer #tally_dialogue_inner .tally-tutorial-step {
+    color:#d243ec;
+}
+
 
 
 

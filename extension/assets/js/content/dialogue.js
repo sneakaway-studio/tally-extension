@@ -39,6 +39,8 @@ window.Dialogue = (function () {
 			let dialogueObj = {
 				text: "",
 				mood: "",
+				before: "", // show string before text
+				after: "", // show string after text
 				callback: ""
 			};
 
@@ -52,7 +54,7 @@ window.Dialogue = (function () {
 					dialogueObj = FS_Object.randomObjProperty(DialogueData.data[dataReq.category][dataReq.subcategory]);
 				}
 				// else if a category + index
-				else if (dataReq.index){
+				else if (dataReq.index) {
 					// if the category + index combination exists
 					if (FS_Object.prop(DialogueData.data[dataReq.category][dataReq.index])) {
 						// get the specific category + index
@@ -168,7 +170,8 @@ window.Dialogue = (function () {
 	// 			if (!prop(category[subcategoryStr]) || category[subcategoryStr].length < 1) return;
 	// 			// otherwise get a random one
 	// 			let r = Math.floor(Math.random() * category[subcategoryStr].length);
-	// 			if (DEBUG) console.log("💬 Dialogue.get()", "subcategoryStr=" + subcategoryStr + ", category[subcategoryStr]=" + JSON.stringify(category[subcategoryStr]));
+	// 			if (DEBUG) console.log("💬 Dialogue.get()", "subcategoryStr=" + subcategoryStr + ",
+	// 				category[subcategoryStr]=" + JSON.stringify(category[subcategoryStr]));
 	// 			result = category[subcategoryStr][r];
 	// 		}
 	// 		// if there is no subcategory, then get by index
@@ -306,8 +309,12 @@ window.Dialogue = (function () {
 				return;
 			}
 
-			// replace any template strings
+			// replace any template strings {{}}
 			dialogue.text = searchReplaceTemplateStr(dialogue.text);
+
+			// replace any branching links {}
+			dialogue.text = searchAddBranchLinks(dialogue.text);
+
 			// update queueWaitTime
 			queueWaitTime = stringDuration(dialogue.text);
 
@@ -321,8 +328,14 @@ window.Dialogue = (function () {
 				Tutorial.slideshowCallback(dialogue.callback);
 			}
 
+			// in case before and after text aren't included
+			if (!dialogue.before) dialogue.before = "";
+			if (!dialogue.after) dialogue.after = "";
+			// add next link to after
+			dialogue.after = "<span class='tally tally-tutorial-step tally-dialogue-next'>...</span> ";
+
 			// show text
-			$('#tally_dialogue_inner').html(dialogue.text);
+			$('#tally_dialogue_inner').html(dialogue.before + " " + dialogue.text + " " + dialogue.after);
 			// play sound (if exists)
 			if (prop(dialogue.mood)) Sound.playTallyVoice(dialogue);
 
@@ -344,14 +357,16 @@ window.Dialogue = (function () {
 				});
 			} else {
 				// update dialogue box size
-				setDialoguBoxSize(dialogue.text, 0);
+				setDialoguBoxSize(dialogue.before + dialogue.text + dialogue.after, 0);
 			}
 
 
 			// make Tally look at user
 			Tally.stare();
-			// hide after appropriate reading period
+
+			// clear previous timeout
 			clearTimeout(hideTimeout);
+			// and create a new one to hide after appropriate reading period
 			hideTimeout = setTimeout(hide, queueWaitTime);
 		} catch (err) {
 			console.error(err);
@@ -371,7 +386,8 @@ window.Dialogue = (function () {
 			// if image exists then increase size
 			if (imgHeight > 0) {
 				boxHeight = imgHeight;
-				if (DEBUG) console.log("💬 Dialogue.setDialoguBoxSize() [1]", "imgHeight =", imgHeight, "inner =", inner, "outer =", outer);
+				if (DEBUG)
+					console.log("💬 Dialogue.setDialoguBoxSize() [1]", "imgHeight =", imgHeight, "inner =", inner, "outer =", outer);
 			}
 
 			// adjust size of the box
@@ -404,6 +420,8 @@ window.Dialogue = (function () {
 			_active = false;
 			// reset timer
 			clearTimeout(hideTimeout);
+			// hide slide show too in case it was left open
+			Tutorial.slideshowVisible(false);
 		} catch (err) {
 			console.error(err);
 		}
@@ -424,7 +442,10 @@ window.Dialogue = (function () {
 			console.error(err);
 		}
 	}
-
+	// the ... in the dialogue button
+	$(document).on('click', '.tally-dialogue-next', function () {
+		skipToNext();
+	});
 
 
 
@@ -437,13 +458,18 @@ window.Dialogue = (function () {
 	function hide() {
 		try {
 			// return;
-			// if (DEBUG) console.log("💬 Dialogue.hide()", queueWaitTime);
-			$('#tally_dialogue_outer').css({
-				'left': '-500px',
-				'display': 'none',
-				'opacity': 0
-			});
-			dialogueBubbleOpen = false;
+			if (DEBUG) console.log("💬 Dialogue.hide()", queueWaitTime);
+			// only hide bubble if queue is empty
+			if (_queue.length < 1) {
+				$('#tally_dialogue_outer').css({
+					'left': '-500px',
+					'display': 'none',
+					'opacity': 0
+				});
+				dialogueBubbleOpen = false;
+				// hide slide show too in case it was left open
+				Tutorial.slideshowVisible(false);
+			}
 			// release active state
 			active(false);
 		} catch (err) {
@@ -456,6 +482,7 @@ window.Dialogue = (function () {
 	 */
 	function stringLines(str = "", measure = 26) {
 		try {
+			if (!str) return console.warn("💬 Dialogue.stringLines() str == undefined");
 			// if (DEBUG) console.log("💬 Dialogue.stringLines() [1]", str, measure);
 			let lines = 1;
 			// remove html from string count
@@ -496,6 +523,7 @@ window.Dialogue = (function () {
 	// 	showStr(msg);
 	// });
 
+
 	/**
 	 *	Search and replace any template
 	 */
@@ -507,9 +535,10 @@ window.Dialogue = (function () {
 				replace = "";
 			// check for any template replacement matches
 			if (str.indexOf("a {{Monster.current}}") > -1) {
-				find = "Monster.current";
+				find = "a Monster.current";
 				replace = MonsterData.dataById[Monster.current().mid].name;
 				if (FS_String.isVowel(replace[0])) replace = "n " + replace;
+				else replace = "a " + replace;
 			}
 			if (str.indexOf("{{Monster.current}}") > -1) {
 				find = "Monster.current";
@@ -535,8 +564,92 @@ window.Dialogue = (function () {
 	}
 
 
+	/**
+	 *	Search and add any links to branching stories - looks for dialogue {linkText,category,index}
+	 * 	Can transform an of the following
+	 * 	- text: "Want to hear a {joke,joke,joke2}?",
+	 *	- text: "Want to hear a joke? {yes,joke,joke1} or {no,branch,answerNo}",
+	 */
+	function searchAddBranchLinks(str = "") {
+		try {
+			// if it doesn't include two brackets then return
+			if (str === "" || !str.includes('{')) return str;
+			if (DEBUG) console.log("💬 Dialogue.searchAddBranchLinks() [1] str =", str);
 
+			// get matching text in an array
+			let replaceArr = str.match(/{[\w, -]+}/g);
+			if (replaceArr.length < 1) return str; // required
+			if (DEBUG) console.log("💬 Dialogue.searchAddBranchLinks() [2] replaceArr =", replaceArr);
 
+			// loop through the all the strings to replace
+			for (let i = 0; i < replaceArr.length; i++) {
+
+				// remove brackets and create array from results
+				let linkArr = replaceArr[i].replace(/[{}]/g, '').split(",");
+				if (DEBUG) console.log("💬 Dialogue.searchAddBranchLinks() [3]",
+					"replaceArr[i] =", replaceArr[i],
+					"linkArr =", linkArr
+				);
+
+				// get vars
+				let linkText = linkArr[0].trim(),
+					category = linkArr[1].trim(),
+					index = linkArr[2].trim();
+				if (DEBUG) console.log("💬 Dialogue.searchAddBranchLinks() [4]",
+					"linkText =", linkText,
+					"category =", category,
+					"index =", index
+				);
+
+				// wrap it in a link
+				let link = `<a class='tally-dialogue-branch' data-category='${category}' data-index='${index}' href='#'>${linkText}</a>`;
+				if (DEBUG) console.log("💬 Dialogue.searchAddBranchLinks() [5]",
+					"link =", link,
+					"replaceArr[i] =", replaceArr[i]
+				);
+
+				// replace and store in string
+				str = str.replace(replaceArr[i], link);
+
+				// add listener
+				$(document).on('click', '.tally-dialogue-branch', function () {
+					// call the
+					console.log("hello", $(this).data('category'), $(this).data('index'));
+
+					// if a tutorial
+					if ($(this).data('category') === "tutorial") {
+						// empty queue and play
+						Tutorial.reset();
+						Dialogue.emptyTheQueue();
+						Tutorial.play("tutorial",$(this).data('index'));
+					} else if ($(this).data('category') === "joke") {
+						// empty queue and play
+						Tutorial.reset();
+						Dialogue.emptyTheQueue();
+						Tutorial.play("joke",$(this).data('index'));
+					} else if ($(this).data('category') === "branch" && $(this).data('index') === "answerNo") {
+						// empty queue and play
+						Tutorial.reset();
+						Dialogue.emptyTheQueue();
+						Dialogue.showData(Dialogue.getData({
+							category: "branch",
+							subcategory: "answerNo"
+						}), {
+							addIfInProcess: false,
+							instant: true
+						});
+					}
+
+				});
+
+			}
+
+			// return string
+			return str;
+		} catch (err) {
+			console.error(err);
+		}
+	}
 
 
 

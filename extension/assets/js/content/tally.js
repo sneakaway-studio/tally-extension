@@ -534,9 +534,16 @@ window.Tally = (function () {
 				// update progress
 				Progress.update("clickTallyTriple", 1, "+");
 				Dialogue.showData({
-					"text": "A triple click!",
-					"mood": "happy"
+					text: "A triple click!",
+					mood: "happy"
 				}, {
+					instant: true
+				});
+				// pick a random joke 
+				Dialogue.showData(Dialogue.getData({
+					category: "joke",
+					subcategory: "jokePrompt"
+				}), {
 					instant: true
 				});
 			}
@@ -561,10 +568,10 @@ window.Tally = (function () {
 
 	// MENU ITEM LISTENERS
 	$(document).on('click', '.tally_showStory1', function () {
-		Tutorial.play("story1");
+		Tutorial.play("tutorial","story1");
 	});
 	$(document).on('click', '.tally_showTutorial1', function () {
-		Tutorial.play("tutorial1");
+		Tutorial.play("tutorial","tutorial1");
 	});
 	$(document).on('click', '.tally_showMoreOptions', function () {
 		// disabled - troubled getting this to work

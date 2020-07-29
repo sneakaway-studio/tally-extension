@@ -22,11 +22,24 @@ window.Tutorial = (function () {
 			console.error(err);
 		}
 	}
+	/**
+	 *	Reset tutorial - to start a new one
+	 */
+	function reset() {
+		try {
+			_active = false;
+			_sequenceActive = false;
+		} catch (err) {
+			console.error(err);
+		}
+	}
+
+
 
 	/**
 	 *	Add tutorial to Dialogue and play
 	 */
-	function play(which) {
+	function play(category, index) {
 		try {
 			// allow offline
 			if (Page.data.mode.notActive) return;
@@ -34,7 +47,12 @@ window.Tutorial = (function () {
 			if (T.tally_options.gameMode === "disabled" || T.tally_options.gameMode === "stealth") return;
 
 
-			if (DEBUG) console.log("📚 Tutorial.play() [1]", which);
+			if (DEBUG) console.log("📚 Tutorial.play() [1]", index);
+
+			// reset Tutorial
+			reset();
+			// empty the queue
+			Dialogue.emptyTheQueue();
 
 			// set tutorial mode active
 			if (_active) return;
@@ -44,31 +62,27 @@ window.Tutorial = (function () {
 
 			let dialogue = {},
 				step = 1, // start @ step 1
-				count = FS_Object.countKeysRegex(DialogueData.data.tutorial,"story1-")
-				;
-
+				count = FS_Object.countKeysRegex(DialogueData.data[category], index);
 
 
 			// loop through all the dialogue objects for this tutorial and add them
 			while (step > -1) {
 				// store each dialogue obj
 				dialogue = Dialogue.getData({
-					"category": "tutorial",
-					"index": which + "-" + step // e.g. "story1" + "-" + 1
+					"category": category,
+					"index": index + "-" + step // e.g. "story1" + "-" + 1
 				});
-				if (!dialogue){
+				if (!dialogue) {
 					step = -1;
 					break;
 				}
 
 				// add 1/3, 2/3, 3/3 ... to text so players know how long it is
-				dialogue.text = "<span style='color:rgba(255,255,255,.5)'>" + step + "/" + count + "</span> " + dialogue.text;
-
-				// testing
-				if (DEBUG) console.log("📚 Tutorial.play() [2]", which, step, "/", count, dialogue);
+				dialogue.before = "<span class='tally tally-tutorial-step tally-dialogue-next'>" + step + "/" + count + "</span> ";
+				if (DEBUG) console.log("📚 Tutorial.play() [2]", index, step, "/", count, dialogue);
 
 
-				// if (DEBUG) console.log("📚 Tutorial.play() [3]", which, step, "of", count, dialogue);
+				// if (DEBUG) console.log("📚 Tutorial.play() [3]", index, step, "of", count, dialogue);
 
 				// play first dialogue of tutorial, instantly
 				if (step === 1)
@@ -93,7 +107,7 @@ window.Tutorial = (function () {
 			}, 500);
 
 			// mark as true and save
-			Progress.update("play" + FS_String.ucFirst(which), 1, "+");
+			Progress.update("view" + FS_String.ucFirst(index), 1, "+");
 
 		} catch (err) {
 			console.error(err);
@@ -117,6 +131,7 @@ window.Tutorial = (function () {
 			if (callback === "closeSlideshow") {
 				slideshowVisible(false);
 			}
+
 
 			/*  story1
 			 ******************************************************************************/
@@ -150,9 +165,10 @@ window.Tutorial = (function () {
 				frameStr = '<img src="' + chrome.extension.getURL('assets/img/tutorial/monster-battle.gif') + '">';
 			}
 
+
+
 			/*  gameTutorial1
 			 ******************************************************************************/
-
 
 			// if string isn't empty then show it
 			if (frameStr) {
@@ -164,7 +180,7 @@ window.Tutorial = (function () {
 			// otherwise hide the slideshow
 			else {
 				// set sequence back to false
-				setTimeout(function(){
+				setTimeout(function () {
 					// set tutorial sequence active
 					_sequenceActive = false;
 				}, 1000);
@@ -214,6 +230,9 @@ window.Tutorial = (function () {
 
 
 
+
+
+
 	// PUBLIC
 	return {
 		set active(value) {
@@ -231,6 +250,8 @@ window.Tutorial = (function () {
 
 		play: play,
 		slideshowCallback: slideshowCallback,
-		skip: skip
+		slideshowVisible: slideshowVisible,
+		skip: skip,
+		reset: reset
 	};
 }());
