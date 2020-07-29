@@ -22,6 +22,7 @@ window.MonsterCheck = (function () {
 			if (T.tally_options.gameMode === "disabled" || T.tally_options.gameMode === "stealth") return;
 			// don't check on our site
 			if (Page.data.domain == "tallygame.net" || Page.data.domain == "tallysavestheinternet.com") return;
+			if (Page.data.actions.onTallyWebsite) return;
 
 			// set potential based on level
 			if (T.tally_user.level < 5) {
