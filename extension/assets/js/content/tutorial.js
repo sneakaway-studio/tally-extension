@@ -33,53 +33,57 @@ window.Tutorial = (function () {
 			// don't allow if mode disabled or stealth
 			if (T.tally_options.gameMode === "disabled" || T.tally_options.gameMode === "stealth") return;
 
+
 			if (DEBUG) console.log("📚 Tutorial.play() [1]", which);
 
 			// set tutorial mode active
 			if (_active) return;
 			active(true);
 
+
+
 			let dialogue = {},
-				step = 1;
+				step = 1, // start @ step 1
+				count = FS_Object.countKeysRegex(DialogueData.data.tutorial,"story1-")
+				;
+
+
 
 			// loop through all the dialogue objects for this tutorial and add them
 			while (step > -1) {
 				// store each dialogue obj
 				dialogue = Dialogue.getData({
 					"category": "tutorial",
-					"index": which + "-" + step
+					"index": which + "-" + step // e.g. "story1" + "-" + 1
 				});
-
-				// testing
-				if (DEBUG) console.log("📚 Tutorial.play() [2]", step, which, dialogue);
-
-				// check to see if there is more dialogue
-				if (dialogue !== undefined) {
-					// if (DEBUG) console.log("📚 Tutorial.play() [3]", step, which, dialogue);
-
-					// play first dialogue of tutorial, instantly
-					if (step === 1)
-						Dialogue.showData(dialogue, {
-							instant: true
-						});
-					// otherwise add next dialogue to queue
-					else
-						Dialogue.showData(dialogue, {
-							instant: false
-						});
-
-
-				} else {
-					if (DEBUG) console.log("📚 Tutorial.play() [4] NO MORE DIALOGUE");
-
-					// hide slide show and break loop
-					slideshowVisible(false);
+				if (!dialogue){
+					step = -1;
 					break;
 				}
-				step++;
 
-				if (step > 100) {
-					console.error("📚 Tutorial.play() ONLY 100 STEPS ALLOWED");
+				// add 1/3, 2/3, 3/3 ... to text so players know how long it is
+				dialogue.text = "<span style='color:rgba(255,255,255,.5)'>" + step + "/" + count + "</span> " + dialogue.text;
+
+				// testing
+				if (DEBUG) console.log("📚 Tutorial.play() [2]", which, step, "/", count, dialogue);
+
+
+				// if (DEBUG) console.log("📚 Tutorial.play() [3]", which, step, "of", count, dialogue);
+
+				// play first dialogue of tutorial, instantly
+				if (step === 1)
+					Dialogue.showData(dialogue, {
+						instant: true
+					});
+				// otherwise add next dialogue to queue
+				else
+					Dialogue.showData(dialogue, {
+						instant: false
+					});
+
+				// SAFETY FIRST!
+				if (++step > 100) {
+					console.warn("📚 Tutorial.play() SAFETY FIRST!");
 					break;
 				}
 			}

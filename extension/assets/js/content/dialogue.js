@@ -45,17 +45,22 @@ window.Dialogue = (function () {
 			// if a category and it exists
 			if (dataReq.category && FS_Object.prop(DialogueData.data[dataReq.category])) {
 
-				// if a category && subcategory (and the combination exists)
+				// if a category + subcategory (and the combination exists)
 				if (dataReq.subcategory &&
 					FS_Object.prop(DialogueData.data[dataReq.category][dataReq.subcategory])) {
 					// get random cat + subcat
 					dialogueObj = FS_Object.randomObjProperty(DialogueData.data[dataReq.category][dataReq.subcategory]);
 				}
-				// else if a category and index (and the combination exists)
-				else if (dataReq.index &&
-					FS_Object.prop(DialogueData.data[dataReq.category][dataReq.index])) {
-					// get the specific cat + index
-					dialogueObj = DialogueData.data[dataReq.category][dataReq.index];
+				// else if a category + index
+				else if (dataReq.index){
+					// if the category + index combination exists
+					if (FS_Object.prop(DialogueData.data[dataReq.category][dataReq.index])) {
+						// get the specific category + index
+						dialogueObj = DialogueData.data[dataReq.category][dataReq.index];
+					} else {
+						// otherwise return undefined
+						dialogueObj = undefined;
+					}
 				}
 				// else if a category only
 				else {
@@ -77,9 +82,10 @@ window.Dialogue = (function () {
 	 */
 	function showData(dialogueObj, showReq = {}) {
 		try {
-			if (DEBUG) console.log("💬 Dialogue.addData() [1] dialogueObj =",
-				// JSON.stringify(dialogueObj),
-				", showReq = " + JSON.stringify(showReq));
+			if (DEBUG) console.log("💬 Dialogue.showData() [1]",
+				// "dialogueObj =", JSON.stringify(dialogueObj),
+				// ", showReq = " + JSON.stringify(showReq)
+			);
 
 			//  default show request (defines how the dialogue is displayed)
 			let showReqDefaults = {
@@ -93,7 +99,7 @@ window.Dialogue = (function () {
 			// if defined and false, show regardless if Dialogue is already in progress
 			if (FS_Object.prop(showReq.addIfInProcess) && !showReq.addIfInProcess && _queue.length > 0) return;
 			// else add dialogueObj to queue
-			add(dialogueObj);
+			addToQueue(dialogueObj);
 
 		} catch (err) {
 			console.error(err);
@@ -183,7 +189,7 @@ window.Dialogue = (function () {
 	// }
 
 	/**
-	 *	Show dialogue bubble - send object to add()
+	 *	Show dialogue bubble - send object to addToQueue()
 	 */
 	// OLD - MARKED FOR DELETION
 	// function show(dialogue, mood, addIfInProcess = true, instant = false) {
@@ -197,7 +203,7 @@ window.Dialogue = (function () {
 	// 		// don't add if marked false
 	// 		if (!addIfInProcess && _queue.length > 0) return;
 	// 		// else add dialogueObj to queue
-	// 		add(dialogue);
+	// 		addToQueue(dialogue);
 	// 	} catch (err) {
 	// 		console.error(err);
 	// 	}
@@ -231,9 +237,9 @@ window.Dialogue = (function () {
 	/**
 	 *	Add a dialogue object to the queue
 	 */
-	function add(dialogue) {
+	function addToQueue(dialogue) {
 		try {
-			if (DEBUG) console.log("💬 Dialogue.add() [1]", dialogue);
+			if (DEBUG) console.log("💬 Dialogue.addToQueue() [1]", dialogue);
 			if (dialogue.text === "" || dialogue.text === undefined) return; // don't show if there is no text
 			// add wait time for it to display
 			dialogue.wait = stringDuration(dialogue.text);
@@ -305,7 +311,9 @@ window.Dialogue = (function () {
 			// update queueWaitTime
 			queueWaitTime = stringDuration(dialogue.text);
 
-			if (DEBUG) console.log("💬 Dialogue.writeNextInQueue() [2]", dialogue, _queue, _active);
+			if (DEBUG) console.log("💬 Dialogue.writeNextInQueue() [2]", dialogue,
+				// _queue, _active
+			);
 
 			// is there a callback in the dialogue object?
 			if (dialogue.callback) {
@@ -313,7 +321,7 @@ window.Dialogue = (function () {
 				Tutorial.slideshowCallback(dialogue.callback);
 			}
 
-			// add text
+			// show text
 			$('#tally_dialogue_inner').html(dialogue.text);
 			// play sound (if exists)
 			if (prop(dialogue.mood)) Sound.playTallyVoice(dialogue);
@@ -429,7 +437,7 @@ window.Dialogue = (function () {
 	function hide() {
 		try {
 			// return;
-			if (DEBUG) console.log("💬 Dialogue.hide()", queueWaitTime);
+			// if (DEBUG) console.log("💬 Dialogue.hide()", queueWaitTime);
 			$('#tally_dialogue_outer').css({
 				'left': '-500px',
 				'display': 'none',

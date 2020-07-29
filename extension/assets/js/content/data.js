@@ -197,12 +197,14 @@ window.TallyData = (function () {
 	 */
 	function startManager(caller) {
 		try {
-			let log = "💾 TallyData.startManager()";
+			let log = "💾 TallyData.startManager()",
+				managerCountdownInterval = 4,
+				managerCountdownMax = 8;
 
 			// increment time to wait
-			managerCountdown += 5;
+			managerCountdown += managerCountdownInterval;
 			// keep countdown to max
-			if (managerCountdown > 10) managerCountdown = 5;
+			managerCountdown = Math.min(managerCountdown, managerCountdownMax);
 
 			// make sure manager isn't already waiting to send updates
 			if (managerInterval !== null) return console.log("💾 TallyData.manager() IN-PROGRESS",

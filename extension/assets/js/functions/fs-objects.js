@@ -22,6 +22,14 @@ window.FS_Object = (function() {
 	}
 
 	/**
+	 *	Count occurances of string in keys
+	 */
+	function countKeysRegex(obj,str) {
+		// return Object.keys(obj).filter((key) => /${str}/.test(key)).length;
+		return Object.keys(obj).filter((key) => key.match(new RegExp(str, 'g'))).length;
+	}
+
+	/**
 	 *	Return number of properties in an object
 	 */
 	function objLength(obj) {
@@ -63,22 +71,13 @@ window.FS_Object = (function() {
 	// PUBLIC
 	return {
 		prop: prop,
-		objLength: function(obj){
-			return objLength(obj);
-		},
+		objLength: objLength,
 		randomObjKey: randomObjKey,
-		randomObjProperty: function(obj) {
-			return randomObjProperty(obj);
-		},
-		randomArrayIndex: function(arr) {
-			return randomArrayIndex(arr);
-		},
-		lastKeyValue: function(obj) {
-			return lastKeyValue(obj);
-		},
-		isEmpty: function(obj){
-			return isEmpty(obj);
-		}
+		randomObjProperty: randomObjProperty,
+		randomArrayIndex: randomArrayIndex,
+		countKeysRegex: countKeysRegex,
+		lastKeyValue: lastKeyValue,
+		isEmpty: isEmpty
 	};
 })();
 
