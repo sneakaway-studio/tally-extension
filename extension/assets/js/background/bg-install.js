@@ -97,7 +97,8 @@ window.Install = (function () {
 	async function launchStartScreen() {
 		try {
 			// console.trace();
-			let _tally_meta = await store("tally_meta");
+			let _tally_meta = await store("tally_meta"),
+				pageToShow = "/get-anonyname";
 
 			// don't launch if !server
 			if (!_tally_meta.server.online)
@@ -105,7 +106,9 @@ window.Install = (function () {
 
 			// don't launch if they are logged in
 			if (_tally_meta.userLoggedIn)
-				return console.log("🔧 Install.launchStartScreen() 🛑 ALREADY LOGGED IN");
+				// return console.log("🔧 Install.launchStartScreen() 🛑 ALREADY LOGGED IN");
+				// show how to
+				pageToShow = "/how-to-play";
 
 			// get current page
 			chrome.tabs.query({
@@ -125,7 +128,7 @@ window.Install = (function () {
 				// else launch install page
 				chrome.tabs.create({
 					// url: chrome.extension.getURL('assets/pages/startScreen/startScreen.html')
-					url: _tally_meta.website + "/signin"
+					url: _tally_meta.website + pageToShow
 				}, function (newTab) {
 					// increment, check # prompts
 					if (++_tally_meta.install.prompts <= 3) {}

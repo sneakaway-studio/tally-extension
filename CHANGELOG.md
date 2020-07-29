@@ -10,6 +10,7 @@
 
 * Improvements to and new consumables
 * Checks to make sure player has latest version
+* Adds new attack animations and sounds
 
 ### Version 0.3.2
 
