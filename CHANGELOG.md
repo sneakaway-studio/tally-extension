@@ -6,6 +6,10 @@
 ## Development Versions
 
 
+### Version 0.3.4
+
+* New onboarding
+
 ### Version 0.3.3
 
 * Improvements to and new consumables
