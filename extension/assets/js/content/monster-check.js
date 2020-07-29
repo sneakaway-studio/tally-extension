@@ -5,7 +5,7 @@ window.MonsterCheck = (function () {
 	let DEBUG = Debug.ALL.MonsterCheck,
 		highestStage = 0,
 		potential = 0.5, // potential a monster will appear
-		secondsBeforeDelete = 600; // if longer than 10 mins (600 secs) then delete
+		secondsBeforeDelete = 1 * 60 * 60; // seconds to keep a monster in the nearby_monsters queue 
 
 
 

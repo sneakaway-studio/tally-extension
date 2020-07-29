@@ -36,7 +36,6 @@ window.Debug = (function () {
 			MonsterCheck: true,
 			Monster: true,
 
-			Onboarding: true,
 			Page: true,
 			Progress: true,
 
