@@ -8,7 +8,8 @@
 
 ### Version 0.3.4
 
-* New onboarding
+* New onboarding tutorial
+* Adds branching option and improves dialogue, onboarding, and adds jokes!
 
 ### Version 0.3.3
 

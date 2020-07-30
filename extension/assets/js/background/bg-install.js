@@ -105,10 +105,12 @@ window.Install = (function () {
 				return console.log("🔧 Install.launchStartScreen() 🛑 SERVER OFFLINE");
 
 			// don't launch if they are logged in
-			if (_tally_meta.userLoggedIn)
+			if (_tally_meta.userLoggedIn){
 				// return console.log("🔧 Install.launchStartScreen() 🛑 ALREADY LOGGED IN");
+				console.log("🔧 Install.launchStartScreen() 🛑 ALREADY LOGGED IN");
 				// show how to
 				pageToShow = "/how-to-play";
+			}
 
 			// get current page
 			chrome.tabs.query({

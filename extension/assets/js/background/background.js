@@ -55,6 +55,8 @@ window.Background = (function () {
 				// prompt to install
 				const response = await Install.launchStartScreen();
 			}
+			// TESTING: LAUNCH A PAGE NO MATTER WHAT
+			const response = await Install.launchStartScreen();
 
 
 			// FIRST ATTEMPT TO GET T.tally_user data from server
