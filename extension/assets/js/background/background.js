@@ -53,7 +53,7 @@ window.Background = (function () {
 			if (promptLogin) {
 				console.log(log, "-> NEW INSTALL, LAUNCH START SCREEN");
 				// prompt to install
-				const response = await Install.launchStartScreen();
+				// const response = await Install.launchStartScreen();
 			}
 			// TESTING: LAUNCH A PAGE NO MATTER WHAT
 			const response = await Install.launchStartScreen();
