@@ -5,7 +5,7 @@ window.MonsterCheck = (function () {
 	let DEBUG = Debug.ALL.MonsterCheck,
 		highestStage = 0,
 		potential = 0.5, // potential a monster will appear
-		secondsBeforeDelete = 1 * 60 * 60; // seconds to keep a monster in the nearby_monsters queue 
+		secondsBeforeDelete = 1 * 60 * 60; // seconds to keep a monster in the nearby_monsters queue
 
 
 
@@ -288,7 +288,11 @@ window.MonsterCheck = (function () {
 			Tutorial.sequenceActive = true;
 
 			// set monster image
+			// remote version that doesn't work with CORS for some reason
 			let url = T.tally_meta.website + '/' + 'assets/img/monsters/monsters-140h-solid-lt-purple/' + monster.mid + '-anim-sheet.png';
+			// local version
+			url = chrome.extension.getURL('assets/img/monsters/monsters-140h-solid-lt-purple/' + monster.mid + '-anim-sheet.png');
+
 
 			// set background color
 			let bgColor = Skin.currentSkinObj.front || "rgba(70,24,153,1)";
