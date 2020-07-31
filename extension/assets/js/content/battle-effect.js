@@ -223,7 +223,7 @@ window.BattleEffect = (function() {
 			if (prop(attack["animation-name"]) && attack["animation-name"] !== "") file = attack["animation-name"];
 
 			// reference to image file
-			var url = chrome.extension.getURL('assets/img/battles/explosions/' + file + "?a=" + Math.random());
+			var url = chrome.extension.getURL('assets/img/battles/explosions-gifs/' + file + "?a=" + Math.random());
 			// set content to none to reset GIF
 			$('#explosion_sprite_inner').css('background-image', 'none');
 			// set content
