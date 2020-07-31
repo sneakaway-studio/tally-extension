@@ -6,9 +6,13 @@
 ## Development Versions
 
 
-### Version 0.3.5
+### Version 0.3.6
 
 *
+
+### Version 0.3.5
+
+* Adds new attacks, consumables, disguises, dialogue
 
 ### Version 0.3.4
 
