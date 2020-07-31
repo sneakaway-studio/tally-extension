@@ -14,6 +14,18 @@ window.Consumable = (function () {
 			'stamina',
 			'health',
 			'evasion'
+		],
+		types = [
+			"algorithm",
+			"boots",
+			"bug",
+			"cake",
+			"cookie",
+			"data",
+			"marketing",
+			"packet",
+			"pattern",
+			"potion",
 		];
 
 
@@ -90,10 +102,12 @@ window.Consumable = (function () {
 			// don't allow if mode disabled or stealth
 			if (T.tally_options.gameMode === "disabled" || T.tally_options.gameMode === "stealth") return;
 
+			if (DEBUG) console.log('🍪 Consumable.randomizer()');
+
 			let count = 1, // number to create
 				rCount = Math.random(), // whether to create a consumable
 				type = "", // default type to create
-				rType = Math.random() // whether to create consumable of type
+				r = Math.random() // whether to create consumable of type
 			;
 
 
@@ -110,16 +124,17 @@ window.Consumable = (function () {
 			// add two on one page every 200 loads
 			else if (rCount < 0.005) count = 2;
 
-			// TYPE TO CREATE?
+			// SHOULD WE CREATE?
 
-			// pick random from type
-			if (rType < 0.05) create("", "cookie", count);
-			else if (rType < 0.06) create("", "data", count);
-			else if (rType < 0.07) create("", "marketing", count);
-			// pick random type
-			else if (rType < 0.08) create("", "", count);
+			// 8%
+			if (r < 0.08) {
+				// pick random type
+				type = FS_Object.randomArrayIndex(types);
+				// create
+				create("", type, count);
+			}
 			// gameMode === testing
-			else if (rType < 0.4 && ["demo", "testing"].includes(T.tally_options.gameMode))
+			else if (["demo", "testing"].includes(T.tally_options.gameMode))
 				// create("marketing", "", 1);
 				create("", "cookie", 1);
 
