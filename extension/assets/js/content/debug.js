@@ -8,8 +8,8 @@ window.Debug = (function () {
 
 	let DEBUG = true,
 		ALL = {
-			Account: true,
-			Badge: true,
+			Account: false,
+			Badge: false,
 
 			// battles
 			BattleAttack: true,

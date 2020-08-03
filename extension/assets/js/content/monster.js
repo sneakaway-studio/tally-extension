@@ -15,6 +15,29 @@ window.Monster = (function () {
 		secondsBeforeDelete = 300 // 60 seconds for testing
 	;
 
+
+
+	/**
+	 *	Return the monster's tracker
+	 */
+	function setTracker() {
+		try {
+			let tracker = "";
+
+			console.log("👿 Monster.setTracker()",
+				"Page.data.trackers =", Page.data.trackers,
+			);
+			// if there are trackers on the page
+			tracker = FS_Object.randomObjProperty(Page.data.trackers.found) || "";
+
+			return tracker;
+
+		} catch (err) {
+			console.error(err);
+		}
+	}
+
+
 	/**
 	 *	Create a new monster object and return
 	 */
@@ -29,15 +52,11 @@ window.Monster = (function () {
 
 			// make sure we have required data
 			if (!prop(mid) || !prop(_stage) || !prop(MonsterData.dataById[mid])) return;
-			// if there are trackers on the page
-			let tracker = FS_Object.randomObjProperty(Page.data.trackers.found) || "";
-			// only proceed if there are trackers
-			if (tracker == "") {
-				if (DEBUG) console.log(log, "[1] NO TRACKERS ON THIS PAGE - Page.data.trackers" + Page.data.trackers);
-				// return;
-			}
 
-			if (DEBUG) console.log(log, "[2] mid=" + mid, "_stage=" + _stage, MonsterData.dataById[mid]);
+			// set the tracker
+			let tracker = setTracker();
+
+			if (DEBUG) console.log(log, "[1] mid=" + mid, "tracker = " + tracker, "_stage = " + _stage, MonsterData.dataById[mid]);
 
 			T.tally_nearby_monsters[mid] = {
 				"stage": _stage,
@@ -105,17 +124,6 @@ window.Monster = (function () {
 			if (!mid || mid <= 0) {
 				if (DEBUG) console.log('👿 Monster.showOnPage() [1.2] MID NOT VALID', mid);
 				return;
-			}
-
-			// if it doesn't yet have a tracker then try to get one
-			if (T.tally_nearby_monsters[mid].tracker === "")
-				T.tally_nearby_monsters[mid].tracker = FS_Object.randomObjProperty(Page.data.trackers.found) || "";
-			// return if we don't have one
-			if (T.tally_nearby_monsters[mid].tracker === "") {
-				if (DEBUG) console.log('👿 Monster.showOnPage() [1.3] NO TRACKER',
-					"Page.data.trackers =", Page.data.trackers,
-				);
-				// return;
 			}
 
 			// make sure everything has loaded before running

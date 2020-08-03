@@ -224,8 +224,8 @@ window.Battle = (function() {
 
 			// create tracker update object
 			let trackerUpdate = {
-				"name": Battle.details.monsterTracker,
-				"mid": Battle.details.mid,
+				"name": details.monsterTracker,
+				"mid": details.mid,
 				"blocked": 0 // false be default
 			};
 

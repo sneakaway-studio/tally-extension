@@ -100,11 +100,14 @@ window.Install = (function () {
 			let _tally_meta = await store("tally_meta"),
 				pageToShow = "/get-anonyname";
 
+			// don't launch in development
+			if (T.options.localhost) return;
+
 			// don't launch if !server
 			if (!_tally_meta.server.online)
 				return console.log("🔧 Install.launchStartScreen() 🛑 SERVER OFFLINE");
 
-			// don't launch if they are logged in
+			// if they are logged in show how to play
 			if (_tally_meta.userLoggedIn){
 				// return console.log("🔧 Install.launchStartScreen() 🛑 ALREADY LOGGED IN");
 				console.log("🔧 Install.launchStartScreen() 🛑 ALREADY LOGGED IN");
