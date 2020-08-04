@@ -520,7 +520,7 @@ window.Tally = (function () {
 				Progress.update("clickTallyDouble", 1, "+");
 				// build string and show
 				let str = "Want to hear <a class='tally tally_showStory1'>my story</a>,<br>" +
-					" see a <a class='tally tally_showTutorial1'>game tutorial</a>,<br> " +
+					" see a <a class='tally tally_showTutorial1' href='https://youtu.be/RKvw50V02hs' target='_blank'>game tutorial</a>,<br> " +
 					"or <a class='tally tally_showMoreOptions'>something else</a>?";
 				Dialogue.showData({
 					"text": str,
@@ -539,7 +539,7 @@ window.Tally = (function () {
 				}, {
 					instant: true
 				});
-				// pick a random joke 
+				// pick a random joke
 				Dialogue.showData(Dialogue.getData({
 					category: "joke",
 					subcategory: "jokePrompt"
@@ -593,6 +593,7 @@ window.Tally = (function () {
 				"or <a class='tally' id='tally_leaderboard'>leaderboards</a>.<br>" +
 				// promo material
 				"Check out the <a class='tally' id='tally_howToPlay'>how to play page</a>, " +
+				"the <a class='tally' id='tally_faq'>faq</a>, " +
 				"or the <a class='tally' id='tally_gameTrailerBtn'>game trailer</a>. " +
 				// nerd out
 				// "Read our <a class='tally' id='tally_privacyPolicy'>privacy policy</a> " +
@@ -628,6 +629,9 @@ window.Tally = (function () {
 			// web pages
 			$(document).on('click', '#tally_howToPlay', function () {
 				window.open(T.tally_meta.website + "/how-to-play");
+			});
+			$(document).on('click', '#tally_faq', function () {
+				window.open(T.tally_meta.website + "/faq");
 			});
 			$(document).on('click', '#tally_gameTrailerBtn', function () {
 				window.open("https://www.youtube.com/watch?v=xfsbm1cI2uo");

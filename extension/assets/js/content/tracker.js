@@ -256,7 +256,7 @@ window.Tracker = (function () {
 				'action': 'setBadgeText',
 				'data': data
 			}, function (response) {
-				console.log("🕷️ Tracker.setBadgeText() response =", response);
+				if (DEBUG) console.log("🕷️ Tracker.setBadgeText() response =", response);
 			});
 		} catch (err) {
 			console.error(err);

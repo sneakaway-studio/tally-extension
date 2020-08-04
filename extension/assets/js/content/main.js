@@ -227,7 +227,7 @@ window.TallyMain = (function () {
 			// save in Page.data.mode
 			// console.log("Page.data.mode", Page.data.mode);
 			Page.data.mode = mode;
-			console.log("Page.data.mode", Page.data.mode);
+			if (DEBUG) console.log("Page.data.mode", Page.data.mode);
 
 		} catch (err) {
 			console.error(err);

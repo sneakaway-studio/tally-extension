@@ -70,7 +70,7 @@ window.Stats = (function() {
 			if (who == "tally"){
 				allLevels.tally = T.tally_user.level || 1;
 			} else if (who == "monster"){
-				allLevels.monster = Monster.current().level || 1; 
+				allLevels.monster = Monster.current().level || 1;
 			}
 
 			// get level
@@ -119,7 +119,7 @@ window.Stats = (function() {
 			// don't allow if mode disabled
 			if (T.tally_options.gameMode === "disabled") return;
 
-			console.log("📋 Stats.reset()", who, JSON.stringify(allStats[who]), JSON.stringify(T.tally_stats));
+			if (DEBUG) console.log("📋 Stats.reset()", who, JSON.stringify(allStats[who]), JSON.stringify(T.tally_stats));
 
 			init("tally");
 
@@ -134,7 +134,7 @@ window.Stats = (function() {
 				// update display
 				StatsDisplay.updateDisplay('monster');
 
-			console.log("📋 Stats.reset()", who, JSON.stringify(allStats[who]));
+			if (DEBUG) console.log("📋 Stats.reset()", who, JSON.stringify(allStats[who]));
 		} catch (err) {
 			console.error(err);
 		}

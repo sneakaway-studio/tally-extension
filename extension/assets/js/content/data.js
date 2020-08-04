@@ -49,8 +49,10 @@ window.TallyData = (function () {
 			// console.trace();
 
 			// do not proceed if a backgroundUpdate already exists with edits
-			if (backgroundUpdateEdits > 0)
-				return console.log("💾 TallyData.createBackgroundUpdate() backgroundUpdateEdits =", backgroundUpdateEdits);
+			if (backgroundUpdateEdits > 0){
+				if (DEBUG) console.log("💾 TallyData.createBackgroundUpdate() backgroundUpdateEdits =", backgroundUpdateEdits);
+				return;
+			}
 
 			backgroundUpdate = {
 				// the type of update (e.g. "update" | "sync")
@@ -207,10 +209,12 @@ window.TallyData = (function () {
 			managerCountdown = Math.min(managerCountdown, managerCountdownMax);
 
 			// make sure manager isn't already waiting to send updates
-			if (managerInterval !== null) return console.log("💾 TallyData.manager() IN-PROGRESS",
+			if (DEBUG) console.log("💾 TallyData.manager() IN-PROGRESS",
 				"managerCountdown =", managerCountdown,
 				"managerInterval =", managerInterval
 			);
+			if (managerInterval !== null) return;
+
 
 			// if (DEBUG) console.log("💾 TallyData.startManager() CHECKING FOR UPDATE");
 
