@@ -43,8 +43,8 @@ window.Tracker = (function () {
 					domain: Environment.extractRootDomain(scripts[i].src) || ""
 				};
 
-				if (DEBUG) console.log(log, "[1] pageDomain =", pageDomain, ", script =", scripts[i]);
-				if (DEBUG) console.log(log, "[2] script =", script);
+				// if (DEBUG) console.log(log, "[1] pageDomain =", pageDomain, ", script =", scripts[i]);
+				// if (DEBUG) console.log(log, "[2] script =", script);
 
 
 
@@ -57,7 +57,6 @@ window.Tracker = (function () {
 					};
 					break;
 				} else {
-
 
 					// skip if no url or domain or if is whitelisted by user
 					if (script.url === "" || script.domain === "" ||

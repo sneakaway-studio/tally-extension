@@ -3,7 +3,7 @@
 /*  STATS
  ******************************************************************************/
 
-window.Stats = (function() {
+window.Stats = (function () {
 	// PRIVATE
 	let DEBUG = Debug.ALL.Stats,
 		levelMultiplier = 9.5,
@@ -67,15 +67,18 @@ window.Stats = (function() {
 			if (DEBUG) console.log("📋 Stats.init() [1]", who);
 
 			// update levels
-			if (who == "tally"){
+			if (who == "tally") {
 				allLevels.tally = T.tally_user.level || 1;
-			} else if (who == "monster"){
+			} else if (who == "monster") {
 				allLevels.monster = Monster.current().level || 1;
 			}
 
 			// get level
 			let level = allLevels[who];
-			if (!level) return console.log("📋 Stats.reset()", who, level, "NO LEVEL");
+			if (!level) {
+				if (DEBUG) console.log("📋 Stats.reset()", who, level, "NO LEVEL");
+				return;
+			}
 			if (DEBUG) console.log("📋 Stats.init() [2]", who, "level =", level);
 
 			// for each resetStat
@@ -166,7 +169,7 @@ window.Stats = (function() {
 	 */
 	function setVal(who, stat = "", change = null) {
 		try {
-			console.log("📋 Stats.setVal()", who, stat, change);
+			if (DEBUG) console.log("📋 Stats.setVal()", who, stat, change);
 			let newVal = 0,
 				normalized = 0;
 			// should we update the stat by value?
@@ -238,7 +241,7 @@ window.Stats = (function() {
 
 			let who = "tally";
 
-			console.log("📋 Stats.updateFromConsumable() [1]", consumable);
+			if (DEBUG) console.log("📋 Stats.updateFromConsumable() [1]", consumable);
 
 			// save original so we can make up or down sound
 			let originalStatVal = allStats[who][consumable.stat].val;
@@ -266,12 +269,12 @@ window.Stats = (function() {
 			// adjust stat bars
 			//		StatsDisplay.adjustStatsBar("tally", consumable.stat, allStats[who][consumable.stat]);
 			// test
-			console.log("📋 Stats.updateFromConsumable()", consumable, consumable.stat, allStats[who]);
+			if (DEBUG) console.log("📋 Stats.updateFromConsumable()", consumable, consumable.stat, allStats[who]);
 			// if stat is full
 			if (allStats[who][consumable.stat].val >= allStats[who][consumable.stat].max) {
 				Dialogue.showStr("Your " + consumable.stat + " is full!", "happy");
 			} else {
-				setTimeout(function() {
+				setTimeout(function () {
 					// play sound
 					if (originalStatVal < allStats[who][consumable.stat].val) {
 						Sound.playRandomJump();
@@ -282,7 +285,7 @@ window.Stats = (function() {
 					}
 				}, 500);
 
-				setTimeout(function() {
+				setTimeout(function () {
 					$(".stat-blink").removeClass("stat-blink");
 				}, 2000);
 			}
@@ -298,13 +301,13 @@ window.Stats = (function() {
 		resetStatsAll: resetStatsAll,
 		reset: reset,
 		set: set,
-		get: function(who) {
+		get: function (who) {
 			return get(who);
 		},
-		setVal: function(who, stat, change) {
+		setVal: function (who, stat, change) {
 			return setVal(who, stat, change);
 		},
-		getLevel: function(who) {
+		getLevel: function (who) {
 			return getLevel(who);
 		},
 		updateFromConsumable: updateFromConsumable,
