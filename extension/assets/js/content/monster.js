@@ -28,7 +28,7 @@ window.Monster = (function () {
 				"Page.data.trackers =", Page.data.trackers,
 			);
 			// if there are trackers on the page
-			tracker = FS_Object.randomObjProperty(Page.data.trackers.found) || "";
+			tracker = FS_Object.randomObjProperty(Page.data.trackers.found) || "1st-party-tracker";
 
 			return tracker;
 

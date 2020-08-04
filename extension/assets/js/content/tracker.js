@@ -155,6 +155,8 @@ window.Tracker = (function () {
 					"trackerUrl =", trackerUrl
 				);
 
+				if (trackerUrl == "1st-party-tracker") continue; // first party trackers can't be blocked
+
 				// if there is a match and it is in the block list ...
 				if (FS_Object.prop(T.tally_user.trackers[trackerUrl]) && T.tally_user.trackers[trackerUrl].blocked > 0) {
 					if (DEBUG) console.log(log, "[3] ATTEMPT BLOCK",

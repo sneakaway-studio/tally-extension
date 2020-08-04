@@ -447,7 +447,7 @@ window.BattleAttack = (function() {
 				subcategory: dialogue
 			}));
 			// calculate and show award for beating the monster
-			let increase = FS_Number.round(Battle.details.monsterLevel * 10);
+			let increase = 100;
 			// save in background (and on server)
 			TallyData.queue("scoreData", "score", increase);
 			// show in log and tell player they blocked tracker

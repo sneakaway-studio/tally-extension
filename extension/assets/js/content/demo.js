@@ -6,6 +6,13 @@
 window.Demo = (function() {
 	// PRIVATE
 
+
+
+/**
+ * NOTE: BEFORE USING THIS AGAIN THIS MAKE SURE CLICKS ARE BEING COUNTED
+ */
+
+
 	let DEBUG = Debug.ALL.Demo,
 		mode = "off", // "off" | "start" | "countdown"
 		messageStr = "",
