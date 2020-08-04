@@ -25,9 +25,37 @@ $(window).on("beforeunload", function() {
 	}
 });
 
+/**
+ *	Send a denug message to background console
+ */
+function reportToAnalytics(report) {
+	try {
+		// console.log("🗜️ Debug.reportToAnalytics()", caller, str);
+		let msg = {
+			'action': 'reportToAnalytics',
+			'report': report
+		};
+		chrome.runtime.sendMessage(msg, function (response) {
+			console.log("🗜️ Debug.reportToAnalytics() RESPONSE =", JSON.stringify(response));
+		});
+	} catch (err) {
+		console.error(err);
+	}
+}
+
+
 // if user hasn't logged in then show login only
 function init() {
 	try {
+		// send page report
+		reportToAnalytics({
+			type: "event",
+			cat: "ui",
+			action: "popup",
+			label: "",
+			val: 1
+		});
+
 		// show tally image
 		$('.container').css({
 			'background-image': 'url(' + chrome.runtime.getURL("assets/img/tally/tally-logo-clear-600w.png") + ')'
@@ -577,13 +605,13 @@ $(document).on('click', '#bugReportSurveyBtn', function() {
 // show status message
 function showStatus(msg) {
 	try {
-		// Update status to let user know options were saved.
-		var status = document.getElementById("status");
-		status.innerHTML = msg;
-		status.style.display = "block";
+		$("#status").html(msg).css({
+			'display':'block'
+		});
 		setTimeout(function() {
-			status.innerHTML = "";
-			status.style.display = "none";
+			$("#status").html("").css({
+				'display':'none'
+			});
 		}, 1250);
 	} catch (err) {
 		console.error(err);

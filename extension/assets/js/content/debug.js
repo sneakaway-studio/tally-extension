@@ -105,8 +105,32 @@ window.Debug = (function () {
 	}
 
 
+	
+
+
 	/**
 	 *	Send a denug message to background console
+	 */
+	function reportToAnalytics(report) {
+		try {
+			// if (DEBUG) console.log("🗜️ Debug.reportToAnalytics()", caller, str);
+			let msg = {
+				'action': 'reportToAnalytics',
+				'report': report
+			};
+			chrome.runtime.sendMessage(msg, function (response) {
+				if (DEBUG) console.log("🗜️ Debug.reportToAnalytics() RESPONSE =", JSON.stringify(response));
+			});
+		} catch (err) {
+			console.error(err);
+		}
+	}
+
+
+
+
+	/**
+	 *	Send a debug message to background console
 	 */
 	function sendBackgroundDebugMessage(caller, str) {
 		try {
@@ -160,15 +184,15 @@ window.Debug = (function () {
 			$("#tyd").draggable({
 				axis: "y"
 				// ,drag: function () {
-					//if (DEBUG) console.log("🗜️ Debug.add() draggable:drag");
-					// var offset = $(this).offset();
-					// var xPos = offset.left;
-					// var yPos = offset.top - $(window).scrollTop();
-					// T.tally_options.debuggerPosition = [xPos,yPos];
+				//if (DEBUG) console.log("🗜️ Debug.add() draggable:drag");
+				// var offset = $(this).offset();
+				// var xPos = offset.left;
+				// var yPos = offset.top - $(window).scrollTop();
+				// T.tally_options.debuggerPosition = [xPos,yPos];
 				// },
 				// stop: function () {
-					//if (DEBUG) console.log("🗜️ Debug.add() draggable:stop");
-					//TallyStorage.saveData("tally_options",T.tally_options,"tyd.draggable.stop");
+				//if (DEBUG) console.log("🗜️ Debug.add() draggable:stop");
+				//TallyStorage.saveData("tally_options",T.tally_options,"tyd.draggable.stop");
 				// }
 			});
 		} catch (err) {
@@ -337,6 +361,7 @@ window.Debug = (function () {
 		ALL: ALL,
 		setAll: setAll,
 		styles: styles,
+		reportToAnalytics: reportToAnalytics,
 		sendBackgroundDebugMessage: sendBackgroundDebugMessage,
 		dataReportHeader: dataReportHeader,
 		add: add,

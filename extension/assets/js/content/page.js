@@ -128,6 +128,7 @@ window.Page = (function () {
 				contentType: window.document.contentType || "",
 				description: getDescription() || "",
 				domain: Environment.extractRootDomain(document.location.href) || "",
+				host: Environment.extractHostname(document.location.href) || "",
 				h1: getH1() || "",
 				keywords: getKeywords() || "",
 				mode: {},
@@ -164,6 +165,13 @@ window.Page = (function () {
 			if (newData.domain == "youtube.com")
 				// 	addMutationObserver();
 				addTitleChecker();
+
+			// send page report
+			Debug.reportToAnalytics({
+				type: "pageview",
+				url: newData.url,
+				title: newData.title
+			});
 
 			if (DEBUG) console.log(log, newData);
 			// show in background

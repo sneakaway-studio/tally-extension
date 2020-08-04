@@ -46,8 +46,7 @@
             "assets/js/background/bg-install.js",
             "assets/js/background/bg-server.js",
             "assets/js/background/bg-listener.js",
-            "assets/js/background/background.js",
-            "assets/js/background/analytics.js"
+            "assets/js/background/background.js"
         ]
     },
     "content_scripts": [{
@@ -142,7 +141,6 @@
     }],
     "permissions": [
 
-        "https://www.google-analytics.com/*",
         "http://localhost/*",
         "http://127.0.0.1/*",
         "https://127.0.0.1/*",
@@ -160,6 +158,6 @@
         "/assets/*",
         "/assets/sounds/*"
     ],
-    "content_security_policy": "script-src 'self' https://ssl.google-analytics.com; object-src 'self'"
+    "content_security_policy": "script-src 'self'; object-src 'self';"
 
 }

@@ -182,6 +182,7 @@ window.Listener = (function () {
 
 				// receive and log debug messages from content
 				else if (request.action == "sendBackgroundDebugMessage") {
+
 					Background.dataReportHeader("🗜️ " + request.caller, "<", "before");
 					if (DEBUG) console.log("url =", request.str);
 					Background.dataReportHeader("/ 🗜️ " + request.caller, ">", "after");
@@ -190,6 +191,24 @@ window.Listener = (function () {
 						"message": 1
 					});
 				}
+
+
+				// receive and log debug messages from content
+				else if (request.action == "reportToAnalytics") {
+
+					reportToAnalytics(request.report);
+
+					sendResponse({
+						"action": request.action,
+						"message": 1
+					});
+
+					// required so chrome knows this is asynchronous
+					return true;
+				}
+
+
+
 
 
 				// setBadgeText
@@ -363,6 +382,52 @@ window.Listener = (function () {
 			}
 		}
 	);
+
+
+
+
+
+
+	/**
+	 *  Send event to Google Analytics
+	 * 	https://blog.mozilla.org/addons/2016/05/31/using-google-analytics-in-extensions/
+	 * 	https://developers.google.com/analytics/devguides/collection/protocol/v1/devguide
+	 */
+	function reportToAnalytics(obj) {
+		try {
+
+			let request = new XMLHttpRequest();
+			let message =
+				// required
+				"v=1" + // version
+				"&tid=" + "UA-102267502-5" + // Tracking ID / Property ID
+				"&cid= " + "tally-extension" + // Anonymous Client ID
+				"&aip=1" + // anonymize the sender IP
+				"&ds=extension"; // data source
+
+			if (obj.type == "pageview") {
+				message += "&t=pageview" + // Hit Type (required)
+					"&dl=" + obj.url + // Document url.
+					"&dt=" + obj.title; // e.g. Home
+			}
+			if (obj.type == "event") {
+				message += "&t=event" + // Event hit type (required)
+					"&ec=" + obj.cat + // Event Category. Required. e.g. video
+					"&ea=" + obj.action + // Event Action. Required. e.g. play
+					"&el=" + obj.label + // Event label e.g. holiday
+					"&ev=300" + obj.val; // Event value.
+			}
+
+
+
+			request.open("POST", "https://www.google-analytics.com/collect", true);
+			request.send(message);
+
+
+		} catch (err) {
+			console.error(err);
+		}
+	}
 
 
 
