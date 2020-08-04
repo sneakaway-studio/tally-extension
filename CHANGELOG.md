@@ -6,9 +6,13 @@
 ## Development Versions
 
 
+### Version 0.3.8
+
+
 ### Version 0.3.7
 
-*
+* Official public release
+* Improves tracker finding and blocking
 
 ### Version 0.3.5
 
