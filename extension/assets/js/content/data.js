@@ -203,6 +203,14 @@ window.TallyData = (function () {
 				managerCountdownInterval = 4,
 				managerCountdownMax = 8;
 
+			// don't send if not online
+			if (!T.tally_meta.userLoggedIn) {
+				if (DEBUG) console.log("💾 TallyData.startManager() [1]",
+					"T.tally_meta.userLoggedIn =", T.tally_meta.userLoggedIn
+				);
+				return false;
+			}
+
 			// increment time to wait
 			managerCountdown += managerCountdownInterval;
 			// keep countdown to max
@@ -273,17 +281,20 @@ window.TallyData = (function () {
 		try {
 			if (DEBUG) Debug.dataReportHeader("💾 < TallyData.pushUpdate() [0] caller = " + caller, "#", "before");
 
+			// don't send if not online
+			if (!T.tally_meta.userLoggedIn) {
+				if (DEBUG) console.log("💾 TallyData.pushUpdate() [1]", backgroundUpdate,
+					// "backgroundUpdateEditors =",backgroundUpdateEditors
+					"T.tally_meta.userLoggedIn =", T.tally_meta.userLoggedIn
+				);
+				return false;
+			}
 			// no need to send if not updated
 			if (backgroundUpdateEdits < 1) return;
 			// do not attempt if currently sending
 			if (backgroundUpdateSending === true) return;
 			// set to true to prevent additional sending
 			backgroundUpdateSending = true;
-
-			if (DEBUG) console.log("💾 TallyData.pushUpdate() [1]", backgroundUpdate,
-				// "backgroundUpdateEditors =",backgroundUpdateEditors
-				"T.tally_meta.userLoggedIn =", T.tally_meta.userLoggedIn
-			);
 
 			// checks before sending the update
 
@@ -305,12 +316,13 @@ window.TallyData = (function () {
 				if (DEBUG) console.log('💾 > TallyData.pushUpdate() [2] RESPONSE =', response);
 
 				// if update was successful
-				if (response.message === 1 || response.tally_user.username) {
+				if (response.message && response.tally_user.username) {
 					// update T.tally_user and T.tally_meta in content
 					T.tally_user = response.tally_user;
 					T.tally_meta = response.tally_meta;
 					// check for level updates, etc.
 					TallyMain.inPageChecks();
+					return true;
 				}
 				// otherwise one of the following may be true
 				// - user may have lost connection
@@ -318,9 +330,11 @@ window.TallyData = (function () {
 				// - user reset their data
 				// - player switched user accounts (probably in development only)
 				else {
-					// re-check Page.data.mode
+					// these two should be enough to halt the game on that page anyway
 					TallyMain.savePageMode();
+					T.tally_meta = response.tally_meta;
 					// Stats.reset("tally");
+					return false;
 				}
 
 

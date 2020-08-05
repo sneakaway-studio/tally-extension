@@ -24,7 +24,7 @@ window.Monster = (function () {
 		try {
 			let tracker = "";
 
-			console.log("👿 Monster.setTracker()",
+			if (DEBUG) console.log("👿 Monster.setTracker()",
 				"Page.data.trackers =", Page.data.trackers,
 			);
 			// if there are trackers on the page

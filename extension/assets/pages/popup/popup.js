@@ -577,7 +577,7 @@ $(document).on('click', '#editProfileBtn', function() {
 	window.open(_tally_meta.website + "/dashboard");
 });
 $(document).on('click', '#viewLeaderboardsBtn', function() {
-	window.open(_tally_meta.website + "/leaderboards");
+	window.open(_tally_meta.website + "/leaderboard");
 });
 $(document).on('click', '#howToPlayBtn', function() {
 	window.open(_tally_meta.website + "/how-to-play");

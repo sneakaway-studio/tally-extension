@@ -4,7 +4,7 @@ window.Background = (function () {
 	// PRIVATE
 
 	let DEBUG = true,
-		gameReady = false;
+		gameStatus = {};
 
 	/**
 	 *  1. Listen for first install, or updated (code or from web store) installation
@@ -24,6 +24,16 @@ window.Background = (function () {
 	 *  2. Run installation checks
 	 *	- always called on new install or update
 	 * 	- checks for previous install, verifies user, gets latest server data
+	 * 	- order of situations to account for
+	 * 		2.1. cleanInstall
+	 * 				= true	-> no previous data found, install objects
+	 * 				= false	-> previous data found, don't install objects
+	 * 		2.2. serverOnline
+	 * 				= false	-> save in meta then stop
+	 * 				= true	-> save, then continue
+	 * 		2.3. userOnline
+	 * 				= false -> not logged-in, open login window
+	 * 				= true  -> save data, then continue
 	 */
 	async function runInstallChecks() {
 		try {
@@ -31,51 +41,57 @@ window.Background = (function () {
 			dataReportHeader(log, "@", "before");
 			Debug.elapsedTime("Background.runInstallChecks() [1]");
 
+			// 2.1 cleanInstall
+
 			// if T.tally_meta not found, install all objects
-			const promptLogin = await Install.init();
-			// check the version
+			const cleanInstall = await Install.init();
+			console.log(log, "[2.1] cleanInstall =", cleanInstall);
+			// set the version
 			await Install.setVersion();
 			// set server/api production | development
 			await Install.setCurrentAPI();
 
+			// 2.2 serverOnline
+
 			// check the API status
 			const serverOnline = await Server.checkIfOnline();
+			console.log(log, "[2.2] serverOnline =", serverOnline);
 			// if server NOT online ...
 			if (!serverOnline) {
-				console.warn(log, "-> API SERVER NOT ONLINE");
-				return false;
+				console.warn(log, "[2.2] API SERVER NOT ONLINE");
+				return false; // stop
 			}
-			// else continue
-			console.log(log, "-> SERVER ONLINE!");
-			Debug.elapsedTime(log, "[2]");
 
-			// if this is a new install and they aren't already logged-in
-			if (promptLogin) {
-				console.log(log, "-> NEW INSTALL, LAUNCH START SCREEN");
-				// prompt to install
-				// const response = await Install.launchStartScreen();
+			// 2.3 userOnline
+
+			// server is online so check if user logged in
+			// - this is the FIRST attempt to get T.tally_user data from server
+			// - if they are then this function writes over local storage objects
+			const userOnline = await Server.getTallyUser();
+			console.log(log, "[2.3] userOnline =", userOnline);
+			if (!userOnline) {
+				// if user not logged in we should prompt
+				console.log(log, "[2.3] NOT LOGGED IN");
+
+				// if clean install then definitely open start screen
+				if (cleanInstall) {
+					console.log(log, "-> NEW INSTALL, LAUNCH START SCREEN");
+					// prompt to install
+					const startScreenResponse = await Install.launchStartScreen();
+				}
+
 			}
-			// TESTING: LAUNCH A PAGE NO MATTER WHAT
-			const response = await Install.launchStartScreen();
-
-
-			// FIRST ATTEMPT TO GET T.tally_user data from server
-			const tallyUserResponse = await Server.getTallyUser();
-			console.log(log, "-> tallyUserResponse =", tallyUserResponse);
-
-			// if user logged in ...
-			if (tallyUserResponse && tallyUserResponse.username) {
-				console.log(log, "-> RETURN TOP MONSTERS");
-				// now username is stored in T.tally_user and we can pass it to populate monsters
-				const _tally_top_monsters = await Server.returnTopMonsters();
+			// user logged in ...
+			else {
+				// username is stored in T.tally_user and we can pass it to populate monsters
+				const returnTopMonstersResponse = await Server.returnTopMonsters();
+				console.log(log, "[2.4] returnTopMonstersResponse =", returnTopMonstersResponse);
+				Debug.elapsedTime(log, "[2.4]");
 				// return true to send data back to content
 				return true;
 			}
-			// user not logged in - because it is a new install
-			else {
-				console.log(log, "-> NOT LOGGED IN");
-				return false;
-			}
+			// if we get this far then fail
+			return false;
 
 		} catch (err) {
 			console.error(err);
@@ -131,9 +147,7 @@ window.Background = (function () {
 
 	// PUBLIC
 	return {
-		gameReady: function () {
-			return gameReady;
-		},
+
 		runInstallChecks: runInstallChecks,
 		dataReport: dataReport,
 		dataReportHeader: dataReportHeader

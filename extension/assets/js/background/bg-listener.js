@@ -11,7 +11,7 @@ window.Listener = (function () {
 	chrome.runtime.onMessage.addListener(
 		function (request, sender, sendResponse) {
 			try {
-				// console.log("👂🏼 Listener.addListener() onMessage.request =", JSON.stringify(request), sender, sendResponse);
+				// if (DEBUG) console.log("👂🏼 Listener.addListener() onMessage.request =", JSON.stringify(request), sender, sendResponse);
 
 				// needed for several conditions below
 				let _tally_user = store("tally_user"),
@@ -26,11 +26,11 @@ window.Listener = (function () {
 					if (!_tally_meta || !_tally_meta.userLoggedIn) {
 						sendResponse({
 							"action": request.action,
-							"message": 0
+							"message": false
 						});
 						return false;
 					}
-					console.log("👂🏼 Listener.addListener() < getData [1]", request.name);
+					if (DEBUG) console.log("👂🏼 Listener.addListener() < getData [1]", request.name);
 
 					// (attempt to) get data from server, response to callback
 					$.ajax({
@@ -38,7 +38,7 @@ window.Listener = (function () {
 						url: _tally_meta.api + request.url,
 						dataType: 'json'
 					}).done(result => {
-						console.log("👂🏼 Listener.getDataFromServer() > RESULT =", JSON.stringify(result));
+						if (DEBUG) console.log("👂🏼 Listener.getDataFromServer() > RESULT =", JSON.stringify(result));
 						// reply to contentscript
 						sendResponse({
 							"action": request.action,
@@ -46,12 +46,12 @@ window.Listener = (function () {
 							"data": result
 						});
 					}).fail(err => {
-						console.error("👂🏼 Listener.getDataFromServer() > RESULT =", JSON.stringify(err));
+						if (DEBUG) console.error("👂🏼 Listener.getDataFromServer() > RESULT =", JSON.stringify(err));
 						// server might not be reachable
 						Server.checkIfOnline();
 						sendResponse({
 							"action": request.action,
-							"message": 0
+							"message": false
 						});
 					});
 
@@ -68,26 +68,26 @@ window.Listener = (function () {
 
 				// get data from background
 				else if (request.action == "getData" && request.name) {
-					// console.log("👂🏼 Listener.addListener() < getData [1]", request.name);
+					// if (DEBUG) console.log("👂🏼 Listener.addListener() < getData [1]", request.name);
 					// build response
 					let resp = {
 						"action": request.action,
 						"message": 1,
 						"data": store(request.name)
 					};
-					console.log("👂🏼 Listener.addListener() > getData [2]", request.name, resp);
+					if (DEBUG) console.log("👂🏼 Listener.addListener() > getData [2]", request.name, resp);
 					// send
 					sendResponse(resp);
 				}
 				// save data in background
 				if (request.action == "saveData" && request.name && request.data) {
-					console.log("👂🏼 Listener.addListener() < saveData [1]", request.name, request.data);
+					if (DEBUG) console.log("👂🏼 Listener.addListener() < saveData [1]", request.name);
 					// save data
 					let success = 0;
 					if (store(request.name, request.data))
 						success = 1;
 					else
-						console.error("👂🏼 Listener.addListener() > Could not save data", request);
+						if (DEBUG) console.error("👂🏼 Listener.addListener() > Could not save data", request);
 					// send response
 					sendResponse({
 						"action": request.action,
@@ -302,23 +302,25 @@ window.Listener = (function () {
 				else if (request.action == "sendUpdateToBackground") {
 					// if (DEBUG) console.log("👂🏼 Listener.addListener() < sendUpdateToBackground", JSON.stringify(request.data));
 
-					// if user is not logged-in or server is down then we are just saving in background
+					// default response
+					let responseToContentScript = {
+						"action": request.action,
+						"message": false,
+						"tally_user": _tally_user,
+						"tally_meta": _tally_meta
+					};
+
+					// if user is not logged-in or server is down
 					if (!_tally_meta.userLoggedIn || !_tally_meta.server.online) {
-
 						console.warn("👂🏼 Listener.addListener() ! sendUpdateToBackground - NO ACCOUNT OR SERVER OFFLINE");
-
 						// every once in a while check again
-						if (Math.random() > 0.5) Server.checkIfOnline();
-
-						// reply to contentscript with updated T.tally_user
-						sendResponse({
-							"action": request.action,
-							"message": 0,
-							"tally_user": store("tally_user")
-						});
+						if (Math.random() > 0.8) Server.checkIfOnline();
+						// one day add logic to save data in bg here
+						// ...
+						// reply to contentscript
+						sendResponse(responseToContentScript);
 					} else {
-
-						// and (attempt to) send data to server, response to callback
+						// (attempt to) send data to server, response to callback
 						$.ajax({
 							type: "PUT",
 							url: _tally_meta.api + "/user/updateTallyUser",
@@ -327,39 +329,32 @@ window.Listener = (function () {
 							data: JSON.stringify(request.data)
 						}).done(result => {
 							// result contains T.tally_user
-							if (DEBUG) console.log("👂🏼 Listener.addListener() > sendUpdateToBackground - DONE =", result);
+							if (DEBUG) console.log("👂🏼 Listener.addListener() > sendUpdateToBackground, result.username = %c" + JSON.stringify(result.username), Debug.styles.greenbg);
 
 							// if tally_user returned
 							if (result.username) {
+								_tally_meta.userLoggedIn = true;
 								// merge attack data from server with game data properties
 								result.attacks = Server.mergeAttackDataFromServer(result.attacks);
-								// store result
-								store("tally_user", result);
 							} else {
 								// else update tally_meta
 								_tally_meta.userLoggedIn = false;
 							}
-
-							// reply to contentscript with updated T.tally_user
-							sendResponse({
-								"action": request.action,
-								"message": _tally_meta.userLoggedIn,
-								"tally_user": result,
-								"tally_meta": _tally_meta
-							});
 						}).fail(err => {
-							console.warn("👂🏼 Listener.addListener() > sendUpdateToBackground - FAIL =", JSON.stringify(err));
-							// server might not be reachable
-							Server.checkIfOnline();
-							sendResponse({
-								"action": request.action,
-								"message": 0
-							});
+							if (DEBUG) console.warn("👂🏼 Listener.addListener() > sendUpdateToBackground - FAIL result.username = %c",  Debug.styles.redbg);
+							_tally_meta.userLoggedIn = false;
 						}).always(result => {
-							if (DEBUG) console.log("👂🏼 Listener.addListener() > sendUpdateToBackground - ALWAYS");
+							// if (DEBUG) console.log("👂🏼 Listener.addListener() > sendUpdateToBackground - ALWAYS - result =", result);
 							// save result
 							store("tally_meta", result);
 							store("tally_meta", _tally_meta);
+
+							responseToContentScript.message = _tally_meta.userLoggedIn;
+							responseToContentScript.tally_user = _tally_meta;
+							responseToContentScript.tally_user = result;
+
+							// reply to contentscript with updated T.tally_user
+							sendResponse(responseToContentScript);
 						});
 					}
 
@@ -377,6 +372,11 @@ window.Listener = (function () {
 						"data": {}
 					});
 				}
+
+				// for whole function?
+				// required so chrome knows this is asynchronous
+				return true;
+
 			} catch (err) {
 				console.error(err);
 			}

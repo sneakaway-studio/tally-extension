@@ -11,37 +11,41 @@ window.Server = (function () {
 	async function checkIfOnline() {
 		let _tally_meta = store("tally_meta"),
 			_startTime = new Date().getTime(),
+			_url = _tally_meta.api,
 			_server = {
 				"lastChecked": 0,
-				"online": 1,
+				"online": 0, // default is not online
 				"responseMillis": -1
 			};
-		// return result of ajax call
-		return $.ajax({
-				type: "GET",
-				timeout: 10000,
-				url: _tally_meta.api,
-				contentType: 'application/json', // type of data you are sending
-				dataType: 'json', // type of data you expect to receive
+
+		// get response
+		var serverOnline = await fetch(_url)
+			.then((response) => {
+				if (DEBUG) console.log("📟 Server.checkIfOnline() response.status =", response.status);
+				// go to next .then()
+				if (response.status === 200) return response.json();
+				// go straight to .catch()
+				else throw new Error('Something went wrong');
 			})
-			.done(result => {
-				console.log("📟 Server.checkIfOnline() SUCCESS", JSON.stringify(result));
-				// save state
+			.then((data) => {
+				if (DEBUG) console.log("📟 Server.checkIfOnline() SUCCESS", JSON.stringify(data));
+				// update state
 				_server.online = 1;
 				_server.responseMillis = new Date().getTime() - _startTime;
-			}).fail(error => {
+				return true;
+			})
+			.catch((error) => {
 				// server is not online
-				console.warn("📟 Server.checkIfOnline() FAIL", _tally_meta.api, "😢 NOT ONLINE", JSON.stringify(error));
-				// save state
-				_server.online = 0;
-				_server.responseMillis = -1;
-			}).always(() => {
-				// console.log("📟 Server.checkIfOnline() ALWAYS store results");
-				// save result
-				_server.lastChecked = moment().format();
-				_tally_meta.server = _server;
-				store("tally_meta", _tally_meta);
+				if (DEBUG) console.warn("📟 Server.checkIfOnline() FAIL", _tally_meta.api, "😢 NOT ONLINE", JSON.stringify(error));
+				return false;
 			});
+
+		// save result
+		_server.lastChecked = moment().format();
+		_tally_meta.server = _server;
+		store("tally_meta", _tally_meta);
+		// return
+		return serverOnline;
 	}
 
 
@@ -50,50 +54,53 @@ window.Server = (function () {
 	 *  Get latest T.tally_user data from API
 	 */
 	async function getTallyUser() {
-		try {
-			let _tally_meta = store("tally_meta"),
-				_url = _tally_meta.api + "/user/getTallyUser";
-			// console.log(_url);
-			// return early if !server
-			if (!_tally_meta.server.online) {
-				console.error("📟 Server.getTallyUser() *** SERVER NOT ONLINE ***");
-				return false;
-			}
-			// go to server to get latest T.tally_user data
-			return $.ajax({
-				type: "GET",
-				url: _url,
-				contentType: 'application/json',
-				dataType: 'json', // type of data you expect to receive
-			}).done(result => {
-				// make sure user was returned
-				if (result && result.username && result.message !== 0) {
-					if (DEBUG) console.log("📟 Server.getTallyUser() DONE result.username = %c" + JSON.stringify(result.username), Debug.styles.greenbg);
-					// merge attack data from server with T.tally_user data properties
-					result.attacks = Server.mergeAttackDataFromServer(result.attacks);
-					// update account status
-					_tally_meta.userLoggedIn = true;
-				} else {
-					if (DEBUG) console.log("📟 Server.getTallyUser() DONE result.username = %c" + JSON.stringify(result.username), Debug.styles.redbg);
-					// update account status
-					_tally_meta.userLoggedIn = false;
-				}
-			}).fail(error => {
-				if (DEBUG) console.warn("📟 Server.getTallyUser() FAIL", this.url, JSON.stringify(error));
-				// update account status
-				_tally_meta.userLoggedIn = false;
-				store("tally_meta", _tally_meta);
-				// server might not be online
-				checkIfOnline();
-			}).always((result) => {
-				// if (DEBUG) console.log("📟 Server.getTallyUser() ALWAYS", JSON.stringify(result.username));
-				// store result
-				store("tally_user", result);
-				store("tally_meta", _tally_meta);
-			});
-		} catch (err) {
-			console.error(err);
+		let _tally_meta = store("tally_meta"),
+			_startTime = new Date().getTime(),
+			_url = _tally_meta.api + "/user/getTallyUser";
+
+		// return early if !server
+		if (!_tally_meta.server.online) {
+			console.error("📟 Server.getTallyUser() *** SERVER NOT ONLINE ***");
+			return false;
 		}
+
+		// get response
+		var userOnline = await fetch(_url, {
+				credentials: 'include'
+			})
+			.then((response) => {
+				if (DEBUG) console.log("📟 Server.getTallyUser() response.status =", response.status);
+				// go to next .then()
+				if (response.status === 200) return response.json();
+				// go straight to .catch()
+				else throw new Error('Something went wrong');
+			})
+			.then(async (result) => {
+				// user is online
+				// if (DEBUG) console.log("📟 Server.getTallyUser() SUCCESS", JSON.stringify(result));
+
+				// make sure user was returned
+				if (result && result.username) {
+					if (DEBUG) console.log("📟 Server.getTallyUser() SUCCESS result.username = %c" + JSON.stringify(result.username), Debug.styles.greenbg);
+					// merge attack data from server with T.tally_user data properties
+					result.attacks = await Server.mergeAttackDataFromServer(result.attacks);
+					store("tally_user", result);
+					return true;
+				} else {
+					if (DEBUG) console.log("📟 Server.getTallyUser() FAIL result.username = %c" + JSON.stringify(result.username), Debug.styles.redbg);
+					return false;
+				}
+			})
+			.catch((error) => {
+				// user (or server) is not online
+				if (DEBUG) console.warn("📟 Server.getTallyUser() FAIL", _tally_meta.api, "😢 USER NOT LOGGED-IN", JSON.stringify(error));
+				return false;
+			});
+		// save tally_meta
+		_tally_meta.userLoggedIn = userOnline;
+		store("tally_meta", _tally_meta);
+		// return status
+		return userOnline;
 	}
 
 
@@ -143,7 +150,7 @@ window.Server = (function () {
 	/**
 	 *	Merge attack data from server with game data properties
 	 */
-	function mergeAttackDataFromServer(attacks) {
+	async function mergeAttackDataFromServer(attacks) {
 		try {
 			// loop through attacks from server
 			for (var key in attacks) {

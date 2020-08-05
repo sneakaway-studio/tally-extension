@@ -10,26 +10,29 @@ window.Install = (function () {
 	 */
 	async function init() {
 		try {
+			let cleanInstall = true;
+
 			// does T.tally_meta exists, or is this the first install?
 			if (prop(store("tally_meta"))) {
 				if (DEBUG) console.log("🔧 Install.init() -> T.tally_meta exists, need to check account");
-				return false;
+				cleanInstall = false;
+			} else {
+				if (DEBUG) console.log("🔧 Install.init() -> no T.tally_meta found, creating app");
+				// Create all game objects
+				store("tally_user", createUser());
+				store("tally_options", createOptions());
+				store("tally_nearby_monsters", {});
+				store("tally_meta", createMeta());
+				store("tally_stats", {});
+				store("tally_top_monsters", {});
+
+				// get user's geolocation
+				await saveLocation();
+
+				cleanInstall = true;
 			}
-
-			if (DEBUG) console.log("🔧 Install.init() -> no T.tally_meta found, creating app");
-			// Create all game objects
-			store("tally_user", createUser());
-			store("tally_options", createOptions());
-			store("tally_nearby_monsters", {});
-			store("tally_meta", createMeta());
-			store("tally_stats", {});
-			store("tally_top_monsters", {});
-
-			// get user's geolocation
-			await saveLocation();
-
-			if (DEBUG) console.log("🔧 Install.init() -> game installed!");
-			return true;
+			if (DEBUG) console.log("🔧 Install.init() -> game installed! cleanInstall =", cleanInstall);
+			return cleanInstall;
 		} catch (err) {
 			console.error("failed to create user", err);
 		}
@@ -108,7 +111,7 @@ window.Install = (function () {
 				return console.log("🔧 Install.launchStartScreen() 🛑 SERVER OFFLINE");
 
 			// if they are logged in show how to play
-			if (_tally_meta.userLoggedIn){
+			if (_tally_meta.userLoggedIn) {
 				// return console.log("🔧 Install.launchStartScreen() 🛑 ALREADY LOGGED IN");
 				console.log("🔧 Install.launchStartScreen() 🛑 ALREADY LOGGED IN");
 				// show how to
@@ -121,24 +124,36 @@ window.Install = (function () {
 				currentWindow: true
 			}, function (tabs) {
 				var tab = tabs[0];
-				if (DEBUG) console.log("🔧 Install.launchStartScreen() current tab =", tab);
+				// if (DEBUG) console.log("🔧 Install.launchStartScreen() current tab =", tab);
 
 				// are we in the process resetting user's data?
 				if (tab.url !== undefined && (tab.url.includes("/dashboard") ||
-					tab.url.includes("tallygame.net") || tab.url.includes("tallysavestheinternet.com")
-				)) {
-					return console.log("🔧 Install.launchStartScreen() 🛑 ON DASHBOARD");
+						tab.url.includes("tallygame.net") || tab.url.includes("tallygame.net") ||
+						tab.url.includes(_tally_meta.website)
+					)) {
+					if (DEBUG) console.log("🔧 Install.launchStartScreen() 🛑 ON DASHBOARD");
+					return;
+				}
+
+				// keep track of prompts and don't do too many
+				if (_tally_meta.install.prompts >= 30) {
+					if (DEBUG) console.log("🔧 Install.launchStartScreen() 🛑 _tally_meta.install.prompts >=",
+						_tally_meta.install.prompts
+					);
+					return;
 				}
 
 				// else launch install page
 				chrome.tabs.create({
-					// url: chrome.extension.getURL('assets/pages/startScreen/startScreen.html')
 					url: _tally_meta.website + pageToShow
 				}, function (newTab) {
-					// increment, check # prompts
-					if (++_tally_meta.install.prompts <= 3) {}
+					// increment
+					_tally_meta.install.prompts = _tally_meta.install.prompts + 1;
 					store("tally_meta", _tally_meta);
-					if (DEBUG) console.log("🔧 Install.launchStartScreen() 👍 launching", newTab);
+					if (DEBUG) console.log("🔧 Install.launchStartScreen() 👍 launching",
+						"_tally_meta.install.prompts =", _tally_meta.install.prompts,
+						"newTab =", newTab
+					);
 					return true;
 				});
 			});
