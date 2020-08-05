@@ -37,21 +37,30 @@ window.Progress = (function () {
 		// disguises
 		disguisesAwarded: 0,
 
-		// page progress and tags
+		// page progress
 		pageActionRefreshes: 0,
 		pageActionScrollDistance: 0,
 		pageActionScrollDistanceOnePage: 0,
+		// page tags
 		pageTagsCats: 0,
 		pageTagsAnimals: 0,
+		pageTagsDarkPatterns: 0,
+		pageTagsDeepLinking: 0,
 		pageTagsErrors: 0,
 		pageTagsEncryption: 0,
+		pageTagsFomo: 0,
+		pageTagsFootfall: 0,
+		pageTagsFraud: 0,
 		pageTagsLegal: 0,
-		pageTagsOpenSource: 0,
+		pageTagsLootBoxes: 0,
+		pageTagsMaps: 0,
 		pageTagsNetArt: 0,
 		pageTagsNews: 0,
 		pageTagsNineties: 0,
+		pageTagsOpenSource: 0,
 		pageTagsPhotos: 0,
 		pageTagsProfanity: 0,
+		pageTagsSubscription: 0,
 		pageTagsTally: 0,
 		pageTagsUtopianism: 0,
 		pageTagsWhisteblower: 0,

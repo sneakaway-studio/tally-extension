@@ -28,10 +28,13 @@ General information and references for cross-browser extension development
 
 1. Change `T.options.hotreload` to `false` (prevents `hot-reload.js` from running)
 2. Change `T.options.localhost` to `false` (so extension uses production server)
-3. Zip the files
+3. Zip the extension
     1. Chrome: Zip `extension/` directory
-    2. Firefox: Zip only files *inside* extension directory (`assets/` and `manifest.json`), and then run a script to remove all hidden files like `.DS_Store`
-4. Rename extension zip file and upload respective web stores
+    2. Firefox:
+        1. Remove localhost from host permissions in manifest
+        2. Zip only files *inside* extension directory (`assets/` and `manifest.json`)
+        3. Run `releases/clean_zip.sh file.zip` to remove all hidden files like `.DS_Store`
+4. Rename extension zip file and upload to respective web stores
 
 
 

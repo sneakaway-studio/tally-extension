@@ -6,8 +6,14 @@
 ## Development Versions
 
 
+### Version 0.3.9
+
+* Fixes bug in badges 
+
 ### Version 0.3.8
 
+* Firefox release
+* Improves server communication
 
 ### Version 0.3.7
 
