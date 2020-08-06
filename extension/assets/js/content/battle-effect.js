@@ -532,22 +532,22 @@ window.BattleEffect = (function() {
 			$(ele).html(str);
 			// once elements are on page add svgs
 			if (m.tier1) {
-				svg1 = SVG('tier1svg').size(20, 30).polygon('0,0 8,15 0,30').fill(p.tier1);
+				// svg1 = SVG('tier1svg').size(20, 30).polygon('0,0 8,15 0,30').fill(p.tier1);
 			}
 			if (m.tier2) {
-				svg2 = SVG('tier2svg').size(20, 30).polygon('0,0 8,15 0,30').fill(p.tier2);
+				// svg2 = SVG('tier2svg').size(20, 30).polygon('0,0 8,15 0,30').fill(p.tier2);
 				$('#tier1svg').css({
 					'background': p.tier2
 				}); // add background color to previous svg
 			}
 			if (m.tier3) {
-				svg3 = SVG('tier3svg').size(20, 30).polygon('0,0 8,15 0,30').fill(p.tier3);
+				// svg3 = SVG('tier3svg').size(20, 30).polygon('0,0 8,15 0,30').fill(p.tier3);
 				$('#tier2svg').css({
 					'background': p.tier3
 				}); // add background color to previous svg
 			}
 			if (m.tier4) {
-				svg4 = SVG('tier4svg').size(20, 30).polygon('0,0 8,15 0,30').fill(p.tier4);
+				// svg4 = SVG('tier4svg').size(20, 30).polygon('0,0 8,15 0,30').fill(p.tier4);
 				$('#tier2svg').css({
 					'background': p.tier3
 				}); // add background color to previous svg
