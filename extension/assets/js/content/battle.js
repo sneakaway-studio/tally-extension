@@ -241,7 +241,7 @@ window.Battle = (function() {
 			TallyData.queue("itemData", "monsters", monsterUpdate);
 			// add tracker to update
 			TallyData.queue("itemData", "trackers", trackerUpdate);
-			// update server immediately
+			// update server after battle not active
 			TallyData.pushUpdate(log);
 
 			if (quit) Battle.quit();

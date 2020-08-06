@@ -79,7 +79,7 @@ window.Listener = (function () {
 					// send
 					sendResponse(resp);
 				}
-				// save data in background
+				// save data in background - used by popup, etc.
 				if (request.action == "saveData" && request.name && request.data) {
 					if (DEBUG) console.log("👂🏼 Listener.addListener() < saveData [1]", request.name);
 					// save data
@@ -108,7 +108,7 @@ window.Listener = (function () {
 						"data": store("tally_options")
 					});
 				}
-				// saveOptions
+				// saveOptions - called from popup
 				else if (request.action == "saveOptions") {
 					let options = Install.setOptions(request.data);
 					store("tally_options", options); // store in localStorage
@@ -298,7 +298,7 @@ window.Listener = (function () {
 				// sendUpdateToBackground
 				// - receive and save score, event, page, etc. data in background
 				// - if server online and account good then send to server
-				// - receive and reply to content with T.tally_user only
+				// - receive and reply to content with tally_user and tally_meta
 				else if (request.action == "sendUpdateToBackground") {
 					// if (DEBUG) console.log("👂🏼 Listener.addListener() < sendUpdateToBackground", JSON.stringify(request.data));
 
@@ -327,15 +327,15 @@ window.Listener = (function () {
 							contentType: 'application/json', // content we are sending
 							dataType: 'json',
 							data: JSON.stringify(request.data)
-						}).done(result => {
-							// result contains T.tally_user
+						}).done(async result => {
+							// result contains tally_user
 							if (DEBUG) console.log("👂🏼 Listener.addListener() > sendUpdateToBackground, result.username = %c" + JSON.stringify(result.username), Debug.styles.greenbg);
 
 							// if tally_user returned
 							if (result.username) {
 								_tally_meta.userLoggedIn = true;
 								// merge attack data from server with game data properties
-								result.attacks = Server.mergeAttackDataFromServer(result.attacks);
+								result.attacks = await Server.mergeAttackDataFromServer(result.attacks);
 							} else {
 								// else update tally_meta
 								_tally_meta.userLoggedIn = false;
@@ -353,7 +353,7 @@ window.Listener = (function () {
 							responseToContentScript.tally_user = _tally_meta;
 							responseToContentScript.tally_user = result;
 
-							// reply to contentscript with updated T.tally_user
+							// reply to contentscript with updated tally_user
 							sendResponse(responseToContentScript);
 						});
 					}

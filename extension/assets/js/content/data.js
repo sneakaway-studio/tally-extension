@@ -191,7 +191,6 @@ window.TallyData = (function () {
 		}
 	}
 
-
 	/**
 	 * 	Called after edits from queue()
 	 *	- Sends update to server after n milliseconds and resets
@@ -282,11 +281,10 @@ window.TallyData = (function () {
 		try {
 			if (DEBUG) Debug.dataReportHeader("💾 < TallyData.pushUpdate() [0] caller = " + caller, "#", "before");
 
-			// don't send if not online or Battle active
-			if (!T.tally_meta.userLoggedIn || Battle.active) {
+			// don't send if not online
+			if (!T.tally_meta.userLoggedIn) {
 				if (DEBUG) console.log("💾 TallyData.startManager() [1]",
-					"T.tally_meta.userLoggedIn =", T.tally_meta.userLoggedIn,
-					"Battle.active =", Battle.active
+					"T.tally_meta.userLoggedIn =", T.tally_meta.userLoggedIn
 				);
 				return false;
 			}
