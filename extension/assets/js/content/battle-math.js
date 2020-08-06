@@ -7,6 +7,7 @@ window.BattleMath = (function () {
 	// PRIVATE VARS;
 
 	let DEBUG = Debug.ALL.BattleMath,
+		tallyMisses = 0, // track # of misses in battle
 		outcomeData = {
 			"selfHealth": {
 				"change": 0,
@@ -133,7 +134,11 @@ window.BattleMath = (function () {
 
 			// if not a defense, check to see if there is a miss
 			if (attack.type !== "defense" && !didHit(attack, self, opp)) {
-				return "missed";
+				// two tally misses total
+				if (self == "tally" && ++tallyMisses < 2)
+					return "missed";
+				else
+				 	return "missed";
 			}
 			// was it a special attack?
 			else if (FS_Object.prop(attack.special)) {
@@ -334,8 +339,10 @@ window.BattleMath = (function () {
 	function didHit(attack, self, opp) {
 		try {
 			if (DEBUG) console.log("🔢 BattleMath.didHit() [1]", "attack =", attack, "self =", self, "opp =", opp);
+			if (!attack.accuracy) attack.accuracy = 1; // in case problem saving attack data
 			let hitChance = attack.accuracy * (self.accuracy.val / opp.evasion.val);
 			let r = Math.random();
+			if (isNaN(hitChance)) hitChance = 0.9; // default to hit
 
 			if (DEBUG) console.log("🔢 BattleMath.didHit() [2]",
 				"hitChance [" + hitChance + "] = attack.accuracy [" + attack.accuracy + "] * ",

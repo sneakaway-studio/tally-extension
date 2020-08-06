@@ -115,6 +115,10 @@ window.BattleEffect = (function() {
 					// add to pos and time
 					endPos.left = -200;
 					addToDuration = 500;
+
+					Dialogue.showData(Dialogue.getData({
+						category: "attack", subcategory: "missed"
+					}));
 				}
 			}
 			// else firing from Tally > monster
