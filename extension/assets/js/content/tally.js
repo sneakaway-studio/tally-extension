@@ -521,7 +521,7 @@ window.Tally = (function () {
 				Progress.update("clickTallyDouble", 1, "+");
 				// build string and show
 				let str = "Want to hear <a class='tally tally_showStory1'>my story</a>,<br>" +
-					" see a <a class='tally tally_showTutorial1' href='https://youtu.be/RKvw50V02hs' target='_blank'>game tutorial</a>,<br> " +
+					" see a <a class='tally' href='https://youtu.be/RKvw50V02hs' target='_blank'>tutorial</a>,<br>" +
 					"or <a class='tally tally_showMoreOptions'>something else</a>?";
 				Dialogue.showData({
 					"text": str,
@@ -569,10 +569,10 @@ window.Tally = (function () {
 
 	// MENU ITEM LISTENERS
 	$(document).on('click', '.tally_showStory1', function () {
-		Tutorial.play("tutorial","story1");
+		Tutorial.play("tutorial", "story1");
 	});
 	$(document).on('click', '.tally_showTutorial1', function () {
-		Tutorial.play("tutorial","tutorial1");
+		Tutorial.play("tutorial", "tutorial1");
 	});
 	$(document).on('click', '.tally_showMoreOptions', function () {
 		// disabled - troubled getting this to work
@@ -589,22 +589,34 @@ window.Tally = (function () {
 
 			let str = "" +
 				// user-specific
-				"View your <a class='tally tally_profile_link'>profile</a>, " +
+				"Do you want to view your <a class='tally tally_profile_link'>profile</a> or " +
 				"<a class='tally' id='tally_dashboard'>dashboard</a>, " +
-				"or <a class='tally' id='tally_leaderboard'>leaderboards</a>.<br>" +
-				// promo material
-				"Check out the <a class='tally' id='tally_howToPlay'>how to play page</a>, " +
-				"the <a class='tally' id='tally_faq'>faq</a>, " +
-				"or the <a class='tally' id='tally_gameTrailerBtn'>game trailer</a>. " +
-				// nerd out
-				// "Read our <a class='tally' id='tally_privacyPolicy'>privacy policy</a> " +
-				// "or take the <a class='tally' id='tally_gameTrailerBtn'>beta tester survey</a> " +
+				"or see the <a class='tally' id='tally_leaderboard'>leaderboards</a>? " +
 				"";
 			Dialogue.showData({
 				"text": str,
 				"mood": "happy"
 			}, {
 				instant: true
+			});
+
+			str = "Check out <a class='tally' id='tally_howToPlay'>How to Play</a>, " +
+				"the <a class='tally' id='tally_faq'>FAQ</a>, " +
+				"or the <a class='tally' id='tally_gameTrailerBtn'>game trailer</a>. ";
+			Dialogue.showData({
+				"text": str,
+				"mood": "happy"
+			}, {
+				instant: false
+			});
+
+			str = 'Have <a target="_blank" href="https://docs.google.com/forms/d/e/1FAIpQLSdhftpXZHrnU1RXZ-yQ0LZovCp84ShZEicZpy__mOt621-Q2w/viewform">feedback</a> or ' +
+				'<a target="_blank" href="https://docs.google.com/forms/d/e/1FAIpQLScUG923UhVtFWzLaV5gOsd0e1grdS9iKeNLjdwPixKEJkn4bQ/viewform">find an issue</a>?';
+			Dialogue.showData({
+				"text": str,
+				"mood": "happy"
+			}, {
+				instant: false
 			});
 
 			if (moreOptionListenersAdded) return;
@@ -635,7 +647,7 @@ window.Tally = (function () {
 				window.open(T.tally_meta.website + "/faq");
 			});
 			$(document).on('click', '#tally_gameTrailerBtn', function () {
-				window.open("https://www.youtube.com/watch?v=xfsbm1cI2uo");
+				window.open("https://www.youtube.com/watch?v=hBfq8TNHbCE");
 			});
 
 			// nerd out

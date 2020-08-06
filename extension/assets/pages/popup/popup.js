@@ -642,7 +642,7 @@ document.getElementById("opt_close").onclick = function () {
 
 // external links
 $(document).on('click', '#gameTrailerBtn', function () {
-	window.open("https://www.youtube.com/watch?v=xfsbm1cI2uo");
+	window.open("https://www.youtube.com/watch?v=hBfq8TNHbCE");
 });
 $(document).on('click', '#viewProfileBtn', function () {
 	window.open(_tally_meta.website + "/profile/" + _tally_user.username);
