@@ -3,9 +3,11 @@
 window.Tutorial = (function () {
 	// PRIVATE
 	let DEBUG = Debug.ALL.Tutorial,
-		_active = false, // are we playing a tutorial?
-		_sequenceActive = false // are we playing some other sequence that should stop all interactions?
-	;
+		// the internal state of the Tutorial - are we playing a tutorial?
+		_active = false,
+		// the global state of all tutorials
+		//  - are we playing some other sequence that should stop all interactions?
+		_sequenceActive = false;
 
 
 	/**
@@ -15,7 +17,7 @@ window.Tutorial = (function () {
 		try {
 			if (state != undefined && (state === true || state === false))
 				_active = state;
-			// also account for sequences
+			// also account for global state
 			if (_active === true) _sequenceActive = true;
 			return _active;
 		} catch (err) {
@@ -49,11 +51,12 @@ window.Tutorial = (function () {
 
 			if (DEBUG) console.log("📚 Tutorial.play() [1]", index);
 
+			// allow any tutorial or tutorial sequence to stop current one and start new?
+
 			// reset Tutorial
 			reset();
 			// empty the queue
 			Dialogue.emptyTheQueue();
-
 			// set tutorial mode active
 			if (_active) return;
 			active(true);
@@ -181,7 +184,7 @@ window.Tutorial = (function () {
 			else {
 				// set sequence back to false
 				setTimeout(function () {
-					// set tutorial sequence active
+					// set tutorial sequence inactive
 					_sequenceActive = false;
 				}, 1000);
 				slideshowVisible(false);
@@ -236,7 +239,7 @@ window.Tutorial = (function () {
 	// PUBLIC
 	return {
 		set active(value) {
-			_active = value;
+			active(value); // call internal method to set both true 
 		},
 		get active() {
 			return _active;

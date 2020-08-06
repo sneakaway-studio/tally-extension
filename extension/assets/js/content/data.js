@@ -49,7 +49,7 @@ window.TallyData = (function () {
 			// console.trace();
 
 			// do not proceed if a backgroundUpdate already exists with edits
-			if (backgroundUpdateEdits > 0){
+			if (backgroundUpdateEdits > 0) {
 				if (DEBUG) console.log("💾 TallyData.createBackgroundUpdate() backgroundUpdateEdits =", backgroundUpdateEdits);
 				return;
 			}
@@ -203,10 +203,11 @@ window.TallyData = (function () {
 				managerCountdownInterval = 4,
 				managerCountdownMax = 8;
 
-			// don't send if not online
-			if (!T.tally_meta.userLoggedIn) {
+			// don't start if not online or if battle active
+			if (!T.tally_meta.userLoggedIn || Battle.active) {
 				if (DEBUG) console.log("💾 TallyData.startManager() [1]",
-					"T.tally_meta.userLoggedIn =", T.tally_meta.userLoggedIn
+					"T.tally_meta.userLoggedIn =", T.tally_meta.userLoggedIn,
+					"Battle.active =", Battle.active
 				);
 				return false;
 			}
@@ -281,14 +282,15 @@ window.TallyData = (function () {
 		try {
 			if (DEBUG) Debug.dataReportHeader("💾 < TallyData.pushUpdate() [0] caller = " + caller, "#", "before");
 
-			// don't send if not online
-			if (!T.tally_meta.userLoggedIn) {
-				if (DEBUG) console.log("💾 TallyData.pushUpdate() [1]", backgroundUpdate,
-					// "backgroundUpdateEditors =",backgroundUpdateEditors
-					"T.tally_meta.userLoggedIn =", T.tally_meta.userLoggedIn
+			// don't send if not online or Battle active
+			if (!T.tally_meta.userLoggedIn || Battle.active) {
+				if (DEBUG) console.log("💾 TallyData.startManager() [1]",
+					"T.tally_meta.userLoggedIn =", T.tally_meta.userLoggedIn,
+					"Battle.active =", Battle.active
 				);
 				return false;
 			}
+
 			// no need to send if not updated
 			if (backgroundUpdateEdits < 1) return;
 			// do not attempt if currently sending

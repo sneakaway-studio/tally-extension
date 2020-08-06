@@ -3,7 +3,7 @@
 /*  (BATTLE) CONSOLE
  ******************************************************************************/
 
-window.BattleConsole = (function() {
+window.BattleConsole = (function () {
 	// PRIVATE
 	let DEBUG = Debug.ALL.BattleConsole,
 		logId, _active, _queue, _next;
@@ -76,16 +76,7 @@ window.BattleConsole = (function() {
 			console.error(err);
 		}
 	}
-	// control state
-	function active(state) {
-		try {
-			if (state != undefined && (state === true || state === false))
-				_active = state;
-			return _active;
-		} catch (err) {
-			console.error(err);
-		}
-	}
+
 	// log to the console
 	function log(_str, next = "") {
 		try {
@@ -117,7 +108,7 @@ window.BattleConsole = (function() {
 				$("#battle-console-stream:last-child:after").addClass("noanimation");
 			}
 			// check again in a bit in case there are more
-			setTimeout(function() {
+			setTimeout(function () {
 				queueChecker();
 			}, 200);
 		} catch (err) {
@@ -127,11 +118,11 @@ window.BattleConsole = (function() {
 
 	function writeNextInQueue(lineSpeed = 150) {
 		try {
-			//if(DEBUG) console.log("🖥️ BattleConsole.writeNextInQueue()", _queue, _active);
+			// if(DEBUG) console.log("🖥️ BattleConsole.writeNextInQueue()", _queue, _active);
 			// if currently active, stop
 			if (_active) return;
-			// else set active true
-			active(true);
+			// else set active
+			_active = true;
 			// remove first element in array
 			var str = _queue.shift();
 			if (DEBUG) console.log("🖥️ BattleConsole.writeNextInQueue() [1]", str, _queue, _active);
@@ -147,7 +138,7 @@ window.BattleConsole = (function() {
 				scrollTop: $('#battle-console-stream')[0].scrollHeight
 			}, 800);
 			// insert text
-			setTimeout(function() {
+			setTimeout(function () {
 				// log to console
 				typeWriter("tally_log" + logId, str, 0);
 			}, lineSpeed);
@@ -172,25 +163,25 @@ window.BattleConsole = (function() {
 
 	function showBattleOptions(lineSpeed = 150) {
 		try {
-			if (DEBUG) console.log("🖥️ BattleConsole.showBattleOptions() step 1", _active);
+			if (DEBUG) console.log("🖥️ BattleConsole.showBattleOptions() step 1 _active =", _active);
 			// if currently active, stop
 			if (_active) return;
-			// set active state
-			active(true);
+			// set active
+			_active = true;
 			// get list of attacks
 			var _attacks = {};
-			if (DEBUG) console.log("🖥️ BattleConsole.showBattleOptions() step 1.1", _active);
+			if (DEBUG) console.log("🖥️ BattleConsole.showBattleOptions() step 1.1 _active =", _active);
 			if (!FS_Object.isEmpty(T.tally_user.attacks))
 				_attacks = T.tally_user.attacks;
 			// return if no attacks available
 			else return;
-			if (DEBUG) console.log("🖥️ BattleConsole.showBattleOptions() step 1.2", _active);
+			if (DEBUG) console.log("🖥️ BattleConsole.showBattleOptions() step 1.2 _active =", _active);
 
 			// build options
 			var str = "<div class='tally battle-options-row'>";
 			for (var key in _attacks) {
 				if (_attacks.hasOwnProperty(key)) {
-					if (DEBUG) console.log("🖥️ BattleConsole.showBattleOptions() step 1.3", _attacks[key]);
+					if (DEBUG) console.log("🖥️ BattleConsole.showBattleOptions() step 1.3 key =", _attacks[key]);
 					// only show selected ones
 					if (!_attacks[key].selected) continue;
 
@@ -235,7 +226,7 @@ window.BattleConsole = (function() {
 
 
 			// display attack description
-			$(document).on("mouseenter", '.battle-options-fire', function() {
+			$(document).on("mouseenter", '.battle-options-fire', function () {
 				let attackName = $(this).attr("data-attack");
 				let str = attackName + " " + T.tally_user.attacks[attackName].type + "... ";
 				// if description field contains string
@@ -245,12 +236,12 @@ window.BattleConsole = (function() {
 				$("#battle-console-prompt-content").html(str);
 			});
 			// hide
-			$(document).on("mouseleave", '.battle-options-fire', function() {
+			$(document).on("mouseleave", '.battle-options-fire', function () {
 				$("#battle-console-prompt-content").html("");
 			});
 
 			// add only one listener
-			$(document).on("click", '.battle-options-fire', function() {
+			$(document).on("click", '.battle-options-fire', function () {
 				console.log("🖥️ CLICK CALLED, attack =", $(this).attr("data-attack"), Battle.details);
 				// if user can't do attack yet but they clicked anyway
 				if (Battle.details.attackInProgress) {
@@ -274,17 +265,17 @@ window.BattleConsole = (function() {
 				}
 			});
 			// add "run" / "escape" listeners
-			$(document).on("click", '.battle-options-esc', function() {
+			$(document).on("click", '.battle-options-esc', function () {
 				// empty queue of any leftover dialogue
 				Dialogue.emptyTheQueue();
 				// end battle
 				Battle.end(true);
 			});
-			$(document).on("mouseenter", '.battle-options-esc', function() {
+			$(document).on("mouseenter", '.battle-options-esc', function () {
 				// show
 				$("#battle-console-prompt-content").html("Run from this battle?");
 			});
-			$(document).on("mouseleave", '.battle-options-esc', function() {
+			$(document).on("mouseleave", '.battle-options-esc', function () {
 				// show
 				$("#battle-console-prompt-content").html("");
 			});
@@ -295,7 +286,7 @@ window.BattleConsole = (function() {
 				scrollTop: $('#battle-console-stream')[0].scrollHeight
 			}, 700);
 			// release active state
-			active(false);
+			_active = false;
 		} catch (err) {
 			console.error(err);
 		}
@@ -324,14 +315,14 @@ window.BattleConsole = (function() {
 			if (DEBUG) console.log("🖥️ BattleConsole.typeWriter()", ele, str, i, arr);
 
 			// loop through arr element
-			arrLoop = function(i, j, arr) {
+			arrLoop = function (i, j, arr) {
 				if (DEBUG) console.log("typeWriter() -> arrLoop()", i, arr[i]);
 
 				// if we haven't reached the end of the arr
 				if (i < arr.length) {
 
 					// loop through txt in arr element
-					strLoop = function(i, j, arr) {
+					strLoop = function (i, j, arr) {
 						let char = arr[i].charAt(j);
 						// if (DEBUG) console.log("typeWriter() -> strLoop()", i, arr[i], j, char);
 
@@ -353,12 +344,12 @@ window.BattleConsole = (function() {
 						addCursor();
 						// if there is more left in string
 						if (j < arr[i].length) {
-							setTimeout(function() {
+							setTimeout(function () {
 								// work on next character with slight pause
 								strLoop(i, ++j, arr);
 							}, 15);
 						} else {
-							setTimeout(function() {
+							setTimeout(function () {
 								// work on next array with slight pause
 								arrLoop(++i, 0, arr);
 							}, 15);
@@ -430,13 +421,17 @@ window.BattleConsole = (function() {
 
 
 	function returnTagsAsArray(str) {
-		// add a delimiter
-		str = str
-			.replace(/<span/g, '^<span')
-			.replace(/\/span>/g, '\/span>^');
-		// if (DEBUG) console.log("🖥️ BattleConsole.returnTagsAsArray()", "#####", str);
-		// split on delimeter
-		return str.split("^");
+		try {
+			// add a delimiter
+			str = str
+				.replace(/<span/g, '^<span')
+				.replace(/\/span>/g, '\/span>^');
+			// if (DEBUG) console.log("🖥️ BattleConsole.returnTagsAsArray()", "#####", str);
+			// split on delimeter
+			return str.split("^");
+		} catch (err) {
+			console.error(err);
+		}
 	}
 
 
@@ -450,8 +445,8 @@ window.BattleConsole = (function() {
 			if (DEBUG) console.log("🖥️ BattleConsole.lineComplete() [1]", ele);
 
 			// add a little time at the end of each line
-			setTimeout(function() {
-				active(false);
+			setTimeout(function () {
+				_active = false;
 				// text is done writing so color it
 				colorText(ele);
 				if (DEBUG) console.log("🖥️ BattleConsole.lineComplete() [2]", ele);
@@ -503,12 +498,12 @@ window.BattleConsole = (function() {
 
 	// PUBLIC
 	return {
+		set active (value) { _active = value; },
+		get active () { return _active; },
+
 		display: display,
 		hide: hide,
 		log: log,
-		active: function(state) {
-			return active(state);
-		},
 		lineComplete: lineComplete,
 		colorText: colorText
 	};

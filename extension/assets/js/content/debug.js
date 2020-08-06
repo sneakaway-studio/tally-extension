@@ -9,7 +9,7 @@ window.Debug = (function () {
 	let DEBUG = true,
 		ALL = {
 			Account: false,
-			Badge: false,
+			Badge: true,
 
 			// battles
 			BattleAttack: true,
@@ -105,7 +105,7 @@ window.Debug = (function () {
 	}
 
 
-	
+
 
 
 	/**

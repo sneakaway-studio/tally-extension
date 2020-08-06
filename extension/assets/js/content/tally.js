@@ -307,6 +307,7 @@ window.Tally = (function () {
 
 			if (DEBUG) console.log("%c   Tally.interactionHandler()", Debug.tallyConsoleIcon, interaction,
 				"Tutorial.sequenceActive", Tutorial.sequenceActive);
+			// don't allow tally interactions to happen when global tutorial sequence running
 			if (Tutorial.sequenceActive == true) {
 				return;
 			}

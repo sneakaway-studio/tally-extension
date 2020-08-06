@@ -191,7 +191,7 @@ window.Consumable = (function () {
 
 				// new position
 				randomPos = Core.returnRandomPositionFull('', 100, 100, "below-the-fold");
-				css = "left:" + randomPos.x + "px;top:" + randomPos.y + "px;";
+				css = "left:" + randomPos.x + "px;top:" + randomPos.y + "px;z-index:999999999999999;";
 				if (DEBUG) console.log("🍪 Consumable.add()", randomPos, css);
 
 				// html

@@ -132,7 +132,7 @@ window.Demo = (function() {
 				listenerActive = true;
 
 				// is a battle in progress?
-				if (Battle.active() && !Battle.details.attackInProgress) {
+				if (Battle.active && !Battle.details.attackInProgress) {
 					// only run every other second
 					if (idleTime % 2 == 0) {
 						let l = $('.battle-options-fire').length;

@@ -32,17 +32,6 @@ window.Battle = (function() {
 		};
 	}
 
-	// control state
-	function active(state) {
-		try {
-			if (state != undefined && (state === true || state === false))
-				_active = state;
-			if (false) end();
-			return _active;
-		} catch (err) {
-			console.error(err);
-		}
-	}
 
 	/**
 	 *	Testing, generates its own mid and calls start()
@@ -82,7 +71,7 @@ window.Battle = (function() {
 		try {
 			//console.log("💥 Battle.start()", mid);
 			if (_active) return;
-			active(true);
+			_active = true;
 			// set current
 			Monster.currentMID = mid;
 			// update progress
@@ -341,13 +330,13 @@ window.Battle = (function() {
 
 	// PUBLIC
 	return {
+		set active (value) { _active = value; },
+		get active () { return _active; },
+
 		start: start,
 		end: end,
 		quit: quit,
 		test: test,
-		active: function(state) {
-			return active(state);
-		},
 		details: details
 	};
 })();

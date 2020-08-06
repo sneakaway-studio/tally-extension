@@ -5,7 +5,7 @@ window.Dialogue = (function () {
 
 	let DEBUG = Debug.ALL.Dialogue,
 		dialogueBubbleOpen = false, // whether or not dialogue bubble currently open
-		_active = false, // is text currently being shown in the speech bubble
+		_active = false, // text currently being shown in the speech bubble, and has not timed out
 		queueWaitTime = 0,
 		hideTimeout = {},
 		_queue = []; // array of objects
@@ -255,18 +255,6 @@ window.Dialogue = (function () {
 		}
 	}
 	/**
-	 *	control state
-	 */
-	function active(state) {
-		try {
-			if (state != undefined && (state === true || state === false))
-				_active = state;
-			return _active;
-		} catch (err) {
-			console.error(err);
-		}
-	}
-	/**
 	 *	Check if there are objects to show
 	 */
 	function queueChecker() {
@@ -274,9 +262,9 @@ window.Dialogue = (function () {
 			//if (DEBUG) console.log("💬 Dialogue.queueChecker()", _queue, _active);
 			// if no items in _queue then stop
 			if (_queue.length < 1) return;
-			// else, if not currently active then start a new one
+			// else, if not active then start a new one
 			if (!_active) writeNextInQueue();
-			// if currently active, check again in a bit in case there are more
+			// if active, check again in a bit in case there are more
 			setTimeout(function () {
 				queueChecker();
 			}, 200);
@@ -293,10 +281,10 @@ window.Dialogue = (function () {
 
 			// if (DEBUG) console.log("💬 Dialogue.writeNextInQueue() [1]", JSON.stringify(_queue), _active, queueWaitTime);
 
-			// if currently active, stop (unless we want to skip to next)
+			// if active, stop (unless we want to skip to next)
 			if (_active && !skipToNext) return;
-			// set active state true
-			active(true);
+			// set active
+			_active = true;
 			// set open
 			dialogueBubbleOpen = true;
 
@@ -471,7 +459,7 @@ window.Dialogue = (function () {
 				Tutorial.slideshowVisible(false);
 			}
 			// release active state
-			active(false);
+			_active = false;
 		} catch (err) {
 			console.error(err);
 		}
@@ -611,9 +599,12 @@ window.Dialogue = (function () {
 				// replace and store in string
 				str = str.replace(replaceArr[i], link);
 
-				// add listener
+				// remove listener
+				$(document).off("click", '.tally-dialogue-branch');
+
+				// add new listener
 				$(document).on('click', '.tally-dialogue-branch', function () {
-					// call the
+					// log
 					console.log("hello", $(this).data('category'), $(this).data('index'));
 
 					// if a tutorial
@@ -785,31 +776,23 @@ window.Dialogue = (function () {
 
 	// PUBLIC
 	return {
+		set active (value) { _active = value; },
+		get active () { return _active; },
+
 		getData: getData,
 		showData: showData,
 		showStr: showStr,
 		random: random,
 		test: test,
 		showSurveyPrompt: showSurveyPrompt,
-
 		emptyTheQueue: emptyTheQueue,
 		hide: hide,
 		getFact: function (domain, includeSource) {
 			return getFact(domain, includeSource);
 		},
-
-		active: function () {
-			return _active;
-		},
 		skipToNext: skipToNext,
 
 
-
-		// // mark for deletion
-		// show: show,
-		// get: function(arr) {
-		// 	return get(arr);
-		// },
 
 	};
 })();

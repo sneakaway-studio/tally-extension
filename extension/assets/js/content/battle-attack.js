@@ -378,7 +378,7 @@ window.BattleAttack = (function() {
 					});
 				}
 				// n% of the time show dialogue
-				if (Battle.active() && Math.random() > 0.5)
+				if (Battle.active && Math.random() > 0.5)
 					Dialogue.showData(progressMessage, {
 						instant: true
 					});

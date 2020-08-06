@@ -133,7 +133,7 @@ window.Stats = (function () {
 				StatsDisplay.updateDisplay('tally');
 			}
 			// only update monster if battle going on
-			else if (Battle.active())
+			else if (Battle.active)
 				// update display
 				StatsDisplay.updateDisplay('monster');
 
