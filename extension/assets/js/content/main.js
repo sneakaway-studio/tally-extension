@@ -319,7 +319,7 @@ window.TallyMain = (function () {
 					if (DEBUG) console.log("🧰 TallyMain.startGameOnPage() [4.4] -> Check monsters");
 					// check for, and potentially add monsters on the page
 					MonsterCheck.check();
-				}, 3000);
+				}, 2500);
 
 			}, 10);
 

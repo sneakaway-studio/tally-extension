@@ -168,7 +168,7 @@ window.MonsterCheck = (function () {
 					if (r < 0.05) {
 						// go back to normal stage
 						T.tally_nearby_monsters[mid].stage = 0;
-						// Dialogue.showSurveyPrompt();
+						Dialogue.showSurveyPrompt();
 					} else if (r < 0.2) {
 						// random dialogue, but don't change stage
 						showDialogueAboutQuantity();
