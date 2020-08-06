@@ -83,7 +83,7 @@ window.Server = (function () {
 				if (result && result.username) {
 					if (DEBUG) console.log("📟 Server.getTallyUser() SUCCESS result.username = %c" + JSON.stringify(result.username), Debug.styles.greenbg);
 					// merge attack data from server with T.tally_user data properties
-					result.attacks = await Server.mergeAttackDataFromServer(result.attacks);
+					result.attacks = Server.mergeAttackDataFromServer(result.attacks);
 					store("tally_user", result);
 					return true;
 				} else {
@@ -150,27 +150,19 @@ window.Server = (function () {
 	/**
 	 *	Merge attack data from server with game data properties
 	 */
-	async function mergeAttackDataFromServer(attacks) {
+	function mergeAttackDataFromServer(attacks) {
 		try {
 			// loop through attacks from server
 			for (var key in attacks) {
 				if (attacks.hasOwnProperty(key)) {
-					// get name
-					let name = attacks[key].name;
 					// add AttackData properties to obj from server
-					//console.log("📟 Server.mergeAttackDataFromServer()", key, attacks[key], name);
-					// make sure it exists
-					let attackData = AttackData.data[name];
-					//console.log("📟 Server.mergeAttackDataFromServer()", key, attacks[key], name, attackData);
-					if (attackData) {
-						// loop through AttackData properties add
-						for (var p in attackData) {
-							if (attackData.hasOwnProperty(p)) {
-								//console.log("📟 Server.mergeAttackDataFromServer()", p, attackData[p]);
-								attacks[key][p] = attackData[p];
-							}
-						}
-					}
+					// console.log("📟 Server.mergeAttackDataFromServer()", key, attacks[key]);
+					// save the data
+					let attackData = AttackData.data[key];
+					// save selected prop
+					attackData.selected = attacks[key].selected;
+					// set it back in attacks 
+					attacks[key] = attackData;
 				}
 			}
 			return attacks;

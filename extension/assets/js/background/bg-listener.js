@@ -87,7 +87,7 @@ window.Listener = (function () {
 					if (store(request.name, request.data))
 						success = 1;
 					else
-						if (DEBUG) console.error("👂🏼 Listener.addListener() > Could not save data", request);
+					if (DEBUG) console.error("👂🏼 Listener.addListener() > Could not save data", request);
 					// send response
 					sendResponse({
 						"action": request.action,
@@ -300,7 +300,7 @@ window.Listener = (function () {
 				// - if server online and account good then send to server
 				// - receive and reply to content with tally_user and tally_meta
 				else if (request.action == "sendUpdateToBackground") {
-					// if (DEBUG) console.log("👂🏼 Listener.addListener() < sendUpdateToBackground", JSON.stringify(request.data));
+					if (DEBUG) console.log("👂🏼 Listener.addListener() < sendUpdateToBackground", JSON.stringify(request.data));
 
 					// default response
 					let responseToContentScript = {
@@ -327,30 +327,33 @@ window.Listener = (function () {
 							contentType: 'application/json', // content we are sending
 							dataType: 'json',
 							data: JSON.stringify(request.data)
-						}).done(async result => {
+						}).done(result => {
 							// result contains tally_user
 							if (DEBUG) console.log("👂🏼 Listener.addListener() > sendUpdateToBackground, result.username = %c" + JSON.stringify(result.username), Debug.styles.greenbg);
 
 							// if tally_user returned
 							if (result.username) {
-								_tally_meta.userLoggedIn = true;
 								// merge attack data from server with game data properties
-								result.attacks = await Server.mergeAttackDataFromServer(result.attacks);
+								result.attacks = Server.mergeAttackDataFromServer(result.attacks);
+								// then send to .a
+								_tally_meta.userLoggedIn = true;
+								return true;
 							} else {
 								// else update tally_meta
 								_tally_meta.userLoggedIn = false;
+								return false;
 							}
 						}).fail(err => {
-							if (DEBUG) console.warn("👂🏼 Listener.addListener() > sendUpdateToBackground - FAIL result.username = %c",  Debug.styles.redbg);
+							if (DEBUG) console.warn("👂🏼 Listener.addListener() > sendUpdateToBackground - FAIL result.username = %c", Debug.styles.redbg);
 							_tally_meta.userLoggedIn = false;
 						}).always(result => {
-							// if (DEBUG) console.log("👂🏼 Listener.addListener() > sendUpdateToBackground - ALWAYS - result =", result);
+							if (DEBUG) console.log("👂🏼 Listener.addListener() > sendUpdateToBackground - ALWAYS - result =", result);
 							// save result
 							store("tally_meta", result);
 							store("tally_meta", _tally_meta);
 
 							responseToContentScript.message = _tally_meta.userLoggedIn;
-							responseToContentScript.tally_user = _tally_meta;
+							responseToContentScript.tally_meta = _tally_meta;
 							responseToContentScript.tally_user = result;
 
 							// reply to contentscript with updated tally_user

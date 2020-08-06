@@ -171,8 +171,12 @@ window.BattleConsole = (function () {
 			// get list of attacks
 			var _attacks = {};
 			if (DEBUG) console.log("🖥️ BattleConsole.showBattleOptions() step 1.1 _active =", _active);
+			if (DEBUG) console.log("🖥️ BattleConsole.showBattleOptions() T.tally_user.attacks =", T.tally_user.attacks);
 			if (!FS_Object.isEmpty(T.tally_user.attacks))
 				_attacks = T.tally_user.attacks;
+
+
+				if (DEBUG) console.log("🖥️ BattleConsole.showBattleOptions() T.tally_user.attacks =", T.tally_user.attacks);
 			// return if no attacks available
 			else return;
 			if (DEBUG) console.log("🖥️ BattleConsole.showBattleOptions() step 1.2 _active =", _active);
@@ -316,7 +320,7 @@ window.BattleConsole = (function () {
 
 			// loop through arr element
 			arrLoop = function (i, j, arr) {
-				if (DEBUG) console.log("typeWriter() -> arrLoop()", i, arr[i]);
+				// if (DEBUG) console.log("typeWriter() -> arrLoop()", i, arr[i]);
 
 				// if we haven't reached the end of the arr
 				if (i < arr.length) {
@@ -330,11 +334,11 @@ window.BattleConsole = (function () {
 						if (char != "<") {
 							// add it
 							htmlOut += char;
-							if (DEBUG) console.log("a", i, j, htmlOut);
+							// if (DEBUG) console.log("a", i, j, htmlOut);
 						} else {
 							// otherwise add whole html ele
 							htmlOut += arr[i];
-							if (DEBUG) console.log("b", i, j, htmlOut);
+							// if (DEBUG) console.log("b", i, j, htmlOut);
 							// move to end
 							j = 1000;
 						}
@@ -364,7 +368,7 @@ window.BattleConsole = (function () {
 					// another safety
 					if (i > 300) return;
 				} else {
-					if (DEBUG) console.log("typeWriter() -> END OF ARRAY");
+					// if (DEBUG) console.log("typeWriter() -> END OF ARRAY");
 					// color text
 					lineComplete(ele);
 					return;

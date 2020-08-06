@@ -279,12 +279,11 @@ window.TallyData = (function () {
 	 */
 	function pushUpdate(caller) {
 		try {
-			if (DEBUG) Debug.dataReportHeader("💾 < TallyData.pushUpdate() [0] caller = " + caller, "#", "before");
-
 			// don't send if not online
-			if (!T.tally_meta.userLoggedIn) {
+			if (!T.tally_meta.userLoggedIn || Battle.active) {
 				if (DEBUG) console.log("💾 TallyData.startManager() [1]",
-					"T.tally_meta.userLoggedIn =", T.tally_meta.userLoggedIn
+					"T.tally_meta.userLoggedIn =", T.tally_meta.userLoggedIn,
+					"Battle.active =", Battle.active
 				);
 				return false;
 			}

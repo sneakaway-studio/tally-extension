@@ -122,7 +122,8 @@ window.Battle = (function() {
 			details.monsterName = MonsterData.dataById[mid].name + " monster";
 			details.monsterAttacks = AttackData.returnRandomAttacks(4);
 			details.monsterTracker = T.tally_nearby_monsters[mid].tracker.domain;
-			console.log("💥 Battle.start()", "details=", details, mid, T.tally_nearby_monsters[mid]);
+			if (DEBUG) console.log("💥 Battle.start()", "details=", details, mid, T.tally_nearby_monsters[mid]);
+			if (DEBUG) console.log("💥 Battle.start()", "T.tally_user.attacks =", T.tally_user.attacks);
 			// rescale
 			let matrix = $('.tally_monster_sprite_flip').css('transform')
 				.replace('matrix(', "").replace(')', "").replace(' ', "").split(',');
@@ -241,8 +242,6 @@ window.Battle = (function() {
 			TallyData.queue("itemData", "monsters", monsterUpdate);
 			// add tracker to update
 			TallyData.queue("itemData", "trackers", trackerUpdate);
-			// update server after battle not active
-			TallyData.pushUpdate(log);
 
 			if (quit) Battle.quit();
 		} catch (err) {
@@ -261,6 +260,9 @@ window.Battle = (function() {
 			console.log(log);
 			_active = false;
 
+			// update server after battle not active
+			TallyData.pushUpdate(log);
+			
 			// hide console
 			BattleConsole.hide();
 			// put tally back
