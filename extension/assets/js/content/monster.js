@@ -60,7 +60,7 @@ window.Monster = (function () {
 
 			T.tally_nearby_monsters[mid] = {
 				"stage": _stage,
-				"level": returnNewMonsterLevel(),
+				"level": returnNewMonsterLevel(mid),
 				"name": MonsterData.dataById[mid].name,
 				"slug": MonsterData.dataById[mid].slug,
 				"mid": mid,
@@ -87,7 +87,7 @@ window.Monster = (function () {
 	/**
 	 *	Determine and return a monster's level
 	 */
-	function returnNewMonsterLevel() {
+	function returnNewMonsterLevel(mid) {
 		try {
 			// if (DEBUG) console.log("👿 Monster.returnNewMonsterLevel()");
 			let userLevel = T.tally_user.level || 1,
@@ -99,6 +99,24 @@ window.Monster = (function () {
 			let min = Math.floor(userLevel - (userLevel * factor)),
 				max = Math.ceil(userLevel + (userLevel * factor));
 			let level = Math.floor(Math.random() * (max - min) + min) - 1;
+
+
+// new logic below ...
+
+			// if user has already beaten this monster
+			if (T.tally_user.monsters[mid]) {
+				// base monster level on previous highest level for this monster
+				level = T.tally_user.monsters[mid].level +
+					FS_Number.randomIntBetween(
+						-Math.round(T.tally_user.monsters[mid].level * 0.1),
+						Math.round(T.tally_user.monsters[mid].level * 0.3));
+			} else {
+				// first time
+				level = FS_Number.randomIntBetween(1,5);
+			}
+
+
+
 			if (level < 1) level = 1;
 			if (DEBUG) console.log("👿 Monster.returnNewMonsterLevel()",
 				"userLevel =", userLevel, "min, max =", min, max, "level =", level);
