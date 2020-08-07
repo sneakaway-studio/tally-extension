@@ -5,9 +5,9 @@ window.MonsterCheck = (function () {
 	let DEBUG = Debug.ALL.MonsterCheck,
 		highestStage = 0,
 		potential = 0.5, // potential a monster will appear
-		secondsBeforeDelete = 1 * 60 * 60; // seconds to keep a monster in the nearby_monsters queue
-
-
+		secondsBeforeDelete = 1 * 60 * 60, // seconds to keep a monster in the nearby_monsters queue
+		foundStreamSummary = [ /* {mid: 000, stage: 1, tracker: "domain.com"} */ ]
+		;
 
 
 
@@ -208,12 +208,8 @@ window.MonsterCheck = (function () {
 				// save to log after code above
 				if (DEBUG) console.log(log, '[4] -> monster =', MonsterData.dataById[mid].slug, T.tally_nearby_monsters[mid]);
 			}
-
-
-
-
-
-
+			// update the list of found monsters
+			saveFoundForServer();
 			// save monsters
 			TallyStorage.saveData("tally_nearby_monsters", T.tally_nearby_monsters, log);
 			// if set, show monster on page
@@ -227,6 +223,24 @@ window.MonsterCheck = (function () {
 		}
 	}
 
+
+	/**
+	 *	Update the found list
+	 */
+	function saveFoundForServer() {
+		try {
+			for (let m in T.tally_nearby_monsters){
+				foundStreamSummary.push({
+					mid: T.tally_nearby_monsters[m].mid,
+					level: T.tally_nearby_monsters[m].level,
+					stage: T.tally_nearby_monsters[m].stage,
+					tracker: T.tally_nearby_monsters[m].tracker.domain,
+				});
+			}
+		} catch (err) {
+			console.error(err);
+		}
+	}
 
 
 	/**
@@ -366,6 +380,9 @@ window.MonsterCheck = (function () {
 
 	// PUBLIC
 	return {
-		check: check
+		check: check,
+		
+		get foundStreamSummary () { return foundStreamSummary; },
+
 	};
 }());

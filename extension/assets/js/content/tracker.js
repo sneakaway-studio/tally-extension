@@ -16,6 +16,10 @@ window.Tracker = (function () {
 		},
 		painInTheAssDomains = {
 			"amazon.com": "amazon-adsystem.com"
+		},
+		foundAndBlockedDomains = {
+			blocked: [],
+			found: []
 		};
 
 
@@ -89,6 +93,10 @@ window.Tracker = (function () {
 			if (FS_Object.objLength(foundObj) > 0) {
 				// for each tracker
 				for (let trackerUrl in foundObj) {
+					// save the url to push to server
+					foundAndBlockedDomains.found.push(trackerUrl);
+
+					// get categories
 					let cats = TrackersByUrl.data[trackerUrl].cats;
 					// if (DEBUG) console.log(log, "CHECKING CATEGORIES [1]",
 					// 	"trackerUrl =", trackerUrl,
@@ -179,10 +187,12 @@ window.Tracker = (function () {
 						}
 
 					}
+					// save the url to push to server
+					foundAndBlockedDomains.blocked.push(trackerUrl);
+					// add blocked to Page.data.trackers
+					Page.data.trackers.blocked = blocked;
 				}
 			}
-			// add blocked to Page.data.trackers
-			Page.data.trackers.blocked = blocked;
 			// remember the attempt
 			blockAttempted = true;
 			// update progress
@@ -192,9 +202,6 @@ window.Tracker = (function () {
 			console.error(err);
 		}
 	}
-
-
-
 
 
 	let observer,
@@ -269,6 +276,11 @@ window.Tracker = (function () {
 		findAll: findAll,
 		removeBlocked: removeBlocked,
 		setBadgeText: setBadgeText,
+
+		get foundAndBlockedDomains() {
+			return foundAndBlockedDomains;
+		},
+
 		set blockAttempted(value) {
 			blockAttempted = value;
 		},

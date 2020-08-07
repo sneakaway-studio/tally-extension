@@ -85,6 +85,8 @@ window.TallyData = (function () {
 					"tags": Page.data.tags,
 					"time": Page.data.time,
 					"title": Page.data.title,
+					"monsters": MonsterCheck.foundStreamSummary,
+					"trackers": Tracker.foundAndBlockedDomains,
 					"url": Page.data.url
 				},
 				"timezone": Intl.DateTimeFormat().resolvedOptions().timeZone || "",
