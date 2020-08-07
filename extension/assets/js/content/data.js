@@ -244,6 +244,9 @@ window.TallyData = (function () {
 	 */
 	function manager() {
 		try {
+			// don't count down if the page doesn't have focus
+			if (!document.hasFocus()) return;
+
 			let log = "💾 TallyData.manager()";
 			if (DEBUG) console.log(log, "[1] managerCountdown =", managerCountdown);
 
