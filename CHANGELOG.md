@@ -6,9 +6,14 @@
 ## Development Versions
 
 
+### Version 0.3.10
+
+* Fixes bug in DialogueData
+
 ### Version 0.3.9
 
-* Fixes bug in badges 
+* Fixes bug in badges
+* Multiple improvements with server comm
 
 ### Version 0.3.8
 
