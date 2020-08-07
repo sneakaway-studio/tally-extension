@@ -76,6 +76,7 @@ window.Tutorial = (function () {
 					"index": index + "-" + step // e.g. "story1" + "-" + 1
 				});
 				if (!dialogue) {
+					if (DEBUG) console.log("📚 Tutorial.play() [2] NO DIALOGUE RETURNED", index, step, "/", count, dialogue);
 					step = -1;
 					break;
 				}
@@ -239,7 +240,7 @@ window.Tutorial = (function () {
 	// PUBLIC
 	return {
 		set active(value) {
-			active(value); // call internal method to set both true 
+			active(value); // call internal method to set both true
 		},
 		get active() {
 			return _active;
