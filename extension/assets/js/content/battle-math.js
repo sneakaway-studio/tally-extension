@@ -109,12 +109,21 @@ window.BattleMath = (function () {
 			// get stats
 			let self = Stats.get(selfStr),
 				opp = Stats.get(oppStr),
+				selfLevel = 1,
+				oppLevel = 1,
 				noEffect = true,
 				stat = "",
 				affectsStat = "",
 				attackOutcomes = [], // track the outcome(s) of the attack to log them
 				outcome = {}; // default outcome
 
+			if (selfStr == "monster"){
+				selfLevel = Monster.current().level;
+				oppLevel = T.tally_user.level;
+			} else if (selfStr == "tally"){
+				selfLevel = T.tally_user.level;
+				oppLevel = Monster.current().level;
+			}
 
 
 			// ************** STAMINA FIRST **************
@@ -138,23 +147,11 @@ window.BattleMath = (function () {
 				if (self == "tally" && ++tallyMisses < 2)
 					return "missed";
 				else
-				 	return "missed";
+					return "missed";
 			}
 			// was it a special attack?
 			else if (FS_Object.prop(attack.special)) {
 				console.log("🔢 BattleMath.returnAttackOutcomes() SPECIAL ATTACK !", attack.special);
-
-//  MARKED FOR DELETION - HANDLED IN SIDE battle-attack now
-				// // types...
-				// if (attack.special === "opp-loses-1-turn") {
-				// 	return "opp-loses-1-turn";
-				// } else if (attack.special === "opp-loses-2-turns") {
-				// 	return "opp-loses-2-turns";
-				// } else if (attack.special === "opp-loses-3-turns") {
-				// 	return "opp-loses-3-turns";
-				// }
-
-
 				outcome = outcomeData[attack.special]; // get data
 				// make sure its defined
 				if (outcome) {
@@ -189,11 +186,14 @@ window.BattleMath = (function () {
 				stat = "health";
 				affectsStat = "oppHealth";
 				outcome = outcomeData[affectsStat];
-				outcome.change = -(FS_Number.round(opp[stat].max * attack[affectsStat], 3));
+				// change = (max opp stat * the normalized attack stat) + (self level * the normalized attack stat)
+				// e.g. tally (lvl 40) vs. monster (level 5) gives the advantage to tally
+				// e.g. monster (lvl 40) vs. tally (level 5) gives the advantage to monster
+				outcome.change = -(FS_Number.round((opp[stat].max * attack[affectsStat]) + (selfLevel * attack[affectsStat]), 3));
 				if (DEBUG) console.log(
 					"outcome.change [" + outcome.change + "] = -(FS_Number.round(" +
-					"opp[stat].max [" + opp[stat].max + "] *",
-					"attack[affectsStat] [" + attack[affectsStat] + "] , 1))"
+					"opp[stat].max [" + opp[stat].max + "] *", "attack[affectsStat] [" + attack[affectsStat] + "] + " +
+					"selfLevel [" + selfLevel + "] * attack[affectsStat] [" + attack[affectsStat] + "] , 3))"
 				);
 				if (DEBUG) console.log("opp[stat].val [" + opp[stat].val + "] + outcome.change [" + outcome.change + "] = " +
 					(opp[stat].val + outcome.change));
@@ -223,7 +223,7 @@ window.BattleMath = (function () {
 				stat = "attack";
 				affectsStat = "oppAtk";
 				outcome = outcomeData[affectsStat];
-				outcome.change = -(FS_Number.round(opp[stat].max * attack[affectsStat], 1));
+				outcome.change = -(FS_Number.round((opp[stat].max * attack[affectsStat]) + (selfLevel * attack[affectsStat]), 3));
 				opp[stat].val = Stats.setVal(oppStr, outcome.stat, opp[stat].val + outcome.change);
 				attackOutcomes.push(outcome);
 				logOutcome(affectsStat, outcome, "opp", opp);
@@ -247,7 +247,7 @@ window.BattleMath = (function () {
 				stat = "accuracy";
 				affectsStat = "oppAcc";
 				outcome = outcomeData[affectsStat];
-				outcome.change = -(FS_Number.round(opp[stat].max * attack[affectsStat], 1));
+				outcome.change = -(FS_Number.round((opp[stat].max * attack[affectsStat]) + (selfLevel * attack[affectsStat]), 3));
 				opp[stat].val = Stats.setVal(oppStr, outcome.stat, opp[stat].val + outcome.change);
 				attackOutcomes.push(outcome);
 				logOutcome(affectsStat, outcome, "opp", opp);
@@ -271,7 +271,7 @@ window.BattleMath = (function () {
 				stat = "evasion";
 				affectsStat = "oppEva";
 				outcome = outcomeData[affectsStat];
-				outcome.change = -(FS_Number.round(opp[stat].max * attack[affectsStat], 1));
+				outcome.change = -(FS_Number.round((opp[stat].max * attack[affectsStat]) + (selfLevel * attack[affectsStat]), 3));
 				opp[stat].val = Stats.setVal(oppStr, outcome.stat, opp[stat].val + outcome.change);
 				attackOutcomes.push(outcome);
 				logOutcome(affectsStat, outcome, "opp", opp);
@@ -295,16 +295,18 @@ window.BattleMath = (function () {
 				stat = "defense";
 				affectsStat = "oppDef";
 				outcome = outcomeData[affectsStat];
-				outcome.change = -(FS_Number.round(opp[stat].max * attack[affectsStat], 1));
+				outcome.change = -(FS_Number.round((opp[stat].max * attack[affectsStat]) + (selfLevel * attack[affectsStat]), 3));
 				opp[stat].val = Stats.setVal(oppStr, outcome.stat, opp[stat].val + outcome.change);
 				attackOutcomes.push(outcome);
 				logOutcome(affectsStat, outcome, "opp", opp);
 			}
 
 
-			if (DEBUG) console.log("🔢 BattleMath.returnAttackOutcomes() final stats = ", selfStr + " 🧨 " + oppStr, attack,
-				"\n --> self=", JSON.stringify(self),
-				"\n --> opp=", JSON.stringify(opp));
+			if (DEBUG) console.log("🔢 BattleMath.returnAttackOutcomes() final stats = ",
+				selfStr + " 🧨 " + oppStr, attack
+				// ,"\n --> self=", JSON.stringify(self),
+				// "\n --> opp=", JSON.stringify(opp)
+			);
 
 			// check to make sure there was an effect
 			for (let i = 0; i < attackOutcomes.length; i++) {
