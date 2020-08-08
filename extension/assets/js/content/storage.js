@@ -5,9 +5,11 @@
 
 window.TallyStorage = (function () {
 
-	let DEBUG = Debug.ALL.TallyStorage;
+	let DEBUG = Debug.ALL.TallyStorage,
+		backgroundConnectErrors = 0;
 
 	console.log("%c   Hi, I'm Tally!", Debug.tallyConsoleIcon);
+
 
 
 	/**
@@ -20,12 +22,17 @@ window.TallyStorage = (function () {
 				'action': 'getDataFromServer',
 				'url': url
 			};
+
+			// stop if background disconnected
+			if (backgroundConnectErrors >= 3) return;
+
 			chrome.runtime.sendMessage(msg, function (response) {
 				if (DEBUG) console.log("🗄️ > TallyStorage.getDataFromServer() RESPONSE =", JSON.stringify(response));
 				//TallyMain.sync(start);
 				callback(response);
 			});
 		} catch (err) {
+			backgroundConnectErrors ++;
 			console.error(err);
 		}
 	}
@@ -40,11 +47,16 @@ window.TallyStorage = (function () {
 				'action': 'getData',
 				'name': name
 			};
+
+			// stop if background disconnected
+			if (backgroundConnectErrors >= 3) return;
+
 			chrome.runtime.sendMessage(msg, function (response) {
 				if (DEBUG) console.log("🗄️ > TallyStorage.getData() RESPONSE =", name, JSON.stringify(response));
 				return response.data;
 			});
 		} catch (err) {
+			backgroundConnectErrors ++;
 			console.error(err);
 		}
 	}
@@ -59,12 +71,17 @@ window.TallyStorage = (function () {
 				'data': data
 			};
 			if (DEBUG) console.log("🗄️ < TallyStorage.saveData() <", caller, msg);
+
+			// stop if background disconnected
+			if (backgroundConnectErrors >= 3) return;
+
 			chrome.runtime.sendMessage(msg, function (response) {
 				// if (DEBUG) console.log("🗄️ > TallyStorage.saveData() RESPONSE =", name, caller, JSON.stringify(response));
 				// no response needed
 				//return response.data;
 			});
 		} catch (err) {
+			backgroundConnectErrors ++;
 			console.error(err);
 		}
 	}
@@ -87,6 +104,9 @@ window.TallyStorage = (function () {
 			if (DEBUG) console.log("< 🗄️ TallyStorage.resetTallyUserFromServer() [1.2]",
 				"Page.data.actions.resetTallyUserFromServerCalled =", Page.data.actions.resetTallyUserFromServerCalled);
 
+			// stop if background disconnected
+			if (backgroundConnectErrors >= 3) return;
+
 			// send message
 			chrome.runtime.sendMessage({
 				'action': 'resetTallyUserFromServer'
@@ -107,6 +127,7 @@ window.TallyStorage = (function () {
 				TallyMain.contentStartChecks();
 			});
 		} catch (err) {
+			backgroundConnectErrors ++;
 			console.error(err);
 		}
 	}
@@ -159,6 +180,10 @@ window.TallyStorage = (function () {
 	 */
 	function returnNewStartupPromise(name) {
 		try {
+
+			// stop if background disconnected
+			if (backgroundConnectErrors >= 3) return;
+
 			// add new promise
 			return new Promise((resolve, reject) => {
 				Debug.elapsedTime("🗄️ TallyStorage.returnNewStartupPromise() [1] (create) " + name + " ");
@@ -183,6 +208,7 @@ window.TallyStorage = (function () {
 				});
 			});
 		} catch (err) {
+			backgroundConnectErrors ++;
 			console.error(err);
 		}
 	}
@@ -247,6 +273,10 @@ window.TallyStorage = (function () {
 		get startupPromises() {
 			return startupPromises;
 		},
+
+		set backgroundConnectErrors (value) { backgroundConnectErrors = value; },
+		get backgroundConnectErrors () { return backgroundConnectErrors; },
+
 		getDataFromServer: getDataFromServer,
 		getDataFromBackground: getDataFromBackground,
 		getData: getData,

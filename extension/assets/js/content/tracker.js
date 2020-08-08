@@ -258,6 +258,10 @@ window.Tracker = (function () {
 		try {
 			// icons are too small and covers Tally icon in Opera
 			if (Page.data.browser.name === "Opera") return;
+
+			// stop if background disconnected
+			if (TallyStorage.backgroundConnectErrors >= 3) return;
+
 			chrome.runtime.sendMessage({
 				'action': 'setBadgeText',
 				'data': data
@@ -265,6 +269,7 @@ window.Tracker = (function () {
 				if (DEBUG) console.log("🕷️ Tracker.setBadgeText() response =", response);
 			});
 		} catch (err) {
+			TallyStorage.backgroundConnectError++;
 			console.error(err);
 		}
 	}

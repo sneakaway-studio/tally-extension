@@ -254,21 +254,21 @@ window.TallyData = (function () {
 			managerCountdown -= 1;
 
 			// if there are edits then then consider pushing update
-			if (backgroundUpdateEdits > 0 && managerCountdown < 0 && !backgroundUpdateSending) {
+			if (backgroundUpdateEdits > 0 && managerCountdown <= 0 && !backgroundUpdateSending) {
 				// if time complete then send update
 
-				if (DEBUG) console.log(log, "[2] SENDING TO pushUpdate()",
-					"backgroundUpdateEdits =", backgroundUpdateEdits,
-					"managerCountdown =", managerCountdown,
-					"backgroundUpdateSending =", backgroundUpdateSending
-				);
+				managerCountdown = -1;
+
+				// if (DEBUG) console.log(log, "[2] SENDING TO pushUpdate()",
+				// 	"backgroundUpdateEdits =", backgroundUpdateEdits,
+				// 	"backgroundUpdateSending =", backgroundUpdateSending
+				// );
 				// update background / server if anything has changed
 				pushUpdate("💾 TallyData.startManager()");
-
 			}
 			// safety - else kill interval and reset everything
-			if (managerCountdown < -2) {
-				if (DEBUG) console.log(log, " [3] SAFETY FIRST");
+			if (managerCountdown < -1) {
+				if (DEBUG) console.log(log, "[3] !!! SAFETY FIRST");
 				// clearTimeout(managerInterval);
 				resetManager();
 			}
@@ -284,33 +284,41 @@ window.TallyData = (function () {
 	 */
 	function pushUpdate(caller) {
 		try {
+			if (DEBUG) Debug.dataReportHeader("💾 < TallyData.pushUpdate() [0] caller = " + caller, "#", "before");
 			// don't send if not online
-			if (!T.tally_meta.userLoggedIn || Battle.active) {
-				if (DEBUG) console.log("💾 TallyData.startManager() [1]",
-					"T.tally_meta.userLoggedIn =", T.tally_meta.userLoggedIn,
-					"Battle.active =", Battle.active
-				);
+			if (!T.tally_meta.userLoggedIn) {
+				if (DEBUG) console.log("💾 TallyData.pushUpdate() [1] STOP: T.tally_meta.userLoggedIn =", T.tally_meta.userLoggedIn);
 				return false;
 			}
+			if (Battle.active) {
+				if (DEBUG) console.log("💾 TallyData.pushUpdate() [1] STOP: Battle.active =", Battle.active);
+				return false;
+			}
+
 
 			// no need to send if not updated
 			if (backgroundUpdateEdits < 1) return;
 			// do not attempt if currently sending
 			if (backgroundUpdateSending === true) return;
+
+			// stop if background disconnected
+			if (TallyStorage.backgroundConnectErrors >= 3) return;
+
+			// flags and checks before sending the update
+			if (DEBUG) console.log('💾 > TallyData.pushUpdate() [1.1] backgroundUpdate =', backgroundUpdate);
+
 			// set to true to prevent additional sending
 			backgroundUpdateSending = true;
-
-			// checks before sending the update
-
 			// update and reset time
 			backgroundUpdate.pageData.time = Page.data.time;
 			Page.data.time = 0;
-
 			// don't send tags again
 			if (pageHasBeenPushedToServer)
 				backgroundUpdate.pageData.tags = [];
 
 			pageHasBeenPushedToServer = true;
+
+			if (DEBUG) console.log('💾 > TallyData.pushUpdate() [1.2] backgroundUpdate =', backgroundUpdate);
 
 			// send update to background (which will determine whether to send to server)
 			chrome.runtime.sendMessage({
@@ -355,6 +363,7 @@ window.TallyData = (function () {
 			resetManager();
 
 		} catch (err) {
+			TallyStorage.backgroundConnectErrors++;
 			console.error(err);
 		}
 	}

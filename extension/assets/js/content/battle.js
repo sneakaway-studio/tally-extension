@@ -3,7 +3,7 @@
 /*  BATTLE
  ******************************************************************************/
 
-window.Battle = (function() {
+window.Battle = (function () {
 	// PRIVATE
 
 	let DEBUG = Debug.ALL.Battle,
@@ -150,7 +150,7 @@ window.Battle = (function() {
 				"display": "block"
 			});
 			// add stats display / hide action
-			$('.monster_stats').on("click", function(e) {
+			$('.monster_stats').on("click", function (e) {
 				//console.log("hi",$('.monster_stats_table').css("display"));
 				if ($('.monster_stats_table').css("display") == "none")
 					$('.monster_stats_table').css({
@@ -171,15 +171,16 @@ window.Battle = (function() {
 			// show console
 			BattleConsole.display();
 			// log intro message
-			setTimeout(function() {
+			setTimeout(function () {
 				Dialogue.showData(Dialogue.getData({
-					category: "battle", subcategory: "start"
+					category: "battle",
+					subcategory: "start"
 				}));
 				// display stats
 				StatsDisplay.updateDisplay("monster");
 				// log intro...
 				BattleConsole.log("t:/game/battle/start...");
-				BattleConsole.log("Running Tally "+ T.tally_meta.version + " BattleConsole 0.1");
+				BattleConsole.log("Running Tally " + T.tally_meta.version + " BattleConsole 0.1");
 				BattleConsole.log("#########################################");
 				BattleConsole.log("Battle started with <span class='tally text-green'>" + MonsterData.dataById[mid].tier1 + " &gt; " + details.monsterName + "</span>!");
 				// wait for tally to attack first ...
@@ -190,14 +191,14 @@ window.Battle = (function() {
 		}
 	}
 
-	Mousetrap.bind('escape', function() {
+	Mousetrap.bind('escape', function () {
 		Battle.end(true);
 	});
 
 	/**
 	 *	Run all the battle finish scripts
 	 */
-	function end(quit=false) {
+	function end(quit = false) {
 		try {
 			if (!_active) return;
 			let log = "💥 Battle.end()";
@@ -242,6 +243,10 @@ window.Battle = (function() {
 			TallyData.queue("itemData", "monsters", monsterUpdate);
 			// add tracker to update
 			TallyData.queue("itemData", "trackers", trackerUpdate);
+			// set battle not active so we can push update
+			_active = false;
+			// update server
+			TallyData.pushUpdate(log);
 
 			if (quit) Battle.quit();
 		} catch (err) {
@@ -255,14 +260,10 @@ window.Battle = (function() {
 	 */
 	function quit() {
 		try {
-			if (!_active) return;
+			// if (!_active) return;
 			let log = "💥 Battle.quit()";
 			console.log(log);
-			_active = false;
 
-			// update server after battle not active
-			TallyData.pushUpdate(log);
-			
 			// hide console
 			BattleConsole.hide();
 			// put tally back
@@ -283,12 +284,16 @@ window.Battle = (function() {
 				Dialogue.showData({
 					"text": "There are likely other trackers nearby",
 					"mood": "cautious"
-				}, { instant: true });
+				}, {
+					instant: true
+				});
 			} else {
 				Dialogue.showData({
 					"text": "The battle is over!",
 					"mood": "happy"
-				}, { instant: true });
+				}, {
+					instant: true
+				});
 			}
 
 			// hide monster
@@ -320,7 +325,7 @@ window.Battle = (function() {
 			// reload page if tally won (because it was exploded)
 			if (Battle.details.winner === "tally") {
 				// reset page after a moment
-				setTimeout(function() {
+				setTimeout(function () {
 					location.reload();
 				}, 800);
 			}
@@ -332,8 +337,12 @@ window.Battle = (function() {
 
 	// PUBLIC
 	return {
-		set active (value) { _active = value; },
-		get active () { return _active; },
+		set active(value) {
+			_active = value;
+		},
+		get active() {
+			return _active;
+		},
 
 		start: start,
 		end: end,

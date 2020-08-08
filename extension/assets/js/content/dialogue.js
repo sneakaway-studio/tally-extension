@@ -724,7 +724,7 @@ window.Dialogue = (function () {
 	 */
 	function showSurveyPrompt() {
 		try {
-			if (DEBUG) console.log("💬 Dialogue.showSurveyPrompt() subcategory=" + subcategory);
+			if (DEBUG) console.log("💬 Dialogue.showSurveyPrompt()");
 			Dialogue.showStr("Want to give feedback? <a href='https://tallysavestheinternet.com/about#feedback'>Have feedback about the game or find an issue?</a>", "question");
 		} catch (err) {
 			console.error(err);

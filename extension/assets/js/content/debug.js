@@ -13,7 +13,7 @@ window.Debug = (function () {
 
 			// battles
 			BattleAttack: true,
-			BattleConsole: false,
+			BattleConsole: true,
 			BattleEffect: false,
 			BattleMath: true,
 			BattleTest: true,
@@ -118,10 +118,15 @@ window.Debug = (function () {
 				'action': 'reportToAnalytics',
 				'report': report
 			};
+
+			// stop if background disconnected
+			if (TallyStorage.backgroundConnectErrors >= 3) return;
+
 			chrome.runtime.sendMessage(msg, function (response) {
 				if (DEBUG) console.log("🗜️ Debug.reportToAnalytics() RESPONSE =", JSON.stringify(response));
 			});
 		} catch (err) {
+			TallyStorage.backgroundConnectErrors++;
 			console.error(err);
 		}
 	}
@@ -143,11 +148,16 @@ window.Debug = (function () {
 				'caller': caller,
 				'str': str
 			};
+
+			// stop if background disconnected
+			if (TallyStorage.backgroundConnectErrors >= 3) return;
+
 			chrome.runtime.sendMessage(msg, function (response) {
 				let endTime = new Date().getTime();
 				// if (DEBUG) console.log("🗜️ Debug.sendBackgroundDebugMessage() time = " + (endTime - startTime) + "ms, RESPONSE =", JSON.stringify(response));
 			});
 		} catch (err) {
+			TallyStorage.backgroundConnectErrors++;
 			console.error(err);
 		}
 	}
