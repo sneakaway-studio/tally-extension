@@ -91,6 +91,7 @@ window.TallyData = (function () {
 				},
 				"timezone": Intl.DateTimeFormat().resolvedOptions().timeZone || "",
 				"userAgent": navigator.userAgent || "",
+				"version": T.tally_meta.version || "",
 			};
 		} catch (err) {
 			console.error(err);

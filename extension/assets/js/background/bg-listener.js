@@ -328,17 +328,19 @@ window.Listener = (function () {
 							dataType: 'json',
 							data: JSON.stringify(request.data)
 						}).done(result => {
-							// result contains tally_user
-							if (DEBUG) console.log("👂🏼 Listener.addListener() > sendUpdateToBackground, result.username = %c" + JSON.stringify(result.username), Debug.styles.greenbg);
-
 							// if tally_user returned
 							if (result.username) {
+								// result contains tally_user
+								if (DEBUG) console.log("👂🏼 Listener.addListener() > sendUpdateToBackground, result.username = %c" +
+									JSON.stringify(result.username), Debug.styles.greenbg);
+
 								// merge attack data from server with game data properties
 								result.attacks = Server.mergeAttackDataFromServer(result.attacks);
 								// then send to .a
 								_tally_meta.userLoggedIn = true;
 								return true;
 							} else {
+								if (DEBUG) console.log("👂🏼 Listener.addListener() > sendUpdateToBackground, %cresult.username", Debug.styles.redbg);
 								// else update tally_meta
 								_tally_meta.userLoggedIn = false;
 								return false;
