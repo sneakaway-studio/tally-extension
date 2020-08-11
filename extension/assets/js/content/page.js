@@ -109,7 +109,7 @@ window.Page = (function () {
 			// object
 			let newData = {
 				browser: {
-					name: Environment.getBrowserName() || "",
+					name: "",
 					cookieEnabled: navigator.cookieEnabled || "",
 					language: Environment.getBrowserLanguage() || "",
 					platform: Environment.getPlatform() || "",

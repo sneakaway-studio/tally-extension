@@ -9,6 +9,7 @@
 ### Version 0.3.10
 
 * Fixes bug in DialogueData
+* Lots of Dialogue improvements and additions
 
 ### Version 0.3.9
 

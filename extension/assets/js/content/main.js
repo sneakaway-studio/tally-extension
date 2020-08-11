@@ -80,13 +80,15 @@ window.TallyMain = (function () {
 			// 2.2. Check for Flags (in case we need to pause and restart game with data)
 			if (DEBUG) console.log(log, '[2.2] -> Check for flags');
 
-            // SET PAGE INFO
+			// SET PAGE INFO
+
 			// are we on the tally website?
 			Page.data.actions.onTallyWebsite = Page.data.url.includes(T.tally_meta.website) || false;
 			// if so are we on the dashboard?
 			if (Page.data.actions.onTallyWebsite)
 				Page.data.actions.onDashboard = Page.data.url.includes("/dashboard") || false;
-
+			// browser name is async op
+			Page.data.browser.name = await Environment.getBrowserName();
 
 			// if user has just logged into their account on Tally website
 			let dashboardLogin = await Flag.checkForDashboardLogin();
@@ -108,7 +110,7 @@ window.TallyMain = (function () {
 			// stop if page mode marked notActive
 			if (Page.data.mode.notActive) return console.log(" NOT ACTIVE - Page.data.mode =", Page.data.mode);
 
-            // send page report
+			// send page report
 			Debug.reportToAnalytics({
 				type: "pageview",
 				url: Page.data.url,
