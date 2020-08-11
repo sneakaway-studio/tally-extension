@@ -305,38 +305,41 @@ window.Tally = (function () {
 			// ELSE CONTINUE...
 
 
-			if (DEBUG) console.log("%c   Tally.interactionHandler()", Debug.tallyConsoleIcon, interaction,
-				"Tutorial.sequenceActive", Tutorial.sequenceActive);
+			if (DEBUG) console.log("%c   Tally.interactionHandler()", Debug.tallyConsoleIcon,
+				"interaction =", interaction,
+				"Tutorial.sequenceActive =", Tutorial.sequenceActive);
+
 			// don't allow tally interactions to happen when global tutorial sequence running
-			if (Tutorial.sequenceActive) {
-				return;
-			}
+			if (Tutorial.sequenceActive) return;
+
 
 			// MOUSE ENTER
 			if (interaction === 'mouseenter') {
 				if (DEBUG) console.log("%c   Tally.interactionHandler()", Debug.tallyConsoleIcon, interaction);
 
 				// the first time
-				if (Progress.update("mouseEnterTally", 1, "+") < 1) {
-					if (Progress.update("toldToDragTally", 1, "+") < 1) {
-						// tell them more
-						Dialogue.showData({
-							"text": "Did you know that you can drag me around the screen?",
-							"mood": "question"
-						}, {
-							instant: true
-						});
-					}
+				if (Progress.update("mouseEnterTally", 1, "+") < 20 || Math.random() > 0.9) {
+					// tell them a tip
+					Dialogue.showData(Dialogue.getData({
+						category: "random",
+						subcategory: "tip"
+					}), {
+						addIfInProcess: false,
+						instant: true
+					});
 				} else {
 
 					let // % chance any dialog will show
 						chance = Math.random(),
 						// which dialogue will show
 						which = Math.random();
+
 					// check/update progress, after the first time then only show half the time
-					if (Progress.get("mouseEnterTally") > 0)
+					if (Progress.get("mouseEnterTally") > 0) {
 						if (which < 0.5) chance = true;
 						else chance = false;
+					}
+
 					// if wearing a disguise then say something about it
 					if (chance && which < 0.25 && FS_Object.objLength(T.tally_user.disguises)) {
 						Dialogue.showData(Dialogue.getData({
@@ -346,14 +349,16 @@ window.Tally = (function () {
 							addIfInProcess: false,
 							instant: true
 						});
-					} else if (chance && which < 0.5)
+					} else if (chance && which < 0.5) {
 						Dialogue.showData(Dialogue.getData({
 							"category": "random",
-							subcategory: "greeting"
+							subcategory: "conversation"
 						}), {
 							addIfInProcess: false,
 							instant: true
 						});
+					}
+
 				}
 
 			} else if (interaction === 'mouseleave') {
@@ -501,22 +506,33 @@ window.Tally = (function () {
 				// tests
 				// Skin.random();
 				// Dialogue.test();
-				// Dialogue.showData(Dialogue.getData({ "category": "random", subcategory: "greeting" }), {});
 				// Dialogue.random();
 
 
+				// don't allow when global tutorial sequence running
+				if (!Tutorial.sequenceActive)
+					Dialogue.showData(Dialogue.getData({
+						"category": "random",
+						subcategory: "conversation"
+					}), {
+						addIfInProcess: false,
+						instant: true
+					});
 
 
 				// update progress
-				if (Progress.update("clickTallySingle", 1, "+") < 1)
+				if (Progress.update("clickTallySingle", 1, "+") < 5 && Math.random() > 0.8) {
 					// tell them more
 					if (Progress.update("toldToClickDouble", 1, "+") < 1)
 						Dialogue.showStr("Double click me!", "happy");
 					else
 						Dialogue.showStr("Double click me to see a menu!", "happy");
+				}
 			}
-			// TWO CLICKS
+			// TWO CLICKS - ALWAYS SHOW MENU
 			else if (clickCount === 2) {
+				// always reset any sequence
+				Tutorial.sequenceActive = false;
 				// update progress
 				Progress.update("clickTallyDouble", 1, "+");
 				// build string and show
@@ -530,14 +546,14 @@ window.Tally = (function () {
 					instant: true
 				});
 			}
-			// THREE CLICKS
+			// THREE CLICKS - JOKING TIME
 			else if (clickCount === 3) {
 				// update progress
 				Progress.update("clickTallyTriple", 1, "+");
-				Dialogue.showData({
-					text: "A triple click!",
-					mood: "happy"
-				}, {
+				Dialogue.showData(Dialogue.getData({
+					category: "tally",
+					subcategory: "triple-click"
+				}), {
 					instant: true
 				});
 				// pick a random joke
@@ -595,17 +611,17 @@ window.Tally = (function () {
 				"";
 			Dialogue.showData({
 				"text": str,
-				"mood": "happy"
+				"mood": "question"
 			}, {
 				instant: true
 			});
 
-			str = "Check out <a class='tally' id='tally_howToPlay'>How to Play</a>, " +
-				"the <a class='tally' id='tally_faq'>FAQ</a>, " +
-				"or the <a class='tally' id='tally_gameTrailerBtn'>game trailer</a>. ";
+			str = "Check out the <a class='tally' id='tally_howToPlay'>How to Play</a>, " +
+				"or <a class='tally' id='tally_faq'>FAQ</a> pages, " +
+				"or watch the <a class='tally' id='tally_gameTrailerBtn'>game trailer</a>? ";
 			Dialogue.showData({
 				"text": str,
-				"mood": "happy"
+				"mood": "question"
 			}, {
 				instant: false
 			});
@@ -614,7 +630,7 @@ window.Tally = (function () {
 				'<a target="_blank" href="https://docs.google.com/forms/d/e/1FAIpQLScUG923UhVtFWzLaV5gOsd0e1grdS9iKeNLjdwPixKEJkn4bQ/viewform">find an issue</a>?';
 			Dialogue.showData({
 				"text": str,
-				"mood": "happy"
+				"mood": "question"
 			}, {
 				instant: false
 			});
@@ -650,14 +666,6 @@ window.Tally = (function () {
 				window.open("https://www.youtube.com/watch?v=hBfq8TNHbCE");
 			});
 
-			// nerd out
-			$(document).on('click', '#tally_privacyPolicy', function () {
-				window.open(T.tally_meta.website + "/privacy");
-			});
-			$(document).on('click', '#tally_betaTestSurvey', function () {
-				window.open("https://docs.google.com/forms/d/e/1FAIpQLSeGx8zsF4aMQZH1eM0SzOvcpXijt8Bem1pzg4eni9eK8Jr-Lg/viewform");
-			});
-
 		} catch (err) {
 			console.error(err);
 		}
@@ -687,7 +695,7 @@ window.Tally = (function () {
 				"<a class='tally' id='tally_explodePage'>explode</a>;<br>" +
 
 				"Dialogue: <a class='tally' id='tally_randomDialogue'>random</a> " +
-				"<a class='tally' id='tally_randomConversation'>conversation</a>; " +
+				"<a class='tally' id='tally_random'>greeting</a>; " +
 
 				"Skin: <a class='tally' id='tally_randomSkin'>random</a>" +
 				"";
@@ -723,7 +731,7 @@ window.Tally = (function () {
 			$(document).on('click', '#tally_randomDialogue', function () {
 				Dialogue.random();
 			});
-			$(document).on('click', '#tally_randomConversation', function () {
+			$(document).on('click', '#tally_random', function () {
 				Dialogue.test();
 			});
 

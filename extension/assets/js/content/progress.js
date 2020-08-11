@@ -187,14 +187,22 @@ window.Progress = (function () {
 
 			///////// GENERAL: ONBOARDING /////////////////////////////////////////////
 
-			// NOTE: tutorials increment their own progress
-			if (Page.data.url.includes("/how-to-play") && get("viewOnboardingHowto1") < 2) {
-				Tutorial.play("tutorial","onboardingHowto1");
+			if (Page.data.actions.onTallyWebsite) {
+				// NOTE: tutorials increment their own progress
+				if (Page.data.url.includes("/how-to-play") && get("viewOnboardingHowto1") < 2) {
+					Tutorial.play("tutorial", "onboardingHowto1");
+				} else if (Page.data.url.includes("/how-to-play") && get("viewOnboardingHowto2") < 2) {
+					Tutorial.play("tutorial", "onboardingHowto2");
+				} else if (Page.data.url.includes("/faq") && get("viewOnboardingFaq1") < 2) {
+					Tutorial.play("tutorial", "onboardingFaq1");
+				} else if (Math.random() > 0.9) {
+					// play random
+					Dialogue.showData(Dialogue.getData({
+						category: "tutorial",
+						subcategory: "tally-website"
+					}));
+				}
 			}
-			if (Page.data.url.includes("/faq") && get("viewOnboardingFaq1") < 2) {
-				Tutorial.play("tutorial","onboardingFaq1");
-			}
-
 
 			///////// PAGE: CONTENT ///////////////////////////////////////////////////
 
@@ -365,14 +373,37 @@ window.Progress = (function () {
 
 			// called at beginning of page load so add delay before game things (dialogue, sound, etc.)
 			setTimeout(function () {
-				// 1. if this is the first time user is logging in
-				if (dashboardLogins < 10 && (accountCreatedWelcomeMessage <= 1 || accountCreatedWelcomeMessage % 3 === 0)) {
-					playGreeting();
+
+				// 1a. first time
+				if (accountCreatedWelcomeMessage <= 4) {
+					// play introduction
+					Dialogue.showData(Dialogue.getData({
+						category: "random",
+						subcategory: "introduction"
+					}));
+					// let them know their account is updated
 					Dialogue.showData(Dialogue.getData({
 						category: "account",
 						subcategory: "updated"
 					}));
-					playDashboardIntro();
+				}
+				// 1b. if this is the first time user is logging in
+				if (dashboardLogins < 10 && (accountCreatedWelcomeMessage <= 1 || accountCreatedWelcomeMessage % 3 === 0)) {
+					// play onboarding tutorial
+					Tutorial.play("tutorial", "onboardingDashboard1");
+					Dialogue.showData(Dialogue.getData({
+						category: "help",
+						subcategory: "how-to-play"
+					}));
+					playLetsFindTrackers();
+				}
+				// 1c. the user has logged in before but not every often
+				else if (dashboardLogins < 10 && (accountCreatedWelcomeMessage <= 4 || accountCreatedWelcomeMessage % 3 === 0)) {
+					// play onboarding tutorial
+					if (get("onboardingDashboard2") < 2) {
+						// play onboarding tutorial
+						Tutorial.play("tutorial", "onboardingDashboard2");
+					}
 					Dialogue.showData(Dialogue.getData({
 						category: "help",
 						subcategory: "how-to-play"
@@ -381,6 +412,10 @@ window.Progress = (function () {
 				}
 				// if user has been here before
 				else {
+					Dialogue.showData(Dialogue.getData({
+						category: "random",
+						subcategory: "greeting"
+					}));
 					// sometimes we should run this
 					let r = Math.random();
 					if (r < 0.2) {
@@ -436,33 +471,9 @@ window.Progress = (function () {
 		}
 	}
 
-	function playGreeting() {
-		try {
-			let r = Math.random();
-			if (r < 0.33) {
-				Dialogue.showStr("Oh hi! I'm Tally!!!", "happy");
-			} else if (r < 0.66) {
-				Dialogue.showStr("Hello!", "happy");
-				Dialogue.showStr("I'm Tally!!!", "happy");
-			} else {
-				Dialogue.showStr("My name is Tally!!!", "happy");
-			}
-		} catch (err) {
-			console.error(err);
-		}
-	}
 
 
 
-	function playDashboardIntro() {
-		try {
-			Dialogue.showStr("This is your dashboard.", "happy");
-			Dialogue.showStr("You can edit your profile here.", "happy");
-			Dialogue.showStr("Good to stay anonymous though, what with all the monsters around...", "cautious");
-		} catch (err) {
-			console.error(err);
-		}
-	}
 
 	function playLetsFindTrackers() {
 		try {

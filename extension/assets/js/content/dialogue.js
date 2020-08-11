@@ -761,7 +761,7 @@ window.Dialogue = (function () {
 			// };
 			let dialogue = getData(dialogueReq);
 
-			// console.log("💬 Dialogue.test()", dialogue);
+			console.log("💬 Dialogue.test()", dialogue);
 
 			// show
 			Dialogue.showData(dialogue);

@@ -45,7 +45,7 @@ window.Badge = (function () {
 			// don't allow if mode disabled or stealth
 			if (T.tally_options.gameMode === "disabled" || T.tally_options.gameMode === "stealth") return;
 			// don't allow on dashboard
-			if (Page.data.url.includes("/dashboard")) return;
+			if (Page.data.actions.onDashboard) return;
 
 			let log = "🏆 Badge.check()",
 				badge = {};

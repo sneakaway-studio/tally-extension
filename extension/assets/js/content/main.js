@@ -80,11 +80,12 @@ window.TallyMain = (function () {
 			// 2.2. Check for Flags (in case we need to pause and restart game with data)
 			if (DEBUG) console.log(log, '[2.2] -> Check for flags');
 
+            // SET PAGE INFO
 			// are we on the tally website?
 			Page.data.actions.onTallyWebsite = Page.data.url.includes(T.tally_meta.website) || false;
 			// if so are we on the dashboard?
 			if (Page.data.actions.onTallyWebsite)
-				Page.data.actions.onDashboard = Page.data.url.includes(T.tally_meta.website + "/dashboard") || false;
+				Page.data.actions.onDashboard = Page.data.url.includes("/dashboard") || false;
 
 
 			// if user has just logged into their account on Tally website
