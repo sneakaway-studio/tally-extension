@@ -8,6 +8,7 @@ window.Battle = (function () {
 
 	let DEBUG = Debug.ALL.Battle,
 		_active = false,
+		_quit = false,
 		tallyBattleFloatingAnim = null,
 		monsterBattleFloatingAnim = null,
 		details = createNewBattleDetails();
@@ -262,7 +263,13 @@ window.Battle = (function () {
 		try {
 			// if (!_active) return;
 			let log = "💥 Battle.quit()";
-			console.log(log);
+			console.log(log, "_active =", _active, "_quit =", _quit);
+
+			if (_quit) return;
+
+			// set _quit true so this only runs once
+			_active = false;
+			_quit = true;
 
 			// hide console
 			BattleConsole.hide();
