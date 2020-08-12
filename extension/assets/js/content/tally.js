@@ -318,24 +318,32 @@ window.Tally = (function () {
 				if (DEBUG) console.log("%c   Tally.interactionHandler()", Debug.tallyConsoleIcon, interaction);
 
 				// the first time
-				if (Progress.update("mouseEnterTally", 1, "+") < 20 || Math.random() > 0.9) {
-					// start a random conversation
+				if (Progress.update("mouseEnterTally", 1, "+") < 3) {
+					// give a tip tip
 					Dialogue.showData(Dialogue.getData({
-						category: "random",
-						subcategory: "conversation"
+						category: "help",
+						subcategory: "click-for-tips"
 					}), {
 						addIfInProcess: false,
 						instant: true
 					});
-				} else {
+				}
 
+			} else if (interaction === 'mouseleave') {
+				if (DEBUG) console.log("%c   Tally.interactionHandler()", Debug.tallyConsoleIcon, interaction);
+
+				// update progress
+				if (Progress.update("mouseLeaveTally", 1, "+") < 3) {
+					if (Progress.get("clickTallyDouble") < 1)
+						Dialogue.showStr("Double click me to see a menu!", "happy");
+				} else {
 					let // % chance any dialog will show
 						chance = Math.random(),
 						// which dialogue will show
 						which = Math.random();
 
 					// check/update progress, after the first time then only show half the time
-					if (Progress.get("mouseEnterTally") > 0) {
+					if (Progress.get("mouseLeaveTally") > 0) {
 						if (which < 0.5) chance = true;
 						else chance = false;
 					}
@@ -347,7 +355,7 @@ window.Tally = (function () {
 							subcategory: Disguise.currentDisguiseObj.name
 						}), {
 							addIfInProcess: false,
-							instant: true
+							instant: false
 						});
 					} else if (chance && which < 0.5) {
 						Dialogue.showData(Dialogue.getData({
@@ -355,20 +363,11 @@ window.Tally = (function () {
 							subcategory: "conversation"
 						}), {
 							addIfInProcess: false,
-							instant: true
+							instant: false
 						});
 					}
-
 				}
 
-			} else if (interaction === 'mouseleave') {
-				if (DEBUG) console.log("%c   Tally.interactionHandler()", Debug.tallyConsoleIcon, interaction);
-
-				// update progress
-				if (Progress.update("mouseLeaveTally", 1, "+") < 3) {
-					if (Progress.get("clickTallyDouble") < 1)
-						Dialogue.showStr("Double click me to see a menu!", "happy");
-				}
 
 			}
 
@@ -513,36 +512,25 @@ window.Tally = (function () {
 				// - don't allow when global tutorial sequence running
 				if (!Tutorial.sequenceActive) {
 
-					// tell them to click for tips
-					if (Progress.update("toldToClickForTips", 1, "+") < 1) {
-						// tell them a tip
+					// tell them a tip
+					Dialogue.showData(Dialogue.getData({
+						category: "random",
+						subcategory: "tip"
+					}), {
+						addIfInProcess: false,
+						instant: true
+					});
+					if (Math.random() > 0.9 || Progress.update("toldToClickForTips", 1, "+") < 2) {
+						// tell them to click for tips
 						Dialogue.showData(Dialogue.getData({
 							category: "help",
 							subcategory: "click-for-tips"
 						}), {
-							addIfInProcess: false,
-							instant: true
+							addIfInProcess: true,
+							instant: false
 						});
 					}
-					// tell them a tip
-					else {
-						Dialogue.showData(Dialogue.getData({
-							category: "random",
-							subcategory: "tip"
-						}), {
-							addIfInProcess: false,
-							instant: true
-						});
-						if (Math.random() > 0.8) {
-							Dialogue.showData(Dialogue.getData({
-								category: "help",
-								subcategory: "click-for-tips"
-							}), {
-								addIfInProcess: false,
-								instant: true
-							});
-						}
-					}
+
 				}
 
 				// update progress
@@ -612,9 +600,9 @@ window.Tally = (function () {
 	$(document).on('click', '.tally_showStory1', function () {
 		Tutorial.play("tutorial", "story1");
 	});
-	$(document).on('click', '.tally_showTutorial1', function () {
-		Tutorial.play("tutorial", "tutorial1");
-	});
+	// $(document).on('click', '.tally_showTutorial1', function () {
+	// 	Tutorial.play("tutorial", "tutorial1");
+	// });
 	$(document).on('click', '.tally_showMoreOptions', function () {
 		// disabled - troubled getting this to work
 		// TallyMain.openPopup();
