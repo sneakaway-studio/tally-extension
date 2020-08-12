@@ -319,10 +319,10 @@ window.Tally = (function () {
 
 				// the first time
 				if (Progress.update("mouseEnterTally", 1, "+") < 20 || Math.random() > 0.9) {
-					// tell them a tip
+					// start a random conversation
 					Dialogue.showData(Dialogue.getData({
 						category: "random",
-						subcategory: "tip"
+						subcategory: "conversation"
 					}), {
 						addIfInProcess: false,
 						instant: true
@@ -480,7 +480,17 @@ window.Tally = (function () {
 			// ONE CLICK
 			if (clickCount === 1) {
 
-				// initiate a disguise
+				// in-progress
+				// Item.showManager();
+
+				// tests
+				// Skin.random();
+				// Dialogue.test();
+				// Dialogue.random();
+
+
+
+				// 1. change disguise
 				let disguiseCount = FS_Object.objLength(T.tally_user.disguises);
 
 				if (disguiseCount < 1) {
@@ -499,26 +509,41 @@ window.Tally = (function () {
 				}
 
 
+				// 2. give them a tip
+				// - don't allow when global tutorial sequence running
+				if (!Tutorial.sequenceActive) {
 
-				// in-progress
-				// Item.showManager();
-
-				// tests
-				// Skin.random();
-				// Dialogue.test();
-				// Dialogue.random();
-
-
-				// don't allow when global tutorial sequence running
-				if (!Tutorial.sequenceActive)
-					Dialogue.showData(Dialogue.getData({
-						"category": "random",
-						subcategory: "conversation"
-					}), {
-						addIfInProcess: false,
-						instant: true
-					});
-
+					// tell them to click for tips
+					if (Progress.update("toldToClickForTips", 1, "+") < 1) {
+						// tell them a tip
+						Dialogue.showData(Dialogue.getData({
+							category: "help",
+							subcategory: "click-for-tips"
+						}), {
+							addIfInProcess: false,
+							instant: true
+						});
+					}
+					// tell them a tip
+					else {
+						Dialogue.showData(Dialogue.getData({
+							category: "random",
+							subcategory: "tip"
+						}), {
+							addIfInProcess: false,
+							instant: true
+						});
+						if (Math.random() > 0.8) {
+							Dialogue.showData(Dialogue.getData({
+								category: "help",
+								subcategory: "click-for-tips"
+							}), {
+								addIfInProcess: false,
+								instant: true
+							});
+						}
+					}
+				}
 
 				// update progress
 				if (Progress.update("clickTallySingle", 1, "+") < 5 && Math.random() > 0.8) {

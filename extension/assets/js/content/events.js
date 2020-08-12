@@ -59,8 +59,27 @@ window.TallyEvents = (function() {
 					// play sound
 					Sound.playRandomJump();
 					// tell them
-					Dialogue.showStr("You took a break from the internet to recharge!", "happy");
+					Dialogue.showData(Dialogue.getData({
+						category: "random",
+						subcategory: "recharge"
+					}), {
+						addIfInProcess: false,
+						instant: true
+					});
 				}, 700);
+			}
+			// if player hasn't been online for n minutes then tell them you missed them
+			if (FS_Date.diffMinutes("now", T.tally_user.lastActive) > 600) { // 0=testing
+				setTimeout(function() {
+					// tell them
+					Dialogue.showData(Dialogue.getData({
+						category: "random",
+						subcategory: "long-return"
+					}), {
+						addIfInProcess: true,
+						instant: false
+					});
+				}, 900);
 			}
 			// update last active
 			T.tally_user.lastActive = moment().format();

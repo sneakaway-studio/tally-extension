@@ -100,7 +100,14 @@ window.Flag = (function () {
 				// Stats.reset("tally");
 				// tell user
 				setTimeout(function () {
-					Dialogue.showStr(GameData.serverFlags.levelUp.dialogue, GameData.serverFlags.levelUp.mood);
+					// Dialogue.showStr(GameData.serverFlags.levelUp.dialogue, GameData.serverFlags.levelUp.mood);
+					Dialogue.showData(Dialogue.getData({
+						category: "level",
+						subcategory: "up"
+					}), {
+						addIfInProcess: true,
+						instant: false
+					});
 					// remove flag once handled
 					delete T.tally_user.serverFlags.levelUp;
 				}, 300);

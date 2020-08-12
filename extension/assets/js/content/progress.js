@@ -67,6 +67,7 @@ window.Progress = (function () {
 
 		// things to tell the player
 		toldToDragTally: 0,
+		toldToClickForTips: 0,
 		toldToClickDouble: 0,
 
 		// trackers
