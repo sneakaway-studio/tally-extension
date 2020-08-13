@@ -5,9 +5,9 @@
 
 ## Development Versions
 
-### Version 0.4.0
+### Version 0.3.11
 
-*
+* Fixes bugs in badges and server comm.
 
 ### Version 0.3.10
 

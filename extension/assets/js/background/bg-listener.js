@@ -351,7 +351,7 @@ window.Listener = (function () {
 						}).always(result => {
 							if (DEBUG) console.log("👂🏼 Listener.addListener() > sendUpdateToBackground - ALWAYS - result =", result);
 							// save result
-							store("tally_meta", result);
+							store("tally_user", result);
 							store("tally_meta", _tally_meta);
 
 							responseToContentScript.message = _tally_meta.userLoggedIn;

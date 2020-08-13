@@ -16,18 +16,22 @@ window.Badge = (function () {
 		try {
 			// start with blank data
 			let badge = BadgeData.data[name];
-			// if (DEBUG) console.log('🏆 Badge.get() name =', name, badge);
+			// set default
+			badge.level = 0;
+			if (DEBUG) console.log("\n🏆 Badge.get() [1] %c" + badge.name, Debug.styles.blue);
+			// if (DEBUG) console.log('🏆 Badge.get() [1]', badge);
+
 			// if they have received one before
 			if (T.tally_user.badges && T.tally_user.badges[name])
 				// then update level
-				badge.level = Number(T.tally_user.badges[name].level) || 0;
+				badge.level = Number(T.tally_user.badges[name].level);
 
 			// add next points / level for computing advancement
 			badge.nextLevel = 1;
 			badge.nextLevelFloat = 1.0;
 			badge.points = -1;
 			badge.nextPoints = -1;
-			// if (DEBUG) console.log('🏆 Badge.get() name =', name, badge);
+			// if (DEBUG) console.log('🏆 Badge.get() [2]', badge);
 			return badge;
 		} catch (err) {
 			console.error(err);
@@ -135,6 +139,7 @@ window.Badge = (function () {
 					if (!Badges.data[name].tags || !Badges.data[name].tagProgress) continue;
 					// get current badge (or a new default badge)
 					badge = get(name);
+					console.log("🏆 Badge.tags", badge);
 
 					// get points required to advance to next level
 					badge = nextPointsExp(badge, Progress.get(badge.tagProgress));
@@ -177,7 +182,7 @@ window.Badge = (function () {
 				badge.level = badge.nextLevel;
 				if (1) return award(badge);
 			}
-			badge = get("tracker-star");
+			badge = get("browser-fingerprinting");
 			badge = nextPointsExp(badge, Progress.get("trackersSeenFingerprinting") / 15); // # refreshes
 			if (badge.points >= badge.nextPoints) {
 				badge.level = badge.nextLevel;
@@ -231,7 +236,7 @@ window.Badge = (function () {
 	 */
 	function nextLevelRound(badge, nextLevelFloat) {
 		try {
-			// if (DEBUG) console.log("\n🏆 Badge.nextLevelRound() badge =", badge);
+			// if (DEBUG) console.log("🏆 Badge.nextLevelRound()", badge);
 
 			// only if > 0
 			if (nextLevelFloat <= 0) {
@@ -252,7 +257,7 @@ window.Badge = (function () {
 				displayCondition = ">";
 				winnerStr = ' ✅ ';
 			}
-			if (DEBUG) console.log("🏆" + winnerStr + "Badge.nextLevelRound() %c" + badge.name, Debug.styles.blue,
+			if (DEBUG) console.log("🏆" + winnerStr + "Badge.nextLevelRound()",
 				"(nextLevel " + displayCondition + " level) " +
 				badge.nextLevel, displayCondition, badge.level, "",
 				"nextLevelFloat =", badge.nextLevelFloat,
@@ -273,7 +278,7 @@ window.Badge = (function () {
 	 */
 	function nextPointsExp(badge, points) {
 		try {
-			if (DEBUG) console.log("\n🏆 Badge.nextPointsExp() [1] badge =", badge);
+			if (DEBUG) console.log("🏆 Badge.nextPointsExp() [1]", badge);
 			// only if > 0
 			if (points <= 0) {
 				badge.points = -1000;
@@ -283,12 +288,11 @@ window.Badge = (function () {
 			// get the next highest level to compare to
 			badge.nextLevel = badge.level + 1;
 			badge.nextLevelFloat = badge.nextLevel;
-			if (DEBUG) console.log("\n🏆 Badge.nextPointsExp() [2] badge =", badge);
+			if (DEBUG) console.log("🏆 Badge.nextPointsExp() [2]", badge);
 
 			// if points received then use it (rounded to nearest 100th)
 			if (points > 0) badge.points = FS_Number.round(points, 2);
-
-			// if (DEBUG) console.log("🏆 Badge.nextPointsExp() [2] badge =", badge);
+			if (DEBUG) console.log("🏆 Badge.nextPointsExp() [3]", badge);
 
 			// // first one = (x * 30) * (x / 4) === f(x)=(x * 30) * (x / 4)
 			// nextPoints = Math.round((badge.level * 30) * (badge.level / 4));
@@ -308,7 +312,7 @@ window.Badge = (function () {
 				winnerStr = ' ✅ ';
 			}
 
-			if (DEBUG) console.log("🏆" + winnerStr + "Badge.nextPointsExp() [3] %c" + badge.name, Debug.styles.blue,
+			if (DEBUG) console.log("🏆" + winnerStr + "Badge.nextPointsExp() [4]",
 				"level =", badge.level +
 				", (points " + displayCondition + " nextPoints)", "",
 				badge.points, displayCondition, badge.nextPoints,
