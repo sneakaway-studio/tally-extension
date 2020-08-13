@@ -32,7 +32,7 @@ var T = (function () {
 			// true = development, false = production
 			localhost: false, // change to false to quickly shift to production server
 			hotreload: false,
-			debugging: true
+			debugging: false
 		},
 		DEBUG = true;
 

@@ -313,8 +313,8 @@ window.Badge = (function () {
 			}
 
 			if (DEBUG) console.log("🏆" + winnerStr + "Badge.nextPointsExp() [4]",
-				"level =", badge.level +
-				", (points " + displayCondition + " nextPoints)", "",
+				// "level =", badge.level +
+				// ", (points " + displayCondition + " nextPoints)", "",
 				badge.points, displayCondition, badge.nextPoints,
 				badge
 			);
