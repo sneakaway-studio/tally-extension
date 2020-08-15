@@ -151,6 +151,11 @@ svg#tally-svg * {
     padding: 0;
     cursor: pointer;
 }
+#tally_dialogue_outer,
+#tally_dialogue_outer a {
+    font: 12px/16px "Monaco", "Andale Mono", "Courier New", sans-serif;
+    color: #fff;
+}
 #tally_dialogue_outer img {
     max-width: 200px;
 }
@@ -158,8 +163,6 @@ svg#tally-svg * {
     padding: 10px 10px 11px 10px;
     text-align: center;
     margin: auto;
-    font: 12px/16px "Monaco", "Andale Mono", "Courier New", sans-serif;
-    color: #fff;
     z-index: 2147483645;
     overflow: auto;
 }

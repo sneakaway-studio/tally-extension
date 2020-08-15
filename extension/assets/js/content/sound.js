@@ -105,6 +105,8 @@ window.Sound = (function () {
 			if (!T.tally_options.playSounds) return;
 			// don't allow if no soundFile
 			if (!FS_Object.prop(file)) return;
+			// check volume
+			if (volumeModifier > 0.5) volumeModifier = 0;
 
 			if (DEBUG) console.log("🎵 Sound.playMusic()", file, loop, volumeModifier);
 
@@ -364,7 +366,7 @@ window.Sound = (function () {
 	// 	var audio = new Audio(chrome.extension.getURL("assets/sounds/" + soundFile));
 	// 	audio.muted = true;
 	// 	audio.pause();
-	// 	audio.volume = (T.tally_options.soundVolume || 0.3) + volumeModifier;
+	// 	audio.volume = (T.tally_options.soundVolume || 0.2) + volumeModifier;
 	// 	if (delay > 0)
 	// 		setTimeout(function() {
 	// 			audio.muted = false;
@@ -393,6 +395,8 @@ window.Sound = (function () {
 			if (!T.tally_options.playSounds) return;
 			// don't allow if no soundFile
 			if (!FS_Object.prop(soundFile)) return;
+			// check volume
+			if (volumeModifier > 0.5) volumeModifier = 0;
 
 			if (DEBUG) console.log("🎵 Sound.play(" + soundFile + "," + delay + "," + volumeModifier + ")");
 
@@ -405,7 +409,7 @@ window.Sound = (function () {
 			// update the source
 			audioEl.load();
 			// set volume
-			audioEl.volume = FS_Number.clamp((T.tally_options.soundVolume || 0.3) + volumeModifier, 0, 1);
+			audioEl.volume = FS_Number.clamp((T.tally_options.soundVolume || 0.2) + volumeModifier, 0, 1);
 
 			// some hacks for Chrome
 			audioEl.muted = false;

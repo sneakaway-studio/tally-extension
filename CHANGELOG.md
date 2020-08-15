@@ -9,6 +9,7 @@
 ### Version 0.4.0
 
 * Update Badge math
+* Update volume 
 
 ### Version 0.3.11
 

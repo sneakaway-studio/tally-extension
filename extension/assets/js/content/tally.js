@@ -614,7 +614,6 @@ window.Tally = (function () {
 
 	function showMoreOptions() {
 		try {
-			if (T.tally_user.admin <= 0) return;
 
 			let str = "" +
 				// user-specific
