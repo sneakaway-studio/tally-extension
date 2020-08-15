@@ -71,6 +71,7 @@ General information and references for cross-browser extension development
 ### Opera Browser
 
 * Based on Chromium browser
+* [Opera Store](https://addons.opera.com/en/extensions/)
 * [Developer portal](https://addons.opera.com/developer/)
 
 

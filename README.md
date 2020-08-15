@@ -10,10 +10,7 @@ Learn more at [tallysavestheinternet.com](https://tallysavestheinternet.com).
 
 ### Install the extension
 
-* [Chrome](https://chrome.google.com/webstore/detail/tally/clidhbnhgfffjhooihemgfgmfhmojbfl)
-* Firefox (coming soon)
-* [Brave](https://chrome.google.com/webstore/detail/tally/clidhbnhgfffjhooihemgfgmfhmojbfl) ([via Chrome Web Store](https://support.brave.com/hc/en-us/articles/360017909112-How-can-I-add-extensions-to-Brave-))
-* [Opera](https://addons.opera.com/en/extensions/) (coming soon) (currently available using Opera's [Install Chrome Extensions addon](https://addons.opera.com/en/extensions/details/install-chrome-extensions/))
+* [Get Tally Now](https://tallysavestheinternet.com)
 
 
 

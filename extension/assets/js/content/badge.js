@@ -139,7 +139,6 @@ window.Badge = (function () {
 					if (!Badges.data[name].tags || !Badges.data[name].tagProgress) continue;
 					// get current badge (or a new default badge)
 					badge = get(name);
-					console.log("🏆 Badge.tags", badge);
 
 					// get points required to advance to next level
 					badge = nextPointsExp(badge, Progress.get(badge.tagProgress));
@@ -236,7 +235,7 @@ window.Badge = (function () {
 	 */
 	function nextLevelRound(badge, nextLevelFloat) {
 		try {
-			// if (DEBUG) console.log("🏆 Badge.nextLevelRound()", badge);
+			if (DEBUG) console.log("🏆 Badge.nextLevelRound()", badge);
 
 			// only if > 0
 			if (nextLevelFloat <= 0) {
@@ -248,7 +247,7 @@ window.Badge = (function () {
 			badge.nextLevelFloat = FS_Number.round(nextLevelFloat, 4);
 
 			// get rounded level from nextLevelFloat
-			badge.nextLevel = Math.round(badge.nextLevelFloat);
+			badge.nextLevel = Math.floor(badge.nextLevelFloat);
 
 			// show and format results in console.log
 			let displayCondition = "<=",
@@ -257,12 +256,12 @@ window.Badge = (function () {
 				displayCondition = ">";
 				winnerStr = ' ✅ ';
 			}
-			if (DEBUG) console.log("🏆" + winnerStr + "Badge.nextLevelRound()",
-				"(nextLevel " + displayCondition + " level) " +
-				badge.nextLevel, displayCondition, badge.level, "",
-				"nextLevelFloat =", badge.nextLevelFloat,
-				badge
-			);
+			// if (DEBUG) console.log("🏆" + winnerStr + "Badge.nextLevelRound()",
+			// 	"(nextLevel " + displayCondition + " level) " +
+			// 	badge.nextLevel, displayCondition, badge.level, "",
+			// 	"nextLevelFloat =", badge.nextLevelFloat,
+			// 	badge
+			// );
 			return badge;
 		} catch (err) {
 			console.error(err);
@@ -288,11 +287,11 @@ window.Badge = (function () {
 			// get the next highest level to compare to
 			badge.nextLevel = badge.level + 1;
 			badge.nextLevelFloat = badge.nextLevel;
-			if (DEBUG) console.log("🏆 Badge.nextPointsExp() [2]", badge);
+			// if (DEBUG) console.log("🏆 Badge.nextPointsExp() [2]", badge);
 
 			// if points received then use it (rounded to nearest 100th)
 			if (points > 0) badge.points = FS_Number.round(points, 2);
-			if (DEBUG) console.log("🏆 Badge.nextPointsExp() [3]", badge);
+			// if (DEBUG) console.log("🏆 Badge.nextPointsExp() [3]", badge);
 
 			// // first one = (x * 30) * (x / 4) === f(x)=(x * 30) * (x / 4)
 			// nextPoints = Math.round((badge.level * 30) * (badge.level / 4));
@@ -312,12 +311,12 @@ window.Badge = (function () {
 				winnerStr = ' ✅ ';
 			}
 
-			if (DEBUG) console.log("🏆" + winnerStr + "Badge.nextPointsExp() [4]",
-				// "level =", badge.level +
-				// ", (points " + displayCondition + " nextPoints)", "",
-				badge.points, displayCondition, badge.nextPoints,
-				badge
-			);
+			// if (DEBUG) console.log("🏆" + winnerStr + "Badge.nextPointsExp() [4]",
+			// 	// "level =", badge.level +
+			// 	// ", (points " + displayCondition + " nextPoints)", "",
+			// 	badge.points, displayCondition, badge.nextPoints,
+			// 	badge
+			// );
 
 			return badge;
 		} catch (err) {

@@ -8,7 +8,7 @@
 
 ### Version 0.4.0
 
-* 
+* Update Badge math
 
 ### Version 0.3.11
 
