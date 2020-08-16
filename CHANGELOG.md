@@ -6,10 +6,15 @@
 ## Development Versions
 
 
+### Version 0.4.1
+
+* 
+
 ### Version 0.4.0
 
 * Update Badge math
-* Update volume 
+* Update volume
+* Adds chill mode
 
 ### Version 0.3.11
 
