@@ -45,10 +45,10 @@ window.Badge = (function () {
 	 */
 	function check() {
 		try {
-			// do not allow unless fully active
+			// do not allow unless active on page
 			if (!Page.data.mode.active) return;
-			// don't allow if mode disabled or stealth
-			if (T.tally_options.gameMode === "disabled" || T.tally_options.gameMode === "stealth") return;
+			// don't allow if mode disabled
+			if (T.tally_options.gameMode === "disabled") return;
 			// don't allow on dashboard
 			if (Page.data.actions.onDashboard) return;
 
@@ -391,9 +391,6 @@ window.Badge = (function () {
 				str += "You earned a new badge!";
 			}
 			str += "</div>";
-
-
-
 
 			// show dialogue with badge image
 			Dialogue.showData({

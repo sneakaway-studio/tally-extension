@@ -28,7 +28,7 @@ window.Demo = (function() {
 	// (maybe) set demo mode "on"
 	function start() {
 		try {
-            // do not allow unless fully active
+            // do not allow unless active on page
             if (!Page.data.mode.active) return;
             // do not allow if mode !demo
             if (T.tally_options.gameMode !== "demo") return;
@@ -196,7 +196,7 @@ window.Demo = (function() {
 
 	function goToNewPage(now) {
 		try {
-            // do not allow unless fully active
+            // do not allow unless active on page
             if (!Page.data.mode.active) return;
             // do not allow if mode !demo
             if (T.tally_options.gameMode !== "demo") return;

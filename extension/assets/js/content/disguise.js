@@ -153,7 +153,7 @@ window.Disguise = (function() {
 
 
 	/**
-	 *	Check to see if we should reward Tally with a new disguise
+	 *	Check to see if we should reward Tally with a new disguise (after a battle)
 	 */
 	function checkAndReward() {
 		try {

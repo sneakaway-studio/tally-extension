@@ -91,6 +91,9 @@ window.Flag = (function () {
 			if (DEBUG) console.log("🚩 Flag.checkFromServer()", T.tally_user.serverFlags);
 			// address individual serverFlags...
 
+			// do we show notifications?
+			if (!T.tally_options.showNotifications) return;
+
 			// SERVER SAYS: we have leveled up!
 			if (FS_Object.prop(T.tally_user.serverFlags.levelUp)) {
 				// make sure we have this flag in GameData
@@ -112,6 +115,9 @@ window.Flag = (function () {
 					delete T.tally_user.serverFlags.levelUp;
 				}, 300);
 			}
+
+
+
 
 
 			// SERVER SAYS: new version notification

@@ -56,6 +56,8 @@ window.TallyEvents = (function() {
 				setTimeout(function() {
 					// reset tally stats
 					Stats.reset("tally");
+					// do we show notifications?
+					if (!T.tally_options.showNotifications) return;
 					// play sound
 					Sound.playRandomJump();
 					// tell them
@@ -71,6 +73,8 @@ window.TallyEvents = (function() {
 			// if player hasn't been online for n minutes then tell them you missed them
 			if (FS_Date.diffMinutes("now", T.tally_user.lastActive) > 600) { // 0=testing
 				setTimeout(function() {
+					// do we show notifications?
+					if (!T.tally_options.showNotifications) return;
 					// tell them
 					Dialogue.showData(Dialogue.getData({
 						category: "random",

@@ -89,6 +89,9 @@ window.Dialogue = (function () {
 				// ", showReq = " + JSON.stringify(showReq)
 			);
 
+			// don't allow if mode disabled or stealth
+			if (T.tally_options.gameMode === "disabled" || T.tally_options.gameMode === "stealth") return;
+
 			//  default show request (defines how the dialogue is displayed)
 			let showReqDefaults = {
 				addIfInProcess: true,
@@ -98,7 +101,8 @@ window.Dialogue = (function () {
 			if (dialogueObj.text === "" || dialogueObj.text === undefined) return;
 			// if defined and true, show instantly
 			if (FS_Object.prop(showReq.instant) && showReq.instant) return showInstant(dialogueObj);
-			// if defined and false, show regardless if Dialogue is already in progress
+			// if defined and true, show regardless if Dialogue is already in progress
+			// if false and queue has dialogue then return
 			if (FS_Object.prop(showReq.addIfInProcess) && !showReq.addIfInProcess && _queue.length > 0) return;
 			// else add dialogueObj to queue
 			addToQueue(dialogueObj);
@@ -116,6 +120,10 @@ window.Dialogue = (function () {
 
 			// don't show if there is no text
 			if (!prop(str) || str === "") return;
+
+			// don't allow if mode disabled or stealth,
+			if (T.tally_options.gameMode === "disabled" || T.tally_options.gameMode === "stealth") return;
+
 			let dialogueObj = {
 					text: str,
 					mood: mood
@@ -565,8 +573,8 @@ window.Dialogue = (function () {
 			if (DEBUG) console.log("💬 Dialogue.searchAddBranchLinks() [1] str =", str);
 
 			// get matching text in an array
-			let replaceArr = str.match(/{[\w, -]+}/g);
-			if (replaceArr.length < 1) return str; // required
+			let replaceArr = str.match(/{[\w,!?.;# -]+}/g);
+			if (!replaceArr || replaceArr.length < 1) return str; // required
 			if (DEBUG) console.log("💬 Dialogue.searchAddBranchLinks() [2] replaceArr =", replaceArr);
 
 			// loop through the all the strings to replace
@@ -700,17 +708,21 @@ window.Dialogue = (function () {
 	/**
 	 *	Get a random fact (by domain)
 	 */
-	function getFact(domain, includeSource = true) {
+	function getFact(domain = "", includeSource = true) {
 		try {
-			let fact = FS_Object.randomArrayIndex(Facts.data[domain]);
+			// if domain
+			if (domain === "") domain = FS_Object.randomObjKey(Facts.data);
 			// get fact
-			let str = fact.fact;
+			let fact = FS_Object.randomArrayIndex(Facts.data[domain]);
+			let str = "Random fact: " + fact.fact;
 			// should we include source?
 			if (includeSource) {
 				if (fact.url && fact.source)
 					str += " Source: <a href='" + fact.url + "' target='_blank'>" + fact.source + "</a>";
 				if (fact.year)
 					str += " (" + fact.year + ")";
+			} else {
+				str += " <a href='" + fact.url + "' target='_blank'>source</a>";
 			}
 			return str;
 		} catch (err) {
@@ -737,6 +749,9 @@ window.Dialogue = (function () {
 	function test() {
 		try {
 			// console.log("💬 Dialogue.test()");
+
+			// don't allow if mode disabled or stealth,
+			if (T.tally_options.gameMode === "disabled" || T.tally_options.gameMode === "stealth") return;
 
 			// example moods to choose
 			var moods = [

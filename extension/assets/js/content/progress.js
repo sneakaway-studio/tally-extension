@@ -132,7 +132,7 @@ window.Progress = (function () {
 		try {
 			// allow offline
 			if (Page.data.mode.notActive) return;
-			// don't allow if mode disabled or stealth
+			// don't allow if mode disabled
 			if (T.tally_options.gameMode === "disabled") return;
 			if (!T.tally_user || !T.tally_user.progress) return 0;
 
@@ -188,20 +188,23 @@ window.Progress = (function () {
 
 			///////// GENERAL: ONBOARDING /////////////////////////////////////////////
 
-			if (Page.data.actions.onTallyWebsite) {
-				// NOTE: tutorials increment their own progress
-				if (Page.data.url.includes("/how-to-play") && get("viewOnboardingHowto1") < 2) {
-					Tutorial.play("tutorial", "onboardingHowto1");
-				} else if (Page.data.url.includes("/how-to-play") && get("viewOnboardingHowto2") < 2) {
-					Tutorial.play("tutorial", "onboardingHowto2");
-				} else if (Page.data.url.includes("/faq") && get("viewOnboardingFaq1") < 2) {
-					Tutorial.play("tutorial", "onboardingFaq1");
-				} else if (Math.random() > 0.9) {
-					// play random
-					Dialogue.showData(Dialogue.getData({
-						category: "tutorial",
-						subcategory: "tally-website"
-					}));
+			// do we show notifications?
+			if (T.tally_options.showNotifications) {
+				if (Page.data.actions.onTallyWebsite) {
+					// NOTE: tutorials increment their own progress
+					if (Page.data.url.includes("/how-to-play") && get("viewOnboardingHowto1") < 2) {
+						Tutorial.play("tutorial", "onboardingHowto1");
+					} else if (Page.data.url.includes("/how-to-play") && get("viewOnboardingHowto2") < 2) {
+						Tutorial.play("tutorial", "onboardingHowto2");
+					} else if (Page.data.url.includes("/faq") && get("viewOnboardingFaq1") < 2) {
+						Tutorial.play("tutorial", "onboardingFaq1");
+					} else if (Math.random() > 0.9) {
+						// play random
+						Dialogue.showData(Dialogue.getData({
+							category: "tutorial",
+							subcategory: "tally-website"
+						}));
+					}
 				}
 			}
 
@@ -235,7 +238,9 @@ window.Progress = (function () {
 			// AWARD ATTACK - 2nd
 			else if (attacksAwarded <= 1 && T.tally_user.score.score > 10) {
 				BattleAttack.rewardAttack("", "attack");
-				Dialogue.showStr("Manage your attacks with the button at the top right of browser window.", "happy");
+				// do we show notifications?
+				if (T.tally_options.showNotifications)
+					Dialogue.showStr("Manage your attacks with the button at the top right of browser window.", "happy");
 			}
 			// AWARD ATTACK - 3rd
 			else if (attacksAwarded <= 2 && get("battlesFought") > 0) {
@@ -377,66 +382,77 @@ window.Progress = (function () {
 
 				// 1a. first time
 				if (accountCreatedWelcomeMessage <= 4) {
-					// play introduction
-					Dialogue.showData(Dialogue.getData({
-						category: "random",
-						subcategory: "introduction"
-					}));
-					// let them know their account is updated
-					Dialogue.showData(Dialogue.getData({
-						category: "account",
-						subcategory: "updated"
-					}));
-				}
-				// 1b. if this is the first time user is logging in
-				if (dashboardLogins < 10 && (accountCreatedWelcomeMessage <= 1 || accountCreatedWelcomeMessage % 3 === 0)) {
-					// play onboarding tutorial
-					Tutorial.play("tutorial", "onboardingDashboard1");
-					Dialogue.showData(Dialogue.getData({
-						category: "help",
-						subcategory: "how-to-play"
-					}));
-					playLetsFindTrackers();
-				}
-				// 1c. the user has logged in before but not every often
-				else if (dashboardLogins < 10 && (accountCreatedWelcomeMessage <= 4 || accountCreatedWelcomeMessage % 3 === 0)) {
-					// play onboarding tutorial
-					if (get("onboardingDashboard2") < 2) {
-						// play onboarding tutorial
-						Tutorial.play("tutorial", "onboardingDashboard2");
-					}
-					Dialogue.showData(Dialogue.getData({
-						category: "help",
-						subcategory: "how-to-play"
-					}));
-					playLetsFindTrackers();
-				}
-				// if user has been here before
-				else {
-					Dialogue.showData(Dialogue.getData({
-						category: "random",
-						subcategory: "greeting"
-					}));
-					// sometimes we should run this
-					let r = Math.random();
-					if (r < 0.2) {
+					// do we show notifications?
+					if (T.tally_options.showNotifications) {
+						// play introduction
+						Dialogue.showData(Dialogue.getData({
+							category: "random",
+							subcategory: "introduction"
+						}));
+						// let them know their account is updated
 						Dialogue.showData(Dialogue.getData({
 							category: "account",
 							subcategory: "updated"
 						}));
-						playLetsFindTrackers();
-					} else if (r < 0.4) {
-						Dialogue.showData(Dialogue.getData({
-							category: "help",
-							subcategory: "dashboard"
-						}));
-					} else {
+					}
+				}
+				// 1b. if this is the first time user is logging in
+				if (dashboardLogins < 10 && (accountCreatedWelcomeMessage <= 1 || accountCreatedWelcomeMessage % 3 === 0)) {
+					// do we show notifications?
+					if (T.tally_options.showNotifications) {
+						// play onboarding tutorial
+						Tutorial.play("tutorial", "onboardingDashboard1");
 						Dialogue.showData(Dialogue.getData({
 							category: "help",
 							subcategory: "how-to-play"
 						}));
+						playLetsFindTrackers();
 					}
-
+				}
+				// 1c. the user has logged in before but not every often
+				else if (dashboardLogins < 10 && (accountCreatedWelcomeMessage <= 4 || accountCreatedWelcomeMessage % 3 === 0)) {
+					// do we show notifications?
+					if (T.tally_options.showNotifications) {
+						// play onboarding tutorial
+						if (get("onboardingDashboard2") < 2) {
+							// play onboarding tutorial
+							Tutorial.play("tutorial", "onboardingDashboard2");
+						}
+						Dialogue.showData(Dialogue.getData({
+							category: "help",
+							subcategory: "how-to-play"
+						}));
+						playLetsFindTrackers();
+					}
+				}
+				// if user has been here before
+				else {
+					// do we show notifications?
+					if (T.tally_options.showNotifications) {
+						Dialogue.showData(Dialogue.getData({
+							category: "random",
+							subcategory: "greeting"
+						}));
+						// sometimes we should run this
+						let r = Math.random();
+						if (r < 0.2) {
+							Dialogue.showData(Dialogue.getData({
+								category: "account",
+								subcategory: "updated"
+							}));
+							playLetsFindTrackers();
+						} else if (r < 0.4) {
+							Dialogue.showData(Dialogue.getData({
+								category: "help",
+								subcategory: "dashboard"
+							}));
+						} else {
+							Dialogue.showData(Dialogue.getData({
+								category: "help",
+								subcategory: "how-to-play"
+							}));
+						}
+					}
 				}
 			}, 500);
 
@@ -454,16 +470,18 @@ window.Progress = (function () {
 
 			// called at beginning of page load so add delay before game things (dialogue, sound, etc.)
 			setTimeout(function () {
-
-				// tell user with random message
-				Dialogue.showData(Dialogue.getData({
-					category: "account",
-					subcategory: "reset"
-				}));
-				Dialogue.showData(Dialogue.getData({
-					category: "help",
-					subcategory: "how-to-play"
-				}));
+				// do we show notifications?
+				if (T.tally_options.showNotifications) {
+					// tell user with random message
+					Dialogue.showData(Dialogue.getData({
+						category: "account",
+						subcategory: "reset"
+					}));
+					Dialogue.showData(Dialogue.getData({
+						category: "help",
+						subcategory: "how-to-play"
+					}));
+				}
 
 			}, 500);
 
@@ -478,6 +496,9 @@ window.Progress = (function () {
 
 	function playLetsFindTrackers() {
 		try {
+			// do we show notifications?
+			if (!T.tally_options.showNotifications) return;
+
 			let r = Math.random();
 			if (r < 0.2) {
 				Dialogue.showStr("Let's go find some trackers!", "happy");

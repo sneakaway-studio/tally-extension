@@ -18,8 +18,8 @@ window.MonsterCheck = (function () {
 		try {
 			// allow offline
 			if (Page.data.mode.notActive) return;
-			// don't allow if mode disabled or stealth
-			if (T.tally_options.gameMode === "disabled" || T.tally_options.gameMode === "stealth") return;
+			// don't allow if mode disabled
+			if (T.tally_options.gameMode === "disabled") return;
 			// don't check on our site
 			if (Page.data.domain == "tallygame.net" || Page.data.domain == "tallysavestheinternet.com") return;
 			if (Page.data.actions.onTallyWebsite) return;
@@ -168,7 +168,8 @@ window.MonsterCheck = (function () {
 					if (r < 0.05) {
 						// go back to normal stage
 						T.tally_nearby_monsters[mid].stage = 0;
-						Dialogue.showSurveyPrompt();
+						// do we show notifications?
+						if (T.tally_options.showNotifications) Dialogue.showSurveyPrompt();
 					} else if (r < 0.2) {
 						// random dialogue, but don't change stage
 						showDialogueAboutQuantity();
@@ -262,6 +263,9 @@ window.MonsterCheck = (function () {
 	 */
 	function showDialogueAboutQuantity() {
 		try {
+			// do we show notifications?
+			if (!T.tally_options.showNotifications) return;
+
 			Dialogue.showData(Dialogue.getData({
 				category: "tracker",
 				subcategory: returnTrackerQuantity()
@@ -276,6 +280,9 @@ window.MonsterCheck = (function () {
 	 */
 	function showDialogueAboutProximity(distance) {
 		try {
+			// do we show notifications?
+			if (!T.tally_options.showNotifications) return;
+
 			if (DEBUG) console.log("👿 MonsterCheck.showDialogueAboutProximity() distance=" + distance);
 			Dialogue.showData(Dialogue.getData({
 				category: "monster",
@@ -292,6 +299,11 @@ window.MonsterCheck = (function () {
 	 */
 	function showSilhouetteDialogue(mid, distance = "") {
 		try {
+			// don't allow if mode disabled or stealth
+			if (T.tally_options.gameMode === "disabled" || T.tally_options.gameMode === "stealth") return;
+			// do we show notifications?
+			if (!T.tally_options.showNotifications) return;
+
 			let str = "",
 				monster = T.tally_nearby_monsters[mid];
 			if (DEBUG) console.log("👿 MonsterCheck.showSilhouetteDialogue() mid=" + mid, monster);
@@ -381,7 +393,7 @@ window.MonsterCheck = (function () {
 	// PUBLIC
 	return {
 		check: check,
-		
+
 		get foundStreamSummary () { return foundStreamSummary; },
 
 	};

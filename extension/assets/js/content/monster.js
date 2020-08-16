@@ -185,11 +185,14 @@ window.Monster = (function () {
 			// set marker
 			onPage = monster.mid;
 
-			// show dialogue
-			Dialogue.showData(Dialogue.getData({
-				category: "monster",
-				subcategory: "display"
-			}));
+			// do we show notifications?
+			if (T.tally_options.showNotifications) {
+				// show dialogue
+				Dialogue.showData(Dialogue.getData({
+					category: "monster",
+					subcategory: "display"
+				}));
+			}
 			// reference to image file (moved to server )
 			var url = T.tally_meta.website + '/' + 'assets/img/monsters/monsters-300h/' + monster.mid + '-anim-sheet.png';
 			//var url = chrome.extension.getURL('assets/img/472-master-3d-test.png');
@@ -226,13 +229,16 @@ window.Monster = (function () {
 			$(document).on("mouseover", ".tally_monster_sprite_container", function () {
 				let mid = Number($(this).attr('data-mid'));
 				//if (DEBUG) console.log(mid);
-				// show dialogue with sound but don't add to queue in case they click
-				Dialogue.showData(Dialogue.getData({
-					category: "battle",
-					subcategory: "choose"
-				}), {
-					addIfInProcess: false
-				});
+				// do we show notifications?
+				if (T.tally_options.showNotifications) {
+					// show dialogue with sound but don't add to queue in case they click
+					Dialogue.showData(Dialogue.getData({
+						category: "battle",
+						subcategory: "choose"
+					}), {
+						addIfInProcess: false
+					});
+				}
 			});
 			$(document).on("click", ".tally_monster_sprite_container", function () {
 				let mid = Number($(this).attr('data-mid'));
@@ -274,10 +280,13 @@ window.Monster = (function () {
 			TallyStorage.saveData("tally_nearby_monsters", T.tally_nearby_monsters, "👿 Monster.test()");
 			// check/reset skin
 			Skin.updateFromHighestMonsterStage();
-			Dialogue.showData(Dialogue.getData({
-				category: "monster",
-				subcategory: "show"
-			}));
+			// do we show notifications?
+			if (T.tally_options.showNotifications) {
+				Dialogue.showData(Dialogue.getData({
+					category: "monster",
+					subcategory: "show"
+				}));
+			}
 			add();
 		} catch (err) {
 			console.error(err);

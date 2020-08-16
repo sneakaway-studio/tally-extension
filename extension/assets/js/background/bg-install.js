@@ -210,8 +210,8 @@ window.Install = (function () {
 				showClickVisuals: true,
 				playSounds: true,
 				soundVolume: 0.2,
-				showAnimations: true,
-				gameMode: "full", // demo | testing | full | stealth | disabled
+				showNotifications: true,
+				gameMode: "full", // demo | testing | full | chill | stealth | disabled
 				disabledDomains: [
 					"drive.google.com",
 					"docs.google.com",
@@ -231,16 +231,25 @@ window.Install = (function () {
 
 	function setOptions(options) {
 		try {
-			if (options.gameMode == "stealth" || options.gameMode == "disabled") {
-				options.showTally = false;
-				options.showClickVisuals = false;
-				options.playSounds = false;
-				options.showAnimations = false;
-			} else {
+			// chill
+			if (options.gameMode === "chill") {
 				options.showTally = true;
 				options.showClickVisuals = true;
 				options.playSounds = true;
-				options.showAnimations = true;
+				options.showNotifications = false;
+			}
+			// stealth | disabled
+			else if (options.gameMode === "stealth" || options.gameMode === "disabled") {
+				options.showTally = false;
+				options.showClickVisuals = false;
+				options.playSounds = false;
+				options.showNotifications = false;
+			} else {
+				// demo | testing | full
+				options.showTally = true;
+				options.showClickVisuals = true;
+				options.playSounds = true;
+				options.showNotifications = true;
 			}
 			return options;
 		} catch (err) {

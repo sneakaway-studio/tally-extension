@@ -147,7 +147,7 @@ window.Tally = (function () {
 
 			if (DEBUG) console.log("%c   Tally.addCharacter()", Debug.tallyConsoleIcon, T.tally_user, T.tally_options, Page.data.mode);
 
-			// do not allow unless fully active
+			// do not allow unless active on page
 			if (!Page.data.mode.active) return;
 
 			// for domains that rewrite body, add listener to add Tally back if removed
@@ -339,7 +339,7 @@ window.Tally = (function () {
 				} else {
 					let // % chance any dialog will show
 						chance = Math.random(),
-						// which dialogue will show
+						// % which dialogue will show
 						which = Math.random();
 
 					// check/update progress, after the first time then only show half the time
@@ -493,9 +493,11 @@ window.Tally = (function () {
 				let disguiseCount = FS_Object.objLength(T.tally_user.disguises);
 
 				if (disguiseCount < 1) {
-					Dialogue.showStr("We need to beat monsters to earn disguises.", "sad");
+					if (Math.random > 0.25)
+						Dialogue.showStr("We need to beat monsters to earn disguises.", "sad");
 				} else if (disguiseCount === 1) {
-					Dialogue.showStr("We only have one disguise.", "sad");
+					if (Math.random > 0.25)
+						Dialogue.showStr("We only have one disguise.", "sad");
 					Disguise.selector(false);
 				} else if (disguiseCount === 2) {
 					if (Progress.update("toldToBeatMonstersForDisguises", 1, "+") < 1)
@@ -512,14 +514,18 @@ window.Tally = (function () {
 				// - don't allow when global tutorial sequence running
 				if (!Tutorial.sequenceActive) {
 
-					// tell them a tip
-					Dialogue.showData(Dialogue.getData({
-						category: "random",
-						subcategory: "tip"
-					}), {
-						addIfInProcess: false,
-						instant: true
-					});
+					if (Math.random() > 0.3){
+						// tell them a tip
+						Dialogue.showData(Dialogue.getData({
+							category: "random",
+							subcategory: "tip"
+						}), {
+							addIfInProcess: false,
+							instant: true
+						});
+					} else {
+						Dialogue.showStr(Dialogue.getFact("", false), "neutral");
+					}
 					if (Math.random() > 0.9 || Progress.update("toldToClickForTips", 1, "+") < 2) {
 						// tell them to click for tips
 						Dialogue.showData(Dialogue.getData({
