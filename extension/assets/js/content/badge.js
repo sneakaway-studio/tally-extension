@@ -423,12 +423,13 @@ window.Badge = (function () {
 					easing: 'easeInOutSine',
 					duration: 600
 				});
+
+				// play sound
+				Sound.playRandomPowerup();
 			}
 
 			// update progress
 			Progress.update("badgesAwarded", FS_Object.objLength(T.tally_user.badges));
-			// play sound
-			Sound.playRandomPowerup();
 			// save in background (and on server)
 			TallyData.queue("itemData", "badges", badge, "🏆 Badge.award()");
 

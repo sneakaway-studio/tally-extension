@@ -192,6 +192,9 @@ svg.stats-display .stat-bar-circle-text { fill:white; font: 14px "Monaco", "Anda
     left: 45%;
     height: 135px;
 }
+#battle-console a {
+    color: #6ece41;
+}
 #battle-console-inner {
     box-sizing: border-box;
     width: 100%;

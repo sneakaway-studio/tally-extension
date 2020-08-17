@@ -304,6 +304,18 @@ window.Tally = (function () {
 			}
 			// ELSE CONTINUE...
 
+			// specific conversation when battle is active
+			if (Battle.active) {
+				Dialogue.showData(Dialogue.getData({
+					category: "battle",
+					subcategory: "start"
+				}), {
+					addIfInProcess: false,
+					instant: true
+				});
+				return;
+			}
+
 
 			if (DEBUG) console.log("%c   Tally.interactionHandler()", Debug.tallyConsoleIcon,
 				"interaction =", interaction,
@@ -487,7 +499,17 @@ window.Tally = (function () {
 				// Dialogue.test();
 				// Dialogue.random();
 
-
+				// specific conversation when battle is active
+				if (Battle.active) {
+					Dialogue.showData(Dialogue.getData({
+						category: "battle",
+						subcategory: "start"
+					}), {
+						addIfInProcess: false,
+						instant: true
+					});
+					return;
+				}
 
 				// 1. change disguise
 				let disguiseCount = FS_Object.objLength(T.tally_user.disguises);
@@ -544,7 +566,7 @@ window.Tally = (function () {
 					else if (Math.random() < 0.3) {
 						Dialogue.showStr(Dialogue.getFact("", false), "neutral");
 					}
-					// tell tip 
+					// tell tip
 					else {
 						// tell them a tip
 						Dialogue.showData(Dialogue.getData({

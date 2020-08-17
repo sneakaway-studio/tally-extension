@@ -80,6 +80,11 @@ window.BattleConsole = (function () {
 	// log to the console
 	function log(_str, next = "") {
 		try {
+			// if (DEBUG) console.log("🖥️ BattleConsole.log() [1]",
+			// 	"_str =", _str, "next =", next,
+			// 	"_active =", _active,
+			// 	"Battle.active =", Battle.active
+			// );
 			if (!Battle.active) return;
 			// add a "next" function
 			if (next) _next = next;
@@ -87,6 +92,7 @@ window.BattleConsole = (function () {
 			_queue.push(_str);
 			// start/make sure queueChecker is running
 			queueChecker();
+			if (DEBUG) console.log("🖥️ BattleConsole.log() [2]", "_str =", _str, "next =", next, "_active =", _active);
 		} catch (err) {
 			console.error(err);
 		}
@@ -94,7 +100,7 @@ window.BattleConsole = (function () {
 
 	function queueChecker() {
 		try {
-			//if (DEBUG) console.log("queueChecker()", _queue, _active);
+			// if (DEBUG) console.log("🖥️ BattleConsole.queueChecker() [1]", _queue, _active);
 			// if no items in _queue then stop
 			if (_queue.length < 1) {
 				// start animating cursor
@@ -118,14 +124,13 @@ window.BattleConsole = (function () {
 
 	function writeNextInQueue(lineSpeed = 150) {
 		try {
-			// if(DEBUG) console.log("🖥️ BattleConsole.writeNextInQueue()", _queue, _active);
 			// if currently active, stop
 			if (_active) return;
 			// else set active
 			_active = true;
 			// remove first element in array
 			var str = _queue.shift();
-			if (DEBUG) console.log("🖥️ BattleConsole.writeNextInQueue() [1]", str, _queue, _active);
+			if (DEBUG) console.log("🖥️ BattleConsole.writeNextInQueue() [1] str =", str, "_queue =", _queue);
 			// insert placeholder
 			var ele = "<div class='tally tally_log_line'>" +
 				"<span id='tally_log" + (++logId) + "' class='tally tally_log_cursor'></span>" +
@@ -142,7 +147,7 @@ window.BattleConsole = (function () {
 				// log to console
 				typeWriter("tally_log" + logId, str, 0);
 			}, lineSpeed);
-			if (DEBUG) console.log("🖥️ BattleConsole.writeNextInQueue() [2] str =", str);
+			if (DEBUG) console.log("🖥️ BattleConsole.writeNextInQueue() [2] str =", str, "_queue =", _queue);
 		} catch (err) {
 			console.error(err);
 		}
@@ -163,29 +168,62 @@ window.BattleConsole = (function () {
 
 	function showBattleOptions(lineSpeed = 150) {
 		try {
-			if (DEBUG) console.log("🖥️ BattleConsole.showBattleOptions() step 1 _active =", _active);
+			if (DEBUG) console.log("🖥️ BattleConsole.showBattleOptions()", "[1] _active =", _active);
+
 			// if currently active, stop
 			if (_active) return;
 			// set active
 			_active = true;
 			// get list of attacks
-			var _attacks = {};
-			if (DEBUG) console.log("🖥️ BattleConsole.showBattleOptions() step 1.1 _active =", _active);
-			if (DEBUG) console.log("🖥️ BattleConsole.showBattleOptions() T.tally_user.attacks =", T.tally_user.attacks);
-			if (!FS_Object.isEmpty(T.tally_user.attacks))
+			var _attacks = {},
+				ele = "";
+
+			// reset tally's dialogue queue
+			Dialogue.emptyTheQueue();
+
+			if (DEBUG) console.log("🖥️ BattleConsole.showBattleOptions()", "[1.1]", "T.tally_user.attacks =", T.tally_user.attacks);
+			// if no attacks are available
+			// - error in game?
+			// - player not logged-in?
+			if (FS_Object.isEmpty(T.tally_user.attacks)) {
+				if (DEBUG) console.log("🖥️ BattleConsole.showBattleOptions()", "[1.2]", "T.tally_user.attacks =", T.tally_user.attacks);
+				// release active state
+				_active = false;
+
+				removeCursor();
+				ele = "<div class='tally tally_log_line'><span id='tally_log" + (++logId) + "' class='tally tally_log_cursor'>"+
+					"..." +
+					"</span></div>";
+				$("#battle-console-stream").append(ele);
+
+				ele = "<div class='tally tally_log_line'><span id='tally_log" + (++logId) + "' class='tally tally_log_cursor'>"+
+					"<span class='tally text-red'>ERROR: No attacks found in player data.</span>" +
+					"</span></div>";
+				$("#battle-console-stream").append(ele);
+
+				ele = "<div class='tally tally_log_line'><span id='tally_log" + (++logId) + "' class='tally tally_log_cursor'>"+
+					"<a href='https://tallysavestheinternet.com/get-tally'>Update your game version</a> (currently " + T.tally_meta.version +
+					") and <a href='https://tallysavestheinternet.com/dashboard'>login to your dashboard</a> to make sure your game is connected." +
+					"</span></div>";
+				$("#battle-console-stream").append(ele);
+
+				ele = "<div class='tally tally_log_line'><span id='tally_log" + (++logId) + "' class='tally tally_log_cursor'>"+
+					"Press the [esc] button your keyboard to exit.";
+				$("#battle-console-stream").append(ele);
+				addCursor();
+
+				return;
+			} else {
 				_attacks = T.tally_user.attacks;
+			}
+			if (DEBUG) console.log("🖥️ BattleConsole.showBattleOptions()", "[1.3]", "T.tally_user.attacks =", T.tally_user.attacks);
 
-
-				if (DEBUG) console.log("🖥️ BattleConsole.showBattleOptions() T.tally_user.attacks =", T.tally_user.attacks);
-			// return if no attacks available
-			else return;
-			if (DEBUG) console.log("🖥️ BattleConsole.showBattleOptions() step 1.2 _active =", _active);
 
 			// build options
 			var str = "<div class='tally battle-options-row'>";
 			for (var key in _attacks) {
 				if (_attacks.hasOwnProperty(key)) {
-					if (DEBUG) console.log("🖥️ BattleConsole.showBattleOptions() step 1.3 key =", _attacks[key]);
+					if (DEBUG) console.log("🖥️ BattleConsole.showBattleOptions()", "[2.1] key =", _attacks[key]);
 					// only show selected ones
 					if (!_attacks[key].selected) continue;
 
@@ -207,11 +245,10 @@ window.BattleConsole = (function () {
 				}
 			}
 			str += "<span class='tally battle-options battle-options-esc'>[esc]</span></div>";
-
-			if (DEBUG) console.log("🖥️ BattleConsole.showBattleOptions() step 2", str, _queue, _active);
+			if (DEBUG) console.log("🖥️ BattleConsole.showBattleOptions()", "[2.2]", str, _queue, _active);
 
 			// insert button
-			var ele = "<div class='tally tally_log_line'>" +
+			ele = "<div class='tally tally_log_line'>" +
 				"<span id='tally_log" + (++logId) + "' class='tally tally_log_cursor'>" + str + "</span>" + "</div>";
 			removeCursor();
 			$("#battle-console-stream").append(ele);
@@ -236,7 +273,7 @@ window.BattleConsole = (function () {
 				// if description field contains string
 				if (T.tally_user.attacks[attackName].description)
 					str = T.tally_user.attacks[attackName].description;
-				// console.log(attackName, T.tally_user.attacks[attackName], str);
+				// if (DEBUG) console.log("🖥️ BattleConsole.showBattleOptions()", attackName, T.tally_user.attacks[attackName], str);
 				$("#battle-console-prompt-content").html(str);
 			});
 			// hide
@@ -246,7 +283,7 @@ window.BattleConsole = (function () {
 
 			// add only one listener
 			$(document).on("click", '.battle-options-fire', function () {
-				console.log("🖥️ CLICK CALLED, attack =", $(this).attr("data-attack"), Battle.details);
+				if (DEBUG) console.log("🖥️ BattleConsole.showBattleOptions()", "CLICK CALLED, attack =", $(this).attr("data-attack"), Battle.details);
 				// if user can't do attack yet but they clicked anyway
 				if (Battle.details.attackInProgress) {
 					let r = Math.random();
@@ -264,7 +301,7 @@ window.BattleConsole = (function () {
 					$('.battle-options-row').addClass("disabled");
 					// get attack name
 					let attackName = $(this).attr("data-attack");
-					if (DEBUG) console.log("🖥️ BattleConsole.showBattleOptions() attackName =", attackName, T.tally_user.attacks);
+					if (DEBUG) console.log("🖥️ BattleConsole.showBattleOptions()", "attackName =", attackName, T.tally_user.attacks);
 					BattleAttack.doAttack(T.tally_user.attacks[attackName], "tally", "monster");
 				}
 			});
@@ -316,7 +353,9 @@ window.BattleConsole = (function () {
 				arrLoop, // use function assignment instead of a function declaration
 				strLoop; // so that functions are not hoisted to the top of scope
 
-			if (DEBUG) console.log("🖥️ BattleConsole.typeWriter()", ele, str, i, arr);
+			if (DEBUG) console.log("🖥️ BattleConsole.typeWriter() [1]", ele, "str =", str,
+				// "arr =",arr
+			);
 
 			// loop through arr element
 			arrLoop = function (i, j, arr) {
@@ -446,25 +485,23 @@ window.BattleConsole = (function () {
 	 */
 	function lineComplete(ele) {
 		try {
-			if (DEBUG) console.log("🖥️ BattleConsole.lineComplete() [1]", ele);
-
 			// add a little time at the end of each line
 			setTimeout(function () {
 				_active = false;
 				// text is done writing so color it
 				colorText(ele);
-				if (DEBUG) console.log("🖥️ BattleConsole.lineComplete() [2]", ele);
+				if (DEBUG) console.log("🖥️ BattleConsole.lineComplete() [1]", ele, "setTimeout()");
 				// if queue is empty and there is a next string
 				if (_queue.length < 1 && _next != "") {
-					if (DEBUG) console.log("🖥️ BattleConsole.lineComplete() [3]", ele);
+					if (DEBUG) console.log("🖥️ BattleConsole.lineComplete() [2]", ele, "_queue.length =", _queue.length);
 					if (_next == "showBattleOptions") {
-						if (DEBUG) console.log("🖥️ BattleConsole.lineComplete() [4]", ele);
+						if (DEBUG) console.log("🖥️ BattleConsole.lineComplete() [3]", ele, "_next =", _next);
 						//if (DEBUG) console.log(_next);
 						showBattleOptions();
 					}
 					_next = "";
 				}
-			}, 200);
+			}, 100);
 		} catch (err) {
 			console.error(err);
 		}
@@ -502,8 +539,12 @@ window.BattleConsole = (function () {
 
 	// PUBLIC
 	return {
-		set active (value) { _active = value; },
-		get active () { return _active; },
+		set active(value) {
+			_active = value;
+		},
+		get active() {
+			return _active;
+		},
 
 		display: display,
 		hide: hide,

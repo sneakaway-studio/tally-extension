@@ -8,7 +8,9 @@
 
 ### Version 0.4.1
 
-* 
+* Fix bug in attacks
+* Fix bug in audio volume
+* Adds new onboarding to explain options menus  
 
 ### Version 0.4.0
 
