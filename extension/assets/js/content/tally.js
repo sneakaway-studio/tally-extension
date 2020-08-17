@@ -514,17 +514,38 @@ window.Tally = (function () {
 				// - don't allow when global tutorial sequence running
 				if (!Tutorial.sequenceActive) {
 
-					if (Progress.update("toldOptionsChill", 1, "+") < 2) {
+					// tell options
+					if (Progress.get("toldOptions") < 1) {
 						// tell them a tip
 						Dialogue.showData(Dialogue.getData({
 							category: "random",
-							subcategory: "tip-chill-option"
+							subcategory: "tip-options"
 						}), {
-							addIfInProcess: true,
+							addIfInProcess: false,
 							instant: true
 						});
+						// update progress
+						Progress.update("toldOptions", 1, "+");
 					}
-					else if (Math.random() > 0.3){
+					// tell options chill
+					else if (Math.random() > 0.3 && Progress.get("toldOptionsChill") < 3) {
+						// tell them a tip
+						Dialogue.showData(Dialogue.getData({
+							category: "random",
+							subcategory: "tip-options-chill" + Progress.get("toldOptionsChill")
+						}), {
+							addIfInProcess: false,
+							instant: true
+						});
+						// update progress
+						Progress.update("toldOptionsChill", 1, "+");
+					}
+					// tell fact
+					else if (Math.random() < 0.3) {
+						Dialogue.showStr(Dialogue.getFact("", false), "neutral");
+					}
+					// tell tip 
+					else {
 						// tell them a tip
 						Dialogue.showData(Dialogue.getData({
 							category: "random",
@@ -533,29 +554,31 @@ window.Tally = (function () {
 							addIfInProcess: false,
 							instant: true
 						});
-					} else {
-						Dialogue.showStr(Dialogue.getFact("", false), "neutral");
 					}
-					if (Math.random() > 0.9 || Progress.update("toldToClickForTips", 1, "+") < 2) {
+					if (Math.random() > 0.9 || Progress.get("toldToClickForTips") < 2) {
 						// tell them to click for tips
 						Dialogue.showData(Dialogue.getData({
 							category: "help",
 							subcategory: "click-for-tips"
 						}), {
-							addIfInProcess: true,
+							addIfInProcess: false,
 							instant: false
 						});
+						// update progress
+						Progress.update("toldToClickForTips", 1, "+");
 					}
 
 				}
 
 				// update progress
-				if (Progress.update("clickTallySingle", 1, "+") < 5 && Math.random() > 0.8) {
+				if (Progress.get("toldToClickDouble") < 5 && Math.random() > 0.8) {
 					// tell them more
-					if (Progress.update("toldToClickDouble", 1, "+") < 1)
+					if (Progress.get("toldToClickDouble") < 1)
 						Dialogue.showStr("Double click me!", "happy");
 					else
 						Dialogue.showStr("Double click me to see a menu!", "happy");
+					// update progress
+					Progress.update("toldToClickDouble", 1, "+");
 				}
 			}
 			// TWO CLICKS - ALWAYS SHOW MENU

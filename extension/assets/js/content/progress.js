@@ -66,6 +66,7 @@ window.Progress = (function () {
 		pageTagsWhisteblower: 0,
 
 		// things to tell the player
+		toldOptions: 0,
 		toldOptionsChill: 0,
 		toldToBeatMonstersForDisguises: 0,
 		toldToClickForTips: 0,
