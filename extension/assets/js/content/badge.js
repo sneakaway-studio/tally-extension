@@ -353,73 +353,77 @@ window.Badge = (function () {
 
 			if (DEBUG) console.log("🏆 Badge.award()", badge);
 
-			if (!badge.color1 || badge.color1 == "") badge.color1 = "rgba(70,24,153,1)";
-			if (!badge.color2 || badge.color2 == "") badge.color2 = "rgba(170,24,153,1)";
+			// do we show notifications?
+			if (T.tally_options.showNotifications) {
 
-			// string for dialogue box
-			let str = "";
-			str += "<div class='tally tally-dialogue-with-img' style=' " +
-				"background: " + badge.color1 + ";" +
-				"background: linear-gradient(180deg, " + badge.color1 + " 0%, " + badge.color2 + "100%);" +
-				"'>";
-			str += "<div class='tally-badge-award-wrapper'>";
+				if (!badge.color1 || badge.color1 == "") badge.color1 = "rgba(70,24,153,1)";
+				if (!badge.color2 || badge.color2 == "") badge.color2 = "rgba(170,24,153,1)";
 
-			// add the badge image
-			str += "<img class='tally tally-badge-img-wrapper' src='";
-			if (badge.ext && badge.ext !== "")
-				// placeholder for badges not finished
-				str += chrome.extension.getURL('assets/img/badges/' + badge.name + badge.ext);
-			else
-				str += chrome.extension.getURL('assets/img/badges/placeholder.png');
-			str += "'>";
+				// string for dialogue box
+				let str = "";
+				str += "<div class='tally tally-dialogue-with-img' style=' " +
+					"background: " + badge.color1 + ";" +
+					"background: linear-gradient(180deg, " + badge.color1 + " 0%, " + badge.color2 + "100%);" +
+					"'>";
+				str += "<div class='tally-badge-award-wrapper'>";
 
-			// add award text
-			str += "<div class='tally do-not-break tally-badge-text'>";
-			str += "<div class='tally do-not-break'>" + badge.title + "</div>";
-			str += "<div class='tally tally-badge-text-level'>level " + badge.level + "</div>";
-			str += "</div>";
+				// add the badge image
+				str += "<img class='tally tally-badge-img-wrapper' src='";
+				if (badge.ext && badge.ext !== "")
+					// placeholder for badges not finished
+					str += chrome.extension.getURL('assets/img/badges/' + badge.name + badge.ext);
+				else
+					str += chrome.extension.getURL('assets/img/badges/placeholder.png');
+				str += "'>";
 
-			str += "</div>"; // close tally-badge-award-wrapper
-			str += "</div>"; // close tally-dialogue-with-img
+				// add award text
+				str += "<div class='tally do-not-break tally-badge-text'>";
+				str += "<div class='tally do-not-break'>" + badge.title + "</div>";
+				str += "<div class='tally tally-badge-text-level'>level " + badge.level + "</div>";
+				str += "</div>";
 
-			// the text tally says
-			str += "<div class='dialogue_text_after_image'>";
-			if (T.tally_user.badges[badge.name] && badge.level > T.tally_user.badges[badge.name].level) {
-				// if they already have that badge
-				str += "You leveled up!";
-			} else {
-				str += "You earned a new badge!";
+				str += "</div>"; // close tally-badge-award-wrapper
+				str += "</div>"; // close tally-dialogue-with-img
+
+				// the text tally says
+				str += "<div class='dialogue_text_after_image'>";
+				if (T.tally_user.badges[badge.name] && badge.level > T.tally_user.badges[badge.name].level) {
+					// if they already have that badge
+					str += "You leveled up!";
+				} else {
+					str += "You earned a new badge!";
+				}
+				str += "</div>";
+
+				// show dialogue with badge image
+				Dialogue.showData({
+					text: str,
+					mood: badge.sound
+				}, {
+					instant: true
+				});
+				Dialogue.showData(Dialogue.getData({
+					category: "badge",
+					subcategory: badge.name
+				}));
+
+				// add floating animation
+				let badgeFloatingAnim = anime({
+					targets: ".tally-badge-img-wrapper",
+					// translateY: -4,
+					rotateZ: [{
+							value: -5
+						},
+						{
+							value: 5
+						}
+					],
+					direction: 'alternate',
+					loop: true,
+					easing: 'easeInOutSine',
+					duration: 600
+				});
 			}
-			str += "</div>";
-
-			// show dialogue with badge image
-			Dialogue.showData({
-				text: str,
-				mood: badge.sound
-			}, {
-				instant: true
-			});
-			Dialogue.showData(Dialogue.getData({
-				category: "badge",
-				subcategory: badge.name
-			}));
-
-			// add floating animation
-			let badgeFloatingAnim = anime({
-				targets: ".tally-badge-img-wrapper",
-				// translateY: -4,
-				rotateZ: [{
-						value: -5
-					},
-					{
-						value: 5
-					}
-				],
-				direction: 'alternate',
-				loop: true,
-				easing: 'easeInOutSine',
-				duration: 600
-			});
 
 			// update progress
 			Progress.update("badgesAwarded", FS_Object.objLength(T.tally_user.badges));
