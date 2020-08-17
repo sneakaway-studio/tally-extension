@@ -514,7 +514,17 @@ window.Tally = (function () {
 				// - don't allow when global tutorial sequence running
 				if (!Tutorial.sequenceActive) {
 
-					if (Math.random() > 0.3){
+					if (Progress.update("toldOptionsChill", 1, "+") < 2) {
+						// tell them a tip
+						Dialogue.showData(Dialogue.getData({
+							category: "random",
+							subcategory: "tip-chill-option"
+						}), {
+							addIfInProcess: true,
+							instant: true
+						});
+					}
+					else if (Math.random() > 0.3){
 						// tell them a tip
 						Dialogue.showData(Dialogue.getData({
 							category: "random",
