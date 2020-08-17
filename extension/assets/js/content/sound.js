@@ -118,7 +118,7 @@ window.Sound = (function () {
 				musicAudioEl = document.querySelector('#tally_music');
 				$('#tally_music_source').attr("src", chrome.extension.getURL("assets/sounds/music/" + musicFile));
 				// set params
-				musicAudioEl.volume = FS_Number.clamp((T.tally_options.soundVolume || 0.3) + volumeModifier, 0, 1);
+				musicAudioEl.volume = FS_Number.clamp(T.tally_options.soundVolume + volumeModifier, 0, 1);
 				// some hacks for Chrome
 				musicAudioEl.muted = false;
 				musicAudioEl.loop = loop;
@@ -366,7 +366,7 @@ window.Sound = (function () {
 	// 	var audio = new Audio(chrome.extension.getURL("assets/sounds/" + soundFile));
 	// 	audio.muted = true;
 	// 	audio.pause();
-	// 	audio.volume = (T.tally_options.soundVolume || 0.2) + volumeModifier;
+	// 	audio.volume = T.tally_options.soundVolume + volumeModifier;
 	// 	if (delay > 0)
 	// 		setTimeout(function() {
 	// 			audio.muted = false;
@@ -398,8 +398,11 @@ window.Sound = (function () {
 			// check volume
 			if (volumeModifier > 0.5) volumeModifier = 0;
 
-			if (DEBUG) console.log("🎵 Sound.play(" + soundFile + "," + delay + "," + volumeModifier + ")");
-
+			if (DEBUG) console.log("🎵 Sound.play() [1]",
+				"soundFile =", soundFile,
+				"delay =", delay,
+				"volumeModifier =", volumeModifier,
+			);
 
 			// reference to audio element
 			var audioEl = document.querySelector('#tally_audio');
@@ -409,7 +412,11 @@ window.Sound = (function () {
 			// update the source
 			audioEl.load();
 			// set volume
-			audioEl.volume = FS_Number.clamp((T.tally_options.soundVolume || 0.2) + volumeModifier, 0, 1);
+			audioEl.volume = FS_Number.clamp(T.tally_options.soundVolume + volumeModifier, 0, 1);
+
+			if (DEBUG) console.log("🎵 Sound.play() [2]",
+				"audioEl.volume =", audioEl.volume,
+			);
 
 			// some hacks for Chrome
 			audioEl.muted = false;

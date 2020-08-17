@@ -531,7 +531,7 @@ $("select#gameMode").on('change', function () {
 });
 $('#soundVolume').on('change', function () {
 	// play a sound to confirm new setting
-	var audio = new Audio(chrome.extension.getURL("assets/sounds/tally/tally-hello-q.mp3"));
+	var audio = new Audio(chrome.extension.getURL("assets/sounds/tally/moods-v3/excited-2-1.wav"));
 	audio.volume = $(this).val() / 100;
 	audio.play();
 });
