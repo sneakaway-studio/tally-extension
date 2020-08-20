@@ -564,7 +564,13 @@ window.Tally = (function () {
 					}
 					// tell fact
 					else if (Math.random() < 0.3) {
-						Dialogue.showStr(Dialogue.getFact("", false), "neutral");
+						Dialogue.showData({
+							text: Dialogue.getFact("", false),
+							mood: "neutral"
+						}, {
+							addIfInProcess: false,
+							instant: false
+						});
 					}
 					// tell tip
 					else {
