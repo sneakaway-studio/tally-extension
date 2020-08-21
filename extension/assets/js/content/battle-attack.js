@@ -390,7 +390,7 @@ window.BattleAttack = (function() {
 				Sound.stopMusic();
 				setTimeout(function() {
 					// show final dialogue
-					console.log("endBattleMessage", endBattleMessage);
+					if (DEBUG) console.log("endBattleMessage", endBattleMessage);
 					Dialogue.showStr(endBattleMessage.text, endBattleMessage.mood);
 					setTimeout(function() {
 						// if in demo then quit after a moment

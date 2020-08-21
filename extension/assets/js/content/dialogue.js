@@ -530,15 +530,19 @@ window.Dialogue = (function () {
 			let find = "",
 				replace = "";
 			// check for any template replacement matches
-			if (str.indexOf("a {{Monster.current}}") > -1) {
+			if (str.indexOf("{{a Monster.current}}") > -1) {
+				// search for name with "a"
 				find = "a Monster.current";
-				replace = MonsterData.dataById[Monster.current().mid].name;
-				if (FS_String.isVowel(replace[0])) replace = "n " + replace;
+				// get only monster name first
+				replace = MonsterData.dataById[Monster.current().mid].name + " monster";
+				// append an
+				if (FS_String.isVowel(replace[0])) replace = "an " + replace;
+				// else append "a"
 				else replace = "a " + replace;
 			}
 			if (str.indexOf("{{Monster.current}}") > -1) {
 				find = "Monster.current";
-				replace = MonsterData.dataById[Monster.current().mid].name;
+				replace = MonsterData.dataById[Monster.current().mid].name + " monster";
 			}
 			if (str.indexOf("{{Page.data.title}}") > -1) {
 				find = "Page.data.title";

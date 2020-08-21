@@ -151,7 +151,7 @@ window.BattleMath = (function () {
 			}
 			// was it a special attack?
 			else if (FS_Object.prop(attack.special)) {
-				console.log("🔢 BattleMath.returnAttackOutcomes() SPECIAL ATTACK !", attack.special);
+				if (DEBUG) console.log("🔢 BattleMath.returnAttackOutcomes() SPECIAL ATTACK !", attack.special);
 				outcome = outcomeData[attack.special]; // get data
 				// make sure its defined
 				if (outcome) {

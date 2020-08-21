@@ -165,14 +165,14 @@ window.Disguise = (function() {
 			for (let i = parseInt(T.tally_user.level); i < 100; i--) {
 				// until we get to a disguise that has a leve that matches
 				if (FS_Object.prop(DisguiseData.dataByLevel[i])) {
-					console.log("😎 Disguise.checkAndReward() [2]", DisguiseData.dataByLevel[i]);
+					if (DEBUG) console.log("😎 Disguise.checkAndReward() [2]", DisguiseData.dataByLevel[i]);
 					disguise = DisguiseData.dataByLevel[i];
 					break;
 				}
 			}
 			// if they DO NOT currently have that disguise then award it
 			if (!FS_Object.prop(T.tally_user.disguises[disguise.name])) {
-				console.log("😎 Disguise.checkAndReward() [3] - Disguise has not be received before", T.tally_user.disguises);
+				if (DEBUG) console.log("😎 Disguise.checkAndReward() [3] - Disguise has not be received before", T.tally_user.disguises);
 
 				// save in background (and on server)
 				TallyData.queue("itemData", "disguises", disguise, "😎 Disguise.checkAndReward()");

@@ -6,6 +6,11 @@
 ## Development Versions
 
 
+### Version 0.4.2
+
+*
+
+
 ### Version 0.4.1
 
 * Fix bug in attacks

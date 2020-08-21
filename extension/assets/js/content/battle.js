@@ -203,7 +203,7 @@ window.Battle = (function () {
 		try {
 			if (!_active) return;
 			let log = "💥 Battle.end()";
-			console.log(log);
+			if (DEBUG) console.log(log);
 
 			// create monster update object
 			let monsterUpdate = {
