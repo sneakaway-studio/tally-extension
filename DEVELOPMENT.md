@@ -28,11 +28,12 @@ General information and references for cross-browser extension development
 
 1. Set all `T.options` to `false`
 1. Remove localhost from host permissions in manifest
-1. Zip the extension files
+1. Zip extension files
     1. Chrome: Zip `extension/` directory
-    1. Firefox: Zip only files *inside* extension directory (`assets/` and `manifest.json`)
-1. Run `releases/clean_zip.sh file.zip` to remove all hidden files like `.DS_Store`
-1. Rename extension zip file and upload to respective web stores
+    2. Firefox: Zip *only files inside* extension directory
+1. Rename extension zip files  
+1. Run `releases/clean_zip.sh <filename>.zip` to remove all hidden files like `.DS_Store`
+1. Upload to respective web stores
 
 
 
