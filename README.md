@@ -15,16 +15,23 @@ Learn more at [tallysavestheinternet.com](https://tallysavestheinternet.com).
 
 
 
-### Options
+### Game play and options
 
-* Some settings can be changed by clicking on the Tally icon in the top, right of your screen
-* Some debugging options are available by double-clicking on Tally
+* Check out <a href="https://tallysavestheinternet.com/how-to-play">How to Play</a> and the <a href="https://tallysavestheinternet.com/leaderboard">Leaderboard</a> to see how people are playing Tally.
+* Curious about why we made Tally? Watch the <a href="https://tallysavestheinternet.com/">trailer</a>, or check out <a href="https://tallysavestheinternet.com/learn-more">Learn More</a>.
+* See our <a href="https://tallysavestheinternet.com/press">Press page</a> for high-resolution images and other resources.
+* Have feedback or find an issue? See the <a href="https://tallysavestheinternet.com/faq#feedback">Playtest Survey</a> and <a href="https://tallysavestheinternet.com/faq#feedback">Report-a-Bug Form</a>.
+* Tally was created by <a href="https://sneakaway.studio">Sneakaway Studio</a> with the help of <a href="https://tallysavestheinternet.com/credits">many others</a>. Follow our work on <a href="https://sneakaway.studio/blog" target="_blank"> our blog </a>, <a href="https://twitter.com/SneakawayStudio" target="_blank"> Twitter </a>, <a href="https://www.instagram.com/sneakaway.studio/" target="_blank">Instagram</a>, or <a href="https://www.facebook.com/sneakawaystudio/" target="_blank">Facebook</a>
+* Still have questions? Check out the <a href="https://tallysavestheinternet.com/faq">FAQ</a> or our <a href="https://tallysavestheinternet.com/privacy">Privacy Policy</a>.
+
 
 
 
 
 ### Demo Mode ("Gallery Version")
+This game has a demo mode. <a href="https://sneakaway.studio">Reach out</a> if you want to exhibit this game.
 
+Instructions
 * Switch to a user account with admin privileges
 * Select "Demo" in options
 * If sound doesn't play automatically use [Chrome Canary](https://www.google.com/chrome/canary/) with startup flags: `/Applications/Google\ Chrome\ Canary.app/Contents/MacOS/Google\ Chrome\ Canary  --autoplay-policy=no-user-gesture-required`
@@ -36,15 +43,3 @@ Learn more at [tallysavestheinternet.com](https://tallysavestheinternet.com).
 
 * [Extension Development](DEVELOPMENT.md)
 * [Changelog](CHANGELOG.md)
-
-
-### Dependencies
-
-* [Mousetrap.js](https://craig.is/killing/mice)
-* [Moment.js](https://momentjs.com/)
-* [Anime.js](https://animejs.com/)
-* [CSShake](https://elrumordelaluz.github.io/csshake/)
-* [jQuery](https://jquery.com/)
-* [jQuery Growl](http://ksylvest.github.io/jquery-growl/)
-* [Store2](https://www.npmjs.com/package/store2)
-* [Disconnect Tracking Protection](https://github.com/disconnectme/disconnect-tracking-protection)
