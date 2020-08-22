@@ -89,6 +89,9 @@
     background: #282c35;
     color: #fff;
 }
+
+
+
 /* remove other sites' CSS */
 .tally_stats_table_wrapper table, .monster_stats_table_wrapper table {
     margin: 0 !important;
@@ -101,10 +104,18 @@
     vertical-align: middle !important;
     background-color: transparent !important;
 }
-table.stats-table {
+table.stats-table,
+table.stats-table tbody,
+table.stats-table tfoot,
+table.stats-table thead,
+table.stats-table tbody tr:nth-child(1n),
+table.stats-table tbody tr:nth-child(2n),
+table.stats-table tbody tr:nth-child(3n) {
     border: none !important;
     background-color: transparent !important;
 }
+
+
 
 
 

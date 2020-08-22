@@ -150,6 +150,7 @@ svg#tally-svg * {
     display: flex;
     padding: 0;
     cursor: pointer;
+    color: #fff !important;
 }
 #tally_dialogue_outer,
 #tally_dialogue_outer a {
