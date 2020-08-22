@@ -122,10 +122,9 @@ window.StatsDisplay = (function () {
 				<tr class='tally ${statChangedBlinkClass}' title="${preferredStatOrder[key]}">
 					<td class='tally ${statClass}'>${key}</td>
 					<td class='tally stats-number-column'>
-						<span class='tally ${statClass}'>` + stats[key].val + `</span>
-						/
-						<span class='tally ${statClass}'>` + stats[key].max + `</span>
-					</td>
+						<span class='tally ${statClass}'>` + stats[key].val +
+						`</span>/<span class='tally ${statClass}'>` +
+						stats[key].max + `</span></td>
 				</tr>
 
 				`;

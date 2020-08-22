@@ -81,11 +81,11 @@
     display: none;  /* hide by default */
     position: absolute;
     z-index: 2147483630;
-    width: 135px;
-    padding: 6px;
-    padding-top: 16px;
+    width: 145px;
+    padding: 5px;
+    padding-top: 14px;
     top: 30px;
-    left: 42px;
+    left: 35px;
     background: #282c35;
     color: #fff;
 }
@@ -119,12 +119,12 @@ table.stats-table {
     font: 11px/12px "Monaco", "Andale Mono", "Courier New", sans-serif !important;
     border-collapse: separate !important;
     border-spacing: 2px !important;
-    padding-right: 4px !important;
+    padding-right: 3px !important;
     z-index: 2147483647 !important;
 }
 .stats-table tr td {
     font: 11px/12px "Monaco", "Andale Mono", "Courier New", sans-serif !important;
-    padding: 1px !important;
+    padding: 0 1px !important;
 }
 table.stats-table tr:hover {
     cursor: crosshair;
@@ -132,7 +132,7 @@ table.stats-table tr:hover {
 table.stats-table tr td.stats-number-column {
     width: 20% !important;
     text-align: right !important;
-    line-height: 12px !important;
+    line-height: 11px !important;
 }
 
 
