@@ -130,7 +130,7 @@ window.Tally = (function () {
 				"<div class='tally tally_disguise'></div>" +
 				"<div class='tally tally_stats'>" +
 				"<div class='tally tally_stats_bars'></div>" +
-				"<div class='tally tally_stats_table'></div>" +
+				"<div class='tally tally_stats_table_wrapper'></div>" +
 				"</div>" +
 				"</div>";
 			$('#tally_wrapper').append(str);
@@ -179,17 +179,17 @@ window.Tally = (function () {
 				"display": "block"
 			});
 			$('.tally_stats_bars').html(StatsDisplay.returnInitialSVG("tally"));
-			$('.tally_stats_table').html(StatsDisplay.returnFullTable("tally"));
+			$('.tally_stats_table_wrapper').html(StatsDisplay.returnFullTable("tally"));
 
 			// show / hide stats on click
 			$('.tally_stats').on("click", function (e) {
-				//console.log("hi",$('.tally_stats_table').css("display"));
-				if ($('.tally_stats_table').css("display") == "none")
-					$('.tally_stats_table').css({
+				//console.log("hi",$('.tally_stats_table_wrapper').css("display"));
+				if ($('.tally_stats_table_wrapper').css("display") == "none")
+					$('.tally_stats_table_wrapper').css({
 						"display": "block"
 					});
 				else
-					$('.tally_stats_table').css({
+					$('.tally_stats_table_wrapper').css({
 						"display": "none"
 					});
 			});

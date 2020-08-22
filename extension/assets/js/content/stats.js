@@ -262,7 +262,7 @@ window.Stats = (function () {
 			save('tally');
 
 			// update stat display
-			//		$('.tally_stats_table').html(StatsDisplay.returnFullTable("tally", consumable.stat));
+			//		$('.tally_stats_table_wrapper').html(StatsDisplay.returnFullTable("tally", consumable.stat));
 
 			StatsDisplay.updateDisplay('tally');
 

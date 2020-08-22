@@ -17,7 +17,7 @@ window.Interface = (function() {
 							"<div class='tally tally_demo_window tally_demo_window_hidden'></div>" +
 							// effects
 							"<div class='tally' id='tally_click_visual'></div>" +
- 
+
 							// sound effects
 							"<audio class='tally' id='tally_audio' muted='muted'>"+
 								"<source src='' class='tally' id='tally_audio_source' type='audio/mp3'>"+
@@ -36,7 +36,7 @@ window.Interface = (function() {
 								"</div>" +
 								"<div class='tally monster_stats'>" +
 									"<div class='tally monster_stats_bars'></div>" +
-									"<div class='tally monster_stats_table'></div>" +
+									"<div class='tally monster_stats_table_wrapper'></div>" +
 								"</div>" +
 							"</div>" +
 

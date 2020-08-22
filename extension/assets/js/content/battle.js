@@ -145,20 +145,20 @@ window.Battle = (function () {
 			});
 			// insert SVG, stats table
 			$('.monster_stats_bars').html(StatsDisplay.returnInitialSVG("monster"));
-			$('.monster_stats_table').html(StatsDisplay.returnFullTable("monster"));
+			$('.monster_stats_table_wrapper').html(StatsDisplay.returnFullTable("monster"));
 			// display stats
 			$('.monster_stats').css({
 				"display": "block"
 			});
 			// add stats display / hide action
 			$('.monster_stats').on("click", function (e) {
-				//console.log("hi",$('.monster_stats_table').css("display"));
-				if ($('.monster_stats_table').css("display") == "none")
-					$('.monster_stats_table').css({
+				//console.log("hi",$('.monster_stats_table_wrapper').css("display"));
+				if ($('.monster_stats_table_wrapper').css("display") == "none")
+					$('.monster_stats_table_wrapper').css({
 						"display": "block"
 					});
 				else
-					$('.monster_stats_table').css({
+					$('.monster_stats_table_wrapper').css({
 						"display": "none"
 					});
 			});

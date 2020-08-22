@@ -76,7 +76,7 @@
     top: 0px;
     left: 0px;
 }
-.tally_stats_table, .monster_stats_table {
+.tally_stats_table_wrapper, .monster_stats_table_wrapper {
     font: 12px/16px "Monaco", "Andale Mono", "Courier New", sans-serif !important;
     display: none;  /* hide by default */
     position: absolute;
@@ -88,9 +88,26 @@
     left: 42px;
     background: #282c35;
     color: #fff;
-    /* display: hidden; */
-
 }
+/* remove other sites' CSS */
+.tally_stats_table_wrapper table, .monster_stats_table_wrapper table {
+    margin: 0 !important;
+    border: none !important;
+    background-color: transparent !important;
+}
+.tally_stats_table_wrapper table td, .monster_stats_table_wrapper table td {
+    padding: 0 !important;
+    border: none !important;
+    vertical-align: middle !important;
+    background-color: transparent !important;
+}
+table.stats-table {
+    border: none !important;
+    background-color: transparent !important;
+}
+
+
+
 /* .monster_stats {
     transform: translateX(25%);
     top: 0;
@@ -105,7 +122,10 @@ table.stats-table {
     padding-right: 4px !important;
     z-index: 2147483647 !important;
 }
-.stats-table tr td { font: 11px/12px "Monaco", "Andale Mono", "Courier New", sans-serif !important; }
+.stats-table tr td {
+    font: 11px/12px "Monaco", "Andale Mono", "Courier New", sans-serif !important;
+    padding: 1px !important;
+}
 table.stats-table tr:hover {
     cursor: crosshair;
 }
@@ -114,9 +134,7 @@ table.stats-table tr td.stats-number-column {
     text-align: right !important;
     line-height: 12px !important;
 }
-table.stats-table tr td.stats-number-column .divider {
-    padding: 0 1px 0 3px;
-}
+
 
 
 .stat-blink {
