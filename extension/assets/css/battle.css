@@ -81,9 +81,9 @@
     display: none;  /* hide by default */
     position: absolute;
     z-index: 2147483630;
-    width: 105px;
-    padding: 8px;
-    padding-top: 18px;
+    width: 135px;
+    padding: 6px;
+    padding-top: 16px;
     top: 30px;
     left: 42px;
     background: #282c35;
@@ -134,7 +134,7 @@ table.stats-table tr td.stats-number-column .divider {
 
 svg.stats-display { width:230;  }
 
-svg.stats-display .stat-bars { stroke-width:0; transform:translateX(30px); }
+svg.stats-display .stat-bars { stroke-width:0; transform:translate(30px,4px); }
 svg.stats-display .stat-bar-health { fill:#6ece41; }
 svg.stats-display .stat-bar-health-bg { fill:#494949; }
 svg.stats-display .stat-bar-stamina { fill:#189aed;  }
@@ -142,6 +142,7 @@ svg.stats-display .stat-bar-stamina-bg { fill:#494949; }
 svg.stats-display .stat-bar-experience { fill:#ff9900; }
 svg.stats-display .stat-bar-experience-bg { fill:#494949; }
 svg.stats-display .stat-bar-circle {
+    transform:translateY(1px);
     fill: #272c34;
     stroke-width: 5px;
     stroke: #d243ec;
@@ -231,11 +232,11 @@ svg.stats-display .stat-bar-circle-text { fill:white; font: 14px "Monaco", "Anda
 /* text colors */
 #battle-console-stream .text-green, .text-health { color: #6ece41; }
 #battle-console-stream .text-ltblue { color: #18c8d8; }
-#battle-console-stream .text-blue, .text-defense { color: #189aed; }
+#battle-console-stream .text-blue, .text-stamina, .text-defense { color: #189aed; }
 #battle-console-stream .text-purple, .text-tally { color: #fd5be9; }
 #battle-console-stream .text-yellow { color: #f5ac39; }
 #battle-console-stream .text-orange, .text-attack { color: #f58b1a; }
-#battle-console-stream .text-red, .text-stamina { color: #df4a3b; }
+#battle-console-stream .text-red { color: #df4a3b; }
 #battle-console-stream .text-dkgrey { color: #272c34; }
 #battle-console-stream .text-grey { color: #5b636f; }
 #battle-console-stream .text-ltgrey { color: #8f96a2; }

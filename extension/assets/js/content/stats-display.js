@@ -3,7 +3,7 @@
 /*  STATS DISPLAY
  ******************************************************************************/
 
-window.StatsDisplay = (function() {
+window.StatsDisplay = (function () {
 	// PRIVATE
 	let DEBUG = Debug.ALL.StatsDisplay;
 
@@ -77,22 +77,59 @@ window.StatsDisplay = (function() {
 		try {
 			let stats = Stats.get(who),
 				str = "",
-				blink = "";
-			// console.log("📈 StatsDisplay.returnFullTable() [1]", who, changed, str, blink);
+				statClass = "",
+				statChangedBlinkClass = "",
+				preferredStatOrder = {
+					health: "How long you can withstand a monster's attacks.",
+					stamina: "Stamina enables you to launch attacks and depletes as you do.",
+					accuracy: "Determines the accuracy of the attacks you launch at the monster. High accuracy means you won't miss.",
+					attack: "How powerful your attacks will be against the monster.",
+					defense: "How well you can withstand a monster's attacks. The lower your defense, the more health you will lose.",
+					evasion: "Your ability to evade a monster's attacks. They will miss if your evasion is high.",
+				};
+			// console.log("📈 StatsDisplay.returnFullTable() [1]", who, changed, str, statChangedBlinkClass);
 			str += "<div class='tally'><table class='tally stats-table'><tbody class='tally'>";
-			for (var key in stats) {
-				if (stats.hasOwnProperty(key)) {
+
+			// stats alphabetical
+
+			// for (var key in stats) {
+			// 	if (stats.hasOwnProperty(key)) {
+			// 		console.log("📈 StatsDisplay.returnFullTable() [2] loop ->", key +" => "+ stats[key]);
+			// 		statChangedBlinkClass = "";
+			// 		if (changed == key) statChangedBlinkClass = " stat-blink";
+			// 		let title = key + ": " + stats[key].val + "/" + stats[key].max;
+			// 		str += "<tr class='tally text-" + key + statChangedBlinkClass + "' title='" + title + "'>" +
+			// 			"<td class='tally'>" + key + "</td>" +
+			// 			"<td class='tally stats-number-column'>" + stats[key].val + "</td></tr>";
+			// 	}
+			// }
+
+			// stats in new order
+
+			for (var key in preferredStatOrder) {
+				if (preferredStatOrder.hasOwnProperty(key)) {
 					// console.log("📈 StatsDisplay.returnFullTable() [2] loop ->", key +" => "+ stats[key]);
-					blink = "";
-					if (changed == key) blink = " stat-blink";
-					let title = key + ": " + stats[key].val + "/" + stats[key].max;
-					str += "<tr class='tally text-" + key + blink + "' title='" + title + "'>" +
-						"<td class='tally'>" + key + "</td>" +
-						"<td class='tally stats-number-column'>" + stats[key].val + "</td></tr>";
+					statChangedBlinkClass = "";
+					// whether or not to blink if changed
+					if (changed == key) statChangedBlinkClass = " stat-blink";
+					// defense and attack have the same colors, a bit confusing but easier to fix with this logic than create new palette
+					if (key === "defense" || key === "attack") statClass = "";
+					// else use key name
+					else statClass = "text-" + key;
+
+					str += `
+
+				<tr class='tally ${statClass} ${statChangedBlinkClass}' title="${preferredStatOrder[key]}">
+					<td class='tally'>${key}</td>
+					<td class='tally stats-number-column'>` + stats[key].val + `/` + stats[key].max + `</td>
+				</tr>
+
+				`;
 				}
 			}
+
 			str += "</tbody></table></div>";
-			// console.log("📈 StatsDisplay.returnFullTable() [3]", who, changed, str, blink);
+			// console.log("📈 StatsDisplay.returnFullTable() [3]", who, changed, str, statChangedBlinkClass);
 			return str;
 		} catch (err) {
 			console.error(err);
@@ -328,10 +365,10 @@ window.StatsDisplay = (function() {
 
 	// PUBLIC
 	return {
-		returnInitialSVG: function(who) {
+		returnInitialSVG: function (who) {
 			return returnInitialSVG(who);
 		},
-		returnFullTable: function(who, changed) {
+		returnFullTable: function (who, changed) {
 			return returnFullTable(who, changed);
 		},
 		// showStatsFull: function(who){

@@ -8,7 +8,7 @@
 
 ### Version 0.4.2
 
-*
+* Improvements to stats displays
 
 
 ### Version 0.4.1
