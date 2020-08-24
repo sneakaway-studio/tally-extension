@@ -617,7 +617,7 @@ window.Tally = (function () {
 				Progress.update("clickTallyDouble", 1, "+");
 				// build string and show
 				let str = "Want to hear <a class='tally tally_showStory1'>my story</a>,<br>" +
-					" see a <a class='tally' href='https://youtu.be/RKvw50V02hs' target='_blank'>tutorial</a>,<br>" +
+					" see a <a class='tally' href='https://tallysavestheinternet.com/how-to-play#tutorials' target='_blank'>tutorial</a>,<br>" +
 					"or <a class='tally tally_showMoreOptions'>something else</a>?";
 				Dialogue.showData({
 					"text": str,
