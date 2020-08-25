@@ -138,7 +138,8 @@ window.MonsterCheck = (function () {
 			// will we show monster on the page
 			let showMonster = false,
 				distance = "",
-				advance = false;
+				advance = false,
+				dialogue = "";
 
 			// if the monster id does not exist in nearby_monsters
 			if (!prop(T.tally_nearby_monsters[mid])) {
@@ -161,7 +162,7 @@ window.MonsterCheck = (function () {
 				// STAGE == 0
 				else if (T.tally_nearby_monsters[mid].stage == 0) {
 					// do nothing
-					showDialogueAboutQuantity();
+					dialogue = "showDialogueAboutQuantity";
 				}
 				// STAGE == 1
 				else if (T.tally_nearby_monsters[mid].stage == 1) {
@@ -172,7 +173,7 @@ window.MonsterCheck = (function () {
 						if (T.tally_options.showNotifications) Dialogue.showSurveyPrompt();
 					} else if (r < 0.2) {
 						// random dialogue, but don't change stage
-						showDialogueAboutQuantity();
+						dialogue = "showDialogueAboutQuantity";
 					} else if (r < 0.4) {
 						// random dialogue, but don't change stage
 						distance = "far";
@@ -189,15 +190,16 @@ window.MonsterCheck = (function () {
 				}
 				// STAGE == 2
 				else if (T.tally_nearby_monsters[mid].stage == 2) {
-					// random dialogue, but don't change stage
-					if (r < 0.2) {
-						showDialogueAboutQuantity();
-					} else if (r < 0.4) {
-						distance = "close";
-					}
 					// set advance - 70%
 					if (r < 0.7) {
 						advance = true;
+					} else {
+						// random dialogue, but don't change stage
+						if (r < 0.2) {
+							dialogue = "showDialogueAboutQuantity";
+						} else if (r < 0.4) {
+							distance = "close";
+						}
 					}
 					// additional chance for new players
 					if (advance || potential > 0.5) {
@@ -213,12 +215,21 @@ window.MonsterCheck = (function () {
 			saveFoundForServer();
 			// save monsters
 			TallyStorage.saveData("tally_nearby_monsters", T.tally_nearby_monsters, log);
-			// if set, show monster on page
-			if (showMonster) Monster.showOnPage(mid);
-			// check/reset skin
-			Skin.updateFromHighestMonsterStage();
-			// always show something (after the skin has updated)
-			showSilhouetteDialogue(mid, distance);
+
+			// wait a moment to show on page; gives badges a chance to finish
+			setTimeout(function(){
+				if (dialogue === "showDialogueAboutQuantity"){
+					showDialogueAboutQuantity();
+				}
+				// if set, show monster on page
+				if (showMonster) Monster.showOnPage(mid);
+				// check/reset skin
+				Skin.updateFromHighestMonsterStage();
+				// always show something (after the skin has updated)
+				showSilhouetteDialogue(mid, distance);
+			},1000);
+
+
 		} catch (err) {
 			console.error(err);
 		}

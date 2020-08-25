@@ -91,25 +91,30 @@ window.Monster = (function () {
 		try {
 			// if (DEBUG) console.log("👿 Monster.returnNewMonsterLevel()");
 			let userLevel = T.tally_user.level || 1,
-				factor = 0.5;
+				factor = 0.5,
+				level = 1;
+
 			// use factor to keep the level different but near the user's level
 			if (userLevel > 15) factor = 0.4;
 			if (userLevel > 30) factor = 0.2;
 			if (userLevel > 60) factor = 0.1;
+
+			// original logic - depended on user level
 			let min = Math.floor(userLevel - (userLevel * factor)),
 				max = Math.ceil(userLevel + (userLevel * factor));
-			let level = Math.floor(Math.random() * (max - min) + min) - 1;
+			level = Math.floor(Math.random() * (max - min) + min) - 1;
 
 
-// new logic below ...
+			// new logic - depends on previous monster level
 
 			// if user has already beaten this monster
 			if (T.tally_user.monsters[mid]) {
 				// base monster level on previous highest level for this monster
 				level = T.tally_user.monsters[mid].level +
 					FS_Number.randomIntBetween(
-						-Math.round(T.tally_user.monsters[mid].level * 0.1),
-						Math.round(T.tally_user.monsters[mid].level * 0.3));
+						-Math.round(T.tally_user.monsters[mid].level * factor),
+						Math.round(T.tally_user.monsters[mid].level * (factor * 1.5)) // lean high
+					);
 			} else {
 				// first time
 				level = FS_Number.randomIntBetween(1,5);
