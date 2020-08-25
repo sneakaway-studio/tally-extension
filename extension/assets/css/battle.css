@@ -313,11 +313,14 @@ svg.stats-display .stat-bar-circle-text { fill:white; font: 14px "Monaco", "Anda
 
 
 
+
+
 /*  BATTLE OPTIONS
 ******************************************************************************/
 .battle-options-row {
     margin: 6px 0 0 0;
     overflow: auto;
+    display:inline-block !important;
 }
 
 
@@ -331,6 +334,7 @@ svg.stats-display .stat-bar-circle-text { fill:white; font: 14px "Monaco", "Anda
     float: left;
     background-color: #f58b1a;
     box-shadow: 2px 2px #df4a3b;
+    display:inline-block !important;
 }
 .battle-options:hover {
     cursor: pointer;
@@ -355,12 +359,15 @@ svg.stats-display .stat-bar-circle-text { fill:white; font: 14px "Monaco", "Anda
     background-color: #747d8b;
 }
 
+
 .attack-icon {
-    display: inline-block;
-    width: 17px; height: 17px;
-    padding: 1px 2px 1px 0;
-    vertical-align: middle;
-    background-repeat: no-repeat;
+    display: inline-block !important;
+    width: 17px; height: 17px !important;
+    padding: 1px 2px 1px 0 !important;
+    vertical-align: middle !important;
+    background-repeat: no-repeat !important;
+    background-position: center center !important;
+    vertical-align: middle !important;
 }
 
 
@@ -438,6 +445,7 @@ svg.stats-display .stat-bar-circle-text { fill:white; font: 14px "Monaco", "Anda
     z-index: 2147483647;
     font: 22px/26px "Monaco", "Andale Mono", "Courier New", sans-serif;
     color: #fff;
+    display:block !important;
 }
 .monster_capture_banner_top,
 .monster_capture_banner_bottom,
@@ -476,11 +484,13 @@ svg.stats-display .stat-bar-circle-text { fill:white; font: 14px "Monaco", "Anda
 .monster_capture_taxonomy {
     font-size: 0.9rem;
     padding: 0 0 30px 0;
+    display:block !important;
 }
 .monster_capture_taxonomy span {
     float: left;
     background: rgba(0, 0, 0, .0);
     height: 30px;
+    display:inline-block !important;
 }
 .monster_capture_taxonomy span.tier-text {
     padding: 6px 8px 4px 0;

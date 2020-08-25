@@ -3,7 +3,7 @@
 window.Install = (function () {
 	// PRIVATE
 
-	let DEBUG = true;
+	let DEBUG = Debug.ALL.BackgroundInstall;
 
 	/**
 	 *  Create all objects for game from scratch
@@ -107,13 +107,15 @@ window.Install = (function () {
 			if (T.options.localhost) return;
 
 			// don't launch if !server
-			if (!_tally_meta.server.online)
-				return console.log("🔧 Install.launchStartScreen() 🛑 SERVER OFFLINE");
+			if (!_tally_meta.server.online){
+				if (DEBUG) console.log("🔧 Install.launchStartScreen() 🛑 SERVER OFFLINE");
+				return;
+			}
 
 			// if they are logged in show how to play
 			if (_tally_meta.userLoggedIn) {
 				// return console.log("🔧 Install.launchStartScreen() 🛑 ALREADY LOGGED IN");
-				console.log("🔧 Install.launchStartScreen() 🛑 ALREADY LOGGED IN");
+				if (DEBUG) console.log("🔧 Install.launchStartScreen() 🛑 ALREADY LOGGED IN");
 				// show how to
 				pageToShow = "/how-to-play";
 			}
@@ -297,7 +299,7 @@ window.Install = (function () {
 		try {
 			let _tally_meta = store("tally_meta");
 			return $.getJSON('http://www.geoplugin.net/json.gp', function (data) {
-				// console.log(JSON.stringify(data, null, 2));
+				// if (DEBUG) console.log(JSON.stringify(data, null, 2));
 				_tally_meta.location = {
 					ip: data.geoplugin_request,
 					city: data.geoplugin_city,

@@ -2,7 +2,7 @@
 
 window.Server = (function () {
 	// PRIVATE
-	let DEBUG = true;
+	let DEBUG = Debug.ALL.BackgroundServer;
 
 
 	/**
@@ -156,12 +156,12 @@ window.Server = (function () {
 			for (var key in attacks) {
 				if (attacks.hasOwnProperty(key)) {
 					// add AttackData properties to obj from server
-					// console.log("📟 Server.mergeAttackDataFromServer()", key, attacks[key]);
+					// if (DEBUG) console.log("📟 Server.mergeAttackDataFromServer()", key, attacks[key]);
 					// save the data
 					let attackData = AttackData.data[key];
 					// save selected prop
 					attackData.selected = attacks[key].selected;
-					// set it back in attacks 
+					// set it back in attacks
 					attacks[key] = attackData;
 				}
 			}

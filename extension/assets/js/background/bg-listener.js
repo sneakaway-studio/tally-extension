@@ -3,7 +3,7 @@
 window.Listener = (function () {
 	// PRIVATE
 
-	let DEBUG = true;
+	let DEBUG = Debug.ALL.BackgroundListener;
 
 	/*  Listener for messages in order to receive/pass data to contentscript.js
 	 ******************************************************************************/

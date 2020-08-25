@@ -3,7 +3,7 @@
 window.Background = (function () {
 	// PRIVATE
 
-	let DEBUG = true,
+	let DEBUG = Debug.ALL.Background,
 		gameStatus = {};
 
 	/**
@@ -45,7 +45,7 @@ window.Background = (function () {
 
 			// if T.tally_meta not found, install all objects
 			const cleanInstall = await Install.init();
-			console.log(log, "[2.1] cleanInstall =", cleanInstall);
+			if (DEBUG) console.log(log, "[2.1] cleanInstall =", cleanInstall);
 			// set the version
 			await Install.setVersion();
 			// set server/api production | development
@@ -55,10 +55,10 @@ window.Background = (function () {
 
 			// check the API status
 			const serverOnline = await Server.checkIfOnline();
-			console.log(log, "[2.2] serverOnline =", serverOnline);
+			if (DEBUG) console.log(log, "[2.2] serverOnline =", serverOnline);
 			// if server NOT online ...
 			if (!serverOnline) {
-				console.warn(log, "[2.2] API SERVER NOT ONLINE");
+				if (DEBUG) console.warn(log, "[2.2] API SERVER NOT ONLINE");
 				return false; // stop
 			}
 
@@ -68,14 +68,14 @@ window.Background = (function () {
 			// - this is the FIRST attempt to get T.tally_user data from server
 			// - if they are then this function writes over local storage objects
 			const userOnline = await Server.getTallyUser();
-			console.log(log, "[2.3] userOnline =", userOnline);
+			if (DEBUG) console.log(log, "[2.3] userOnline =", userOnline);
 			if (!userOnline) {
 				// if user not logged in we should prompt
-				console.log(log, "[2.3] NOT LOGGED IN");
+				if (DEBUG) console.log(log, "[2.3] NOT LOGGED IN");
 
 				// if clean install then definitely open start screen
 				if (cleanInstall) {
-					console.log(log, "-> NEW INSTALL, LAUNCH START SCREEN");
+					if (DEBUG) console.log(log, "-> NEW INSTALL, LAUNCH START SCREEN");
 					// prompt to install
 					const startScreenResponse = await Install.launchStartScreen();
 				}
@@ -85,7 +85,7 @@ window.Background = (function () {
 			else {
 				// username is stored in T.tally_user and we can pass it to populate monsters
 				const returnTopMonstersResponse = await Server.returnTopMonsters();
-				console.log(log, "[2.4] returnTopMonstersResponse =", returnTopMonstersResponse);
+				if (DEBUG) console.log(log, "[2.4] returnTopMonstersResponse =", returnTopMonstersResponse);
 				Debug.elapsedTime(log, "[2.4]");
 				// return true to send data back to content
 				return true;

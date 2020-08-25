@@ -8,6 +8,13 @@
     background-color: transparent;
 }
 
+/* .tally div {
+    display:block !important;
+}
+.tally span {
+    display:inline-block !important;
+} */
+
 /* default button */
 .tally button {
     box-sizing: border-box;

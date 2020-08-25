@@ -8,7 +8,8 @@
 
 ### Version 0.4.2
 
-* Improvements to stats displays
+* Improvements to stats displays and monster checking
+* Removes CSS pollution from embedded sites
 
 
 ### Version 0.4.1

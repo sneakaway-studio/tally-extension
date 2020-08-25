@@ -8,6 +8,13 @@ window.Debug = (function () {
 
 	let DEBUG = true,
 		ALL = {
+
+			Background: true,
+			BackgroundInstall: true,
+			BackgroundListener: true,
+			BackgroundServer: true,
+
+
 			Account: false,
 			Badge: true,
 
