@@ -94,7 +94,7 @@ window.TallyData = (function () {
 				"version": T.tally_meta.version || "",
 				"browser": Page.data.browser.name || "",
 				"platform": Page.data.browser.platform || "",
-				"gameMode": T.tally_meta.gameMode || "",
+				"gameMode": T.tally_options.gameMode || "",
 			};
 		} catch (err) {
 			console.error(err);
