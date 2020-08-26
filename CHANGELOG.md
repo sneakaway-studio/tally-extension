@@ -6,6 +6,10 @@
 ## Development Versions
 
 
+### Version 0.4.3
+
+*
+
 ### Version 0.4.2
 
 * Improvements to stats displays and monster checking
