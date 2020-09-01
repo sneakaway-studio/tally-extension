@@ -75,7 +75,7 @@ window.Listener = (function () {
 						"message": 1,
 						"data": store(request.name)
 					};
-					if (DEBUG) console.log("👂🏼 Listener.addListener() > getData [2]", request.name, resp);
+					// if (DEBUG) console.log("👂🏼 Listener.addListener() > getData [2]", request.name, resp);
 					// send
 					sendResponse(resp);
 				}
@@ -300,26 +300,37 @@ window.Listener = (function () {
 				// - if server online and account good then send to server
 				// - receive and reply to content with tally_user and tally_meta
 				else if (request.action == "sendUpdateToBackground") {
-					if (DEBUG) console.log("👂🏼 Listener.addListener() < sendUpdateToBackground", JSON.stringify(request.data));
 
 					// default response
 					let responseToContentScript = {
-						"action": request.action,
-						"message": false,
-						"tally_user": _tally_user,
-						"tally_meta": _tally_meta
-					};
+							"action": request.action,
+							"message": false,
+							"tally_user": _tally_user,
+							"tally_meta": _tally_meta
+						},
+						_startTime = new Date().getTime(),
+						serverResponseMillis = -1;
 
-					// if user is not logged-in or server is down
-					if (!_tally_meta.userLoggedIn || !_tally_meta.server.online) {
-						console.warn("👂🏼 Listener.addListener() ! sendUpdateToBackground - NO ACCOUNT OR SERVER OFFLINE");
-						// every once in a while check again
-						if (Math.random() > 0.8) Server.checkIfOnline();
-						// one day add logic to save data in bg here
-						// ...
+
+					// one day add logic to save data in bg here
+					// ...
+
+
+					if (!_tally_meta.userOnline) {
+						console.warn("👂🏼 Listener.addListener() ! sendUpdateToBackground - USER OFFLINE");
+						// reply to contentscript
+						sendResponse(responseToContentScript);
+					} else if (!_tally_meta.serverOnline) {
+						console.warn("👂🏼 Listener.addListener() ! sendUpdateToBackground - SERVER OFFLINE");
+						// reply to contentscript
+						sendResponse(responseToContentScript);
+					} else if (!_tally_meta.userLoggedIn) {
+						console.warn("👂🏼 Listener.addListener() ! sendUpdateToBackground - USER NOT LOGGED-IN");
 						// reply to contentscript
 						sendResponse(responseToContentScript);
 					} else {
+						if (DEBUG) console.log("👂🏼 Listener.addListener() < sendUpdateToBackground", request.data);
+
 						// (attempt to) send data to server, response to callback
 						$.ajax({
 							type: "PUT",
@@ -338,6 +349,8 @@ window.Listener = (function () {
 								result.attacks = Server.mergeAttackDataFromServer(result.attacks);
 								// then send to .a
 								_tally_meta.userLoggedIn = true;
+								// response time
+								serverResponseMillis = new Date().getTime() - _startTime;
 								return true;
 							} else {
 								if (DEBUG) console.log("👂🏼 Listener.addListener() > sendUpdateToBackground, %cresult.username", Debug.styles.redbg);
@@ -353,6 +366,15 @@ window.Listener = (function () {
 							// save result
 							store("tally_user", result);
 							store("tally_meta", _tally_meta);
+
+							// reset time since last checked server
+							_tally_meta.serverTimeSinceLastCheck = 0;
+							// update last time checked
+							_tally_meta.serverTimeOfLastCheckMillis = new Date().getTime();
+							// update server response time
+							_tally_meta.serverResponseMillis = serverResponseMillis;
+							// save
+							store('tally_meta', _tally_meta);
 
 							responseToContentScript.message = _tally_meta.userLoggedIn;
 							responseToContentScript.tally_meta = _tally_meta;
@@ -400,6 +422,8 @@ window.Listener = (function () {
 	 */
 	function reportToAnalytics(obj) {
 		try {
+			// don't run if not online
+			if (!navigator.onLine) return;
 
 			let request = new XMLHttpRequest();
 			let message =

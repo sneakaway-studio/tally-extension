@@ -31,7 +31,7 @@ window.Background = (function () {
 	 * 		2.2. serverOnline
 	 * 				= false	-> save in meta then stop
 	 * 				= true	-> save, then continue
-	 * 		2.3. userOnline
+	 * 		2.3. userLoggedIn
 	 * 				= false -> not logged-in, open login window
 	 * 				= true  -> save data, then continue
 	 */
@@ -62,16 +62,14 @@ window.Background = (function () {
 				return false; // stop
 			}
 
-			// 2.3 userOnline
+			// 2.3 userLoggedIn
 
 			// server is online so check if user logged in
 			// - this is the FIRST attempt to get T.tally_user data from server
 			// - if they are then this function writes over local storage objects
-			const userOnline = await Server.getTallyUser();
-			if (DEBUG) console.log(log, "[2.3] userOnline =", userOnline);
-			if (!userOnline) {
-				// if user not logged in we should prompt
-				if (DEBUG) console.log(log, "[2.3] NOT LOGGED IN");
+			const userLoggedIn = await Server.getTallyUser();
+			if (DEBUG) console.log(log, "[2.3] userLoggedIn =", userLoggedIn);
+			if (!userLoggedIn) {
 
 				// if clean install then definitely open start screen
 				if (cleanInstall) {
@@ -131,18 +129,7 @@ window.Background = (function () {
 	}
 
 
-	/**
-	 *	Background timed events
-	 */
-	function serverCheckTimer() {
-		try {
-			setInterval(function () {
-				Server.checkIfOnline();
-			}, (1000 * 60));
-		} catch (err) {
-			console.error("dataReport() failed");
-		}
-	}
+
 
 
 	// PUBLIC

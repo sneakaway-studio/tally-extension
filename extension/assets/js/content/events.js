@@ -3,32 +3,40 @@
 /*  EVENTS
  ******************************************************************************/
 
-window.TallyEvents = (function() {
+window.TallyEvents = (function () {
 	// PRIVATE
 	let DEBUG = Debug.ALL.TallyEvents,
-		timedEvents = {};
+		timedEvents = {}
+		// // how often to check if user connected (from this page) and save background if user online status has changed
+		// saveUserOnlineStatusTime = 60 * 60 * 1000 // min * secs * millis
+	;
 
 	/**
 	 * Timed functions
 	 */
-	function startTimeEvents() {
+	function startTimedEvents() {
 		try {
 			timedEvents = {
 
 				// track time on current page
-				pageTimerInterval: setInterval(function() {
-					// if this page is visible
+				pageTimerInterval: setInterval(function () {
+					// if this page is focussed
 					if (document.hasFocus()) {
 						Page.data.time = Page.data.time + 1;
 						Debug.update();
 					}
 				}, 1000),
 
-				// check if user is online
-				userOnlineInterval: setInterval(function() {
-					T.tally_meta.userOnline = navigator.onLine;
-					TallyStorage.saveData("tally_meta", T.tally_meta);
-				}, 60 * 60 * 1000),
+// moving to background
+// marked for deletion
+				// // check if user is online and save in background
+				// userOnlineInterval: setInterval(function () {
+				// 	// if this page is focussed
+				// 	if (document.hasFocus()) {
+				// 		T.tally_meta.userOnline = navigator.onLine;
+				// 		TallyStorage.saveData("tally_meta", T.tally_meta);
+				// 	}
+				// }, saveUserOnlineStatusTime),
 
 			};
 		} catch (err) {
@@ -53,7 +61,7 @@ window.TallyEvents = (function() {
 			);
 			// if player hasn't been online for n minutes then recharge
 			if (FS_Date.diffMinutes("now", T.tally_user.lastActive) > 60) { // 0=testing
-				setTimeout(function() {
+				setTimeout(function () {
 					// reset tally stats
 					Stats.reset("tally");
 					// do we show notifications?
@@ -72,7 +80,7 @@ window.TallyEvents = (function() {
 			}
 			// if player hasn't been online for n minutes then tell them you missed them
 			if (FS_Date.diffMinutes("now", T.tally_user.lastActive) > 600) { // 0=testing
-				setTimeout(function() {
+				setTimeout(function () {
 					// do we show notifications?
 					if (!T.tally_options.showNotifications) return;
 					// tell them
@@ -102,7 +110,7 @@ window.TallyEvents = (function() {
 
 	// PUBLIC
 	return {
-		startTimeEvents: startTimeEvents,
+		startTimedEvents: startTimedEvents,
 		checkLastActiveAndRecharge: checkLastActiveAndRecharge
 	};
 })();

@@ -120,7 +120,7 @@ window.Install = (function () {
 			if (T.options.localhost) return;
 
 			// don't launch if !server
-			if (!_tally_meta.serverOnline){
+			if (!_tally_meta.serverOnline) {
 				if (DEBUG) console.log("🔧 Install.launchStartScreen() 🛑 SERVER OFFLINE");
 				return;
 			}
@@ -285,7 +285,7 @@ window.Install = (function () {
 					version: manifestData.version, // set in manifest
 				},
 				serverOnline: false,
-				serverTimeOfLastCheck: -1,
+				serverTimeOfLastCheckMillis: -1,
 				serverTimeSinceLastCheck: -1,
 				serverResponseMillis: -1,
 				userLoggedIn: false,
