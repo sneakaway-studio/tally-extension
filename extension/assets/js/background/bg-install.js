@@ -47,14 +47,14 @@ window.Install = (function () {
 		try {
 			let _tally_meta = store("tally_meta"),
 				manifestData = chrome.runtime.getManifest();
-			if (_tally_meta.version == manifestData.version) {
-				if (DEBUG) console.log("🔧 Install.setVersion()", _tally_meta.version + "==" + manifestData.version, "..... SAME VERSION");
+			if (_tally_meta.install.version == manifestData.version) {
+				if (DEBUG) console.log("🔧 Install.setVersion()", _tally_meta.install.version + "==" + manifestData.version, "..... SAME VERSION");
 				return false;
 			} else {
-				if (DEBUG) console.log("🔧 Install.setVersion()", _tally_meta.version + "!=" + manifestData.version, "!!!!! NEW VERSION");
+				if (DEBUG) console.log("🔧 Install.setVersion()", _tally_meta.install.version + "!=" + manifestData.version, "!!!!! NEW VERSION");
 				// update version
-				_tally_meta.version = manifestData.version;
-				store("tally_meta", _tally_meta);
+				_tally_meta.install.version = manifestData.version;
+				store("tally_meta", createMeta());
 				return true;
 			}
 		} catch (err) {
@@ -107,7 +107,7 @@ window.Install = (function () {
 			if (T.options.localhost) return;
 
 			// don't launch if !server
-			if (!_tally_meta.server.online){
+			if (!_tally_meta.serverOnline){
 				if (DEBUG) console.log("🔧 Install.launchStartScreen() 🛑 SERVER OFFLINE");
 				return;
 			}
@@ -266,18 +266,18 @@ window.Install = (function () {
 		try {
 			var manifestData = chrome.runtime.getManifest();
 			var obj = {
-				version: manifestData.version, // set in manifest
 				install: {
 					date: moment().format(),
-					prompts: 0 // number prompts given to user
+					prompts: 0, // number prompts given to user
+					version: manifestData.version, // set in manifest
 				},
+				serverOnline: false,
+				serverTimeOfLastCheck: -1,
+				serverTimeSinceLastCheck: -1,
+				serverResponseMillis: -1,
 				userLoggedIn: false,
 				userOnline: navigator.onLine,
-				server: {
-					lastChecked: 0,
-					online: 1,
-					responseMillis: -1
-				},
+
 				currentAPI: "production", // default to production on new installation
 				api: T.options.production.api,
 				website: T.options.production.website,

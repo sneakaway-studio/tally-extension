@@ -467,14 +467,15 @@ function getMeta(callback) {
 			//console.log("getMeta()",JSON.stringify(response.data));
 			_tally_meta = response.data;
 
-			$("#serverStatus").html((_tally_meta.server.online ? "yes" : "no"));
-			$("#loggedInStatus").html((_tally_meta.userLoggedIn ? "yes" : "no"));
+			$("#onlineStatus").html((_tally_meta.userOnline ? "true" : "false"));
+			$("#serverStatus").html((_tally_meta.serverOnline ? "true" : "false"));
+			$("#loggedInStatus").html((_tally_meta.userLoggedIn ? "true" : "false"));
 			$("#currentAPI").html((_tally_meta.currentAPI ? _tally_meta.currentAPI : "null"));
 			$("#api").html((_tally_meta.api ? _tally_meta.api : "null"));
 
 
 			$("#installedOn").html(_tally_meta.install.date);
-			$("#version").html(_tally_meta.version);
+			$("#version").html(_tally_meta.install.version);
 
 			// callback
 			if (callback) callback();

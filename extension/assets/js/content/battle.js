@@ -181,7 +181,7 @@ window.Battle = (function () {
 				StatsDisplay.updateDisplay("monster");
 				// log intro...
 				BattleConsole.log("t:/game/battle/start...");
-				BattleConsole.log("Running Tally " + T.tally_meta.version + " BattleConsole 0.1");
+				BattleConsole.log("Running Tally " + T.tally_meta.install.version + " BattleConsole 0.1");
 				BattleConsole.log("#########################################");
 				BattleConsole.log("Battle started with <span class='tally text-green'>" + MonsterData.dataById[mid].tier1 + " &gt; " + details.monsterName + "</span>!");
 				// wait for tally to attack first ...

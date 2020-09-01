@@ -171,7 +171,7 @@ window.TallyMain = (function () {
 			// SERVER IS ONLINE
 			// - if not, tally can still point to trackers, save in bg
 			// - if not, the game can run using the background only
-			if (T.tally_meta.server.online) {
+			if (T.tally_meta.serverOnline) {
 				if (DEBUG) console.log(log + "Connection to Tally server is 👍");
 				mode.serverOnline = true;
 			}
@@ -255,7 +255,7 @@ window.TallyMain = (function () {
 			// add Tally character
 			Tally.addCharacter();
 			// add timed events listeners
-			TallyEvents.startTimeEvents();
+			TallyEvents.startTimedEvents();
 			// add main click listener
 			TallyListeners.addMainClickEventListener();
 			// add scroll listener

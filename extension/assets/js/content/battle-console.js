@@ -202,7 +202,7 @@ window.BattleConsole = (function () {
 				$("#battle-console-stream").append(ele);
 
 				ele = "<div class='tally tally_log_line'><span id='tally_log" + (++logId) + "' class='tally tally_log_cursor'>"+
-					"<a href='https://tallysavestheinternet.com/get-tally'>Update your game version</a> (currently " + T.tally_meta.version +
+					"<a href='https://tallysavestheinternet.com/get-tally'>Update your game version</a> (currently " + T.tally_meta.install.version +
 					") and <a href='https://tallysavestheinternet.com/dashboard'>login to your dashboard</a> to make sure your game is connected." +
 					"</span></div>";
 				$("#battle-console-stream").append(ele);

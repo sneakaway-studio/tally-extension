@@ -123,7 +123,7 @@ window.Flag = (function () {
 			// SERVER SAYS: new version notification
 			if (FS_Object.prop(T.tally_user.serverFlags.versionNotification)) {
 				// if current version isn't the same or higher
-				let versionCompare = FS_Number.compareVersionStrings(T.tally_meta.version,
+				let versionCompare = FS_Number.compareVersionStrings(T.tally_meta.install.version,
 					T.tally_user.serverFlags.versionNotification.latestVersion);
 				if (DEBUG) console.log("🚩 Flag.checkFromServer()", "compareVersionStrings()", versionCompare);
 				if (versionCompare < 0) {
@@ -134,7 +134,7 @@ window.Flag = (function () {
 							Dialogue.showStr(T.tally_user.serverFlags.versionNotification.message, "excited");
 						}, 2000);
 						setTimeout(function () {
-							Dialogue.showStr("Your extension (" + T.tally_meta.version + ") is " +
+							Dialogue.showStr("Your extension (" + T.tally_meta.install.version + ") is " +
 								(0 - versionCompare) + " behind the latest. <a href='" + T.tally_meta.website +
 								"/get-tally'>Please update soon</a>.", "excited");
 						}, 2100);
