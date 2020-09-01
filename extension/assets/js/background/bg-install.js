@@ -47,16 +47,29 @@ window.Install = (function () {
 		try {
 			let _tally_meta = store("tally_meta"),
 				manifestData = chrome.runtime.getManifest();
+			// if version the same
 			if (_tally_meta.install.version == manifestData.version) {
 				if (DEBUG) console.log("🔧 Install.setVersion()", _tally_meta.install.version + "==" + manifestData.version, "..... SAME VERSION");
-				return false;
-			} else {
+			}
+			// 0.4.3
+			if (manifestData.version === "0.4.3") {
+				// changes in tally_meta structure
+				store("tally_meta", createMeta());
+				// update user's geolocation
+				await saveLocation();
+
+			}
+			// all other versions
+			else {
 				if (DEBUG) console.log("🔧 Install.setVersion()", _tally_meta.install.version + "!=" + manifestData.version, "!!!!! NEW VERSION");
 				// update version
 				_tally_meta.install.version = manifestData.version;
-				store("tally_meta", createMeta());
-				return true;
+				// changes in tally_meta structure
+				store("tally_meta", _tally_meta);
 			}
+
+
+			return true;
 		} catch (err) {
 			console.error(err);
 		}
