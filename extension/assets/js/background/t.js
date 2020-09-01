@@ -30,9 +30,9 @@ var T = (function () {
 				website: "https://tallysavestheinternet.com",
 			},
 			// true = development, false = production
-			localhost: true, // change to false to quickly shift to production server
+			localhost: false, // change to false to quickly shift to production server
 			hotreload: false,
-			debugging: true
+			debugging: false 
 		},
 		DEBUG = true;
 

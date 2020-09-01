@@ -8,7 +8,8 @@
 
 ### Version 0.4.3
 
-*
+* Updates to version handling
+* Improvements to server connections
 
 ### Version 0.4.2
 
