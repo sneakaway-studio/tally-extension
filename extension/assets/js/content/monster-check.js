@@ -10,13 +10,7 @@ window.MonsterCheck = (function() {
 		highestStage = 0,
 		potential = 0.5, // potential a monster will appear
 		secondsBeforeDelete = 1 * 60 * 60, // seconds to keep a monster in the nearby_monsters queue
-		foundStreamSummary = [ /* {mid: 000, stage: 1, tracker: "domain.com"} */ ],
-		stages = { // store mids found on page by their current stage
-			"s0": [], // newly discovered
-			"s1": [], // randomly upgrade to #2
-			"s2": [], // queued to appear on page next time there is a match
-			"s3": [] // display on page
-		};
+		foundStreamSummary = [ /* {mid: 000, stage: 1, tracker: "domain.com"} */ ];
 
 
 
@@ -93,15 +87,18 @@ window.MonsterCheck = (function() {
 			}
 
 			// update stage 0 monsters using tags
-			stages.s0 = await returnTagMatches();
+			T.tally_tag_matches.s0 = await returnTagMatches();
 
-			// update stage 1 & 2 monsters
-			[stages.s1, stages.s2, stages.s3] = await returnMonsterStages();
+			// update stage 1, 2, 3 monsters
+			[T.tally_tag_matches.s1, T.tally_tag_matches.s2, T.tally_tag_matches.s3] = await returnMonsterStages();
 
-			if (DEBUG) console.log(log, '[4] stages =', stages);
+			// update stages in background
+			TallyStorage.saveData("tally_tag_matches", T.tally_tag_matches, "👿 MonsterCheck.checkNearbyMonsterTimes()");
+
+			if (DEBUG) console.log(log, '[4] T.tally_tag_matches =', T.tally_tag_matches);
 
 			// once it returns, pick one from stage0 to elevate
-			handleMatch(FS_Object.randomArrayIndexFromRange(stages.s0, 0, 5));
+			handleMatch(FS_Object.randomArrayIndexFromRange(T.tally_tag_matches.s0, 0, 5));
 
 
 		} catch (err) {
@@ -149,10 +146,11 @@ window.MonsterCheck = (function() {
 	async function returnMonsterStages() {
 		try {
 			let log = "👿 MonsterCheck.returnMonsterStages()",
-				obj = {
-					"s1": [],
-					"s2": [],
-					"s3": [],
+				obj = { // store mids found on page by their current stage
+					"s0": [], // newly discovered
+					"s1": [], // randomly upgrade to #2
+					"s2": [], // queued to appear on page next time there is a match
+					"s3": [] // display on page
 				};
 
 			// FILL STAGES 1,2,3 FROM tally_nearby_monsters
@@ -265,7 +263,10 @@ window.MonsterCheck = (function() {
 				if (DEBUG) console.log(log, '[4] monster =', MonsterData.dataById[mid].slug, T.tally_nearby_monsters[mid]);
 			}
 			// update stage 1,2,3 monsters
-			[stages.s1, stages.s2, stages.s3] = await returnMonsterStages();
+			[T.tally_tag_matches.s1, T.tally_tag_matches.s2, T.tally_tag_matches.s3] = await returnMonsterStages();
+			// update stages in background
+			TallyStorage.saveData("tally_tag_matches", T.tally_tag_matches, log);
+
 			// update the list of found monsters
 			saveFoundForServer();
 			// save monsters

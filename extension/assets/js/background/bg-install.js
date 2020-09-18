@@ -22,6 +22,7 @@ window.Install = (function () {
 				store("tally_user", createUser());
 				store("tally_options", createOptions());
 				store("tally_nearby_monsters", {});
+				store("tally_tag_matches", {});
 				store("tally_meta", createMeta());
 				store("tally_stats", {});
 				store("tally_top_monsters", {});
@@ -51,18 +52,22 @@ window.Install = (function () {
 			if (_tally_meta.install.version == manifestData.version) {
 				if (DEBUG) console.log("🔧 Install.setVersion()", _tally_meta.install.version + "==" + manifestData.version, "..... SAME VERSION");
 			}
-			// 0.4.3
+
+			// SPECIFIC CHECKS, WHAT IS NEW IN VERSION ...
+
+			// IF INSTALLING 0.4.3
 			if (manifestData.version === "0.4.3") {
 				// changes in tally_meta structure
 				store("tally_meta", createMeta());
+				// new objects
+				store("tally_tag_matches", {});
 				// update user's geolocation
 				await saveLocation();
-
 			}
-			// all other versions
+			// IF INSTALLING ANY OTHER VERSION
 			else {
 				if (DEBUG) console.log("🔧 Install.setVersion()", _tally_meta.install.version + "!=" + manifestData.version, "!!!!! NEW VERSION");
-				// update version
+				// just update version
 				_tally_meta.install.version = manifestData.version;
 				// changes in tally_meta structure
 				store("tally_meta", _tally_meta);

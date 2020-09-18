@@ -64,6 +64,7 @@ window.TallyMain = (function () {
 			// if (DEBUG) console.log(log, '[1.1] -> T.tally_options =',T.tally_options);
 			// if (DEBUG) console.log(log, '[1.1] -> T.tally_meta =',T.tally_meta);
 			// if (DEBUG) console.log(log, '[1.1] -> T.tally_nearby_monsters =',T.tally_nearby_monsters);
+			// if (DEBUG) console.log(log, '[1.1] -> T.tally_tag_matches =',T.tally_tag_matches);
 			// if (DEBUG) console.log(log, '[1.1] -> T.tally_stats =',T.tally_stats);
 			// if (DEBUG) console.log(log, '[1.1] -> T.tally_top_monsters =',T.tally_top_monsters);
 

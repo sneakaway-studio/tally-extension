@@ -1,6 +1,6 @@
 "use strict";
 
-window.Listener = (function () {
+window.Listener = (function() {
 	// PRIVATE
 
 	let DEBUG = Debug.ALL.BackgroundListener;
@@ -9,7 +9,7 @@ window.Listener = (function () {
 	 ******************************************************************************/
 
 	chrome.runtime.onMessage.addListener(
-		function (request, sender, sendResponse) {
+		function(request, sender, sendResponse) {
 			try {
 				// if (DEBUG) console.log("👂🏼 Listener.addListener() onMessage.request =", JSON.stringify(request), sender, sendResponse);
 
@@ -158,6 +158,13 @@ window.Listener = (function () {
 						"data": store("tally_nearby_monsters") || {}
 					});
 				}
+				// getTagMatches
+				else if (request.action == "getTagMatches") {
+					sendResponse({
+						"action": request.action,
+						"data": store("tally_tag_matches") || {}
+					});
+				}
 				// getStats
 				else if (request.action == "getStats") {
 					sendResponse({
@@ -262,7 +269,7 @@ window.Listener = (function () {
 
 					// (re)start app to pull in data, run checks, and return control back to content
 					Background.runInstallChecks()
-						.then(function (result) {
+						.then(function(result) {
 							if (DEBUG) console.log("👂🏼 Listener.addListener() > resetTallyUserFromServer [2.1] ", result);
 							if (DEBUG) console.log(store("tally_user"));
 							if (DEBUG) console.log("👂🏼 Listener.addListener() > resetTallyUserFromServer [2.2] ", result);
@@ -278,12 +285,13 @@ window.Listener = (function () {
 								"tally_options": store("tally_options"),
 								"tally_meta": store("tally_meta"),
 								"tally_nearby_monsters": store("tally_nearby_monsters"),
+								"tally_tag_matches": store("tally_tag_matches"),
 								"tally_top_monsters": store("tally_top_monsters"),
 								"tally_stats": store("tally_stats"),
 								"message": 1
 							});
-						}).catch(function (err) {
-							if (DEBUG) console.log("👂🏼 Listener.addListener() > resetTallyUserFromServer [3.1] ", result);
+						}).catch(function(err) {
+							if (DEBUG) console.log("👂🏼 Listener.addListener() > resetTallyUserFromServer [3.1] ", err);
 
 						});
 
@@ -500,7 +508,7 @@ window.Listener = (function () {
 			// 	});
 			// });
 
-			chrome.browserAction.getPopup({}, function (result) {
+			chrome.browserAction.getPopup({}, function(result) {
 				if (DEBUG) console.log("👂🏼 Listener.getPopup() [1] result =", result);
 				chrome.browserAction.setPopup({
 					popup: result
