@@ -25,7 +25,7 @@ window.BattleAttack = (function() {
 			if (DEBUG) console.log("💥💥💥💥💥💥💥💥💥💥💥💥💥💥💥💥💥💥💥");
 			if (DEBUG) console.log("💥 BattleAttack.doAttack()", attack, extraDelay);
 
-			if (!prop(attack)) {
+			if (!FS_Object.prop(attack)) {
 				console.error("🔢 BattleAttack.doAttack() attack is required!");
 				return;
 			}
@@ -602,7 +602,7 @@ window.BattleAttack = (function() {
 
 			// make sure tally doesn't already have that attack
 			let safety = 0;
-			while (prop(T.tally_user.attacks[attack.name])) {
+			while (FS_Object.prop(T.tally_user.attacks[attack.name])) {
 				// if so get a new one, passing name and type if set
 				attack = AttackData.returnAttack(name, type);
 				// exit if all attacks have been rewarded

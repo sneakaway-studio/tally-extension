@@ -1,6 +1,6 @@
 "use strict";
 
-var MonsterData = (function() {
+window.MonsterData = (function() {
 
 	return {
 		dataById: MonstersById.data,

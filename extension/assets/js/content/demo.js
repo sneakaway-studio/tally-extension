@@ -263,7 +263,7 @@ window.Demo = (function() {
 	function goToUrlCallback(response) {
 		try {
 			console.log('🎲 Demo.goToUrl()', response.data);
-			if (prop(response.data.urls[0]))
+			if (FS_Object.prop(response.data.urls[0]))
 				window.location.assign(response.data.urls[0].url);
 		} catch (err) {
 			console.error(err);

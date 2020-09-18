@@ -349,7 +349,7 @@ window.Badge = (function () {
 	 */
 	function award(badge = "") {
 		try {
-			if (!prop(badge) || !prop(badge.name) || badge.name === "") return console.error(badge);
+			if (!FS_Object.prop(badge) || !FS_Object.prop(badge.name) || badge.name === "") return console.error(badge);
 
 			if (DEBUG) console.log("🏆 Badge.award()", badge);
 

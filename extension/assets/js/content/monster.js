@@ -51,7 +51,7 @@ window.Monster = (function () {
 			let log = "👿 Monster.create()";
 
 			// make sure we have required data
-			if (!prop(mid) || !prop(_stage) || !prop(MonsterData.dataById[mid])) return;
+			if (!FS_Object.prop(mid) || !FS_Object.prop(_stage) || !FS_Object.prop(MonsterData.dataById[mid])) return;
 
 			// set the tracker
 			let tracker = setTracker();
@@ -206,7 +206,7 @@ window.Monster = (function () {
 			$('.tally_monster_sprite_inner').css('background-image', 'url( ' + url + ')');
 
 			// turn monster to face Tally
-			if (prop(T.tally_nearby_monsters[monster.mid].facing) && T.tally_nearby_monsters[monster.mid].facing == "1")
+			if (FS_Object.prop(T.tally_nearby_monsters[monster.mid].facing) && T.tally_nearby_monsters[monster.mid].facing == "1")
 				$('.tally_monster_sprite_flip').css('transform', 'scale(-.5,.5)'); // left
 			else
 				$('.tally_monster_sprite_flip').css('transform', 'scale(.5,.5)'); // reset (right)
@@ -275,7 +275,7 @@ window.Monster = (function () {
 			if (!T.tally_nearby_monsters || FS_Object.objLength(T.tally_nearby_monsters) <= 0) return;
 
 			// TESTING
-			let mid = randomObjKey(T.tally_nearby_monsters),
+			let mid = FS_Object.randomObjKey(T.tally_nearby_monsters),
 				_stage = 3;
 			T.tally_nearby_monsters[mid] = create(mid, _stage);
 			T.tally_nearby_monsters[mid].captured = 0;

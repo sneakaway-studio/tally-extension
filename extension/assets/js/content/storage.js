@@ -119,6 +119,7 @@ window.TallyStorage = (function () {
 				T.tally_meta = response.tally_meta;
 				T.tally_top_monsters = response.tally_top_monsters;
 				T.tally_nearby_monsters = response.tally_nearby_monsters;
+				T.tally_tag_matches = response.tally_tag_matches;
 				T.tally_stats = response.tally_stats;
 
 				// update Page.data.mode
@@ -156,6 +157,7 @@ window.TallyStorage = (function () {
 				"tally_options",
 				"tally_meta",
 				"tally_nearby_monsters",
+				"tally_tag_matches",
 				"tally_stats",
 				"tally_top_monsters"
 			];
@@ -230,6 +232,7 @@ window.TallyStorage = (function () {
 				// if (DEBUG) console.log('T.tally_options =', T.tally_options);
 				// if (DEBUG) console.log('T.tally_meta =', T.tally_meta);
 				// if (DEBUG) console.log('T.tally_nearby_monsters =', T.tally_nearby_monsters);
+				// if (DEBUG) console.log('T.tally_tag_matches =', T.tally_tag_matches);
 				// if (DEBUG) console.log('T.tally_stats =', T.tally_stats);
 				// if (DEBUG) console.log('T.tally_top_monsters =', T.tally_top_monsters);
 
@@ -260,6 +263,7 @@ window.TallyStorage = (function () {
 				"\n T.tally_options =", T.tally_options,
 				"\n T.tally_meta =", T.tally_meta,
 				"\n T.tally_nearby_monsters =", T.tally_nearby_monsters,
+				"\n T.tally_tag_matches =", T.tally_tag_matches,
 				"\n T.tally_stats =", T.tally_stats,
 				"\n T.tally_top_monsters =", T.tally_top_monsters
 			);

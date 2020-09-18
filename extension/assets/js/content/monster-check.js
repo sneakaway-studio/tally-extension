@@ -1,13 +1,17 @@
-"use strict";
+/**
+ * 	Check for monsters on a page
+ */
 
-window.MonsterCheck = (function () {
+/* jshint strict: true */
+window.MonsterCheck = (function() {
+	"use strict";
 
 	let DEBUG = Debug.ALL.MonsterCheck,
 		highestStage = 0,
 		potential = 0.5, // potential a monster will appear
 		secondsBeforeDelete = 1 * 60 * 60, // seconds to keep a monster in the nearby_monsters queue
-		foundStreamSummary = [ /* {mid: 000, stage: 1, tracker: "domain.com"} */ ]
-		;
+		foundStreamSummary = [ /* {mid: 000, stage: 1, tracker: "domain.com"} */ ];
+
 
 
 
@@ -40,7 +44,7 @@ window.MonsterCheck = (function () {
 	/**
 	 *	Make sure all monsters are nearby, deletes those that aren't
 	 */
-	function checkNearbyMonsterTimes() {
+	async function checkNearbyMonsterTimes() {
 		try {
 			let log = "👿 MonsterCheck.checkNearbyMonsterTimes()";
 			if (DEBUG) Debug.dataReportHeader(log, "#", "before", 15);
@@ -49,7 +53,7 @@ window.MonsterCheck = (function () {
 				deleteList = [];
 			// make sure T.tally_nearby_monsters exists
 			if (T.tally_nearby_monsters && FS_Object.objLength(T.tally_nearby_monsters) > 0) {
-				if (DEBUG) console.log(log, "[1] -> T.tally_nearby_monsters =", T.tally_nearby_monsters);
+				if (DEBUG) console.log(log, "[1] T.tally_nearby_monsters =", T.tally_nearby_monsters);
 				// loop through them
 				for (var mid in T.tally_nearby_monsters) {
 					if (T.tally_nearby_monsters.hasOwnProperty(mid)) {
@@ -68,54 +72,99 @@ window.MonsterCheck = (function () {
 			}
 			// log deleted to console
 			if (DEBUG)
-				if (deleteList.length > 0) console.log(log, "[2] -> DELETING", deleteList);
+				if (deleteList.length > 0) console.log(log, "[2] DELETING", deleteList);
 			// save
 			TallyStorage.saveData("tally_nearby_monsters", T.tally_nearby_monsters, log);
 
 			// set the skin color
 			Skin.updateFromHighestMonsterStage();
-			// continue
-			checkForTagMatches();
+
+
+			// only proceed if there are trackers
+			if (FS_Object.objLength(Page.data.trackers.found) < 1) {
+				if (DEBUG) console.log(log, "[3] NO TRACKERS ON THIS PAGE - Page.data.trackers =", Page.data.trackers);
+				return;
+			}
+
+			// update stage 0 monsters using tags
+			T.tally_tag_matches.s0 = await returnTagMatches();
+
+			// update stage 1, 2, 3 monsters
+			[T.tally_tag_matches.s1, T.tally_tag_matches.s2, T.tally_tag_matches.s3] = await returnMonsterStages();
+
+			// update stages in background
+			TallyStorage.saveData("tally_tag_matches", T.tally_tag_matches, "👿 MonsterCheck.checkNearbyMonsterTimes()");
+
+			if (DEBUG) console.log(log, '[4] T.tally_tag_matches =', T.tally_tag_matches);
+
+			// once it returns, pick one from stage0 to elevate
+			handleMatch(FS_Object.randomArrayIndexFromRange(T.tally_tag_matches.s0, 0, 5));
+
+
+		} catch (err) {
+			console.error(err);
+		}
+	}
+
+
+	/**
+	 *	Return mids from tag matches for stage0
+	 */
+	async function returnTagMatches() {
+		try {
+			let log = "👿 MonsterCheck.returnTagMatches()",
+				arr = [];
+
+			if (DEBUG) console.log(log, '[1] Page.data.tags =', Page.data.tags);
+
+			// for each tag
+			for (let i = 0, l = Page.data.tags.length; i < l; i++) {
+				// if tag matches a monster
+				if (MonsterData.idsByTag[Page.data.tags[i]]) {
+					// if (DEBUG) console.log(log, '[2.1] #' + Page.data.tags[i], MonsterData.idsByTag[Page.data.tags[i]]);
+
+					// add all mids from tag
+					arr = arr.concat(
+						MonsterData.idsByTag[Page.data.tags[i]]
+					);
+				}
+			}
+			// if (DEBUG) console.log(log, '[2.2] arr =', arr);
+			arr = FS_Object.sortArrayByOccuranceRemoveDuplicates(arr);
+			// if (DEBUG) console.log(log, '[2.3] arr (sorted) =', arr);
+
+			return arr;
+
 		} catch (err) {
 			console.error(err);
 		}
 	}
 
 	/**
-	 *	Check the page for a monster
+	 *	Update object that stores mids found on page by stage
 	 */
-	function checkForTagMatches() {
+	async function returnMonsterStages() {
 		try {
-			let log = "👿 MonsterCheck.checkForTagMatches()";
-			if (DEBUG) console.log(log, '[1] -> Page.data.tags =', Page.data.tags);
+			let log = "👿 MonsterCheck.returnMonsterStages()",
+				obj = { // store mids found on page by their current stage
+					"s0": [], // newly discovered
+					"s1": [], // randomly upgrade to #2
+					"s2": [], // queued to appear on page next time there is a match
+					"s3": [] // display on page
+				};
 
-			// only proceed if there are trackers
-			if (FS_Object.objLength(Page.data.trackers.found) < 1) {
-				if (DEBUG) console.log(log, "[1] NO TRACKERS ON THIS PAGE - Page.data.trackers =", Page.data.trackers);
-				return;
+			// FILL STAGES 1,2,3 FROM tally_nearby_monsters
+
+			// for each mid in tally_nearby_monsters
+			for (let mid in T.tally_nearby_monsters) {
+				// add the mid to the array
+				obj["s" + T.tally_nearby_monsters[mid].stage].push(Number(mid));
+				// if (DEBUG) console.log(log, '[2] mid =', mid);
 			}
-			// loop through the tags on the page
-			for (var i = 0, l = Page.data.tags.length; i < l; i++) {
-				// save reference
-				let tag = Page.data.tags[i];
-				// if tag is in list
-				if (MonsterData.idsByTag[tag]) {
-					// save reference to related monster ids
-					let arr = MonsterData.idsByTag[tag];
-					// if there is at least one match...
-					if (arr.length > 0) {
-						// pick random monster id from list, this will be the page monster
-						let randomMID = arr[Math.floor(Math.random() * arr.length)];
-						// return if not a number or not found in dataById
-						if (isNaN(randomMID) || !prop(MonsterData.dataById[randomMID])) return;
-						if (DEBUG) console.log(log, '[2] -> #' + tag + " has", arr.length,
-							'MATCH(ES) (' + arr + ') randomly selecting:', MonsterData.dataById[randomMID].slug);
-						// we have identified a match, let's handle the monster
-						handleMatch(randomMID);
-						break;
-					}
-				}
-			}
+			// if (DEBUG) console.log(log, '[2.1] obj =', obj);
+
+			return [obj.s1, obj.s2, obj.s3];
+
 		} catch (err) {
 			console.error(err);
 		}
@@ -127,12 +176,14 @@ window.MonsterCheck = (function () {
 	 *	1. add it to T.tally_nearby_monsters
 	 *	2. or, if it is already "nearby", then determine if its stage will advance
 	 */
-	function handleMatch(mid) {
+	async function handleMatch(mid) {
 		try {
 			let log = "👿 MonsterCheck.handleMatch()";
 			// if (DEBUG) console.log(log, '[1] mid=' + mid);
-			if (mid && mid > 0 && T.tally_nearby_monsters && MonsterData.dataById[mid] && T.tally_nearby_monsters[mid]) {
-				if (DEBUG) console.log(log, MonsterData.dataById[mid].slug, "stage=" + T.tally_nearby_monsters[mid].stage);
+			if (mid && !isNaN(mid) && mid > 0 && T.tally_nearby_monsters &&
+				MonsterData.dataById[mid] && T.tally_nearby_monsters[mid]) {
+				if (DEBUG)
+					console.log(log, MonsterData.dataById[mid].slug, "stage=" + T.tally_nearby_monsters[mid].stage);
 			}
 
 			// will we show monster on the page
@@ -141,9 +192,9 @@ window.MonsterCheck = (function () {
 				advance = false,
 				dialogue = "";
 
-			// if the monster id does not exist in nearby_monsters
-			if (!prop(T.tally_nearby_monsters[mid])) {
-				if (DEBUG) console.log(log, '[2] mid ' + mid + ' NOT IN nearby_monsters');
+			// if the monster id does not exist in tally_nearby_monsters
+			if (!FS_Object.prop(T.tally_nearby_monsters[mid])) {
+				if (DEBUG) console.log(log, '[2] mid ' + mid + ' NOT IN tally_nearby_monsters');
 				// add it
 				T.tally_nearby_monsters[mid] = Monster.create(mid);
 			}
@@ -209,16 +260,21 @@ window.MonsterCheck = (function () {
 					}
 				}
 				// save to log after code above
-				if (DEBUG) console.log(log, '[4] -> monster =', MonsterData.dataById[mid].slug, T.tally_nearby_monsters[mid]);
+				if (DEBUG) console.log(log, '[4] monster =', MonsterData.dataById[mid].slug, T.tally_nearby_monsters[mid]);
 			}
+			// update stage 1,2,3 monsters
+			[T.tally_tag_matches.s1, T.tally_tag_matches.s2, T.tally_tag_matches.s3] = await returnMonsterStages();
+			// update stages in background
+			TallyStorage.saveData("tally_tag_matches", T.tally_tag_matches, log);
+
 			// update the list of found monsters
 			saveFoundForServer();
 			// save monsters
 			TallyStorage.saveData("tally_nearby_monsters", T.tally_nearby_monsters, log);
 
 			// wait a moment to show on page; gives badges a chance to finish
-			setTimeout(function(){
-				if (dialogue === "showDialogueAboutQuantity"){
+			setTimeout(function() {
+				if (dialogue === "showDialogueAboutQuantity") {
 					showDialogueAboutQuantity();
 				}
 				// if set, show monster on page
@@ -227,7 +283,7 @@ window.MonsterCheck = (function () {
 				Skin.updateFromHighestMonsterStage();
 				// always show something (after the skin has updated)
 				showSilhouetteDialogue(mid, distance);
-			},1000);
+			}, 1000);
 
 
 		} catch (err) {
@@ -241,7 +297,7 @@ window.MonsterCheck = (function () {
 	 */
 	function saveFoundForServer() {
 		try {
-			for (let m in T.tally_nearby_monsters){
+			for (let m in T.tally_nearby_monsters) {
 				foundStreamSummary.push({
 					mid: T.tally_nearby_monsters[m].mid,
 					level: T.tally_nearby_monsters[m].level,
@@ -337,7 +393,7 @@ window.MonsterCheck = (function () {
 			// turn monster to face Tally
 			let scale = 1,
 				flipStyle = "transform:scale(" + scale + "," + scale + ");"; // default
-			if (prop(T.tally_nearby_monsters[monster.mid].facing) && T.tally_nearby_monsters[monster.mid].facing == "1")
+			if (FS_Object.prop(T.tally_nearby_monsters[monster.mid].facing) && T.tally_nearby_monsters[monster.mid].facing == "1")
 				flipStyle = "transform:scale(-" + scale + "," + scale + ");"; // left
 
 			// string for dialogue box
@@ -366,7 +422,7 @@ window.MonsterCheck = (function () {
 				instant: true
 			});
 
-			setTimeout(function () {
+			setTimeout(function() {
 				// set tutorial sequence active
 				Tutorial.sequenceActive = false;
 			}, 2000);
@@ -405,7 +461,9 @@ window.MonsterCheck = (function () {
 	return {
 		check: check,
 
-		get foundStreamSummary () { return foundStreamSummary; },
+		get foundStreamSummary() {
+			return foundStreamSummary;
+		},
 
 	};
 }());

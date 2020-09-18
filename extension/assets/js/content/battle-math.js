@@ -102,7 +102,7 @@ window.BattleMath = (function () {
 	 */
 	function returnAttackOutcomes(attack, selfStr, oppStr) {
 		try {
-			if (!prop(attack)) {
+			if (!FS_Object.prop(attack)) {
 				console.error("🔢 BattleMath.returnAttackOutcomes() attack is required!");
 				return;
 			}
@@ -129,7 +129,7 @@ window.BattleMath = (function () {
 			// ************** STAMINA FIRST **************
 
 			// COMPUTE STAMINA COST FIRST
-			if (prop(attack.staminaCost)) {
+			if (FS_Object.prop(attack.staminaCost)) {
 				stat = "stamina";
 				affectsStat = "staminaCost";
 				outcome = outcomeData[affectsStat];
@@ -172,7 +172,7 @@ window.BattleMath = (function () {
 			// ************** HEALTH **************
 
 			// SELF +HEALTH
-			if (prop(attack.selfHealth)) {
+			if (FS_Object.prop(attack.selfHealth)) {
 				stat = "health";
 				affectsStat = "selfHealth";
 				outcome = outcomeData[affectsStat]; // get data
@@ -182,7 +182,7 @@ window.BattleMath = (function () {
 				logOutcome(affectsStat, outcome, "self", self); // log
 			}
 			// OPP -HEALTH
-			if (prop(attack.oppHealth)) {
+			if (FS_Object.prop(attack.oppHealth)) {
 				stat = "health";
 				affectsStat = "oppHealth";
 				outcome = outcomeData[affectsStat];
@@ -208,7 +208,7 @@ window.BattleMath = (function () {
 			// ************** ATTACK **************
 
 			// INCREASE SELF ATTACK
-			if (prop(attack.selfAtk)) {
+			if (FS_Object.prop(attack.selfAtk)) {
 				stat = "attack";
 				affectsStat = "selfAtk";
 				outcome = outcomeData[affectsStat];
@@ -219,7 +219,7 @@ window.BattleMath = (function () {
 				logOutcome(affectsStat, outcome, "self", self);
 			}
 			// DAMAGE OPP ATTACK
-			if (prop(attack.oppAtk)) {
+			if (FS_Object.prop(attack.oppAtk)) {
 				stat = "attack";
 				affectsStat = "oppAtk";
 				outcome = outcomeData[affectsStat];
@@ -233,7 +233,7 @@ window.BattleMath = (function () {
 			// ************** ACCURACY **************
 
 			// INCREASE SELF ACCURACY
-			if (prop(attack.selfAcc)) {
+			if (FS_Object.prop(attack.selfAcc)) {
 				stat = "accuracy";
 				affectsStat = "selfAcc";
 				outcome = outcomeData[affectsStat];
@@ -243,7 +243,7 @@ window.BattleMath = (function () {
 				logOutcome(affectsStat, outcome, "self", self);
 			}
 			// DAMAGE OPP ACCURACY
-			if (prop(attack.oppAcc)) {
+			if (FS_Object.prop(attack.oppAcc)) {
 				stat = "accuracy";
 				affectsStat = "oppAcc";
 				outcome = outcomeData[affectsStat];
@@ -257,7 +257,7 @@ window.BattleMath = (function () {
 			// ************** EVASION **************
 
 			// INCREASE SELF EVASION
-			if (prop(attack.selfEva)) {
+			if (FS_Object.prop(attack.selfEva)) {
 				stat = "evasion";
 				affectsStat = "selfEva";
 				outcome = outcomeData[affectsStat];
@@ -267,7 +267,7 @@ window.BattleMath = (function () {
 				logOutcome(affectsStat, outcome, "self", self);
 			}
 			// DAMAGE OPP EVASION
-			if (prop(attack.oppEva)) {
+			if (FS_Object.prop(attack.oppEva)) {
 				stat = "evasion";
 				affectsStat = "oppEva";
 				outcome = outcomeData[affectsStat];
@@ -281,7 +281,7 @@ window.BattleMath = (function () {
 			// ************** DEFENSE **************
 
 			// INCREASE SELF DEFENSE
-			if (prop(attack.selfDef)) {
+			if (FS_Object.prop(attack.selfDef)) {
 				stat = "defense";
 				affectsStat = "selfDef";
 				outcome = outcomeData[affectsStat];
@@ -291,7 +291,7 @@ window.BattleMath = (function () {
 				logOutcome(affectsStat, outcome, "self", self);
 			}
 			// DAMAGE OPP DEFENSE
-			if (prop(attack.oppDef)) {
+			if (FS_Object.prop(attack.oppDef)) {
 				stat = "defense";
 				affectsStat = "oppDef";
 				outcome = outcomeData[affectsStat];

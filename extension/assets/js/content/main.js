@@ -64,6 +64,7 @@ window.TallyMain = (function () {
 			// if (DEBUG) console.log(log, '[1.1] -> T.tally_options =',T.tally_options);
 			// if (DEBUG) console.log(log, '[1.1] -> T.tally_meta =',T.tally_meta);
 			// if (DEBUG) console.log(log, '[1.1] -> T.tally_nearby_monsters =',T.tally_nearby_monsters);
+			// if (DEBUG) console.log(log, '[1.1] -> T.tally_tag_matches =',T.tally_tag_matches);
 			// if (DEBUG) console.log(log, '[1.1] -> T.tally_stats =',T.tally_stats);
 			// if (DEBUG) console.log(log, '[1.1] -> T.tally_top_monsters =',T.tally_top_monsters);
 
@@ -72,7 +73,7 @@ window.TallyMain = (function () {
 			if (DEBUG) console.log(log, '[2.1] -> SET Page.data');
 
 			// stop if Page.data failed
-			if (!prop(Page.data)) return console.warn("... Page.data NOT FOUND");
+			if (!FS_Object.prop(Page.data)) return console.warn("... Page.data NOT FOUND");
 			// check page mode before proceeding
 			savePageMode();
 
@@ -191,12 +192,12 @@ window.TallyMain = (function () {
 			// - tally does not show at all, does not save in background or prompt for login
 
 			// Page.data failed - game cannot start at all
-			if (!prop(Page.data)) {
+			if (!FS_Object.prop(Page.data)) {
 				if (DEBUG) console.log(log + "No Page.data found");
 				mode.notActive = true;
 			}
 			// this is a disabled domain - user has added this to blocklist
-			else if (prop(T.tally_options.disabledDomains) && (
+			else if (FS_Object.prop(T.tally_options.disabledDomains) && (
 					($.inArray(Page.data.domain, T.tally_options.disabledDomains) >= 0) ||
 					($.inArray(Page.data.subDomain, T.tally_options.disabledDomains) >= 0)
 				)) {

@@ -10,6 +10,7 @@ var T = (function () {
 	let tally_meta = {},
 		tally_options = {},
 		tally_nearby_monsters = {},
+		tally_tag_matches = {},
 		tally_stats = {};
 
 	// global vars
@@ -55,6 +56,8 @@ var T = (function () {
 		get tally_options () { return tally_options; },
 		set tally_nearby_monsters (value) { tally_nearby_monsters = value; },
 		get tally_nearby_monsters () { return tally_nearby_monsters; },
+		set tally_tag_matches (value) { tally_tag_matches = value; },
+		get tally_tag_matches () { return tally_tag_matches; },
 		set tally_stats (value) { tally_stats = value; },
 		get tally_stats () { return tally_stats; },
 

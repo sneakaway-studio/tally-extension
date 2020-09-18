@@ -265,16 +265,16 @@ window.Sound = (function () {
 			//if(DEBUG) console.log("🎵 Sound.playRandom("+ category +","+ index +")");
 			var soundFile = "";
 			// if a specific category && index provided, then get that sound
-			if (prop(category) && prop(index))
+			if (FS_Object.prop(category) && FS_Object.prop(index))
 				soundFile = category + "/" + sounds[category][index];
 			// else pick random index from category
-			else if (prop(category) && !prop(index))
+			else if (FS_Object.prop(category) && !FS_Object.prop(index))
 				// for array
 				//soundFile = category +"/"+ sounds[category][Math.floor((Math.random() * sounds[category].length))];
 				// random from obj
 				soundFile = category + "/" + FS_Object.randomObjProperty(sounds[category]);
 			// else pick random category && index
-			else if (!prop(category) && !prop(index)) {
+			else if (!FS_Object.prop(category) && !FS_Object.prop(index)) {
 				var categoryArr = FS_Object.randomObjProperty(sounds); // reference to array group in sounds
 				soundFile = category + "/" + categoryArr[Math.floor(Math.random() * categoryArr.length)];
 			}
@@ -328,7 +328,7 @@ window.Sound = (function () {
 			// 	sad: 1
 			// };
 			// // make sure mood exists
-			// if (!prop(mood)) return;
+			// if (!FS_Object.prop(mood)) return;
 			// if (mood == "award") mood = "happy";
 			// if (DEBUG) console.log("🎵 Sound.playTallyVoice()", mood);
 			// let r = Math.ceil(Math.random() * moods[mood]);
@@ -339,7 +339,7 @@ window.Sound = (function () {
 			// now receives a dialogue obj
 
 			// make sure mood exists
-			if (!prop(dialogue.mood)) return;
+			if (!FS_Object.prop(dialogue.mood)) return;
 			if (dialogue.mood == "award") dialogue.mood = "happy";
 			if (DEBUG) console.log("🎵 Sound.playTallyVoice()", JSON.stringify(dialogue));
 

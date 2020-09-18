@@ -190,7 +190,7 @@ window.Debug = (function () {
 	// add the debugger
 	function add() {
 		try {
-			if (!prop(T.tally_options) || !T.tally_options.showDebugger) return;
+			if (!FS_Object.prop(T.tally_options) || !T.tally_options.showDebugger) return;
 
 			// make sure it isn't already there
 			if ($("#tyd").length) return;
@@ -219,7 +219,7 @@ window.Debug = (function () {
 
 	function update() {
 		try {
-			if (!prop(T.tally_options) || !T.tally_options.showDebugger) return;
+			if (!FS_Object.prop(T.tally_options) || !T.tally_options.showDebugger) return;
 			if (!$("#tyd").length) return;
 
 			var str =
@@ -230,31 +230,31 @@ window.Debug = (function () {
 				"";
 
 			// add T.tally_user.score
-			if (prop(T.tally_user.score))
+			if (FS_Object.prop(T.tally_user.score))
 				str += "<b class='tally'>T.tally_user.score (XP)</b>: " + JSON.stringify(T.tally_user.score) + "<br>";
 
 			// add T.tally_user.monsters
-			if (prop(T.tally_user.monsters))
+			if (FS_Object.prop(T.tally_user.monsters))
 				str += "<b class='tally'>T.tally_user.monsters</b>: " + JSON.stringify(T.tally_user.monsters) + "<br>";
 
 			// add T.tally_nearby_monsters
-			// if (prop(T.tally_nearby_monsters))
+			// if (FS_Object.prop(T.tally_nearby_monsters))
 			// 	str += "<b class='tally'>T.tally_nearby_monsters (" +
 			// 	FS_Object.objLength(T.tally_nearby_monsters) + ")</b>: " +JSON.stringify(T.tally_nearby_monsters) + "<br>";
 
 			// add T.tally_options
-			if (prop(T.tally_options)) str += "T.tally_options: " + JSON.stringify(T.tally_options) + "<br>";
+			if (FS_Object.prop(T.tally_options)) str += "T.tally_options: " + JSON.stringify(T.tally_options) + "<br>";
 
 			// add Page.data
-			if (prop(Page.data)) str += "<b>Page.data</b>: " + JSON.stringify(Page.data) + "<br>";
+			if (FS_Object.prop(Page.data)) str += "<b>Page.data</b>: " + JSON.stringify(Page.data) + "<br>";
 
 			// add Page.data.tags
-			// if (prop(Page.data.tags))
+			// if (FS_Object.prop(Page.data.tags))
 			// 	str += "<b class='tally'>Page.data.tags (" + Page.data.tags.length + ")</b>: " +
 			// 	JSON.stringify(Page.data.tags) + "<br>";
 
 			// add Page.data.trackers
-			// if (prop(Page.data.trackers))
+			// if (FS_Object.prop(Page.data.trackers))
 			// 	str += "<b class='tally'>Page.data.trackers</b>: " +
 			// 	JSON.stringify(Page.data.trackers) + "<br>";
 
