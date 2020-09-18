@@ -13,7 +13,7 @@ window.Install = (function () {
 			let cleanInstall = true;
 
 			// does T.tally_meta exists, or is this the first install?
-			if (prop(store("tally_meta"))) {
+			if (FS_Object.prop(store("tally_meta"))) {
 				if (DEBUG) console.log("🔧 Install.init() -> T.tally_meta exists, need to check account");
 				cleanInstall = false;
 			} else {

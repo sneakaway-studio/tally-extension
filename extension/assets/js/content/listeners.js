@@ -48,10 +48,10 @@ window.TallyListeners = (function() {
 					Page.data.mouseX = eventData.mouseX;
 					Page.data.mouseY = eventData.mouseY;
 					// include parent tags if they exist
-					if (prop(e.target.parentElement)) {
+					if (FS_Object.prop(e.target.parentElement)) {
 						eventData.parentTag = (e.target.parentElement || e.srcElement.parentNode).tagName;
 						// include grandparent tags...
-						if (prop(e.target.parentElement.parentElement))
+						if (FS_Object.prop(e.target.parentElement.parentElement))
 							eventData.gParentTag = (e.target.parentElement.parentElement || e.srcElement.parentNode.parentNode).tagName;
 					}
 					//console.log(eventData, "e",e, "e.target",e.target);

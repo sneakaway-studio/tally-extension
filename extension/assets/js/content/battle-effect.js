@@ -224,7 +224,7 @@ window.BattleEffect = (function() {
 			let file = "stars-pink.gif";
 			if (attack.type === "defense") file = "stars-orange.gif";
 			// unless attack has a specific one
-			if (prop(attack["animation-name"]) && attack["animation-name"] !== "") file = attack["animation-name"];
+			if (FS_Object.prop(attack["animation-name"]) && attack["animation-name"] !== "") file = attack["animation-name"];
 
 			// reference to image file
 			var url = chrome.extension.getURL('assets/img/battles/explosions-gifs/' + file + "?a=" + Math.random());

@@ -211,7 +211,7 @@ window.Stats = (function () {
 			if (T.tally_options.gameMode === "disabled") return;
 
 			// error checking
-			if (!prop(T.tally_user)) return console.warn("📋 Stats.getLevel()", " no T.tally_user.level");
+			if (!FS_Object.prop(T.tally_user)) return console.warn("📋 Stats.getLevel()", " no T.tally_user.level");
 
 			// default
 			let level = 0;

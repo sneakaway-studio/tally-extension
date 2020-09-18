@@ -42,7 +42,7 @@ window.Battle = (function () {
 			if (_active) return;
 			if (FS_Object.objLength(T.tally_nearby_monsters) < 1) return;
 			// use random ...
-			let mid = randomObjKey(T.tally_nearby_monsters);
+			let mid = FS_Object.randomObjKey(T.tally_nearby_monsters);
 			// or pick from some favorites...
 			var r = Math.random();
 			if (r < 0.1) mid = 6;

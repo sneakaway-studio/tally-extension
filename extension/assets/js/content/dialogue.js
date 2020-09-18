@@ -119,7 +119,7 @@ window.Dialogue = (function () {
 			if (DEBUG) console.log("💬 Dialogue.showStr()", str, mood, addIfInProcess, instant);
 
 			// don't show if there is no text
-			if (!prop(str) || str === "") return;
+			if (!FS_Object.prop(str) || str === "") return;
 
 			// don't allow if mode disabled or stealth,
 			if (T.tally_options.gameMode === "disabled" || T.tally_options.gameMode === "stealth") return;
@@ -154,7 +154,7 @@ window.Dialogue = (function () {
 	// 		// make sure it is an array
 	// 		if (!Array.isArray(arr)) return;
 	// 		// category is required
-	// 		if (!prop(arr[0])) return;
+	// 		if (!FS_Object.prop(arr[0])) return;
 	//
 	// 		if (DEBUG) console.log("💬 Dialogue.get() arr=" + JSON.stringify(arr));
 	//
@@ -171,11 +171,11 @@ window.Dialogue = (function () {
 	// 		// if (DEBUG) console.log("💬 Dialogue.get()", "categoryStr=" + categoryStr + ", category=" + JSON.stringify(category));
 	//
 	// 		// if there is a subcategory, then select random
-	// 		if (prop(arr[1])) {
+	// 		if (FS_Object.prop(arr[1])) {
 	// 			subcategoryStr = arr[1];
 	// 			if (DEBUG) console.log("💬 Dialogue.get()", "subcategoryStr=" + subcategoryStr);
 	// 			// if prop doesn't exist in Dialogue then don't show anything
-	// 			if (!prop(category[subcategoryStr]) || category[subcategoryStr].length < 1) return;
+	// 			if (!FS_Object.prop(category[subcategoryStr]) || category[subcategoryStr].length < 1) return;
 	// 			// otherwise get a random one
 	// 			let r = Math.floor(Math.random() * category[subcategoryStr].length);
 	// 			if (DEBUG) console.log("💬 Dialogue.get()", "subcategoryStr=" + subcategoryStr + ",
@@ -183,7 +183,7 @@ window.Dialogue = (function () {
 	// 			result = category[subcategoryStr][r];
 	// 		}
 	// 		// if there is no subcategory, then get by index
-	// 		if (prop(arr[2])) {
+	// 		if (FS_Object.prop(arr[2])) {
 	// 			let index = arr[2];
 	// 			result = category[index];
 	// 		}
@@ -299,7 +299,7 @@ window.Dialogue = (function () {
 			// remove first element in array
 			var dialogue = _queue.shift();
 			// make sure there is text in the element
-			if (!prop(dialogue) || dialogue.text === null ||
+			if (!FS_Object.prop(dialogue) || dialogue.text === null ||
 				dialogue.text === undefined || dialogue.text === "") {
 				console.warn("💬 Dialogue.writeNextInQueue() element was empty", _queue, dialogue);
 				return;
@@ -333,7 +333,7 @@ window.Dialogue = (function () {
 			// show text
 			$('#tally_dialogue_inner').html(dialogue.before + " " + dialogue.text + " " + dialogue.after);
 			// play sound (if exists)
-			if (prop(dialogue.mood)) Sound.playTallyVoice(dialogue);
+			if (FS_Object.prop(dialogue.mood)) Sound.playTallyVoice(dialogue);
 
 
 			// if there is an image

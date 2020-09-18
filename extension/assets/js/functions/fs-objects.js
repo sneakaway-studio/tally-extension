@@ -6,7 +6,14 @@
 
 window.FS_Object = (function() {
 
-	function prop(obj){
+
+	/**
+	 *	Make sure a property or method is:
+	 *	1. declared
+	 *	2. is !== null, undefined, NaN, empty string (""), 0, false
+	 *	* like PHP isset()
+	 */
+	function prop(obj) {
 		// console.log("FS_Object.prop()", obj);
 		// console.trace();
 		if (typeof obj !== 'undefined' && obj && obj !== null) return true;
@@ -24,7 +31,7 @@ window.FS_Object = (function() {
 	/**
 	 *	Count occurances of string in keys
 	 */
-	function countKeysRegex(obj,str) {
+	function countKeysRegex(obj, str) {
 		// return Object.keys(obj).filter((key) => /${str}/.test(key)).length;
 		return Object.keys(obj).filter((key) => key.match(new RegExp(str, 'g'))).length;
 	}
@@ -60,11 +67,54 @@ window.FS_Object = (function() {
 	}
 
 	/**
+	 *	Shuffle and return array
+	 */
+	function shuffleArray(arr) {
+		for (let i = arr.length - 1; i > 0; i--) {
+			const j = Math.floor(Math.random() * (i + 1));
+			[arr[i], arr[j]] = [arr[j], arr[i]];
+		}
+		return arr;
+	}
+
+	/**
 	 *	Is an object empty?
 	 */
 	function isEmpty(obj) {
-		for (var x in obj) { return false; }
+		for (var x in obj) {
+			return false;
+		}
 		return true;
+	}
+
+
+	/**
+	 *	Convert an array to an object with <key> as key
+	 */
+	function convertArrayToObject(arr, key) {
+		var obj = arr.reduce(function(result, item, i) {
+			result[item[key]] = item;
+			return result;
+		}, {});
+		return obj;
+	}
+
+
+	/**
+	 *	Remove duplicates from an array
+	 */
+	function removeDuplicates(array_) {
+		var ret_array = [];
+		for (var a = array_.length - 1; a >= 0; a--) {
+			for (var b = array_.length - 1; b >= 0; b--) {
+				if (array_[a] == array_[b] && a != b) {
+					delete array_[b];
+				}
+			}
+			if (array_[a] != undefined)
+				ret_array.push(array_[a]);
+		}
+		return ret_array;
 	}
 
 
@@ -75,72 +125,11 @@ window.FS_Object = (function() {
 		randomObjKey: randomObjKey,
 		randomObjProperty: randomObjProperty,
 		randomArrayIndex: randomArrayIndex,
+		shuffleArray: shuffleArray,
 		countKeysRegex: countKeysRegex,
 		lastKeyValue: lastKeyValue,
-		isEmpty: isEmpty
+		isEmpty: isEmpty,
+		convertArrayToObject: convertArrayToObject,
+		removeDuplicates: removeDuplicates
 	};
 })();
-
-
-
-
-
-
-
-
-/**
- *	Make sure a property or method is:
- *	1. declared
- *	2. is !== null, undefined, NaN, empty string (""), 0, false
- *	* like PHP isset()
- */
-function prop(val) {
-	// console.log("prop()", val);
-	// console.trace();
-	if (typeof val !== 'undefined' && val && val !== null) {
-		return true;
-	} else {
-		return false;
-	}
-}
-
-
-
-/**
- *	Return random key from an object
- */
-var randomObjKey = function(obj) {
-	var keys = Object.keys(obj);
-	return keys[keys.length * Math.random() << 0];
-};
-
-
-
-
-/**
- *	Convert an array to an object with <key> as key
- */
-function convertArrayToObject(arr, key) {
-	var obj = arr.reduce(function(result, item, i) {
-		result[item[key]] = item;
-		return result;
-	}, {});
-	return obj;
-}
-
-/**
- *	Remove duplicates from an array
- */
-function removeDuplicates(array_) {
-	var ret_array = [];
-	for (var a = array_.length - 1; a >= 0; a--) {
-		for (var b = array_.length - 1; b >= 0; b--) {
-			if (array_[a] == array_[b] && a != b) {
-				delete array_[b];
-			}
-		}
-		if (array_[a] != undefined)
-			ret_array.push(array_[a]);
-	}
-	return ret_array;
-}

@@ -92,7 +92,7 @@ window.Tally = (function () {
 			if (DEBUG) console.log("%c   Tally.addCharacter()", Debug.tallyConsoleIcon);
 
 			// only show Tally if game mode == full
-			if (!prop(T.tally_options) || !T.tally_options.showTally) return;
+			if (!FS_Object.prop(T.tally_options) || !T.tally_options.showTally) return;
 
 			// maybe temp...
 			//Skin.preload(); // don't need now, replacing with svg

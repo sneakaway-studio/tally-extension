@@ -252,7 +252,7 @@ window.Server = (function () {
 
 
 			// return early if no username
-			if (prop(_tally_user.username) && _tally_user.username != "")
+			if (FS_Object.prop(_tally_user.username) && _tally_user.username != "")
 				username = _tally_user.username;
 
 
@@ -264,7 +264,7 @@ window.Server = (function () {
 			}).done(result => {
 				// treat all server data as master
 				// if (DEBUG) console.log("📟 Server.returnTopMonsters() [1] RESULT =", JSON.stringify(result));
-				_tally_top_monsters = convertArrayToObject(result.topMonsters, "mid");
+				_tally_top_monsters = FS_Object.convertArrayToObject(result.topMonsters, "mid");
 				// if (DEBUG) console.log("📟 Server.returnTopMonsters() [2] RESULT =", JSON.stringify(_tally_top_monsters));
 				// store top monsters
 				store("tally_top_monsters", _tally_top_monsters);

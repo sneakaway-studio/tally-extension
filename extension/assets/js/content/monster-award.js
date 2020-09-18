@@ -114,7 +114,7 @@ window.MonsterAward = (function() {
 	 */
 	function showAward(_mid) {
 		console.log("☆☆☆☆☆ Monster.showAward()", _mid, JSON.stringify(T.tally_top_monsters[_mid]),T.tally_nearby_monsters[_mid]);
-		if (!prop(T.tally_top_monsters[_mid])) return;
+		if (!FS_Object.prop(T.tally_top_monsters[_mid])) return;
 
 		// insert text
 		$('.award_subtitle').html("You leveled up! <a href='https://tallysavestheinternet.com/profile'> Check out your profile</a>");
@@ -124,7 +124,7 @@ window.MonsterAward = (function() {
 		let str = Dialogue.getFact("trackers",true);
 		let box_text = "Did you know?";
 
-		if (!prop(T.tally_top_monsters[_mid].top))
+		if (!FS_Object.prop(T.tally_top_monsters[_mid].top))
 			console.error(".top is undefined");
 
 		// 1. Are they already at the top of the leaderboard?
@@ -254,7 +254,7 @@ window.MonsterAward = (function() {
 			_scale = Page.data.browser.width > 1200 ? 0.65 : 0.5; // increase scale w/larger screens
 
 		// set direction of monster (default is normal, i.e. right)
-		if (prop(T.tally_nearby_monsters[_mid].facing)) {
+		if (FS_Object.prop(T.tally_nearby_monsters[_mid].facing)) {
 			// set direction left
 			if (T.tally_nearby_monsters[_mid].facing == -1)
 				_direction = "reverse";
@@ -307,13 +307,13 @@ window.MonsterAward = (function() {
 			.one("animationend webkitAnimationEnd oAnimationEnd MSAnimationEnd", function() {
 				console.log("animation done", T.tally_nearby_monsters[_mid]);
 				// code to execute after animation ends
-				if (prop(T.tally_nearby_monsters[_mid]) && T.tally_nearby_monsters[_mid].captured == 0)
+				if (FS_Object.prop(T.tally_nearby_monsters[_mid]) && T.tally_nearby_monsters[_mid].captured == 0)
 					MonsterAward.miss(_mid);
 			});
 
 		// add click handler
 		$(document).on('click', '.tally_monster_sprite', function() {
-			if (!prop(T.tally_nearby_monsters[_mid])) return;
+			if (!FS_Object.prop(T.tally_nearby_monsters[_mid])) return;
 			// remove the click listener from the monster
 			$('.tally_monster_sprite').off("click");
 			// capture the monster
