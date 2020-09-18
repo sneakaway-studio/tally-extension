@@ -70,7 +70,7 @@ window.Page = (function () {
 			tags = cleanStringReturnTagArray(str);
 			//if (DEBUG) console.log( "tags", JSON.stringify(tags) );
 			// delete duplicates
-			tags = FS_Object.removeDuplicates(tags);
+			tags = FS_Object.removeArrayDuplicates(tags);
 			tags = removeStopWords(null, tags);
 			tags = removeSmallWords(tags);
 			return tags;

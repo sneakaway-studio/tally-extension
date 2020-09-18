@@ -7,6 +7,8 @@
 window.FS_Object = (function() {
 
 
+	/*************************** OBJECT *******************************/
+
 	/**
 	 *	Make sure a property or method is:
 	 *	1. declared
@@ -18,6 +20,16 @@ window.FS_Object = (function() {
 		// console.trace();
 		if (typeof obj !== 'undefined' && obj && obj !== null) return true;
 		else return false;
+	}
+
+	/**
+	 *	Is an object empty?
+	 */
+	function isEmpty(obj) {
+		for (var x in obj) {
+			return false;
+		}
+		return true;
 	}
 
 	/**
@@ -59,11 +71,40 @@ window.FS_Object = (function() {
 		return obj[keys[keys.length * Math.random() << 0]];
 	}
 
+
+
+	/*************************** ARRAY *******************************/
+
 	/**
 	 *	Return random index from array
 	 */
 	function randomArrayIndex(arr) {
 		return arr[Math.floor(Math.random() * arr.length)];
+	}
+
+	/**
+	 *	Return random index from a segment of array
+	 */
+	function randomArrayIndexFromRange(arr, min = 0, max = 1) {
+		if (max > arr.length) max = arr.length;
+		return randomArrayIndex(arr.slice(min,max));
+	}
+
+	/**
+	 *	Sort an array by occurance of index
+	 */
+	function sortArrayByOccuranceRemoveDuplicates(arr) {
+		var frequency = {};
+		// store frequency
+		arr.forEach(function(value) {
+			frequency[value] = 0;
+		});
+		var uniques = arr.filter(function(value) {
+			return ++frequency[value] == 1;
+		});
+		return uniques.sort(function(a, b) {
+			return frequency[b] - frequency[a];
+		});
 	}
 
 	/**
@@ -78,17 +119,6 @@ window.FS_Object = (function() {
 	}
 
 	/**
-	 *	Is an object empty?
-	 */
-	function isEmpty(obj) {
-		for (var x in obj) {
-			return false;
-		}
-		return true;
-	}
-
-
-	/**
 	 *	Convert an array to an object with <key> as key
 	 */
 	function convertArrayToObject(arr, key) {
@@ -99,11 +129,10 @@ window.FS_Object = (function() {
 		return obj;
 	}
 
-
 	/**
 	 *	Remove duplicates from an array
 	 */
-	function removeDuplicates(array_) {
+	function removeArrayDuplicates(array_) {
 		var ret_array = [];
 		for (var a = array_.length - 1; a >= 0; a--) {
 			for (var b = array_.length - 1; b >= 0; b--) {
@@ -121,15 +150,18 @@ window.FS_Object = (function() {
 	// PUBLIC
 	return {
 		prop: prop,
+		isEmpty: isEmpty,
 		objLength: objLength,
 		randomObjKey: randomObjKey,
 		randomObjProperty: randomObjProperty,
-		randomArrayIndex: randomArrayIndex,
-		shuffleArray: shuffleArray,
 		countKeysRegex: countKeysRegex,
 		lastKeyValue: lastKeyValue,
-		isEmpty: isEmpty,
+
+		randomArrayIndex: randomArrayIndex,
+		randomArrayIndexFromRange: randomArrayIndexFromRange,
 		convertArrayToObject: convertArrayToObject,
-		removeDuplicates: removeDuplicates
+		sortArrayByOccuranceRemoveDuplicates: sortArrayByOccuranceRemoveDuplicates,
+		shuffleArray: shuffleArray,
+		removeArrayDuplicates: removeArrayDuplicates
 	};
 })();

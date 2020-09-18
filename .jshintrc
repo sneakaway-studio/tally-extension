@@ -1,23 +1,86 @@
 {
-    "indent": 1,
-    "strict": "global",
-    "unused": false,
-    "browser": true,
-    "undef": true,
-    "validthis": true,
-    "esversion": 8,
-    "globals": {
-        "$": false,
-        "Storage": false,
-        "Sound": false,
-        "tally_user": true,
-        "tally_options": true,
-        "chrome": false,
-        "prop": false,
-        "Tally": false,
-        "Skin": false,
-        "Dialogue": false,
-        "Debug": false
-    },
-    "-W117": true
+	"esversion": 8,
+	"strict": "global",
+	"devel": true,
+	"browser": true,
+	"indent": 1,
+	"undef": true,
+	"unused": false,
+	"globals": {
+
+		"$": false,
+		"chrome": false,
+		"prop": false,
+		"store": false,
+		"moment": false,
+
+
+
+
+		"T": false,
+
+		"Background": true,
+		"BackgroundInstall": true,
+		"BackgroundListener": true,
+		"BackgroundServer": true,
+
+		"Account": false,
+		"Badge": true,
+
+		"BattleAttack": true,
+		"BattleConsole": true,
+		"BattleEffect": false,
+		"BattleMath": true,
+		"BattleTest": true,
+		"Battle": true,
+
+		"Consumable": true,
+		"Core": false,
+		"Debug": true,
+		"Demo": true,
+		"Dialogue": true,
+		"Disguise": true,
+		"Effect": true,
+		"Flag": true,
+		"TallyEvents": true,
+		"Interface": true,
+		"Item": true,
+
+		"MonsterAward": false,
+		"MonsterCheck": true,
+		"Monster": true,
+
+		"Page": true,
+		"Progress": true,
+
+		"Sound": true,
+		"StatsDisplay": false,
+		"Stats": false,
+		"Skin": false,
+
+		"Tally": true,
+		"TallyData": true,
+		"TallyListeners": false,
+		"TallyMain": true,
+		"TallyStorage": true,
+		"Tracker": true,
+		"Tutorial": true,
+
+
+
+
+
+		"MonsterData": false,
+		"MonstersById": false,
+		"MonstersByTag": false,
+
+
+		"FS_Date": false,
+		"Environment": false,
+		"FS_Number": false,
+		"FS_Object": false,
+		"FS_String": false
+
+
+	}
 }
