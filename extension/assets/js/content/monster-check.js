@@ -97,8 +97,9 @@ window.MonsterCheck = (function() {
 
 			if (DEBUG) console.log(log, '[4] T.tally_tag_matches =', T.tally_tag_matches);
 
-			// once it returns, pick one from stage0 to elevate
-			handleMatch(FS_Object.randomArrayIndexFromRange(T.tally_tag_matches.s0, 0, 5));
+			if (T.tally_tag_matches.s0.length > 0)
+				// once it returns, pick one from stage0 to elevate
+				handleMatch(FS_Object.randomArrayIndexFromRange(T.tally_tag_matches.s0, 0, 5));
 
 
 		} catch (err) {
@@ -157,9 +158,12 @@ window.MonsterCheck = (function() {
 
 			// for each mid in tally_nearby_monsters
 			for (let mid in T.tally_nearby_monsters) {
-				// add the mid to the array
-				obj["s" + T.tally_nearby_monsters[mid].stage].push(Number(mid));
-				// if (DEBUG) console.log(log, '[2] mid =', mid);
+				if (T.tally_nearby_monsters.hasOwnProperty(mid)) {
+					if (!FS_Object.prop(T.tally_nearby_monsters[mid])) continue;
+					if (DEBUG) console.log(log, '[2] mid =', mid);
+					// add the mid to the array
+					obj["s" + T.tally_nearby_monsters[mid].stage].push(Number(mid));
+				}
 			}
 			// if (DEBUG) console.log(log, '[2.1] obj =', obj);
 
@@ -179,8 +183,8 @@ window.MonsterCheck = (function() {
 	async function handleMatch(mid) {
 		try {
 			let log = "👿 MonsterCheck.handleMatch()";
-			// if (DEBUG) console.log(log, '[1] mid=' + mid);
-			if (mid && !isNaN(mid) && mid > 0 && T.tally_nearby_monsters &&
+			if (DEBUG) console.log(log, '[1] mid=' + mid);
+			if (mid && mid !== 'undefined' && !isNaN(mid) && mid > 0 && T.tally_nearby_monsters &&
 				MonsterData.dataById[mid] && T.tally_nearby_monsters[mid]) {
 				if (DEBUG)
 					console.log(log, MonsterData.dataById[mid].slug, "stage=" + T.tally_nearby_monsters[mid].stage);
@@ -297,13 +301,16 @@ window.MonsterCheck = (function() {
 	 */
 	function saveFoundForServer() {
 		try {
-			for (let m in T.tally_nearby_monsters) {
-				foundStreamSummary.push({
-					mid: T.tally_nearby_monsters[m].mid,
-					level: T.tally_nearby_monsters[m].level,
-					stage: T.tally_nearby_monsters[m].stage,
-					tracker: T.tally_nearby_monsters[m].tracker.domain,
-				});
+			for (let mid in T.tally_nearby_monsters) {
+				if (T.tally_nearby_monsters.hasOwnProperty(mid)) {
+					if (!FS_Object.prop(T.tally_nearby_monsters[mid])) continue;
+					foundStreamSummary.push({
+						mid: T.tally_nearby_monsters[mid].mid,
+						level: T.tally_nearby_monsters[mid].level,
+						stage: T.tally_nearby_monsters[mid].stage,
+						tracker: T.tally_nearby_monsters[mid].tracker.domain,
+					});
+				}
 			}
 		} catch (err) {
 			console.error(err);
@@ -436,25 +443,7 @@ window.MonsterCheck = (function() {
 
 
 
-	/**
-	 *	Reset monster
-	 */
-	function reset(mid) {
-		try {
-			// reset one
-			// if (T.tally_nearby_monsters[mid])
-			// 	delete T.tally_nearby_monsters[mid];
 
-			// reset them all
-			T.tally_nearby_monsters = {};
-			TallyStorage.saveData("tally_nearby_monsters", T.tally_nearby_monsters, "👿 MonsterCheck.reset()");
-
-			// check/reset skin
-			Skin.updateFromHighestMonsterStage();
-		} catch (err) {
-			console.error(err);
-		}
-	}
 
 
 	// PUBLIC

@@ -67,6 +67,7 @@ window.Skin = (function() {
 			// loop through nearby monsters
 			for (var mid in T.tally_nearby_monsters) {
 				if (T.tally_nearby_monsters.hasOwnProperty(mid)) {
+					if (!FS_Object.prop(T.tally_nearby_monsters[mid])) continue;
 					// skin should reflect highest stage
 					highestStage = Math.max(highestStage, parseInt(T.tally_nearby_monsters[mid].stage));
 				}

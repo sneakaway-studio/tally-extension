@@ -1,6 +1,6 @@
 "use strict";
 
-window.Page = (function () {
+window.Page = (function() {
 	// PRIVATE
 	let DEBUG = Debug.ALL.Page,
 		data = getData();
@@ -13,7 +13,8 @@ window.Page = (function () {
 		try {
 			var str = "";
 			var descriptionTag = document.head.querySelector("meta[property='og:description']") ||
-				document.head.querySelector("meta[name='description']");
+				document.head.querySelector("meta[name='description']") ||
+				document.head.querySelector("meta[name='Description']"); // uppercase 
 			if (descriptionTag) str = descriptionTag.getAttribute("content");
 			return str;
 		} catch (err) {
@@ -35,7 +36,8 @@ window.Page = (function () {
 		try {
 			var str = "";
 			var keywordsTag = document.head.querySelector("meta[property='og:keywords']") ||
-				document.head.querySelector("meta[name='keywords']");
+				document.head.querySelector("meta[name='keywords']") ||
+				document.head.querySelector("meta[name='Keywords']"); // uppercase
 			if (keywordsTag) str = keywordsTag.getAttribute("content");
 			return str;
 		} catch (err) {
@@ -202,7 +204,7 @@ window.Page = (function () {
 			// don't allow if mode disabled
 			if (T.tally_options.gameMode === "disabled") return;
 
-			new MutationObserver(function (mutations) {
+			new MutationObserver(function(mutations) {
 				if (DEBUG) console.log("title changed", mutations[0].target.nodeValue);
 				restartAfterMutation("🗒 Page.addMutationObserver()");
 			}).observe(
@@ -219,7 +221,7 @@ window.Page = (function () {
 	// alternate observer, simply listens for title change
 	function addTitleChecker() {
 		try {
-			let pageTitleInterval = setInterval(function () {
+			let pageTitleInterval = setInterval(function() {
 				let title = getTitle();
 				if (title != data.title) {
 					//if (DEBUG) console.log("title changed", Page.data.title, " to: ",title);
@@ -247,7 +249,7 @@ window.Page = (function () {
 			if (DEBUG) console.log("🗒 Page.restartAfterMutation() caller = " + caller);
 
 			// refresh Page.data
-			Page.refreshData().then(function () {
+			Page.refreshData().then(function() {
 				// check for monsters again
 				MonsterCheck.check();
 				Debug.update();
