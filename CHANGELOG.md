@@ -10,6 +10,10 @@
 
 * Updates to version handling
 * Improvements to server connections
+* Improvements to stats, and stats display
+* Improves monster matching
+* New monsters!
+* Adds chill mode default
 
 ### Version 0.4.2
 

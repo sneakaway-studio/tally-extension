@@ -37,8 +37,6 @@ window.Progress = (function () {
 		// disguises
 		disguisesAwarded: 0,
 
-		onboardingChillDefault: 0,
-
 		// page progress
 		pageActionRefreshes: 0,
 		pageActionScrollDistance: 0,
@@ -86,6 +84,9 @@ window.Progress = (function () {
 		trollsDisguisesStolen: 0,
 
 		// tutorials
+		viewOnboardingChillDefault: 0,
+		viewOnboardingDashboard1: 0,
+		viewOnboardingDashboard2: 0,
 		viewOnboardingHowto1: 0,
 		viewOnboardingFaq1: 0,
 		viewTutorial1: 0,
@@ -119,6 +120,8 @@ window.Progress = (function () {
 				val = parseInt(T.tally_user.progress[name].val);
 			} else {
 				// if (DEBUG) console.log("🕹️ Progress.get() [3]" + name + " NOT FOUND");
+				// set value
+				T.tally_user.progress[name] = 0;
 				val = 0;
 			}
 			if (val === undefined) val = 0;
@@ -419,7 +422,7 @@ window.Progress = (function () {
 					// do we show notifications?
 					if (T.tally_options.showNotifications) {
 						// play onboarding tutorial
-						if (get("onboardingDashboard2") < 2) {
+						if (get("viewOnboardingDashboard2") < 2) {
 							// play onboarding tutorial
 							Tutorial.play("tutorial", "onboardingDashboard2");
 						}

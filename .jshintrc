@@ -70,7 +70,7 @@
 
 
 		"ConsumableData": false,
-
+		"DialogueData": false,
 		"MonsterData": false,
 		"MonstersById": false,
 		"MonstersByTag": false,

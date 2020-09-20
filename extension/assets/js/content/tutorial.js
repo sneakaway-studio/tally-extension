@@ -39,7 +39,7 @@ window.Tutorial = (function () {
 
 
 	/**
-	 *	Add tutorial to Dialogue and play
+	 *	Add tutorial to Dialogue and play, then save progress
 	 */
 	function play(category, index) {
 		try {
@@ -138,7 +138,9 @@ window.Tutorial = (function () {
 
 
 			else if (callback === "changeModeToChill") {
+				// save chill mode
 				T.tally_options.gameMode = "chill";
+				T.tally_options = T.returnGameModeOptions(T.tally_options);
 				TallyStorage.saveData("tally_options", T.tally_options);
 			}
 

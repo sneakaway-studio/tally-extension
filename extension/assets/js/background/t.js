@@ -1,6 +1,6 @@
 "use strict";
 
-var T = (function () {
+window.T = (function () {
 	// PRIVATE
 
 	// objects created on server, mirrored locally
@@ -38,10 +38,40 @@ var T = (function () {
 		DEBUG = true;
 
 
+	function returnGameModeOptions(options) {
+		try {
+			// chill
+			if (options.gameMode === "chill") {
+				options.showTally = true;
+				options.showClickVisuals = true;
+				options.playSounds = true;
+				options.showNotifications = false;
+			}
+			// stealth | disabled
+			else if (options.gameMode === "stealth" || options.gameMode === "disabled") {
+				options.showTally = false;
+				options.showClickVisuals = false;
+				options.playSounds = false;
+				options.showNotifications = false;
+			} else {
+				// demo | testing | full
+				options.showTally = true;
+				options.showClickVisuals = true;
+				options.playSounds = true;
+				options.showNotifications = true;
+			}
+			return options;
+		} catch (err) {
+			console.error(err);
+		}
+	}
+
+
 	// PUBLIC
 	return {
 
 		options: options,
+		returnGameModeOptions: returnGameModeOptions,
 
 		set startUpPromisesResolved (value) { startUpPromisesResolved = value; },
 		get startUpPromisesResolved () { return startUpPromisesResolved; },

@@ -3,7 +3,7 @@
 /*  ACCOUNT
  ******************************************************************************/
 
-window.Account = (function () {
+window.Account = (function() {
 	// PRIVATE
 
 	let DEBUG = Debug.ALL.Account,
@@ -38,7 +38,7 @@ window.Account = (function () {
 			// check if they have already logged in and Tally should update
 			if (Page.data.actions.onTallyWebsite)
 				if ($(".tallyFlags").length > 0 && $("#userLoggedin").length > 0)
-					Tutorial.play("tutorial","onboardingFirstLogin1");
+					Tutorial.play("tutorial", "onboardingFirstLogin1");
 
 			// only play a few times per load
 			if (++tallyLoginPrompts > 5) return;
@@ -70,7 +70,7 @@ window.Account = (function () {
 
 			// don't bother them every time
 			if (T.tally_meta.install.prompts % 2 == 0) {
-				setTimeout(function () {
+				setTimeout(function() {
 					Dialogue.showStr(returnPrompt(), "sad");
 				}, 500);
 			}
@@ -80,8 +80,6 @@ window.Account = (function () {
 			console.error(err);
 		}
 	}
-
-
 
 
 	// PUBLIC

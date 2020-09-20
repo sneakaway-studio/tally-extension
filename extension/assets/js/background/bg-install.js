@@ -242,40 +242,14 @@ window.Install = (function () {
 				showDebugger: false,
 				debuggerPosition: [0, 300]
 			};
-			obj = setOptions(obj);
+			// save options based on gameMode
+			obj = T.returnGameModeOptions(obj);
 			return obj;
 		} catch (err) {
 			console.error(err);
 		}
 	}
 
-	function setOptions(options) {
-		try {
-			// chill
-			if (options.gameMode === "chill") {
-				options.showTally = true;
-				options.showClickVisuals = true;
-				options.playSounds = true;
-				options.showNotifications = false;
-			}
-			// stealth | disabled
-			else if (options.gameMode === "stealth" || options.gameMode === "disabled") {
-				options.showTally = false;
-				options.showClickVisuals = false;
-				options.playSounds = false;
-				options.showNotifications = false;
-			} else {
-				// demo | testing | full
-				options.showTally = true;
-				options.showClickVisuals = true;
-				options.playSounds = true;
-				options.showNotifications = true;
-			}
-			return options;
-		} catch (err) {
-			console.error(err);
-		}
-	}
 
 	/**
 	 *  Create Meta object on installation
