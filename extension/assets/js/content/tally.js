@@ -340,6 +340,11 @@ window.Tally = (function () {
 						instant: true
 					});
 				}
+				else if (Progress.get("onboardingChillDefault") < 1) {
+					// change to chill
+					Tutorial.play("tutorial", "onboardingChillDefault1");
+				}
+
 
 			} else if (interaction === 'mouseleave') {
 				if (DEBUG) console.log("%c   Tally.interactionHandler()", Debug.tallyConsoleIcon, interaction);
@@ -517,6 +522,9 @@ window.Tally = (function () {
 				if (disguiseCount < 1) {
 					if (Math.random > 0.25)
 						Dialogue.showStr("We need to beat monsters to earn disguises.", "sad");
+					else if (Math.random > 0.5) {
+						Tutorial.play("tutorial","mechDisguises1");
+					}
 				} else if (disguiseCount === 1) {
 					if (Math.random > 0.25)
 						Dialogue.showStr("We only have one disguise.", "sad");
@@ -570,6 +578,14 @@ window.Tally = (function () {
 						}, {
 							addIfInProcess: false,
 							instant: false
+						});
+					}
+					else if (Math.random() < 0.3){
+						Dialogue.showData(Dialogue.getData({
+							category: "tutorial",
+							subcategory: "mechPrompt"
+						}), {
+							instant: true
 						});
 					}
 					// tell tip

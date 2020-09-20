@@ -137,6 +137,13 @@ window.Tutorial = (function () {
 			}
 
 
+			else if (callback === "changeModeToChill") {
+				T.tally_options.gameMode = "chill";
+				TallyStorage.saveData("tally_options", T.tally_options);
+			}
+
+
+
 			/*  story1
 			 ******************************************************************************/
 			else if (callback === "slideShowCatGifs") {

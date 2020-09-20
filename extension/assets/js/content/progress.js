@@ -37,6 +37,8 @@ window.Progress = (function () {
 		// disguises
 		disguisesAwarded: 0,
 
+		onboardingChillDefault: 0,
+
 		// page progress
 		pageActionRefreshes: 0,
 		pageActionScrollDistance: 0,
