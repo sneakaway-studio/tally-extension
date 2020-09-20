@@ -88,6 +88,7 @@ window.BattleMath = (function () {
 		};
 
 	function logOutcome(which, outcome, who = "", stat = 0) {
+		if (!which || !outcome) return;
 		if (!DEBUG) return;
 		console.log("🔢 BattleMath.logOutcome() attack." + which,
 			"\n --> outcome=", JSON.stringify(outcome) +
