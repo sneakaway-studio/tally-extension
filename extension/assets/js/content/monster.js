@@ -341,9 +341,6 @@ window.Monster = (function () {
 		current: function () {
 			return T.tally_nearby_monsters[currentMID];
 		},
-		saveAndPush: function (mid) {
-			return saveAndPush(mid);
-		},
 		test: test,
 		returnNewMonsterLevel: returnNewMonsterLevel
 	};

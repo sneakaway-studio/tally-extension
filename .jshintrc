@@ -47,7 +47,6 @@
 		"Interface": true,
 		"Item": true,
 
-		"MonsterAward": false,
 		"MonsterCheck": true,
 		"Monster": true,
 

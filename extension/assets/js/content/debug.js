@@ -39,7 +39,6 @@ window.Debug = (function () {
 			Item: true,
 
 			// monsters
-			MonsterAward: false,
 			MonsterCheck: true,
 			Monster: true,
 
