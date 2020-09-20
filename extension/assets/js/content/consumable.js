@@ -3,7 +3,7 @@
 /*  CONSUMABLE
  ******************************************************************************/
 
-window.Consumable = (function () {
+window.Consumable = (function() {
 	// PRIVATE
 
 	let DEBUG = Debug.ALL.Consumable,
@@ -37,13 +37,18 @@ window.Consumable = (function () {
 		try {
 			let consumable = {},
 				safety = 0;
+
+			if (DEBUG) console.log('🍪 Consumable.get() [] slug =', slug, 'type =', type);
+
 			// if slug is set
 			if (slug && slug !== "") {
 				consumable = ConsumableData.data[slug];
 			}
 			// if only type is set
 			else if (type && type !== "") {
+				// select a random consumable
 				consumable = FS_Object.randomObjProperty(ConsumableData.data);
+				// loop until the random matches the type we want
 				while (consumable.type !== type) {
 					if (++safety > 30) {
 						console.log("🧰 TallyMain SAFETY FIRST!");
@@ -53,35 +58,29 @@ window.Consumable = (function () {
 					consumable = FS_Object.randomObjProperty(ConsumableData.data);
 				}
 			}
-			// nothing set
+			// if no specific slug or type then
 			else {
-				//select a new random consumable and populate with data
+				// select a new random consumable
 				consumable = FS_Object.randomObjProperty(ConsumableData.data);
 			}
 
-			// after selecting...
-			consumable.val = Number(consumable.val);
+			// after selecting, make sure everything is a number
+			consumable.val = Number(consumable.val) || 0;
+			consumable.max = Number(consumable.max) || 0;
+			consumable.min = Number(consumable.min) || 0;
 
-			// SET STAT
+			// if stat is set to r
 			if (!consumable.stat || consumable.stat === "" || consumable.stat === "r") {
+				// select ranndom stat
 				consumable.stat = FS_Object.randomArrayIndex(statsToAffect);
 			}
-			// SET VALUE
-			if (consumable.val == 0 || consumable.val == "") {
-				if (!consumable.min) consumable.min = 0;
-				if (!consumable.max) consumable.max = 0;
 
-				safety = 0;
-				while (consumable.val == 0 || isNaN(consumable.val)) {
-					if (++safety > 30) {
-						console.log("🧰 TallyMain SAFETY FIRST!");
-						break;
-					}
-					consumable.val = FS_Number.round(FS_Number.randomFloatBetween(consumable.min, consumable.max), 4);
-				}
+			// if val is not set
+			if (consumable.val === 0 || consumable.val === "") {
+				consumable.val = FS_Number.round(FS_Number.randomFloatBetween(consumable.min, consumable.max), 4);
 			}
 
-			// if (DEBUG) console.log('🍪 Consumable.get() consumable =', consumable);
+			if (DEBUG) console.log('🍪 Consumable.get() [2] consumable =', consumable);
 
 			return consumable;
 		} catch (err) {
@@ -208,15 +207,15 @@ window.Consumable = (function () {
 				$('.tally_consumable_wrapper').append(str);
 
 				// add listeners
-				$(document).on("mouseover", "#" + id, function () {
+				$(document).on("mouseover", "#" + id, function() {
 					//if (DEBUG) console.log($(this));
 					hover($(this).attr("data-consumable"));
 				});
-				$(document).on("click", "#" + id, function () {
+				$(document).on("click", "#" + id, function() {
 					// Math.random so gif replays
 					let img = chrome.extension.getURL('assets/img/consumables/consumable-explosion.gif?' + Math.random());
 					$(this).html("<img src='" + img + "'>");
-					setTimeout(function () {
+					setTimeout(function() {
 						// remove
 						$(this).remove();
 					}, 500);
@@ -276,7 +275,7 @@ window.Consumable = (function () {
 			// save in background (and on server)
 			TallyData.queue("itemData", "consumables", consumable, "🍪 Consumables.collect()");
 			// delay then update stats
-			setTimeout(function () {
+			setTimeout(function() {
 				// update stats
 				Stats.updateFromConsumable(consumable);
 				// hide

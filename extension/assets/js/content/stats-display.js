@@ -3,7 +3,7 @@
 /*  STATS DISPLAY
  ******************************************************************************/
 
-window.StatsDisplay = (function () {
+window.StatsDisplay = (function() {
 	// PRIVATE
 	let DEBUG = Debug.ALL.StatsDisplay;
 
@@ -28,7 +28,12 @@ window.StatsDisplay = (function () {
 	/**
 	 * 	Combine stat bar polygon points
 	 */
-	function combineSVGPoints({ x = 0, y = 0, w = 0, h = 0 } = {}) {
+	function combineSVGPoints({
+		x = 0,
+		y = 0,
+		w = 0,
+		h = 0
+	} = {}) {
 		try {
 			let p1 = x + "," + y,
 				p2 = w + "," + y,
@@ -73,7 +78,7 @@ window.StatsDisplay = (function () {
 	/**
 	 * 	Return the full stats table that appears under the stats SVG
 	 */
-	function returnFullTable(who, changed = "") {
+	function returnFullTable(who, changeArr = []) {
 		try {
 			let stats = Stats.get(who),
 				str = "",
@@ -87,31 +92,24 @@ window.StatsDisplay = (function () {
 					defense: "How well you can withstand a monster's attacks. The lower your defense, the more health you will lose.",
 					evasion: "Your ability to evade a monster's attacks. They will miss if your evasion is high.",
 				};
-			// console.log("📈 StatsDisplay.returnFullTable() [1]", who, changed, str, statChangedBlinkClass);
+
+			console.log("📈 StatsDisplay.returnFullTable() [1]", who, changeArr, str, statChangedBlinkClass);
+
 			str += "<div class='tally'><table class='tally stats-table'><tbody class='tally'>";
 
-			// stats alphabetical
-
-			// for (var key in stats) {
-			// 	if (stats.hasOwnProperty(key)) {
-			// 		console.log("📈 StatsDisplay.returnFullTable() [2] loop ->", key +" => "+ stats[key]);
-			// 		statChangedBlinkClass = "";
-			// 		if (changed == key) statChangedBlinkClass = " stat-blink";
-			// 		let title = key + ": " + stats[key].val + "/" + stats[key].max;
-			// 		str += "<tr class='tally text-" + key + statChangedBlinkClass + "' title='" + title + "'>" +
-			// 			"<td class='tally'>" + key + "</td>" +
-			// 			"<td class='tally stats-number-column'>" + stats[key].val + "</td></tr>";
-			// 	}
-			// }
-
-			// stats in new order
-
+			// loop through stats in perferred order
 			for (var key in preferredStatOrder) {
 				if (preferredStatOrder.hasOwnProperty(key)) {
-					// console.log("📈 StatsDisplay.returnFullTable() [2] loop ->", key +" => "+ stats[key]);
-					statChangedBlinkClass = "";
+
 					// whether or not to blink if changed
-					if (changed == key) statChangedBlinkClass = " stat-blink";
+					if (changeArr.length > 0 && changeArr.includes(key)) {
+						statChangedBlinkClass = " stat-blink";
+					} else {
+						statChangedBlinkClass = "";
+					}
+
+					console.log("📈 StatsDisplay.returnFullTable() [2]", key + ": " + JSON.stringify(stats[key]));
+
 					// defense and attack have the same colors, a bit confusing but easier to fix with this logic than create new palette
 					if (key === "defense" || key === "attack") statClass = "";
 					// else use key name
@@ -122,9 +120,14 @@ window.StatsDisplay = (function () {
 				<tr class='tally ${statChangedBlinkClass}' title="${preferredStatOrder[key]}">
 					<td class='tally ${statClass}'>${key}</td>
 					<td class='tally stats-number-column'>
-						<span class='tally ${statClass}'>` + stats[key].val +
+						<span class='tally ${statClass}'>` +
+						// format numbers
+						numeral(stats[key].val).format('0a') +
 						`</span>/<span class='tally ${statClass}'>` +
-						stats[key].max + `</span></td>
+						// format numbers
+						numeral(stats[key].max).format('0a') +
+						`</span>
+					</td>
 				</tr>
 
 				`;
@@ -132,7 +135,9 @@ window.StatsDisplay = (function () {
 			}
 
 			str += "</tbody></table></div>";
-			// console.log("📈 StatsDisplay.returnFullTable() [3]", who, changed, str, statChangedBlinkClass);
+
+			// console.log("📈 StatsDisplay.returnFullTable() [3]", who, changeArr, str, statChangedBlinkClass);
+
 			return str;
 		} catch (err) {
 			console.error(err);
@@ -142,7 +147,7 @@ window.StatsDisplay = (function () {
 	/**
 	 * 	Update display for *who*
 	 */
-	function updateDisplay(who) {
+	function updateDisplay(who, changeArr) {
 		try {
 			// allow offline
 			if (Page.data.mode.notActive) return;
@@ -153,19 +158,23 @@ window.StatsDisplay = (function () {
 			let stats = Stats.get(who),
 				level = Stats.getLevel(who);
 
-
 			// if any problems return
-			if (level < 1) return console.log("📈 StatsDisplay.updateDisplay() ERROR -> level < 1");
-			if (stats === {}) return console.log("📈 StatsDisplay.updateDisplay() ERROR -> stats === {}");
-			if (!FS_Object.prop(T.tally_user)) return console.log("📈 StatsDisplay.updateDisplay() ERROR -> NO T.tally_user");
-			if (!FS_Object.prop(T.tally_user.score)) return console.log("📈 StatsDisplay.updateDisplay() ERROR -> NO T.tally_user.score", T.tally_user);
+			if (level < 1)
+				return console.log("📈 StatsDisplay.updateDisplay() ERROR -> level < 1");
+			if (stats === {})
+				return console.log("📈 StatsDisplay.updateDisplay() ERROR -> stats === {}");
+			if (!FS_Object.prop(T.tally_user))
+				return console.log("📈 StatsDisplay.updateDisplay() ERROR -> NO T.tally_user");
+			if (!FS_Object.prop(T.tally_user.score))
+				return console.log("📈 StatsDisplay.updateDisplay() ERROR -> NO T.tally_user.score", T.tally_user);
 
 			if (DEBUG) console.log("📈 StatsDisplay.updateDisplay() level =", level, who, "=>", JSON.stringify(stats));
 			// bars, circle, table
 			adjustStatsBar(who, "health");
 			adjustStatsBar(who, "stamina");
 			adjustStatsCircle(who, level);
-			$('.' + who + '_stats_table').html(returnFullTable(who));
+			// update stats table
+			$('.' + who + '_stats_table_wrapper').html(returnFullTable(who, changeArr));
 		} catch (err) {
 			console.error(err);
 		}
@@ -368,11 +377,11 @@ window.StatsDisplay = (function () {
 
 	// PUBLIC
 	return {
-		returnInitialSVG: function (who) {
+		returnInitialSVG: function(who) {
 			return returnInitialSVG(who);
 		},
-		returnFullTable: function (who, changed) {
-			return returnFullTable(who, changed);
+		returnFullTable: function(who, changeArr) {
+			return returnFullTable(who, changeArr);
 		},
 		// showStatsFull: function(who){
 		// 	showStatsFull(who);

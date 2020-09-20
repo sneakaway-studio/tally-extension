@@ -13,7 +13,8 @@
 		"prop": false,
 		"store": false,
 		"moment": false,
-
+		"numeral": false,
+		"anime": false,
 
 
 
@@ -68,7 +69,7 @@
 
 
 
-
+		"ConsumableData": false,
 
 		"MonsterData": false,
 		"MonstersById": false,
