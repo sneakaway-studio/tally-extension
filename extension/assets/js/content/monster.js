@@ -209,7 +209,7 @@ window.Monster = (function () {
 			if (FS_Object.prop(T.tally_nearby_monsters[monster.mid].facing) && T.tally_nearby_monsters[monster.mid].facing == "1")
 				$('.tally_monster_sprite_flip').css('transform', 'scale(-.5,.5)'); // left
 			else
-				$('.tally_monster_sprite_flip').css('transform', 'scale(.5,.5)'); // reset (right)
+				$('.tally_monster_sprite_flip').css('transform', 'scale(.5,.5)'); // (right)
 
 			// get random position
 			let preference = "";
@@ -292,47 +292,19 @@ window.Monster = (function () {
 					subcategory: "show"
 				}));
 			}
-			add();
+			display();
 		} catch (err) {
 			console.error(err);
 		}
 	}
 
-
-
-
-
-	/**
-	 *	Reset monster
-	 */
-	function reset(mid) {
-		try {
-			// reset one
-			// if (T.tally_nearby_monsters[mid])
-			// 	delete T.tally_nearby_monsters[mid];
-			// reset them all
-			T.tally_nearby_monsters = {};
-			monster = {};
-			TallyStorage.saveData("tally_nearby_monsters", T.tally_nearby_monsters, "👿 Monster.reset()");
-			// check/reset skin
-			Skin.updateFromHighestMonsterStage();
-		} catch (err) {
-			console.error(err);
-		}
-	}
-
-	function returnOnPage(state) {
-		if (state != undefined && (state === true || state === false))
-			onPage = state;
-		return onPage;
-	}
 
 
 	// PUBLIC
 	return {
-		onPage: function (state) {
-			return returnOnPage(state);
-		},
+		set onPage (value) { onPage = value; },
+		get onPage () { return onPage; },
+
 		create: function (mid) {
 			return create(mid);
 		},

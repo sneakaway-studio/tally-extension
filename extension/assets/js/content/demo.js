@@ -75,7 +75,7 @@ window.Demo = (function() {
 			// does the page have focus?
 			if (!document.hasFocus()) return;
 			console.log('🎲 Demo.restart() idleTime=' + idleTime +
-				", Monster.onPage()=" + Monster.onPage() +
+				", Monster.onPage =" + Monster.onPage +
 				", document.hasFocus()=" + document.hasFocus());
 			// reset idle time
 			idleTime = idleReset;
@@ -145,7 +145,7 @@ window.Demo = (function() {
 					}
 				}
 				// is a monster on the page?
-				else if (Monster.onPage()) {
+				else if (Monster.onPage) {
 					// scroll to it
 					if (!scrollToMonster) {
 						$('html,body').animate({
@@ -186,7 +186,7 @@ window.Demo = (function() {
 			// update text
 			$('.tally_demo_window').html(messageStr);
 			console.log('🎲 Demo.counter() idleTime=' + idleTime +
-				", Monster.onPage()=" + Monster.onPage() +
+				", Monster.onPage =" + Monster.onPage +
 				", document.hasFocus()=" + document.hasFocus());
 		} catch (err) {
 			console.error(err);

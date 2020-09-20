@@ -317,7 +317,7 @@ window.Battle = (function () {
 				"display": "none"
 			});
 			// set monster back
-			Monster.onPage(false);
+			Monster.onPage = false;
 			// stop music
 			Sound.stopMusic();
 
