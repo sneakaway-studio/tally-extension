@@ -3,7 +3,7 @@
 /*  STATS
  ******************************************************************************/
 
-window.Stats = (function () {
+window.Stats = (function() {
 	// PRIVATE
 	let DEBUG = Debug.ALL.Stats,
 		levelMultiplier = 9.5,
@@ -37,11 +37,14 @@ window.Stats = (function () {
 	 */
 	function get(who) {
 		try {
-			if (DEBUG) console.log("📋 Stats.get()", who, "allStats =", allStats, "allStats[who] =", allStats[who]);
+			if (DEBUG) console.log("📋 Stats.get() [1]", who, "allStats =", allStats, "allStats[who] =", allStats[who]);
 			// if (DEBUG) console.log("📋 Stats.get()", who, "T.tally_stats =", T.tally_stats);
 			// console.trace();
+
 			// if no stats found then initialize before returning
 			if (FS_Object.isEmpty(allStats[who])) init(who);
+
+			if (DEBUG) console.log("📋 Stats.get() [2]", who, "allStats =", allStats, "allStats[who] =", allStats[who]);
 			return allStats[who];
 		} catch (err) {
 			console.error(err);
@@ -101,8 +104,8 @@ window.Stats = (function () {
 					// if (DEBUG) console.log("📋 Stats.init() [3.2]", who, "stat =",stat);
 				}
 			}
-			if (DEBUG) console.log("📋 Stats.init() [final]", "allStats =", allStats);
-			if (DEBUG) console.log("📋 Stats.init() [final] same as above??", "T.tally_stats =", T.tally_stats); // same as above?
+			if (DEBUG) console.log("📋 Stats.init() [4]", "allStats =", allStats);
+			if (DEBUG) console.log("📋 Stats.init() [4] same as above??", "T.tally_stats =", T.tally_stats); // same as above?
 
 			if (who === "tally") save(who);
 
@@ -124,7 +127,7 @@ window.Stats = (function () {
 
 			if (DEBUG) console.log("📋 Stats.reset()", who, JSON.stringify(allStats[who]), JSON.stringify(T.tally_stats));
 
-			init("tally");
+			init(who);
 
 			// save if Tally
 			if (who == "tally") {
@@ -169,12 +172,12 @@ window.Stats = (function () {
 	 */
 	function setVal(who, stat = "", change = null) {
 		try {
-			if (DEBUG) console.log("📋 Stats.setVal()", who, stat, change);
+			if (DEBUG) console.log("📋 Stats.setVal() [1]", who, stat, change);
 			let newVal = 0,
 				normalized = 0;
 			// should we update the stat by value?
 			if (stat != "") { // && change !== 0) {
-				if (DEBUG) console.log("📋 Stats.setVal() #1", who, stat, change, allStats[who][stat]);
+				if (DEBUG) console.log("📋 Stats.setVal() [2]", who, stat, change, "current =", allStats[who][stat]);
 
 				// update value, clamp, and round
 				allStats[who][stat].val = FS_Number.clamp(FS_Number.round(change, 1), 0, allStats[who][stat].max);
@@ -186,7 +189,7 @@ window.Stats = (function () {
 				// make sure we end up w/ a number
 				if (isNaN(allStats[who][stat].normalized)) allStats[who][stat].normalized = 0;
 
-				if (DEBUG) console.log("📋 Stats.setVal() #2", who, stat, change, allStats[who][stat]);
+				if (DEBUG) console.log("📋 Stats.setVal() [3]", who, stat, change, "current =", allStats[who][stat]);
 			} else {
 				console.warn("📋 Stats.setVal() stat (string) and change (value) required!", who, stat, change);
 			}
@@ -239,53 +242,83 @@ window.Stats = (function () {
 			// don't allow if mode disabled
 			if (T.tally_options.gameMode === "disabled") return;
 
-			let who = "tally";
+			let who = "tally",
+				gainedLost = 0;
 
-			if (DEBUG) console.log("📋 Stats.updateFromConsumable() [1]", consumable);
+			// make sure everything is a number
+			consumable.max = Number(consumable.max);
+			consumable.min = Number(consumable.min);
+			consumable.val = Number(consumable.val);
 
-			// save original so we can make up or down sound
+			if (DEBUG) console.log("📋 Stats.updateFromConsumable() [1] consumable =", consumable,
+				"val =", allStats[who][consumable.stat].val,
+				"max =", allStats[who][consumable.stat].max,
+				"allStats[who] = ", allStats[who]
+			);
+
+			// EXAMPLE
+			// {
+			// 	category: "error"
+			// 	ext: ".gif"
+			// 	max: "0"
+			// 	min: "-0.2"
+			// 	name: "runtime"
+			// 	ref: "a"
+			// 	slug: "runtime-bug"
+			// 	sound: "cautious"
+			// 	stat: "evasion"
+			// 	type: "bug"
+			// 	val: -0.1765
+			// }
+
+
+
+			// save original value so we can make up or down sound
 			let originalStatVal = allStats[who][consumable.stat].val;
-			// if stat is already full
+
+
+			// if consumable has positive val, and stat is already full
 			if (consumable.val > 0 && allStats[who][consumable.stat].val >= allStats[who][consumable.stat].max) {
 				Dialogue.showData({
-					"text": "Your " + consumable.stat + " is full!",
+					"text": `Your <span class='text-${consumable.stat}'>${consumable.stat}</span> is already full!`,
 					"mood": "happy"
 				}, {
 					instant: true
 				});
 				return;
 			}
+
 			// else, add new stat
 			let change = allStats[who][consumable.stat].val * consumable.val;
 			setVal(who, consumable.stat, allStats[who][consumable.stat].val + change);
 			// save stats in background
 			save('tally');
 
-			// update stat display
-			//		$('.tally_stats_table_wrapper').html(StatsDisplay.returnFullTable("tally", consumable.stat));
-
-			StatsDisplay.updateDisplay('tally');
+			// update bars, table
+			StatsDisplay.updateDisplay('tally',[consumable.stat]);
 
 			// adjust stat bars
 			//		StatsDisplay.adjustStatsBar("tally", consumable.stat, allStats[who][consumable.stat]);
 			// test
-			if (DEBUG) console.log("📋 Stats.updateFromConsumable()", consumable, consumable.stat, allStats[who]);
+			if (DEBUG) console.log("📋 Stats.updateFromConsumable() [2]", consumable, consumable.stat, allStats[who]);
 			// if stat is full
 			if (allStats[who][consumable.stat].val >= allStats[who][consumable.stat].max) {
-				Dialogue.showStr("Your " + consumable.stat + " is full!", "happy");
+				Dialogue.showStr(`Your <span class='text-${consumable.stat}'>${consumable.stat}</span> is now full!`, "happy");
 			} else {
-				setTimeout(function () {
+				setTimeout(function() {
 					// play sound
 					if (originalStatVal < allStats[who][consumable.stat].val) {
 						Sound.playRandomJump();
-						Dialogue.showStr("Yay! You gained " + consumable.stat + "!", "happy");
+						Dialogue.showStr(`Yay! You gained <span class='text-${consumable.stat}'>` +
+							numeral(change).format('0a') + ` ${consumable.stat}</span>!`, "happy");
 					} else if (originalStatVal > allStats[who][consumable.stat].val) {
 						Sound.playRandomJumpReverse();
-						Dialogue.showStr("Dang, you lost " + consumable.stat + "!", "sad");
+						Dialogue.showStr(`Dang, you lost <span class='text-${consumable.stat}'>` +
+							(-1 * numeral(change).format('0a')) + ` ${consumable.stat}</span>!`, "sad");
 					}
-				}, 500);
+				}, 200);
 
-				setTimeout(function () {
+				setTimeout(function() {
 					$(".stat-blink").removeClass("stat-blink");
 				}, 2000);
 			}
@@ -301,13 +334,13 @@ window.Stats = (function () {
 		resetStatsAll: resetStatsAll,
 		reset: reset,
 		set: set,
-		get: function (who) {
+		get: function(who) {
 			return get(who);
 		},
-		setVal: function (who, stat, change) {
+		setVal: function(who, stat, change) {
 			return setVal(who, stat, change);
 		},
-		getLevel: function (who) {
+		getLevel: function(who) {
 			return getLevel(who);
 		},
 		updateFromConsumable: updateFromConsumable,

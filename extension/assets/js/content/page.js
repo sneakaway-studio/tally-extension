@@ -67,12 +67,12 @@ window.Page = (function () {
 				data.h1 + " " +
 				data.keywords + " " +
 				data.title;
-			tags = cleanStringReturnTagArray(str);
+			tags = FS_String.cleanStringReturnTagArray(str);
 			//if (DEBUG) console.log( "tags", JSON.stringify(tags) );
 			// delete duplicates
 			tags = FS_Object.removeArrayDuplicates(tags);
-			tags = removeStopWords(null, tags);
-			tags = removeSmallWords(tags);
+			tags = FS_String.removeStopWords(null, tags);
+			tags = FS_String.removeSmallWords(tags);
 			return tags;
 		} catch (err) {
 			console.error(err);
