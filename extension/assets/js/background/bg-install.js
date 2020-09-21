@@ -316,9 +316,6 @@ window.Install = (function () {
 		setVersion: setVersion,
 		setCurrentAPI: setCurrentAPI,
 		createOptions: createOptions,
-		setOptions: function (obj) {
-			return setOptions(obj);
-		},
 		saveLocation: saveLocation,
 		launchStartScreen: launchStartScreen
 	};
