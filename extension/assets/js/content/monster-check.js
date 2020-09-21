@@ -276,8 +276,11 @@ window.MonsterCheck = (function() {
 			// save monsters
 			TallyStorage.saveData("tally_nearby_monsters", T.tally_nearby_monsters, log);
 
-			// wait a moment to show on page; gives badges a chance to finish
-			setTimeout(function() {
+			// wait a moment to show on page
+			let waitToTellMonster = setInterval(function() {
+				// gives badges and tutorials a chance to finish
+				if (Tutorial.sequenceActive) return;
+
 				if (dialogue === "showDialogueAboutQuantity") {
 					showDialogueAboutQuantity();
 				}
@@ -287,6 +290,8 @@ window.MonsterCheck = (function() {
 				Skin.updateFromHighestMonsterStage();
 				// always show something (after the skin has updated)
 				showSilhouetteDialogue(mid, distance);
+
+				clearInterval(waitToTellMonster);
 			}, 1000);
 
 

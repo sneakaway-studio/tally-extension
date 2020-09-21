@@ -317,6 +317,7 @@ window.Tally = (function() {
 			}
 			// specific conversation when monster on page
 			else if (Monster.onPage && Math.random() > 0.5) {
+				if (Tutorial.sequenceActive) return;
 				Dialogue.showData(Dialogue.getData({
 					category: "monster",
 					subcategory: "display"
