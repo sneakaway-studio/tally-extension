@@ -38,7 +38,7 @@ window.T = (function () {
 		DEBUG = true;
 
 
-	function returnGameModeOptions(options) {
+	function updateOptionsFromGameMode(options) {
 		try {
 			// chill
 			if (options.gameMode === "chill") {
@@ -71,7 +71,7 @@ window.T = (function () {
 	return {
 
 		options: options,
-		returnGameModeOptions: returnGameModeOptions,
+		updateOptionsFromGameMode: updateOptionsFromGameMode,
 
 		set startUpPromisesResolved (value) { startUpPromisesResolved = value; },
 		get startUpPromisesResolved () { return startUpPromisesResolved; },

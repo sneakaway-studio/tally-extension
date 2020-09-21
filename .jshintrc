@@ -21,6 +21,7 @@
 		"T": false,
 
 		"Background": true,
+		"Install": true,
 		"BackgroundInstall": true,
 		"BackgroundListener": true,
 		"BackgroundServer": true,

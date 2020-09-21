@@ -110,7 +110,7 @@ window.Listener = (function() {
 				}
 				// saveOptions - called from popup
 				else if (request.action == "saveOptions") {
-					let options = Install.setOptions(request.data);
+					let options = T.updateOptionsFromGameMode(request.data);
 					store("tally_options", options); // store in localStorage
 					sendResponse({
 						"action": request.action,

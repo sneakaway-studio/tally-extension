@@ -243,7 +243,7 @@ window.Install = (function () {
 				debuggerPosition: [0, 300]
 			};
 			// save options based on gameMode
-			obj = T.returnGameModeOptions(obj);
+			obj = T.updateOptionsFromGameMode(obj);
 			return obj;
 		} catch (err) {
 			console.error(err);
