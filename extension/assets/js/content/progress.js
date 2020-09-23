@@ -84,7 +84,7 @@ window.Progress = (function () {
 		trollsDisguisesStolen: 0,
 
 		// tutorials
-		viewOnboardingChillDefault: 0,
+		viewOnboardingChillDefault1: 0,
 		viewOnboardingDashboard1: 0,
 		viewOnboardingDashboard2: 0,
 		viewOnboardingHowto1: 0,

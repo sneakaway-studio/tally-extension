@@ -351,7 +351,7 @@ window.Tally = (function() {
 						addIfInProcess: false,
 						instant: true
 					});
-				} else if (Progress.get("viewOnboardingChillDefault") < 1) {
+				} else if (Progress.get("viewOnboardingChillDefault1") < 1) {
 					// change to chill
 					Tutorial.play("tutorial", "onboardingChillDefault1");
 				}
