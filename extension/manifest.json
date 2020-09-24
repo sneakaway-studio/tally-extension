@@ -59,7 +59,6 @@
 			"assets/libs/jquery-3.2.1.min.js",
 			"assets/libs/jquery-ui.min.js",
 			"assets/libs/store2.min.js",
-			"assets/libs/jquery.growl.js",
 			"assets/libs/mousetrap.min.js",
 			"assets/libs/moment.js",
 			"assets/libs/anime.min-3.2.0.js",
@@ -131,7 +130,6 @@
 		"css": [
 			"assets/css/reset.css",
 			"assets/libs/jquery-ui.min.css",
-			"assets/libs/jquery.growl.css",
 			"assets/libs/cssshake.min.css",
 			"assets/css/styles.css",
 			"assets/css/battle.css",

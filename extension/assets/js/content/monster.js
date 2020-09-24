@@ -252,12 +252,6 @@ window.Monster = (function () {
 				Battle.start(mid);
 			});
 
-			// // temp: show growl
-			// $.growl({
-			// 	title: "LAUNCHING MONSTER!!!",
-			// 	message: "MONSTER: " + MonsterData.dataById[mid].name + " [" + mid + "] "
-			// });
-
 			// saveMonster
 			T.tally_nearby_monsters[monster.mid] = monster;
 		} catch (err) {
