@@ -130,7 +130,6 @@
 		"css": [
 			"assets/css/reset.css",
 			"assets/libs/jquery-ui.min.css",
-			"assets/libs/cssshake.min.css",
 			"assets/css/styles.css",
 			"assets/css/battle.css",
 			"assets/css/monster.css",
