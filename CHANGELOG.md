@@ -3,12 +3,13 @@
 ## Tally CHANGELOG
 
 
-## Development Versions
+## Development History
 
 
 ### Version 0.4.4
 
-* 
+* Removes unused libraries
+* Removes Google Analytics
 
 ### Version 0.4.3
 

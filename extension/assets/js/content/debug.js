@@ -114,30 +114,6 @@ window.Debug = (function () {
 
 
 
-	/**
-	 *	Send a denug message to background console
-	 */
-	function reportToAnalytics(report) {
-		try {
-			// if (DEBUG) console.log("🗜️ Debug.reportToAnalytics()", caller, str);
-			let msg = {
-				'action': 'reportToAnalytics',
-				'report': report
-			};
-
-			// stop if background disconnected
-			if (TallyStorage.backgroundConnectErrors >= 3) return;
-
-			chrome.runtime.sendMessage(msg, function (response) {
-				if (DEBUG) console.log("🗜️ Debug.reportToAnalytics() RESPONSE =", JSON.stringify(response));
-			});
-		} catch (err) {
-			TallyStorage.backgroundConnectErrors++;
-			console.error(err);
-		}
-	}
-
-
 
 
 	/**
@@ -377,7 +353,6 @@ window.Debug = (function () {
 		ALL: ALL,
 		setAll: setAll,
 		styles: styles,
-		reportToAnalytics: reportToAnalytics,
 		sendBackgroundDebugMessage: sendBackgroundDebugMessage,
 		dataReportHeader: dataReportHeader,
 		add: add,
