@@ -191,7 +191,7 @@ window.BattleMath = (function () {
 				// e.g. tally (lvl 40) vs. monster (level 5) gives the advantage to tally
 				// e.g. monster (lvl 40) vs. tally (level 5) gives the advantage to monster
 				// I just changed this to be based on ATK and DEF values rather than as a proportion of level
-				outcome.change = -(FS_Number.round((attack[affectsStat])*(selfAtk-oppDef), 3));
+				outcome.change = -(FS_Number.round((attack[affectsStat])*max((selfAtk-oppDef), 2.0), 3));
 				if (DEBUG) console.log(
 					"outcome.change [" + outcome.change + "] = -(FS_Number.round(" +
 					"opp[stat].max [" + opp[stat].max + "] *", "attack[affectsStat] [" + attack[affectsStat] + "] + " +
