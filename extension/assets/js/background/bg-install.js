@@ -55,21 +55,22 @@ window.Install = (function () {
 
 			// SPECIFIC CHECKS, WHAT IS NEW IN VERSION ...
 
+			// ADDED 0.4.3
+			if (!store("tally_tag_matches")) store("tally_tag_matches", {});
+
+
 			// IF INSTALLING 0.4.3
 			if (manifestData.version === "0.4.3") {
 				// changes in tally_meta structure
 				store("tally_meta", createMeta());
-				// new objects
-				store("tally_tag_matches", {});
 				// update user's geolocation
 				await saveLocation();
 			}
 			// IF INSTALLING ANY OTHER VERSION
 			else {
 				if (DEBUG) console.log("🔧 Install.setVersion()", _tally_meta.install.version + "!=" + manifestData.version, "!!!!! NEW VERSION");
-				// just update version
+				// update meta with version number
 				_tally_meta.install.version = manifestData.version;
-				// changes in tally_meta structure
 				store("tally_meta", _tally_meta);
 			}
 
