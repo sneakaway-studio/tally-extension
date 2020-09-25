@@ -3,7 +3,7 @@
 /*  (BATTLE) MATH
  ******************************************************************************/
 
-window.BattleMath = (function () {
+window.BattleMath = (function() {
 	// PRIVATE VARS;
 
 	let DEBUG = Debug.ALL.BattleMath,
@@ -118,10 +118,10 @@ window.BattleMath = (function () {
 				attackOutcomes = [], // track the outcome(s) of the attack to log them
 				outcome = {}; // default outcome
 
-			if (selfStr == "monster"){
+			if (selfStr == "monster") {
 				selfLevel = Monster.current().level;
 				oppLevel = T.tally_user.level;
-			} else if (selfStr == "tally"){
+			} else if (selfStr == "tally") {
 				selfLevel = T.tally_user.level;
 				oppLevel = Monster.current().level;
 			}
@@ -144,8 +144,8 @@ window.BattleMath = (function () {
 
 			// if not a defense, check to see if there is a miss
 			if (attack.type !== "defense" && !didHit(attack, self, opp)) {
-				// two tally misses total
-				if (self == "tally" && ++tallyMisses < 2)
+				// allow two tally misses total
+				if (selfStr == "tally" && ++tallyMisses < 2)
 					return "missed";
 				else
 					return "missed";
@@ -187,11 +187,18 @@ window.BattleMath = (function () {
 				stat = "health";
 				affectsStat = "oppHealth";
 				outcome = outcomeData[affectsStat];
-				// change = (max opp stat * the normalized attack stat) + (self level * the normalized attack stat)
-				// e.g. tally (lvl 40) vs. monster (level 5) gives the advantage to tally
-				// e.g. monster (lvl 40) vs. tally (level 5) gives the advantage to monster
+
+				// original
+				// change = (max opp stat * the normalized attack stat) 
+				// e.g. tally (lvl24) v. monster (lvl3) = opp[stat].max (26) * ttack[affectsStat] (0.15) = -3.9 = advantage tally
+				outcome.change = -(FS_Number.round((opp[stat].max * attack[affectsStat]), 3));
+
+
+				// Daniel
 				// I just changed this to be based on ATK and DEF values rather than as a proportion of level
-				outcome.change = -(FS_Number.round((1+attack[affectsStat])*Math.max((self["attack"]-opp["defense"]), 2.0), 3));
+				// outcome.change = -(FS_Number.round((1 + attack[affectsStat]) * Math.max((self.attack.val - opp.defense.val), 2.0), 3));
+
+
 				if (DEBUG) console.log(
 					"outcome.change [" + outcome.change + "] = -(FS_Number.round(" +
 					"opp[stat].max [" + opp[stat].max + "] *", "attack[affectsStat] [" + attack[affectsStat] + "] + " +
@@ -365,7 +372,7 @@ window.BattleMath = (function () {
 
 	// PUBLIC
 	return {
-		returnAttackOutcomes: function (attack, selfStr, oppStr) {
+		returnAttackOutcomes: function(attack, selfStr, oppStr) {
 			return returnAttackOutcomes(attack, selfStr, oppStr);
 		}
 	};
