@@ -351,7 +351,7 @@ window.Tally = (function() {
 						addIfInProcess: false,
 						instant: true
 					});
-				} else if (Progress.get("viewOnboardingChillDefault1") < 1) {
+				} else if (T.tally_options.gameMode !== "chill" && Progress.get("viewOnboardingChillDefault1") < 1) {
 					// change to chill
 					Tutorial.play("tutorial", "onboardingChillDefault1");
 				}
@@ -569,7 +569,7 @@ window.Tally = (function() {
 						Progress.update("toldOptions", 1, "+");
 					}
 					// tell options chill
-					else if (Math.random() > 0.3 && Progress.get("toldOptionsChill") < 3) {
+					else if (T.tally_options.gameMode !== "chill" && Math.random() > 0.3 && Progress.get("toldOptionsChill") < 3) {
 						// tell them a tip
 						Dialogue.showData(Dialogue.getData({
 							category: "random",

@@ -3,12 +3,15 @@
 ## Tally CHANGELOG
 
 
-## Development Versions
+## Development History
 
 
 ### Version 0.4.4
 
-* 
+* Adds error check for chill notification
+* Removes unused libraries
+* Removes Google Analytics
+* New monsters!
 
 ### Version 0.4.3
 

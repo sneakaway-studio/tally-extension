@@ -56,39 +56,11 @@ function saveAndClose() {
 
 
 
-/**
- *	Send a denug message to background console
- */
-function reportToAnalytics(report) {
-	try {
-		// console.log("🗜️ Debug.reportToAnalytics()", caller, str);
-		let msg = {
-			'action': 'reportToAnalytics',
-			'report': report
-		};
-		chrome.runtime.sendMessage(msg, function (response) {
-			console.log("🗜️ Debug.reportToAnalytics() RESPONSE =", JSON.stringify(response));
-		});
-	} catch (err) {
-		console.error(err);
-	}
-}
-
-
-
 
 
 // if user hasn't logged in then show login only
 function init() {
 	try {
-		// send page report
-		reportToAnalytics({
-			type: "event",
-			cat: "ui",
-			action: "popup",
-			label: "",
-			val: 1
-		});
 
 		// show tally image
 		$('.container').css({

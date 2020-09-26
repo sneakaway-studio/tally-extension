@@ -27,9 +27,8 @@
 			"assets/js/content/debug.js",
 
 			"assets/libs/jquery-3.2.1.min.js",
-			"assets/libs/store2.min.js",
-			"assets/libs/moment.js",
-			"assets/libs/hot-reload.js",
+			"assets/libs/store2-2.12.0.min.js",
+			"assets/libs/moment-2.29.0.js",
 
 			"assets/data/game-data.js",
 			"assets/data/monsters-by-tag.js",
@@ -58,10 +57,9 @@
 
 			"assets/libs/jquery-3.2.1.min.js",
 			"assets/libs/jquery-ui.min.js",
-			"assets/libs/store2.min.js",
-			"assets/libs/jquery.growl.js",
+			"assets/libs/store2-2.12.0.min.js",
 			"assets/libs/mousetrap.min.js",
-			"assets/libs/moment.js",
+			"assets/libs/moment-2.29.0.js",
 			"assets/libs/anime.min-3.2.0.js",
 			"assets/libs/numeral-2.0.6.min.js",
 
@@ -131,8 +129,6 @@
 		"css": [
 			"assets/css/reset.css",
 			"assets/libs/jquery-ui.min.css",
-			"assets/libs/jquery.growl.css",
-			"assets/libs/cssshake.min.css",
 			"assets/css/styles.css",
 			"assets/css/battle.css",
 			"assets/css/monster.css",
@@ -145,6 +141,7 @@
 		"http://localhost/*",
 		"http://127.0.0.1/*",
 		"https://127.0.0.1/*",
+
 		"https://tallysavestheinternet.com/*",
 		"https://*.tallysavestheinternet.com/*",
 

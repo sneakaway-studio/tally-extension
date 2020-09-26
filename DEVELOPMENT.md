@@ -83,3 +83,21 @@ General information and references for cross-browser extension development
 * [Porting a Google Chrome extension](https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/Porting_a_Google_Chrome_extension)
 * [Mozilla > Chrome incompatibilities](https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/Chrome_incompatibilities)
 * [Mozilla > Browser support for JavaScript APIs](https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/Browser_support_for_JavaScript_APIs)
+
+
+
+## Libraries used in Tally Saves the Internet
+
+Links to official versions of our libraries (this is needed for Firefox Addon review)
+
+```
+https://github.com/juliangarnier/anime/blob/3.2.0/lib/anime.min.js
+https://github.com/jquery/jquery/blob/3.2.1/build/release/dist.js
+https://jqueryui.com/download/all/
+https://github.com/moment/moment/blob/2.29.0/moment.js
+https://github.com/ccampbell/mousetrap/blob/1.6.2/mousetrap.min.js
+https://github.com/adamwdraper/Numeral-js/blob/2.0.6/numeral.js
+https://github.com/nbubna/store/blob/2.12.0/dist/store2.min.js
+
+
+```
