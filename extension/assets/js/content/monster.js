@@ -1,6 +1,6 @@
 "use strict";
 
-window.Monster = (function () {
+window.Monster = (function() {
 
 	/**
 	 *	1. MonsterCheck determines which monsters are nearby and calls Monster.create(mid)
@@ -110,14 +110,20 @@ window.Monster = (function () {
 			// if user has already beaten this monster
 			if (T.tally_user.monsters[mid]) {
 				// base monster level on previous highest level for this monster
-				level = T.tally_user.monsters[mid].level +
+				level = Math.ceil(
+					(T.tally_user.monsters[mid].level * 0.2) +
 					FS_Number.randomIntBetween(
-						-Math.round(T.tally_user.monsters[mid].level * factor),
-						Math.round(T.tally_user.monsters[mid].level * (factor * 1.5)) // lean high
-					);
+						-Math.round(T.tally_user.monsters[mid].level * 0.2),
+						Math.round(T.tally_user.monsters[mid].level * 0.2)
+					) +
+					(userLevel * 0.5)
+				);
 			} else {
 				// first time
-				level = FS_Number.randomIntBetween(1,5);
+				// level = FS_Number.randomIntBetween(1, 5);
+
+				// still start low, but increase with player level
+				level = Math.ceil (3 + FS_Number.randomIntBetween(-2, 2) + (userLevel * 0.15));
 			}
 
 
@@ -150,7 +156,7 @@ window.Monster = (function () {
 			}
 
 			// make sure everything has loaded before running
-			setTimeout(function () {
+			setTimeout(function() {
 				// set currentMID
 				currentMID = mid;
 				// reset / create new stats for monster
@@ -231,7 +237,7 @@ window.Monster = (function () {
 			$('.tally_monster_sprite_container').attr('data-mid', monster.mid);
 
 			// add listeners
-			$(document).on("mouseover", ".tally_monster_sprite_container", function () {
+			$(document).on("mouseover", ".tally_monster_sprite_container", function() {
 				let mid = Number($(this).attr('data-mid'));
 				//if (DEBUG) console.log(mid);
 				// do we show notifications?
@@ -245,7 +251,7 @@ window.Monster = (function () {
 					});
 				}
 			});
-			$(document).on("click", ".tally_monster_sprite_container", function () {
+			$(document).on("click", ".tally_monster_sprite_container", function() {
 				let mid = Number($(this).attr('data-mid'));
 				//console.log(mid);
 				// launch battle
@@ -296,15 +302,19 @@ window.Monster = (function () {
 
 	// PUBLIC
 	return {
-		set onPage (value) { onPage = value; },
-		get onPage () { return onPage; },
+		set onPage(value) {
+			onPage = value;
+		},
+		get onPage() {
+			return onPage;
+		},
 
-		create: function (mid) {
+		create: function(mid) {
 			return create(mid);
 		},
 		showOnPage: showOnPage,
 		currentMID: currentMID,
-		current: function () {
+		current: function() {
 			return T.tally_nearby_monsters[currentMID];
 		},
 		test: test,
