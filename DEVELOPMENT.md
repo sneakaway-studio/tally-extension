@@ -96,7 +96,8 @@ https://github.com/jquery/jquery/blob/3.2.1/build/release/dist.js
 https://jqueryui.com/download/all/
 https://github.com/moment/moment/blob/2.29.0/moment.js
 https://github.com/ccampbell/mousetrap/blob/1.6.2/mousetrap.min.js
-
+https://github.com/adamwdraper/Numeral-js/blob/2.0.6/numeral.js
+https://github.com/nbubna/store/blob/2.12.0/dist/store2.min.js
 
 
 ```
