@@ -189,9 +189,15 @@ window.BattleMath = (function() {
 				outcome = outcomeData[affectsStat];
 
 				// original
-				// change = (max opp stat * the normalized attack stat) 
-				// e.g. tally (lvl24) v. monster (lvl3) = opp[stat].max (26) * ttack[affectsStat] (0.15) = -3.9 = advantage tally
+				// change = (max opp stat * the normalized attack stat)
 				outcome.change = -(FS_Number.round((opp[stat].max * attack[affectsStat]), 3));
+				// e.g. tally (lvl24) v. monster (lvl3),
+				// change = -(opp[stat].max (26) * attack[affectsStat] (0.15)) = -3.9
+				// change = -(opp[stat].max (26) * attack[affectsStat] (0.15) * (24 - 23 * .1) = .1) = -4 (not much change)
+				// change = -(opp[stat].max (26) * attack[affectsStat] (0.15) * (24 - 3 * .1) = 2.1) = -8.19 (big change)
+				// change = -(opp[stat].max (4) * attack[affectsStat] (0.15) * (3 - 24 * .1) = -1.26) = -8.19 (big change)
+
+// outcome.change = -(FS_Number.round((opp[stat].max * attack[affectsStat]) * Math.max(((selfLevel - oppLevel) * 0.1), 0.1), 3));
 
 
 				// Daniel
