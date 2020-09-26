@@ -29,7 +29,6 @@
 			"assets/libs/jquery-3.2.1.min.js",
 			"assets/libs/store2.min.js",
 			"assets/libs/moment.js",
-			"assets/libs/hot-reload.js",
 
 			"assets/data/game-data.js",
 			"assets/data/monsters-by-tag.js",
@@ -142,7 +141,7 @@
 		"http://localhost/*",
 		"http://127.0.0.1/*",
 		"https://127.0.0.1/*",
-		
+
 		"https://tallysavestheinternet.com/*",
 		"https://*.tallysavestheinternet.com/*",
 

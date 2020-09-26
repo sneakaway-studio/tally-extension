@@ -32,8 +32,8 @@ window.T = (function () {
 			},
 			// true = development, false = production
 			localhost: false, // change to false to quickly shift to production server
-			hotreload: false,
-			debugging: false 
+			// hotreload: false,
+			debugging: false
 		},
 		DEBUG = true;
 
