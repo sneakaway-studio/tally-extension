@@ -93,7 +93,7 @@ window.StatsDisplay = (function() {
 					evasion: "Your ability to evade a monster's attacks. They will miss if your evasion is high.",
 				};
 
-			console.log("📈 StatsDisplay.returnFullTable() [1]", who, changeArr, str, statChangedBlinkClass);
+			if (DEBUG) console.log("📈 StatsDisplay.returnFullTable() [1]", who, changeArr, str, statChangedBlinkClass);
 
 			str += "<div class='tally'><table class='tally stats-table'><tbody class='tally'>";
 
@@ -108,7 +108,7 @@ window.StatsDisplay = (function() {
 						statChangedBlinkClass = "";
 					}
 
-					console.log("📈 StatsDisplay.returnFullTable() [2]", key + ": " + JSON.stringify(stats[key]));
+					if (DEBUG) console.log("📈 StatsDisplay.returnFullTable() [2]", key + ": " + JSON.stringify(stats[key]));
 
 					// defense and attack have the same colors, a bit confusing but easier to fix with this logic than create new palette
 					if (key === "defense" || key === "attack") statClass = "";
@@ -136,7 +136,7 @@ window.StatsDisplay = (function() {
 
 			str += "</tbody></table></div>";
 
-			// console.log("📈 StatsDisplay.returnFullTable() [3]", who, changeArr, str, statChangedBlinkClass);
+			// if (DEBUG) console.log("📈 StatsDisplay.returnFullTable() [3]", who, changeArr, str, statChangedBlinkClass);
 
 			return str;
 		} catch (err) {
