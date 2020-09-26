@@ -28,7 +28,7 @@
 
 			"assets/libs/jquery-3.2.1.min.js",
 			"assets/libs/store2.min.js",
-			"assets/libs/moment.js",
+			"assets/libs/moment-2.29.0.js",
 
 			"assets/data/game-data.js",
 			"assets/data/monsters-by-tag.js",
@@ -59,7 +59,7 @@
 			"assets/libs/jquery-ui.min.js",
 			"assets/libs/store2.min.js",
 			"assets/libs/mousetrap.min.js",
-			"assets/libs/moment.js",
+			"assets/libs/moment-2.29.0.js",
 			"assets/libs/anime.min-3.2.0.js",
 			"assets/libs/numeral-2.0.6.min.js",
 

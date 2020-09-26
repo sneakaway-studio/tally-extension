@@ -93,6 +93,8 @@ Links to official versions of our libraries (this is needed for Firefox Addon re
 ```
 https://github.com/juliangarnier/anime/blob/3.2.0/lib/anime.min.js
 https://github.com/jquery/jquery/blob/3.2.1/build/release/dist.js
+https://jqueryui.com/download/all/
+https://github.com/moment/moment/blob/2.29.0/moment.js
 https://github.com/ccampbell/mousetrap/blob/1.6.2/mousetrap.min.js
 
 
