@@ -78,7 +78,7 @@
 }
 .tally_stats_table_wrapper, .monster_stats_table_wrapper {
     font: 12px/16px "Monaco", "Andale Mono", "Courier New", sans-serif !important;
-    display: none;  /* hide by default */
+    display: block;  /* hide by default */
     position: absolute;
     z-index: 2147483630;
     width: 145px;

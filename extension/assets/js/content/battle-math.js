@@ -190,7 +190,8 @@ window.BattleMath = (function() {
 
 				// original
 				// change = (max opp stat * the normalized attack stat)
-				outcome.change = -(FS_Number.round((opp[stat].max * attack[affectsStat]), 3));
+				outcome.change = -(FS_Number.round((self.attack.val * (opp[stat].max/(opp[stat].max+opp.defense.val)) * (.2+attack[affectsStat])), 1));
+				//(1+attack[affectsStat])
 				// e.g. tally (lvl24) v. monster (lvl3),
 				// change = -(opp[stat].max (26) * attack[affectsStat] (0.15)) = -3.9
 				// change = -(opp[stat].max (26) * attack[affectsStat] (0.15) * (24 - 23 * .1) = .1) = -4 (not much change)
@@ -238,7 +239,7 @@ window.BattleMath = (function() {
 				stat = "attack";
 				affectsStat = "oppAtk";
 				outcome = outcomeData[affectsStat];
-				outcome.change = -(FS_Number.round((opp[stat].max * attack[affectsStat]), 3));
+				outcome.change = -(FS_Number.round((opp[stat].max * attack[affectsStat]), 1));
 				opp[stat].val = Stats.setVal(oppStr, outcome.stat, opp[stat].val + outcome.change);
 				attackOutcomes.push(outcome);
 				logOutcome(affectsStat, outcome, "opp", opp);
@@ -262,7 +263,7 @@ window.BattleMath = (function() {
 				stat = "accuracy";
 				affectsStat = "oppAcc";
 				outcome = outcomeData[affectsStat];
-				outcome.change = -(FS_Number.round((opp[stat].max * attack[affectsStat]), 3));
+				outcome.change = -(FS_Number.round((opp[stat].max * attack[affectsStat]), 1));
 				opp[stat].val = Stats.setVal(oppStr, outcome.stat, opp[stat].val + outcome.change);
 				attackOutcomes.push(outcome);
 				logOutcome(affectsStat, outcome, "opp", opp);
@@ -286,7 +287,7 @@ window.BattleMath = (function() {
 				stat = "evasion";
 				affectsStat = "oppEva";
 				outcome = outcomeData[affectsStat];
-				outcome.change = -(FS_Number.round((opp[stat].max * attack[affectsStat]), 3));
+				outcome.change = -(FS_Number.round((opp[stat].max * attack[affectsStat]), 1));
 				opp[stat].val = Stats.setVal(oppStr, outcome.stat, opp[stat].val + outcome.change);
 				attackOutcomes.push(outcome);
 				logOutcome(affectsStat, outcome, "opp", opp);
@@ -310,7 +311,7 @@ window.BattleMath = (function() {
 				stat = "defense";
 				affectsStat = "oppDef";
 				outcome = outcomeData[affectsStat];
-				outcome.change = -(FS_Number.round((opp[stat].max * attack[affectsStat]), 3));
+				outcome.change = -(FS_Number.round((opp[stat].max * attack[affectsStat]), 1));
 				opp[stat].val = Stats.setVal(oppStr, outcome.stat, opp[stat].val + outcome.change);
 				attackOutcomes.push(outcome);
 				logOutcome(affectsStat, outcome, "opp", opp);
