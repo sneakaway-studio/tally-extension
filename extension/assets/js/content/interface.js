@@ -88,10 +88,10 @@ $(function() {
 	this.fullScreenMode = document.fullScreen || document.mozFullScreen || document.webkitIsFullScreen;
 	$(document).on('mozfullscreenchange webkitfullscreenchange fullscreenchange', function() {
 		try {
-			if (DEBUG) console.log("🖥️ Interface -> show/hide Tally in fullscreen mode");
+			// console.log("🖥️ Interface -> show/hide Tally in fullscreen mode");
 
 			this.fullScreenMode = !this.fullScreenMode;
-			console.log("this.fullScreenMode",this.fullScreenMode);
+			// console.log("this.fullScreenMode",this.fullScreenMode);
 
 	        if (this.fullScreenMode == true){
 	            $("#tally_wrapper").hide();
