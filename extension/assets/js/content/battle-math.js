@@ -177,7 +177,7 @@ window.BattleMath = (function() {
 				stat = "health";
 				affectsStat = "selfHealth";
 				outcome = outcomeData[affectsStat]; // get data
-				outcome.change = FS_Number.round(self[stat].max * attack[affectsStat], 1); // get change
+				outcome.change = FS_Number.round(self[stat].max * attack[affectsStat], 0); // get change
 				self[stat].val = Stats.setVal(selfStr, outcome.stat, self[stat].val + outcome.change); // set new val
 				attackOutcomes.push(outcome); // store outcome
 				logOutcome(affectsStat, outcome, "self", self); // log
@@ -190,7 +190,7 @@ window.BattleMath = (function() {
 
 				// original
 				// change = (max opp stat * the normalized attack stat)
-				outcome.change = -(FS_Number.round((self.attack.val * (opp[stat].max/(opp[stat].max+opp.defense.val)) * (.2+attack[affectsStat])), 1));
+				outcome.change = -(FS_Number.round((self.attack.val * (opp[stat].max/(opp[stat].max+opp.defense.val)) * (.2+attack[affectsStat])), 0));
 				//(1+attack[affectsStat])
 				// e.g. tally (lvl24) v. monster (lvl3),
 				// change = -(opp[stat].max (26) * attack[affectsStat] (0.15)) = -3.9
@@ -228,7 +228,7 @@ window.BattleMath = (function() {
 				stat = "attack";
 				affectsStat = "selfAtk";
 				outcome = outcomeData[affectsStat];
-				outcome.change = FS_Number.round(self[stat].max * attack[affectsStat], 1);
+				outcome.change = FS_Number.round(self[stat].max * attack[affectsStat], 0);
 				//if (outcome.change != 0)
 				self[stat].val = Stats.setVal(selfStr, outcome.stat, self[stat].val + outcome.change);
 				attackOutcomes.push(outcome);
@@ -239,7 +239,7 @@ window.BattleMath = (function() {
 				stat = "attack";
 				affectsStat = "oppAtk";
 				outcome = outcomeData[affectsStat];
-				outcome.change = -(FS_Number.round((opp[stat].max * attack[affectsStat]), 1));
+				outcome.change = -(FS_Number.round((opp[stat].max * attack[affectsStat]) * (self.attack.val/opp.defense.val), 0));
 				opp[stat].val = Stats.setVal(oppStr, outcome.stat, opp[stat].val + outcome.change);
 				attackOutcomes.push(outcome);
 				logOutcome(affectsStat, outcome, "opp", opp);
@@ -253,7 +253,7 @@ window.BattleMath = (function() {
 				stat = "accuracy";
 				affectsStat = "selfAcc";
 				outcome = outcomeData[affectsStat];
-				outcome.change = FS_Number.round(self[stat].max * attack[affectsStat], 1);
+				outcome.change = FS_Number.round(self[stat].max * attack[affectsStat], 0);
 				self[stat].val = Stats.setVal(selfStr, outcome.stat, self[stat].val + outcome.change);
 				attackOutcomes.push(outcome);
 				logOutcome(affectsStat, outcome, "self", self);
@@ -263,7 +263,7 @@ window.BattleMath = (function() {
 				stat = "accuracy";
 				affectsStat = "oppAcc";
 				outcome = outcomeData[affectsStat];
-				outcome.change = -(FS_Number.round((opp[stat].max * attack[affectsStat]), 1));
+				outcome.change = -(FS_Number.round((opp[stat].max * attack[affectsStat]) * (self.attack.val/opp.defense.val), 0));
 				opp[stat].val = Stats.setVal(oppStr, outcome.stat, opp[stat].val + outcome.change);
 				attackOutcomes.push(outcome);
 				logOutcome(affectsStat, outcome, "opp", opp);
@@ -277,7 +277,7 @@ window.BattleMath = (function() {
 				stat = "evasion";
 				affectsStat = "selfEva";
 				outcome = outcomeData[affectsStat];
-				outcome.change = FS_Number.round(self[stat].max * attack[affectsStat], 1);
+				outcome.change = FS_Number.round(self[stat].max * attack[affectsStat], 0);
 				self[stat].val = Stats.setVal(selfStr, outcome.stat, self[stat].val + outcome.change);
 				attackOutcomes.push(outcome);
 				logOutcome(affectsStat, outcome, "self", self);
@@ -287,7 +287,7 @@ window.BattleMath = (function() {
 				stat = "evasion";
 				affectsStat = "oppEva";
 				outcome = outcomeData[affectsStat];
-				outcome.change = -(FS_Number.round((opp[stat].max * attack[affectsStat]), 1));
+				outcome.change = -(FS_Number.round((opp[stat].max * attack[affectsStat]) * (self.attack.val/opp.defense.val), 0));
 				opp[stat].val = Stats.setVal(oppStr, outcome.stat, opp[stat].val + outcome.change);
 				attackOutcomes.push(outcome);
 				logOutcome(affectsStat, outcome, "opp", opp);
@@ -301,7 +301,7 @@ window.BattleMath = (function() {
 				stat = "defense";
 				affectsStat = "selfDef";
 				outcome = outcomeData[affectsStat];
-				outcome.change = FS_Number.round(self[stat].max * attack[affectsStat], 1);
+				outcome.change = FS_Number.round(self[stat].max * attack[affectsStat], 0);
 				self[stat].val = Stats.setVal(selfStr, outcome.stat, self[stat].val + outcome.change);
 				attackOutcomes.push(outcome);
 				logOutcome(affectsStat, outcome, "self", self);
@@ -311,7 +311,7 @@ window.BattleMath = (function() {
 				stat = "defense";
 				affectsStat = "oppDef";
 				outcome = outcomeData[affectsStat];
-				outcome.change = -(FS_Number.round((opp[stat].max * attack[affectsStat]), 1));
+				outcome.change = -(FS_Number.round((opp[stat].max * attack[affectsStat]) * (self.attack.val/opp.defense.val), 0));
 				opp[stat].val = Stats.setVal(oppStr, outcome.stat, opp[stat].val + outcome.change);
 				attackOutcomes.push(outcome);
 				logOutcome(affectsStat, outcome, "opp", opp);
@@ -358,7 +358,7 @@ window.BattleMath = (function() {
 		try {
 			if (DEBUG) console.log("🔢 BattleMath.didHit() [1]", "attack =", attack, "self =", self, "opp =", opp);
 			if (!attack.accuracy) attack.accuracy = 1; // in case problem saving attack data
-			let hitChance = attack.accuracy * (self.accuracy.val / opp.evasion.val);
+			let hitChance = Math.min(attack.accuracy * (self.accuracy.val / opp.evasion.val), 0.95);
 			let r = Math.random();
 			if (isNaN(hitChance)) hitChance = 0.9; // default to hit
 
