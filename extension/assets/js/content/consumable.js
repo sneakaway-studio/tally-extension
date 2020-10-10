@@ -51,7 +51,7 @@ window.Consumable = (function() {
 				// loop until the random matches the type we want
 				while (consumable.type !== type) {
 					if (++safety > 30) {
-						console.log("🧰 TallyMain SAFETY FIRST!");
+						console.log("🍪 Consumable.get() SAFETY FIRST!");
 						break;
 					}
 					// try again
@@ -75,12 +75,19 @@ window.Consumable = (function() {
 				consumable.stat = FS_Object.randomArrayIndex(statsToAffect);
 			}
 
-			// if val is not set
-			if (consumable.val === 0 || consumable.val === "") {
+			// reset safety
+			safety = 0;
+			// if val is not set or if it is too close to zero
+			while (consumable.val === 0 || FS_Number.round(consumable.val, 2) === 0)  {
 				consumable.val = FS_Number.round(FS_Number.randomFloatBetween(consumable.min, consumable.max), 4);
+				// if (DEBUG) console.log('🍪 Consumable.get() [2] consumable =', consumable);
+				if (++safety > 30) {
+					console.log("🍪 Consumable.get()  SAFETY FIRST!");
+					break;
+				}
 			}
 
-			if (DEBUG) console.log('🍪 Consumable.get() [2] consumable =', consumable);
+			if (DEBUG) console.log('🍪 Consumable.get() [3] consumable =', consumable);
 
 			return consumable;
 		} catch (err) {
