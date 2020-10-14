@@ -19,9 +19,9 @@ window.FS_String = (function() {
 				console.error(err);
 			}
 		},
-		isVowel: function(x) {
+		containsVowel: function(str) {
 			try {
-				return /[aeiouAEIOU]/.test(x);
+				return /[aeiouAEIOU]/.test(str);
 			} catch (err) {
 				console.error(err);
 			}

@@ -536,7 +536,7 @@ window.Dialogue = (function () {
 				// get only monster name first
 				replace = MonsterData.dataById[Monster.current().mid].name + " monster";
 				// append an
-				if (FS_String.isVowel(replace[0])) replace = "an " + replace;
+				if (FS_String.containsVowel(replace[0])) replace = "an " + replace;
 				// else append "a"
 				else replace = "a " + replace;
 			}
