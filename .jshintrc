@@ -24,7 +24,7 @@
 		"Install": true,
 		"BackgroundInstall": true,
 		"BackgroundListener": true,
-		"BackgroundServer": true,
+		"Server": true,
 
 		"Account": false,
 		"Badge": true,
@@ -69,12 +69,14 @@
 
 
 
+		"AttackData": false,
+		"BadgeData": false,
 		"ConsumableData": false,
 		"DialogueData": false,
 		"MonsterData": false,
 		"MonstersById": false,
 		"MonstersByTag": false,
-
+		"GameData": false,
 
 		"FS_Date": false,
 		"Environment": false,
