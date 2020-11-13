@@ -168,6 +168,8 @@ window.BattleAttack = (function() {
 				// 4. loop through attack outcomes and add to attackOutcomeLog
 				for (let i = 0; i < outcomeDetails.outcomes.length; i++) {
 					/*jshint loopfunc: true */
+					// round value down for display
+					outcomeDetails.outcomes[i].change = FS_Number.round(outcomeDetails.outcomes[i].change, 0)
 
 					if (DEBUG) console.log("💥 BattleAttack.handleAttackOutcomes() -> outcomeDetails.outcomes[i]=", outcomeDetails.outcomes[i]);
 
