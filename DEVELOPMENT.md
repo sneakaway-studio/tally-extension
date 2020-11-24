@@ -2,7 +2,7 @@
 
 
 
-## Development
+## Browser Extension Development
 
 General information and references for cross-browser extension development
 
@@ -43,39 +43,14 @@ General information and references for cross-browser extension development
 * Brave - uses Chrome Web Store version
 
 
+
+## Notable Example Extensions
+
+- [Add-Art](https://github.com/coreytegeler/add-art-chrome/)
+
+
+
 ## Platform References & Notes
-
-
-
-### Chrome Browser
-
-* [Download](https://www.google.com/chrome/)
-
-
-### Chromium Browser
-
-* [Download](https://www.chromium.org/getting-involved/download-chromium)
-
-
-
-### Firefox Browser
-
-* [Addons Store](https://addons.mozilla.org/en-US/firefox/)
-* [Developer Hub](https://addons.mozilla.org/en-US/developers/)
-* [Documentation](https://extensionworkshop.com/)
-
-
-### Opera Browser
-
-* Based on Chromium browser
-* [Opera Store](https://addons.opera.com/en/extensions/)
-* [Developer portal](https://addons.opera.com/developer/)
-
-
-### Brave Browser
-
-* [Based on Chromium browser](https://support.brave.com/hc/en-us/articles/360017909112-How-can-I-add-extensions-to-Brave- )
-
 
 
 ### Cross-browser compatibility
@@ -86,7 +61,19 @@ General information and references for cross-browser extension development
 
 
 
-## Libraries used in Tally Saves the Internet
+### Browsers 
+
+- Chrome (Chromium) - [download](https://www.google.com/chrome/)
+- Chromium - [download](https://www.chromium.org/getting-involved/download-chromium)
+- Firefox - [Addons Store](https://addons.mozilla.org/en-US/firefox/), [Developer Hub](https://addons.mozilla.org/en-US/developers/), [Documentation](https://extensionworkshop.com/)
+- Opera (Chromium) - [Opera Store](https://addons.opera.com/en/extensions/), [Developer portal](https://addons.opera.com/developer/)
+- Brave ([Chromium](https://support.brave.com/hc/en-us/articles/360017909112-How-can-I-add-extensions-to-Brave-))
+
+
+
+
+
+## Libraries used in Tally
 
 Links to official versions of our libraries (this is needed for Firefox Addon review)
 
