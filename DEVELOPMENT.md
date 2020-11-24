@@ -46,9 +46,9 @@ General information and references for cross-browser extension development
 
 ## Notable Example Extensions
 
-- [Add-Art](https://github.com/coreytegeler/add-art-chrome/)
-
-
+- Add-Art [source](https://github.com/coreytegeler/add-art-chrome/)
+- [Catblock](https://getcatblock.com/)
+- Adblock [source](http://code.getadblock.com/releases/)
 
 ## Platform References & Notes
 
