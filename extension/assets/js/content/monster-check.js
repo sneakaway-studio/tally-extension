@@ -10,7 +10,8 @@ window.MonsterCheck = (function() {
 		highestStage = 0,
 		potential = 0.5, // potential a monster will appear
 		secondsBeforeDelete = 1 * 60 * 60, // seconds to keep a monster in the nearby_monsters queue
-		foundStreamSummary = [ /* {mid: 000, stage: 1, tracker: "domain.com"} */ ];
+		foundStreamSummary = [ /* {mid: 000, stage: 1, tracker: "domain.com"} */ ],
+		savedFoundForServer = false; // prevent this from running multiple times, looking @ you youtube
 
 
 
@@ -306,6 +307,7 @@ window.MonsterCheck = (function() {
 	 */
 	function saveFoundForServer() {
 		try {
+			if (savedFoundForServer) return;
 			for (let mid in T.tally_nearby_monsters) {
 				if (T.tally_nearby_monsters.hasOwnProperty(mid)) {
 					if (!FS_Object.prop(T.tally_nearby_monsters[mid])) continue;
@@ -317,6 +319,7 @@ window.MonsterCheck = (function() {
 					});
 				}
 			}
+			savedFoundForServer = true;
 		} catch (err) {
 			console.error(err);
 		}

@@ -93,8 +93,10 @@ window.Tracker = (function () {
 			if (FS_Object.objLength(foundObj) > 0) {
 				// for each tracker
 				for (let trackerUrl in foundObj) {
-					// save the url to push to server
-					foundAndBlockedDomains.found.push(trackerUrl);
+					// if the url isn't already in the array
+					if (!foundAndBlockedDomains.found.includes(trackerUrl))
+						// save the url to push to server
+						foundAndBlockedDomains.found.push(trackerUrl);
 
 					// get categories
 					let cats = TrackersByUrl.data[trackerUrl].cats;
@@ -187,8 +189,10 @@ window.Tracker = (function () {
 						}
 
 					}
-					// save the url to push to server
-					foundAndBlockedDomains.blocked.push(trackerUrl);
+					// if the url isn't already in the array
+					if (!foundAndBlockedDomains.blocked.includes(trackerUrl))
+						// save the url to push to server
+						foundAndBlockedDomains.blocked.push(trackerUrl);
 					// add blocked to Page.data.trackers
 					Page.data.trackers.blocked = blocked;
 				}
