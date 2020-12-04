@@ -3,7 +3,7 @@
 /*  BATTLE
  ******************************************************************************/
 
-window.Battle = (function () {
+window.Battle = (function() {
 	// PRIVATE
 
 	let DEBUG = Debug.ALL.Battle,
@@ -151,7 +151,7 @@ window.Battle = (function () {
 				"display": "block"
 			});
 			// add stats display / hide action
-			$('.monster_stats').on("click", function (e) {
+			$('.monster_stats').on("click", function(e) {
 				//console.log("hi",$('.monster_stats_table_wrapper').css("display"));
 				if ($('.monster_stats_table_wrapper').css("display") == "none")
 					$('.monster_stats_table_wrapper').css({
@@ -172,7 +172,7 @@ window.Battle = (function () {
 			// show console
 			BattleConsole.display();
 			// log intro message
-			setTimeout(function () {
+			setTimeout(function() {
 				Dialogue.showData(Dialogue.getData({
 					category: "battle",
 					subcategory: "start"
@@ -192,7 +192,7 @@ window.Battle = (function () {
 		}
 	}
 
-	Mousetrap.bind('escape', function () {
+	Mousetrap.bind('escape', function() {
 		Battle.end(true);
 	});
 
@@ -332,7 +332,7 @@ window.Battle = (function () {
 			// reload page if tally won (because it was exploded)
 			if (Battle.details.winner === "tally") {
 				// reset page after a moment
-				setTimeout(function () {
+				setTimeout(function() {
 					location.reload();
 				}, 800);
 			}

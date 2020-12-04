@@ -3,7 +3,7 @@
 /*  DEBUGGER
  ******************************************************************************/
 
-window.Debug = (function () {
+window.Debug = (function() {
 	// PRIVATE
 
 	let DEBUG = true,
@@ -134,7 +134,7 @@ window.Debug = (function () {
 			// stop if background disconnected
 			if (TallyStorage.backgroundConnectErrors >= 3) return;
 
-			chrome.runtime.sendMessage(msg, function (response) {
+			chrome.runtime.sendMessage(msg, function(response) {
 				let endTime = new Date().getTime();
 				// if (DEBUG) console.log("🗜️ Debug.sendBackgroundDebugMessage() time = " + (endTime - startTime) + "ms, RESPONSE =", JSON.stringify(response));
 			});
@@ -252,15 +252,15 @@ window.Debug = (function () {
 			if (DEBUG) console.log("🗜️ Debug.addDebugButtons()");
 
 			// add listener for reset buttons
-			$(document).on("click", '#resetTallyUserFromBackground', function () {
+			$(document).on("click", '#resetTallyUserFromBackground', function() {
 				TallyStorage.getDataFromBackground(TallyMain.contentStartChecks);
 			});
-			$(document).on("click", '#resetTallyUserFromServer', function () {
+			$(document).on("click", '#resetTallyUserFromServer', function() {
 				TallyStorage.resetTallyUserFromServer();
 			});
-			$(document).on("click", '#showRandomUrl', function (e) {
+			$(document).on("click", '#showRandomUrl', function(e) {
 				e.preventDefault();
-				TallyStorage.getDataFromServer("/url/random", function (response) {
+				TallyStorage.getDataFromServer("/url/random", function(response) {
 					console.log("🗜️ Debug #showRandomUrl", response.data.urls[0]);
 				});
 			});
@@ -271,69 +271,70 @@ window.Debug = (function () {
 	}
 
 
+
 	function addKeys() {
 		try {
 
 			let k = "`+1";
-			Mousetrap.bind(k + ' p', function () {
+			Mousetrap.bind(k + ' p', function() {
 				window.open('https://tallysavestheinternet.com/profile/' + T.tally_user.username);
 			});
-			Mousetrap.bind(k + ' t', function () {
+			Mousetrap.bind(k + ' t', function() {
 				Dialogue.random();
 			});
-			Mousetrap.bind(k + ' w', function () {
+			Mousetrap.bind(k + ' w', function() {
 				Skin.random();
 			});
-			Mousetrap.bind(k + ' m', function () {
+			Mousetrap.bind(k + ' m', function() {
 				Sound.stopMusic();
 				BattleAttack.tallyWins("The monster's health has been depleted. Tally wins!!!", "monster-health-gone");
 				// BattleEffect.showCapturedMonster();
 				// Monster.test();
 			});
-			Mousetrap.bind(k + ' b', function () {
-				// Battle.test();
-				Sound.playFile("explosions/explode.mp3", false, 0);
+			Mousetrap.bind(k + ' b', function() {
+				Battle.test();
+				// Sound.playFile("explosions/explode.mp3", false, 0);
 			});
-			Mousetrap.bind(k + ' 0', function () {
+			Mousetrap.bind(k + ' 0', function() {
 				BattleEffect.showRumble("small");
 			});
-			Mousetrap.bind(k + ' 1', function () {
+			Mousetrap.bind(k + ' 1', function() {
 				BattleEffect.showRumble("medium");
 			});
-			Mousetrap.bind(k + ' 2', function () {
+			Mousetrap.bind(k + ' 2', function() {
 				BattleEffect.showRumble("large");
 			});
-			Mousetrap.bind(k + ' 7', function () {
+			Mousetrap.bind(k + ' 7', function() {
 
 			});
-			Mousetrap.bind(k + ' 8', function () {
+			Mousetrap.bind(k + ' 8', function() {
 				BattleConsole.log("What will Tally do?", "showBattleOptions");
 			});
-			Mousetrap.bind(k + ' 9', function () {
+			Mousetrap.bind(k + ' 9', function() {
 
 			});
-			Mousetrap.bind(k + ' q', function () {
+			Mousetrap.bind(k + ' q', function() {
 				Battle.end(true);
 			});
 
-			Mousetrap.bind(k + ' e', function () {
+			Mousetrap.bind(k + ' e', function() {
 				Effect.explode();
 			});
 
 
-			Mousetrap.bind(k + ' z', function () {
+			Mousetrap.bind(k + ' z', function() {
 				StatsDisplay.adjustStatsBar("tally", "health", Math.random());
 			});
-			Mousetrap.bind(k + ' x', function () {
+			Mousetrap.bind(k + ' x', function() {
 				StatsDisplay.adjustStatsBar("tally", "stamina", Math.random());
 			});
-			Mousetrap.bind(k + ' v', function () {
+			Mousetrap.bind(k + ' v', function() {
 				StatsDisplay.adjustStatsCircle("tally", Math.random());
 			});
-			Mousetrap.bind(k + ' r', function () {
+			Mousetrap.bind(k + ' r', function() {
 
 			});
-			Mousetrap.bind(k + ' v', function () {
+			Mousetrap.bind(k + ' v', function() {
 				BattleTest.test();
 			});
 
@@ -343,7 +344,7 @@ window.Debug = (function () {
 	}
 
 	// global error handler
-	window.onerror = function (message, source, lineno, colno, error) {
+	window.onerror = function(message, source, lineno, colno, error) {
 		console.error("Tally", message, source, lineno, colno, error);
 	};
 
