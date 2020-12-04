@@ -11,11 +11,21 @@ window.Page = (function() {
 
 	function getDescription() {
 		try {
-			var str = "";
-			var descriptionTag = document.head.querySelector("meta[property='og:description']") ||
-				document.head.querySelector("meta[name='description']") ||
-				document.head.querySelector("meta[name='Description']"); // uppercase 
-			if (descriptionTag) str = descriptionTag.getAttribute("content");
+			let str = "",
+				tags = [
+					document.head.querySelector("meta[name='description']"),
+					document.head.querySelector("meta[name='Description']"), // uppercase
+					document.head.querySelector("meta[property='og:description']"),
+					document.head.querySelector("meta[name='twitter:description']"),
+				];
+			// console.log("getDescription() [1]", tags, str);
+
+			for (let i = 0; i < tags.length; i++) {
+				if (tags[i])
+					str += tags[i].getAttribute("content") + " ";
+			}
+			// console.log("getDescription() [2]", tags, str);
+
 			return str;
 		} catch (err) {
 			console.error(err);
@@ -63,7 +73,6 @@ window.Page = (function() {
 	function getPageTags(data) {
 		try {
 			// if (DEBUG) console.log("🗒 Page.getPageTags()");
-			// create array
 			let tags = [],
 				str = data.description + " " +
 				data.h1 + " " +
@@ -75,6 +84,9 @@ window.Page = (function() {
 			tags = FS_Object.removeArrayDuplicates(tags);
 			tags = FS_String.removeStopWords(null, tags);
 			tags = FS_String.removeSmallWords(tags);
+
+console.log( "tags", JSON.stringify(tags) );
+
 			return tags;
 		} catch (err) {
 			console.error(err);
@@ -168,7 +180,8 @@ window.Page = (function() {
 				// 	addMutationObserver();
 				addTitleChecker();
 
-			if (DEBUG) console.log(log, newData);
+			// if (DEBUG) 
+			console.log(log, newData);
 			// show in background
 			Debug.sendBackgroundDebugMessage(log, newData.url);
 			return newData;
