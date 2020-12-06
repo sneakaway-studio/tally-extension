@@ -147,7 +147,8 @@
 
 		"activeTab",
 		"storage",
-		"management"
+		"management",
+        "webRequest"
 	],
 	"web_accessible_resources": [
 		"*.svg", "*.png",

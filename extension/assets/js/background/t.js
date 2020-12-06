@@ -21,8 +21,8 @@ window.T = (function () {
 			development: {
 				// api: "http://localhost:5000/api",
 				// website: "http://localhost:5000",
-				api: "https://127.0.0.1/api",
-				website: "https://127.0.0.1",
+				api: "https://127.0.0.1:5000/api",
+				website: "https://127.0.0.1:5000",
 			},
 			production: {
 				// api: "https://tallygame.net/api",
@@ -32,7 +32,7 @@ window.T = (function () {
 			},
 			// true = development, false = production
 			localhost: false, // change to false to quickly shift to production server
-			debugging: false
+			debugging: true
 		},
 		DEBUG = true;
 

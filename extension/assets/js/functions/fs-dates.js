@@ -1,6 +1,7 @@
 "use strict";
 
 /*  DATE FUNCTIONS *requires Moment.js*
+ * 	- See notes in API README about datetime for Tally and future projects
  ******************************************************************************/
 
 window.FS_Date = (function() {

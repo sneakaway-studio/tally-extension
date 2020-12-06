@@ -1,6 +1,6 @@
 "use strict";
 
-window.Server = (function () {
+window.Server = (function() {
 	// PRIVATE
 	let DEBUG = Debug.ALL.BackgroundServer,
 		timedEvents = null,
@@ -8,7 +8,7 @@ window.Server = (function () {
 		serverTimeSinceLastCheckLength = 10 * 60 // check server online every n seconds
 	;
 
-
+	// DEBUG = true;
 
 	/**
 	 *	Timed events to check on server, login status, etc. (mins * secs * millis)
@@ -19,21 +19,21 @@ window.Server = (function () {
 			timedEvents = {
 
 				// check if user online (connected to internet)
-				userOnlineInterval: setInterval(function () {
+				userOnlineInterval: setInterval(function() {
 					// if (DEBUG) console.log(log + "userOnlineInterval()");
 					T.tally_meta.userOnline = navigator.onLine;
 				}, (1 * 60 * 1000)), // every 1 minute (low overhead)
 
 
 				// check if tally server is online
-				serverOnlineInterval: setInterval(function () {
+				serverOnlineInterval: setInterval(function() {
 					// get tally_meta
 					let _tally_meta = store('tally_meta');
 					// update time since last checked server
 					_tally_meta.serverTimeSinceLastCheck += 1;
 
-					if (DEBUG) console.log(log + "serverOnlineInterval()",
-						"_tally_meta.serverTimeSinceLastCheck =", _tally_meta.serverTimeSinceLastCheck);
+					// if (DEBUG) console.log(log + "serverOnlineInterval()",
+					// 	"_tally_meta.serverTimeSinceLastCheck =", _tally_meta.serverTimeSinceLastCheck);
 					// save
 					store('tally_meta', _tally_meta);
 
@@ -98,7 +98,7 @@ window.Server = (function () {
 				})
 				.catch((error) => {
 					// server is not online
-					if (DEBUG) console.warn("📟 Server.checkIfOnline() [2.3] FAIL", _url, "😢 NOT ONLINE", JSON.stringify(error));
+					if (DEBUG) console.warn("📟 Server.checkIfOnline() [2.3] FAIL", _url, "😢 NOT ONLINE", JSON.stringify(error), Debug.getCurrentDateStr());
 					return false;
 				});
 
@@ -201,7 +201,7 @@ window.Server = (function () {
 				})
 				.catch((error) => {
 					// user (or server) is not online
-					if (DEBUG) console.warn("📟 Server.getTallyUser() [3.4] FAIL", _url, "😢 USER NOT LOGGED-IN", JSON.stringify(error));
+					if (DEBUG) console.warn("📟 Server.getTallyUser() [3.4] FAIL", _url, "😢 USER NOT LOGGED-IN", JSON.stringify(error), Debug.getCurrentDateStr());
 					_tally_meta.serverOnline = false;
 					return false;
 				});
@@ -270,7 +270,7 @@ window.Server = (function () {
 				store("tally_top_monsters", _tally_top_monsters);
 				return true;
 			}).fail(error => {
-				console.warn("📟 Server.returnTopMonsters() [3] RESULT =", JSON.stringify(error));
+				console.warn("📟 Server.returnTopMonsters() [3] ERROR =", Debug.getCurrentDateStr(), JSON.stringify(error));
 				// server might not be online
 				// checkIfOnline();
 			});
@@ -314,3 +314,47 @@ window.Server = (function () {
 		mergeAttackDataFromServer: mergeAttackDataFromServer
 	};
 }());
+
+
+
+
+/**
+ *	Chrome web request error handling
+ */
+
+// ::net errors
+chrome.webRequest.onErrorOccurred.addListener(handleNetworkError, {
+	urls: ["http://*/*", "https://*/*"]
+});
+
+// check for HTTP errors
+chrome.webRequest.onHeadersReceived.addListener(function(details) {
+	// console.log("chrome.webRequest.onHeadersReceived", details);
+
+	var status = extractStatus(details.statusLine);
+	if (!status) return;
+	// if error code is 4** or 5**
+	if (status.code.charAt(0) == '5' || status.code.charAt(0) == '4')
+		handleNetworkError();
+}, {
+	urls: ["http://*/*", "https://*/*"]
+});
+
+function handleNetworkError(details) {
+	console.error(Debug.getCurrentDateStr(), JSON.stringify(details));
+	// console.error(Debug.getCurrentDateStr());
+}
+
+/**
+ *	Extract status code/message
+ * 	'HTTP/1.1 200 OK' => { "code": 200, "message": "ok"}
+ */
+function extractStatus(line) {
+	var match = line.match(/[^ ]* (\d{3}) (.*)/);
+	if (match)
+		return {
+			code: match[1],
+			message: match[2]
+		};
+	else return undefined;
+}

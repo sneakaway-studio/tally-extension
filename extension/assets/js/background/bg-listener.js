@@ -46,7 +46,7 @@ window.Listener = (function() {
 							"data": result
 						});
 					}).fail(err => {
-						if (DEBUG) console.error("👂🏼 Listener.getDataFromServer() > RESULT =", JSON.stringify(err));
+						console.error("👂🏼 Listener.getDataFromServer() > RESULT =", Debug.getCurrentDateStr(), JSON.stringify(err));
 						// server might not be reachable
 						Server.checkIfOnline();
 						sendResponse({
@@ -86,8 +86,9 @@ window.Listener = (function() {
 					let success = 0;
 					if (store(request.name, request.data))
 						success = 1;
-					else
-					if (DEBUG) console.error("👂🏼 Listener.addListener() > Could not save data", request);
+					else {
+						console.error("👂🏼 Listener.addListener() > Could not save data", Debug.getCurrentDateStr(), request);
+					}
 					// send response
 					sendResponse({
 						"action": request.action,

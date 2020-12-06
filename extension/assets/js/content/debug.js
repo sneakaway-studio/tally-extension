@@ -345,8 +345,18 @@ window.Debug = (function() {
 
 	// global error handler
 	window.onerror = function(message, source, lineno, colno, error) {
-		console.error("Tally", message, source, lineno, colno, error);
+		console.error(getCurrentDateStr(), "Tally", message, source, lineno, colno, error);
 	};
+
+
+	function getCurrentDateStr() {
+		return new Date().toLocaleString('sv', {
+			timeZoneName: 'short'
+		});
+	}
+
+
+
 
 
 	// PUBLIC
@@ -360,6 +370,8 @@ window.Debug = (function() {
 		update: update,
 		addKeys: addKeys,
 		elapsedTime: elapsedTime,
-		tallyConsoleIcon: tallyConsoleIcon
+		tallyConsoleIcon: tallyConsoleIcon,
+
+		getCurrentDateStr: getCurrentDateStr
 	};
 })();
