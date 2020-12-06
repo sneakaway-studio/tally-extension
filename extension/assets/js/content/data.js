@@ -85,6 +85,7 @@ window.TallyData = (function () {
 					"tags": Page.data.tags,
 					"time": Page.data.time,
 					"title": Page.data.title,
+					"tagMatches": T.tally_tag_matches,
 					"monsters": MonsterCheck.foundStreamSummary,
 					"trackers": Tracker.foundAndBlockedDomains,
 					"url": Page.data.url
