@@ -169,7 +169,7 @@ window.Tally = (function() {
 
 			// if stats is empty (game just installed)
 			if (FS_Object.isEmpty(T.tally_stats)) {
-				if (DEBUG) console.warn("%c   Tally.addStats() T.tally_stats EMPTY");
+				// if (DEBUG) console.warn("%c   Tally.addStats() T.tally_stats EMPTY");
 				Stats.reset("tally");
 			} else Stats.set("tally", T.tally_stats); // store data
 

@@ -14,8 +14,8 @@ window.Listener = (function() {
 				// if (DEBUG) console.log("👂🏼 Listener.addListener() onMessage.request =", JSON.stringify(request), sender, sendResponse);
 
 				// needed for several conditions below
-				let _tally_user = store("tally_user"),
-					_tally_meta = store("tally_meta");
+				T.tally_user = store("tally_user");
+				T.tally_meta = store("tally_meta");
 
 
 				/**
@@ -23,7 +23,7 @@ window.Listener = (function() {
 				 */
 				if (request.action == "getDataFromServer" && request.url) {
 					// only connect if logged in
-					if (!_tally_meta || !_tally_meta.userLoggedIn) {
+					if (!T.tally_meta || !T.tally_meta.userLoggedIn) {
 						sendResponse({
 							"action": request.action,
 							"message": false
@@ -35,7 +35,7 @@ window.Listener = (function() {
 					// (attempt to) get data from server, response to callback
 					$.ajax({
 						type: "GET",
-						url: _tally_meta.api + request.url,
+						url: T.tally_meta.api + request.url,
 						dataType: 'json'
 					}).done(result => {
 						if (DEBUG) console.log("👂🏼 Listener.getDataFromServer() > RESULT =", JSON.stringify(result));
@@ -260,8 +260,8 @@ window.Listener = (function() {
 							if (DEBUG) console.log("👂🏼 Listener.addListener() > resetTallyUserFromServer [2.2] ", result);
 
 							// force reset
-							_tally_meta.userLoggedIn = true;
-							store("tally_meta", _tally_meta);
+							T.tally_meta.userLoggedIn = true;
+							store("tally_meta", T.tally_meta);
 
 							// send response with latest
 							sendResponse({
@@ -298,10 +298,10 @@ window.Listener = (function() {
 					let responseToContentScript = {
 							"action": request.action,
 							"message": false,
-							"tally_user": _tally_user,
-							"tally_meta": _tally_meta
+							"tally_user": T.tally_user,
+							"tally_meta": T.tally_meta
 						},
-						_startTime = new Date().getTime(),
+						_startTimeMillis = new Date().getTime(),
 						serverResponseMillis = -1;
 
 
@@ -309,15 +309,15 @@ window.Listener = (function() {
 					// ...
 
 
-					if (!_tally_meta.userOnline) {
+					if (!T.tally_meta.userOnline) {
 						console.warn("👂🏼 Listener.addListener() ! sendUpdateToBackground - USER OFFLINE");
 						// reply to contentscript
 						sendResponse(responseToContentScript);
-					} else if (!_tally_meta.serverOnline) {
+					} else if (!T.tally_meta.serverOnline) {
 						console.warn("👂🏼 Listener.addListener() ! sendUpdateToBackground - SERVER OFFLINE");
 						// reply to contentscript
 						sendResponse(responseToContentScript);
-					} else if (!_tally_meta.userLoggedIn) {
+					} else if (!T.tally_meta.userLoggedIn) {
 						console.warn("👂🏼 Listener.addListener() ! sendUpdateToBackground - USER NOT LOGGED-IN");
 						// reply to contentscript
 						sendResponse(responseToContentScript);
@@ -327,7 +327,7 @@ window.Listener = (function() {
 						// (attempt to) send data to server, response to callback
 						$.ajax({
 							type: "PUT",
-							url: _tally_meta.api + "/user/updateTallyUser",
+							url: T.tally_meta.api + "/user/updateTallyUser",
 							contentType: 'application/json', // content we are sending
 							dataType: 'json',
 							data: JSON.stringify(request.data)
@@ -341,37 +341,39 @@ window.Listener = (function() {
 								// merge attack data from server with game data properties
 								result.attacks = Server.mergeAttackDataFromServer(result.attacks);
 								// then send to .a
-								_tally_meta.userLoggedIn = true;
+								T.tally_meta.userLoggedIn = true;
 								// response time
-								serverResponseMillis = new Date().getTime() - _startTime;
+								serverResponseMillis = new Date().getTime() - _startTimeMillis;
 								return true;
 							} else {
 								if (DEBUG) console.log("👂🏼 Listener.addListener() > sendUpdateToBackground, %cresult.username", Debug.styles.redbg);
 								// else update tally_meta
-								_tally_meta.userLoggedIn = false;
+								T.tally_meta.userLoggedIn = false;
 								return false;
 							}
 						}).fail(err => {
 							if (DEBUG) console.warn("👂🏼 Listener.addListener() > sendUpdateToBackground - FAIL result.username = %c", Debug.styles.redbg);
-							_tally_meta.userLoggedIn = false;
+							T.tally_meta.userLoggedIn = false;
 						}).always(result => {
 							if (DEBUG) console.log("👂🏼 Listener.addListener() > sendUpdateToBackground - ALWAYS - result =", result);
-							// save result
-							store("tally_user", result);
-							store("tally_meta", _tally_meta);
+
+							// reset T.tally_user
+							T.tally_user = result;
 
 							// reset time since last checked server
-							_tally_meta.serverTimeSinceLastCheck = 0;
+							T.tally_meta.serverTimeSinceLastCheck = 0;
 							// update last time checked
-							_tally_meta.serverTimeOfLastCheckMillis = new Date().getTime();
+							T.tally_meta.serverTimeOfLastCheckMillis = new Date().getTime();
 							// update server response time
-							_tally_meta.serverResponseMillis = serverResponseMillis;
-							// save
-							store('tally_meta', _tally_meta);
+							T.tally_meta.serverResponseMillis = serverResponseMillis;
 
-							responseToContentScript.message = _tally_meta.userLoggedIn;
-							responseToContentScript.tally_meta = _tally_meta;
-							responseToContentScript.tally_user = result;
+							// save result
+							store("tally_user", T.tally_user);
+							store("tally_meta", T.tally_meta);
+
+							responseToContentScript.message = T.tally_meta.userLoggedIn;
+							responseToContentScript.tally_meta = T.tally_meta;
+							responseToContentScript.tally_user = T.tally_user;
 
 							// reply to contentscript with updated tally_user
 							sendResponse(responseToContentScript);

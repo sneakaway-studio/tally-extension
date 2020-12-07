@@ -13,9 +13,17 @@ window.Install = (function () {
 			let cleanInstall = true;
 
 			// does T.tally_meta exists, or is this the first install?
-			if (FS_Object.prop(store("tally_meta"))) {
+			if (store.has("tally_meta")) {
 				if (DEBUG) console.log("🔧 Install.init() -> T.tally_meta exists, need to check account");
 				cleanInstall = false;
+				// update all game objects
+				T.tally_user = store("tally_user");
+				T.tally_options = store("tally_options");
+				T.tally_nearby_monsters = store("tally_nearby_monsters");
+				T.tally_tag_matches = store("tally_tag_matches");
+				T.tally_meta = store("tally_meta");
+				T.tally_stats = store("tally_stats");
+				T.tally_top_monsters = store("tally_top_monsters");
 			} else {
 				if (DEBUG) console.log("🔧 Install.init() -> no T.tally_meta found, creating app");
 				// Create all game objects
@@ -46,11 +54,12 @@ window.Install = (function () {
 	 */
 	async function setVersion() {
 		try {
-			let _tally_meta = store("tally_meta"),
-				manifestData = chrome.runtime.getManifest();
+			T.tally_meta = store("tally_meta");
+			let manifestData = chrome.runtime.getManifest();
+
 			// if version the same
-			if (_tally_meta.install.version == manifestData.version) {
-				if (DEBUG) console.log("🔧 Install.setVersion()", _tally_meta.install.version + "==" + manifestData.version, "..... SAME VERSION");
+			if (T.tally_meta.install.version == manifestData.version) {
+				if (DEBUG) console.log("🔧 Install.setVersion()", T.tally_meta.install.version + "==" + manifestData.version, "..... SAME VERSION");
 			}
 
 			// SPECIFIC CHECKS, WHAT IS NEW IN VERSION ...
@@ -68,10 +77,10 @@ window.Install = (function () {
 			}
 			// IF INSTALLING ANY OTHER VERSION
 			else {
-				if (DEBUG) console.log("🔧 Install.setVersion()", _tally_meta.install.version + "!=" + manifestData.version, "!!!!! NEW VERSION");
+				if (DEBUG) console.log("🔧 Install.setVersion()", T.tally_meta.install.version + "!=" + manifestData.version, "!!!!! NEW VERSION");
 				// update meta with version number
-				_tally_meta.install.version = manifestData.version;
-				store("tally_meta", _tally_meta);
+				T.tally_meta.install.version = manifestData.version;
+				store("tally_meta", T.tally_meta);
 			}
 
 
@@ -87,23 +96,23 @@ window.Install = (function () {
 	 */
 	async function setCurrentAPI() {
 		try {
-			let _tally_meta = store("tally_meta");
-			// if (DEBUG) console.log("🔧 Install.setCurrentAPI() [1] currentAPI=%c" + _tally_meta.currentAPI, Debug.styles.greenbg);
+			T.tally_meta = store("tally_meta");
+			// if (DEBUG) console.log("🔧 Install.setCurrentAPI() [1] currentAPI=%c" + T.tally_meta.currentAPI, Debug.styles.greenbg);
 
 			// if T.options.localhost == true
 			if (T.options.localhost)
-				_tally_meta.currentAPI = "development";
+				T.tally_meta.currentAPI = "development";
 			else
-				_tally_meta.currentAPI = "production";
-			// if (DEBUG) console.log("🔧 Install.setCurrentAPI() [2] currentAPI=%c" + _tally_meta.currentAPI, Debug.styles.greenbg);
+				T.tally_meta.currentAPI = "production";
+			// if (DEBUG) console.log("🔧 Install.setCurrentAPI() [2] currentAPI=%c" + T.tally_meta.currentAPI, Debug.styles.greenbg);
 
-			_tally_meta.api = T.options[_tally_meta.currentAPI].api;
-			_tally_meta.website = T.options[_tally_meta.currentAPI].website;
+			T.tally_meta.api = T.options[T.tally_meta.currentAPI].api;
+			T.tally_meta.website = T.options[T.tally_meta.currentAPI].website;
 
-			if (DEBUG) console.log("🔧 Install.setCurrentAPI() [3] currentAPI=%c" + _tally_meta.currentAPI, Debug.styles.greenbg,
-				"api=" + _tally_meta.api, "website=" + _tally_meta.website);
+			if (DEBUG) console.log("🔧 Install.setCurrentAPI() [3] currentAPI=%c" + T.tally_meta.currentAPI, Debug.styles.greenbg,
+				"api=" + T.tally_meta.api, "website=" + T.tally_meta.website);
 
-			store("tally_meta", _tally_meta);
+			store("tally_meta", T.tally_meta);
 			return true;
 		} catch (err) {
 			console.error(err);
@@ -119,20 +128,20 @@ window.Install = (function () {
 	async function launchStartScreen() {
 		try {
 			// console.trace();
-			let _tally_meta = await store("tally_meta"),
-				pageToShow = "/get-anonyname";
+			T.tally_meta = await store("tally_meta");
+			let	pageToShow = "/get-anonyname";
 
 			// don't launch in development
 			if (T.options.localhost) return;
 
 			// don't launch if !server
-			if (!_tally_meta.serverOnline) {
+			if (!T.tally_meta.serverOnline) {
 				if (DEBUG) console.log("🔧 Install.launchStartScreen() 🛑 SERVER OFFLINE");
 				return;
 			}
 
 			// if they are logged in show how to play
-			if (_tally_meta.userLoggedIn) {
+			if (T.tally_meta.userLoggedIn) {
 				// return console.log("🔧 Install.launchStartScreen() 🛑 ALREADY LOGGED IN");
 				if (DEBUG) console.log("🔧 Install.launchStartScreen() 🛑 ALREADY LOGGED IN");
 				// show how to
@@ -150,29 +159,29 @@ window.Install = (function () {
 				// are we in the process resetting user's data?
 				if (tab.url !== undefined && (tab.url.includes("/dashboard") ||
 						tab.url.includes("tallygame.net") || tab.url.includes("tallygame.net") ||
-						tab.url.includes(_tally_meta.website)
+						tab.url.includes(T.tally_meta.website)
 					)) {
 					if (DEBUG) console.log("🔧 Install.launchStartScreen() 🛑 ON DASHBOARD");
 					return;
 				}
 
 				// keep track of prompts and don't do too many
-				if (_tally_meta.install.prompts >= 30) {
-					if (DEBUG) console.log("🔧 Install.launchStartScreen() 🛑 _tally_meta.install.prompts >=",
-						_tally_meta.install.prompts
+				if (T.tally_meta.install.prompts >= 30) {
+					if (DEBUG) console.log("🔧 Install.launchStartScreen() 🛑 T.tally_meta.install.prompts >=",
+						T.tally_meta.install.prompts
 					);
 					return;
 				}
 
 				// else launch install page
 				chrome.tabs.create({
-					url: _tally_meta.website + pageToShow
+					url: T.tally_meta.website + pageToShow
 				}, function (newTab) {
 					// increment
-					_tally_meta.install.prompts = _tally_meta.install.prompts + 1;
-					store("tally_meta", _tally_meta);
+					T.tally_meta.install.prompts = T.tally_meta.install.prompts + 1;
+					store("tally_meta", T.tally_meta);
 					if (DEBUG) console.log("🔧 Install.launchStartScreen() 👍 launching",
-						"_tally_meta.install.prompts =", _tally_meta.install.prompts,
+						"T.tally_meta.install.prompts =", T.tally_meta.install.prompts,
 						"newTab =", newTab
 					);
 					return true;
@@ -290,10 +299,10 @@ window.Install = (function () {
 	 */
 	async function saveLocation() {
 		try {
-			let _tally_meta = store("tally_meta");
+			T.tally_meta = store("tally_meta");
 			return $.getJSON('http://www.geoplugin.net/json.gp', function (data) {
 				// if (DEBUG) console.log(JSON.stringify(data, null, 2));
-				_tally_meta.location = {
+				T.tally_meta.location = {
 					ip: data.geoplugin_request,
 					city: data.geoplugin_city,
 					region: data.geoplugin_region,
@@ -303,7 +312,7 @@ window.Install = (function () {
 					lng: data.geoplugin_longitude,
 					timezone: data.geoplugin_timezone
 				};
-				store("tally_meta", _tally_meta);
+				store("tally_meta", T.tally_meta);
 			});
 		} catch (err) {
 			console.error(err);

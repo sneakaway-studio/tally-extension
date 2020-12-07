@@ -62,6 +62,8 @@ window.Debug = (function() {
 		tallyConsoleIcon = 'font-size:12px; background:url("' + chrome.extension.getURL('assets/img/tally/tally-clear-20w.png') + '") no-repeat;';
 
 
+	console.log("%c   Hi, I'm Tally!", tallyConsoleIcon, "\n");
+
 	/**
 	 *	Track loading time for scripts, backend data
 	 */

@@ -8,9 +8,7 @@ window.TallyStorage = (function () {
 	let DEBUG = Debug.ALL.TallyStorage,
 		backgroundConnectErrors = 0;
 
-	console.log("%c   Hi, I'm Tally!", Debug.tallyConsoleIcon);
-
-
+	
 
 	/**
 	 *	Get data from API - currently only uses for random urls for demo

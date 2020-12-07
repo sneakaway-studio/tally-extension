@@ -11,7 +11,6 @@ window.Background = (function () {
 	 */
 	chrome.runtime.onInstalled.addListener(function () {
 		try {
-			if (DEBUG) console.log("🧰 Background.onInstalled() -> new (or updated) installation detected");
 			Debug.elapsedTime("Background chrome.runtime.onInstalled() [1]");
 			runInstallChecks();
 		} catch (err) {
@@ -39,6 +38,7 @@ window.Background = (function () {
 		try {
 			let log = "🧰 Background.runInstallChecks()";
 			dataReportHeader(log, "@", "before");
+				if (DEBUG) console.log("🧰 Background.onInstalled() -> new (or updated) installation detected");
 			Debug.elapsedTime("Background.runInstallChecks() [1]");
 
 			// 2.1 cleanInstall
@@ -51,14 +51,18 @@ window.Background = (function () {
 			// set server/api production | development
 			await Install.setCurrentAPI();
 
+
+			let userOnline = await Server.checkIfUserOnline();
+			if (DEBUG) console.log(log, "[2.2] userOnline =", userOnline);
+
 			// 2.2 serverOnline
 
 			// check the API status
 			const serverOnline = await Server.checkIfOnline();
-			if (DEBUG) console.log(log, "[2.2] serverOnline =", serverOnline);
+			if (DEBUG) console.log(log, "[2.3] serverOnline =", serverOnline);
 			// if server NOT online ...
 			if (!serverOnline) {
-				if (DEBUG) console.warn(log, "[2.2] API SERVER NOT ONLINE");
+				if (DEBUG) console.warn(log, "[2.3] API SERVER NOT ONLINE");
 				return false; // stop
 			}
 
@@ -68,7 +72,7 @@ window.Background = (function () {
 			// - this is the FIRST attempt to get T.tally_user data from server
 			// - if they are then this function writes over local storage objects
 			const userLoggedIn = await Server.getTallyUser();
-			if (DEBUG) console.log(log, "[2.3] userLoggedIn =", userLoggedIn);
+			if (DEBUG) console.log(log, "[2.4] userLoggedIn =", userLoggedIn);
 			if (!userLoggedIn) {
 
 				// if clean install then definitely open start screen
@@ -83,8 +87,8 @@ window.Background = (function () {
 			else {
 				// username is stored in T.tally_user and we can pass it to populate monsters
 				const returnTopMonstersResponse = await Server.returnTopMonsters();
-				if (DEBUG) console.log(log, "[2.4] returnTopMonstersResponse =", returnTopMonstersResponse);
-				Debug.elapsedTime(log, "[2.4]");
+				if (DEBUG) console.log(log, "[2.5] returnTopMonstersResponse =", returnTopMonstersResponse);
+				Debug.elapsedTime(log, "[2.5]");
 				// return true to send data back to content
 				return true;
 			}
@@ -102,13 +106,13 @@ window.Background = (function () {
 	 */
 	function dataReport() {
 		try {
-			let _tally_user = store("tally_user"),
-				_tally_options = store("tally_options"),
-				_tally_meta = store("tally_meta");
+			T.tally_user = store("tally_user");
+			T.tally_options = store("tally_options");
+			T.tally_meta = store("tally_meta");
 			dataReportHeader("🧰 Background.dataReport()", "#", "before");
-			if (DEBUG) console.log("%cT.tally_user", Debug.styles.greenbg, JSON.stringify(_tally_user));
-			if (DEBUG) console.log("%cT.tally_options", Debug.styles.greenbg, JSON.stringify(_tally_options));
-			if (DEBUG) console.log("%cT.tally_meta", Debug.styles.greenbg, JSON.stringify(_tally_meta));
+			if (DEBUG) console.log("%cT.tally_user", Debug.styles.greenbg, JSON.stringify(T.tally_user));
+			if (DEBUG) console.log("%cT.tally_options", Debug.styles.greenbg, JSON.stringify(T.tally_options));
+			if (DEBUG) console.log("%cT.tally_meta", Debug.styles.greenbg, JSON.stringify(T.tally_meta));
 			dataReportHeader("/ 🧰 Background.dataReport()", "#", "after");
 		} catch (err) {
 			console.error("dataReport() failed");
