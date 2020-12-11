@@ -128,7 +128,7 @@ window.Install = (function() {
 
 
 	/**
-	 *  Launch Start Screen - call if getTallyUser fails
+	 *  Launch Start Screen - call if api/getTallyUser fails
 	 */
 	async function launchStartScreen() {
 		try {

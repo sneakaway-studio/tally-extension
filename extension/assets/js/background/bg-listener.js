@@ -19,46 +19,6 @@ window.Listener = (function() {
 				T.tally_meta = store("tally_meta");
 
 
-				/**
-				 *	A generic server data grabber - currently in use for random urls only
-				 */
-				if (request.action == "getDataFromServer" && request.url) {
-					// // only connect if logged in
-					// if (!T.tally_meta || !T.tally_meta.userLoggedIn) {
-					// 	sendResponse({
-					// 		"action": request.action,
-					// 		"message": false
-					// 	});
-					// 	return false;
-					// }
-					// if (DEBUG) console.log("👂🏼 Listener.onMessage() < getData [1]", request.name);
-
-					// (attempt to) get data from server, response to callback
-					$.ajax({
-						type: "GET",
-						url: T.tally_meta.env.api + request.url,
-						dataType: 'json'
-					}).done(result => {
-						// if (DEBUG) console.log("👂🏼 Listener.getDataFromServer() > RESULT =", JSON.stringify(result));
-						// reply to contentscript
-						sendResponse({
-							"action": request.action,
-							"message": 1,
-							"data": result
-						});
-					}).fail(err => {
-						console.error("👂🏼 Listener.getDataFromServer() > RESULT =", JSON.stringify(err));
-						// server might not be reachable
-						//						Server.checkIfOnline();
-						sendResponse({
-							"action": request.action,
-							"message": false
-						});
-					});
-
-					// required so chrome knows this is asynchronous
-					return true;
-				}
 
 
 
@@ -68,7 +28,7 @@ window.Listener = (function() {
 				 ******************************************************************************/
 
 				// get data from background
-				else if (request.action == "getData" && request.name) {
+				if (request.action == "getData" && request.name) {
 					// if (DEBUG) console.log("👂🏼 Listener.onMessage() < getData [1]", request.name);
 					// build response
 					let resp = {
@@ -288,16 +248,61 @@ window.Listener = (function() {
 
 
 
-				// updateTallyUser
-				// - receive and save score, event, page, etc. data in background
-				// - if server online and account good then send to server
-				// - receive and reply to content with tally_user and tally_meta
+				/**
+				 *	A generic server data grabber. Used for:
+				 * 	- getting random urls for "gallery mode"
+				 */
+				else if (request.action == "getDataFromServer" && request.url) {
+					// only connect if logged in
+					if (!T.tally_meta || !T.tally_meta.userLoggedIn) {
+						sendResponse({
+							"action": request.action,
+							"message": false
+						});
+						return false;
+					}
+					// if (DEBUG) console.log("👂🏼 Listener.onMessage() < getData [1]", request.name);
+
+					// (attempt to) get data from server, response to callback
+					$.ajax({
+						type: "GET",
+						url: T.tally_meta.env.api + request.url,
+						dataType: 'json'
+					}).done(result => {
+						// if (DEBUG) console.log("👂🏼 Listener.getDataFromServer() > RESULT =", JSON.stringify(result));
+						// reply to contentscript
+						sendResponse({
+							"action": request.action,
+							"message": 1,
+							"data": result
+						});
+					}).fail(err => {
+						console.error("👂🏼 Listener.getDataFromServer() > RESULT =", JSON.stringify(err));
+						sendResponse({
+							"action": request.action,
+							"message": false
+						});
+					});
+
+					// required so chrome knows this is asynchronous
+					return true;
+				}
+
+
+
+				/**
+				 *	updateTallyUser
+				 * 	- receive and save score, event, page, etc. data in background
+				 * 	Always
+				 * 	- attempts to send to server, saves newest tally_user if successful
+				 * 	- replies to content with tally_user and tally_meta
+				 */
 				else if (request.action == "updateTallyUser") {
 
 					let _startTimeMillis = new Date().getTime(),
 						responseToContentScript = {
 							"action": request.action,
-							"message": false,
+							"message": false, // default to fail
 							"tally_user": T.tally_user,
 							"tally_meta": T.tally_meta
 						};
@@ -325,7 +330,6 @@ window.Listener = (function() {
 					});
 					if (DEBUG) console.log("👂🏼 Listener.onMessage() [3] updateTallyUser");
 
-
 					// required so chrome knows this is asynchronous
 					return true;
 				}
@@ -340,8 +344,6 @@ window.Listener = (function() {
 						"data": {}
 					});
 				}
-
-				// for whole function?
 				// required so chrome knows this is asynchronous
 				return true;
 

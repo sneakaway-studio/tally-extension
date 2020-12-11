@@ -16,7 +16,7 @@ window.Debug = (function() {
 
 
 			Account: false,
-			Badge: true,
+			Badge: false,
 
 			// battles
 			BattleAttack: true,

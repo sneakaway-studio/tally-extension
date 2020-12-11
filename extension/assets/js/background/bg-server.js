@@ -112,15 +112,13 @@ window.Server = (function() {
 
 			// // if server wasn't online before, has just come online, and this isn't the first run
 			// if (!T.tally_meta.serverOnline && serverOnlineResponse && timedEvents != null)
-			// 	// make a note and run getTallyUser() at end
 			// 	serverJustCameBackOnline = true;
 
 
 			// 4. update current state
 			// if (DEBUG) console.log("📟 Server.checkIfOnline() [4]", "UPDATE STATE serverOnlineResponse =", serverOnlineResponse);
 
-			// // save server status
-			// updateStatusSaveMeta({
+
 			// 	serverOnline: serverOnlineResponse,
 			// 	serverSecondsSinceLastChecked: 0,
 			// 	serverResponseMillis: serverResponseMillis
@@ -143,30 +141,8 @@ window.Server = (function() {
 
 
 
-			// // if just came back then check logged in too
-			// if (serverJustCameBackOnline) await getTallyUser();
-
 			// return
 			// return serverOnlineResponse;
-		} catch (err) {
-			console.error(err);
-		}
-	}
-
-
-
-	function updateStatusSaveMeta(obj) {
-		try {
-			// // serverOnline status
-			// T.tally_meta.serverOnline = obj.serverOnline || false;
-			// // reset time since last checked server
-			// T.tally_meta.serverSecondsSinceLastChecked = obj.serverSecondsSinceLastChecked || 0;
-			// // update last time checked
-			// T.tally_meta.serverTimestampFromLastCheck = new Date().getTime();
-			// // update server response time
-			// T.tally_meta.serverResponseMillis = obj.serverResponseMillis || -1;
-			// // store object
-			// store("tally_meta", T.tally_meta);
 		} catch (err) {
 			console.error(err);
 		}
@@ -224,7 +200,7 @@ window.Server = (function() {
 			T.tally_meta.userOnline = navigator.onLine;
 			// if !userOnline
 			if (!T.tally_meta.userOnline) {
-				if (DEBUG) console.warn("📟 Server.send() [2.1] *** USER NOT ONLINE ***");
+				if (DEBUG) console.warn("📟 Server.send() [2.1] ❌ USER NOT ONLINE ");
 				// since we can't check server, we can't rely on any other connections
 				T.tally_meta.serverOnline = false;
 				T.tally_meta.userLoggedIn = false;
@@ -250,6 +226,7 @@ window.Server = (function() {
 						else if (response.status === 401) {
 							// save status
 							T.tally_meta.userLoggedIn = false;
+							T.tally_meta.userLoggedInFailedAttempts++;
 							return false;
 						}
 						// go straight to .catch()
@@ -273,27 +250,29 @@ window.Server = (function() {
 								T.tally_user = result;
 								store("tally_user", T.tally_user);
 							}
-							// if no username but trying to reach an endpoint that required authentication
+							// if no username but trying to reach an endpoint that required authentication then server failed silently
 							else if (params.action === "getTallyUser" || params.action === "updateTallyUser") {
+								if (DEBUG) console.log("📟 Server.send() [4.3] ❌ %cresult.username", Debug.styles.redbg);
+
 								// track failed attempts
+								T.tally_meta.userLoggedIn = false;
 								T.tally_meta.userLoggedInFailedAttempts++;
 								return false;
 							}
 							return true;
 						} else {
-							if (DEBUG) console.log("📟 Server.send() [4.1] %cresult.username", Debug.styles.redbg);
+							if (DEBUG) console.log("📟 Server.send() [4.4] ❌ %cresult.username", Debug.styles.redbg);
 							// if connected to server but no result then something must be wrong with server
 							throw new Error('Something went wrong');
 						}
 					})
 					.catch((err) => {
-						if (DEBUG) console.error("📟 Server.send() [5.1] 😢 NO RESPONSE FROM SERVER", _url, "err = ", JSON.stringify(err), Debug.getCurrentDateStr());
+						if (DEBUG) console.error("📟 Server.send() [5.1] ❌ NO RESPONSE FROM SERVER 😢", _url, "err = ", JSON.stringify(err), Debug.getCurrentDateStr());
 
-						// if no response from server then it is not online or not responding ATM
+						// if no response from server then it is not online, and therefore not logggedIn
 						T.tally_meta.serverOnline = false;
 						T.tally_meta.serverOnlineFailedAttempts++;
-						// also can't be loggedIn if not online
-						T.tally_meta.serverOnline = false;
+						T.tally_meta.userLoggedIn = false;
 						return false;
 					});
 
@@ -383,104 +362,7 @@ window.Server = (function() {
  	}
 	// setTimeout(testSendFunction, 1500);
 
-	//
-	// /**
-	//  *  Get latest T.tally_user data from API
-	//  */
-	// async function getTallyUser(auto = false) {
-	// 	T.tally_meta = store("tally_meta");
-	// 	let _startTimeMillis = new Date().getTime(),
-	// 		_url = T.tally_meta.env.api + "/user/getTallyUser",
-	// 		serverResponseMillis = -1,
-	// 		userLoggedInResponse = false;
-	//
-	// 	// // update userOnline status
-	// 	// T.tally_meta.userOnline = navigator.onLine;
-	// 	//
-	// 	// // 1. return early if user !online
-	// 	// if (!T.tally_meta.userOnline) {
-	// 	// 	if (DEBUG) console.warn("📟 Server.getTallyUser() [1.1] *** USER NOT ONLINE ***");
-	// 	// 	// therefore we can't rely on any other connections either so let them be
-	// 	// }
-	// 	//
-	// 	// // 2. return early if !server
-	// 	// else if (!T.tally_meta.serverOnline) {
-	// 	// 	if (DEBUG) console.warn("📟 Server.getTallyUser() [2.1] *** SERVER NOT ONLINE ***");
-	// 	// }
-	// 	//
-	// 	// // 3. check if user logged in
-	// 	// else {
-	// 	// 	// get response
-	// 	// 	userLoggedInResponse = await fetch(_url, {
-	// 	// 			credentials: 'include'
-	// 	// 		})
-	// 			// .then((response) => {
-	// 			// 	if (DEBUG) console.log("📟 Server.getTallyUser() [3.1] response.status =", response.status);
-	// 			//
-	// 			// 	// if response then server is online
-	// 			// 	if (response) T.tally_meta.serverOnline = true;
-	// 			//
-	// 			// 	// go to next .then()
-	// 			// 	if (response.status === 200) return response.json();
-	// 			// 	else if (response.status === 401) return false;
-	// 			//
-	// 			// 	// go straight to .catch()
-	// 			// 	else throw new Error('Something went wrong');
-	// 			// // })
-	// 			// .then(async (result) => {
-	// 			//
-	// 			// 	// make sure user was returned
-	// 			// 	if (result && result.username) {
-	// 			// 		if (DEBUG) console.log("📟 Server.getTallyUser() [3.2] SUCCESS result.username = %c" + JSON.stringify(result.username), Debug.styles.greenbg);
-	// 			//
-	// 			// 		// merge attack data from server with T.tally_user data properties
-	// 			// 		result.attacks = Server.mergeAttackDataFromServer(result.attacks);
-	// 			// 		T.tally_user = result;
-	// 			// 		store("tally_user", T.tally_user);
-	// 			// 		// serverResponseMillis = new Date().getTime() - _startTimeMillis;
-	// 			// 		return true;
-	// 			// 	} else {
-	// 			// 		if (DEBUG) console.warn("📟 Server.getTallyUser() [3.3] FAIL result.username = %c" + JSON.stringify(result.username), Debug.styles.redbg);
-	// 			// 		return false;
-	// 			// 	}
-	// 			// })
-	// 			// .catch((error) => {
-	// 			// 	// user (or server) is not online
-	// 			// 	if (DEBUG) console.warn("📟 Server.getTallyUser() [3.4] FAIL", _url, "😢 USER NOT LOGGED-IN", JSON.stringify(error), Debug.getCurrentDateStr());
-	// 			// 	return false;
-	// 			// });
-	// 	}
-	// 	// if (DEBUG) console.log("📟 Server.getTallyUser() [4.1] SAVING data");
-	//
-	//
-	//
-	//
-	//
-	//
-	// 	// // save tally_meta
-	// 	// T.tally_meta.userLoggedIn = userLoggedInResponse;
-	// 	// // if connection failed
-	// 	// if (!userLoggedInResponse) {
-	// 	// 	// track failed attempts
-	// 	// 	T.tally_meta.userLoggedInFailedAttempts++;
-	// 	// } else {
-	// 	// 	// reset
-	// 	// 	T.tally_meta.userLoggedInFailedAttempts = 0;
-	// 	// }
-	//
-	// 	// // save server status
-	// 	// updateStatusSaveMeta({
-	// 	// 	serverOnline: userLoggedInResponse,
-	// 	// 	serverSecondsSinceLastChecked: 0,
-	// 	// 	serverResponseMillis: serverResponseMillis
-	// 	// });
-	//
-	//
-	// 	// return status
-	// 	return userLoggedInResponse;
-	// }
-	//
-	//
+
 
 
 	/**
@@ -564,68 +446,57 @@ window.Server = (function() {
 		send: send,
 		canSendUpdate: canSendUpdate,
 		checkIfUserOnline: checkIfUserOnline,
-		//		checkIfOnline: checkIfOnline,
-		startServerTimedEvents: startServerTimedEvents,
-		updateStatusSaveMeta: updateStatusSaveMeta,
 		returnTopMonsters: returnTopMonsters,
-		// getTallyUser: getTallyUser,
 		mergeAttackDataFromServer: mergeAttackDataFromServer
 	};
 }());
 
 
 
-//
-// /**
-//  *	Chrome web request error handling
-//  */
-//
-// // ::net errors
-// // potentially use filters to isolate specific errors for Tally
-// // > https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/webRequest/onErrorOccurred
-// // --> https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/webRequest/RequestFilter
-// // ----> https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/webRequest/ResourceType
-// chrome.webRequest.onErrorOccurred.addListener(function(details) {
-// 	console.error(Debug.getCurrentDateStr(), "onErrorOccurred", details);
-//
-// 	// connection refused: tally server did not respond (offline or busy)
-// 	if (details.error === "net::ERR_CONNECTION_REFUSED" && details.url === T.tally_meta.env.api) {
-// 		console.error("onErrorOccurred", "TALLY CANNOT CONNECT");
-// 	}
-//
-//
-// }, {
-// 	urls: ["http://*/*", "https://*/*"]
-// });
-//
-// // check for HTTP errors
-// chrome.webRequest.onHeadersReceived.addListener(function(details) {
-// 	// console.error("onHeadersReceived", details);
-//
-// 	var status = extractStatus(details.statusLine);
-// 	if (!status) return;
-// 	// if error code is 4** or 5**
-// 	if (status.code.charAt(0) == '5' || status.code.charAt(0) == '4')
-// 		console.error("onHeadersReceived", details);
-// }, {
-// 	urls: ["http://*/*", "https://*/*"]
-// });
-//
-// // function handleNetworkError(details) {
-// // 	console.error(details);
-// // 	// console.error(Debug.getCurrentDateStr());
-// // }
-//
-// /**
-//  *	Extract status code/message
-//  * 	'HTTP/1.1 200 OK' => { "code": 200, "message": "ok"}
-//  */
-// function extractStatus(line) {
-// 	var match = line.match(/[^ ]* (\d{3}) (.*)/);
-// 	if (match)
-// 		return {
-// 			code: match[1],
-// 			message: match[2]
-// 		};
-// 	else return undefined;
-// }
+
+/**
+ *	Chrome web request error handling
+ */
+
+// ::net errors
+// potentially use filters to isolate specific errors for Tally
+// > https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/webRequest/onErrorOccurred
+// --> https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/webRequest/RequestFilter
+// ----> https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/webRequest/ResourceType
+chrome.webRequest.onErrorOccurred.addListener(function(details) {
+	console.error(Debug.getCurrentDateStr(), "onErrorOccurred", details);
+
+	// connection refused: tally server did not respond (offline or busy)
+	if (details.error === "net::ERR_CONNECTION_REFUSED" && details.url === T.tally_meta.env.api) {
+		console.error("onErrorOccurred", "TALLY CANNOT CONNECT");
+	}
+}, {
+	urls: ["http://*/*", "https://*/*"]
+});
+
+// check for HTTP errors
+chrome.webRequest.onHeadersReceived.addListener(function(details) {
+	// console.error(Debug.getCurrentDateStr(), "onHeadersReceived", details);
+
+	var status = extractStatus(details.statusLine);
+	if (!status) return;
+	// if error code is 4** or 5**
+	if (status.code.charAt(0) == '5' || status.code.charAt(0) == '4')
+		console.error(Debug.getCurrentDateStr(), "onHeadersReceived", details);
+}, {
+	urls: ["http://*/*", "https://*/*"]
+});
+
+/**
+ *	Extract status code/message
+ * 	'HTTP/1.1 200 OK' => { "code": 200, "message": "ok"}
+ */
+function extractStatus(line) {
+	var match = line.match(/[^ ]* (\d{3}) (.*)/);
+	if (match)
+		return {
+			code: match[1],
+			message: match[2]
+		};
+	else return undefined;
+}

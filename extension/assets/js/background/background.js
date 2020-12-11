@@ -50,12 +50,7 @@ window.Background = (function() {
 			// set server/api production | development
 			await Install.setEnvironment();
 
-			// 2.3 userLoggedIn
-
-			// server is online so check if user logged in
-			// - this is the FIRST attempt to get T.tally_user data from server
-			// - if they are then this function writes over local storage objects
-
+			// 2.2 check server connection and get tally_user
 
 			// params for send()
 			let params = {
@@ -64,9 +59,11 @@ window.Background = (function() {
 				method: "GET",
 				url: "/user/getTallyUser"
 			};
-			const userLoggedIn = await Server.send(params);
-			if (DEBUG) console.log(log, "[2.4] userLoggedIn =", userLoggedIn);
-			if (!userLoggedIn) {
+			// contact server
+			const getTallyUserResponse = await Server.send(params);
+			if (DEBUG) console.log(log, "[2.4] getTallyUserResponse =", getTallyUserResponse);
+			// if false returned
+			if (!getTallyUserResponse) {
 
 				// if first time install then definitely open start screen
 				if (firstTimeInstallation) {
@@ -76,7 +73,7 @@ window.Background = (function() {
 				}
 				// else this is a reinstall and user needs to login
 				else {
-					if (DEBUG) console.log(log, "-> RE INSTALL, ** MAYBE ** LAUNCH START SCREEN");
+					if (DEBUG) console.log(log, "-> RE INSTALL, LET SERVER.SEND() LAUNCH START SCREEN");
 				}
 			}
 			// user logged in ...
@@ -89,55 +86,6 @@ window.Background = (function() {
 				return true;
 			}
 
-
-
-			//
-			//
-			// let userOnline = await Server.checkIfUserOnline();
-			// if (DEBUG) console.log(log, "[2.2] userOnline =", userOnline);
-			// // if user NOT online ...
-			// if (!userOnline) {
-			// 	if (DEBUG) console.warn(log, "[2.2] USER NOT ONLINE");
-			// 	return false; // stop
-			// }
-			//
-			// // 2.2 serverOnline
-			//
-			// // check the API status
-			// const serverOnline = await Server.checkIfOnline();
-			// if (DEBUG) console.log(log, "[2.3] serverOnline =", serverOnline);
-			// // if server NOT online ...
-			// if (!serverOnline) {
-			// 	if (DEBUG) console.warn(log, "[2.3] API SERVER NOT ONLINE");
-			// 	return false; // stop
-			// }
-			//
-			// // 2.3 userLoggedIn
-			//
-			// // server is online so check if user logged in
-			// // - this is the FIRST attempt to get T.tally_user data from server
-			// // - if they are then this function writes over local storage objects
-			// const userLoggedIn = await Server.getTallyUser();
-			// if (DEBUG) console.log(log, "[2.4] userLoggedIn =", userLoggedIn);
-			// if (!userLoggedIn) {
-			//
-			// 	// if first time install then definitely open start screen
-			// 	if (firstTimeInstallation) {
-			// 		if (DEBUG) console.log(log, "-> NEW INSTALL, LAUNCH START SCREEN");
-			// 		// prompt to install
-			// 		const startScreenResponse = await Install.launchStartScreen();
-			// 	}
-			//
-			// }
-			// // user logged in ...
-			// else {
-			// 	// username is stored in T.tally_user and we can pass it to populate monsters
-			// 	const returnTopMonstersResponse = await Server.returnTopMonsters();
-			// 	if (DEBUG) console.log(log, "[2.5] returnTopMonstersResponse =", returnTopMonstersResponse);
-			// 	Debug.elapsedTime(log, "[2.5]");
-			// 	// return true to send data back to content
-			// 	return true;
-			// }
 			// if we get this far then fail
 			return false;
 
@@ -158,30 +106,31 @@ window.Background = (function() {
 
 				// log times for monitoring overnight debugging
 				logTimesInterval: setInterval(function() {
-					console.log(log, "logTimesInterval", Debug.getCurrentDateStr());
-				}, (60 * 60 * 1000)), // every 1 hour
+					if (new Date().getMinutes() === "00")
+						console.log("\n🕒 - - - - - - - - - - - - ", Debug.getCurrentDateStr(), " - - - - - - - - - - - - \n");
+				}, (1 * 60 * 1000)), // every 1 min
 
 
-				// check if user online (connected to internet)
-				userOnlineInterval: setInterval(function() {
-					console.log(log, "userOnlineInterval", Debug.getCurrentDateStr());
-					Server.checkIfUserOnline();
-				}, (1 * 60 * 1000)), // every 1 minute (low overhead)
+				// // check if user online (connected to internet)
+				// userOnlineInterval: setInterval(function() {
+				// 	console.log(log, "userOnlineInterval", Debug.getCurrentDateStr());
+				// 	Server.checkIfUserOnline();
+				// }, (1 * 60 * 1000)), // every 1 minute (low overhead)
 
 
-				// check if tally server is online
-				serverOnlineInterval: setInterval(function() {
-					console.log(log, "serverOnlineInterval", Debug.getCurrentDateStr());
-					Server.send({
-						caller: "📟 Server.testSendFunction()",
-						action: "serverOnline",
-						method: "GET",
-						url: "",
-						data: {}
-					}).then(response => {
-						console.log("send() / response =", response);
-					});
-				}, (10 * 60 * 1000)), // every 10 minutes
+				// // check if tally server is online
+				// serverOnlineInterval: setInterval(function() {
+				// 	console.log(log, "serverOnlineInterval", Debug.getCurrentDateStr());
+				// 	Server.send({
+				// 		caller: "📟 Server.testSendFunction()",
+				// 		action: "serverOnline",
+				// 		method: "GET",
+				// 		url: "",
+				// 		data: {}
+				// 	}).then(response => {
+				// 		console.log("send() / response =", response);
+				// 	});
+				// }, (10 * 60 * 1000)), // every 10 minutes
 
 			};
 		} catch (err) {
@@ -204,9 +153,6 @@ window.Background = (function() {
 	 */
 	function dataReport() {
 		try {
-			T.tally_user = store("tally_user");
-			T.tally_options = store("tally_options");
-			T.tally_meta = store("tally_meta");
 			dataReportHeader("🧰 Background.dataReport()", "#", "before");
 			if (DEBUG) console.log("%cT.tally_user", Debug.styles.greenbg, JSON.stringify(T.tally_user));
 			if (DEBUG) console.log("%cT.tally_options", Debug.styles.greenbg, JSON.stringify(T.tally_options));
@@ -218,25 +164,26 @@ window.Background = (function() {
 	}
 
 	function dataReportHeader(title, char, pos) {
-		// console.trace();
-		if (!DEBUG) return;
-		// make string
-		let line = "";
-		for (let i = 0; i < 30; i++) {
-			line += char;
+		try {
+			// console.trace();
+			if (!DEBUG) return;
+			// make string
+			let line = "";
+			for (let i = 0; i < 30; i++) {
+				line += char;
+			}
+			if (pos == "before") console.log("\n");
+			console.log(line + " " + title + " " + line);
+			if (pos == "after") console.log("\n");
+		} catch (err) {
+			console.error("dataReportHeader() failed");
 		}
-		if (pos == "before") console.log("\n");
-		console.log(line + " " + title + " " + line);
-		if (pos == "after") console.log("\n");
 	}
-
-
 
 
 
 	// PUBLIC
 	return {
-
 		runInstallChecks: runInstallChecks,
 		dataReport: dataReport,
 		dataReportHeader: dataReportHeader
