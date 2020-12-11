@@ -295,12 +295,9 @@ window.Tally = (function() {
 			if (T.tally_options.gameMode === "disabled") return;
 
 			// MOUSE ENTER ( NOT LOGGED-IN VERSION )
-			// if mode !== active - AND - server online - AND - they aren't logged in then show prompt
-			if (!Page.data.mode.active && Page.data.mode.serverOnline && !Page.data.mode.loggedIn) {
-				if (interaction === 'mouseenter') {
-					Account.playLoginPrompt();
-				}
-				return;
+			if (interaction === 'mouseenter') {
+				// check to see if we should play login prompt and return early if it did
+				if (Account.checkAndPlayLoginPrompt()) return;
 			}
 			// ELSE CONTINUE...
 
@@ -454,11 +451,8 @@ window.Tally = (function() {
 			// don't allow if mode disabled or stealth
 			if (T.tally_options.gameMode === "disabled" || T.tally_options.gameMode === "stealth") return;
 
-			// if mode !== active - AND - server online - AND - they aren't logged in then show prompt
-			if (!Page.data.mode.active && Page.data.mode.serverOnline && !Page.data.mode.loggedIn) {
-				Account.playLoginPrompt();
-				return;
-			}
+			// check to see if we should play login prompt and return early if it did
+			if (Account.checkAndPlayLoginPrompt()) return;
 
 			// if restarting or continuing
 			if ((clickCount >= 0 && clickCount <= clickCountMax) || clickInterval) {
@@ -751,21 +745,21 @@ window.Tally = (function() {
 
 			// launch profile
 			$(document).on('click', '.tally_profile_link', function() {
-				window.open(T.tally_meta.website + "/profile/" + T.tally_user.username);
+				window.open(T.tally_meta.env.website + "/profile/" + T.tally_user.username);
 			});
 			$(document).on('click', '#tally_dashboard', function() {
-				window.open(T.tally_meta.website + "/dashboard");
+				window.open(T.tally_meta.env.website + "/dashboard");
 			});
 			$(document).on('click', '#tally_leaderboard', function() {
-				window.open(T.tally_meta.website + "/leaderboards");
+				window.open(T.tally_meta.env.website + "/leaderboards");
 			});
 
 			// web pages
 			$(document).on('click', '#tally_howToPlay', function() {
-				window.open(T.tally_meta.website + "/how-to-play");
+				window.open(T.tally_meta.env.website + "/how-to-play");
 			});
 			$(document).on('click', '#tally_faq', function() {
-				window.open(T.tally_meta.website + "/faq");
+				window.open(T.tally_meta.env.website + "/faq");
 			});
 			$(document).on('click', '#tally_gameTrailerBtn', function() {
 				window.open("https://www.youtube.com/watch?v=hBfq8TNHbCE");

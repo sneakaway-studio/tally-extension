@@ -16,8 +16,8 @@ window.T = (function () {
 	// global vars
 	let startUpPromisesResolved = false; // has all data loaded from background?
 
-	// options for development / production
-	let options = {
+	// environment options for development / production
+	let envOptions = {
 			development: {
 				// api: "http://localhost:5000/api",
 				// website: "http://localhost:5000",
@@ -31,7 +31,7 @@ window.T = (function () {
 				website: "https://tallysavestheinternet.com",
 			},
 			// true = development, false = production
-			localhost: false, // change to false to quickly shift to production server
+			localhost: true, // change to false to quickly shift to production server
 			debugging: true
 		},
 		DEBUG = true;
@@ -69,7 +69,7 @@ window.T = (function () {
 	// PUBLIC
 	return {
 
-		options: options,
+		envOptions: envOptions,
 		updateOptionsFromGameMode: updateOptionsFromGameMode,
 
 		set startUpPromisesResolved (value) { startUpPromisesResolved = value; },

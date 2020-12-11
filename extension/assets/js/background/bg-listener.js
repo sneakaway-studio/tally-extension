@@ -11,7 +11,8 @@ window.Listener = (function() {
 	chrome.runtime.onMessage.addListener(
 		function(request, sender, sendResponse) {
 			try {
-				// if (DEBUG) console.log("👂🏼 Listener.addListener() onMessage.request =", JSON.stringify(request), sender, sendResponse);
+				// if (DEBUG) console.log("👂🏼 Listener.onMessage() request =", JSON.stringify(request), sender, sendResponse);
+				// if (DEBUG) console.log("👂🏼 Listener.onMessage()", request.action, request.name);
 
 				// needed for several conditions below
 				T.tally_user = store("tally_user");
@@ -22,23 +23,23 @@ window.Listener = (function() {
 				 *	A generic server data grabber - currently in use for random urls only
 				 */
 				if (request.action == "getDataFromServer" && request.url) {
-					// only connect if logged in
-					if (!T.tally_meta || !T.tally_meta.userLoggedIn) {
-						sendResponse({
-							"action": request.action,
-							"message": false
-						});
-						return false;
-					}
-					if (DEBUG) console.log("👂🏼 Listener.addListener() < getData [1]", request.name);
+					// // only connect if logged in
+					// if (!T.tally_meta || !T.tally_meta.userLoggedIn) {
+					// 	sendResponse({
+					// 		"action": request.action,
+					// 		"message": false
+					// 	});
+					// 	return false;
+					// }
+					// if (DEBUG) console.log("👂🏼 Listener.onMessage() < getData [1]", request.name);
 
 					// (attempt to) get data from server, response to callback
 					$.ajax({
 						type: "GET",
-						url: T.tally_meta.api + request.url,
+						url: T.tally_meta.env.api + request.url,
 						dataType: 'json'
 					}).done(result => {
-						if (DEBUG) console.log("👂🏼 Listener.getDataFromServer() > RESULT =", JSON.stringify(result));
+						// if (DEBUG) console.log("👂🏼 Listener.getDataFromServer() > RESULT =", JSON.stringify(result));
 						// reply to contentscript
 						sendResponse({
 							"action": request.action,
@@ -46,9 +47,9 @@ window.Listener = (function() {
 							"data": result
 						});
 					}).fail(err => {
-						console.error("👂🏼 Listener.getDataFromServer() > RESULT =", Debug.getCurrentDateStr(), JSON.stringify(err));
+						console.error("👂🏼 Listener.getDataFromServer() > RESULT =", JSON.stringify(err));
 						// server might not be reachable
-						Server.checkIfOnline();
+						//						Server.checkIfOnline();
 						sendResponse({
 							"action": request.action,
 							"message": false
@@ -68,26 +69,26 @@ window.Listener = (function() {
 
 				// get data from background
 				else if (request.action == "getData" && request.name) {
-					// if (DEBUG) console.log("👂🏼 Listener.addListener() < getData [1]", request.name);
+					// if (DEBUG) console.log("👂🏼 Listener.onMessage() < getData [1]", request.name);
 					// build response
 					let resp = {
 						"action": request.action,
 						"message": 1,
 						"data": store(request.name)
 					};
-					// if (DEBUG) console.log("👂🏼 Listener.addListener() > getData [2]", request.name, resp);
+					// if (DEBUG) console.log("👂🏼 Listener.onMessage() > getData [2]", request.name, resp);
 					// send
 					sendResponse(resp);
 				}
 				// save data in background - used by popup, etc.
 				if (request.action == "saveData" && request.name && request.data) {
-					if (DEBUG) console.log("👂🏼 Listener.addListener() < saveData [1]", request.name);
+					// if (DEBUG) console.log("👂🏼 Listener.onMessage() < saveData [1]", request.name);
 					// save data
 					let success = 0;
 					if (store(request.name, request.data))
 						success = 1;
 					else {
-						console.error("👂🏼 Listener.addListener() > Could not save data", Debug.getCurrentDateStr(), request);
+						console.error("👂🏼 Listener.onMessage() > Could not save data", request);
 					}
 					// send response
 					sendResponse({
@@ -95,6 +96,7 @@ window.Listener = (function() {
 						"message": success
 					});
 				}
+
 
 
 
@@ -190,7 +192,6 @@ window.Listener = (function() {
 
 				// receive and log debug messages from content
 				else if (request.action == "sendBackgroundDebugMessage") {
-
 					Background.dataReportHeader("🗜️ " + request.caller, "<", "before");
 					if (DEBUG) console.log("url =", request.str);
 					Background.dataReportHeader("/ 🗜️ " + request.caller, ">", "after");
@@ -213,9 +214,9 @@ window.Listener = (function() {
 				}
 
 
-				// setBadgeText
+				// openPopup
 				else if (request.action == "openPopup") {
-					if (DEBUG) console.log("👂🏼 Listener.addListener() openPopup",
+					if (DEBUG) console.log("👂🏼 Listener.onMessage() openPopup",
 						"sender =", sender,
 						"sender.tab =", sender.tab,
 						"sender.tab.id =", sender.tab.id
@@ -250,14 +251,14 @@ window.Listener = (function() {
 				// - get latest data from server; run start checks
 				// - a.k.a. "resetUser", "resetGame"
 				else if (request.action == "resetTallyUserFromServer") {
-					if (DEBUG) console.log("👂🏼 Listener.addListener() < resetTallyUserFromServer [1] ");
+					if (DEBUG) console.log("👂🏼 Listener.onMessage() < resetTallyUserFromServer [1] ");
 
 					// (re)start app to pull in data, run checks, and return control back to content
 					Background.runInstallChecks()
 						.then(function(result) {
-							if (DEBUG) console.log("👂🏼 Listener.addListener() > resetTallyUserFromServer [2.1] ", result);
+							if (DEBUG) console.log("👂🏼 Listener.onMessage() > resetTallyUserFromServer [2.1] ", result);
 							if (DEBUG) console.log(store("tally_user"));
-							if (DEBUG) console.log("👂🏼 Listener.addListener() > resetTallyUserFromServer [2.2] ", result);
+							if (DEBUG) console.log("👂🏼 Listener.onMessage() > resetTallyUserFromServer [2.2] ", result);
 
 							// force reset
 							T.tally_meta.userLoggedIn = true;
@@ -276,8 +277,7 @@ window.Listener = (function() {
 								"message": 1
 							});
 						}).catch(function(err) {
-							if (DEBUG) console.log("👂🏼 Listener.addListener() > resetTallyUserFromServer [3.1] ", err);
-
+							if (DEBUG) console.error("👂🏼 Listener.onMessage() > resetTallyUserFromServer [3.1] ", err);
 						});
 
 					// required so chrome knows this is asynchronous
@@ -288,97 +288,43 @@ window.Listener = (function() {
 
 
 
-				// sendUpdateToBackground
+				// updateTallyUser
 				// - receive and save score, event, page, etc. data in background
 				// - if server online and account good then send to server
 				// - receive and reply to content with tally_user and tally_meta
-				else if (request.action == "sendUpdateToBackground") {
+				else if (request.action == "updateTallyUser") {
 
-					// default response
-					let responseToContentScript = {
+					let _startTimeMillis = new Date().getTime(),
+						responseToContentScript = {
 							"action": request.action,
 							"message": false,
 							"tally_user": T.tally_user,
 							"tally_meta": T.tally_meta
-						},
-						_startTimeMillis = new Date().getTime(),
-						serverResponseMillis = -1;
+						};
 
+					// one day add logic to save data in bg here ...
 
-					// one day add logic to save data in bg here
-					// ...
+					// params for send()
+					let params = {
+						caller: "👂🏼 Listener.updateTallyUser()",
+						action: "updateTallyUser",
+						method: "PUT",
+						url: "/user/updateTallyUser",
+						data: request.data
+					};
+					if (DEBUG) console.log("👂🏼 Listener.onMessage() [1] updateTallyUser params =", params);
 
-
-					if (!T.tally_meta.userOnline) {
-						console.warn("👂🏼 Listener.addListener() ! sendUpdateToBackground - USER OFFLINE");
-						// reply to contentscript
+					Server.send(params).then(responseFromSend => {
+						if (DEBUG) console.log("👂🏼 Listener.onMessage() [2] updateTallyUser responseFromSend =", responseFromSend);
+						// reply to contentscript with updated tally_user
+						responseToContentScript.message = responseFromSend;
 						sendResponse(responseToContentScript);
-					} else if (!T.tally_meta.serverOnline) {
-						console.warn("👂🏼 Listener.addListener() ! sendUpdateToBackground - SERVER OFFLINE");
-						// reply to contentscript
+					}).catch(err => {
+						if (DEBUG) console.error("👂🏼 Listener.onMessage() err =", err);
 						sendResponse(responseToContentScript);
-					} else if (!T.tally_meta.userLoggedIn) {
-						console.warn("👂🏼 Listener.addListener() ! sendUpdateToBackground - USER NOT LOGGED-IN");
-						// reply to contentscript
-						sendResponse(responseToContentScript);
-					} else {
-						if (DEBUG) console.log("👂🏼 Listener.addListener() < sendUpdateToBackground", request.data);
+					});
+					if (DEBUG) console.log("👂🏼 Listener.onMessage() [3] updateTallyUser");
 
-						// (attempt to) send data to server, response to callback
-						$.ajax({
-							type: "PUT",
-							url: T.tally_meta.api + "/user/updateTallyUser",
-							contentType: 'application/json', // content we are sending
-							dataType: 'json',
-							data: JSON.stringify(request.data)
-						}).done(result => {
-							// if tally_user returned
-							if (result.username) {
-								// result contains tally_user
-								if (DEBUG) console.log("👂🏼 Listener.addListener() > sendUpdateToBackground, result.username = %c" +
-									JSON.stringify(result.username), Debug.styles.greenbg);
-
-								// merge attack data from server with game data properties
-								result.attacks = Server.mergeAttackDataFromServer(result.attacks);
-								// then send to .a
-								T.tally_meta.userLoggedIn = true;
-								// response time
-								serverResponseMillis = new Date().getTime() - _startTimeMillis;
-								return true;
-							} else {
-								if (DEBUG) console.log("👂🏼 Listener.addListener() > sendUpdateToBackground, %cresult.username", Debug.styles.redbg);
-								// else update tally_meta
-								T.tally_meta.userLoggedIn = false;
-								return false;
-							}
-						}).fail(err => {
-							if (DEBUG) console.warn("👂🏼 Listener.addListener() > sendUpdateToBackground - FAIL result.username = %c", Debug.styles.redbg);
-							T.tally_meta.userLoggedIn = false;
-						}).always(result => {
-							if (DEBUG) console.log("👂🏼 Listener.addListener() > sendUpdateToBackground - ALWAYS - result =", result);
-
-							// reset T.tally_user
-							T.tally_user = result;
-
-							// reset time since last checked server
-							T.tally_meta.serverTimeSinceLastCheck = 0;
-							// update last time checked
-							T.tally_meta.serverTimeOfLastCheckMillis = new Date().getTime();
-							// update server response time
-							T.tally_meta.serverResponseMillis = serverResponseMillis;
-
-							// save result
-							store("tally_user", T.tally_user);
-							store("tally_meta", T.tally_meta);
-
-							responseToContentScript.message = T.tally_meta.userLoggedIn;
-							responseToContentScript.tally_meta = T.tally_meta;
-							responseToContentScript.tally_user = T.tally_user;
-
-							// reply to contentscript with updated tally_user
-							sendResponse(responseToContentScript);
-						});
-					}
 
 					// required so chrome knows this is asynchronous
 					return true;

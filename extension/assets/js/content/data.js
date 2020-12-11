@@ -50,7 +50,7 @@ window.TallyData = (function () {
 
 			// do not proceed if a backgroundUpdate already exists with edits
 			if (backgroundUpdateEdits > 0) {
-				if (DEBUG) console.log("💾 TallyData.createBackgroundUpdate() backgroundUpdateEdits =", backgroundUpdateEdits);
+				// if (DEBUG) console.log("💾 TallyData.createBackgroundUpdate() backgroundUpdateEdits =", backgroundUpdateEdits);
 				return;
 			}
 
@@ -209,14 +209,14 @@ window.TallyData = (function () {
 				managerCountdownInterval = 4,
 				managerCountdownMax = 8;
 
-			// don't start if not online or if battle active
-			if (!T.tally_meta.userLoggedIn || Battle.active) {
-				if (DEBUG) console.log("💾 TallyData.startManager() [1]",
-					"T.tally_meta.userLoggedIn =", T.tally_meta.userLoggedIn,
-					"Battle.active =", Battle.active
-				);
-				return false;
-			}
+			// // don't start if not online or if battle active
+			// if (!T.tally_meta.userLoggedIn || Battle.active) {
+			// 	if (DEBUG) console.log("💾 TallyData.startManager() [1]",
+			// 		"T.tally_meta.userLoggedIn =", T.tally_meta.userLoggedIn,
+			// 		"Battle.active =", Battle.active
+			// 	);
+			// 	return false;
+			// }
 
 			// increment time to wait
 			managerCountdown += managerCountdownInterval;
@@ -290,11 +290,13 @@ window.TallyData = (function () {
 	function pushUpdate(caller) {
 		try {
 			if (DEBUG) Debug.dataReportHeader("💾 < TallyData.pushUpdate() [0] caller = " + caller, "#", "before");
-			// don't send if not online
-			if (!T.tally_meta.userLoggedIn) {
-				if (DEBUG) console.log("💾 TallyData.pushUpdate() [1] STOP: T.tally_meta.userLoggedIn =", T.tally_meta.userLoggedIn);
-				return false;
-			}
+
+			// // don't send if not online
+			// ACTUALLY, LET BACKGROUND HANDLE THIS NOW.
+			// if (!T.tally_meta.userLoggedIn) {
+			// 	if (DEBUG) console.log("💾 TallyData.pushUpdate() [1] STOP: T.tally_meta.userLoggedIn =", T.tally_meta.userLoggedIn);
+			// 	return false;
+			// }
 			if (Battle.active) {
 				if (DEBUG) console.log("💾 TallyData.pushUpdate() [1] STOP: Battle.active =", Battle.active);
 				return false;
@@ -327,7 +329,7 @@ window.TallyData = (function () {
 
 			// send update to background (which will determine whether to send to server)
 			chrome.runtime.sendMessage({
-				'action': 'sendUpdateToBackground',
+				'action': 'updateTallyUser',
 				'data': backgroundUpdate
 			}, function (response) {
 				if (DEBUG) console.log('💾 > TallyData.pushUpdate() [2] RESPONSE =', response);

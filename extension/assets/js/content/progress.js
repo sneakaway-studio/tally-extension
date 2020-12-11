@@ -1,6 +1,6 @@
 "use strict";
 
-window.Progress = (function () {
+window.Progress = (function() {
 	// PRIVATE
 	let DEBUG = Debug.ALL.Progress;
 
@@ -199,8 +199,13 @@ window.Progress = (function () {
 			// do we show notifications?
 			if (T.tally_options.showNotifications) {
 				if (Page.data.actions.onTallyWebsite) {
+
 					// NOTE: tutorials increment their own progress
-					if (Page.data.url.includes("/how-to-play") && get("viewOnboardingHowto1") < 2) {
+
+					// check if there are flags, and that they are logged in
+					if ($(".tallyFlags").length > 0 && $("#userLoggedin").length > 0) {
+						Tutorial.play("tutorial", "onboardingFirstLogin1");
+					} else if (Page.data.url.includes("/how-to-play") && get("viewOnboardingHowto1") < 2) {
 						Tutorial.play("tutorial", "onboardingHowto1");
 					} else if (Page.data.url.includes("/how-to-play") && get("viewOnboardingHowto2") < 2) {
 						Tutorial.play("tutorial", "onboardingHowto2");
@@ -285,15 +290,15 @@ window.Progress = (function () {
 	 */
 	function createScrollListeners() {
 		try {
-			// do not allow offline
-			if (!Page.data.mode.loggedIn) return;
+			// allow offline
+			if (Page.data.mode.notActive) return;
 			// don't allow if mode disabled
 			if (T.tally_options.gameMode === "disabled") return;
 
 			if (DEBUG) console.log("🕹️ Progress.createScrollListeners() [1]");
 
 			// on scroll
-			$(window).scroll(function () {
+			$(window).scroll(function() {
 				// console.log('scroll detected');
 				// if (DEBUG) console.log("🕹️ Progress.createScrollListeners() [2]",
 				// 	"pageActionScrollDistance =", pageActionScrollDistance
@@ -310,18 +315,18 @@ window.Progress = (function () {
 					d = now;
 				}
 				clearTimeout(t);
-				t = setTimeout(function () {
+				t = setTimeout(function() {
 					if (scrolling)
 						$(window).trigger('scrollEnd');
 				}, 300);
 			});
 			// trigger for scroll start
-			$(window).bind('scrollStart', function () {
+			$(window).bind('scrollStart', function() {
 				scrolling = true;
 				// console.log('scrollStart');
 			});
 			// trigger for scroll end
-			$(window).bind('scrollEnd', function () {
+			$(window).bind('scrollEnd', function() {
 				scrolling = false;
 				// console.log('scrollEnd');
 				// increase # most scrolls on page, compare against past
@@ -386,7 +391,7 @@ window.Progress = (function () {
 			if (DEBUG) console.log("🕹️ Progress.dashboardLogin() -> dashboardLogins =", dashboardLogins);
 
 			// called at beginning of page load so add delay before game things (dialogue, sound, etc.)
-			setTimeout(function () {
+			setTimeout(function() {
 
 				// 1a. first time
 				if (accountCreatedWelcomeMessage <= 4) {
@@ -477,7 +482,7 @@ window.Progress = (function () {
 			if (DEBUG) console.log("🕹️ Progress.resetUserAccount()");
 
 			// called at beginning of page load so add delay before game things (dialogue, sound, etc.)
-			setTimeout(function () {
+			setTimeout(function() {
 				// do we show notifications?
 				if (T.tally_options.showNotifications) {
 					// tell user with random message

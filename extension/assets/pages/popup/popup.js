@@ -74,7 +74,7 @@ function init() {
 			_tally_meta = response.data;
 			if (!_tally_meta.userLoggedIn) {
 				// display only the login
-				let str = "<a href='" + _tally_meta.website + "/dashboard" + "' target='_blank'>Link your Tally account</a>";
+				let str = "<a href='" + _tally_meta.env.website + "/dashboard" + "' target='_blank'>Link your Tally account</a>";
 				$(".content").html(str);
 			} else {
 				if (_tally_user.admin > 0)
@@ -318,7 +318,7 @@ function sendUpdateToBackground() {
 		background.console.log("POPUP -> sendUpdateToBackground() [1]", background);
 
 		chrome.runtime.sendMessage({
-			'action': 'sendUpdateToBackground',
+			'action': 'updateTallyUser',
 			'data': popupUpdate
 		}, function (response) {
 			background.console.log("POPUP -> sendUpdateToBackground() [2]");
@@ -442,8 +442,8 @@ function getMeta(callback) {
 			$("#onlineStatus").html((_tally_meta.userOnline ? "true" : "false"));
 			$("#serverStatus").html((_tally_meta.serverOnline ? "true" : "false"));
 			$("#loggedInStatus").html((_tally_meta.userLoggedIn ? "true" : "false"));
-			$("#currentAPI").html((_tally_meta.currentAPI ? _tally_meta.currentAPI : "null"));
-			$("#api").html((_tally_meta.api ? _tally_meta.api : "null"));
+			$("#currentAPI").html((_tally_meta.env.currentAPI ? _tally_meta.env.currentAPI : "null"));
+			$("#api").html((_tally_meta.env.api ? _tally_meta.env.api : "null"));
 
 
 			$("#installedOn").html(_tally_meta.install.date);
@@ -460,7 +460,7 @@ function getMeta(callback) {
 // reset _tally_user
 document.getElementById("opt_reset_user").onclick = function () {
 	try {
-		window.open(_tally_meta.website + "/dashboard");
+		window.open(_tally_meta.env.website + "/dashboard");
 	} catch (err) {
 		console.error(err);
 	}
@@ -618,19 +618,19 @@ $(document).on('click', '#gameTrailerBtn', function () {
 	window.open("https://www.youtube.com/watch?v=hBfq8TNHbCE");
 });
 $(document).on('click', '#viewProfileBtn', function () {
-	window.open(_tally_meta.website + "/profile/" + _tally_user.username);
+	window.open(_tally_meta.env.website + "/profile/" + _tally_user.username);
 });
 $(document).on('click', '#editProfileBtn', function () {
-	window.open(_tally_meta.website + "/dashboard");
+	window.open(_tally_meta.env.website + "/dashboard");
 });
 $(document).on('click', '#viewLeaderboardsBtn', function () {
-	window.open(_tally_meta.website + "/leaderboard");
+	window.open(_tally_meta.env.website + "/leaderboard");
 });
 $(document).on('click', '#howToPlayBtn', function () {
-	window.open(_tally_meta.website + "/how-to-play");
+	window.open(_tally_meta.env.website + "/how-to-play");
 });
 $(document).on('click', '#viewPrivacyPolicyBtn', function () {
-	window.open(_tally_meta.website + "/privacy");
+	window.open(_tally_meta.env.website + "/privacy");
 });
 
 // surveys

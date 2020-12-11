@@ -205,7 +205,7 @@ window.Monster = (function() {
 				}));
 			}
 			// reference to image file (moved to server )
-			var url = T.tally_meta.website + '/' + 'assets/img/monsters/monsters-300h/' + monster.mid + '-anim-sheet.png';
+			var url = T.tally_meta.env.website + '/' + 'assets/img/monsters/monsters-300h/' + monster.mid + '-anim-sheet.png';
 			//var url = chrome.extension.getURL('assets/img/472-master-3d-test.png');
 
 			// set monster image

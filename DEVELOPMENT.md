@@ -26,7 +26,7 @@ General information and references for cross-browser extension development
 
 ### Packaging
 
-1. Set all `T.options` to `false`
+1. Set all `T.envOptions` to `false`
 1. Remove localhost from host permissions in manifest
 1. Zip extension files (Chrome: Zip `extension/` directory; Firefox: Zip *only files inside* extension directory)
 1. Rename extension zip files  
@@ -61,7 +61,7 @@ General information and references for cross-browser extension development
 
 
 
-### Browsers 
+### Browsers
 
 - Chrome (Chromium) - [download](https://www.google.com/chrome/)
 - Chromium - [download](https://www.chromium.org/getting-involved/download-chromium)

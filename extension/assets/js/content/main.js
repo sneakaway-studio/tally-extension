@@ -84,7 +84,7 @@ window.TallyMain = (function () {
 			// SET PAGE INFO
 
 			// are we on the tally website?
-			Page.data.actions.onTallyWebsite = Page.data.url.includes(T.tally_meta.website) || false;
+			Page.data.actions.onTallyWebsite = Page.data.url.includes(T.tally_meta.env.website) || false;
 			// if so are we on the dashboard?
 			if (Page.data.actions.onTallyWebsite)
 				Page.data.actions.onDashboard = Page.data.url.includes("/dashboard") || false;

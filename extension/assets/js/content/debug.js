@@ -73,9 +73,9 @@ window.Debug = (function() {
 		try {
 			if (1) return;
 			let now = new Date().getTime();
-			if (DEBUG) console.log("🗜️ Debug.elapsedTime() ELAPSED =", now - then, caller);
+			if (DEBUG) console.log(getCurrentDateStr(), "🗜️ Debug.elapsedTime() ELAPSED =", now - then, caller);
 		} catch (err) {
-			console.error(err);
+			console.error(getCurrentDateStr(), err);
 		}
 	}
 	elapsedTime("");
@@ -94,20 +94,20 @@ window.Debug = (function() {
 	 */
 	function setAll(state) {
 		try {
-			if (DEBUG) console.log("🗜️ Debug.setAll() state =", state);
+			if (DEBUG) console.log(getCurrentDateStr(), "🗜️ Debug.setAll() state =", state);
 			for (var key in ALL) {
 				if (ALL.hasOwnProperty(key)) {
 					ALL[key] = state;
 				}
 			}
 		} catch (err) {
-			console.error(err);
+			console.error(getCurrentDateStr(), err);
 		}
 	}
 	// setAll(true);
 	// setAll(false);
 
-	if (!T.options.debugging) {
+	if (!T.envOptions.debugging) {
 		DEBUG = false;
 		setAll(false);
 	}
@@ -126,7 +126,7 @@ window.Debug = (function() {
 			// time the request
 			let startTime = new Date().getTime();
 
-			// if (DEBUG) console.log("🗜️ Debug.sendBackgroundDebugMessage()", caller, str);
+			// if (DEBUG) console.log(getCurrentDateStr(), "🗜️ Debug.sendBackgroundDebugMessage()", caller, str);
 			let msg = {
 				'action': 'sendBackgroundDebugMessage',
 				'caller': caller,
@@ -138,11 +138,11 @@ window.Debug = (function() {
 
 			chrome.runtime.sendMessage(msg, function(response) {
 				let endTime = new Date().getTime();
-				// if (DEBUG) console.log("🗜️ Debug.sendBackgroundDebugMessage() time = " + (endTime - startTime) + "ms, RESPONSE =", JSON.stringify(response));
+				// if (DEBUG) console.log(getCurrentDateStr(), "🗜️ Debug.sendBackgroundDebugMessage() time = " + (endTime - startTime) + "ms, RESPONSE =", JSON.stringify(response));
 			});
 		} catch (err) {
 			TallyStorage.backgroundConnectErrors++;
-			console.error(err);
+			console.error(getCurrentDateStr(), err);
 		}
 	}
 
@@ -156,10 +156,10 @@ window.Debug = (function() {
 				line += char;
 			}
 			if (pos == "before") console.log("");
-			console.log(line + " " + title + " " + line);
+			console.log(getCurrentDateStr(), line + " " + title + " " + line);
 			if (pos == "after") console.log("");
 		} catch (err) {
-			console.error(err);
+			console.error(getCurrentDateStr(), err);
 		}
 	}
 

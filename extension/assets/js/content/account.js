@@ -7,7 +7,8 @@ window.Account = (function() {
 	// PRIVATE
 
 	let DEBUG = Debug.ALL.Account,
-		tallyLoginPrompts = 0;
+		loginPromptsOnThisPage = 0,
+		maxLoginPromptPerPage = 3;
 
 
 
@@ -18,9 +19,9 @@ window.Account = (function() {
 		try {
 			// an array of message prompts
 			let messages = [
-				"Please <a href='" + T.tally_meta.website + "/dashboard' target='_blank'>visit your dashboard</a> to connect your account",
-				"You can't stop the trackers unless you <a href='" + T.tally_meta.website + "/dashboard' target='_blank'>connect your account</a>",
-				"<a href='" + T.tally_meta.website + "/dashboard' target='_blank'>Link your account</a> to start playing Tally"
+				"Please <a href='" + T.tally_meta.env.website + "/dashboard' target='_blank'>visit your dashboard</a> to connect your account",
+				"You can't stop the trackers unless you <a href='" + T.tally_meta.env.website + "/dashboard' target='_blank'>connect your account</a>",
+				"<a href='" + T.tally_meta.env.website + "/dashboard' target='_blank'>Link your account</a> to start playing Tally"
 			];
 			return FS_Object.randomArrayIndex(messages);
 		} catch (err) {
@@ -31,18 +32,23 @@ window.Account = (function() {
 	/**
 	 *	Tally says a login prompt
 	 */
-	function playLoginPrompt() {
+	function checkAndPlayLoginPrompt() {
 		try {
-			console.log("tallyLoginPrompts", tallyLoginPrompts);
+			if (DEBUG) console.log("🔑 Account.checkAndPlayLoginPrompt() loginPromptsOnThisPage", loginPromptsOnThisPage);
 
-			// check if they have already logged in and Tally should update
-			if (Page.data.actions.onTallyWebsite)
-				if ($(".tallyFlags").length > 0 && $("#userLoggedin").length > 0)
-					Tutorial.play("tutorial", "onboardingFirstLogin1");
+			let didPrompt = false;
 
-			// only play a few times per load
-			if (++tallyLoginPrompts > 5) return;
-			Dialogue.showStr(returnPrompt(), "sad");
+			// if !loggedIn, and we're sure server wasn't just temporarily offline...
+			if (!Page.data.mode.loggedIn &&
+				(T.tally_meta.userLoggedInFailedAttempts >= 5 || T.tally_meta.serverOnlineFailedAttempts >= 5)) {
+				// only play a few times per load
+				if (++loginPromptsOnThisPage > maxLoginPromptPerPage) return;
+				// show dialogue
+				Dialogue.showStr(returnPrompt(), "sad");
+				// return true so calling functions know to stop execution of other game events
+				didPrompt = true;
+			}
+			return didPrompt;
 
 		} catch (err) {
 			console.error(err);
@@ -85,6 +91,6 @@ window.Account = (function() {
 	// PUBLIC
 	return {
 		returnPrompt: returnPrompt,
-		playLoginPrompt: playLoginPrompt
+		checkAndPlayLoginPrompt: checkAndPlayLoginPrompt
 	};
 })();

@@ -135,7 +135,7 @@ window.Flag = (function () {
 						}, 2000);
 						setTimeout(function () {
 							Dialogue.showStr("Your extension (" + T.tally_meta.install.version + ") is " +
-								(0 - versionCompare) + " behind the latest. <a href='" + T.tally_meta.website +
+								(0 - versionCompare) + " behind the latest. <a href='" + T.tally_meta.env.website +
 								"/get-tally'>Please update soon</a>.", "excited");
 						}, 2100);
 					}
