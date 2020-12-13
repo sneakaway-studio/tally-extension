@@ -8,35 +8,6 @@ window.Server = (function() {
 
 
 
-	/**
-	 *	Check if game can send an update and track failed attempts
-	 */
-	function canSendUpdate() {
-		try {
-			// let connected = true;
-			// // if we want to send an update but can't because ...
-			// // user not logged in, server not online, or user not connected to internet
-			// if (!T.tally_meta.userOnline) {
-			// 	console.warn("📟 Server.canSendUpdate() ❌ USER OFFLINE");
-			// 	T.tally_meta.userOnlineFailedAttempts++;
-			// 	connected = false;
-			// } else if (!T.tally_meta.serverOnline) {
-			// 	console.warn("📟 Server.canSendUpdate() ❌ SERVER OFFLINE");
-			// 	T.tally_meta.serverOnlineInFailedAttempts++;
-			// 	connected = false;
-			// } else if (!T.tally_meta.userLoggedIn) {
-			// 	console.warn("📟 Server.canSendUpdate() ❌ USER NOT LOGGED-IN");
-			// 	T.tally_meta.userLoggedInFailedAttempts++;
-			// 	connected = false;
-			// }
-			// // save tally_meta
-			// store('tally_meta', T.tally_meta);
-			// return connected;
-		} catch (err) {
-			console.error(err);
-		}
-	}
-
 
 	/**
 	 *	Check if user is online, save and return status
@@ -55,100 +26,6 @@ window.Server = (function() {
 			console.error(err);
 		}
 	}
-
-	/**
-	 *	Check if API Server is online, save status
-	 */
-	async function checkIfOnline() {
-		try {
-			//
-			// // T.tally_meta = store("tally_meta");
-			// let _url = T.tally_meta.env.api,
-			// 	// set default server status info
-			// 	_startTimeMillis = new Date().getTime(),
-			// 	serverResponseMillis = -1,
-			// 	serverOnlineResponse = false,
-			// 	// serverJustCameBackOnline = false
-			// 	;
-
-			// 1. make sure user is online
-
-			// // update userOnline status
-			// T.tally_meta.userOnline = navigator.onLine;
-			// // if !userOnline
-			// if (!T.tally_meta.userOnline) {
-			// 	if (DEBUG) console.warn("📟 Server.checkIfOnline() [1] *** USER NOT ONLINE ***");
-			// 	// since we can't check server, we can't rely on any other connections
-			// 	T.tally_meta.userLoggedIn = false;
-			// }
-
-			// // 2. if userOnline, check server status
-			// else {
-				// get response
-				// serverOnlineResponse = await fetch(_url)
-					// .then((response) => {
-					// 	if (DEBUG) console.log("📟 Server.checkIfOnline() [2.1] response.status =", response.status);
-					// 	// go to next .then()
-					// 	if (response.status === 200) return response.json();
-					// 	// go straight to .catch()
-					// 	else throw new Error('Something went wrong');
-					// })
-					// .then((data) => {
-					// 	if (DEBUG) console.log("📟 Server.checkIfOnline() [2.2] SUCCESS", JSON.stringify(data));
-					// 	// update state
-					// 	//serverResponseMillis = new Date().getTime() - _startTimeMillis;
-					// 	return true;
-					// })
-					// .catch((error) => {
-					// 	// server is not online
-					// 	if (DEBUG) console.warn("📟 Server.checkIfOnline() [2.3] FAIL", _url, "😢 NOT ONLINE", JSON.stringify(error), Debug.getCurrentDateStr());
-					// 	return false;
-					// });
-			// }
-
-
-			// 3. look @ previous state
-			// if (DEBUG) console.log("📟 Server.checkIfOnline() [3]", "LOOK @ PREVIOUS STATE serverOnlineResponse =", serverOnlineResponse);
-
-			// // if server wasn't online before, has just come online, and this isn't the first run
-			// if (!T.tally_meta.serverOnline && serverOnlineResponse && timedEvents != null)
-			// 	serverJustCameBackOnline = true;
-
-
-			// 4. update current state
-			// if (DEBUG) console.log("📟 Server.checkIfOnline() [4]", "UPDATE STATE serverOnlineResponse =", serverOnlineResponse);
-
-
-			// 	serverOnline: serverOnlineResponse,
-			// 	serverSecondsSinceLastChecked: 0,
-			// 	serverResponseMillis: serverResponseMillis
-			// });
-
-			// // if connection failed
-			// if (!serverOnlineResponse) {
-			// 	// track failed attempts
-			// 	T.tally_meta.serverOnlineFailedAttempts++;
-			// 	// since we can't check server, we can't rely on other connections
-			// 	T.tally_meta.userLoggedIn = false;
-			// } else {
-			// 	// reset
-			// 	T.tally_meta.serverOnlineFailedAttempts = 0;
-			// }
-
-
-			// 5. other functions
-			// if (DEBUG) console.log("📟 Server.checkIfOnline() [5]", "OTHER FUNCTIONS! serverOnlineResponse =", serverOnlineResponse);
-
-
-
-			// return
-			// return serverOnlineResponse;
-		} catch (err) {
-			console.error(err);
-		}
-	}
-
-
 
 
 
@@ -368,27 +245,24 @@ window.Server = (function() {
 	/**
 	 *  Refresh T.tally_top_monsters from API server
 	 */
-	async function returnTopMonsters() {
+	async function saveTopMonstersFromApi() {
 		try {
-			T.tally_meta = store("tally_meta");
-			T.tally_user = store("tally_user");
-			T.tally_top_monsters = store("tally_top_monsters");
 
-			// if (DEBUG) console.log("📟 Server.returnTopMonsters() [1]", T.tally_meta, T.tally_user);
+			// if (DEBUG) console.log("📟 Server.saveTopMonstersFromApi() [1]", T.tally_meta, T.tally_user);
 
 			// 1. return early if user !online
 			if (!T.tally_meta.userOnline) {
-				if (DEBUG) console.warn("📟 Server.returnTopMonsters() [1.1] *** USER NOT ONLINE ***");
+				if (DEBUG) console.warn("📟 Server.saveTopMonstersFromApi() [1.1] *** USER NOT ONLINE ***");
 				return false;
 			}
 			// 2. return early if !server
 			else if (!T.tally_meta.serverOnline) {
-				if (DEBUG) console.warn("📟 Server.returnTopMonsters() [1.2] *** SERVER NOT ONLINE ***");
+				if (DEBUG) console.warn("📟 Server.saveTopMonstersFromApi() [1.2] *** SERVER NOT ONLINE ***");
 				return false;
 			}
 			// 3. return early if !username
 			else if (FS_Object.prop(T.tally_user.username) && T.tally_user.username === "") {
-				if (DEBUG) console.warn("📟 Server.returnTopMonsters() [1.3] *** NO USERNAME ***");
+				if (DEBUG) console.warn("📟 Server.saveTopMonstersFromApi() [1.3] *** NO USERNAME ***");
 				return false;
 			}
 
@@ -400,14 +274,14 @@ window.Server = (function() {
 				dataType: 'json',
 			}).done(result => {
 				// treat all server data as master
-				// if (DEBUG) console.log("📟 Server.returnTopMonsters() [1] RESULT =", JSON.stringify(result));
+				// if (DEBUG) console.log("📟 Server.saveTopMonstersFromApi() [1] RESULT =", JSON.stringify(result));
 				T.tally_top_monsters = FS_Object.convertArrayToObject(result.topMonsters, "mid");
-				// if (DEBUG) console.log("📟 Server.returnTopMonsters() [2] RESULT =", JSON.stringify(T.tally_top_monsters));
+				// if (DEBUG) console.log("📟 Server.saveTopMonstersFromApi() [2] RESULT =", JSON.stringify(T.tally_top_monsters));
 				// store top monsters
 				store("tally_top_monsters", T.tally_top_monsters);
 				return true;
 			}).fail(error => {
-				console.error("📟 Server.returnTopMonsters() [3] ERROR =", JSON.stringify(error));
+				console.error("📟 Server.saveTopMonstersFromApi() [3] ERROR =", JSON.stringify(error));
 				return false;
 			});
 		} catch (err) {
@@ -444,9 +318,8 @@ window.Server = (function() {
 	// PUBLIC
 	return {
 		send: send,
-		canSendUpdate: canSendUpdate,
 		checkIfUserOnline: checkIfUserOnline,
-		returnTopMonsters: returnTopMonsters,
+		saveTopMonstersFromApi: saveTopMonstersFromApi,
 		mergeAttackDataFromServer: mergeAttackDataFromServer
 	};
 }());

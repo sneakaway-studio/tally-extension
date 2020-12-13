@@ -133,7 +133,6 @@ window.Install = (function() {
 	async function launchStartScreen() {
 		try {
 			// console.trace();
-			T.tally_meta = await store("tally_meta");
 			let pageToShow = "/get-anonyname";
 
 			// don't launch in development

@@ -28,12 +28,6 @@ window.Background = (function() {
 	 * 		2.1. firstTimeInstallation
 	 * 				= true	-> no previous data found, install objects
 	 * 				= false	-> previous data found, don't install objects
-	 * 		2.2. serverOnline
-	 * 				= false	-> save in meta then stop
-	 * 				= true	-> save, then continue
-	 * 		2.3. userLoggedIn
-	 * 				= false -> not logged-in, open login window
-	 * 				= true  -> save data, then continue
 	 */
 	async function runInstallChecks() {
 		try {
@@ -78,9 +72,11 @@ window.Background = (function() {
 			}
 			// user logged in ...
 			else {
+				// 2.3 save more data for game and start
+
 				// username is stored in T.tally_user and we can pass it to populate monsters
-				const returnTopMonstersResponse = await Server.returnTopMonsters();
-				if (DEBUG) console.log(log, "[2.5] returnTopMonstersResponse =", returnTopMonstersResponse);
+				const saveTopMonstersFromApiResponse = await Server.saveTopMonstersFromApi();
+				if (DEBUG) console.log(log, "[2.5] saveTopMonstersFromApiResponse =", saveTopMonstersFromApiResponse);
 				Debug.elapsedTime(log, "[2.5]");
 				// return true to send data back to content
 				return true;
@@ -106,31 +102,14 @@ window.Background = (function() {
 
 				// log times for monitoring overnight debugging
 				logTimesInterval: setInterval(function() {
-					if (new Date().getMinutes() === "00")
-						console.log("\n🕒 - - - - - - - - - - - - ", Debug.getCurrentDateStr(), " - - - - - - - - - - - - \n");
-				}, (1 * 60 * 1000)), // every 1 min
+					console.log("\n🕒 - - - - - - - - - - - - ", Debug.getCurrentDateStr(), " - - - - - - - - - - - - \n");
+				}, (60 * 60 * 1000)), // every 1 min
 
-
-				// // check if user online (connected to internet)
-				// userOnlineInterval: setInterval(function() {
-				// 	console.log(log, "userOnlineInterval", Debug.getCurrentDateStr());
-				// 	Server.checkIfUserOnline();
-				// }, (1 * 60 * 1000)), // every 1 minute (low overhead)
-
-
-				// // check if tally server is online
-				// serverOnlineInterval: setInterval(function() {
-				// 	console.log(log, "serverOnlineInterval", Debug.getCurrentDateStr());
-				// 	Server.send({
-				// 		caller: "📟 Server.testSendFunction()",
-				// 		action: "serverOnline",
-				// 		method: "GET",
-				// 		url: "",
-				// 		data: {}
-				// 	}).then(response => {
-				// 		console.log("send() / response =", response);
-				// 	});
-				// }, (10 * 60 * 1000)), // every 10 minutes
+				// save top monsters from api
+				saveTopMonstersFromApiInterval: setInterval(function() {
+					console.log(log, "saveTopMonstersFromApiInterval", Debug.getCurrentDateStr());
+					Server.saveTopMonstersFromApi();
+				}, (7 * 24 * 60 * 60 * 1000)), // 1 time per week
 
 			};
 		} catch (err) {

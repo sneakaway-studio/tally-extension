@@ -6,10 +6,7 @@
 window.TallyEvents = (function () {
 	// PRIVATE
 	let DEBUG = Debug.ALL.TallyEvents,
-		timedEvents = {}
-		// // how often to check if user connected (from this page) and save background if user online status has changed
-		// saveUserOnlineStatusTime = 60 * 60 * 1000 // min * secs * millis
-	;
+		timedEvents = {};
 
 	/**
 	 * Timed functions
@@ -26,17 +23,6 @@ window.TallyEvents = (function () {
 						Debug.update();
 					}
 				}, 1000),
-
-// moving to background
-// marked for deletion
-				// // check if user is online and save in background
-				// userOnlineInterval: setInterval(function () {
-				// 	// if this page is focussed
-				// 	if (document.hasFocus()) {
-				// 		T.tally_meta.userOnline = navigator.onLine;
-				// 		TallyStorage.saveData("tally_meta", T.tally_meta);
-				// 	}
-				// }, saveUserOnlineStatusTime),
 
 			};
 		} catch (err) {
