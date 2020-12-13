@@ -59,8 +59,16 @@ window.TallyEvents = (function () {
 						category: "random",
 						subcategory: "recharge"
 					}), {
-						addIfInProcess: false,
+						addIfInProcess: true,
 						instant: true
+					});
+					// say something after
+					Dialogue.showData(Dialogue.getData({
+						category: "random",
+						subcategory: "recharge-post"
+					}), {
+						addIfInProcess: true,
+						instant: false
 					});
 				}, 700);
 			}
