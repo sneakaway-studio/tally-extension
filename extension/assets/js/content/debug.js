@@ -345,10 +345,30 @@ window.Debug = (function() {
 		}
 	}
 
+
 	// global error handler
-	window.onerror = function(message, source, lineno, colno, error) {
-		console.error(getCurrentDateStr(), "Tally", message, source, lineno, colno, error);
+	window.onerror = function(msg, url, lineNo, columnNo, error) {
+		var msgStr = msg.toLowerCase();
+		// ignore CORS / CDN errors
+		if (msgStr.indexOf("script error") > -1) {
+			// console.error('Script Error: See Browser Console for Detail');
+		} else if (msgStr.indexOf("resizeobserver") > -1) {
+			// console.error('ResizeObserver loop limit exceeded error on a page visited by Tally');
+		} else {
+			var message = [
+				'Message: ' + msg,
+				'URL: ' + url,
+				'Line: ' + lineNo,
+				'Column: ' + columnNo,
+				'Error object: ' + JSON.stringify(error)
+			].join(' - ');
+
+			console.error(getCurrentDateStr(), "Tally caught an error", message);
+		}
+
+		return false;
 	};
+
 
 
 	function getCurrentDateStr() {
