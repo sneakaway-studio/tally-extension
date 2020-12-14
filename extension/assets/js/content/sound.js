@@ -1,6 +1,6 @@
 "use strict";
 
-window.Sound = (function () {
+window.Sound = (function() {
 	// PRIVATE
 	var DEBUG = Debug.ALL.Sound,
 		sounds = {
@@ -83,7 +83,7 @@ window.Sound = (function () {
 			//playMusic(battleMusicDir + "battle-intro.wav", false, 0);
 			playMusic(battleMusicDir + "intro-with-loop.mp3", false, 0);
 			// then call again so it switches to the loop
-			setTimeout(function () {
+			setTimeout(function() {
 				//playMusic(battleMusicDir + "battle-loop.wav", true, 0);
 				playMusic(battleMusicDir + "loop.mp3", true, 0);
 			}, 500);
@@ -128,7 +128,7 @@ window.Sound = (function () {
 				startMusic();
 
 				// add listener to make sure loop happens
-				musicAudioEl.addEventListener('ended', function () {
+				musicAudioEl.addEventListener('ended', function() {
 					startMusic();
 				}, false);
 
@@ -302,9 +302,166 @@ window.Sound = (function () {
 		}
 	}
 
+	// available variances for moods-syllables-iterations
+	let moodMap = {
+		cautious: {
+			'1': {
+				'1': 'cautious-1-1.wav'
+			},
+			'2': {
+				'1': 'cautious-2-1.wav',
+				'2': 'cautious-2-2.wav',
+				'3': 'cautious-2-3.wav',
+				'4': 'cautious-2-4.wav',
+				'5': 'cautious-2-5.wav'
+			},
+			'3': {
+				'1': 'cautious-3-1.wav',
+				'2': 'cautious-3-2.wav',
+				'3': 'cautious-3-3.wav',
+				'4': 'cautious-3-4.wav',
+				'5': 'cautious-3-5.wav'
+			},
+			'4': {
+				'1': 'cautious-4-1.wav',
+				'2': 'cautious-4-2.wav',
+				'3': 'cautious-4-3.wav',
+				'4': 'cautious-4-4.wav',
+				'5': 'cautious-4-5.wav'
+			},
+			'5': {
+				'1': 'cautious-5-1.wav',
+				'2': 'cautious-5-2.wav',
+				'3': 'cautious-5-3.wav',
+				'4': 'cautious-5-4.wav',
+				'5': 'cautious-5-5.wav'
+			}
+		},
+		excited: {
+			'1': {
+				'1': 'excited-1-1.wav'
+			},
+			'2': {
+				'1': 'excited-2-1.wav',
+				'3': 'excited-2-3.wav',
+				'4': 'excited-2-4.wav',
+				'5': 'excited-2-5.wav'
+			},
+			'3': {
+				'1': 'excited-3-1.wav',
+				'3': 'excited-3-3.wav',
+				'4': 'excited-3-4.wav',
+				'5': 'excited-3-5.wav'
+			},
+			'4': {
+				'1': 'excited-4-1.wav',
+				'3': 'excited-4-3.wav',
+				'4': 'excited-4-4.wav',
+				'5': 'excited-4-5.wav'
+			},
+			'5': {
+				'1': 'excited-5-1.wav',
+				'3': 'excited-5-3.wav',
+				'4': 'excited-5-4.wav',
+				'5': 'excited-5-5.wav'
+			}
+		},
+		happy: {
+			'1': {
+				'1': 'happy-1-1.wav',
+				'2': 'happy-1-2.wav'
+			},
+			'2': {
+				'1': 'happy-2-1.wav',
+				'2': 'happy-2-2.wav'
+			},
+			'3': {
+				'1': 'happy-3-1.wav'
+			},
+			'4': {
+				'1': 'happy-4-1.wav'
+			},
+			'5': {
+				'1': 'happy-5-1.wav'
+			}
+		},
+		neutral: {
+			'1': {
+				'1': 'neutral-1-1.wav',
+				'2': 'neutral-1-2.wav',
+				'3': 'neutral-1-3.wav',
+				'4': 'neutral-1-4.wav'
+			},
+			'2': {
+				'1': 'neutral-2-1.wav',
+				'2': 'neutral-2-2.wav',
+				'3': 'neutral-2-3.wav',
+				'4': 'neutral-2-4.wav',
+				'5': 'neutral-2-5.wav'
+			},
+			'3': {
+				'1': 'neutral-3-1.wav',
+				'2': 'neutral-3-2.wav'
+			},
+			'4': {
+				'1': 'neutral-4-1.wav',
+				'2': 'neutral-4-2.wav'
+			},
+			'5': {
+				'1': 'neutral-5-1.wav',
+				'2': 'neutral-5-2.wav'
+			}
+		},
+		question: {
+			'1': {
+				'1': 'question-1-1.wav'
+			},
+			'2': {
+				'1': 'question-2-1.wav',
+				'3': 'question-2-3.wav',
+				'4': 'question-2-4.wav',
+				'5': 'question-2-5.wav'
+			},
+			'3': {
+				'1': 'question-3-1.wav',
+				'3': 'question-3-3.wav',
+				'4': 'question-3-4.wav',
+				'5': 'question-3-5.wav'
+			},
+			'4': {
+				'1': 'question-4-1.wav',
+				'3': 'question-4-3.wav',
+				'4': 'question-4-4.wav',
+				'5': 'question-4-5.wav'
+			},
+			'5': {
+				'1': 'question-5-1.wav',
+				'3': 'question-5-3.wav',
+				'4': 'question-5-4.wav',
+				'5': 'question-5-5.wav'
+			}
+		},
+		sad: {
+			'1': {
+				'1': 'sad-1-1.wav'
+			},
+			'2': {
+				'1': 'sad-2-1.wav'
+			},
+			'3': {
+				'1': 'sad-3-1.wav'
+			},
+			'4': {
+				'1': 'sad-4-1.wav'
+			},
+			'5': {
+				'1': 'sad-5-1.wav'
+			}
+		}
+	};
 
 	/**
-	 * 	Plays Tally's Voice based on a mood and the length of the string
+	 * 	Plays Tally's Voice based on a mood (via dialogue obj) and the length of the string
 	 */
 	function playTallyVoice(dialogue) {
 		try {
@@ -317,29 +474,9 @@ window.Sound = (function () {
 			// don't allow if playSounds disabled
 			if (!T.tally_options.playSounds) return;
 
-			// previously received mood as a string
-
-			// let moods = {
-			// 	cautious: 3,
-			// 	danger: 3,
-			// 	happy: 2,
-			// 	neutral: 2,
-			// 	question: 2,
-			// 	sad: 1
-			// };
-			// // make sure mood exists
-			// if (!FS_Object.prop(mood)) return;
-			// if (mood == "award") mood = "happy";
-			// if (DEBUG) console.log("🎵 Sound.playTallyVoice()", mood);
-			// let r = Math.ceil(Math.random() * moods[mood]);
-			// let file = "tally/moods-v2/" + mood + "-" + r + "-2.mp3";
-			// play(file, 150);
-
-
-			// now receives a dialogue obj
-
 			// make sure mood exists
 			if (!FS_Object.prop(dialogue.mood)) return;
+			// fixes old moods
 			if (dialogue.mood == "award") dialogue.mood = "happy";
 			if (DEBUG) console.log("🎵 Sound.playTallyVoice()", JSON.stringify(dialogue));
 
@@ -347,9 +484,29 @@ window.Sound = (function () {
 			let words = (dialogue.text.match(/ /g) || []).length + 1;
 			if (words > 5) words = 5;
 
+			// test
+			let pathname = "",
+				filename = "",
+				iteration = 1;
+
+			// e.g. question-5-3.wav --> mood-syllable-iteration.wav
+			// mood
+			if (moodMap[dialogue.mood]) {
+				// syllable
+				if (FS_Object.prop(moodMap[dialogue.mood][String(words)])) {
+					// iterations
+					// iteration = FS_Object.randomObjKey(moodMap[dialogue.mood][String(words)]);
+					// set the file
+					// pathname = "tally/moods-v4/" + dialogue.mood + "-" + words + "-" + iteration + ".wav";
+					// console.error("🎵 Sound.playTallyVoice()", "NOT FOUND!! 1", moodMap[dialogue.mood][String(words)]);
+
+					// if getting filename from moodMap
+					filename = FS_Object.randomObjProperty(moodMap[dialogue.mood][String(words)]);
+					pathname = "tally/moods-v4/" + filename;
+				} else return;
+			} else return;
 			// play the file
-			let file = "tally/moods-v3/" + dialogue.mood + "-" + words + "-1.wav";
-			play(file, 150);
+			play(pathname, 150);
 		} catch (err) {
 			console.error(err);
 		}
@@ -454,7 +611,7 @@ window.Sound = (function () {
 		playRandomJump: playRandomJump,
 		playRandomJumpReverse: playRandomJumpReverse,
 		playCategory: playCategory,
-		playFile: function (file, delay, volume) {
+		playFile: function(file, delay, volume) {
 			play(file, delay, volume);
 		},
 		playTallyVoice: playTallyVoice,
