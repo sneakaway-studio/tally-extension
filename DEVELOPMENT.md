@@ -27,10 +27,10 @@ General information and references for cross-browser extension development
 ### Packaging
 
 1. Set all `T.envOptions` to `false`
-1. Remove localhost from host permissions in manifest
+1. Remove localhost and `webRequest` from host permissions in manifest
 1. Zip extension files (Chrome: Zip `extension/` directory; Firefox: Zip *only files inside* extension directory)
 1. Rename extension zip files  
-1. Run `releases/clean_zip.sh <filename>.zip` to remove all hidden files like `.DS_Store`
+1. `cd /releases` Run `./clean_zip.sh <filename>*` to remove all hidden files like `.DS_Store`
 1. Upload to respective web stores
 
 
@@ -75,7 +75,7 @@ General information and references for cross-browser extension development
 
 ## Libraries used in Tally
 
-Links to official versions of our libraries (this is needed for Firefox Addon review)
+Links to official versions of our libraries (required for Firefox Addon review)
 
 ```
 https://github.com/juliangarnier/anime/blob/3.2.0/lib/anime.min.js

@@ -6,9 +6,15 @@
 ## Development History
 
 
-### Version 0.4.5
+### Version 0.4.7
 
-* 
+*
+
+### Version 0.4.6
+
+* Adds new dialog and voices for Tally
+* Updates and new monsters
+* Several code improvements
 
 ### Version 0.4.4
 
