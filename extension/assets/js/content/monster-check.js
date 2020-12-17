@@ -279,6 +279,8 @@ window.MonsterCheck = (function() {
 
 			// wait a moment to show on page
 			let waitToTellMonster = setInterval(function() {
+				if (DEBUG) console.log(log, '[5.1] monster =', MonsterData.dataById[mid].slug);
+
 				// gives badges and tutorials a chance to finish
 				if (Tutorial.sequenceActive) return;
 
@@ -289,8 +291,13 @@ window.MonsterCheck = (function() {
 				if (showMonster) Monster.showOnPage(mid);
 				// check/reset skin
 				Skin.updateFromHighestMonsterStage();
+
 				// always show something (after the skin has updated)
-				showSilhouetteDialogue(mid, distance);
+				if (T.tally_options.gameMode == "chill") {
+					showRegularDialogue(mid, distance);
+				} else {
+					showSilhouetteDialogue(mid, distance);
+				}
 
 				clearInterval(waitToTellMonster);
 			}, 1000);
@@ -376,6 +383,119 @@ window.MonsterCheck = (function() {
 	}
 
 
+
+	/**
+	 *	Return a notification string
+	 */
+	function getNotificationDialogue(monster, distance) {
+		try {
+			if (DEBUG) console.log("👿 MonsterCheck.getNotificationDialogue()", monster, distance);
+
+			// set color
+			let color = Skin.currentSkinObj.front || "rgba(70,24,153,1)",
+				str = "",
+				mRef = "",
+				needsVowel = false,
+				r1 = Math.random(),
+				r2 = Math.random(),
+				r3 = Math.random();
+
+			// use monster name and/or level
+			if (r1 < 0.4)
+				mRef = "level " + monster.level + " " + monster.name + " monster";
+			else if (r1 < 0.6)
+				mRef = monster.name + " monster";
+			else if (r1 < 0.7)
+				mRef = "level " + monster.level + " product monster";
+			else if (r1 < 0.8)
+				mRef = "product monster";
+			else
+				mRef = "monster";
+
+			// if first letter is vowel add "an"
+			if (FS_String.containsVowel(mRef[0]))
+				// wrap reference to change color
+				mRef = "an <span style='color: " + color + "'>" + mRef + "</span>";
+			else
+				mRef = "a <span style='color: " + color + "'>" + mRef + "</span>";
+
+			// part 1
+			if (r2 < 0.2) {
+				str += "There's " + mRef;
+			} else if (r2 < 0.4) {
+				str += "There is " + mRef;
+			} else if (r2 < 0.6) {
+				str += "Yikes, " + mRef;
+				needsVowel = true;
+			} else if (r2 < 0.8) {
+				str += "Uh oh, " + mRef;
+				needsVowel = true;
+			} else {
+				// A / An ...
+				str += FS_String.ucFirst(mRef);
+				needsVowel = true;
+			}
+
+			// do we need a vowel?
+			if (needsVowel) str += " is ";
+			// random additions
+			if (r1 < 0.5) str += " hiding ";
+
+			// PAGE
+			if (monster.stage === 3 && r3 < 0.5)
+				str += " on the page!";
+			else if (monster.stage === 3)
+				str += " somewhere on this page!";
+
+			// WEBSITE
+			else if (distance !== "" && distance == "close" && r3 < 0.2)
+				str += " on this website!";
+			else if (distance !== "" && distance == "close" && r3 < 0.8)
+				str += " somewhere on " + Page.data.domain + "!";
+			else if (distance !== "" && distance == "close")
+				str += " somewhere on this site!";
+
+			// NEAR
+			else if (r3 < 0.3)
+				str += " on this site!";
+			else if (r3 < 0.7)
+				str += " somewhere on " + Page.data.domain + "!";
+			else
+				str += " nearby!";
+
+			return str;
+		} catch (err) {
+			console.error(err);
+		}
+	}
+
+
+	/**
+	 *	Show regular monster notification dialogue
+	 */
+	function showRegularDialogue(mid, distance = "") {
+		try {
+			// don't allow if mode disabled or stealth
+			if (T.tally_options.gameMode === "disabled" || T.tally_options.gameMode === "stealth") return;
+
+			let str = "",
+				monster = T.tally_nearby_monsters[mid];
+			if (DEBUG) console.log("👿 MonsterCheck.showRegularDialogue() [1] mid=" + mid, monster);
+
+			// show dialogue with badge image
+			Dialogue.showData({
+				text: getNotificationDialogue(monster, distance),
+				mood: "excited"
+			}, {
+				instant: true
+			});
+
+		} catch (err) {
+			console.error(err);
+		}
+	}
+
+
 	/**
 	 *	Show monster silhouette in dialogue
 	 */
@@ -420,14 +540,7 @@ window.MonsterCheck = (function() {
 			str += "</div>";
 
 			// the text tally says
-			str += "<div class='dialogue_text_after_image'>";
-			if (monster.stage === 3)
-				str += "There's a level " + monster.level + " " + monster.name + " monster on this page!";
-			else if (distance !== "" && distance == "close")
-				str += "A " + monster.name + " monster is hiding on this website!";
-			else
-				str += "There is a " + monster.name + " monster on this site!";
-			str += "</div>";
+			str += "<div class='dialogue_text_after_image'>" + getNotificationDialogue(monster, distance) + "</div>";
 
 			// show dialogue with badge image
 			Dialogue.showData({

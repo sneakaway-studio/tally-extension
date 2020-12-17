@@ -550,11 +550,13 @@ window.Sound = (function() {
 			if (!document.hasFocus()) return;
 			// don't allow if playSounds disabled
 			if (!T.tally_options.playSounds) return;
+			// don't allow if in chill mode, UNLESS THEY ARE INTERACTING
+			if (T.tally_options.gameMode === "chill" && !Page.data.actions.userInteractingWithGame) return;
 			// don't allow if no soundFile
 			if (!FS_Object.prop(soundFile)) return;
 			// don't allow if no extension has issue
 			if (!chrome || !chrome.extension) return;
-			
+
 			// check volume
 			if (volumeModifier > 0.5) volumeModifier = 0;
 

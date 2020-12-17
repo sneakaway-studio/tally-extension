@@ -166,6 +166,7 @@ console.log( "tags", JSON.stringify(tags) );
 					checkForDashboardLoginCalled: false, // in case we are connecting the first time
 					checkForAccountResetCalled: false, // in case we are connecting the first time
 					resetTallyUserFromServerCalled: 0, // monitor # game resets
+					userInteractingWithGame: false, // default false until they hover or click on something
 				}
 			};
 			// add dimensions
@@ -180,7 +181,7 @@ console.log( "tags", JSON.stringify(tags) );
 				// 	addMutationObserver();
 				addTitleChecker();
 
-			// if (DEBUG) 
+			// if (DEBUG)
 			console.log(log, newData);
 			// show in background
 			Debug.sendBackgroundDebugMessage(log, newData.url);

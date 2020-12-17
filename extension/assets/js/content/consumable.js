@@ -78,7 +78,7 @@ window.Consumable = (function() {
 			// reset safety
 			safety = 0;
 			// if val is not set or if it is too close to zero
-			while (consumable.val === 0 || FS_Number.round(consumable.val, 2) === 0)  {
+			while (consumable.val === 0 || FS_Number.round(consumable.val, 2) === 0) {
 				consumable.val = FS_Number.round(FS_Number.randomFloatBetween(consumable.min, consumable.max), 4);
 				// if (DEBUG) console.log('🍪 Consumable.get() [2] consumable =', consumable);
 				if (++safety > 30) {
@@ -215,10 +215,15 @@ window.Consumable = (function() {
 
 				// add listeners
 				$(document).on("mouseover", "#" + id, function() {
+					// so that we know player engaged on this page load
+					Page.data.actions.userInteractingWithGame = true;
 					//if (DEBUG) console.log($(this));
 					hover($(this).attr("data-consumable"));
 				});
 				$(document).on("click", "#" + id, function() {
+					// so that we know player engaged on this page load
+					Page.data.actions.userInteractingWithGame = true;
+
 					// Math.random so gif replays
 					let img = chrome.extension.getURL('assets/img/consumables/consumable-explosion.gif?' + Math.random());
 					$(this).html("<img src='" + img + "'>");

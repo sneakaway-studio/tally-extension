@@ -3,7 +3,7 @@
 /*  BADGE
  ******************************************************************************/
 
-window.Badge = (function () {
+window.Badge = (function() {
 	// PRIVATE
 
 	let DEBUG = Debug.ALL.Badge;
@@ -349,9 +349,13 @@ window.Badge = (function () {
 	 */
 	function award(badge = "") {
 		try {
-			if (!FS_Object.prop(badge) || !FS_Object.prop(badge.name) || badge.name === "") return console.error(badge);
+			if (!FS_Object.prop(badge) || !FS_Object.prop(badge.name) || badge.name === "")
+				return console.error("badge not found", badge);
 
 			if (DEBUG) console.log("🏆 Badge.award()", badge);
+
+			// string for dialogue box
+			let str = "";
 
 			// do we show notifications?
 			if (T.tally_options.showNotifications) {
@@ -359,8 +363,6 @@ window.Badge = (function () {
 				if (!badge.color1 || badge.color1 == "") badge.color1 = "rgba(70,24,153,1)";
 				if (!badge.color2 || badge.color2 == "") badge.color2 = "rgba(170,24,153,1)";
 
-				// string for dialogue box
-				let str = "";
 				str += "<div class='tally tally-dialogue-with-img' style=' " +
 					"background: " + badge.color1 + ";" +
 					"background: linear-gradient(180deg, " + badge.color1 + " 0%, " + badge.color2 + "100%);" +
@@ -387,12 +389,15 @@ window.Badge = (function () {
 
 				// the text tally says
 				str += "<div class='dialogue_text_after_image'>";
+
+				// Tally's comment
 				if (T.tally_user.badges[badge.name] && badge.level > T.tally_user.badges[badge.name].level) {
 					// if they already have that badge
 					str += "You leveled up!";
 				} else {
 					str += "You earned a new badge!";
 				}
+
 				str += "</div>";
 
 				// show dialogue with badge image
@@ -402,6 +407,7 @@ window.Badge = (function () {
 				}, {
 					instant: true
 				});
+				// show comment after badge
 				Dialogue.showData(Dialogue.getData({
 					category: "badge",
 					subcategory: badge.name
@@ -426,6 +432,30 @@ window.Badge = (function () {
 
 				// play sound
 				Sound.playRandomPowerup();
+			}
+			// else if in chill then show TEXT dialogue only
+			else if (T.tally_options.gameMode === "chill") {
+
+				// Tally's comment
+				if (T.tally_user.badges[badge.name] && badge.level > T.tally_user.badges[badge.name].level) {
+					// if they already have that badge
+					str += "You leveled up your " + badge.name + " badge!";
+				} else {
+					str += "You earned a new " + badge.name + " badge!";
+				}
+
+				// show dialogue with badge image
+				Dialogue.showData({
+					text: str,
+					mood: badge.sound
+				}, {
+					instant: true
+				});
+				// show comment after badge
+				Dialogue.showData(Dialogue.getData({
+					category: "badge",
+					subcategory: badge.name
+				}));
 			}
 
 			// update progress

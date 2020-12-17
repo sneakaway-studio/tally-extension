@@ -1,6 +1,6 @@
 "use strict";
 
-window.Dialogue = (function () {
+window.Dialogue = (function() {
 	// PRIVATE
 
 	let DEBUG = Debug.ALL.Dialogue,
@@ -273,7 +273,7 @@ window.Dialogue = (function () {
 			// else, if not active then start a new one
 			if (!_active) writeNextInQueue();
 			// if active, check again in a bit in case there are more
-			setTimeout(function () {
+			setTimeout(function() {
 				queueChecker();
 			}, 200);
 		} catch (err) {
@@ -333,7 +333,10 @@ window.Dialogue = (function () {
 			// show text
 			$('#tally_dialogue_inner').html(dialogue.before + " " + dialogue.text + " " + dialogue.after);
 			// play sound (if exists)
-			if (FS_Object.prop(dialogue.mood)) Sound.playTallyVoice(dialogue);
+			if (FS_Object.prop(dialogue.mood))
+				// don't allow dialogue sounds in chill mode
+				if (T.tally_options.gameMode !== "chill" || Page.data.actions.userInteractingWithGame)
+					Sound.playTallyVoice(dialogue);
 
 
 			// if there is an image
@@ -341,12 +344,12 @@ window.Dialogue = (function () {
 				// if (DEBUG) console.log("💬 Dialogue.writeNextInQueue() [3] IMG found");
 
 				// wait until images load
-				$('#tally_dialogue_inner img').on('load', function () {
+				$('#tally_dialogue_inner img').on('load', function() {
 					// if (DEBUG) console.log("💬 Dialogue.setDialoguBoxSize() imgHeight =", $('#tally_dialogue_inner img').height());
 					// adjust size of the box
 					setDialoguBoxSize(dialogue.text, $('#tally_dialogue_inner').outerHeight());
 				});
-				$('.monster_sprite_dialogue_loader').on('load', function () {
+				$('.monster_sprite_dialogue_loader').on('load', function() {
 					// if (DEBUG) console.log("💬 Dialogue.setDialoguBoxSize() imgHeight =", $('.monster_sprite_outer_dialogue').height());
 					// adjust size of the box
 					setDialoguBoxSize(dialogue.text, $('#tally_dialogue_inner').outerHeight());
@@ -439,7 +442,7 @@ window.Dialogue = (function () {
 		}
 	}
 	// the ... in the dialogue button
-	$(document).on('click', '.tally-dialogue-next', function () {
+	$(document).on('click', '.tally-dialogue-next', function() {
 		skipToNext();
 	});
 
@@ -615,7 +618,7 @@ window.Dialogue = (function () {
 				$(document).off("click", '.tally-dialogue-branch');
 
 				// add new listener
-				$(document).on('click', '.tally-dialogue-branch', function () {
+				$(document).on('click', '.tally-dialogue-branch', function() {
 					// log
 					console.log("hello", $(this).data('category'), $(this).data('index'));
 
@@ -624,12 +627,12 @@ window.Dialogue = (function () {
 						// empty queue and play
 						Tutorial.reset();
 						Dialogue.emptyTheQueue();
-						Tutorial.play("tutorial",$(this).data('index'));
+						Tutorial.play("tutorial", $(this).data('index'));
 					} else if ($(this).data('category') === "joke") {
 						// empty queue and play
 						Tutorial.reset();
 						Dialogue.emptyTheQueue();
-						Tutorial.play("joke",$(this).data('index'));
+						Tutorial.play("joke", $(this).data('index'));
 					} else if ($(this).data('category') === "branch" && $(this).data('index') === "answerNo") {
 						// empty queue and play
 						Tutorial.reset();
@@ -795,8 +798,12 @@ window.Dialogue = (function () {
 
 	// PUBLIC
 	return {
-		set active (value) { _active = value; },
-		get active () { return _active; },
+		set active(value) {
+			_active = value;
+		},
+		get active() {
+			return _active;
+		},
 
 		getData: getData,
 		showData: showData,
@@ -806,7 +813,7 @@ window.Dialogue = (function () {
 		showSurveyPrompt: showSurveyPrompt,
 		emptyTheQueue: emptyTheQueue,
 		hide: hide,
-		getFact: function (domain, includeSource) {
+		getFact: function(domain, includeSource) {
 			return getFact(domain, includeSource);
 		},
 		skipToNext: skipToNext,

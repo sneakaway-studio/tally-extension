@@ -238,6 +238,9 @@ window.Monster = (function() {
 
 			// add listeners
 			$(document).on("mouseover", ".tally_monster_sprite_container", function() {
+				// so that we know player engaged on this page load
+				Page.data.actions.userInteractingWithGame = true;
+
 				let mid = Number($(this).attr('data-mid'));
 				//if (DEBUG) console.log(mid);
 				// do we show notifications?
@@ -252,6 +255,9 @@ window.Monster = (function() {
 				}
 			});
 			$(document).on("click", ".tally_monster_sprite_container", function() {
+				// so that we know player engaged on this page load
+				Page.data.actions.userInteractingWithGame = true;
+
 				let mid = Number($(this).attr('data-mid'));
 				//console.log(mid);
 				// launch battle

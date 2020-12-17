@@ -294,6 +294,9 @@ window.Tally = (function() {
 			// don't allow if mode disabled
 			if (T.tally_options.gameMode === "disabled") return;
 
+			// so that we know player engaged on this page load
+			Page.data.actions.userInteractingWithGame = true;
+
 			// MOUSE ENTER ( NOT LOGGED-IN VERSION )
 			if (interaction === 'mouseenter') {
 				// check to see if we should play login prompt and return early if it did
@@ -450,6 +453,9 @@ window.Tally = (function() {
 			if (Page.data.mode.notActive) return;
 			// don't allow if mode disabled or stealth
 			if (T.tally_options.gameMode === "disabled" || T.tally_options.gameMode === "stealth") return;
+
+			// so that we know player engaged on this page load
+			Page.data.actions.userInteractingWithGame = true;
 
 			// check to see if we should play login prompt and return early if it did
 			if (Account.checkAndPlayLoginPrompt()) return;
