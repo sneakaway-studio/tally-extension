@@ -552,6 +552,9 @@ window.Sound = (function() {
 			if (!T.tally_options.playSounds) return;
 			// don't allow if no soundFile
 			if (!FS_Object.prop(soundFile)) return;
+			// don't allow if no extension has issue
+			if (!chrome || !chrome.extension) return;
+			
 			// check volume
 			if (volumeModifier > 0.5) volumeModifier = 0;
 

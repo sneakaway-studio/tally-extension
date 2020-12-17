@@ -327,6 +327,9 @@ window.TallyData = (function () {
 
 			if (DEBUG) console.log('💾 > TallyData.pushUpdate() [1.2] backgroundUpdate =', backgroundUpdate);
 
+			// make sure extension is ready 
+			if (!chrome || !chrome.runtime) return;
+
 			// send update to background (which will determine whether to send to server)
 			chrome.runtime.sendMessage({
 				'action': 'updateTallyUser',
