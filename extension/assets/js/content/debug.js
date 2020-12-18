@@ -156,7 +156,7 @@ window.Debug = (function() {
 				line += char;
 			}
 			if (pos == "before") console.log("");
-			console.log(getCurrentDateStr(), line + " " + title + " " + line);
+			console.log(line + " " + title + " " + line);
 			if (pos == "after") console.log("");
 		} catch (err) {
 			console.error(getCurrentDateStr(), err);

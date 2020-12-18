@@ -162,7 +162,7 @@ window.Install = (function() {
 
 				// are we in the process resetting user's data?
 				if (tab.url !== undefined && (tab.url.includes("/dashboard") ||
-						tab.url.includes("tallygame.net") || tab.url.includes("tallygame.net") ||
+						tab.url.includes("tallygame.net") || tab.url.includes("tallysavestheinternet.com") ||
 						tab.url.includes(T.tally_meta.env.website)
 					)) {
 					if (DEBUG) console.log("🔧 Install.launchStartScreen() 🛑 ON DASHBOARD");
@@ -240,12 +240,7 @@ window.Install = (function() {
 	function createOptions() {
 		try {
 			var obj = {
-				showTally: true,
-				showClickVisuals: true,
-				playSounds: true,
-				soundVolume: 0.2,
-				showNotifications: true,
-				gameMode: "full", // demo | testing | full | chill | stealth | disabled
+				debuggerPosition: [0, 300],
 				disabledDomains: [
 					"drive.google.com",
 					"docs.google.com",
@@ -253,8 +248,13 @@ window.Install = (function() {
 					"mail.google.com",
 					"moodle.davidson.edu",
 				],
+				gameMode: "full", // demo | testing | full | chill | stealth | disabled
+				playSounds: true,
+				showClickVisuals: true,
 				showDebugger: false,
-				debuggerPosition: [0, 300]
+				showNotifications: true, // defined as sounds + dialogue animations
+				showTally: true,
+				soundVolume: 0.2,
 			};
 			// save options based on gameMode
 			obj = T.updateOptionsFromGameMode(obj);
@@ -296,6 +296,10 @@ window.Install = (function() {
 				userLoggedInFailedAttempts: 0, // number times userLoggedIn (i.e. backgroundUpdate) failed
 				userOnline: navigator.onLine,
 				userOnlineFailedAttempts: 0, // number times userOnline failed
+				// game
+				game: {
+					midsRecentlyShown: {}
+				}
 			};
 		} catch (err) {
 			console.error(err);

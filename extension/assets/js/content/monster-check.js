@@ -16,18 +16,21 @@ window.MonsterCheck = (function() {
 
 
 
+
 	/**
 	 *	Initial check function, error checking, refreshes nearby monsters from backend continues to next
 	 */
-	function check() {
+	async function check() {
 		try {
 			// allow offline
 			if (Page.data.mode.notActive) return;
 			// don't allow if mode disabled
 			if (T.tally_options.gameMode === "disabled") return;
-			// don't check on our site
-			if (Page.data.domain == "tallygame.net" || Page.data.domain == "tallysavestheinternet.com") return;
+			// don't check tally domains
+			if ($.inArray(Page.data.domain, GameData.tallyDomains) >= 0) return;
 			if (Page.data.actions.onTallyWebsite) return;
+
+			let log = "👿 MonsterCheck.check()";
 
 			// set potential based on level
 			if (T.tally_user.level < 5) {
@@ -35,26 +38,66 @@ window.MonsterCheck = (function() {
 				potential = 0.95;
 			}
 
-			checkNearbyMonsterTimes();
+			if (DEBUG) Debug.dataReportHeader(log, "#", "before", 15);
 
+
+			// 1. Check current nearby monsters
+
+			// update/remove nearby monsters
+			let removeOldResp = await removeOldNearbyMonsters();
+			// save
+			TallyStorage.saveData("tally_nearby_monsters", T.tally_nearby_monsters, log);
+			if (DEBUG) console.log(log, "[1] removeOldResp =", removeOldResp);
+
+
+
+			// 2. Get tag from page
+
+			// save MIDs on page to stage 0
+			T.tally_tag_matches.s0 = await returnTagMatches();
+			// then update stage 1, 2, 3 monsters
+			[T.tally_tag_matches.s1, T.tally_tag_matches.s2, T.tally_tag_matches.s3] = await returnMonsterStages();
+			// save tag matches
+			TallyStorage.saveData("tally_tag_matches", T.tally_tag_matches, log);
+			if (DEBUG) console.log(log, "[2] T.tally_tag_matches.s0 =", T.tally_tag_matches.s0);
+
+
+			// only proceed if there are trackers
+			if (FS_Object.objLength(Page.data.trackers.found) < 1) {
+				if (DEBUG) console.log(log, "[3] NO TRACKERS ON THIS PAGE - Page.data.trackers =", Page.data.trackers);
+				// return;
+			}
+
+			// 3. Attempt tag/monster match
+
+			let midMatched = await attemptTagMatch();
+
+			if (midMatched > -1) {
+				if (DEBUG) console.log(log, "[3.1] 🙌 A MATCH ELEVATED midMatched =", midMatched);
+				// if match
+				handleMatch(midMatched);
+			} else {
+				if (DEBUG) console.log(log, "[3.2] ❌ NO MATCH ELEVATED midMatched =", midMatched);
+			}
 		} catch (err) {
 			console.error(err);
 		}
 	}
 
 	/**
-	 *	Make sure all monsters are nearby, deletes those that aren't
+	 *	Make sure all monsters are nearby, delete those that aren't
 	 */
-	async function checkNearbyMonsterTimes() {
+	async function removeOldNearbyMonsters() {
 		try {
-			let log = "👿 MonsterCheck.checkNearbyMonsterTimes()";
-			if (DEBUG) Debug.dataReportHeader(log, "#", "before", 15);
+			let log = "👿 MonsterCheck.removeOldNearbyMonsters()";
 
 			let now = Date.now(),
 				deleteList = [];
+
 			// make sure T.tally_nearby_monsters exists
 			if (T.tally_nearby_monsters && FS_Object.objLength(T.tally_nearby_monsters) > 0) {
 				if (DEBUG) console.log(log, "[1] T.tally_nearby_monsters =", T.tally_nearby_monsters);
+
 				// loop through them
 				for (var mid in T.tally_nearby_monsters) {
 					if (T.tally_nearby_monsters.hasOwnProperty(mid)) {
@@ -73,40 +116,67 @@ window.MonsterCheck = (function() {
 			}
 			// log deleted to console
 			if (DEBUG)
-				if (deleteList.length > 0) console.log(log, "[2] DELETING", deleteList);
-			// save
-			TallyStorage.saveData("tally_nearby_monsters", T.tally_nearby_monsters, log);
+				if (deleteList.length > 0) console.log(log, "[2] DELETED", deleteList);
 
 			// set the skin color
 			Skin.updateFromHighestMonsterStage();
+			return true;
+		} catch (err) {
+			console.error(err);
+		}
+	}
 
+	/**
+	 *	Attempt to match page tags to monsters
+	 */
+	async function attemptTagMatch() {
+		try {
+			// make sure we have tags to choose from
+			if (T.tally_tag_matches.s0.length < 1) return;
 
-			// only proceed if there are trackers
-			if (FS_Object.objLength(Page.data.trackers.found) < 1) {
-				if (DEBUG) console.log(log, "[3] NO TRACKERS ON THIS PAGE - Page.data.trackers =", Page.data.trackers);
-				return;
+			let log = "👿 MonsterCheck.attemptTagMatch()",
+				arr = [],
+				midMatched = -1,
+				secondsBlocked = 10 * 60,
+				maxIndex = Math.min(8, T.tally_tag_matches.s0.length); // this array is sorted by occurance of tags
+
+			// remove old tag matches from
+			for (let mid in T.tally_meta.game.midsRecentlyShown) {
+				mid = Number(mid);
+				if (T.tally_meta.game.midsRecentlyShown.hasOwnProperty(mid)) {
+					if (DEBUG) console.log(log, mid, "🧐 was last shown", FS_Date.diffSeconds("now", T.tally_meta.game.midsRecentlyShown[mid]), "seconds ago");
+
+					// if time to remove from block list
+					if (FS_Date.diffSeconds("now", T.tally_meta.game.midsRecentlyShown[mid]) > secondsBlocked) {
+						if (DEBUG) console.log(log, "✅ REMOVING", mid, 'FROM BLOCK LIST');
+						// remove it from array
+						delete T.tally_meta.game.midsRecentlyShown[mid];
+					}
+				}
 			}
 
-			// update stage 0 monsters using tags
-			T.tally_tag_matches.s0 = await returnTagMatches();
+			// loop until we have an acceptable match to return
+			let safety = 0;
+			while (midMatched < 0) {
+				midMatched = FS_Object.randomArrayIndexFromRange(T.tally_tag_matches.s0, 0, maxIndex);
 
-			// update stage 1, 2, 3 monsters
-			[T.tally_tag_matches.s1, T.tally_tag_matches.s2, T.tally_tag_matches.s3] = await returnMonsterStages();
+				// if mid is still in recently shown on page list
+				if (T.tally_meta.game.midsRecentlyShown[midMatched]) {
 
-			// update stages in background
-			TallyStorage.saveData("tally_tag_matches", T.tally_tag_matches, "👿 MonsterCheck.checkNearbyMonsterTimes()");
+					if (DEBUG) console.log(log, midMatched, 'was last shown', FS_Date.diffSeconds("now", T.tally_meta.game.midsRecentlyShown[midMatched]), "seconds ago");
 
-			if (DEBUG) console.log(log, '[4] T.tally_tag_matches =', T.tally_tag_matches);
-
-			if (T.tally_tag_matches.s0.length > 0)
-				// once it returns, pick one from stage0 to elevate
-				handleMatch(FS_Object.randomArrayIndexFromRange(T.tally_tag_matches.s0, 0, 5));
-
+					// reset to try new match
+					midMatched = -1;
+				}
+				if (++safety > 20) break;
+			}
+			return midMatched;
 
 		} catch (err) {
 			console.error(err);
 		}
 	}
+
 
 
 	/**
@@ -161,7 +231,7 @@ window.MonsterCheck = (function() {
 			for (let mid in T.tally_nearby_monsters) {
 				if (T.tally_nearby_monsters.hasOwnProperty(mid)) {
 					if (!FS_Object.prop(T.tally_nearby_monsters[mid])) continue;
-					if (DEBUG) console.log(log, '[2] mid =', mid);
+					// if (DEBUG) console.log(log, '[2] mid =', mid);
 					// add the mid to the array
 					obj["s" + T.tally_nearby_monsters[mid].stage].push(Number(mid));
 				}
@@ -267,9 +337,16 @@ window.MonsterCheck = (function() {
 				// save to log after code above
 				if (DEBUG) console.log(log, '[4] monster =', MonsterData.dataById[mid].slug, T.tally_nearby_monsters[mid]);
 			}
+
+			if (showMonster) {
+				// add to recently shown
+				T.tally_meta.game.midsRecentlyShown[mid] = moment();
+				TallyStorage.saveData("tally_meta", T.tally_meta, log);
+			}
+
 			// update stage 1,2,3 monsters
 			[T.tally_tag_matches.s1, T.tally_tag_matches.s2, T.tally_tag_matches.s3] = await returnMonsterStages();
-			// update stages in background
+			// save tag matches
 			TallyStorage.saveData("tally_tag_matches", T.tally_tag_matches, log);
 
 			// update the list of found monsters
@@ -289,10 +366,11 @@ window.MonsterCheck = (function() {
 				}
 				// if set, show monster on page
 				if (showMonster) Monster.showOnPage(mid);
+
 				// check/reset skin
 				Skin.updateFromHighestMonsterStage();
 
-				// always show something (after the skin has updated)
+				// always say something (after the skin has updated)
 				if (T.tally_options.gameMode == "chill") {
 					showRegularDialogue(mid, distance);
 				} else {
