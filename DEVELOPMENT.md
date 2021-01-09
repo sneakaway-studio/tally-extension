@@ -71,6 +71,29 @@ General information and references for cross-browser extension development
 
 
 
+## Tips for building extensions
+
+### CSS
+
+CSS from web pages will affect ("pollute") display properties in your extension, often messing up your own styling. For example, if this rule is set on a page your extension (html that you show in the content scripts) will inherit it:
+```css
+p { color: red; }
+```
+To make sure your code doesn't inherit page styles (listed in increasing potential to protect your own styles):
+- Use uncommon class and id names. This works unless the styling rules are applied very broadly (like above).
+- Wrap all your code within a unique class or id.
+- Using `!important` on all your rules.
+- Explicitly set a default for every property within your extension.
+
+```css
+#uniquePrefix p { color: black !important; }
+```
+
+
+
+
+
+
 
 
 ## Libraries used in Tally

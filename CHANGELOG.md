@@ -8,7 +8,7 @@
 
 ### Version 0.4.7
 
-*
+* Improves Tally notifications and game experience in chill mode
 
 ### Version 0.4.6
 

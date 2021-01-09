@@ -5,7 +5,8 @@ var GameData = (function() {
 
 	let tallyDomains = [
 			"tallygame.net",
-			"tallysavestheinternet.com"
+			"tallysavestheinternet.com",
+			"sneakaway.studio"
 		],
 		socialDomains = [
 			"facebook.com",

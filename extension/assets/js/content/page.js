@@ -85,7 +85,7 @@ window.Page = (function() {
 			tags = FS_String.removeStopWords(null, tags);
 			tags = FS_String.removeSmallWords(tags);
 
-console.log( "tags", JSON.stringify(tags) );
+// if (DEBUG) console.log( "tags", JSON.stringify(tags) );
 
 			return tags;
 		} catch (err) {
@@ -182,7 +182,7 @@ console.log( "tags", JSON.stringify(tags) );
 				addTitleChecker();
 
 			// if (DEBUG)
-			console.log(log, newData);
+			if (DEBUG) console.log(log, newData);
 			// show in background
 			Debug.sendBackgroundDebugMessage(log, newData.url);
 			return newData;
