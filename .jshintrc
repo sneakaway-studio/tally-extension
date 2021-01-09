@@ -27,6 +27,7 @@
 		"Server": true,
 
 		"Account": false,
+		"Attacks": false,
 		"Badge": true,
 
 		"BattleAttack": true,

@@ -324,35 +324,38 @@ svg.stats-display .stat-bar-circle-text { fill:white; font: 14px "Monaco", "Anda
 }
 
 
-.battle-options {
+.battle-options, .battle-options-random {
     /* box-sizing: border-box;
     display:inline-block; */
-    padding: 2px 4px;
+    padding: 2px 4px 2px 2px;
     color: #eee0f7;
     font-size: 88%;
-    margin: 0 8px 8px 0;
+    margin: 0 6px 6px 0;
     float: left;
     background-color: #f58b1a;
     box-shadow: 2px 2px #df4a3b;
     display:inline-block !important;
 }
-.battle-options:hover {
+.battle-options:hover, .battle-options-random:hover {
     cursor: pointer;
     background-color: #d69b6b;
 }
 
-.battle-options-defense {
+.battle-options-defense,
+.battle-options-random-defense {
     background-color: #189aed;
     box-shadow: 2px 2px #6ece41;
 }
-.battle-options-defense:hover {
+.battle-options-defense:hover,
+.battle-options-random-defense:hover {
     background-color: #4eaae5;
 }
+
 
 .battle-options-esc {
     background-color: #8f96a2;
     box-shadow: 2px 2px #5b636f;
-    margin: 0 0 8px 0;
+    margin: 0 0 6px 0;
 }
 .battle-options-esc:hover {
     cursor: pointer;

@@ -3,10 +3,11 @@
 /*  (BATTLE) CONSOLE
  ******************************************************************************/
 
-window.BattleConsole = (function () {
+window.BattleConsole = (function() {
 	// PRIVATE
 	let DEBUG = Debug.ALL.BattleConsole,
-		logId, _active, _queue, _next;
+		logId, _active, _queue, _next,
+		randomAttackDefense = "";
 
 	// reset all vars
 	function reset() {
@@ -114,7 +115,7 @@ window.BattleConsole = (function () {
 				$("#battle-console-stream:last-child:after").addClass("noanimation");
 			}
 			// check again in a bit in case there are more
-			setTimeout(function () {
+			setTimeout(function() {
 				queueChecker();
 			}, 200);
 		} catch (err) {
@@ -143,7 +144,7 @@ window.BattleConsole = (function () {
 				scrollTop: $('#battle-console-stream')[0].scrollHeight
 			}, 800);
 			// insert text
-			setTimeout(function () {
+			setTimeout(function() {
 				// log to console
 				typeWriter("tally_log" + logId, str, 0);
 			}, lineSpeed);
@@ -191,23 +192,23 @@ window.BattleConsole = (function () {
 				_active = false;
 
 				removeCursor();
-				ele = "<div class='tally tally_log_line'><span id='tally_log" + (++logId) + "' class='tally tally_log_cursor'>"+
+				ele = "<div class='tally tally_log_line'><span id='tally_log" + (++logId) + "' class='tally tally_log_cursor'>" +
 					"..." +
 					"</span></div>";
 				$("#battle-console-stream").append(ele);
 
-				ele = "<div class='tally tally_log_line'><span id='tally_log" + (++logId) + "' class='tally tally_log_cursor'>"+
+				ele = "<div class='tally tally_log_line'><span id='tally_log" + (++logId) + "' class='tally tally_log_cursor'>" +
 					"<span class='tally text-red'>ERROR: No attacks found in player data.</span>" +
 					"</span></div>";
 				$("#battle-console-stream").append(ele);
 
-				ele = "<div class='tally tally_log_line'><span id='tally_log" + (++logId) + "' class='tally tally_log_cursor'>"+
+				ele = "<div class='tally tally_log_line'><span id='tally_log" + (++logId) + "' class='tally tally_log_cursor'>" +
 					"<a href='https://tallysavestheinternet.com/get-tally'>Update your game version</a> (currently " + T.tally_meta.install.version +
 					") and <a href='https://tallysavestheinternet.com/dashboard'>login to your dashboard</a> to make sure your game is connected." +
 					"</span></div>";
 				$("#battle-console-stream").append(ele);
 
-				ele = "<div class='tally tally_log_line'><span id='tally_log" + (++logId) + "' class='tally tally_log_cursor'>"+
+				ele = "<div class='tally tally_log_line'><span id='tally_log" + (++logId) + "' class='tally tally_log_cursor'>" +
 					"Press the [esc] button your keyboard to exit.";
 				$("#battle-console-stream").append(ele);
 				addCursor();
@@ -244,7 +245,15 @@ window.BattleConsole = (function () {
 						_attacks[key].name + "</span>";
 				}
 			}
-			str += "<span class='tally battle-options battle-options-esc'>[esc]</span></div>";
+
+			// should we display a random attack or defense?
+			if (Math.random() > 0.5) randomAttackDefense = "attack";
+			else randomAttackDefense = "defense";
+
+			str += "<span class='tally battle-options battle-options-random battle-options-random-" + randomAttackDefense + "'>[?]</span>";
+
+			str += "<span class='tally battle-options battle-options-esc'>[esc]</span>";
+			str += "</div>";
 			if (DEBUG) console.log("🖥️ BattleConsole.showBattleOptions()", "[2.2]", str, _queue, _active);
 
 			// insert button
@@ -263,63 +272,77 @@ window.BattleConsole = (function () {
 
 			// first, remove listeners (from all)
 			$(document).off("mouseenter mouseleave click", '.battle-options-fire');
+			$(document).off("mouseenter mouseleave click", '.battle-options-random');
+			$(document).off("mouseenter mouseleave click", '.battle-options-random-' + randomAttackDefense);
 			$(document).off("mouseenter mouseleave click", '.battle-options-esc');
 
 
 			// display attack description
-			$(document).on("mouseenter", '.battle-options-fire', function () {
+			$(document).on("mouseenter", '.battle-options-fire', function() {
 				let attackName = $(this).attr("data-attack");
 				let str = attackName + " " + T.tally_user.attacks[attackName].type + "... ";
 				// if description field contains string
 				if (T.tally_user.attacks[attackName].description)
 					str = T.tally_user.attacks[attackName].description;
 				// if (DEBUG) console.log("🖥️ BattleConsole.showBattleOptions()", attackName, T.tally_user.attacks[attackName], str);
-				$("#battle-console-prompt-content").html(str);
+				setPromptText(str);
 			});
-			// hide
-			$(document).on("mouseleave", '.battle-options-fire', function () {
-				$("#battle-console-prompt-content").html("");
-			});
-
 			// add only one listener
-			$(document).on("click", '.battle-options-fire', function () {
+			$(document).on("click", '.battle-options-fire', function() {
 				if (DEBUG) console.log("🖥️ BattleConsole.showBattleOptions()", "CLICK CALLED, attack =", $(this).attr("data-attack"), Battle.details);
 				// if user can't do attack yet but they clicked anyway
 				if (Battle.details.attackInProgress) {
-					let r = Math.random();
-					if (r < 0.2)
-						Dialogue.showStr("Hey, this is a turn based game. It's not your turn.", "neutral");
-					else if (r < 0.4)
-						Dialogue.showStr("Slow down speed racer.", "neutral");
-					else if (r < 0.6)
-						Dialogue.showStr("Wait your turn 😀", "neutral");
+					showInfoAboutTurnBasedStrategy();
 					return;
 				} else {
-					// remove listener (from all)
-					$(document).off("click", '.battle-options-fire');
-					// show .battle-options-fire disabled
-					$('.battle-options-row').addClass("disabled");
+					// disable battle options
+					setBattleOptionsEnabled(false);
 					// get attack name
 					let attackName = $(this).attr("data-attack");
 					if (DEBUG) console.log("🖥️ BattleConsole.showBattleOptions()", "attackName =", attackName, T.tally_user.attacks);
 					BattleAttack.doAttack(T.tally_user.attacks[attackName], "tally", "monster");
 				}
 			});
+
+			// RANDOM ATTACK / DEFENSE
+			$(document)
+				.on("click", '.battle-options-random', function() {
+					if (DEBUG) console.log("🖥️ BattleConsole.showBattleOptions()", "CLICK CALLED, RANDOM ATTACK");
+					// if user can't do attack yet but they clicked anyway
+					if (Battle.details.attackInProgress) {
+						showInfoAboutTurnBasedStrategy();
+						return;
+					} else {
+						// disable battle options
+						setBattleOptionsEnabled(false);
+						// get random attack/defense each time
+						let attacks = AttackData.returnRandomAttacks(1, [randomAttackDefense]);
+						let attack = FS_Object.randomObjProperty(attacks);
+						if (DEBUG) console.log("🖥️ BattleConsole.showBattleOptions() attack =", attack, "attackName =", attack.name, T.tally_user.attacks);
+						BattleAttack.doAttack(attack, "tally", "monster");
+					}
+				})
+				.on('mouseenter', '.battle-options-random', function() {
+					setPromptText("Choose a random " + randomAttackDefense + "?");
+				});
+
 			// add "run" / "escape" listeners
-			$(document).on("click", '.battle-options-esc', function () {
-				// empty queue of any leftover dialogue
-				Dialogue.emptyTheQueue();
-				// end battle
-				Battle.end(true);
+			$(document)
+				.on("click", '.battle-options-esc', function() {
+					// empty queue of any leftover dialogue
+					Dialogue.emptyTheQueue();
+					// end battle
+					Battle.end(true);
+				})
+				.on('mouseenter', '.battle-options-esc', function() {
+					setPromptText("Run from this battle?");
+				});
+
+			// hide description for all
+			$(document).on('mouseleave', '.battle-options-fire, .battle-options-esc, .battle-options-random', function() {
+				setPromptText("");
 			});
-			$(document).on("mouseenter", '.battle-options-esc', function () {
-				// show
-				$("#battle-console-prompt-content").html("Run from this battle?");
-			});
-			$(document).on("mouseleave", '.battle-options-esc', function () {
-				// show
-				$("#battle-console-prompt-content").html("");
-			});
+
 			// make sure console exists first
 			if (!$('#battle-console-stream')[0]) return;
 			// scroll to new placeholder
@@ -334,6 +357,45 @@ window.BattleConsole = (function () {
 	}
 
 
+
+
+	function setBattleOptionsEnabled(state = false) {
+		try {
+			if (!state) {
+				// remove listener (from all)
+				$(document)
+					.off("click", '.battle-options-fire')
+					.off("click", '.battle-options-random')
+					.off("click", '.battle-options-esc');
+				// show .battle-options-fire disabled
+				$('.battle-options-row').addClass("disabled");
+			}
+		} catch (err) {
+			console.error(err);
+		}
+	}
+
+	function setPromptText(str = "") {
+		try {
+			$("#battle-console-prompt-content").html(str);
+		} catch (err) {
+			console.error(err);
+		}
+	}
+
+	function showInfoAboutTurnBasedStrategy() {
+		try {
+			let r = Math.random();
+			if (r < 0.2)
+				Dialogue.showStr("Hey, this is a turn based game. It's not your turn.", "neutral");
+			else if (r < 0.4)
+				Dialogue.showStr("Slow down speed racer.", "neutral");
+			else if (r < 0.6)
+				Dialogue.showStr("Wait your turn 😀", "neutral");
+		} catch (err) {
+			console.error(err);
+		}
+	}
 
 
 	/**
@@ -358,14 +420,14 @@ window.BattleConsole = (function () {
 			);
 
 			// loop through arr element
-			arrLoop = function (i, j, arr) {
+			arrLoop = function(i, j, arr) {
 				// if (DEBUG) console.log("typeWriter() -> arrLoop()", i, arr[i]);
 
 				// if we haven't reached the end of the arr
 				if (i < arr.length) {
 
 					// loop through txt in arr element
-					strLoop = function (i, j, arr) {
+					strLoop = function(i, j, arr) {
 						let char = arr[i].charAt(j);
 						// if (DEBUG) console.log("typeWriter() -> strLoop()", i, arr[i], j, char);
 
@@ -387,12 +449,12 @@ window.BattleConsole = (function () {
 						addCursor();
 						// if there is more left in string
 						if (j < arr[i].length) {
-							setTimeout(function () {
+							setTimeout(function() {
 								// work on next character with slight pause
 								strLoop(i, ++j, arr);
 							}, 15);
 						} else {
-							setTimeout(function () {
+							setTimeout(function() {
 								// work on next array with slight pause
 								arrLoop(++i, 0, arr);
 							}, 15);
@@ -486,7 +548,7 @@ window.BattleConsole = (function () {
 	function lineComplete(ele) {
 		try {
 			// add a little time at the end of each line
-			setTimeout(function () {
+			setTimeout(function() {
 				_active = false;
 				// text is done writing so color it
 				colorText(ele);
