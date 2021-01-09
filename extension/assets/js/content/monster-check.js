@@ -72,6 +72,9 @@ window.MonsterCheck = (function() {
 
 			let midMatched = await attemptTagMatch();
 
+			// some monsters are too pervasive
+			if (midMatched === 627 && Math.random() > 0.5) return;
+
 			if (midMatched > -1) {
 				if (DEBUG) console.log(log, "[3.1] 🙌 A MATCH ELEVATED midMatched =", midMatched);
 				// if match
