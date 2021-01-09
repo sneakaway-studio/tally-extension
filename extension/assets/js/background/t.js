@@ -1,6 +1,6 @@
 "use strict";
 
-window.T = (function () {
+window.T = (function() {
 	// PRIVATE
 
 	// objects created on server, mirrored locally
@@ -32,7 +32,7 @@ window.T = (function () {
 			},
 			// true = development, false = production
 			localhost: false, // change to false to quickly shift to production server
-			debugging: true
+			debugging: false
 		},
 		DEBUG = true;
 
