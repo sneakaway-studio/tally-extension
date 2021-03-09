@@ -4,8 +4,8 @@
 
 # Browser Extension Development
 
-See this file for general information and references for cross-browser extension development
-https://github.com/omundy/learn-javascript/blob/main/js-topics-extensions.md
+See [learn-javascript/js-topics-extensions.md](https://github.com/omundy/learn-javascript/blob/main/js-topics-extensions.md) for general information and references for cross-browser extension development
+
 
 
 
