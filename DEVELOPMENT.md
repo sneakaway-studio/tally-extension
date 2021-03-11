@@ -4,7 +4,7 @@
 
 # Browser Extension Development
 
-See [learn-javascript/js-topics-extensions.md](https://github.com/omundy/learn-javascript/blob/main/js-topics-extensions.md) for general information and references for cross-browser extension development
+See [learn-javascript/topics-extensions.md](https://github.com/omundy/learn-javascript/blob/main/topics-extensions.md) for general information and references for cross-browser extension development
 
 
 
@@ -36,6 +36,4 @@ https://github.com/moment/moment/blob/2.29.0/moment.js
 https://github.com/ccampbell/mousetrap/blob/1.6.2/mousetrap.min.js
 https://github.com/adamwdraper/Numeral-js/blob/2.0.6/numeral.js
 https://github.com/nbubna/store/blob/2.12.0/dist/store2.min.js
-
-
 ```
