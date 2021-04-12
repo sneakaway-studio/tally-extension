@@ -163,10 +163,15 @@ window.Disguise = (function() {
 
 			// count down from current level ...
 			for (let i = parseInt(T.tally_user.level); i < 100; i--) {
-				// until we get to a disguise that has a leve that matches
+				// until we get to a disguise that has a level that matches
 				if (FS_Object.prop(DisguiseData.dataByLevel[i])) {
 					if (DEBUG) console.log("😎 Disguise.checkAndReward() [2]", DisguiseData.dataByLevel[i]);
 					disguise = DisguiseData.dataByLevel[i];
+					break;
+				}
+				
+				// Bug fix for usecase that the player is a low level (two or less).
+				if (i >= 0) {
 					break;
 				}
 			}

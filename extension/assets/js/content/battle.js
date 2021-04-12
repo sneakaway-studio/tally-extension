@@ -79,7 +79,7 @@ window.Battle = (function() {
 			if (Progress.update("battlesFought", 1, "+") < 1) {
 				// if this is first battle inform them about RPG battling
 				Dialogue.showStr("This game is like a classic RPG.", "neutral");
-				Dialogue.showStr("You and the monster must battle by taking turns lauching attacks or defenses.", "neutral");
+				Dialogue.showStr("You and the monster must battle by taking turns launching attacks or defenses.", "neutral");
 				Dialogue.showStr("You go first!", "happy");
 			}
 			// intro sound
