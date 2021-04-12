@@ -18,7 +18,7 @@ let _tally_options = {},
 var background = chrome.extension.getBackgroundPage();
 
 // beforeunload works only by clicking the "X"
-$(window).on("beforeunload", function () {
+$(window).on("beforeunload", function() {
 	try {
 		background.console.log("POPUP: beforeunload called");
 		saveAndClose();
@@ -28,7 +28,7 @@ $(window).on("beforeunload", function () {
 });
 
 // unload works only for clicking the "X"
-addEventListener("unload", function (event) {
+addEventListener("unload", function(event) {
 	try {
 		background.console.log("POPUP: unload called");
 		saveAndClose();
@@ -69,7 +69,7 @@ function init() {
 
 		chrome.runtime.sendMessage({
 			'action': 'getMeta'
-		}, function (response) {
+		}, function(response) {
 			console.log("getMeta()", JSON.stringify(response.data));
 			_tally_meta = response.data;
 			if (!_tally_meta.userLoggedIn) {
@@ -99,7 +99,7 @@ function getUser(callback) {
 	try {
 		chrome.runtime.sendMessage({
 			'action': 'getUser'
-		}, function (response) {
+		}, function(response) {
 			//console.log("getUser()",JSON.stringify(response.data));
 			_tally_user = response.data;
 			$("#username").html(_tally_user.username);
@@ -124,7 +124,7 @@ function getAttacks(callback) {
 	try {
 		chrome.runtime.sendMessage({
 			'action': 'getUser'
-		}, function (response) {
+		}, function(response) {
 			//console.log("getAttacks()",JSON.stringify(response.data));
 			_tally_user = response.data;
 			// reset selected
@@ -180,7 +180,7 @@ function getAttacks(callback) {
 			});
 
 			// add listener for buttons
-			$('input.attack-checkbox[type="checkbox"]').change(function () {
+			$('input.attack-checkbox[type="checkbox"]').change(function() {
 				try {
 					// update totals
 					updateSelectedCheckboxesTotal();
@@ -188,8 +188,8 @@ function getAttacks(callback) {
 					let name = $(this).attr("id");
 					// do not allow selection of more than limit
 					if (attacksSelected > attacksMax) {
-						// tell user
-						showStatus('You can only use up to four attacks in battles.'); // display success message
+						// show status
+						showStatus('You can only use up to four attacks in battles.');
 						// set back to false
 						$("#" + name).prop('checked', false);
 						// update totals
@@ -320,7 +320,7 @@ function sendUpdateToBackground() {
 		chrome.runtime.sendMessage({
 			'action': 'updateTallyUser',
 			'data': popupUpdate
-		}, function (response) {
+		}, function(response) {
 			background.console.log("POPUP -> sendUpdateToBackground() [2]");
 			console.log('💾 > sendUpdateToBackground() RESPONSE =', response);
 			// update _tally_user in content
@@ -339,7 +339,7 @@ function getOptions() {
 		chrome.runtime.sendMessage({
 			'action': 'getData',
 			'name': "tally_options"
-		}, function (response) {
+		}, function(response) {
 			//console.log("getOptions()",JSON.stringify(response.data));
 			_tally_options = response.data;
 			// game
@@ -366,10 +366,11 @@ function saveUserInBackground() {
 			'action': 'saveData',
 			'name': "tally_user",
 			'data': _tally_user
-		}, function (response) {
+		}, function(response) {
 			console.log(response);
 			background.console.log("POPUP -> saveUserInBackground() [2]");
-			showStatus('Settings saved'); // display success message
+			// show status
+			showStatus('Settings saved');
 			// set flag
 			updatePage = true;
 		});
@@ -397,10 +398,11 @@ function saveOptionsInBackground() {
 		chrome.runtime.sendMessage({
 			'action': 'saveOptions',
 			'data': _tally_options
-		}, function (response) {
+		}, function(response) {
 			//console.log(response);
 			background.console.log("POPUP -> saveOptionsInBackground() [2]");
-			showStatus('Options saved'); // display success message
+			// display success status
+			showStatus('Options saved');
 			// set flag
 			updatePage = true;
 		});
@@ -418,7 +420,7 @@ function refreshPageWithNewSettings() {
 		chrome.tabs.query({
 			active: true,
 			currentWindow: true
-		}, function (arrayOfTabs) {
+		}, function(arrayOfTabs) {
 			//console.log("query again")
 			var code = 'window.location.reload(1);';
 			chrome.tabs.executeScript(arrayOfTabs[0].id, {
@@ -435,7 +437,7 @@ function getMeta(callback) {
 	try {
 		chrome.runtime.sendMessage({
 			'action': 'getMeta'
-		}, function (response) {
+		}, function(response) {
 			//console.log("getMeta()",JSON.stringify(response.data));
 			_tally_meta = response.data;
 
@@ -458,7 +460,7 @@ function getMeta(callback) {
 }
 
 // reset _tally_user
-document.getElementById("opt_reset_user").onclick = function () {
+document.getElementById("opt_reset_user").onclick = function() {
 	try {
 		window.open(_tally_meta.env.website + "/dashboard");
 	} catch (err) {
@@ -466,12 +468,13 @@ document.getElementById("opt_reset_user").onclick = function () {
 	}
 };
 // reset _tally_options
-document.getElementById("opt_reset_options").onclick = function () {
+document.getElementById("opt_reset_options").onclick = function() {
 	try {
 		chrome.runtime.sendMessage({
 			action: "resetOptions"
-		}, function (response) {
-			//console.log(response); // display success message
+		}, function(response) {
+			//console.log(response);
+			// display success status
 			showStatus("Options have been reset");
 		});
 	} catch (err) {
@@ -493,16 +496,16 @@ document.getElementById("opt_reset_options").onclick = function () {
 /*  FORM FUNCTIONS
  ******************************************************************************/
 
-$("input").mouseup(function () {
+$("input").mouseup(function() {
 	// wait a moment so the options are saved before the input has changed value
-	window.setTimeout(function () {
+	window.setTimeout(function() {
 		saveOptionsInBackground("popup options");
 	}, 250);
 });
-$("select#gameMode").on('change', function () {
+$("select#gameMode").on('change', function() {
 	saveOptionsInBackground("popup options");
 });
-$('#soundVolume').on('change', function () {
+$('#soundVolume').on('change', function() {
 	// play a sound to confirm new setting
 	var audio = new Audio(chrome.extension.getURL("assets/sounds/tally/moods-v3/excited-2-1.wav"));
 	audio.volume = $(this).val() / 100;
@@ -510,11 +513,11 @@ $('#soundVolume').on('change', function () {
 });
 // timeout to save textarea
 var timeoutId;
-$('#disabledDomains').on('input propertychange change', function () {
+$('#disabledDomains').on('input propertychange change', function() {
 	//console.log('Textarea Change');
 
 	clearTimeout(timeoutId);
-	timeoutId = setTimeout(function () {
+	timeoutId = setTimeout(function() {
 		// Runs 1 second (1000 ms) after the last change
 		saveOptionsInBackground("popup options");
 	}, 1000);
@@ -589,55 +592,55 @@ openTab("statusBtn", "statusTab");
 //openTab("optionsBtn","optionsTab");
 
 // tab buttons
-document.getElementById("statusBtn").onclick = function () {
+document.getElementById("statusBtn").onclick = function() {
 	openTab("statusBtn", "statusTab");
 };
-document.getElementById("itemsBtn").onclick = function () {
+document.getElementById("itemsBtn").onclick = function() {
 	openTab("itemsBtn", "itemsTab");
 };
-document.getElementById("optionsBtn").onclick = function () {
+document.getElementById("optionsBtn").onclick = function() {
 	openTab("optionsBtn", "optionsTab");
 };
-document.getElementById("aboutBtn").onclick = function () {
+document.getElementById("aboutBtn").onclick = function() {
 	openTab("aboutBtn", "aboutTab");
 };
-document.getElementById("feedbackBtn").onclick = function () {
+document.getElementById("feedbackBtn").onclick = function() {
 	openTab("feedbackBtn", "feedbackTab");
 };
-document.getElementById("debuggingBtn").onclick = function () {
+document.getElementById("debuggingBtn").onclick = function() {
 	openTab("debuggingBtn", "debuggingTab");
 };
 
 // close the popup window
-document.getElementById("opt_close").onclick = function () {
+document.getElementById("opt_close").onclick = function() {
 	window.close();
 };
 
 // external links
-$(document).on('click', '#gameTrailerBtn', function () {
+$(document).on('click', '#gameTrailerBtn', function() {
 	window.open("https://www.youtube.com/watch?v=hBfq8TNHbCE");
 });
-$(document).on('click', '#viewProfileBtn', function () {
+$(document).on('click', '#viewProfileBtn', function() {
 	window.open(_tally_meta.env.website + "/profile/" + _tally_user.username);
 });
-$(document).on('click', '#editProfileBtn', function () {
+$(document).on('click', '#editProfileBtn', function() {
 	window.open(_tally_meta.env.website + "/dashboard");
 });
-$(document).on('click', '#viewLeaderboardsBtn', function () {
+$(document).on('click', '#viewLeaderboardsBtn', function() {
 	window.open(_tally_meta.env.website + "/leaderboard");
 });
-$(document).on('click', '#howToPlayBtn', function () {
+$(document).on('click', '#howToPlayBtn', function() {
 	window.open(_tally_meta.env.website + "/how-to-play");
 });
-$(document).on('click', '#viewPrivacyPolicyBtn', function () {
+$(document).on('click', '#viewPrivacyPolicyBtn', function() {
 	window.open(_tally_meta.env.website + "/privacy");
 });
 
 // surveys
-$(document).on('click', '#testerSurveyBtn', function () {
+$(document).on('click', '#testerSurveyBtn', function() {
 	window.open("https://docs.google.com/forms/d/e/1FAIpQLSdhftpXZHrnU1RXZ-yQ0LZovCp84ShZEicZpy__mOt621-Q2w/viewform");
 });
-$(document).on('click', '#bugReportSurveyBtn', function () {
+$(document).on('click', '#bugReportSurveyBtn', function() {
 	window.open("https://docs.google.com/forms/d/e/1FAIpQLScUG923UhVtFWzLaV5gOsd0e1grdS9iKeNLjdwPixKEJkn4bQ/viewform");
 });
 
@@ -649,13 +652,13 @@ $(document).on('click', '#bugReportSurveyBtn', function () {
 /*  TAB FUNCTIONS
  ******************************************************************************/
 
-// show status message
+// show status
 function showStatus(msg) {
 	try {
 		$("#status").html(msg).css({
 			'display': 'block'
 		});
-		setTimeout(function () {
+		setTimeout(function() {
 			$("#status").html("").css({
 				'display': 'none'
 			});

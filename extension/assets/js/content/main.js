@@ -148,7 +148,8 @@ window.TallyMain = (function () {
 	}
 
 	/**
-	 *	Get the page mode for the current page - Make sure Tally isn't disabled on this page | domain | subdomain | etc
+	 *	Get the page mode for the current page
+	 * 	- Make sure Tally isn't disabled on this page | domain | subdomain | etc
 	 */
 	function savePageMode() {
 		try {

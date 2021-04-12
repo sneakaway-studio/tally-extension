@@ -46,6 +46,9 @@ svg#tally-svg {
     left: 0px;
     overflow: hidden;
 }
+svg#tally-svg g, svg#tally-svg path {
+	
+}
 svg#tally-svg * {
     transition: all .9s;
 }
