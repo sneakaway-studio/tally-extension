@@ -122,6 +122,7 @@ window.FS_Object = (function() {
 	 *	Convert an array to an object with <key> as key
 	 */
 	function convertArrayToObject(arr, key) {
+		if (!Array.isArray(arr)) return {};
 		var obj = arr.reduce(function(result, item, i) {
 			result[item[key]] = item;
 			return result;

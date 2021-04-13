@@ -74,6 +74,7 @@
 		"BadgeData": false,
 		"ConsumableData": false,
 		"DialogueData": false,
+		"DisguiseData": false,
 		"MonsterData": false,
 		"MonstersById": false,
 		"MonstersByTag": false,
