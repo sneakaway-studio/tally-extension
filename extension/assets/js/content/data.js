@@ -3,7 +3,7 @@
 /*  TALLY DATA MANAGER
  ******************************************************************************/
 
-window.TallyData = (function () {
+window.TallyData = (function() {
 	// PRIVATE
 
 	let DEBUG = Debug.ALL.TallyData,
@@ -26,7 +26,7 @@ window.TallyData = (function () {
 	/**
 	 *	Send server updates if user leaves
 	 */
-	$(window).on("beforeunload", function () {
+	$(window).on("beforeunload", function() {
 		try {
 			// if edits
 			if (backgroundUpdateEdits > 0) {
@@ -234,7 +234,7 @@ window.TallyData = (function () {
 			// if (DEBUG) console.log("💾 TallyData.startManager() CHECKING FOR UPDATE");
 
 			// if not already running, start manager interval
-			managerInterval = setInterval(function () {
+			managerInterval = setInterval(function() {
 				// run until pushUpdate()
 				manager();
 			}, 1000);
@@ -327,14 +327,14 @@ window.TallyData = (function () {
 
 			if (DEBUG) console.log('💾 > TallyData.pushUpdate() [1.2] backgroundUpdate =', backgroundUpdate);
 
-			// make sure extension is ready 
+			// make sure extension is ready
 			if (!chrome || !chrome.runtime) return;
 
 			// send update to background (which will determine whether to send to server)
 			chrome.runtime.sendMessage({
 				'action': 'updateTallyUser',
 				'data': backgroundUpdate
-			}, function (response) {
+			}, function(response) {
 				if (DEBUG) console.log('💾 > TallyData.pushUpdate() [2] RESPONSE =', response);
 
 				// if update was successful
@@ -373,8 +373,10 @@ window.TallyData = (function () {
 			resetManager();
 
 		} catch (err) {
-			TallyStorage.backgroundConnectErrors++;
-			console.error(err);
+			if (!Page.isReloadExtErr(err)) {
+				TallyStorage.backgroundConnectErrors++;
+				console.error(err);
+			}
 		}
 	}
 	/**

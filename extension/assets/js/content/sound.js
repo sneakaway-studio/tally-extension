@@ -77,7 +77,7 @@ window.Sound = (function() {
 			// don't allow if this page doesn't have focus
 			if (!document.hasFocus()) return;
 			// don't allow if playSounds disabled
-			if (!T.tally_options.playSounds) return;
+			if (!T.tally_options.playSounds) return; 
 
 			// play intro
 			//playMusic(battleMusicDir + "battle-intro.wav", false, 0);
@@ -188,7 +188,9 @@ window.Sound = (function() {
 			}
 
 		} catch (err) {
-			console.error(err);
+			if (!Page.isReloadExtErr(err)) {
+				console.error(err);
+			}
 		}
 	}
 
@@ -600,7 +602,9 @@ window.Sound = (function() {
 				});
 			}
 		} catch (err) {
-			console.error(err);
+			if (!Page.isReloadExtErr(err)) {
+				console.error(err);
+			}
 		}
 	}
 

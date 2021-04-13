@@ -141,8 +141,10 @@ window.Debug = (function() {
 				// if (DEBUG) console.log(getCurrentDateStr(), "🗜️ Debug.sendBackgroundDebugMessage() time = " + (endTime - startTime) + "ms, RESPONSE =", JSON.stringify(response));
 			});
 		} catch (err) {
-			TallyStorage.backgroundConnectErrors++;
-			console.error(getCurrentDateStr(), err);
+			if (!Page.isReloadExtErr(err)) {
+				TallyStorage.backgroundConnectErrors++;
+				console.error(getCurrentDateStr(), err);
+			}
 		}
 	}
 
