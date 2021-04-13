@@ -347,31 +347,11 @@ window.TallyMain = (function () {
 
 
 
-
-	/**
-	 *	Open Popup // disabled - troubled getting this to work
-	 */
-	function openPopup() {
-		try {
-			chrome.runtime.sendMessage({
-				'action': 'openPopup'
-			}, function (response) {
-				console.log("🧰 TallyMain.openPopup() response =", response);
-			});
-		} catch (err) {
-			console.error(err);
-		}
-	}
-
-
-
-
 	// PUBLIC
 	return {
 		savePageMode: savePageMode,
 		contentStartChecks: contentStartChecks,
 		startGameOnPage: startGameOnPage,
-		inPageChecks: inPageChecks,
-		openPopup: openPopup
+		inPageChecks: inPageChecks
 	};
 }());
