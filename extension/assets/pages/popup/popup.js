@@ -27,7 +27,7 @@ $(window).on("beforeunload", function() {
 	}
 });
 
-// unload works only for clicking the "X"
+// called when the page is unloaded
 addEventListener("unload", function(event) {
 	try {
 		background.console.log("POPUP: unload called");
