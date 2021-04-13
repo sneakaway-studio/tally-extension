@@ -170,8 +170,8 @@ window.Disguise = (function() {
 					break;
 				}
 				
-				// Bug fix for usecase that the player is a low level (two or less).
-				if (i >= 0) {
+				// Stop if the player somehow has a level less than 1.
+				if (i <= 0) {
 					break;
 				}
 			}
