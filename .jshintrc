@@ -75,10 +75,11 @@
 		"ConsumableData": false,
 		"DialogueData": false,
 		"DisguiseData": false,
+		"GameData": false,
 		"MonsterData": false,
 		"MonstersById": false,
 		"MonstersByTag": false,
-		"GameData": false,
+		"SkinData": false,
 
 		"FS_Date": false,
 		"Environment": false,

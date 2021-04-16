@@ -142,16 +142,10 @@ window.Skin = (function() {
 			// get skin data
 			let skinData = returnSkinData(newSkinName);
 
-			// old bitmap method
-			//svg = "<img class='tally-svg' src='" + chrome.extension.getURL('assets/img/tally/tally.svg') + "'>";
-
-
-
-
-			var svg = "";
-			svg += '<svg id="tally-svg" class="tally" viewBox="0 0 914 814" ' +
-				// 'xmlns:xlink="http://www.w3.org/1999/xlink" '+
-				'xmlns="http://www.w3.org/2000/svg" ' +
+			var svg = '<svg id="tally-svg" class="tally" viewBox="0 0 914 814" ' +
+				// namespaces
+				` xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" ` +
+				' version="1.1" ' +
 				' overflow="hidden" ' +
 				'>';
 			svg += '<defs>' + skinData.pattern + skinData.gradient + '</defs>';
@@ -159,21 +153,21 @@ window.Skin = (function() {
 			// alt method: use CSS
 			// svg += '<style type="text/css"> .tallySkinBackFill {fill:#C308C1;} .tallySkinFrontFill {fill:#D32CF1;} </style>';
 
-
+			// use fill in group (fixes site pollution)
+			svg += '<g fill="' + skinData.backFill + '">';
 			// back fill (color or gradient)
-			svg += '<path class="tally tallySkinBackFill" fill="' + skinData.backFill + '"' +
-				' d="M652.5 793.8l255.5-281-342.8-385.2-307.3 35L5 366l88.5 346.8 559 81z"/>';
+			svg += `<path class="tally tallySkinBackFill" fill="${skinData.backFill}" d="M652.5 793.8l255.5-281-342.8-385.2-307.3 35L5 366l88.5 346.8 559 81z"/>`;
 			// back pattern
-			svg += '<path class="tally tallySkinBackPattern" fill="url(#tallyPattern)"' +
-				' d="M652.5 793.8l255.5-281-342.8-385.2-307.3 35L5 366l88.5 346.8 559 81z"/>';
+			svg += `<path class="tally tallySkinBackPattern" fill="url(#tallyPattern)" d="M652.5 793.8l255.5-281-342.8-385.2-307.3 35L5 366l88.5 346.8 559 81z"/>
+			</g>`;
 
+			// use fill in group (fixes site pollution)
+			svg += `<g fill="${skinData.frontFill}">`;
 			// front fill (color or gradient)
-			svg += '<path class="tally tallySkinFrontFill" fill="' + skinData.frontFill + '"' +
-				' d="M199.8 809l419.9-139.2 126.5 10.1 161.9-319L690.5 14.1 509.8 36.2 450.2 4 258.3 66.9l-190 23.2-17.7 443L199.8 809z"/>';
+			svg += `<path class="tally tallySkinFrontFill" fill="${skinData.frontFill}" d="M199.8 809l419.9-139.2 126.5 10.1 161.9-319L690.5 14.1 509.8 36.2 450.2 4 258.3 66.9l-190 23.2-17.7 443L199.8 809z"/>`;
 			// front pattern
-			svg += '<path class="tally tallySkinFrontPattern" fill="url(#tallyPattern)"' +
-				' d="M199.8 809l419.9-139.2 126.5 10.1 161.9-319L690.5 14.1 509.8 36.2 450.2 4 258.3 66.9l-190 23.2-17.7 443L199.8 809z"/>';
-
+			svg += `<path class="tally tallySkinFrontPattern" fill="url(#tallyPattern)" d="M199.8 809l419.9-139.2 126.5 10.1 161.9-319L690.5 14.1 509.8 36.2 450.2 4 258.3 66.9l-190 23.2-17.7 443L199.8 809z"/>
+			</g>`;
 
 			svg += '</svg>';
 			return svg;
@@ -198,14 +192,11 @@ window.Skin = (function() {
 			}
 			// set current skin name and obj
 			currentSkinName = newSkinName;
-
-		// currentSkinName = "magenta";
+			// currentSkinName = "magenta";
 
 			currentSkinObj = SkinData.data[currentSkinName];
 			if (DEBUG) console.log("👚 Skin.returnSkinData() [2] currentSkinName = " + currentSkinName +
 				", currentSkinObj = " + JSON.stringify(currentSkinObj));
-
-
 
 			// object to hold / pass strings
 			let skinData = {
@@ -377,10 +368,18 @@ window.Skin = (function() {
 		returnHighestMonsterStage: returnHighestMonsterStage,
 		random: random,
 
-		set currentSkinName (value) { currentSkinName = value; },
-		get currentSkinName () { return currentSkinName; },
-		set currentSkinObj (value) { currentSkinObj = value; },
-		get currentSkinObj () { return currentSkinObj; },
+		set currentSkinName(value) {
+			currentSkinName = value;
+		},
+		get currentSkinName() {
+			return currentSkinName;
+		},
+		set currentSkinObj(value) {
+			currentSkinObj = value;
+		},
+		get currentSkinObj() {
+			return currentSkinObj;
+		},
 
 	};
 })();
