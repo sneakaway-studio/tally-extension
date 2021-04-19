@@ -8,7 +8,7 @@ window.TallyStorage = (function () {
 	let DEBUG = Debug.ALL.TallyStorage,
 		backgroundConnectErrors = 0;
 
-	
+
 
 	/**
 	 *	Get data from API - currently only uses for random urls for demo
@@ -30,8 +30,10 @@ window.TallyStorage = (function () {
 				callback(response);
 			});
 		} catch (err) {
-			backgroundConnectErrors ++;
-			console.error(err);
+			if (!Page.isReloadExtErr(err)) {
+				backgroundConnectErrors++;
+				console.error(err);
+			}
 		}
 	}
 
@@ -54,8 +56,10 @@ window.TallyStorage = (function () {
 				return response.data;
 			});
 		} catch (err) {
-			backgroundConnectErrors ++;
-			console.error(err);
+			if (!Page.isReloadExtErr(err)) {
+				backgroundConnectErrors++;
+				console.error(err);
+			}
 		}
 	}
 	/**
@@ -79,8 +83,10 @@ window.TallyStorage = (function () {
 				//return response.data;
 			});
 		} catch (err) {
-			backgroundConnectErrors ++;
-			console.error(err);
+			if (!Page.isReloadExtErr(err)) {
+				backgroundConnectErrors++;
+				console.error(err);
+			}
 		}
 	}
 
@@ -126,8 +132,10 @@ window.TallyStorage = (function () {
 				TallyMain.contentStartChecks();
 			});
 		} catch (err) {
-			backgroundConnectErrors ++;
-			console.error(err);
+			if (!Page.isReloadExtErr(err)) {
+				backgroundConnectErrors++;
+				console.error(err);
+			}
 		}
 	}
 
@@ -208,8 +216,10 @@ window.TallyStorage = (function () {
 				});
 			});
 		} catch (err) {
-			backgroundConnectErrors ++;
-			console.error(err);
+			if (!Page.isReloadExtErr(err)) {
+				backgroundConnectErrors++;
+				console.error(err);
+			}
 		}
 	}
 

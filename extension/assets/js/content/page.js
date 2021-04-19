@@ -192,18 +192,17 @@ window.Page = (function() {
 	}
 
 
-
-
-
-
-
-	// chrome.runtime.connect().onDisconnect.addListener(function() {
-	//     // clean up when content script gets disconnected
-	// 	console.warn("EXTENSION WAS UPDATED");
-	//
-	// 	// something went wrong
-	// 	// if(chrome.runtime.lastError) console.warn("chrome.runtime.connect().onDisconnect", JSON.stringify(chrome.runtime.lastError));
-	// });
+	/**
+	 *	Check if an error is caused by extension reloaded in development, set extension notActive
+	 */
+	function isReloadExtErr(err) {
+		if (err.toString().includes("Extension context invalidated")) {
+			console.log("Extension has been reloaded (error caught), notActive = true");
+			data.mode.notActive = true;
+			return true;
+		}
+		return false;
+	}
 
 
 
@@ -280,6 +279,7 @@ window.Page = (function() {
 	return {
 		refreshData: refreshData,
 		getData: getData,
-		data: data
+		data: data,
+		isReloadExtErr: isReloadExtErr
 	};
 })();

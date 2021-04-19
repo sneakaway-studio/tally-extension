@@ -273,8 +273,10 @@ window.Tracker = (function () {
 				if (DEBUG) console.log("🕷️ Tracker.setBadgeText() response =", response);
 			});
 		} catch (err) {
-			TallyStorage.backgroundConnectError++;
-			console.error(err);
+			if (!Page.isReloadExtErr(err)) {
+				TallyStorage.backgroundConnectErrors++;
+				console.error(err);
+			}
 		}
 	}
 

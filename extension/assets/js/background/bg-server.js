@@ -202,41 +202,41 @@ window.Server = (function() {
 	/**
 	 * 	Tests for the send() function
 	 */
-	 function testSendFunction() {
+	function testSendFunction() {
 
- 		// is the server online?
- 		send({
+		// is the server online?
+		send({
 			caller: "📟 Server.testSendFunction()",
 			action: "serverOnline",
 			method: "GET",
 			url: "",
 			data: {}
- 		}).then(response => {
- 			console.log("send() / response =", response);
- 		});
+		}).then(response => {
+			console.log("send() / response =", response);
+		});
 
- 		// get tally user
- 		send({
+		// get tally user
+		send({
 			caller: "📟 Server.testSendFunction()",
 			action: "getTallyUser",
- 			url: "/user/getTallyUser",
- 			method: "GET",
- 			data: {}
- 		}).then(response => {
- 			console.log("send() /user/getTallyUser response =", response);
- 		});
+			url: "/user/getTallyUser",
+			method: "GET",
+			data: {}
+		}).then(response => {
+			console.log("send() /user/getTallyUser response =", response);
+		});
 
- 		// update tally user - this one fails w/o data
- 		send({
+		// update tally user - this one fails w/o data
+		send({
 			caller: "📟 Server.testSendFunction()",
 			action: "updateTallyUser",
- 			url: "/user/updateTallyUser",
- 			method: "PUT",
- 			data: {}
- 		}).then(response => {
- 			console.log("send() /user/updateTallyUser response =", response);
- 		});
- 	}
+			url: "/user/updateTallyUser",
+			method: "PUT",
+			data: {}
+		}).then(response => {
+			console.log("send() /user/updateTallyUser response =", response);
+		});
+	}
 	// setTimeout(testSendFunction, 1500);
 
 
@@ -328,7 +328,9 @@ window.Server = (function() {
 
 
 /**
- *	Chrome web request error handling
+ *	Chrome web request error handling - good for testing server connection
+ *  1. enable "webRequest", in manifest.permission
+ * 	2. uncomment
  */
 
 // ::net errors
@@ -336,29 +338,29 @@ window.Server = (function() {
 // > https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/webRequest/onErrorOccurred
 // --> https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/webRequest/RequestFilter
 // ----> https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/webRequest/ResourceType
-chrome.webRequest.onErrorOccurred.addListener(function(details) {
-	console.error(Debug.getCurrentDateStr(), "onErrorOccurred", details);
-
-	// connection refused: tally server did not respond (offline or busy)
-	if (details.error === "net::ERR_CONNECTION_REFUSED" && details.url === T.tally_meta.env.api) {
-		console.error("onErrorOccurred", "TALLY CANNOT CONNECT");
-	}
-}, {
-	urls: ["http://*/*", "https://*/*"]
-});
-
-// check for HTTP errors
-chrome.webRequest.onHeadersReceived.addListener(function(details) {
-	// console.error(Debug.getCurrentDateStr(), "onHeadersReceived", details);
-
-	var status = extractStatus(details.statusLine);
-	if (!status) return;
-	// if error code is 4** or 5**
-	if (status.code.charAt(0) == '5' || status.code.charAt(0) == '4')
-		console.error(Debug.getCurrentDateStr(), "onHeadersReceived", details);
-}, {
-	urls: ["http://*/*", "https://*/*"]
-});
+// chrome.webRequest.onErrorOccurred.addListener(function(details) {
+// 	console.error(Debug.getCurrentDateStr(), "onErrorOccurred", details);
+//
+// 	// connection refused: tally server did not respond (offline or busy)
+// 	if (details.error === "net::ERR_CONNECTION_REFUSED" && details.url === T.tally_meta.env.api) {
+// 		console.error("onErrorOccurred", "TALLY CANNOT CONNECT");
+// 	}
+// }, {
+// 	urls: ["http://*/*", "https://*/*"]
+// });
+//
+// // check for HTTP errors
+// chrome.webRequest.onHeadersReceived.addListener(function(details) {
+// 	// console.error(Debug.getCurrentDateStr(), "onHeadersReceived", details);
+//
+// 	var status = extractStatus(details.statusLine);
+// 	if (!status) return;
+// 	// if error code is 4** or 5**
+// 	if (status.code.charAt(0) == '5' || status.code.charAt(0) == '4')
+// 		console.error(Debug.getCurrentDateStr(), "onHeadersReceived", details);
+// }, {
+// 	urls: ["http://*/*", "https://*/*"]
+// });
 
 /**
  *	Extract status code/message
