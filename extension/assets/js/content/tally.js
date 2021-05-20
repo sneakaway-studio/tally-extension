@@ -379,7 +379,7 @@ window.Tally = (function() {
 					// if wearing a disguise then say something about it
 					if (chance && which < 0.25 && FS_Object.objLength(T.tally_user.disguises)) {
 						Dialogue.showData(Dialogue.getData({
-							"category": "disguise",
+							category: "disguise",
 							subcategory: Disguise.currentDisguiseObj.name
 						}), {
 							addIfInProcess: false,
@@ -387,7 +387,7 @@ window.Tally = (function() {
 						});
 					} else if (chance && which < 0.5) {
 						Dialogue.showData(Dialogue.getData({
-							"category": "random",
+							category: "random",
 							subcategory: "conversation"
 						}), {
 							addIfInProcess: false,
@@ -405,7 +405,7 @@ window.Tally = (function() {
 				if (!dragging) {
 					if (!draggedOnce) {
 						Dialogue.showData(Dialogue.getData({
-							"category": "tally",
+							category: "tally",
 							subcategory: "drag"
 						}), {
 							addIfInProcess: false,

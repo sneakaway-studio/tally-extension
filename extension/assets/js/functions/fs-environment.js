@@ -139,6 +139,9 @@ var Environment = (function() {
 		return domain;
 	}
 
+	/**
+	 *	Return the sub domain from a url
+	 */
 	function extractSubDomain(url) {
 		//console.log("extractSubDomain()");
 		if (url == "") return "";
@@ -146,20 +149,28 @@ var Environment = (function() {
 		return domain;
 	}
 
+	/**
+	 *	Return the file extension from a url
+	 */
+	function extractExtension(url) {
+		if (url == "") return "";
+		// get last part of url, split on dot
+		let urlParts = url.slice(-8, url.length).split(".");
+		let ext = urlParts[urlParts.length - 1] || "";
+		// console.log(url, ext);
+		return ext.toLowerCase();
+	}
+
+
+
 	// PUBLIC
 	return {
 		getBrowserName: getBrowserName,
 		getBrowserLanguage: getBrowserLanguage,
 		getPlatform: getPlatform,
-		extractHostname: function(url){
-			return extractHostname(url);
-		},
-		extractRootDomain: function(url){
-			return extractRootDomain(url);
-		},
-		extractSubDomain: function(url){
-			return extractSubDomain(url);
-		},
-
+		extractHostname: extractHostname,
+		extractRootDomain: extractRootDomain,
+		extractSubDomain: extractSubDomain,
+		extractExtension: extractExtension
 	};
 })();

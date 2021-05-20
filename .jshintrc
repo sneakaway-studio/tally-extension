@@ -44,6 +44,7 @@
 		"Dialogue": true,
 		"Disguise": true,
 		"Effect": true,
+		"Facts": true,
 		"Flag": true,
 		"TallyEvents": true,
 		"Interface": true,
