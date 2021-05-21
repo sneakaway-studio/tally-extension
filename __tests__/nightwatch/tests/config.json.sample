@@ -1,0 +1,21 @@
+{
+	"environment": "development",
+	"user": "username",
+
+	"environments": {
+		"development": {
+			"signin": "https://127.0.0.1:5000/signin",
+			"testPage": "https://localhost/Tally/_code/tally-extension/test.html"
+		},
+		"production": {
+			"signin": "https://tallysavestheinternet/signin",
+			"testPage": "https://localhost/Tally/_code/tally-extension/test.html"
+		}
+	},
+	"users": {
+		"username": {
+			"email": "",
+			"password": ""
+		}
+	}
+}

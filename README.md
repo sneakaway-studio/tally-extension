@@ -39,6 +39,14 @@ Instructions
 
 
 
+
+### Tests
+
+- e2e tests - run `npm test` in `__tests__/nightwatch/`
+
+
+
+
 ### Other notes
 
 * [Extension Development](DEVELOPMENT.md)
