@@ -42,8 +42,16 @@ Instructions
 
 ### Tests
 
-- e2e tests - run `npm test` in `__tests__/nightwatch/`
+- e2e [nightwatch](https://nightwatchjs.org/) tests - run `npm test` in `__tests__/nightwatch/`
+- unit [jest](https://jestjs.io/) tests (to test pure functions in `js/functions`) - run `npm test` in `__tests__/jest/`
 
+
+
+More on nightwatch
+- https://nightwatchjs.org/
+- https://www.lambdatest.com/blog/nightwatch-js-tutorial-for-test-automation-beginners/
+- https://testautomationu.applitools.com/nightwatchjs-tutorial/chapter1.html
+- https://blog.logrocket.com/using-nightwatch-js-to-write-end-to-end-tests/
 
 
 

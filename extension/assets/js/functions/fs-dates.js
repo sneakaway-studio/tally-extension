@@ -4,7 +4,7 @@
  * 	- See notes in API README about datetime for Tally and future projects
  ******************************************************************************/
 
-window.FS_Date = (function() {
+var FS_Date = (function() {
 	// PRIVATE
 	function format(date) {
 		if (date == "now") date = moment();
@@ -88,6 +88,12 @@ window.FS_Date = (function() {
 
 	};
 })();
+
+// if running in node, then export module
+if (typeof process === 'object') module.exports = FS_Date;
+// otherwise add as "global" object window for browser / extension
+else window.FS_Date = FS_Date;
+
 
 
 
