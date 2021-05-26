@@ -19,3 +19,4 @@ node_modules
 # nightwatch
 tally-config.json
 *.log
+tests_output

@@ -65,13 +65,13 @@ module.exports = {
 
 	// add tests for ...
 	//
-	// score increments
+	// level increments
 	// stats is working (click top bars, check both bottom bars and numbers are present and math is close)
-	// cycle through a dialogue 
+	// cycle through a dialogue
 	// eyes move
 	// tally works on other urls
 	// battle works (refresh test page until monster appears, click to initiate battle)
-	// tags present
+
 
 
 	// clean up after tests

@@ -12,7 +12,7 @@
 			"testPage": "https://localhost/Tally/_code/tally-extension/test.html"
 		},
 		"production": {
-			"signin": "https://tallysavestheinternet/signin",
+			"signin": "https://tallysavestheinternet.com/signin",
 			"testPage": "https://localhost/Tally/_code/tally-extension/test.html"
 		}
 	},
