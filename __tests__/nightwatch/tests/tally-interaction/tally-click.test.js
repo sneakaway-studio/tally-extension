@@ -1,11 +1,12 @@
 // import test user
-const Config = require('../config.json');
+const Config = require('../tally-config.json');
 const env = Config.environment;
 const user = Config.user;
 
 module.exports = {
 	tags: ['tally'],
 
+	// this is a new browser instance, so we have to login first
 	before(browser) {
 		console.log(`Setting up 🦄 ${env} environment for 👤 ${user}`);
 
@@ -32,20 +33,20 @@ module.exports = {
 
 	// 4. begin tests
 
-	'TALLY - Test click limiter': (browser) => {
+	'CLICK button on page, .tally-clicked class present after': (browser) => {
 		browser.waitForElementVisible('#btn1', 3000, false).click('#btn1')
 			.assert.cssClassPresent('#btn1', 'tally-clicked');
 	},
-	'TALLY - Click character (single), speech bubble present': (browser) => {
+	'CLICK character (single), speech bubble is present': (browser) => {
 		browser.moveToElement('#tally_character', 30, 30).click('#tally_character')
 			.assert.elementPresent("#tally_dialogue_outer");
 	},
-	'TALLY - Click character (double), speech bubble present, check response': (browser) => {
+	'CLICK character (double), speech bubble contains "menu" prompt': (browser) => {
 		browser.moveToElement('#tally_character', 30, 30).doubleClick('#tally_character')
 			.assert.elementPresent("#tally_dialogue_outer")
 			.expect.element('#tally_dialogue_inner').text.to.startWith('Want to hear');
 	},
-	'TALLY - Click character (triple), speech bubble present, check response': (browser) => {
+	'CLICK character (triple), speech bubble contains joke prompt': (browser) => {
 		browser.moveToElement('#tally_character', 30, 30)
 			.mouseButtonDown(0).mouseButtonUp(0)
 			.mouseButtonDown(0).mouseButtonUp(0)
@@ -53,7 +54,7 @@ module.exports = {
 			.assert.elementPresent("#tally_dialogue_outer")
 			.expect.element('#tally_dialogue_inner').text.to.startWith('Want to hear a joke');
 	},
-	'TALLY - Drag character, check response': (browser) => {
+	'DRAG character, dialogue is present': (browser) => {
 		browser.moveToElement('#tally_character', 30, 30)
 			// drag character up to verify stats
 			.mouseButtonDown(0).moveTo(null, 0, -300).mouseButtonUp(0)
@@ -62,8 +63,18 @@ module.exports = {
 	},
 
 
+	// add tests for ...
+	//
+	// score increments
+	// stats is working (click top bars, check both bottom bars and numbers are present and math is close)
+	// cycle through a dialogue 
+	// eyes move
+	// tally works on other urls
+	// battle works (refresh test page until monster appears, click to initiate battle)
+	// tags present
 
 
+	// clean up after tests
 	after(browser) {
 		console.log('Tearing down...');
 		setTimeout(() => {

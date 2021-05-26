@@ -15,4 +15,7 @@ dist
 node_modules
 
 
-config.json
+
+# nightwatch
+tally-config.json
+*.log

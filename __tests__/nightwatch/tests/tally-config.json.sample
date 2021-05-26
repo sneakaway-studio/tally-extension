@@ -1,9 +1,13 @@
 {
-	"environment": "development",
+	"environment": "development_secure",
 	"user": "username",
 
 	"environments": {
 		"development": {
+			"signin": "http://127.0.0.1:5000/signin",
+			"testPage": "http://localhost/Tally/_code/tally-extension/test.html"
+		},
+		"development_secure": {
 			"signin": "https://127.0.0.1:5000/signin",
 			"testPage": "https://localhost/Tally/_code/tally-extension/test.html"
 		},

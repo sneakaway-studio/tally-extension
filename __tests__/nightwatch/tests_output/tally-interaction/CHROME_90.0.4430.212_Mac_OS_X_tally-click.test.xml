@@ -5,35 +5,35 @@
 
   <testsuite name="tally-interaction.tally-click.test"
     errors="0" failures="0" hostname="" id="" package="tally-interaction" skipped="0"
-    tests="5" time="1.317" timestamp="">
+    tests="5" time="1.291" timestamp="">
   
-    <testcase name="TALLY - Test click limiter" classname="tally-interaction.tally-click.test" time="0.09400" assertions="2">
+    <testcase name="CLICK button on page, .tally-clicked class present after" classname="tally-interaction.tally-click.test" time="0.09500" assertions="2">
 
     
 
     
     </testcase>
   
-    <testcase name="TALLY - Click character (single), speech bubble present" classname="tally-interaction.tally-click.test" time="0.08200" assertions="1">
+    <testcase name="CLICK character (single), speech bubble is present" classname="tally-interaction.tally-click.test" time="0.08400" assertions="1">
 
     
     </testcase>
   
-    <testcase name="TALLY - Click character (double), speech bubble present, check response" classname="tally-interaction.tally-click.test" time="0.5860" assertions="2">
-
-    
-
-    
-    </testcase>
-  
-    <testcase name="TALLY - Click character (triple), speech bubble present, check response" classname="tally-interaction.tally-click.test" time="0.2860" assertions="2">
+    <testcase name="CLICK character (double), speech bubble contains &#34;menu&#34; prompt" classname="tally-interaction.tally-click.test" time="0.5660" assertions="2">
 
     
 
     
     </testcase>
   
-    <testcase name="TALLY - Drag character, check response" classname="tally-interaction.tally-click.test" time="0.2690" assertions="1">
+    <testcase name="CLICK character (triple), speech bubble contains joke prompt" classname="tally-interaction.tally-click.test" time="0.2760" assertions="2">
+
+    
+
+    
+    </testcase>
+  
+    <testcase name="DRAG character, dialogue is present" classname="tally-interaction.tally-click.test" time="0.2700" assertions="1">
 
     
     </testcase>
