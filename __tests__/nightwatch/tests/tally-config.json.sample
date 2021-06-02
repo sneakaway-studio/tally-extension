@@ -1,19 +1,19 @@
 {
-	"environment": "development_secure",
-	"user": "username",
-
-	"environments": {
+	"settings": {
+		"env": "development_secure",
+		"user": "username",
+		"testStr": "<enter-key-here>",
+		"testPage": "http://localhost/Tally/_code/tally-extension/test.html"
+	},
+	"env": {
 		"development": {
-			"signin": "http://127.0.0.1:5000/signin",
-			"testPage": "http://localhost/Tally/_code/tally-extension/test.html"
+			"host": "http://127.0.0.1:5000"
 		},
 		"development_secure": {
-			"signin": "https://127.0.0.1:5000/signin",
-			"testPage": "https://localhost/Tally/_code/tally-extension/test.html"
+			"host": "https://127.0.0.1:5000"
 		},
 		"production": {
-			"signin": "https://tallysavestheinternet.com/signin",
-			"testPage": "https://localhost/Tally/_code/tally-extension/test.html"
+			"host": "https://tallysavestheinternet.com"
 		}
 	},
 	"users": {
