@@ -12,15 +12,15 @@ const Mod = require('./fs-strings.js');
 
 // adds a leading 0
 test('add leading 0 to string', () => {
-  var string = "123456789";
-  const leadingZero = Mod.pad('0',string.length)
+	var string = "123456789";
+	const leadingZero = Mod.pad('0', string.length);
 	expect(leadingZero).toBe("000000000");
 });
 
 // adds a leading 0
 test('add leading 0 to string', () => {
-  var string = "1";
-  const leadingZero = Mod.pad('0',string.length)
+	var string = "1";
+	const leadingZero = Mod.pad('0', string.length);
 	expect(leadingZero).toBe("0");
 });
 
@@ -28,15 +28,15 @@ test('add leading 0 to string', () => {
 
 // checks for vowel
 test('check string for vowel', () => {
-  var string = "banana";
-  const containVowel = Mod.containsVowel(string)
+	var string = "banana";
+	const containVowel = Mod.containsVowel(string);
 	expect(containVowel).toBe(true);
 });
 
 // checks for vowel
 test('check string for vowel', () => {
-  var string = "100";
-  const containVowel = Mod.containsVowel(string)
+	var string = "100";
+	const containVowel = Mod.containsVowel(string);
 	expect(containVowel).toBe(false);
 });
 
@@ -44,15 +44,15 @@ test('check string for vowel', () => {
 
 // upper case first letter of string
 test('upper case first letter of string', () => {
-  var string = "banana";
-  const ucFirst = Mod.ucFirst(string)
+	var string = "banana";
+	const ucFirst = Mod.ucFirst(string);
 	expect(ucFirst).toBe("Banana");
 });
 
 // upper case first letter of string
 test('upper case first letter of string', () => {
-  var string = "test";
-  const ucFirst = Mod.ucFirst(string)
+	var string = "test";
+	const ucFirst = Mod.ucFirst(string);
 	expect(ucFirst).toBe("Test");
 });
 
@@ -60,25 +60,26 @@ test('upper case first letter of string', () => {
 
 // removeHTML
 test('remove html', () => {
-  var string = "banana";
-  const ucFirst = Mod.ucFirst(string)
-	expect(string).toEqual(expect.not.stringContaining("<"));
-  expect(string).toEqual(expect.not.stringContaining(">"));
+	var string = "<b>banana</b>";
+	let clean = Mod.removeHTML(string).trim();
+	expect(clean).toEqual(expect.not.stringContaining("<"));
+	expect(clean).toEqual(expect.not.stringContaining(">"));
+	expect(clean).toBe("banana");
 });
 
 //5.
 
 // trim str
 test('trim string to certain length', () => {
-  var string = "batman   ";
-  const trimmed = Mod.trimStr(string,6)
+	var string = "batman   ";
+	const trimmed = Mod.trimStr(string, 6);
 	expect(trimmed).toBe("bat" + "&hellip;");
 });
 
 // trim str
 test('trim string to certain length', () => {
-  var string = "baseball   ";
-  const trimmed = Mod.trimStr(string,7)
+	var string = "baseball   ";
+	const trimmed = Mod.trimStr(string, 7);
 	expect(trimmed).toBe("base" + "&hellip;");
 });
 
@@ -102,7 +103,7 @@ test('trim string to certain length', () => {
 
 // remove small words
 test('remove all words smaller than length 3', () => {
-  var strings = ["we","purchased","a","bike"];
-  const removeSmallWords = Mod.removeSmallWords(strings)
-	expect(removeSmallWords).toStrictEqual(["purchased","bike"]);
+	var strings = ["we", "purchased", "a", "bike"];
+	const removeSmallWords = Mod.removeSmallWords(strings);
+	expect(removeSmallWords).toStrictEqual(["purchased", "bike"]);
 });
