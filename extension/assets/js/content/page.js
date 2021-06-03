@@ -4,12 +4,6 @@ window.Page = (function() {
 	// PRIVATE
 	let DEBUG = Debug.ALL.Page;
 
-	const ignoreFiletypes = [
-		"jpg", "gif", "png", "pdf",
-		"xml", "json", "txt",
-		"js", "css",
-	];
-
 	let data = getData();
 
 
@@ -130,11 +124,6 @@ window.Page = (function() {
 
 			var url = document.location.href;
 
-			// only run on web pages
-			let ext = Environment.extractExtension(url);
-			// console.log(log, ext);
-			if (ext && ext !== "" && ignoreFiletypes.indexOf(ext) > -1) return;
-
 			// object
 			let newData = {
 				browser: {
@@ -157,6 +146,7 @@ window.Page = (function() {
 				contentType: window.document.contentType || "",
 				description: getDescription() || "",
 				domain: Environment.extractRootDomain(document.location.href) || "",
+				ext: Environment.extractExtension(url),
 				host: Environment.extractHostname(document.location.href) || "",
 				h1: getH1() || "",
 				keywords: getKeywords() || "",
@@ -173,7 +163,6 @@ window.Page = (function() {
 				},
 				previousUrl: "",
 				url: document.location.href || "",
-				urlExt: ext,
 				// things that might need to change how we start the game on each page
 				actions: {
 					onDashboard: false,
