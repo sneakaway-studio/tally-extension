@@ -10,9 +10,10 @@ const user = Config.settings.user;
 module.exports = {
 	tags: ['tally'],
 
-
+	// before all tests
 	before(browser) {
 		console.log(`Setting up 🦄 ${env} environment for 👤 ${user}`);
+
 		// open browser, login
 		browser.url(`${Config.env[env].host}/signin`)
 			.waitForElementVisible('body', 1000)
@@ -26,10 +27,19 @@ module.exports = {
 			// submit form
 			.submitForm('css selector', '#signin')
 			.pause(2000);
+
+		// confirm logged in
+		browser.url(`${Config.env[env].host}/dashboard`).waitForElementVisible('body', 1000)
+			.assert.title('Dashboard - Tally Saves the Internet!');
+
+		// confirm extension has loaded
+		browser.assert.visible('div#tally_wrapper').pause(1000);
+
+		browser.windowMaximize();
 	},
 
 
-	// IMPORT TESTS
+	// RUN TESTS
 
 	'Interaction tests': browser => {
 		require('./interaction.test.js').run(browser);

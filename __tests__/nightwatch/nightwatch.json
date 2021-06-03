@@ -10,6 +10,7 @@
 
 	"test_settings": {
 		"default": {
+			"skip_testcases_on_fail": true,	
 			"desiredCapabilities": {
 				"browserName": "chrome",
 				"chromeOptions": {

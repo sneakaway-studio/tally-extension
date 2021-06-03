@@ -71,7 +71,7 @@
 				<a class="myBtn"><span>A span inside an a tag</span></a><br>
 				<a class="myBtn"><span><span>A span inside a span inside an a tag</span></span></a><br>
 				<button class="btn btn-primary" id="btn1">A button tag</button><br>
-				<button class="btn btn-primary" onclick="appendButton()">A button tag (append button through mutation)</button><br>
+				<button class="btn btn-primary" id="btn2" onclick="appendButton()">A button tag (append button through mutation)</button><br>
 				<div id="appendTo"></div>
 
 
@@ -88,7 +88,7 @@
 
 
 				<div class="ProfileTweet-action ProfileTweet-action--favorite js-toggleState">
-					<button class="btn btn-primary ProfileTweet-actionButton js-actionButton js-actionFavorite" type="button" aria-describedby="profile-tweet-action-favorite-count-aria-990032243392503809">
+					<button id="btn3" class="btn btn-primary ProfileTweet-actionButton js-actionButton js-actionFavorite" type="button" aria-describedby="profile-tweet-action-favorite-count-aria-990032243392503809">
 						<div class="IconContainer js-tooltip" data-original-title="Like">
 							<span role="presentation" class="Icon Icon--heart Icon--medium"></span>
 							<div class="HeartAnimation"></div>
@@ -98,7 +98,9 @@
 							<span class="ProfileTweet-actionCountForPresentation" aria-hidden="true">4.0K</span>
 						</span>
 
-					</button><button class="btn btn-primary ProfileTweet-actionButtonUndo ProfileTweet-action--unfavorite u-linkClean js-actionButton js-actionFavorite" type="button">
+					</button>
+
+					<button id="btn4" class="btn btn-primary ProfileTweet-actionButtonUndo ProfileTweet-action--unfavorite u-linkClean js-actionButton js-actionFavorite" type="button">
 						<div class="IconContainer js-tooltip" title="Undo like">
 							<span role="presentation" class="Icon Icon--heart Icon--medium"></span>
 							<div class="HeartAnimation"></div>
@@ -113,7 +115,12 @@
 
 
 				<h3>Forms</h3>
-				<button class="btn btn-primary">This is the Button text</button><br>
+				<button class="btn btn-primary" id="btn5">text of btn5</button>
+				<button class="btn btn-primary" id="btn6">text of btn6</button>
+				<button class="btn btn-primary" id="btn7">text of btn7</button>
+				<button class="btn btn-primary" id="btn8">text of btn8</button>
+
+				<br>
 				<input type="text" id="input1">This is a Text input</input>
 				<input type="password">This is aassword input</input><br>
 				<input type="radio">This is aRadio input</input>
@@ -156,11 +163,14 @@
 
 
 	<iframe id="DAsis"
-		src="//s.amazon-adsystem.com/iu3?d=amazon.com&amp;slot=navFooter&amp;a1=01015fb0b4589a2a3271fabe0436eb2d7310a9353dc2a35437ca6bc500fdd9d36370&amp;a2=010151700a903a7f159531222e83534f285716867d95f85696af1955079ec1e7864f&amp;old_oo=0&amp;ts=1596463659025&amp;s=AcxbbKZA66F0n1wA4XTGzKzox0c4Vj75RiRw9Ks9mayd&amp;cb=1596463659025"
-		width="1" height="1" frameborder="0" marginwidth="0" marginheight="0" scrolling="no" style="display: none !important;"></iframe>
+	 src="//s.amazon-adsystem.com/iu3?d=amazon.com&amp;slot=navFooter&amp;a1=01015fb0b4589a2a3271fabe0436eb2d7310a9353dc2a35437ca6bc500fdd9d36370&amp;a2=010151700a903a7f159531222e83534f285716867d95f85696af1955079ec1e7864f&amp;old_oo=0&amp;ts=1596463659025&amp;s=AcxbbKZA66F0n1wA4XTGzKzox0c4Vj75RiRw9Ks9mayd&amp;cb=1596463659025"
+	 width="1" height="1" frameborder="0" marginwidth="0" marginheight="0" scrolling="no" style="display: none !important;"></iframe>
 
-<div id="sis_pixel_r2" aria-hidden="true" style="height:1px; position: absolute; left: -1000000px; top: -1000000px;">
-	<iframe id="DAsis" src="//s.amazon-adsystem.com/iu3?d=amazon.com&amp;slot=navFooter&amp;a1=01015fb0b4589a2a3271fabe0436eb2d7310a9353dc2a35437ca6bc500fdd9d36370&amp;a2=010151700a903a7f159531222e83534f285716867d95f85696af1955079ec1e7864f&amp;old_oo=0&amp;ts=1596463659025&amp;s=AcxbbKZA66F0n1wA4XTGzKzox0c4Vj75RiRw9Ks9mayd&amp;cb=1596463659025" width="1" height="1" frameborder="0" marginwidth="0" marginheight="0" scrolling="no" style="display: none !important;"></iframe></div>
+	<div id="sis_pixel_r2" aria-hidden="true" style="height:1px; position: absolute; left: -1000000px; top: -1000000px;">
+		<iframe id="DAsis"
+		 src="//s.amazon-adsystem.com/iu3?d=amazon.com&amp;slot=navFooter&amp;a1=01015fb0b4589a2a3271fabe0436eb2d7310a9353dc2a35437ca6bc500fdd9d36370&amp;a2=010151700a903a7f159531222e83534f285716867d95f85696af1955079ec1e7864f&amp;old_oo=0&amp;ts=1596463659025&amp;s=AcxbbKZA66F0n1wA4XTGzKzox0c4Vj75RiRw9Ks9mayd&amp;cb=1596463659025"
+		 width="1" height="1" frameborder="0" marginwidth="0" marginheight="0" scrolling="no" style="display: none !important;"></iframe>
+	</div>
 
 
 	<!-- FAKE TRACKERS -->

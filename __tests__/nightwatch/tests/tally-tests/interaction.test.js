@@ -8,15 +8,16 @@ var tests = {
 	'GO to test url': (browser, key) => {
 		browser.perform(() => console.log('🤔', key));
 		// go to test url
-		browser.url(Config.settings.testPage).waitForElementVisible('body', 1000)
-			.pause(1000);
+		browser.url(Config.settings.testPage).waitForElementVisible('body', 1000).pause(1000);
 		// confirm extension has loaded
 		browser.assert.visible('div#tally_wrapper').pause(1000);
 	},
 	'CLICK button on page, .tally-clicked class present after': (browser, key) => {
 		browser.perform(() => console.log('🤔', key));
-		browser.waitForElementVisible('#btn1', 3000, false).click('#btn1')
-			.assert.cssClassPresent('#btn1', 'tally-clicked');
+		browser.waitForElementVisible('#btn2', 3000, false)
+			.moveToElement('#btn2', 30, 30).click('#btn2')
+			// .assert.cssClassPresent('#btn2', 'tally-clicked')
+			.assert.elementPresent("#appendTo button");
 	},
 	'CLICK character (single), speech bubble is present': (browser, key) => {
 		browser.perform(() => console.log('🤔', key));

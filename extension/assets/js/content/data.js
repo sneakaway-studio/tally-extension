@@ -344,6 +344,8 @@ window.TallyData = (function() {
 					T.tally_meta = response.tally_meta;
 					// check for level updates, etc.
 					TallyMain.inPageChecks();
+					// set data in tally-data attribute
+					Tally.setDataAttr();
 					return true;
 				}
 				// otherwise one of the following may be true
