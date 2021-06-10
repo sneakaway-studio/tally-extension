@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Test revealing modules as ES6 modules in a browser</title>
+
+	<!-- import a revealing module as an ES6 module and test it -->
+	<script type="module" src="revealing-mod.js"></script>
+	<script type="module">
+		console.log(`Greeting.hello() =>`, Greeting.hello(), `from revealing-mod.js`);
+		console.log(`Greeting.goodbye() =>`, Greeting.goodbye(), `from revealing-mod.js`);
+		console.log(`Greeting.sum() =>`, Greeting.sum(1, 2), `from revealing-mod.js`);
+		console.log(`privateVar = ${Greeting.privateVar} from revealing-mod.js`);
+		Greeting.privateVar = 200;
+		console.log(`privateVar = ${Greeting.privateVar} from revealing-mod.js`);
+	</script>
+
+
+</head>
+
+<body>
+	<h3>Test revealing modules as ES6 modules in a browser</h3>
+	<p>Ensure all the modules (they use revealing module pattern) in the game work in browser</p>
+	<p>Open the console to see messages</p>
+	<p>NOTE: Because of CORS you <a href="https://github.com/omundy/learn-javascript/topics-data.md#cors">must run this file in a server environment</a></p>
+</body>
+
+</html>

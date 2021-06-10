@@ -1,0 +1,15 @@
+{
+	"esversion": 8,
+	"strict": "implied",
+	"devel": true,
+	"browser": true,
+	"node": true,
+	"indent": 1,
+	"undef": true,
+	"unused": false,
+	"globals": {
+		"$": false,
+		"describe": false,
+		"test": false
+	}
+}

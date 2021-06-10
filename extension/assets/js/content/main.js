@@ -11,11 +11,11 @@
  *
  */
 
-window.TallyMain = (function () {
+window.TallyMain = (function() {
 	// PRIVATE
 	let DEBUG = Debug.ALL.TallyMain;
 
-	$(function () {
+	$(function() {
 		// test();
 	});
 
@@ -147,6 +147,13 @@ window.TallyMain = (function () {
 		}
 	}
 
+
+	const ignoreFiletypes = [
+		"jpg", "gif", "png", "pdf",
+		"xml", "json", "txt",
+		"js", "css",
+	];
+
 	/**
 	 *	Get the page mode for the current page
 	 * 	- Make sure Tally isn't disabled on this page | domain | subdomain | etc
@@ -199,8 +206,8 @@ window.TallyMain = (function () {
 				mode.notActive = true;
 			}
 			// this is not a web page (e.g. a PDF or image)
-			else if (Page.data.contentType != "text/html") {
-				if (DEBUG) console.log(log + "Tally is disabled on pages like " + Page.data.contentType);
+			else if (Page.data.contentType != "text/html" || ignoreFiletypes.indexOf(Page.data.ext) > -1) {
+				if (DEBUG) console.log(`${log} Tally is disabled on pages like ${Page.data.contentType} and/or .${Page.data.ext}`);
 				mode.notActive = true;
 			}
 			// this is a file:// URI
@@ -299,7 +306,7 @@ window.TallyMain = (function () {
 			inPageChecks();
 
 			// checks to perform after user has interacted with page
-			setTimeout(function () {
+			setTimeout(function() {
 
 				if (DEBUG) console.log("🧰 TallyMain.startGameOnPage() [4.2] -> Check progress");
 				// check for, and possibly complete any progress
@@ -313,7 +320,7 @@ window.TallyMain = (function () {
 				Badge.check();
 
 				// after a bit more time
-				setTimeout(function () {
+				setTimeout(function() {
 					if (DEBUG) console.log("🧰 TallyMain.startGameOnPage() [4.4] -> Check monsters");
 					// check for, and potentially add monsters on the page
 					MonsterCheck.check();

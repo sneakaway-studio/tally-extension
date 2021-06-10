@@ -1,0 +1,12 @@
+{
+	"scripts": {
+		"test": "./node_modules/.bin/nightwatch -e default tests"
+	},
+
+	"dependencies": {
+		"nightwatch": "^1.6.4"
+	},
+	"devDependencies": {
+		"chromedriver": "^90.0.0"
+	}
+}

@@ -103,42 +103,46 @@ window.Tally = (function() {
 				Tally.moveEye(".tally_eye_right", "mouse", event);
 			});
 
+			// style='transform:translateY(-350px);'
 			let str =
-				"<div class='tally draggable' id='tally_character'>" + // style='transform:translateY(-350px);'
-				"<div class='tally tally_speech_bubble' id='tally_dialogue_outer'>" +
-				"<div class='tally tally_dialogue_skipToNext'></div>" +
-				"<div class='tally' id='tally_dialogue_inner'></div>" +
-				"</div>" +
-				"<div class='tally' id='tally_item_manager'>" +
-				"<div class='tally' id='tally_item_manager_menu'></div>" +
-				"<div class='tally' id='tally_item_manager_inner'></div>" +
-				"</div>" +
-				"<div class='tally' id='tally_slide_show'>" +
-				"<div class='tally' id='tally_slide_show_inner'></div>" +
-				"</div>" +
-				"<div class='tally' id='tally_character_inner'>" +
-				"<div class='tally' id='tally_body'>" + Skin.returnTallySVG() + "</div>" +
-				"<div class='tally' id='tally_eyes'>" +
-				"<span class='tally tally_lid'>" +
-				"<span class='tally tally_eye tally_eye_left'>" +
-				"<span class='tally tally_eye_pupil'></span></span></span>" +
-				"<span class='tally tally_lid'>" +
-				"<span class='tally tally_eye tally_eye_right'>" +
-				"<span class='tally tally_eye_pupil'></span></span></span>" +
-				"</div>" +
-				"</div>" +
-				"<div class='tally tally_disguise'></div>" +
-				"<div class='tally tally_stats'>" +
-				"<div class='tally tally_stats_bars'></div>" +
-				"<div class='tally tally_stats_table_wrapper'></div>" +
-				"</div>" +
-				"</div>";
+				`<div class='tally draggable' id='tally_character'>
+					<div class='tally tally_speech_bubble' id='tally_dialogue_outer'>
+						<div class='tally tally_dialogue_skipToNext'></div>
+						<div class='tally' id='tally_dialogue_inner'></div>
+					</div>
+					<div class='tally' id='tally_item_manager'>
+						<div class='tally' id='tally_item_manager_menu'></div>
+						<div class='tally' id='tally_item_manager_inner'></div>
+					</div>
+					<div class='tally' id='tally_data' data-tally=''></div>
+					<div class='tally' id='tally_slide_show'>
+					<div class='tally' id='tally_slide_show_inner'></div>
+					</div>
+					<div class='tally' id='tally_character_inner'>
+						<div class='tally' id='tally_body'>${Skin.returnTallySVG()}</div>
+						<div class='tally' id='tally_eyes'>
+							<span class='tally tally_lid'>
+								<span class='tally tally_eye tally_eye_left'>
+									<span class='tally tally_eye_pupil'></span></span></span>
+							<span class='tally tally_lid'>
+								<span class='tally tally_eye tally_eye_right'>
+									<span class='tally tally_eye_pupil'></span></span></span>
+						</div>
+					</div>
+					<div class='tally tally_disguise'></div>
+					<div class='tally tally_stats'>
+						<div class='tally tally_stats_bars'></div>
+						<div class='tally tally_stats_table_wrapper'></div>
+					</div>
+				</div>`;
 			$('#tally_wrapper').append(str);
 
 			$("#tally_character").draggable({
 				drag: function() {},
 				stop: function() {}
 			});
+
+			setDataAttr();
 
 			$(document).on("click", ".tally_dialogue_skipToNext", function() {
 				// if dialogue open let them click through it
@@ -157,6 +161,14 @@ window.Tally = (function() {
 		} catch (err) {
 			console.error(err);
 		}
+	}
+
+	/**
+	 *	Add data to DOM for tests
+	 */
+	function setDataAttr() {
+		var str = encodeURIComponent(JSON.stringify(T.tally_user));
+		$("#tally_data").attr("data-tally", str);
 	}
 
 
@@ -379,7 +391,7 @@ window.Tally = (function() {
 					// if wearing a disguise then say something about it
 					if (chance && which < 0.25 && FS_Object.objLength(T.tally_user.disguises)) {
 						Dialogue.showData(Dialogue.getData({
-							"category": "disguise",
+							category: "disguise",
 							subcategory: Disguise.currentDisguiseObj.name
 						}), {
 							addIfInProcess: false,
@@ -387,7 +399,7 @@ window.Tally = (function() {
 						});
 					} else if (chance && which < 0.5) {
 						Dialogue.showData(Dialogue.getData({
-							"category": "random",
+							category: "random",
 							subcategory: "conversation"
 						}), {
 							addIfInProcess: false,
@@ -405,7 +417,7 @@ window.Tally = (function() {
 				if (!dragging) {
 					if (!draggedOnce) {
 						Dialogue.showData(Dialogue.getData({
-							"category": "tally",
+							category: "tally",
 							subcategory: "drag"
 						}), {
 							addIfInProcess: false,
@@ -856,7 +868,8 @@ window.Tally = (function() {
 		setFollowCursor: setFollowCursor,
 		stare: stare,
 		addCharacter: addCharacter,
-		addStats: addStats
+		addStats: addStats,
+		setDataAttr: setDataAttr
 	};
 
 })();

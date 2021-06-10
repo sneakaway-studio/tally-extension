@@ -2,8 +2,9 @@
 
 window.Page = (function() {
 	// PRIVATE
-	let DEBUG = Debug.ALL.Page,
-		data = getData();
+	let DEBUG = Debug.ALL.Page;
+
+	let data = getData();
 
 
 	/*  HTML FUNCTIONS
@@ -85,7 +86,7 @@ window.Page = (function() {
 			tags = FS_String.removeStopWords(null, tags);
 			tags = FS_String.removeSmallWords(tags);
 
-// if (DEBUG) console.log( "tags", JSON.stringify(tags) );
+			// if (DEBUG) console.log( "tags", JSON.stringify(tags) );
 
 			return tags;
 		} catch (err) {
@@ -109,6 +110,10 @@ window.Page = (function() {
 		}
 	}
 
+
+
+
+
 	/**
 	 *	Get data about this page
 	 */
@@ -118,8 +123,7 @@ window.Page = (function() {
 			if (DEBUG) Debug.dataReportHeader(log, "#", "before");
 
 			var url = document.location.href;
-			// only run on web pages
-			// if (!url || !url.match(/^http/)) return;
+
 			// object
 			let newData = {
 				browser: {
@@ -142,6 +146,7 @@ window.Page = (function() {
 				contentType: window.document.contentType || "",
 				description: getDescription() || "",
 				domain: Environment.extractRootDomain(document.location.href) || "",
+				ext: Environment.extractExtension(url),
 				host: Environment.extractHostname(document.location.href) || "",
 				h1: getH1() || "",
 				keywords: getKeywords() || "",

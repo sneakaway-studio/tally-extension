@@ -31,8 +31,8 @@ window.T = (function() {
 				website: "https://tallysavestheinternet.com",
 			},
 			// true = development, false = production
-			localhost: false, // change to false to quickly shift to production server
-			debugging: false
+			localhost: true, // change to false to quickly shift to production server
+			debugging: true
 		},
 		DEBUG = true;
 

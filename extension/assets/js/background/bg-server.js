@@ -304,6 +304,8 @@ window.Server = (function() {
 					let attackData = AttackData.data[key];
 					// save selected prop
 					attackData.selected = attacks[key].selected;
+					// remove fields
+					delete attackData.artist;
 					// set it back in attacks
 					attacks[key] = attackData;
 				}

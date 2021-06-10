@@ -1,6 +1,6 @@
 "use strict";
 
-/*  LOCAL STORAGE FUNCTIONS
+/*  LOCAL STORAGE FUNCTIONS - not in use
 ******************************************************************************/
 
 

@@ -14,8 +14,9 @@ desktop.ini
 dist
 node_modules
 
-# Extension
-.idea
-.iml
-*.crx
-*.pem
+
+
+# nightwatch
+tally-config.json
+*.log
+tests_output

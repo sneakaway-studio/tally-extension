@@ -1,0 +1,25 @@
+{
+	"settings": {
+		"env": "development_secure",
+		"user": "username",
+		"testStr": "<enter-key-here>",
+		"testPage": "http://localhost/Tally/_code/tally-extension/test.html"
+	},
+	"env": {
+		"development": {
+			"host": "http://127.0.0.1:5000"
+		},
+		"development_secure": {
+			"host": "https://127.0.0.1:5000"
+		},
+		"production": {
+			"host": "https://tallysavestheinternet.com"
+		}
+	},
+	"users": {
+		"username": {
+			"email": "",
+			"password": ""
+		}
+	}
+}
