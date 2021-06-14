@@ -74,15 +74,15 @@ window.Background = (function() {
 			if (!getTallyUserResponse) {
 
 				// if first time install then definitely open start screen
-				/*if (firstTimeInstallation) {
+				if (firstTimeInstallation) {
 					if (DEBUG) console.log(log, "-> NEW INSTALL, LAUNCH START SCREEN");
 					// prompt to install
 					const startScreenResponse = await Install.launchStartScreen();
-				}*/
+				}
 				// else this is a reinstall and user needs to login
-				//else {
+				else {
 					if (DEBUG) console.log(log, "-> RE INSTALL, LET SERVER.SEND() LAUNCH START SCREEN");
-				//}
+				}
 			}
 			// user logged in ...
 			else {
