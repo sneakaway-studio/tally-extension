@@ -50,7 +50,7 @@ window.Background = (function() {
 			Meaning this bug is due to a bug in Firefox's source.
 			*/
 			if (fxVr < 90) {
-				const firstTimeInstallation = Install.init();
+				var firstTimeInstallation = Install.init();
 			}
 			else{
 				var firstTimeInstallation = await Install.init();
