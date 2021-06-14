@@ -149,11 +149,11 @@ window.Tutorial = (function () {
 			/*  story1
 			 ******************************************************************************/
 			else if (callback === "slideShowCatGifs") {
-				frameStr = '<img src="' + chrome.extension.getURL('assets/img/tutorial/funniest-cat-gifs-cat-sit-right-here.gif') + '">';
+				frameStr = '<img src="' + browser.runtime.getURL('assets/img/tutorial/funniest-cat-gifs-cat-sit-right-here.gif') + '">';
 			} else if (callback === "slideShowKindleMonster") {
-				frameStr = '<img src="' + chrome.extension.getURL('assets/img/tutorial/monster-amazon-kindle.gif') + '">';
+				frameStr = '<img src="' + browser.runtime.getURL('assets/img/tutorial/monster-amazon-kindle.gif') + '">';
 			} else if (callback === "slideShowPopUpAds") {
-				frameStr = '<img src="' + chrome.extension.getURL('assets/img/tutorial/popup-ads.gif') + '">';
+				frameStr = '<img src="' + browser.runtime.getURL('assets/img/tutorial/popup-ads.gif') + '">';
 			} else if (callback === "slideShowBrowserDetails") {
 				frameStr = '';
 				if (T.tally_meta.location.ip) {
@@ -175,7 +175,7 @@ window.Tutorial = (function () {
 					if (Page.data.browser.platform) frameStr += "<div><b>Platform</b>: " + Page.data.browser.platform + "</div> ";
 				}
 			} else if (callback === "slideShowBattle") {
-				frameStr = '<img src="' + chrome.extension.getURL('assets/img/tutorial/monster-battle.gif') + '">';
+				frameStr = '<img src="' + browser.runtime.getURL('assets/img/tutorial/monster-battle.gif') + '">';
 			}
 
 

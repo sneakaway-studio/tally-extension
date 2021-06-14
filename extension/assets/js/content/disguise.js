@@ -102,7 +102,7 @@ window.Disguise = (function() {
 	function returnHtmlStr() {
 		try {
 			// if (DEBUG) console.log("😎 Disguise.returnHtmlStr() [1] currentDisguiseObj =", currentDisguiseObj);
-			return "<img class='tally' src='" + chrome.extension.getURL('assets/img/tally-disguises/' +
+			return "<img class='tally' src='" + browser.runtime.getURL('assets/img/tally-disguises/' +
 				currentDisguiseObj.name + DisguiseData.data[currentDisguiseObj.name].ext) + "'>";
 		} catch (err) {
 			console.error(err);

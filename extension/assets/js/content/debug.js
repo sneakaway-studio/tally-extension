@@ -59,7 +59,7 @@ window.Debug = (function() {
 			Tutorial: true
 		},
 		debugButtonListenersAdded = false,
-		tallyConsoleIcon = 'font-size:12px; background:url("' + chrome.extension.getURL('assets/img/tally/tally-clear-20w.png') + '") no-repeat;';
+		tallyConsoleIcon = 'font-size:12px; background:url("' + browser.runtime.getURL('assets/img/tally/tally-clear-20w.png') + '") no-repeat;';
 
 
 	console.log("%c   Hi, I'm Tally!", tallyConsoleIcon, "\n");

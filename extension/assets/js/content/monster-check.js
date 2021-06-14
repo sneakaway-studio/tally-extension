@@ -600,7 +600,7 @@ window.MonsterCheck = (function() {
 			// remote version that doesn't work with CORS for some reason
 			let url = T.tally_meta.env.website + '/' + 'assets/img/monsters/monsters-140h-solid-lt-purple/' + monster.mid + '-anim-sheet.png';
 			// local version
-			url = chrome.extension.getURL('assets/img/monsters/monsters-140h-solid-lt-purple/' + monster.mid + '-anim-sheet.png');
+			url = browser.runtime.getURL('assets/img/monsters/monsters-140h-solid-lt-purple/' + monster.mid + '-anim-sheet.png');
 
 
 			// set background color

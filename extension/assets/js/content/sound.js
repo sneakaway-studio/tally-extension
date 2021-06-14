@@ -116,7 +116,7 @@ window.Sound = (function() {
 				musicFile = file;
 				// get reference to musicAudio element and add source
 				musicAudioEl = document.querySelector('#tally_music');
-				$('#tally_music_source').attr("src", chrome.extension.getURL("assets/sounds/music/" + musicFile));
+				$('#tally_music_source').attr("src", browser.runtime.getURL("assets/sounds/music/" + musicFile));
 				// set params
 				musicAudioEl.volume = FS_Number.clamp(T.tally_options.soundVolume + volumeModifier, 0, 1);
 				// some hacks for Chrome
@@ -136,7 +136,7 @@ window.Sound = (function() {
 				// save file
 				musicFile = file;
 				// only update src
-				$('#tally_music_source').attr("src", chrome.extension.getURL("assets/sounds/music/" + musicFile));
+				$('#tally_music_source').attr("src", browser.runtime.getURL("assets/sounds/music/" + musicFile));
 			}
 
 		} catch (err) {
@@ -175,7 +175,7 @@ window.Sound = (function() {
 					musicAudioEl.pause();
 					// musicAudioEl.currentTime = 0;
 					// only update src
-					$('#tally_music_source').attr("src", chrome.extension.getURL("assets/sounds/music/" + musicFile));
+					$('#tally_music_source').attr("src", browser.runtime.getURL("assets/sounds/music/" + musicFile));
 					musicAudioEl.load();
 					// create promise / attempt to play
 					musicAudioEl.play();
@@ -522,7 +522,7 @@ window.Sound = (function() {
 	// try {
 	// 	//if(DEBUG) console.log("🎵 Sound.play("+ soundFile +","+ delay +","+ volumeModifier +")");
 	// 	// load/play sound
-	// 	var audio = new Audio(chrome.extension.getURL("assets/sounds/" + soundFile));
+	// 	var audio = new Audio(browser.runtime.getURL("assets/sounds/" + soundFile));
 	// 	audio.muted = true;
 	// 	audio.pause();
 	// 	audio.volume = T.tally_options.soundVolume + volumeModifier;
@@ -571,7 +571,7 @@ window.Sound = (function() {
 			// reference to audio element
 			var audioEl = document.querySelector('#tally_audio');
 			// add source
-			$('#tally_audio_source').attr("src", chrome.extension.getURL("assets/sounds/" + soundFile));
+			$('#tally_audio_source').attr("src", browser.runtime.getURL("assets/sounds/" + soundFile));
 			if (!audioEl) return console.warn("🎵 Sound.play() audioEl does not exist", audioEl, $('#tally_audio_source'));
 			// update the source
 			audioEl.load();
