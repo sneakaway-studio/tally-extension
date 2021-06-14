@@ -228,7 +228,7 @@ window.Skin = (function() {
 			// - then store reference in fills
 			else if (currentSkinObj.type == "image") {
 				skinData.pattern = '<pattern id="tallyPattern" patternUnits="userSpaceOnUse" width="120%" height="120%">' +
-					'<image xlink:href="' + browser.runtime.getURL('assets/img/tally/skins/' + currentSkinObj.url) +
+					'<image xlink:href="' + chrome.extension.getURL('assets/img/tally/skins/' + currentSkinObj.url) +
 					'" x="-10" y="-10" width="100%" height="100%" />' +
 					'</pattern>';
 				// if an image then make fill transparent

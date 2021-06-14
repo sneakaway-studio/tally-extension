@@ -175,10 +175,10 @@ function getAttacks(callback) {
 
 			// add icons
 			$(".attack-icon-attack").css({
-				"background-image": 'url(' + browser.runtime.getURL('../../assets/img/battles/sword-pixel-13sq.png') + ')'
+				"background-image": 'url(' + chrome.extension.getURL('../../assets/img/battles/sword-pixel-13sq.png') + ')'
 			});
 			$(".attack-icon-defense").css({
-				"background-image": 'url(' + browser.runtime.getURL('../../assets/img/battles/shield-pixel-13sq.png') + ')'
+				"background-image": 'url(' + chrome.extension.getURL('../../assets/img/battles/shield-pixel-13sq.png') + ')'
 			});
 
 			// add listener for buttons
@@ -509,7 +509,7 @@ $("select#gameMode").on('change', function() {
 });
 $('#soundVolume').on('change', function() {
 	// play a sound to confirm new setting
-	var audio = new Audio(browser.runtime.getURL("assets/sounds/tally/moods-v3/excited-2-1.wav"));
+	var audio = new Audio(chrome.extension.getURL("assets/sounds/tally/moods-v3/excited-2-1.wav"));
 	audio.volume = $(this).val() / 100;
 	audio.play();
 });
@@ -574,7 +574,7 @@ function updateSkins() {
 		for (var key in _tally_user.skins) {
 			str += "<span class='skinThumb'><a href='#'>";
 			str += "<img src='";
-			str += browser.runtime.getURL('assets/img/tally/skins/skin-' + _tally_user.skins[key] + ".png");
+			str += chrome.extension.getURL('assets/img/tally/skins/skin-' + _tally_user.skins[key] + ".png");
 			str += "'></a></span>";
 		}
 		$("#skinThumbs").html(str);

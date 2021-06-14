@@ -373,9 +373,9 @@ window.Badge = (function() {
 				str += "<img class='tally tally-badge-img-wrapper' src='";
 				if (badge.ext && badge.ext !== "")
 					// placeholder for badges not finished
-					str += browser.runtime.getURL('assets/img/badges/' + badge.name + badge.ext);
+					str += chrome.extension.getURL('assets/img/badges/' + badge.name + badge.ext);
 				else
-					str += browser.runtime.getURL('assets/img/badges/placeholder.png');
+					str += chrome.extension.getURL('assets/img/badges/placeholder.png');
 				str += "'>";
 
 				// add award text

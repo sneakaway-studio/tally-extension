@@ -264,10 +264,10 @@ window.BattleConsole = (function() {
 			addCursor();
 			// add icons
 			$(".attack-icon-attack").css({
-				"background-image": 'url(' + browser.runtime.getURL('assets/img/battles/sword-pixel-13sq.png') + ')'
+				"background-image": 'url(' + chrome.extension.getURL('assets/img/battles/sword-pixel-13sq.png') + ')'
 			});
 			$(".attack-icon-defense").css({
-				"background-image": 'url(' + browser.runtime.getURL('assets/img/battles/shield-pixel-13sq.png') + ')'
+				"background-image": 'url(' + chrome.extension.getURL('assets/img/battles/shield-pixel-13sq.png') + ')'
 			});
 
 			// first, remove listeners (from all)
