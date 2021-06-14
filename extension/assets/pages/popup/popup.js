@@ -117,8 +117,6 @@ function getUser(callback) {
 		});
 	} catch (err) {
 		console.error(err);
-		//console.log("raaa");
-		//const startScreenResponse = await Install.launchStartScreen();
 	}
 }
 
