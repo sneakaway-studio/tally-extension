@@ -77,7 +77,7 @@ window.Sound = (function() {
 			// don't allow if this page doesn't have focus
 			if (!document.hasFocus()) return;
 			// don't allow if playSounds disabled
-			if (!T.tally_options.playSounds) return; 
+			if (!T.tally_options.playSounds) return;
 
 			// play intro
 			//playMusic(battleMusicDir + "battle-intro.wav", false, 0);
@@ -480,7 +480,7 @@ window.Sound = (function() {
 			if (!FS_Object.prop(dialogue.mood)) return;
 			// fixes old moods
 			if (dialogue.mood == "award") dialogue.mood = "happy";
-			if (DEBUG) console.log("🎵 Sound.playTallyVoice()", JSON.stringify(dialogue));
+			// if (DEBUG) console.log("🎵 Sound.playTallyVoice()", JSON.stringify(dialogue));
 
 			// get number of spaces in the dialogue text
 			let words = (dialogue.text.match(/ /g) || []).length + 1;

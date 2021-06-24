@@ -713,14 +713,14 @@ window.Dialogue = (function() {
 	}
 
 	/**
-	 *	Get a random fact (by domain)
+	 *	Get a random fact (by category)
 	 */
-	function getFact(domain = "", includeSource = true) {
+	function getFact(category = "", includeSource = true) {
 		try {
-			// if domain
-			if (domain === "") domain = FS_Object.randomObjKey(Facts.data);
+			// if category
+			if (category === "") category = FS_Object.randomObjKey(Facts.data);
 			// get fact
-			let fact = FS_Object.randomArrayIndex(Facts.data[domain]);
+			let fact = FS_Object.randomArrayIndex(Facts.data[category]);
 			let str = "Random fact: " + fact.fact;
 			// should we include source?
 			if (includeSource) {
@@ -813,9 +813,7 @@ window.Dialogue = (function() {
 		showSurveyPrompt: showSurveyPrompt,
 		emptyTheQueue: emptyTheQueue,
 		hide: hide,
-		getFact: function(domain, includeSource) {
-			return getFact(domain, includeSource);
-		},
+		getFact: getFact,
 		skipToNext: skipToNext,
 
 
