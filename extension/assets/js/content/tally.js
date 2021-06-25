@@ -367,9 +367,10 @@ window.Tally = (function() {
 					// change to chill
 					Tutorial.play("tutorial", "onboardingChillDefault1");
 				}
+			}
 
-
-			} else if (interaction === 'mouseleave') {
+			// MOUSE LEAVE
+			else if (interaction === 'mouseleave') {
 				if (DEBUG) console.log("%c   Tally.interactionHandler()", Debug.tallyConsoleIcon, interaction);
 
 				// update progress
@@ -717,34 +718,28 @@ window.Tally = (function() {
 
 	function showMoreOptions() {
 		try {
-
-			let str = "" +
-				// user-specific
-				"Do you want to view your <a class='tally tally_profile_link'>profile</a> or " +
-				"<a class='tally' id='tally_dashboard'>dashboard</a>, " +
-				"or see the <a class='tally' id='tally_leaderboard'>leaderboards</a>? " +
-				"";
+			// 1st dialogue -> player-related links
 			Dialogue.showData({
-				"text": str,
+				"text": `Do you want to view your <a class='tally tally_profile_link'>profile</a> or
+					<a class='tally' id='tally_dashboard'>dashboard</a>,
+					or see the <a class='tally' id='tally_leaderboard'>leaderboards</a>?`,
 				"mood": "question"
 			}, {
 				instant: true
 			});
-
-			str = "Check out the <a class='tally' id='tally_howToPlay'>How to Play</a>, " +
-				"or <a class='tally' id='tally_faq'>FAQ</a> pages, " +
-				"or watch the <a class='tally' id='tally_gameTrailerBtn'>game trailer</a>? ";
+			// 2nd dialogue -> project-related links
 			Dialogue.showData({
-				"text": str,
+				"text": `Check out the <a class='tally' id='tally_howToPlay'>How to Play</a>,
+				or <a class='tally' id='tally_faq'>FAQ</a> pages,
+				or watch the <a class='tally' id='tally_gameTrailerBtn'>game trailer</a>? `,
 				"mood": "question"
 			}, {
 				instant: false
 			});
 
-			str = 'Have <a target="_blank" href="https://docs.google.com/forms/d/e/1FAIpQLSdhftpXZHrnU1RXZ-yQ0LZovCp84ShZEicZpy__mOt621-Q2w/viewform">feedback</a> or ' +
-				'<a target="_blank" href="https://docs.google.com/forms/d/e/1FAIpQLScUG923UhVtFWzLaV5gOsd0e1grdS9iKeNLjdwPixKEJkn4bQ/viewform">find an issue</a>?';
+			// 3rd dialogue -> feedback-related links
 			Dialogue.showData({
-				"text": str,
+				"text": `Have <a target="_blank" href="https://docs.google.com/forms/d/e/1FAIpQLSdhftpXZHrnU1RXZ-yQ0LZovCp84ShZEicZpy__mOt621-Q2w/viewform">feedback</a> or <a target="_blank" href="https://docs.google.com/forms/d/e/1FAIpQLScUG923UhVtFWzLaV5gOsd0e1grdS9iKeNLjdwPixKEJkn4bQ/viewform">find an issue</a>?`,
 				"mood": "question"
 			}, {
 				instant: false
@@ -755,8 +750,7 @@ window.Tally = (function() {
 
 
 			/**
-			 *	Listeners for options menu
-			 *	- Placed outside of functions so they are only added once.
+			 *	Listeners for options menu, only add once
 			 */
 
 			// launch profile
@@ -792,6 +786,7 @@ window.Tally = (function() {
 
 
 
+
 	/*  DEV OPTIONS
 	 *****************************************************************************/
 
@@ -801,19 +796,21 @@ window.Tally = (function() {
 		try {
 			if (T.tally_user.admin <= 0) return;
 
-			let str = "Dev options: <br>" +
-				"Monster: <a class='tally' id='tally_testNearbyMonster'>test</a>; " +
-				"Battle: <a class='tally' id='tally_battleStart'>start</a>;<br>" +
-				"Rumble: <a class='tally' id='tally_battleRumbleSmall'>sm</a>, " +
-				"<a class='tally' id='tally_battleRumbleMedium'>md</a>, " +
-				"<a class='tally' id='tally_battleRumbleLarge'>lg</a>, " +
-				"<a class='tally' id='tally_explodePage'>explode</a>;<br>" +
+			let str = `Dev options:
+				<a class='tally' id='tally_testNearbyMonster'>Monster</a>,
+				<a class='tally' id='tally_battleStart'>Battle</a>,
+				Rumble [<a class='tally' id='tally_battleRumbleSmall'>sm</a>,
+				<a class='tally' id='tally_battleRumbleMedium'>md</a>,
+				<a class='tally' id='tally_battleRumbleLarge'>lg</a>],
+				<a class='tally' id='tally_explodePage'>💥</a>;<br>
 
-				"Dialogue: <a class='tally' id='tally_randomDialogue'>random</a> " +
-				"<a class='tally' id='tally_random'>greeting</a>; " +
+				Dialogue:
+				<a class='tally' id='tally_dialogue_random'>random</a>,
+				<a class='tally' id='tally_dialogue_random_greeting'>greeting</a>,
+				<a class='tally' id='tally_fact_random'>fact</a>;
 
-				"Skin: <a class='tally' id='tally_randomSkin'>random</a>" +
-				"";
+				Skin: <a class='tally' id='tally_skin_random'>random</a>
+				`;
 			Dialogue.showData({
 				"text": str,
 				"mood": "happy"
@@ -843,14 +840,19 @@ window.Tally = (function() {
 				Effect.explode();
 			});
 
-			$(document).on('click', '#tally_randomDialogue', function() {
+
+			$(document).on('click', '#tally_dialogue_random', function() {
 				Dialogue.random();
 			});
-			$(document).on('click', '#tally_random', function() {
+			$(document).on('click', '#tally_dialogue_random_greeting', function() {
 				Dialogue.test();
 			});
+			$(document).on('click', '#tally_fact_random', function() {
+				Dialogue.showStr(Dialogue.getFact("trackers", false), "neutral");
+			});
 
-			$(document).on('click', '#tally_randomSkin', function() {
+
+			$(document).on('click', '#tally_skin_random', function() {
 				Skin.random();
 			});
 

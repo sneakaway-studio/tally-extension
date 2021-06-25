@@ -78,6 +78,9 @@
 			"assets/data/facts.js",
 			"assets/data/dialogues.js",
 			"assets/data/dialogue-data.js",
+			"assets/data/dialogue-ids-by-cat-index.js",
+			"assets/data/dialogue-ids-by-cat-subcat.js",
+			"assets/data/dialogue-ids-by-tag.js",
 			"assets/data/badges.js",
 			"assets/data/badge-data.js",
 			"assets/data/consumables.js",
@@ -138,7 +141,7 @@
 	}],
 	"permissions": [
 
-		
+
 		"http://localhost/*",
 		"http://127.0.0.1/*",
 		"https://127.0.0.1/*",

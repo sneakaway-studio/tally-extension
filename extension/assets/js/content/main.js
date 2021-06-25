@@ -324,6 +324,13 @@ window.TallyMain = (function() {
 					if (DEBUG) console.log("🧰 TallyMain.startGameOnPage() [4.4] -> Check monsters");
 					// check for, and potentially add monsters on the page
 					MonsterCheck.check();
+
+					// and a bit more...
+					setTimeout(function() {
+						if (DEBUG) console.log("🧰 TallyMain.startGameOnPage() [4.5] -> Check domain / url for match");
+						// is this a domain / url that we would like to say something about?
+						Dialogue.checkAddPageSpecificDialogue();
+					}, 1500);
 				}, 1500);
 
 			}, 10);
