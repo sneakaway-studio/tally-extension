@@ -75,10 +75,8 @@ window.Page = (function() {
 		try {
 			// if (DEBUG) console.log("🗒 Page.getPageTags()");
 			let tags = [],
-				str = data.description + " " +
-				data.h1 + " " +
-				data.keywords + " " +
-				data.title;
+				str = `${data.description} ${data.h1} ${data.keywords} ${data.title}`;
+
 			tags = FS_String.cleanStringReturnTagArray(str);
 			//if (DEBUG) console.log( "tags", JSON.stringify(tags) );
 			// delete duplicates
@@ -123,6 +121,7 @@ window.Page = (function() {
 			if (DEBUG) Debug.dataReportHeader(log, "#", "before");
 
 			var url = document.location.href;
+			const urlParts = Environment.extractUrl(document.location.href);
 
 			// object
 			let newData = {
@@ -145,15 +144,15 @@ window.Page = (function() {
 				},
 				contentType: window.document.contentType || "",
 				description: getDescription() || "",
-				domain: Environment.extractRootDomain(document.location.href) || "",
-				ext: Environment.extractExtension(url),
-				host: Environment.extractHostname(document.location.href) || "",
+				domain: urlParts.domain || "",
+				ext: urlParts.extension,
+				host: urlParts.host || "",
 				h1: getH1() || "",
 				keywords: getKeywords() || "",
 				mode: {},
 				mouseX: 0,
 				mouseY: 0,
-				subDomain: Environment.extractSubDomain(document.location.href) || "",
+				subDomain: urlParts.subdomain || "",
 				tags: [],
 				time: 0,
 				title: getTitle() || "",
@@ -179,6 +178,8 @@ window.Page = (function() {
 			newData.browser.center.y = newData.browser.height / 2;
 			// check and count page tags
 			newData.tags = getPageTags(newData);
+			// include domain name domain name
+			newData.tags.push(urlParts.sld);
 			// find trackers
 			newData.trackers.found = Tracker.findAll(newData.domain) || "";
 			// if youtube
