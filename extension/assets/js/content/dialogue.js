@@ -683,36 +683,31 @@ window.Dialogue = (function() {
 			const log = "💬 Dialogue.checkAddPageSpecificDialogue()";
 
 			// dialogue to match a tag, the domain or page
-			let matchedTags = [],
-				matchedDialogueIds = [];
+			let matchedDialogueTags = [],
+				pageTagsToMatch = [Page.data.domain, Page.data.sld];
 
 			// create array of dialogue tags
 			const dialogueTagsArr = Object.keys(DialogueIdsByTag.data);
 			if (DEBUG) console.log(log, "[1.1] Page.data.tags =", Page.data.tags);
 			if (DEBUG) console.log(log, "[1.2] dialogueTagsArr =", dialogueTagsArr);
-			// in order to match with page tags
-			matchedTags = FS_Object.returnArrayMatches(Page.data.tags, dialogueTagsArr);
-			if (DEBUG) console.log(log, "[1.3] (tag) matchedTags =", matchedTags);
 
-			// if no matchedTags, then try to match the domain
-			if (matchedTags.length < 1){
-				matchedTags = FS_Object.checkGetProp(DialogueIdsByTag.data[Page.data.domain]);
-				if (DEBUG) console.log(log, "[1.4] (domain) matchedTags =", matchedTags);
-			}
+			// match dialogue tags with page tags
+			matchedDialogueTags = FS_Object.returnArrayMatches(Page.data.tags, dialogueTagsArr);
+			if (DEBUG) console.log(log, "[1.3] matchedDialogueTags =", matchedDialogueTags);
 
-			// if there are matchedTags
-			if (matchedTags.length > 0) {
+			// if there are matchedDialogueTags
+			if (matchedDialogueTags.length > 0) {
 				// pick one
-				let match = FS_Object.randomArrayIndex(matchedTags);
-				if (DEBUG) console.log(log, "[2.1] match =", match);
+				let tagMatch = FS_Object.randomArrayIndex(matchedDialogueTags);
+				if (DEBUG) console.log(log, "[3.1] tagMatch =", tagMatch);
 				// get a random dialogueId
-				let dialogueId = FS_Object.randomArrayIndex(DialogueIdsByTag.data[match]);
-				if (DEBUG) console.log(log, "[2.2] dialogueId =", dialogueId);
+				let dialogueId = FS_Object.randomArrayIndex(DialogueIdsByTag.data[tagMatch]);
+				if (DEBUG) console.log(log, "[3.2] dialogueId =", dialogueId);
 				// get the dialogueObj
 				let dialogueObj = getData({
 					id: dialogueId
 				});
-				if (DEBUG) console.log(log, "[2.3] dialogueObj =", dialogueObj);
+				if (DEBUG) console.log(log, "[3.3] dialogueObj =", dialogueObj);
 				// and show
 				if (dialogueObj) Dialogue.showData(dialogueObj);
 			}

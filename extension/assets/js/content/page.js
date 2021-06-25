@@ -10,29 +10,35 @@ window.Page = (function() {
 	/*  HTML FUNCTIONS
 	 ******************************************************************************/
 
+	/**
+	 *	Get content from all the descriptions on a page
+	 */
 	function getDescription() {
 		try {
+			let log = "🗒 Page.getDescription()";
 			let str = "",
-				tags = [
+				elements = [
 					document.head.querySelector("meta[name='description']"),
 					document.head.querySelector("meta[name='Description']"), // uppercase
 					document.head.querySelector("meta[property='og:description']"),
 					document.head.querySelector("meta[name='twitter:description']"),
 				];
-			// console.log("getDescription() [1]", tags, str);
 
-			for (let i = 0; i < tags.length; i++) {
-				if (tags[i])
-					str += tags[i].getAttribute("content") + " ";
+			for (let i = 0; i < elements.length; i++) {
+				// if not null
+				if (elements[i])
+					str += elements[i].getAttribute("content") + " ";
 			}
-			// console.log("getDescription() [2]", tags, str);
-
+			if (DEBUG) console.log(log, "[1]", elements, str);
 			return str;
 		} catch (err) {
 			console.error(err);
 		}
 	}
 
+	/**
+	 *	Get content from the h1
+	 */
 	function getH1() {
 		try {
 			var str = "";
@@ -43,13 +49,24 @@ window.Page = (function() {
 		}
 	}
 
+	/**
+	 *	Get content from all the keywords
+	 */
 	function getKeywords() {
 		try {
-			var str = "";
-			var keywordsTag = document.head.querySelector("meta[property='og:keywords']") ||
-				document.head.querySelector("meta[name='keywords']") ||
-				document.head.querySelector("meta[name='Keywords']"); // uppercase
-			if (keywordsTag) str = keywordsTag.getAttribute("content");
+			let log = "🗒 Page.getKeywords()";
+			let str = "",
+				elements = [
+					document.head.querySelector("meta[property='og:keywords']"),
+					document.head.querySelector("meta[name='keywords']"),
+					document.head.querySelector("meta[name='Keywords']"),
+				];
+			for (let i = 0; i < elements.length; i++) {
+				// if not null
+				if (elements[i])
+					str += elements[i].getAttribute("content") + " ";
+			}
+			if (DEBUG) console.log(log, "[1]", elements, str);
 			return str;
 		} catch (err) {
 			console.error(err);
@@ -73,28 +90,22 @@ window.Page = (function() {
 	 */
 	function getPageTags(data) {
 		try {
-			// if (DEBUG) console.log("🗒 Page.getPageTags()");
+			let log = "🗒 Page.getPageTags()";
 			let tags = [],
 				str = `${data.description} ${data.h1} ${data.keywords} ${data.title}`;
 
 			tags = FS_String.cleanStringReturnTagArray(str);
-			//if (DEBUG) console.log( "tags", JSON.stringify(tags) );
+			if (DEBUG) console.log(log, "tags =", JSON.stringify(tags));
 			// delete duplicates
 			tags = FS_Object.removeArrayDuplicates(tags);
 			tags = FS_String.removeStopWords(null, tags);
 			tags = FS_String.removeSmallWords(tags);
-
-			// if (DEBUG) console.log( "tags", JSON.stringify(tags) );
-
+			if (DEBUG) console.log(log, "tags =", JSON.stringify(tags));
 			return tags;
 		} catch (err) {
 			console.error(err);
 		}
 	}
-
-
-
-
 
 	/**
 	 *	Run getData again with refresh flag
@@ -107,10 +118,6 @@ window.Page = (function() {
 			console.error(err);
 		}
 	}
-
-
-
-
 
 	/**
 	 *	Get data about this page
@@ -178,7 +185,8 @@ window.Page = (function() {
 			newData.browser.center.y = newData.browser.height / 2;
 			// check and count page tags
 			newData.tags = getPageTags(newData);
-			// include domain name domain name
+			// include domain name and sld
+			newData.tags.push(urlParts.domain);
 			newData.tags.push(urlParts.sld);
 			// find trackers
 			newData.trackers.found = Tracker.findAll(newData.domain) || "";
