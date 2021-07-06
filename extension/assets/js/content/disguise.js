@@ -15,10 +15,6 @@ window.Disguise = (function() {
 
 
 
-
-
-
-
 	/**
 	 * 	Display a random disguise
 	 */
@@ -122,23 +118,15 @@ window.Disguise = (function() {
 	function includeDialogue() {
 		try {
 			// if there is dialogue for this disguise
-			if (Dialogue.getData({
-					category: "disguise",
-					subcategory: currentDisguiseObj.name,
-				})) {
-				Dialogue.showData(Dialogue.getData({
-					category: "disguise",
-					subcategory: currentDisguiseObj.name
-				}), {
-					addIfInProcess: false
-				});
-			}
+			let dialogueQueued = Dialogue.showData(Dialogue.getData({
+				category: "disguise",
+				subcategory: currentDisguiseObj.name
+			}), {
+				addIfInProcess: false
+			});
 			// otherwise play a random one
-			else if (Dialogue.getData({
-					category: "disguise",
-					subcategory: "random"
-				})) {
-				Dialogue.showData(Dialogue.getData({
+			if (!dialogueQueued) {
+				dialogueQueued = Dialogue.showData(Dialogue.getData({
 					category: "disguise",
 					subcategory: "random"
 				}), {
@@ -169,7 +157,7 @@ window.Disguise = (function() {
 					disguise = DisguiseData.dataByLevel[i];
 					break;
 				}
-				
+
 				// Stop if the player somehow has a level less than 1.
 				if (i <= 0) {
 					break;

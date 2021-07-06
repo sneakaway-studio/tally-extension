@@ -76,8 +76,13 @@
 		"Badges": false,
 		"BadgeData": false,
 		"ConsumableData": false,
+
 		"Dialogues": false,
 		"DialogueData": false,
+		"DialogueIdsByCatIndex": false,
+		"DialogueIdsByCatSubcat": false,
+		"DialogueIdsByTag": false,
+
 		"DisguiseData": false,
 		"GameData": false,
 		"MonsterData": false,

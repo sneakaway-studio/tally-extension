@@ -42,8 +42,31 @@ Instructions
 
 ### Tests
 
-- e2e [nightwatch](https://nightwatchjs.org/) tests - run `npm test` in `__tests__/nightwatch/`
-- unit [jest](https://jestjs.io/) tests (to test pure functions in `js/functions`) - run `npm test` in `__tests__/jest/`
+
+#### Functional Tests
+
+Functional (a.k.a. "e2e") tests use [nightwatch](https://nightwatchjs.org/)
+
+- Location: See `./__tests__/nightwatch/tests/tally-tests/*.test.js` for tests
+- Documentation: [Chai BDD](https://www.chaijs.com/api/bdd/) and [Nightwatch docs](https://nightwatchjs.org/api/) for examples
+
+```bash
+cd /__tests__/nightwatch/
+npm test
+```
+
+
+#### Unit Tests
+
+Unit tests use [jest](https://jestjs.io/)
+
+- Location: These only run against "pure" functions covered in `js/functions/*.test.js`
+
+```bash
+cd /__tests__/jest/
+npm test
+```
+
 
 
 

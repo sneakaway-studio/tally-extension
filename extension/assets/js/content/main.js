@@ -200,7 +200,7 @@ window.TallyMain = (function() {
 			// this is a disabled domain - user has added this to blocklist
 			else if (FS_Object.prop(T.tally_options.disabledDomains) && (
 					($.inArray(Page.data.domain, T.tally_options.disabledDomains) >= 0) ||
-					($.inArray(Page.data.subDomain, T.tally_options.disabledDomains) >= 0)
+					($.inArray(Page.data.host, T.tally_options.disabledDomains) >= 0)
 				)) {
 				if (DEBUG) console.log(log + "Tally is disabled on this domain");
 				mode.notActive = true;
@@ -324,6 +324,13 @@ window.TallyMain = (function() {
 					if (DEBUG) console.log("🧰 TallyMain.startGameOnPage() [4.4] -> Check monsters");
 					// check for, and potentially add monsters on the page
 					MonsterCheck.check();
+
+					// and a bit more...
+					setTimeout(function() {
+						if (DEBUG) console.log("🧰 TallyMain.startGameOnPage() [4.5] -> Check domain / url for match");
+						// is this a domain / url that we would like to say something about?
+						Dialogue.checkAddPageSpecificDialogue();
+					}, 1500);
 				}, 1500);
 
 			}, 10);

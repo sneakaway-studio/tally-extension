@@ -21,6 +21,15 @@ var FS_Object = (function() {
 		if (typeof obj !== 'undefined' && obj && obj !== null) return true;
 		else return false;
 	}
+	/**
+	 *	Uses prop() but returns value if true
+	 */
+	function checkGetProp(obj) {
+		// console.log("FS_Object.checkGetProp()", obj);
+		// console.trace();
+		if (typeof obj !== 'undefined' && obj && obj !== null) return obj;
+		else return false;
+	}
 
 	/**
 	 *	Is an object empty?
@@ -87,7 +96,15 @@ var FS_Object = (function() {
 	 */
 	function randomArrayIndexFromRange(arr, min = 0, max = 1) {
 		if (max > arr.length) max = arr.length;
-		return randomArrayIndex(arr.slice(min,max));
+		return randomArrayIndex(arr.slice(min, max));
+	}
+	
+	/**
+	 *	Return items found in both arrays
+	 */
+	function returnArrayMatches(arr1, arr2) {
+		if (!Array.isArray(arr1) || !Array.isArray(arr2)) return [];
+		return arr1.filter(element => arr2.includes(element));
 	}
 
 	/**
@@ -151,6 +168,7 @@ var FS_Object = (function() {
 	// PUBLIC
 	return {
 		prop: prop,
+		checkGetProp: checkGetProp,
 		isEmpty: isEmpty,
 		objLength: objLength,
 		randomObjKey: randomObjKey,
@@ -160,10 +178,11 @@ var FS_Object = (function() {
 
 		randomArrayIndex: randomArrayIndex,
 		randomArrayIndexFromRange: randomArrayIndexFromRange,
+		returnArrayMatches: returnArrayMatches,
 		convertArrayToObject: convertArrayToObject,
 		sortArrayByOccuranceRemoveDuplicates: sortArrayByOccuranceRemoveDuplicates,
 		shuffleArray: shuffleArray,
-		removeArrayDuplicates: removeArrayDuplicates
+		removeArrayDuplicates: removeArrayDuplicates,
 	};
 })();
 

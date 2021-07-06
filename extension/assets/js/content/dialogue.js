@@ -14,12 +14,7 @@ window.Dialogue = (function() {
 
 
 
-
-
-
-
 	// ************************** MAIN ROUTES ************************** //
-
 
 
 	/**
@@ -34,6 +29,7 @@ window.Dialogue = (function() {
 				category: "", // e.g. "random"
 				subcategory: "", // e.g. "greeting"
 				index: "", // e.g. "story1-1"
+				id: "", // e.g. [cat+subcat+index+number] "random_greeting_story1-1_345"
 			};
 			//  to store the dialogue data RESPONSE
 			let dialogueObj = {
@@ -44,36 +40,45 @@ window.Dialogue = (function() {
 				callback: ""
 			};
 
-			// if a category and it exists
-			if (dataReq.category && FS_Object.prop(DialogueData.data[dataReq.category])) {
+			// id of dialogueObj in dialogues.js
+			let dialogueId;
 
-				// if a category + subcategory (and the combination exists)
-				if (dataReq.subcategory &&
-					FS_Object.prop(DialogueData.data[dataReq.category][dataReq.subcategory])) {
-					// get random cat + subcat
-					dialogueObj = FS_Object.randomObjProperty(DialogueData.data[dataReq.category][dataReq.subcategory]);
-				}
-				// else if a category + index
-				else if (dataReq.index) {
-					// if the category + index combination exists
-					if (FS_Object.prop(DialogueData.data[dataReq.category][dataReq.index])) {
-						// get the specific category + index
-						dialogueObj = DialogueData.data[dataReq.category][dataReq.index];
-					} else {
-						// otherwise return undefined
-						dialogueObj = undefined;
-					}
-				}
-				// else if a category only
-				else {
-					// get random cat + subcat
-					dialogueObj = FS_Object.randomObjProperty(DialogueData.data[dataReq.category]);
-				}
+			// if an id, then skip to end
+			if (dataReq.id)
+				dialogueId = dataReq.id;
+
+			// if a category + subcategory (and the combination exists)
+			else if (dataReq.category && dataReq.subcategory &&
+				FS_Object.prop(DialogueIdsByCatSubcat.data[dataReq.category]) && FS_Object.prop(DialogueIdsByCatSubcat.data[dataReq.category][dataReq.subcategory])
+			) {
+				// get random cat + subcat
+				dialogueId = FS_Object.randomObjProperty(DialogueIdsByCatSubcat.data[dataReq.category][dataReq.subcategory]);
+			}
+			// else if the category + index combination exists
+			else if (dataReq.category && dataReq.index &&
+				FS_Object.prop(DialogueIdsByCatIndex.data[dataReq.category]) && FS_Object.prop(DialogueIdsByCatIndex.data[dataReq.category][dataReq.index])
+			) {
+				// get the specific category + index
+				dialogueId = DialogueIdsByCatIndex.data[dataReq.category][dataReq.index];
+			}
+			// else if a category only
+			else if (dataReq.category &&
+				FS_Object.prop(DialogueIdsByCatSubcat.data[dataReq.category])
+			) {
+				// get random cat
+				dialogueId = FS_Object.randomObjProperty(DialogueIdsByCatSubcat.data[dataReq.category]);
+			}
+
+
+			// get the obj from id
+			if (dialogueId) {
+				dialogueObj = DialogueData.data[dialogueId];
 			} else {
-				console.error("No dialogue found");
+				if (DEBUG) console.warn("No dialogue found dialogueId =", dialogueId, " dialogueObj =", dialogueObj);
 				dialogueObj = false;
 			}
 			return dialogueObj;
+
 		} catch (err) {
 			console.error(err);
 		}
@@ -84,13 +89,19 @@ window.Dialogue = (function() {
 	 */
 	function showData(dialogueObj, showReq = {}) {
 		try {
-			if (DEBUG) console.log("💬 Dialogue.showData() [1]",
-				// "dialogueObj =", JSON.stringify(dialogueObj),
-				// ", showReq = " + JSON.stringify(showReq)
-			);
-
+			let log = "💬 Dialogue.showData()";
 			// don't allow if mode disabled or stealth
 			if (T.tally_options.gameMode === "disabled" || T.tally_options.gameMode === "stealth") return;
+
+			if (DEBUG) console.log(log, "[1]",
+				"dialogueObj =", JSON.stringify(dialogueObj),
+				", showReq = " + JSON.stringify(showReq)
+			);
+			// return early if no dialogue was returned
+			if (!dialogueObj) {
+				if (DEBUG) console.warn(log, "[2] dialogueObj =", dialogueObj);
+				return false;
+			}
 
 			//  default show request (defines how the dialogue is displayed)
 			let showReqDefaults = {
@@ -98,14 +109,14 @@ window.Dialogue = (function() {
 				instant: false
 			};
 			// don't show if there is no text
-			if (dialogueObj.text === "" || dialogueObj.text === undefined) return;
-			// if defined and true, show instantly
+			if (dialogueObj.text === "" || dialogueObj.text === undefined) return false;
+			// if defined and instant=true, show instantly
 			if (FS_Object.prop(showReq.instant) && showReq.instant) return showInstant(dialogueObj);
 			// if defined and true, show regardless if Dialogue is already in progress
 			// if false and queue has dialogue then return
-			if (FS_Object.prop(showReq.addIfInProcess) && !showReq.addIfInProcess && _queue.length > 0) return;
-			// else add dialogueObj to queue
-			addToQueue(dialogueObj);
+			if (FS_Object.prop(showReq.addIfInProcess) && !showReq.addIfInProcess && _queue.length > 0) return false;
+			// else add dialogueObj to queue, let caller know
+			return addToQueue(dialogueObj);
 
 		} catch (err) {
 			console.error(err);
@@ -133,92 +144,11 @@ window.Dialogue = (function() {
 					instant: instant
 				};
 			// pass to new funciton
-			showData(dialogueObj, showReq);
+			return showData(dialogueObj, showReq);
 		} catch (err) {
 			console.error(err);
 		}
 	}
-
-
-
-
-
-
-
-	// OLD - MARKED FOR DELETION
-	/**
-	 *	Return a dialogue {"text":"","mood":""}, arr = ["category", subcategory, "index"]
-	 */
-	// function get(arr) {
-	// 	try {
-	// 		// make sure it is an array
-	// 		if (!Array.isArray(arr)) return;
-	// 		// category is required
-	// 		if (!FS_Object.prop(arr[0])) return;
-	//
-	// 		if (DEBUG) console.log("💬 Dialogue.get() arr=" + JSON.stringify(arr));
-	//
-	// 		// get category
-	// 		let category,
-	// 			categoryStr,
-	// 			subcategoryStr,
-	// 			result = false;
-	//
-	// 		// get top category
-	// 		categoryStr = arr[0];
-	// 		category = DialogueData.data[categoryStr];
-	//
-	// 		// if (DEBUG) console.log("💬 Dialogue.get()", "categoryStr=" + categoryStr + ", category=" + JSON.stringify(category));
-	//
-	// 		// if there is a subcategory, then select random
-	// 		if (FS_Object.prop(arr[1])) {
-	// 			subcategoryStr = arr[1];
-	// 			if (DEBUG) console.log("💬 Dialogue.get()", "subcategoryStr=" + subcategoryStr);
-	// 			// if prop doesn't exist in Dialogue then don't show anything
-	// 			if (!FS_Object.prop(category[subcategoryStr]) || category[subcategoryStr].length < 1) return;
-	// 			// otherwise get a random one
-	// 			let r = Math.floor(Math.random() * category[subcategoryStr].length);
-	// 			if (DEBUG) console.log("💬 Dialogue.get()", "subcategoryStr=" + subcategoryStr + ",
-	// 				category[subcategoryStr]=" + JSON.stringify(category[subcategoryStr]));
-	// 			result = category[subcategoryStr][r];
-	// 		}
-	// 		// if there is no subcategory, then get by index
-	// 		if (FS_Object.prop(arr[2])) {
-	// 			let index = arr[2];
-	// 			result = category[index];
-	// 		}
-	// 		// if neither subcategory or index then get random from category
-	// 		else {
-	// 			if (category)
-	// 				result = FS_Object.randomObjProperty(category);
-	// 		}
-	//
-	// 		return result;
-	// 	} catch (err) {
-	// 		console.error(err);
-	// 	}
-	// }
-
-	/**
-	 *	Show dialogue bubble - send object to addToQueue()
-	 */
-	// OLD - MARKED FOR DELETION
-	// function show(dialogue, mood, addIfInProcess = true, instant = false) {
-	// 	try {
-	// 		if (DEBUG) console.log("💬 Dialogue.show()", dialogue, mood, addIfInProcess);
-	//
-	// 		// don't show if there is no text
-	// 		if (dialogue.text === "" || dialogue.text === undefined) return;
-	// 		// show instant
-	// 		if (instant) return showInstant(dialogue, mood);
-	// 		// don't add if marked false
-	// 		if (!addIfInProcess && _queue.length > 0) return;
-	// 		// else add dialogueObj to queue
-	// 		addToQueue(dialogue);
-	// 	} catch (err) {
-	// 		console.error(err);
-	// 	}
-	// }
 
 	/**
 	 *	Show dialogue instantly (delete everything already queued)
@@ -230,8 +160,8 @@ window.Dialogue = (function() {
 			emptyTheQueue();
 			// then add this dialogue to end of _queue
 			_queue.push(dialogue);
-			// start writing
-			writeNextInQueue();
+			// start writing, and let caller know it worked
+			return writeNextInQueue();
 		} catch (err) {
 			console.error(err);
 		}
@@ -258,8 +188,11 @@ window.Dialogue = (function() {
 			_queue.push(dialogue);
 			// start/make sure queueChecker is running
 			queueChecker();
+			// let caller know it was queued
+			return true;
 		} catch (err) {
 			console.error(err);
+			return false;
 		}
 	}
 	/**
@@ -285,9 +218,10 @@ window.Dialogue = (function() {
 	 */
 	function writeNextInQueue(lineSpeed = 150, skipToNext = false) {
 		try {
-			if (_queue.length < 1) return console.log("💬 Dialogue.writeNextInQueue() [0] (no dialogue in _queue)");
+			const log = "💬 Dialogue.writeNextInQueue()";
+			if (_queue.length < 1) return console.log(log, "[0] (no dialogue in _queue)");
 
-			// if (DEBUG) console.log("💬 Dialogue.writeNextInQueue() [1]", JSON.stringify(_queue), _active, queueWaitTime);
+			// if (DEBUG) console.log(log, "[1]", JSON.stringify(_queue), _active, queueWaitTime);
 
 			// if active, stop (unless we want to skip to next)
 			if (_active && !skipToNext) return;
@@ -301,7 +235,7 @@ window.Dialogue = (function() {
 			// make sure there is text in the element
 			if (!FS_Object.prop(dialogue) || dialogue.text === null ||
 				dialogue.text === undefined || dialogue.text === "") {
-				console.warn("💬 Dialogue.writeNextInQueue() element was empty", _queue, dialogue);
+				console.warn(log, "element was empty", _queue, dialogue);
 				return;
 			}
 
@@ -314,7 +248,7 @@ window.Dialogue = (function() {
 			// update queueWaitTime
 			queueWaitTime = stringDuration(dialogue.text);
 
-			if (DEBUG) console.log("💬 Dialogue.writeNextInQueue() [2]", dialogue,
+			if (DEBUG) console.log(log, "[2]", dialogue,
 				// _queue, _active
 			);
 
@@ -341,7 +275,7 @@ window.Dialogue = (function() {
 
 			// if there is an image
 			if (dialogue.text.search("img") > -1) {
-				// if (DEBUG) console.log("💬 Dialogue.writeNextInQueue() [3] IMG found");
+				// if (DEBUG) console.log(log, "[3] IMG found");
 
 				// wait until images load
 				$('#tally_dialogue_inner img').on('load', function() {
@@ -359,7 +293,6 @@ window.Dialogue = (function() {
 				setDialoguBoxSize(dialogue.before + dialogue.text + dialogue.after, 0);
 			}
 
-
 			// make Tally look at user
 			Tally.stare();
 
@@ -367,6 +300,8 @@ window.Dialogue = (function() {
 			clearTimeout(hideTimeout);
 			// and create a new one to hide after appropriate reading period
 			hideTimeout = setTimeout(hide, queueWaitTime);
+			// we made it this far
+			return true;
 		} catch (err) {
 			console.error(err);
 		}
@@ -713,14 +648,14 @@ window.Dialogue = (function() {
 	}
 
 	/**
-	 *	Get a random fact (by domain)
+	 *	Get a random fact (by category)
 	 */
-	function getFact(domain = "", includeSource = true) {
+	function getFact(category = "", includeSource = true) {
 		try {
-			// if domain
-			if (domain === "") domain = FS_Object.randomObjKey(Facts.data);
+			// if category
+			if (category === "") category = FS_Object.randomObjKey(Facts.data);
 			// get fact
-			let fact = FS_Object.randomArrayIndex(Facts.data[domain]);
+			let fact = FS_Object.randomArrayIndex(Facts.data[category]);
 			let str = "Random fact: " + fact.fact;
 			// should we include source?
 			if (includeSource) {
@@ -738,17 +673,51 @@ window.Dialogue = (function() {
 	}
 
 
+
+
 	/**
-	 *	Show a prompt for survey
+	 *	Check to see whether Tally has something to say about this url / domain using a tag, domain, url
 	 */
-	function showSurveyPrompt() {
+	function checkAddPageSpecificDialogue() {
 		try {
-			if (DEBUG) console.log("💬 Dialogue.showSurveyPrompt()");
-			Dialogue.showStr("Want to give feedback? <a href='https://tallysavestheinternet.com/about#feedback'>Have feedback about the game or find an issue?</a>", "question");
+			const log = "💬 Dialogue.checkAddPageSpecificDialogue()";
+
+			// dialogue to match a tag, the domain or page
+			let matchedDialogueTags = [],
+				pageTagsToMatch = [Page.data.domain, Page.data.sld];
+
+			// create array of dialogue tags
+			const dialogueTagsArr = Object.keys(DialogueIdsByTag.data);
+			if (DEBUG) console.log(log, "[1.1] Page.data.tags =", Page.data.tags);
+			if (DEBUG) console.log(log, "[1.2] dialogueTagsArr =", dialogueTagsArr);
+
+			// match dialogue tags with page tags
+			matchedDialogueTags = FS_Object.returnArrayMatches(Page.data.tags, dialogueTagsArr);
+			if (DEBUG) console.log(log, "[1.3] matchedDialogueTags =", matchedDialogueTags);
+
+			// if there are matchedDialogueTags
+			if (matchedDialogueTags.length > 0) {
+				// pick one
+				let tagMatch = FS_Object.randomArrayIndex(matchedDialogueTags);
+				if (DEBUG) console.log(log, "[3.1] tagMatch =", tagMatch);
+				// get a random dialogueId
+				let dialogueId = FS_Object.randomArrayIndex(DialogueIdsByTag.data[tagMatch]);
+				if (DEBUG) console.log(log, "[3.2] dialogueId =", dialogueId);
+				// get the dialogueObj
+				let dialogueObj = getData({
+					id: dialogueId
+				});
+				if (DEBUG) console.log(log, "[3.3] dialogueObj =", dialogueObj);
+				// and show
+				if (dialogueObj) Dialogue.showData(dialogueObj);
+			}
+
 		} catch (err) {
 			console.error(err);
 		}
 	}
+
+
 
 
 
@@ -810,15 +779,11 @@ window.Dialogue = (function() {
 		showStr: showStr,
 		random: random,
 		test: test,
-		showSurveyPrompt: showSurveyPrompt,
 		emptyTheQueue: emptyTheQueue,
 		hide: hide,
-		getFact: function(domain, includeSource) {
-			return getFact(domain, includeSource);
-		},
+		getFact: getFact,
+		checkAddPageSpecificDialogue: checkAddPageSpecificDialogue,
 		skipToNext: skipToNext,
-
-
 
 	};
 })();

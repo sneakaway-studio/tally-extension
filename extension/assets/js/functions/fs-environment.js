@@ -96,69 +96,132 @@ var Environment = (function() {
 
 
 
-	/* DOMAINS */
+	/*************************** EXTRACT FROM URL *******************************/
 
 	/**
-	 *	Return entire name from URL
+	 *	Break a url into its parts. Each section is removed from original url
 	 */
-	function extractHostname(url) {
-		//console.log("extractHostname()",url);
-		var hostname;
-		//find & remove protocol (http, ftp, etc.) and get hostname
+	function extractUrl(url){
+		try {
+			let log = "🤔 separateParts()",
+				DEBUG = false,
+				obj = {
+					url: url,
+					protocol: '', // https
+					host: '', // news.google.com
+					subdomain: '', // news
+					domain: '', // google.com
+					sld: '', // google
+					tld: '', // com
+					port: '', // 5000
+					path: '', // home/stuff/file.html
+					filename: '', // file.html
+					extension: '', // .html
+					query: '', // p=1
+					fragment: '', // #anchor (w/o #)
+				},
+				temp = [];
 
-		if (url.indexOf("://") > -1) {
-			hostname = url.split('/')[2];
-		} else {
-			hostname = url.split('/')[0];
+			if (DEBUG) console.log(`${log} ${url}`);
+
+
+			// protocol (http, ftp, etc.)
+			if (url.indexOf("://") > -1) {
+				temp = url.split('://');
+				obj.protocol = temp[0];
+				url = temp[1];
+			}
+			if (DEBUG) console.log(`${log} ${url} protocol = ${obj.protocol}`);
+
+			// fragment
+			if (url.indexOf("#") > -1) {
+				temp = url.split('#');
+				obj.fragment = temp[1];
+				url = temp[0];
+			}
+			if (DEBUG) console.log(`${log} ${url} fragment = ${obj.fragment}`);
+
+			// query
+			if (url.indexOf("?") > -1) {
+				temp = url.split('?');
+				obj.query = temp[1];
+				url = temp[0];
+			}
+			if (DEBUG) console.log(`${log} ${url} query = ${obj.query}`);
+
+			// path
+			if (url.indexOf("/") > -1) {
+				// split first from others []
+				let [first, ...others] = url.split('/');
+				obj.host = first;
+				// rejoin
+				obj.path = others.join('/');
+				url = first;
+			}
+			if (DEBUG) console.log(`${log} ${url} path = ${obj.path}`);
+
+			// port
+			if (url.indexOf(":") > -1) {
+				temp = url.split(':');
+				obj.port = temp[1];
+				url = temp[0];
+			}
+			if (DEBUG) console.log(`${log} ${url} port = ${obj.port}`);
+
+
+			// EXTRACT PATH PARTS
+
+			if (obj.path !== "") {
+				// filename - if last part of path has a period
+				if (obj.path.slice(-8).indexOf(".") > -1) {
+					if (obj.path.indexOf("/") > -1) {
+						temp = obj.path.split("/");
+						obj.filename = temp[temp.length-1];
+					} else {
+						obj.filename = obj.path;
+					}
+				}
+				if (DEBUG) console.log(`${log} ${url} filename = ${obj.filename}`);
+
+				// file extension
+				if (obj.filename.indexOf(".") > -1) {
+					obj.extension = obj.filename.split(".")[1];
+				}
+				if (DEBUG) console.log(`${log} ${url} extension = ${obj.extension}`);
+			}
+
+			// EXTRACT HOST PARTS
+
+			// host
+			if (url.indexOf(".") > -1) {
+				obj.host = url;
+			}
+			if (DEBUG) console.log(`${log} ${url} host = ${obj.host}`);
+
+			// domain, subdomain, tld, sld
+			if (obj.host.indexOf(".") > -1) {
+				temp = obj.host.split(".");
+				obj.domain = temp.slice(-2).join(".");
+				obj.subdomain = temp.slice(0,temp.length-2).join(".");
+				obj.tld = temp[temp.length-1];
+				obj.sld = temp[temp.length-2];
+			}
+			// localhost?
+			else if (obj.host !== ""){
+				obj.sld = obj.host;
+				obj.domain = obj.host;
+			}
+			if (DEBUG) console.log(`${log} ${url} domain = ${obj.domain}`);
+			if (DEBUG) console.log(`${log} ${url} subdomain = ${obj.subdomain}`);
+			if (DEBUG) console.log(`${log} ${url} sld = ${obj.sld}`);
+			if (DEBUG) console.log(`${log} ${url} tld = ${obj.tld}`);
+
+
+			if (DEBUG) console.log(`${log} -> ${JSON.stringify(obj)}`);
+			return obj;
+		} catch (err) {
+			console.error(err);
 		}
-
-		//find & remove port number
-		hostname = hostname.split(':')[0];
-		//find & remove "?"
-		hostname = hostname.split('?')[0];
-		//console.log("extractHostname() hostname =",hostname);
-		return hostname;
-	}
-
-	/**
-	 *	Return just the domain and TLD name
-	 */
-	function extractRootDomain(url) {
-		//console.log("extractRootDomain()",url);
-		if (url == "") return "";
-		var domain = extractHostname(url),
-			splitArr = domain.split('.'),
-			arrLen = splitArr.length;
-
-
-		//extracting the root domain here
-		if (arrLen > 2) {
-			domain = splitArr[arrLen - 2] + '.' + splitArr[arrLen - 1];
-		}
-		//console.log("extractRootDomain() domain =",domain);
-		return domain;
-	}
-
-	/**
-	 *	Return the sub domain from a url
-	 */
-	function extractSubDomain(url) {
-		//console.log("extractSubDomain()");
-		if (url == "") return "";
-		var domain = extractHostname(url);
-		return domain;
-	}
-
-	/**
-	 *	Return the file extension from a url
-	 */
-	function extractExtension(url) {
-		if (url == "") return "";
-		// get last part of url, split on dot
-		let urlParts = url.slice(-8, url.length).split(".");
-		let ext = urlParts[urlParts.length - 1] || "";
-		// console.log(url, ext);
-		return ext.toLowerCase();
 	}
 
 
@@ -168,10 +231,7 @@ var Environment = (function() {
 		getBrowserName: getBrowserName,
 		getBrowserLanguage: getBrowserLanguage,
 		getPlatform: getPlatform,
-		extractHostname: extractHostname,
-		extractRootDomain: extractRootDomain,
-		extractSubDomain: extractSubDomain,
-		extractExtension: extractExtension
+		extractUrl: extractUrl,
 	};
 })();
 

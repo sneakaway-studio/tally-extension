@@ -41,10 +41,12 @@ window.Tracker = (function () {
 			// loop through each script
 			for (let i = 0, l = scripts.length; i < l; i++) {
 
+				const urlParts = Environment.extractUrl(scripts[i].src);
+
 				// get source and domain of script
 				let script = {
 					url: scripts[i].src || "",
-					domain: Environment.extractRootDomain(scripts[i].src) || ""
+					domain: urlParts.domain || ""
 				};
 
 				// if (DEBUG) console.log(log, "[1] pageDomain =", pageDomain, ", script =", scripts[i]);
