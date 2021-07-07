@@ -39,11 +39,25 @@ window.Background = (function() {
 			// 2.1 firstTimeInstallation
 
 			// if T.tally_meta not found, install all objects
-			const firstTimeInstallation = await Install.init();
+
+			// Search for "Firefox" in user agent. Will return -1 if there it isn't there.
+			let thisBrwsr = navigator.userAgent.indexOf("Firefox");
+			let fxVr = parseInt(navigator.userAgent.substring(thisBrwsr+"firefox".length+1));
+			// At the index of Firefox+1, check if the version is less than 90.
+			/*
+			This is a workaround to allow Tally to install properly on Firefox 89 or lower:
+			In Firefox Devoloper Edition(Firefox Version 90) and Firefox Nightly(Version 91), this bug does not occur.
+			Meaning this bug is due to a bug in Firefox's source.
+			*/
+			if (fxVr < 90) {
+				var firstTimeInstallation = Install.init();
+			}
+			else{
+				var firstTimeInstallation = await Install.init();
+			}
 			if (DEBUG) console.log(log, "[2.1] firstTimeInstallation =", firstTimeInstallation);
 			// set server/api production | development
 			await Install.setEnvironment();
-
 			// 2.2 check server connection and get tally_user
 
 			// params for send()
