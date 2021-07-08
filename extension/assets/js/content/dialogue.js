@@ -99,7 +99,8 @@ window.Dialogue = (function() {
 			);
 			// return early if no dialogue was returned
 			if (!dialogueObj) {
-				if (DEBUG) console.warn(log, "[2] dialogueObj =", dialogueObj);
+				if (DEBUG) console.log(log, "[2] dialogueObj =", dialogueObj,
+					", showReq = " + JSON.stringify(showReq));
 				return false;
 			}
 
