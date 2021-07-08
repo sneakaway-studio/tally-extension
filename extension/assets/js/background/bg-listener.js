@@ -307,10 +307,10 @@ window.Listener = (function() {
 					};
 					if (DEBUG) console.log("👂🏼 Listener.onMessage() [1] updateTallyUser params =", params);
 
-					Server.send(params).then(responseFromSend => {
-						if (DEBUG) console.log("👂🏼 Listener.onMessage() [2] updateTallyUser responseFromSend =", responseFromSend);
+					Server.send(params).then(responseSuccess => {
+						if (DEBUG) console.log("👂🏼 Listener.onMessage() [2] updateTallyUser responseSuccess =", responseSuccess);
 						// reply to contentscript with updated tally_user
-						responseToContentScript.message = responseFromSend;
+						responseToContentScript.message = responseSuccess;
 						sendResponse(responseToContentScript);
 					}).catch(err => {
 						if (DEBUG) console.error("👂🏼 Listener.onMessage() err =", err);

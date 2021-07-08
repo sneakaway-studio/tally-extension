@@ -5,30 +5,6 @@ window.Server = (function() {
 	let DEBUG = Debug.ALL.BackgroundServer;
 
 
-
-
-
-
-	/**
-	 *	Check if user is online, save and return status
-	 */
-	async function checkIfUserOnline() {
-		try {
-			// if different
-			if (T.tally_meta.userOnline !== navigator.onLine) {
-				if (DEBUG) console.log("📟 Server.checkIfUserOnline() CHANGED", T.tally_meta.userOnline, navigator.onLine);
-				// update
-				T.tally_meta.userOnline = navigator.onLine;
-				store('tally_meta', T.tally_meta);
-			}
-			return navigator.onLine;
-		} catch (err) {
-			console.error(err);
-		}
-	}
-
-
-
 	/**
 	 *  A single function to handle all server requests and simplify logic. Returns true if successful.
 	 * 	Called when
@@ -46,16 +22,15 @@ window.Server = (function() {
 	 */
 	async function send(params) {
 		try {
-			if (DEBUG) console.log("📟 Server.send() [1] params =", params);
+			const log = "📟 Server.send()";
+			if (DEBUG) console.log(log, "[1.0] params =", params);
 
 			// 1. create request from params
 
 			let _url = T.tally_meta.env.api + params.url,
 				_startTimeMillis = new Date().getTime(),
 				_serverResponseMillis = -1,
-				responseFromSend = false,
-				// _userJustCameBackOnline = false, // user was offline, now online
-				// _serverJustCameBackOnline = false, // server was not responding, but is now
+				responseSuccess = false,
 				request = {
 					credentials: "include",
 					method: params.method,
@@ -77,46 +52,48 @@ window.Server = (function() {
 			T.tally_meta.userOnline = navigator.onLine;
 			// if !userOnline
 			if (!T.tally_meta.userOnline) {
-				if (DEBUG) console.warn("📟 Server.send() [2.1] ❌ USER NOT ONLINE ");
-				// since we can't check server, we can't rely on any other connections
-				T.tally_meta.serverOnline = false;
-				T.tally_meta.userLoggedIn = false;
+				if (DEBUG) console.warn(log, "[1.1] ❌ USER NOT ONLINE ");
 			}
 
 			// 2.2 if userOnline, proceed
 			else {
-				if (DEBUG) console.log("📟 Server.send() [2.2] request =", request);
+				if (DEBUG) console.log(log, "[1.2] request =", request);
 
-				responseFromSend = await fetch(_url, request)
+				responseSuccess = await fetch(_url, request)
 					.then((response) => {
-						if (DEBUG) console.log("📟 Server.send() [3.1] response =", response);
-						if (DEBUG) console.log("📟 Server.send() [3.2] response.status =", response.status);
+						if (DEBUG) console.log(log, "[2.0] response =", response);
+						if (DEBUG) console.log(log, "[2.1] response.status =", response.status);
 
 						// if response received then we know server online
-						if (response) {
+						if (response || response.status > 0) {
 							T.tally_meta.serverOnline = true;
 							T.tally_meta.serverOnlineFailedAttempts = 0;
 						}
+
 						// 200–299 = success, parse json response and go to next .then()
-						if (response.ok) return response.json();
+						if (response.ok) {
+							return response.json();
+						}
 						// 401 = unauthorized (not logged in)
 						else if (response.status === 401) {
 							// save status
 							T.tally_meta.userLoggedIn = false;
 							T.tally_meta.userLoggedInFailedAttempts++;
+							if (DEBUG) console.log(log, "[2.2] T.tally_meta =", T.tally_meta);
 							return false;
 						}
 						// go straight to .catch()
 						else throw new Error('Something went wrong');
 					})
 					.then((result) => {
+						if (DEBUG) console.log(log, "[3.0] result =", result);
 						// if result then connection to server was successful
 						if (result) {
-							if (DEBUG) console.log("📟 Server.send() [4.1] SUCCESS result =", result);
+							if (DEBUG) console.log(log, "[3.1] SUCCESS result =", result);
 
 							// if username present it is a tallyUser object and user is also loggedIn
 							if (result.username) {
-								if (DEBUG) console.log("📟 Server.send() [4.2] SUCCESS result.username = %c" + JSON.stringify(result.username), Debug.styles.greenbg);
+								if (DEBUG) console.log(`${log} [3.2] SUCCESS result.username=%c${result.username}`, Debug.styles.greenbg);
 
 								// if a username is present then reset
 								T.tally_meta.userLoggedIn = true;
@@ -125,30 +102,31 @@ window.Server = (function() {
 								// merge attack data from server with T.tally_user data properties
 								result.attacks = Server.mergeAttackDataFromServer(result.attacks);
 								T.tally_user = result;
+								// store tally_user from response
 								store("tally_user", T.tally_user);
+								return true;
 							}
-							// if no username but trying to reach an endpoint that required authentication then server failed silently
+							// if no username while trying an endpoint that required authentication then server failed silently
 							else if (params.action === "getTallyUser" || params.action === "updateTallyUser") {
-								if (DEBUG) console.log("📟 Server.send() [4.3] ❌ %cresult.username", Debug.styles.redbg);
+								if (DEBUG) console.log(`${log} [3.3] ❌ %cresult.username`, Debug.styles.redbg);
 
 								// track failed attempts
 								T.tally_meta.userLoggedIn = false;
 								T.tally_meta.userLoggedInFailedAttempts++;
 								return false;
 							}
-							return true;
 						} else {
-							if (DEBUG) console.log("📟 Server.send() [4.4] ❌ %cresult.username", Debug.styles.redbg);
+							if (DEBUG) console.log(`${log} [4.3] ❌ %cresult.username`, Debug.styles.redbg);
 							// if connected to server but no result then something must be wrong with server
 							throw new Error('Something went wrong');
 						}
 					})
 					.catch((err) => {
-						if (DEBUG) console.error("📟 Server.send() [5.1] ❌ NO RESPONSE FROM SERVER 😢", _url, "err = ", JSON.stringify(err), Debug.getCurrentDateStr());
+						if (DEBUG) console.error(log, "[4.0] ❌ NO RESPONSE FROM SERVER 😢", _url, "err = ", JSON.stringify(err), Debug.getCurrentDateStr());
 
-						// if no response from server then it is not online, and therefore not logggedIn
-						T.tally_meta.serverOnline = false;
-						T.tally_meta.serverOnlineFailedAttempts++;
+						// if no response from server then it is not online, and therefore not loggedIn
+						// T.tally_meta.serverOnline = false;
+						// T.tally_meta.serverOnlineFailedAttempts++;
 						T.tally_meta.userLoggedIn = false;
 						return false;
 					});
@@ -161,38 +139,22 @@ window.Server = (function() {
 				T.tally_meta.serverResponseMillis = T.tally_meta.serverTimestampFromLastCheck - _startTimeMillis;
 			}
 
-
-			// SAVING JUST IN CASE
-
-			// // 3. look @ previous state
-			// if (DEBUG) console.log("📟 Server.send() [6]", "LOOK @ PREVIOUS STATE responseFromSend =", responseFromSend);
-			//
-			// // if server wasn't online before, has just come online, and this isn't the first run
-			// if (!T.tally_meta.serverOnline && responseFromSend && Background.timedEvents != null)
-			// 	// make a note and run getTallyUser() at end
-			// 	_serverJustCameBackOnline = true;
-			//
-			// // 4. update current state
-			//
-			// // // if just came back then check logged in too
-			// // if (_serverJustCameBackOnline) await getTallyUser();
-
-
-			if (DEBUG) console.log("📟 Server.send() [6] RETURN responseFromSend =", responseFromSend, "POST send()",
+			if (DEBUG) console.log(log, "[5] RETURN responseSuccess =", responseSuccess, "AFTER send()",
 				"\n    T.tally_meta.userOnline =", T.tally_meta.userOnline,
 				"\n    T.tally_meta.serverOnline =", T.tally_meta.serverOnline,
 				"\n    T.tally_meta.userLoggedIn =", T.tally_meta.userLoggedIn,
+				"\n    T.tally_meta.install.loginPrompts.startScreen =", T.tally_meta.install.loginPrompts.startScreen,
+				"\n    T.tally_meta.install.loginPrompts.dialogue =", T.tally_meta.install.loginPrompts.dialogue,
 				"\n    T.tally_meta.serverOnlineFailedAttempts =", T.tally_meta.serverOnlineFailedAttempts,
 				"\n    T.tally_meta.userLoggedInFailedAttempts =", T.tally_meta.userLoggedInFailedAttempts,
 				"\n    T.tally_meta.serverSecondsSinceLastChecked =", T.tally_meta.serverSecondsSinceLastChecked,
 				"\n    T.tally_meta.serverResponseMillis =", T.tally_meta.serverResponseMillis,
-				""
-			);
+				"");
 
 			// store object
 			store("tally_meta", T.tally_meta);
 			// return to calling function
-			return responseFromSend;
+			return responseSuccess;
 		} catch (err) {
 			console.error(err);
 		}
@@ -211,8 +173,8 @@ window.Server = (function() {
 			method: "GET",
 			url: "",
 			data: {}
-		}).then(response => {
-			console.log("send() / response =", response);
+		}).then(responseSuccess => {
+			console.log("send() / responseSuccess =", responseSuccess);
 		});
 
 		// get tally user
@@ -222,8 +184,8 @@ window.Server = (function() {
 			url: "/user/getTallyUser",
 			method: "GET",
 			data: {}
-		}).then(response => {
-			console.log("send() /user/getTallyUser response =", response);
+		}).then(responseSuccess => {
+			console.log("send() /user/getTallyUser responseSuccess =", responseSuccess);
 		});
 
 		// update tally user - this one fails w/o data
@@ -233,8 +195,8 @@ window.Server = (function() {
 			url: "/user/updateTallyUser",
 			method: "PUT",
 			data: {}
-		}).then(response => {
-			console.log("send() /user/updateTallyUser response =", response);
+		}).then(responseSuccess => {
+			console.log("send() /user/updateTallyUser responseSuccess =", responseSuccess);
 		});
 	}
 	// setTimeout(testSendFunction, 1500);
@@ -320,7 +282,6 @@ window.Server = (function() {
 	// PUBLIC
 	return {
 		send: send,
-		checkIfUserOnline: checkIfUserOnline,
 		saveTopMonstersFromApi: saveTopMonstersFromApi,
 		mergeAttackDataFromServer: mergeAttackDataFromServer
 	};

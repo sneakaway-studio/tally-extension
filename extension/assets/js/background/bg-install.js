@@ -10,14 +10,17 @@ window.Install = (function() {
 	 */
 	async function init() {
 		try {
-			let firstTimeInstallation = false;
+			let log = "🔧 Install.init()",
+				firstTimeInstallation = false;
 
 			// 1. if no T.tally_meta exists, this is a first install
-			//
+
 			if (!store.has("tally_meta")) {
-				if (DEBUG) console.log("🔧 Install.init() -> no T.tally_meta found, creating app");
+				if (DEBUG) console.log(`${log} [1.0] no T.tally_meta found, creating app`);
 				// mark that this is the first time installation
 				firstTimeInstallation = true;
+			} else {
+				if (DEBUG) console.log(`${log} [1.1] T.tally_meta found! creating app`);
 			}
 
 			// 2. update all game objects from storage || or create defaults
@@ -29,6 +32,8 @@ window.Install = (function() {
 			T.tally_stats = store("tally_stats") || {};
 			T.tally_tag_matches = store("tally_tag_matches") || {};
 			T.tally_top_monsters = store("tally_top_monsters") || {};
+
+			if (DEBUG) console.log(`${log} [2.0] game objects created`);
 
 			// 3. update version & environment
 
@@ -42,6 +47,7 @@ window.Install = (function() {
 			if (firstTimeInstallation || newVersionInstalled) {
 				T.tally_meta.location = await getLocation();
 			}
+			if (DEBUG) console.log(`${log} [3.0] version checks currentVersion=${currentVersion} newVersionInstalled=${newVersionInstalled}`);
 
 			// 4. update all copies in storage
 
@@ -53,7 +59,7 @@ window.Install = (function() {
 			store("tally_tag_matches", T.tally_tag_matches);
 			store("tally_top_monsters", T.tally_top_monsters);
 
-			if (DEBUG) console.log("🔧 Install.init() -> game installed! firstTimeInstallation =", firstTimeInstallation);
+			if (DEBUG) console.log(`${log} [4.0] game installed! firstTimeInstallation=${firstTimeInstallation}`);
 
 			return firstTimeInstallation;
 		} catch (err) {
@@ -101,21 +107,17 @@ window.Install = (function() {
 	 */
 	async function setEnvironment() {
 		try {
-			// T.tally_meta = store("tally_meta");
-			// if (DEBUG) console.log("🔧 Install.setEnvironment() [1] currentAPI=%c" + T.tally_meta.env.currentAPI, Debug.styles.greenbg);
-
-			// if T.envOptions.localhost == true
+			// localhost vs. live server
 			if (T.envOptions.localhost)
 				T.tally_meta.env.currentAPI = "development";
 			else
 				T.tally_meta.env.currentAPI = "production";
-			// if (DEBUG) console.log("🔧 Install.setEnvironment() [2] currentAPI=%c" + T.tally_meta.env.currentAPI, Debug.styles.greenbg);
 
+			// set api and website urls
 			T.tally_meta.env.api = T.envOptions[T.tally_meta.env.currentAPI].api;
 			T.tally_meta.env.website = T.envOptions[T.tally_meta.env.currentAPI].website;
 
-			if (DEBUG) console.log("🔧 Install.setEnvironment() [3] currentAPI=%c" + T.tally_meta.env.currentAPI, Debug.styles.greenbg,
-				"api=" + T.tally_meta.env.api, "website=" + T.tally_meta.env.website);
+			if (DEBUG) console.log(`🔧 Install.setEnvironment() [1] currentAPI=%c${T.tally_meta.env.currentAPI}`, `${Debug.styles.greenbg}`, `api=${T.tally_meta.env.api} website=${T.tally_meta.env.website}`);
 
 			store("tally_meta", T.tally_meta);
 			return true;
@@ -132,22 +134,22 @@ window.Install = (function() {
 	 */
 	async function launchStartScreen() {
 		try {
+			const log = "🔧 Install.launchStartScreen()";
 			// console.trace();
 			let pageToShow = "/get-anonyname";
 
 			// don't launch in development
-			if (T.envOptions.localhost) return;
+			// if (T.envOptions.localhost) return;
 
 			// don't launch if !server
 			if (!T.tally_meta.serverOnline) {
-				if (DEBUG) console.log("🔧 Install.launchStartScreen() 🛑 SERVER OFFLINE");
+				if (DEBUG) console.log(log, "🛑 SERVER OFFLINE");
 				return;
 			}
 
 			// if they are logged in show how to play
 			if (T.tally_meta.userLoggedIn) {
-				// return console.log("🔧 Install.launchStartScreen() 🛑 ALREADY LOGGED IN");
-				if (DEBUG) console.log("🔧 Install.launchStartScreen() 🛑 ALREADY LOGGED IN");
+				if (DEBUG) console.log(log, "🛑 ALREADY LOGGED IN");
 				// show how to
 				pageToShow = "/how-to-play";
 			}
@@ -158,22 +160,21 @@ window.Install = (function() {
 				currentWindow: true
 			}, function(tabs) {
 				var tab = tabs[0];
-				// if (DEBUG) console.log("🔧 Install.launchStartScreen() current tab =", tab);
+				// if (DEBUG) console.log(log, "current tab =", tab);
 
 				// are we in the process resetting user's data?
 				if (tab.url !== undefined && (tab.url.includes("/dashboard") ||
 						tab.url.includes("tallygame.net") || tab.url.includes("tallysavestheinternet.com") ||
 						tab.url.includes(T.tally_meta.env.website)
 					)) {
-					if (DEBUG) console.log("🔧 Install.launchStartScreen() 🛑 ON DASHBOARD");
+					if (DEBUG) console.log(log, "🛑 ON DASHBOARD");
 					return;
 				}
 
-				// keep track of prompts and don't do too many
-				if (T.tally_meta.install.prompts >= 30) {
-					if (DEBUG) console.log("🔧 Install.launchStartScreen() 🛑 T.tally_meta.install.prompts >=",
-						T.tally_meta.install.prompts
-					);
+				// keep track of loginPrompts and don't do too many
+				if (T.tally_meta.install.loginPrompts.startScreen >= 30) {
+					if (DEBUG) console.log(log, "🛑 T.tally_meta.install.loginPrompts.startScreen >=",
+						T.tally_meta.install.loginPrompts.startScreen);
 					return;
 				}
 
@@ -182,12 +183,10 @@ window.Install = (function() {
 					url: T.tally_meta.env.website + pageToShow
 				}, function(newTab) {
 					// increment
-					T.tally_meta.install.prompts = T.tally_meta.install.prompts + 1;
+					T.tally_meta.install.loginPrompts.startScreen = T.tally_meta.install.loginPrompts.startScreen + 1;
 					store("tally_meta", T.tally_meta);
-					if (DEBUG) console.log("🔧 Install.launchStartScreen() 👍 launching",
-						"T.tally_meta.install.prompts =", T.tally_meta.install.prompts,
-						"newTab =", newTab
-					);
+					if (DEBUG) console.log(log, "👍 launching T.tally_meta.install.loginPrompts.startScreen =", T.tally_meta.install.loginPrompts.startScreen);
+					// if (DEBUG) console.log(log, "newTab =", newTab);
 					return true;
 				});
 			});
@@ -281,8 +280,11 @@ window.Install = (function() {
 				},
 				install: {
 					date: moment().format(),
-					prompts: 0, // number prompts given to user
 					version: manifestData.version, // set in manifest
+					loginPrompts: {
+						startScreen: 0, // # times extension has opened a new tab (on install)
+						dialogue: 0 // # times Tally has encouraged user to login
+					}
 				},
 				location: {},
 				// server

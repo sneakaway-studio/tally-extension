@@ -167,14 +167,16 @@ window.TallyMain = (function() {
 				active: false,
 				loggedIn: false,
 				serverOnline: false,
+				userOnline: navigator.onLine,
 				notActive: false
 			};
 
-			// SERVER IS ONLINE
+
+			// USER + SERVER IS ONLINE
 			// - if not, tally can still point to trackers, save in bg
 			// - if not, the game can run using the background only
-			if (T.tally_meta.serverOnline) {
-				if (DEBUG) console.log(log + "Connection to Tally server is 👍");
+			if (T.tally_meta.userOnline && T.tally_meta.serverOnline) {
+				if (DEBUG) console.log(log + "User online and connection to Tally server is 👍");
 				mode.serverOnline = true;
 			}
 
@@ -230,7 +232,7 @@ window.TallyMain = (function() {
 
 			// ACTIVE
 			// - background, login, server, and everything else (like the above) is good, let's roll
-			if (mode.notActive === false && mode.serverOnline === true && mode.loggedIn === true) {
+			if (mode.notActive === false && mode.userOnline === true && mode.serverOnline === true && mode.loggedIn === true) {
 				if (DEBUG) console.log(log + "All is good, setting mode.active = 1");
 				mode.active = true;
 			}

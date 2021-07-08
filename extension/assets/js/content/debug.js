@@ -83,10 +83,10 @@ window.Debug = (function() {
 
 	// https://coderwall.com/p/fskzdw/colorful-console-log
 	let styles = {
-		redbg: 'background: red; color: white; display: block;',
-		greenbg: 'background: green; color: white; display: block;',
-		blue: 'color: blue; display: block;',
-		purple: 'color: purple; display: block;'
+		redbg: 'background: red; color: white; display: inline-block;',
+		greenbg: 'background: green; color: white; display: inline-block;',
+		blue: 'color: blue; display: inline-block;',
+		purple: 'color: purple; display: inline-block;'
 	};
 
 	/**

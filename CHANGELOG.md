@@ -10,6 +10,7 @@
 
 - Improves Tally notifications and game experience in chill mode
 - Adds a random attack / defense button to battle console
+- Improves extension installation (mainly for FF) 
 
 
 ### Version 0.4.6

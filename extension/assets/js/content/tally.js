@@ -312,7 +312,7 @@ window.Tally = (function() {
 			// MOUSE ENTER ( NOT LOGGED-IN VERSION )
 			if (interaction === 'mouseenter') {
 				// check to see if we should play login prompt and return early if it did
-				if (Account.checkAndPlayLoginPrompt()) return;
+				if (Account.checkAndPlayDialogueLoginPrompt()) return;
 			}
 			// ELSE CONTINUE...
 
@@ -471,7 +471,7 @@ window.Tally = (function() {
 			Page.data.actions.userInteractingWithGame = true;
 
 			// check to see if we should play login prompt and return early if it did
-			if (Account.checkAndPlayLoginPrompt()) return;
+			if (Account.checkAndPlayDialogueLoginPrompt()) return;
 
 			// if restarting or continuing
 			if ((clickCount >= 0 && clickCount <= clickCountMax) || clickInterval) {

@@ -10,10 +10,10 @@ window.Background = (function() {
 	/**
 	 *  1. Listen for first install, or updated (code or from web store) installation
 	 */
-	chrome.runtime.onInstalled.addListener(function() {
+	chrome.runtime.onInstalled.addListener(async () => {
 		try {
 			Debug.elapsedTime("Background chrome.runtime.onInstalled() [1]");
-			runInstallChecks();
+			await runInstallChecks();
 		} catch (err) {
 			console.error(err);
 		}
@@ -34,30 +34,31 @@ window.Background = (function() {
 			let log = "🧰 Background.runInstallChecks()";
 			dataReportHeader(log, "@", "before");
 			if (DEBUG) console.log("🧰 Background.onInstalled() -> new (or updated) installation detected");
-			Debug.elapsedTime("Background.runInstallChecks() [1]");
+			Debug.elapsedTime("Background.runInstallChecks() [1.0]");
 
 			// 2.1 firstTimeInstallation
 
 			// if T.tally_meta not found, install all objects
+			let firstTimeInstallation;
 
-			// Search for "Firefox" in user agent. Will return -1 if there it isn't there.
-			let thisBrwsr = navigator.userAgent.indexOf("Firefox");
-			let fxVr = parseInt(navigator.userAgent.substring(thisBrwsr+"firefox".length+1));
-			// At the index of Firefox+1, check if the version is less than 90.
-			/*
-			This is a workaround to allow Tally to install properly on Firefox 89 or lower:
-			In Firefox Devoloper Edition(Firefox Version 90) and Firefox Nightly(Version 91), this bug does not occur.
-			Meaning this bug is due to a bug in Firefox's source.
-			*/
-			if (fxVr < 90) {
-				var firstTimeInstallation = Install.init();
-			}
-			else{
-				var firstTimeInstallation = await Install.init();
-			}
+			// FF version < 90 bug fix
+			let ffBrowser = navigator.userAgent.indexOf("Firefox");
+			let ffVersion = parseInt(navigator.userAgent.substring(ffBrowser + "firefox".length + 1));
+			// A workaround to allow Tally to install properly on Firefox 89 or lower:
+			// In Firefox Devoloper Edition(Firefox Version 90) and Firefox Nightly(Version 91)
+			// this bug does not occur. Meaning this bug is due to a bug in Firefox's source.
+
+			// if (ffBrowser > -1 && ffVersion < 90) {
+			// 	firstTimeInstallation = await Install.init();
+			// } else {
+				firstTimeInstallation = await Install.init();
+			// }
+			if (DEBUG) console.log(log, "[2.0] ffBrowser =", ffBrowser, ", ffVersion =", ffVersion);
 			if (DEBUG) console.log(log, "[2.1] firstTimeInstallation =", firstTimeInstallation);
+
 			// set server/api production | development
 			await Install.setEnvironment();
+
 			// 2.2 check server connection and get tally_user
 
 			// params for send()
@@ -69,20 +70,18 @@ window.Background = (function() {
 			};
 			// contact server
 			const getTallyUserResponse = await Server.send(params);
-			if (DEBUG) console.log(log, "[2.4] getTallyUserResponse =", getTallyUserResponse);
-			// if false returned
-			if (!getTallyUserResponse) {
+			if (DEBUG) console.log(log, "[3.0] getTallyUserResponse =", getTallyUserResponse);
 
-				// if first time install then definitely open start screen
-				if (firstTimeInstallation) {
-					if (DEBUG) console.log(log, "-> NEW INSTALL, LAUNCH START SCREEN");
-					// prompt to install
-					const startScreenResponse = await Install.launchStartScreen();
-				}
-				// else this is a reinstall and user needs to login
-				else {
-					if (DEBUG) console.log(log, "-> RE INSTALL, LET SERVER.SEND() LAUNCH START SCREEN");
-				}
+			// if false returned from server during install
+			if (!getTallyUserResponse) {
+				// if first time install or a reinstall (a new version)
+				// open start screen to prompt user to login
+				const startScreenResponse = await Install.launchStartScreen();
+
+				if (firstTimeInstallation)
+					if (DEBUG) console.log(log, "[3.1] NEW INSTALL");
+				else
+					if (DEBUG) console.log(log, "[3.2] RE INSTALL");
 			}
 			// user logged in ...
 			else {
