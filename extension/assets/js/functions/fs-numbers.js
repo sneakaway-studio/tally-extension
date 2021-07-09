@@ -3,18 +3,59 @@
 /*  NUMBER FUNCTIONS
  ******************************************************************************/
 
-var FS_Number = (function () {
+
+function isNumber(val) {
+	try {
+		let result = false;
+		if (typeof val === 'number') {
+			result = true;
+		}
+		return result;
+	} catch (err) {
+		console.error(err);
+	}
+}
+
+
+var FS_Number = (function() {
 
 	// PUBLIC
 	return {
-		map: function (val, in_min, in_max, out_min, out_max) {
+		isNumber: (val) => {
+			return isNumber(val);
+		},
+		isEven: (val) => {
+			try {
+				if (!isNumber(val)) return false;
+				let result = false;
+				if (val % 2 === 0) {
+					result = true;
+				}
+				return result;
+			} catch (err) {
+				console.error(err);
+			}
+		},
+		isOdd: (val) => {
+			try {
+				if (!isNumber(val)) return false;
+				let result = false;
+				if (val % 2 !== 0) {
+					result = true;
+				}
+				return result;
+			} catch (err) {
+				console.error(err);
+			}
+		},
+		map: function(val, in_min, in_max, out_min, out_max) {
 			try {
 				return (val - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
 			} catch (err) {
 				console.error(err);
 			}
 		},
-		round: function (val, precision = 0) {
+		round: function(val, precision = 0) {
 			try {
 				if (val == null || precision == null)
 					console.error("more numbers required!", val, precision);
@@ -24,7 +65,7 @@ var FS_Number = (function () {
 				console.error(err);
 			}
 		},
-		clamp: function (val = 0, min = 0, max = 1) {
+		clamp: function(val = 0, min = 0, max = 1) {
 			try {
 				if (val === null || min === null || max === null)
 					console.error("more numbers required!", val, min, max);
@@ -35,24 +76,24 @@ var FS_Number = (function () {
 				console.error(err);
 			}
 		},
-		normalize: function (val, min = 0, max = 1) {
+		normalize: function(val, min = 0, max = 1) {
 			try {
 				return (val - min) / (max - min);
 			} catch (err) {
 				console.error(err);
 			}
 		},
-		randomFloatBetween: function (min = 0, max = 0) {
+		randomFloatBetween: function(min = 0, max = 0) {
 			try {
 				return Math.random() * (Number(max) - Number(min)) + Number(min);
 			} catch (err) {
 				console.error(err);
 			}
 		},
-		randomIntBetween: function (min, max) {
+		randomIntBetween: function(min, max) {
 			return Math.floor(Math.random() * (max - min + 1) + min);
 		},
-		randomPosNeg: function (val) {
+		randomPosNeg: function(val) {
 			try {
 				// either 1 or -1
 				let one = Math.round(Math.random()) * 2 - 1;
@@ -62,7 +103,7 @@ var FS_Number = (function () {
 				console.error(err);
 			}
 		},
-		operation: function (operand1, operand2, operator) {
+		operation: function(operand1, operand2, operator) {
 			// make sure they are ints
 			operand1 = parseInt(operand1);
 			operand2 = parseInt(operand2);
@@ -85,7 +126,7 @@ var FS_Number = (function () {
 		// current is behind: -1
 		// current is same: 0
 		// current is ahead: 1
-		compareVersionStrings: function (str1 = "", str2 = "") {
+		compareVersionStrings: function(str1 = "", str2 = "") {
 			try {
 				let current = str1.split("."),
 					latest = str2.split(".");

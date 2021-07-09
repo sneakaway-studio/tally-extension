@@ -202,8 +202,8 @@ window.Progress = (function() {
 
 					// NOTE: tutorials increment their own progress
 
-					// check if there are flags, and that they are logged in
-					if ($(".tallyFlags").length > 0 && $("#userLoggedin").length > 0) {
+					// check if there are flags, that they are logged in, and play only a couple times
+					if ($(".tallyFlags").length > 0 && $("#userLoggedin").length > 0 && get("viewOnboardingFirstLogin1") < 2) {
 						Tutorial.play("tutorial", "onboardingFirstLogin1");
 					} else if (Page.data.url.includes("/how-to-play") && get("viewOnboardingHowto1") < 2) {
 						Tutorial.play("tutorial", "onboardingHowto1");

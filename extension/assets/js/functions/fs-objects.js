@@ -32,6 +32,16 @@ var FS_Object = (function() {
 	}
 
 	/**
+	 *	Is an object?
+	 */
+	function isObject(val) {
+		if (val === null) {
+			return false;
+		}
+		return ((typeof val === 'function') || (typeof val === 'object'));
+	}
+
+	/**
 	 *	Is an object empty?
 	 */
 	function isEmpty(obj) {
@@ -53,6 +63,7 @@ var FS_Object = (function() {
 	 *	Count occurances of string in keys
 	 */
 	function countKeysRegex(obj, str) {
+		if (!isObject(obj) || typeof str !== "string") return 0;
 		// return Object.keys(obj).filter((key) => /${str}/.test(key)).length;
 		return Object.keys(obj).filter((key) => key.match(new RegExp(str, 'g'))).length;
 	}
@@ -98,7 +109,7 @@ var FS_Object = (function() {
 		if (max > arr.length) max = arr.length;
 		return randomArrayIndex(arr.slice(min, max));
 	}
-	
+
 	/**
 	 *	Return items found in both arrays
 	 */
@@ -169,6 +180,7 @@ var FS_Object = (function() {
 	return {
 		prop: prop,
 		checkGetProp: checkGetProp,
+		isObject: isObject,
 		isEmpty: isEmpty,
 		objLength: objLength,
 		randomObjKey: randomObjKey,

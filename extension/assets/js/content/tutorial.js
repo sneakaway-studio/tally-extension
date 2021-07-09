@@ -1,6 +1,6 @@
 "use strict";
 
-window.Tutorial = (function () {
+window.Tutorial = (function() {
 	// PRIVATE
 	let DEBUG = Debug.ALL.Tutorial,
 		// the internal state of the Tutorial - are we playing a tutorial?
@@ -43,13 +43,13 @@ window.Tutorial = (function () {
 	 */
 	function play(category, index) {
 		try {
+			const log = "📚 Tutorial.play()";
 			// allow offline
 			if (Page.data.mode.notActive) return;
 			// don't allow if mode disabled or stealth
 			if (T.tally_options.gameMode === "disabled" || T.tally_options.gameMode === "stealth") return;
 
-
-			if (DEBUG) console.log("📚 Tutorial.play() [1]", index);
+			if (DEBUG) console.log(log, "[1.0] category=", category, "index=", index);
 
 			// allow any tutorial or tutorial sequence to stop current one and start new?
 
@@ -62,11 +62,14 @@ window.Tutorial = (function () {
 			active(true);
 
 
-
 			let dialogue = {},
 				step = 1, // start @ step 1
-				count = FS_Object.countKeysRegex(DialogueData.data[category], index);
+				count = FS_Object.countKeysRegex(DialogueIdsByCatIndex.data[category], index);
 
+			if (count < 1) {
+				if (DEBUG) console.log(log, "[2.0] dialogue=", dialogue, "count=", count);
+				return;
+			}
 
 			// loop through all the dialogue objects for this tutorial and add them
 			while (step > -1) {
@@ -76,17 +79,17 @@ window.Tutorial = (function () {
 					"index": index + "-" + step // e.g. "story1" + "-" + 1
 				});
 				if (!dialogue) {
-					if (DEBUG) console.log("📚 Tutorial.play() [2] NO DIALOGUE RETURNED", index, step, "/", count, dialogue);
+					if (DEBUG) console.log(log, "[2] NO DIALOGUE RETURNED", index, step, "/", count, dialogue);
 					step = -1;
 					break;
 				}
 
 				// add 1/3, 2/3, 3/3 ... to text so players know how long it is
 				dialogue.before = "<span class='tally tally-tutorial-step tally-dialogue-next'>" + step + "/" + count + "</span> ";
-				if (DEBUG) console.log("📚 Tutorial.play() [2]", index, step, "/", count, dialogue);
+				if (DEBUG) console.log(log, "[2]", index, step, "/", count, dialogue);
 
 
-				// if (DEBUG) console.log("📚 Tutorial.play() [3]", index, step, "of", count, dialogue);
+				// if (DEBUG) console.log(log, "[3]", index, step, "of", count, dialogue);
 
 				// play first dialogue of tutorial, instantly
 				if (step === 1)
@@ -101,12 +104,12 @@ window.Tutorial = (function () {
 
 				// SAFETY FIRST!
 				if (++step > 100) {
-					console.warn("📚 Tutorial.play() SAFETY FIRST!");
+					console.warn(log, "SAFETY FIRST!");
 					break;
 				}
 			}
 
-			setTimeout(function () {
+			setTimeout(function() {
 				active(false);
 			}, 500);
 
@@ -134,10 +137,7 @@ window.Tutorial = (function () {
 			let frameStr = '';
 			if (callback === "closeSlideshow") {
 				slideshowVisible(false);
-			}
-
-
-			else if (callback === "changeModeToChill") {
+			} else if (callback === "changeModeToChill") {
 				// save chill mode
 				T.tally_options.gameMode = "chill";
 				T.tally_options = T.updateOptionsFromGameMode(T.tally_options);
@@ -193,7 +193,7 @@ window.Tutorial = (function () {
 			// otherwise hide the slideshow
 			else {
 				// set sequence back to false
-				setTimeout(function () {
+				setTimeout(function() {
 					// set tutorial sequence inactive
 					_sequenceActive = false;
 				}, 1000);

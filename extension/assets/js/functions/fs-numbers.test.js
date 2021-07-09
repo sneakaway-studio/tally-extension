@@ -8,7 +8,60 @@
 // import module
 const Mod = require('./fs-numbers.js');
 
-//1.
+
+
+
+// isNumber() -> 0
+test('isNumber() -> 0', () => {
+	expect(Mod.isNumber(0)).toBe(true);
+});
+// isNumber() -> 1.23
+test('isNumber() -> 1.23', () => {
+	expect(Mod.isNumber(1.23)).toBe(true);
+});
+// isNumber() -> ""
+test('isNumber() -> ""', () => {
+	expect(Mod.isNumber("")).toBe(false);
+});
+
+
+
+// isOdd() -> 0
+test('isOdd() -> 0', () => {
+	expect(Mod.isOdd(0)).toBe(false);
+});
+// isOdd() -> 1
+test('isOdd() -> 1', () => {
+	expect(Mod.isOdd(1)).toBe(true);
+});
+// isOdd() -> 2
+test('isOdd() -> 2', () => {
+	expect(Mod.isOdd(2)).toBe(false);
+});
+// isOdd() -> ""
+test('isOdd() -> ""', () => {
+	expect(Mod.isOdd("")).toBe(false);
+});
+
+
+// isEven() -> 0
+test('isEven() -> 0', () => {
+	expect(Mod.isEven(0)).toBe(true);
+});
+// isEven() -> 1
+test('isEven() -> 1', () => {
+	expect(Mod.isEven(1)).toBe(false);
+});
+// isEven() -> 2
+test('isEven() -> 2', () => {
+	expect(Mod.isEven(2)).toBe(true);
+});
+// isEven() -> ""
+test('isEven() -> ""', () => {
+	expect(Mod.isEven("")).toBe(false);
+});
+
+
 
 // map
 test('map 0.5/1 to 50/100', () => {

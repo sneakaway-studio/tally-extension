@@ -63,6 +63,25 @@ test('checkGetProp() -> undefined === false', () => {
 
 
 
+// isObject() -> {}
+test('is obj -> {}', () => {
+	var fruit = {};
+	expect(Mod.isObject(fruit)).toBe(true);
+});
+test('is obj -> null', () => {
+	var fruit = null;
+	expect(Mod.isObject(fruit)).toBe(false);
+});
+test('is obj -> undefined', () => {
+	var fruit;
+	expect(Mod.isObject(fruit)).toBe(false);
+});
+test('is obj -> 3.14', () => {
+	var fruit = 3.14;
+	expect(Mod.isObject(fruit)).toBe(false);
+});
+
+
 // isEmpty() -> is empty
 test('obj is empty', () => {
 	var fruit = {};
@@ -99,6 +118,12 @@ test('last key value of obj', () => {
 
 
 
+
+// countKeysRegex() -> null, 3.14
+test('countKeysRegex -> null, 3.14', () => {
+	var fruit = null;
+	expect(Mod.countKeysRegex(fruit, 3.14)).toBe(0);
+});
 // countKeysRegex() -> 1 === 1
 test('countKeysRegex of object with 2 unique keys', () => {
 	var fruit = {
