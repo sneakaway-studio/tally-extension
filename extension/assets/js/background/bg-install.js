@@ -6,62 +6,81 @@ window.Install = (function() {
 	let DEBUG = Debug.ALL.BackgroundInstall;
 
 	/**
-	 *  Get or create all data for game objects in T.*
+	 *  Get or create all data for game objects in T.* and return status
 	 */
 	async function init() {
 		try {
 			let log = "🔧 Install.init()",
-				firstTimeInstallation = false;
+				previousVersion = -1,
+				newVersion = -1,
+				isNewVersion = false,
+				installStatus = "reload"; // firstTime | newVersion | reload
 
-			// 1. if no T.tally_meta exists, this is a first install
+			// 1. check version
 
+			// if no tally_meta exists, this is a firstTime install
 			if (!store.has("tally_meta")) {
-				if (DEBUG) console.log(`${log} [1.0] no T.tally_meta found, creating app`);
+				if (DEBUG) console.log(`${log} [1.0] NO T.tally_meta found, creating app`);
 				// mark that this is the first time installation
-				firstTimeInstallation = true;
-			} else {
-				if (DEBUG) console.log(`${log} [1.1] T.tally_meta found! creating app`);
+				installStatus = "firstTime";
+			}
+			// otherwise is a newVersion or reload
+			else {
+				// get current version
+				let tempMeta = store("tally_meta");
+				previousVersion = tempMeta.install.version;
+				// check if new version
+				isNewVersion = checkIfNewVersion(previousVersion);
+				// if new version
+				if(isNewVersion){
+					installStatus = "newVersion";
+				}
+				if (DEBUG) console.log(`${log} [1.1] T.tally_meta found! isNewVersion=${isNewVersion}`);
 			}
 
-			// 2. update all game objects from storage || or create defaults
+			// 2. update all game objects from storage (or create defaults)
+			// !!! store them immediately before FF reloads all tabs and writes over them 🙄
 
 			T.tally_user = store("tally_user") || createUser();
-			T.tally_meta = store("tally_meta") || createMeta();
+			store("tally_user", T.tally_user);
+
+			// always update/reset meta
+			T.tally_meta = await createMeta();
+			store("tally_meta", T.tally_meta);
+			newVersion = T.tally_meta.install.version;
+
 			T.tally_options = store("tally_options") || createOptions();
+			store("tally_options", T.tally_options);
+
 			T.tally_nearby_monsters = store("tally_nearby_monsters") || {};
+			store("tally_nearby_monsters", T.tally_nearby_monsters);
+
 			T.tally_stats = store("tally_stats") || {};
+			store("tally_stats", T.tally_stats);
+
 			T.tally_tag_matches = store("tally_tag_matches") || {};
+			store("tally_tag_matches", T.tally_tag_matches);
+
 			T.tally_top_monsters = store("tally_top_monsters") || {};
+			store("tally_top_monsters", T.tally_top_monsters);
 
 			if (DEBUG) console.log(`${log} [2.0] game objects created`);
 
-			// 3. update version & environment
 
-			// get current version
-			let currentVersion = T.tally_meta.install.version || "0";
-			// check for new version
-			let newVersionInstalled = isNewVersion(currentVersion);
-			// always update/reset meta
-			T.tally_meta = createMeta();
-			// get user's geolocation for tutorials
-			if (firstTimeInstallation || newVersionInstalled) {
+			// 3. get user's geolocation for tutorials on firstTime
+			if (installStatus === "firstTime" || isNewVersion) {
 				T.tally_meta.location = await getLocation();
+				store("tally_meta", T.tally_meta);
 			}
-			if (DEBUG) console.log(`${log} [3.0] version checks currentVersion=${currentVersion} newVersionInstalled=${newVersionInstalled}`);
 
-			// 4. update all copies in storage
 
-			store("tally_user", T.tally_user);
-			store("tally_meta", T.tally_meta);
-			store("tally_options", T.tally_options);
-			store("tally_nearby_monsters", T.tally_nearby_monsters);
-			store("tally_stats", T.tally_stats);
-			store("tally_tag_matches", T.tally_tag_matches);
-			store("tally_top_monsters", T.tally_top_monsters);
 
-			if (DEBUG) console.log(`${log} [4.0] game installed! firstTimeInstallation=${firstTimeInstallation}`);
+			if (DEBUG) console.log(`${log} [3.0] previousVersion=${previousVersion} newVersion=${newVersion}`);
+			if (DEBUG) console.log(`${log} [3.1] game installed! installStatus=${installStatus}`);
+			// if (DEBUG) console.log(`${log} [3.2] store("tally_meta")=${store("tally_meta")}`);
+			// if (DEBUG) console.log(`${log} [3.3] T.tally_meta=${T.tally_meta}`);
 
-			return firstTimeInstallation;
+			return installStatus;
 		} catch (err) {
 			console.error("failed to create user", err);
 		}
@@ -72,30 +91,23 @@ window.Install = (function() {
 	/**
 	 * 	Check if it is a new version
 	 */
-	function isNewVersion(currentVersion) {
+	function checkIfNewVersion(previousVersion) {
 		try {
 			let manifestData = chrome.runtime.getManifest(),
-				status = false;
+				log = "🔧 Install.checkIfNewVersion()";
 
 			// if version the same
-			if (currentVersion === manifestData.version) {
-				if (DEBUG) console.log("🔧 Install.checkUpdateVersion()", currentVersion + "===" + manifestData.version, "..... SAME VERSION");
-				status = false;
+			if (previousVersion === manifestData.version) {
+				if (DEBUG) console.log(log, previousVersion + "===" + manifestData.version, "..... SAME VERSION");
+				return false;
 			}
 			// if version is not the same
 			else {
-				if (DEBUG) console.log("🔧 Install.checkUpdateVersion()", currentVersion + "!==" + manifestData.version, "!!!!! NEW VERSION");
+				if (DEBUG) console.log(log, previousVersion + "!==" + manifestData.version, "!!!!! NEW VERSION");
 				// let calling function know
-				status = true;
+				return true;
 			}
 
-			// SPECIFIC CHECKS, WHAT IS NEW IN VERSION ...
-
-			// if (manifestData.version === "0.4.3") {
-			// all changes to meta are now handled in init()
-			// }
-
-			return status;
 		} catch (err) {
 			console.error(err);
 		}
@@ -182,7 +194,7 @@ window.Install = (function() {
 				chrome.tabs.create({
 					url: T.tally_meta.env.website + pageToShow
 				}, function(newTab) {
-					// increment
+					// increment and save
 					T.tally_meta.install.loginPrompts.startScreen = T.tally_meta.install.loginPrompts.startScreen + 1;
 					store("tally_meta", T.tally_meta);
 					if (DEBUG) console.log(log, "👍 launching T.tally_meta.install.loginPrompts.startScreen =", T.tally_meta.install.loginPrompts.startScreen);
@@ -205,7 +217,7 @@ window.Install = (function() {
 	 */
 	function createUser() {
 		try {
-			var obj = {
+			return {
 				achievements: {},
 				admin: 0,
 				attacks: {},
@@ -230,7 +242,6 @@ window.Install = (function() {
 				trackers: {},
 				username: "",
 			};
-			return obj;
 		} catch (err) {
 			console.error(err);
 		}
@@ -267,7 +278,7 @@ window.Install = (function() {
 	/**
 	 *  Create Meta object on installation
 	 */
-	function createMeta() {
+	async function createMeta() {
 		try {
 			var manifestData = chrome.runtime.getManifest();
 			return {

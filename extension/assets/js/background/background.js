@@ -24,42 +24,41 @@ window.Background = (function() {
 	 *  2. Run installation checks
 	 *	- always called on new install or update
 	 * 	- checks for previous install, verifies user, gets latest server data
-	 * 	- order of situations to account for
-	 * 		2.1. firstTimeInstallation
-	 * 				= true	-> no previous data found, install objects
-	 * 				= false	-> previous data found, don't install objects
 	 */
 	async function runInstallChecks() {
 		try {
 			let log = "🧰 Background.runInstallChecks()";
 			dataReportHeader(log, "@", "before");
 			if (DEBUG) console.log("🧰 Background.onInstalled() -> new (or updated) installation detected");
-			Debug.elapsedTime("Background.runInstallChecks() [1.0]");
+			Debug.elapsedTime("Background.runInstallChecks()");
+			
 
-			// 2.1 firstTimeInstallation
-
-			// if T.tally_meta not found, install all objects
-			let firstTimeInstallation;
-
-			// FF version < 90 bug fix
-			let ffBrowser = navigator.userAgent.indexOf("Firefox");
-			let ffVersion = parseInt(navigator.userAgent.substring(ffBrowser + "firefox".length + 1));
-			// A workaround to allow Tally to install properly on Firefox 89 or lower:
-			// In Firefox Devoloper Edition(Firefox Version 90) and Firefox Nightly(Version 91)
-			// this bug does not occur. Meaning this bug is due to a bug in Firefox's source.
-
+			// // FF version < 90 bug fix
+			// let ffBrowser = navigator.userAgent.indexOf("Firefox");
+			// let ffVersion = parseInt(navigator.userAgent.substring(ffBrowser + "firefox".length + 1));
+			// // A workaround to allow Tally to install properly on Firefox 89 or lower:
+			// // In Firefox Devoloper Edition(Firefox Version 90) and Firefox Nightly(Version 91)
+			// // this bug does not occur. Meaning this bug is due to a bug in Firefox's source.
+			//
 			// if (ffBrowser > -1 && ffVersion < 90) {
-			// 	firstTimeInstallation = await Install.init();
+			// 	firstTimeInstallation = Install.init();
 			// } else {
-				firstTimeInstallation = await Install.init();
+			//  firstTimeInstallation = await Install.init();
 			// }
-			if (DEBUG) console.log(log, "[2.0] ffBrowser =", ffBrowser, ", ffVersion =", ffVersion);
-			if (DEBUG) console.log(log, "[2.1] firstTimeInstallation =", firstTimeInstallation);
+			// if (DEBUG) console.log(log, "[2.0] ffBrowser =", ffBrowser, ", ffVersion =", ffVersion);
+			// if (DEBUG) console.log(log, "[2.1] firstTimeInstallation =", firstTimeInstallation);
+
+
+			// 1. get installStatus, set env variables
+
+			let installStatus = await Install.init();
+			if (DEBUG) console.log(log, "[1.0] installStatus =", installStatus);
 
 			// set server/api production | development
 			await Install.setEnvironment();
 
-			// 2.2 check server connection and get tally_user
+
+			// 2. check server connection, attempt to get tally_user
 
 			// params for send()
 			let params = {
@@ -70,31 +69,31 @@ window.Background = (function() {
 			};
 			// contact server
 			const getTallyUserResponse = await Server.send(params);
-			if (DEBUG) console.log(log, "[3.0] getTallyUserResponse =", getTallyUserResponse);
+			if (DEBUG) console.log(log, "[2.0] getTallyUserResponse =", getTallyUserResponse);
 
-			// if false returned from server during install
+
+			// 3. prompt to create account
+
+			// if no tally_user returned from server during install
 			if (!getTallyUserResponse) {
-				// if first time install or a reinstall (a new version)
-				// open start screen to prompt user to login
-				const startScreenResponse = await Install.launchStartScreen();
-
-				if (firstTimeInstallation)
-					if (DEBUG) console.log(log, "[3.1] NEW INSTALL");
-				else
-					if (DEBUG) console.log(log, "[3.2] RE INSTALL");
+				// ... because this is a firstTime OR newVersion
+				if (installStatus === "firstTime" || installStatus === "newVersion") {
+					if (DEBUG) console.log(log, `[3.0] opening start screen, installStatus = ${installStatus}`);
+					// open start screen to prompt user to login
+					await Install.launchStartScreen();
+				}
 			}
 			// user logged in ...
 			else {
-				// 2.3 save more data for game and start
+				// if everything was successful then save more data for game and start
 
 				// username is stored in T.tally_user and we can pass it to populate monsters
 				const saveTopMonstersFromApiResponse = await Server.saveTopMonstersFromApi();
-				if (DEBUG) console.log(log, "[2.5] saveTopMonstersFromApiResponse =", saveTopMonstersFromApiResponse);
-				Debug.elapsedTime(log, "[2.5]");
+				if (DEBUG) console.log(log, "[3.1] saveTopMonstersFromApiResponse =", saveTopMonstersFromApiResponse);
+				Debug.elapsedTime(log, "[3.1]");
 				// return true to send data back to content
 				return true;
 			}
-
 			// if we get this far then fail
 			return false;
 

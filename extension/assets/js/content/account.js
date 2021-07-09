@@ -49,16 +49,16 @@ window.Account = (function() {
 				// only play a few times per page
 				if (++dialogueLoginPromptsOnThisPage > maxDialogueLoginPromptsPerPage) return;
 				// don't bother them every time
-				if (T.tally_meta.install.loginPrompts.dialogue % 2 == 0) {
+				if (Math.random() > 0.5) {
 					setTimeout(function() {
 						Dialogue.showStr(returnDialogueLoginPrompt(), "sad");
+						// return true so calling functions know to stop execution of other game events
+						didPrompt = true;
+						// increment so we know how many times we've attempted
+						T.tally_meta.install.loginPrompts.dialogue++;
+						TallyStorage.saveData("tally_meta", T.tally_meta, log);
 					}, 500);
 				}
-				// return true so calling functions know to stop execution of other game events
-				didPrompt = true;
-				// increment so we know how many times we've attempted
-				T.tally_meta.install.loginPrompts.dialogue++;
-				TallyStorage.saveData("tally_meta", T.tally_meta, log);
 			}
 			return didPrompt;
 
