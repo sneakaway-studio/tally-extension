@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+  <!-- For some reason, Firefox has issues playing 32 bit wav files which are part of extensions. This file is a demonstration of this error. -->
+  <body>
+    <!-- This audio element will play the now-copied Tally mood (in this case, happy-5-1). It should work flawlessly. -->
+    <audio controls>
+      <source src="happy-5-1.wav">
+    </audio>
+
+    <!-- This audio element will play the Tally mood with static (in this case, happy-5-1) -->
+    <!-- Note that the length of the audio file seems to be a random value (I see 3:06:25, not sure what it means), however on refresh it returns to its correct value and there is no static. -->
+    <audio controls>
+      <source src="/Users/owenmundy/Sites/Tally/_code/tally-extension/extension/assets/sounds/tally/moods-v4/happy-5-1.wav">
+      <!-- You can find the extension location by loading Tally into Firefox, go to google.com, find Tally's audio element via inspect element. You'll see the extension location there. -->
+    </audio>
+
+
+
+
+
+
+    <h6>32 bit - original - 413 KB - Linear PCM, 32 bit little-endian floating point, 48000 Hz</h6>
+    <audio controls>
+      <source src="happy-5-1-original.wav">
+    </audio>
+
+
+    <h6>32 bit - original (loaded via moz-extension) - 413 KB - Linear PCM, 32 bit little-endian floating point, 48000 Hz</h6>
+    <audio controls>
+      <source src="moz-extension://25810ad8-dbc9-0f41-94c6-9bc3de015bb9/assets/sounds/tally/moods-v4/happy-5-1.wav">
+    </audio>
+
+
+    <h6>16 bit - saved from Audacity - 202 KB - Linear PCM, 16 bit little-endian signed integer, 48000 Hz</h6>
+    <audio controls>
+      <source src="happy-5-1-16bit.wav">
+    </audio>
+
+
+    <h6>32 bit - saved from Audacity - 403 KB - Linear PCM, 32 bit little-endian signed integer, 48000 Hz</h6>
+    <audio controls>
+      <source src="happy-5-1-32bit.wav">
+    </audio>
+
+
+    <h6>32 bit float - saved from Audacity - 403 KB - Linear PCM, 32 bit little-endian floating point, 48000 Hz</h6>
+    <audio controls>
+      <source src="happy-5-1-32bit-float.wav">
+    </audio>
+
+
+  </body>
+</html>
