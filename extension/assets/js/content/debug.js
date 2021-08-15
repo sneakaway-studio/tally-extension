@@ -299,6 +299,7 @@ window.Debug = (function() {
 				Battle.test();
 				// Sound.playFile("explosions/explode.mp3", false, 0);
 			});
+
 			Mousetrap.bind(k + ' 0', function() {
 				BattleEffect.showRumble("small");
 			});
@@ -308,23 +309,21 @@ window.Debug = (function() {
 			Mousetrap.bind(k + ' 2', function() {
 				BattleEffect.showRumble("large");
 			});
-			Mousetrap.bind(k + ' 7', function() {
-
-			});
 			Mousetrap.bind(k + ' 8', function() {
 				BattleConsole.log("What will Tally do?", "showBattleOptions");
-			});
-			Mousetrap.bind(k + ' 9', function() {
-
 			});
 			Mousetrap.bind(k + ' q', function() {
 				Battle.end(true);
 			});
-
 			Mousetrap.bind(k + ' e', function() {
 				Effect.explode();
 			});
 
+
+
+			Mousetrap.bind(k + ' 7', function() {
+
+			});
 
 			Mousetrap.bind(k + ' z', function() {
 				StatsDisplay.adjustStatsBar("tally", "health", Math.random());
