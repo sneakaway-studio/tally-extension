@@ -123,6 +123,7 @@
 			"assets/js/content/progress.js",
 			"assets/js/content/consumable.js",
 			"assets/js/content/badge.js",
+			"assets/js/content/chat.js",
 			"assets/js/content/events.js",
 			"assets/js/content/tally.js",
 			"assets/js/content/tutorial.js",

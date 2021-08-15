@@ -13,6 +13,13 @@ window.Interface = (function() {
 
 			let str = "<div id='tally_wrapper' class='tally reset-this-root reset-this no-print'>" +
 
+							// chat input
+							`<div class='tally tally_chat tally_chat_hidden'>
+								<label for="tally_chat_select">Choose a car:</label>
+								<select name="tally_chat_select" class="tally" id="tally_chat_select"></select>
+								<label for="tally_chat_input">Or type and enter</label>
+								<input name="tally_chat_input" class="tally" id="tally_chat_input">
+							</div>` +
 							// demo mode
 							"<div class='tally tally_demo_window tally_demo_window_hidden'></div>" +
 							// effects

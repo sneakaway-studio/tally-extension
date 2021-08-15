@@ -38,6 +38,7 @@
 		"BattleTest": true,
 		"Battle": true,
 
+		"Chat": true,
 		"Consumable": true,
 		"Core": false,
 		"Debug": true,

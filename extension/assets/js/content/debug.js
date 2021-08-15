@@ -325,6 +325,13 @@ window.Debug = (function() {
 
 			});
 
+
+			Mousetrap.bind(k + ' c', function() {
+				Chat.start();
+			});
+
+
+
 			Mousetrap.bind(k + ' z', function() {
 				StatsDisplay.adjustStatsBar("tally", "health", Math.random());
 			});

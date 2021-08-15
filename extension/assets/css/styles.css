@@ -72,6 +72,27 @@
 
 
 
+.tally_chat {
+    position: fixed;
+    display: none; 
+    right: 0px; height: 100px; width: 50%;
+	z-index: 99999999999;
+    margin: 0;
+    padding: 10px;
+    bottom: 0px;
+	font: 15px/18px "Monaco", "Andale Mono", "Courier New", sans-serif;
+    color: #fff; background: #3e1789;
+}
+.tally_chat_hidden { bottom:0px; }
+label[for=tally_chat_input] {
+    display: block;
+}
+#tally_chat_input, #tally_chat_select {
+	/* height: 100%; width: 100%; */
+    background: #252525;
+	border: none;
+}
+
 
 
 .tally_consumable_wrapper{

@@ -37,6 +37,21 @@ window.T = (function() {
 		DEBUG = true;
 
 
+	/**
+	 *	A quick function to reset debugging
+	 */
+	function setEnvOptions(_localhost, _debugging) {
+		try {
+			if (_localhost)
+				envOptions.localhost = _localhost;
+			if (_debugging)
+				envOptions.debugging = _debugging;
+		} catch (err) {
+			console.error(err);
+		}
+	}
+
+
 	function updateOptionsFromGameMode(options) {
 		try {
 			// chill
