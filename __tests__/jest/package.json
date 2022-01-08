@@ -3,8 +3,8 @@
 		"test": "jest"
 	},
 	"dependencies": {
-		"jest": "^27.0.6",
-		"jest-puppeteer": "^5.0.4"
+		"jest": "^27.2.4",
+		"jest-puppeteer": "^6.0.0"
 	},
 	"devDependencies": {
 		"jest-chrome": "^0.7.2"

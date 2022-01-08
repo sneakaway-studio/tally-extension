@@ -104,7 +104,7 @@ test('clamp to 1', () => {
 });
 // clamp in between
 test('clamp to .5', () => {
-	expect(Mod.clamp(.5,0,1)).toBe(.5);
+	expect(Mod.clamp(0.5,0,1)).toBe(0.5);
 });
 
 //4.
@@ -122,13 +122,13 @@ test('normalize -5', () => {
 
 // randomFloatBetween positives
 test('random float between 5 10', () => {
-  const num = Mod.randomFloatBetween(5.0,10.0)
+  const num = Mod.randomFloatBetween(5.0,10.0);
 	expect(num).toBeLessThanOrEqual(10.0);
   expect(num).toBeGreaterThanOrEqual(5.0);
 });
 // randomFloatBetween negatives
 test('random integer between -5 -10', () => {
-  const num = Mod.randomFloatBetween(-5.0,-10.0)
+  const num = Mod.randomFloatBetween(-5.0,-10.0);
 	expect(num).toBeLessThanOrEqual(-5.0);
   expect(num).toBeGreaterThanOrEqual(-10.0);
 });
@@ -137,13 +137,13 @@ test('random integer between -5 -10', () => {
 
 // randomIntBetween positives
 test('random integer between 5 10', () => {
-  const num = Mod.randomIntBetween(5,10)
+  const num = Mod.randomIntBetween(5,10);
 	expect(num).toBeLessThanOrEqual(10);
   expect(num).toBeGreaterThanOrEqual(5);
 });
 // randomIntBetween negatives
 test('random integer between -5 -10', () => {
-  const num = Mod.randomIntBetween(-5,-10)
+  const num = Mod.randomIntBetween(-5,-10);
 	expect(num).toBeLessThanOrEqual(-5);
   expect(num).toBeGreaterThanOrEqual(-10);
 });
@@ -152,7 +152,7 @@ test('random integer between -5 -10', () => {
 
 // randomPosNeg between -5 and 5
 test('random positive or negative number', () => {
-  const num = Mod.randomPosNeg(5)
+  const num = Mod.randomPosNeg(5);
 	expect(num).toBeLessThanOrEqual(5);
   expect(num).toBeGreaterThanOrEqual(-5);
 });
