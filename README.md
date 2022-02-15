@@ -51,6 +51,9 @@ Functional (a.k.a. "e2e") tests use [nightwatch](https://nightwatchjs.org/)
 - Documentation: [Chai BDD](https://www.chaijs.com/api/bdd/) and [Nightwatch docs](https://nightwatchjs.org/api/) for examples
 
 ```bash
+# install chromedriver to match your version of chrome, for example chrome 96...
+npm install chromedriver@96
+
 cd /__tests__/nightwatch/
 npm test
 ```
