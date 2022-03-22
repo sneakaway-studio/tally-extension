@@ -3,9 +3,9 @@
 		"test": "./node_modules/.bin/nightwatch -e default tests"
 	},
 	"dependencies": {
-		"nightwatch": "^1.7.8"
 	},
 	"devDependencies": {
+		"nightwatch": "^1.7.8",
 		"chromedriver": "^96.0.0"
 	}
 }
