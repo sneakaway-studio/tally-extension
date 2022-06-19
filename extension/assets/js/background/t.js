@@ -32,7 +32,7 @@ window.T = (function() {
 			},
 			// true = development, false = production
 			localhost: false, // change to false to quickly shift to production server
-			debugging: false
+			debugging: true
 		},
 		DEBUG = true;
 

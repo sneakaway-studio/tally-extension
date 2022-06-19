@@ -245,7 +245,7 @@ window.Progress = (function() {
 			let attacksAwarded = get("attacksAwarded");
 
 			// AWARD ATTACK - 1st
-			if (attacksAwarded <= 0 && T.tally_user.score.score > 1) {
+			if (!attacksAwarded || attacksAwarded <= 0 && T.tally_user.score.score > 1) {
 				BattleAttack.rewardAttack("", "attack");
 			}
 			// AWARD ATTACK - 2nd
