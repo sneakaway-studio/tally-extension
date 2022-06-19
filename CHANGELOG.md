@@ -12,7 +12,7 @@
 - Adds a random attack / defense button to battle console
 - Improves extension installation (mainly for FF)
 - Adds new monsters and tags
-
+- Remove management permission in manifest 
 
 ### Version 0.4.6
 
@@ -46,7 +46,7 @@
 
 - Fix bug in attacks
 - Fix bug in audio volume
-- Adds new onboarding to explain options menus  
+- Adds new onboarding to explain options menus
 
 ### Version 0.4.0
 
