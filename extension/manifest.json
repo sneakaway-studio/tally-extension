@@ -149,8 +149,7 @@
 		"https://tallysavestheinternet.com/*",
 		"https://*.tallysavestheinternet.com/*",
 		"activeTab",
-		"storage",
-		"management"
+		"storage"
 	],
 	"web_accessible_resources": [
 		"*.svg", "*.png",
