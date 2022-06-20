@@ -1,9 +1,3 @@
-"use strict";
-
-
-
-
-
 /*  DATA
  ******************************************************************************/
 
@@ -15,12 +9,11 @@ let _tally_options = {},
 	attacksSelected = 0,
 	popupUpdate = createPopupBackgroundUpdate();
 
-var background = chrome.extension.getBackgroundPage();
 
 // beforeunload works only by clicking the "X"
 $(window).on("beforeunload", function() {
 	try {
-		background.console.log("POPUP: beforeunload called");
+		sendBackgroundDebugMessage("POPUP", "beforeunload called");
 		saveAndClose();
 	} catch (err) {
 		console.error(err);
@@ -30,7 +23,7 @@ $(window).on("beforeunload", function() {
 // called when the page is unloaded
 addEventListener("unload", function(event) {
 	try {
-		background.console.log("POPUP: unload called");
+		sendBackgroundDebugMessage("POPUP", "unload called");
 		saveAndClose();
 	} catch (err) {
 		console.error(err);
@@ -247,7 +240,7 @@ function updateSelectedCheckboxesDisplay() {
  */
 function saveAttacksOnServer() {
 	try {
-		background.console.log("POPUP -> saveAttacksOnServer()");
+		sendBackgroundDebugMessage("POPUP", "saveAttacksOnServer()");
 
 		// get all check boxes
 		var checkBoxes = document.querySelectorAll('input[type=checkbox]');
@@ -313,15 +306,43 @@ function createPopupBackgroundUpdate() {
 }
 
 
+/**
+ *	Send a debug message to background console
+ */
+function sendBackgroundDebugMessage(caller, str) {
+	try {
+		// time the request
+		// let startTime = new Date().getTime();
+
+		// if (DEBUG) console.log(getCurrentDateStr(), "🗜️ Debug.sendBackgroundDebugMessage()", caller, str);
+		let msg = {
+			'action': 'sendBackgroundDebugMessage',
+			'caller': caller,
+			'str': str
+		};
+
+		chrome.runtime.sendMessage(msg, function(response) {
+			// let endTime = new Date().getTime();
+			// console.log("🗜️ sendBackgroundDebugMessage() time = " + (endTime - startTime) + "ms, RESPONSE =", JSON.stringify(response));
+		});
+	} catch (err) {
+		console.error(err);
+	}
+}
+
+
+
+
 function sendUpdateToBackground() {
 	try {
-		background.console.log("POPUP -> sendUpdateToBackground() [1]", background);
+		sendBackgroundDebugMessage("POPUP", "sendUpdateToBackground() [1]");
 
 		chrome.runtime.sendMessage({
 			'action': 'updateTallyUser',
 			'data': popupUpdate
 		}, function(response) {
-			background.console.log("POPUP -> sendUpdateToBackground() [2]");
+			sendBackgroundDebugMessage("POPUPsendUpdateToBackground() [2]");
+
 			console.log('💾 > sendUpdateToBackground() RESPONSE =', response);
 			// update _tally_user in content
 			_tally_user = response.tally_user;
@@ -359,7 +380,7 @@ function getOptions() {
 function saveUserInBackground() {
 	try {
 		console.log("saveUserInBackground()", _tally_user);
-		background.console.log("POPUP -> saveUserInBackground() [1]");
+		sendBackgroundDebugMessage("POPUP", "saveUserInBackground() [1]");
 
 		// save user in background.js
 		chrome.runtime.sendMessage({
@@ -368,7 +389,8 @@ function saveUserInBackground() {
 			'data': _tally_user
 		}, function(response) {
 			console.log(response);
-			background.console.log("POPUP -> saveUserInBackground() [2]");
+			sendBackgroundDebugMessage("POPUP", "saveUserInBackground() [2]");
+
 			// show status
 			showStatus('Settings saved');
 			// set flag
@@ -381,7 +403,7 @@ function saveUserInBackground() {
 
 function saveOptionsInBackground() {
 	try {
-		background.console.log("POPUP -> saveOptionsInBackground() [1]");
+		sendBackgroundDebugMessage("POPUP", "saveOptionsInBackground() [1]");
 
 		// game
 		_tally_options.gameMode = $("#gameMode").val();
@@ -392,7 +414,7 @@ function saveOptionsInBackground() {
 		_tally_options.showDebugger = $('#showDebugger').prop('checked');
 		_tally_options.debuggerPosition = $("#debuggerPosition").val();
 
-		//console.log("saveOptionsInBackground()",_tally_options);
+		console.log("saveOptionsInBackground()", _tally_options);
 
 		// save options in background.js
 		chrome.runtime.sendMessage({
@@ -400,7 +422,8 @@ function saveOptionsInBackground() {
 			'data': _tally_options
 		}, function(response) {
 			//console.log(response);
-			background.console.log("POPUP -> saveOptionsInBackground() [2]");
+			sendBackgroundDebugMessage("POPUP", "saveOptionsInBackground() [2]");
+
 			// display success status
 			showStatus('Options saved');
 			// set flag
