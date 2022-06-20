@@ -1,10 +1,10 @@
 {
-	"manifest_version": 2,
+	"manifest_version": 3,
 
 	"name": "Tally Saves the Internet!",
 	"short_name": "Tally Saves the Internet!",
 	"description": "Tally is a browser extension that transforms the data advertisers collect into a multiplayer game.",
-	"version": "0.4.8",
+	"version": "1.0.0",
 	"author": "Sneakaway Studio",
 
 	"icons": {
