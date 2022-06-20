@@ -1,6 +1,4 @@
-"use strict";
-
-window.Server = (function() {
+self.Server = (function() {
 	// PRIVATE
 	let DEBUG = Debug.ALL.BackgroundServer;
 

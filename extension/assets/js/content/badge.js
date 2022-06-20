@@ -1,9 +1,4 @@
-"use strict";
-
-/*  BADGE
- ******************************************************************************/
-
-window.Badge = (function() {
+self.Badge = (function() {
 	// PRIVATE
 
 	let DEBUG = Debug.ALL.Badge;

@@ -1,9 +1,4 @@
-"use strict";
-
-/*  EVENTS
- ******************************************************************************/
-
-window.TallyEvents = (function () {
+self.TallyEvents = (function () {
 	// PRIVATE
 	let DEBUG = Debug.ALL.TallyEvents,
 		timedEvents = {};

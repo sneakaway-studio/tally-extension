@@ -1,9 +1,4 @@
-"use strict";
-
-/*  STATS DISPLAY
- ******************************************************************************/
-
-window.StatsDisplay = (function() {
+self.StatsDisplay = (function() {
 	// PRIVATE
 	let DEBUG = Debug.ALL.StatsDisplay;
 

@@ -1,9 +1,4 @@
-"use strict";
-
-/*  CLICK LISTENER
- ******************************************************************************/
-
-window.TallyListeners = (function() {
+self.TallyListeners = (function() {
 	// PRIVATE
 	let DEBUG = Debug.ALL.TallyListeners;
 

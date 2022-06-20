@@ -238,4 +238,4 @@ var Environment = (function() {
 // if running in node, then export module
 if (typeof process === 'object') module.exports = Environment;
 // otherwise add as "global" object window for browser / extension
-else window.Environment = Environment;
+else self.Environment = Environment;

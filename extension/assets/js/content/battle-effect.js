@@ -1,9 +1,4 @@
-"use strict";
-
-/*  BATTLE EFFECT
- ******************************************************************************/
-
-window.BattleEffect = (function() {
+self.BattleEffect = (function() {
 	// PRIVATE
 	let DEBUG = Debug.ALL.BattleEffect,
 		source, // page source for rumbles

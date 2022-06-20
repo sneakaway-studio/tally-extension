@@ -1,9 +1,4 @@
-"use strict";
-
-/*  (BATTLE) CONSOLE
- ******************************************************************************/
-
-window.BattleConsole = (function() {
+self.BattleConsole = (function() {
 	// PRIVATE
 	let DEBUG = Debug.ALL.BattleConsole,
 		logId, _active, _queue, _next,

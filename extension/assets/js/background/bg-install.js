@@ -1,6 +1,4 @@
-"use strict";
-
-window.Install = (function() {
+self.Install = (function() {
 	// PRIVATE
 
 	let DEBUG = Debug.ALL.BackgroundInstall;

@@ -1,6 +1,4 @@
-"use strict";
-
-window.Monster = (function() {
+self.Monster = (function() {
 
 	/**
 	 *	1. MonsterCheck determines which monsters are nearby and calls Monster.create(mid)

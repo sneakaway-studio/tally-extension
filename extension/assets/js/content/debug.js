@@ -1,9 +1,4 @@
-"use strict";
-
-/*  DEBUGGER
- ******************************************************************************/
-
-window.Debug = (function() {
+self.Debug = (function() {
 	// PRIVATE
 
 	let DEBUG = true,
@@ -348,7 +343,7 @@ window.Debug = (function() {
 
 
 	// global error handler
-	window.onerror = function(msg, url, lineNo, columnNo, error) {
+	self.onerror = function(msg, url, lineNo, columnNo, error) {
 		var msgStr = msg.toLowerCase();
 		// ignore CORS / CDN errors
 		if (msgStr.indexOf("script error") > -1) {

@@ -201,4 +201,4 @@ var FS_Object = (function() {
 // if running in node, then export module
 if (typeof process === 'object') module.exports = FS_Object;
 // otherwise add as "global" object window for browser / extension
-else window.FS_Object = FS_Object;
+else self.FS_Object = FS_Object;

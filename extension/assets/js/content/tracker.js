@@ -1,6 +1,4 @@
-"use strict";
-
-window.Tracker = (function () {
+self.Tracker = (function () {
 	// PRIVATE
 	let DEBUG = Debug.ALL.Tracker,
 		blockAttempted = false,

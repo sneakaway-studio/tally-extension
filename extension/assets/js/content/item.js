@@ -1,9 +1,4 @@
-"use strict";
-
-/*  ITEM
- ******************************************************************************/
-
-window.Item = (function() {
+self.Item = (function() {
 	// PRIVATE
 
 	let DEBUG = Debug.ALL.Item,

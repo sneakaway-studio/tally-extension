@@ -1,9 +1,4 @@
-"use strict";
-
-/*  CONSUMABLE
- ******************************************************************************/
-
-window.Consumable = (function() {
+self.Consumable = (function() {
 	// PRIVATE
 
 	let DEBUG = Debug.ALL.Consumable,

@@ -1,6 +1,4 @@
-"use strict";
-
-window.Listener = (function() {
+self.Listener = (function() {
 	// PRIVATE
 
 	let DEBUG = Debug.ALL.BackgroundListener;
@@ -336,7 +334,7 @@ window.Listener = (function() {
 				return true;
 
 			} catch (err) {
-				console.error(err);
+				console.error(err);  
 			}
 		}
 	);

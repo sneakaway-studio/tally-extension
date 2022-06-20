@@ -1,6 +1,4 @@
-"use strict";
-
-window.Dialogue = (function() {
+self.Dialogue = (function() {
 	// PRIVATE
 
 	let DEBUG = Debug.ALL.Dialogue,

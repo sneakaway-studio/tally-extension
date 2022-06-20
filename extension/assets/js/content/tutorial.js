@@ -1,6 +1,4 @@
-"use strict";
-
-window.Tutorial = (function() {
+self.Tutorial = (function() {
 	// PRIVATE
 	let DEBUG = Debug.ALL.Tutorial,
 		// the internal state of the Tutorial - are we playing a tutorial?

@@ -1,9 +1,4 @@
-"use strict";
-
-/*  TALLY
- ******************************************************************************/
-
-window.Tally = (function() {
+self.Tally = (function() {
 	// PRIVATE
 	let DEBUG = Debug.ALL.Tally,
 		followCursor = false, // is eye following currently active? on page load, no

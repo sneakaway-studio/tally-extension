@@ -1,6 +1,4 @@
-"use strict";
-
-window.Background = (function() {
+self.Background = (function() {
 	// PRIVATE
 
 	let DEBUG = Debug.ALL.Background,
@@ -31,7 +29,7 @@ window.Background = (function() {
 			dataReportHeader(log, "@", "before");
 			if (DEBUG) console.log("🧰 Background.onInstalled() -> new (or updated) installation detected");
 			Debug.elapsedTime("Background.runInstallChecks()");
-			
+
 
 			// // FF version < 90 bug fix
 			// let ffBrowser = navigator.userAgent.indexOf("Firefox");

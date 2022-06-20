@@ -1,6 +1,4 @@
-"use strict";
-
-window.Skin = (function() {
+self.Skin = (function() {
 	// PRIVATE
 	let DEBUG = Debug.ALL.Skin,
 		currentMonsterStage = 0,

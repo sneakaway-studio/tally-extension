@@ -1,6 +1,4 @@
-"use strict";
-
-window.Page = (function() {
+self.Page = (function() {
 	// PRIVATE
 	let DEBUG = Debug.ALL.Page;
 

@@ -1,6 +1,4 @@
-"use strict";
-
-window.Sound = (function() {
+self.Sound = (function() {
 	// PRIVATE
 	var DEBUG = Debug.ALL.Sound,
 		sounds = {

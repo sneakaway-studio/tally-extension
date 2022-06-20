@@ -3,7 +3,7 @@
  */
 
 /* jshint strict: true */
-window.MonsterCheck = (function() {
+self.MonsterCheck = (function() {
 	"use strict";
 
 	let DEBUG = Debug.ALL.MonsterCheck,
@@ -176,7 +176,7 @@ window.MonsterCheck = (function() {
 				}
 				if (++safety > 20) break;
 			}
-			return midMatched; 
+			return midMatched;
 
 		} catch (err) {
 			console.error(err);

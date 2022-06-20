@@ -1,5 +1,3 @@
-"use strict";
-
 /**
  *  ______     ____
  * /_  __/__ _/ / /_ __
@@ -11,7 +9,7 @@
  *
  */
 
-window.TallyMain = (function() {
+self.TallyMain = (function() {
 	// PRIVATE
 	let DEBUG = Debug.ALL.TallyMain;
 

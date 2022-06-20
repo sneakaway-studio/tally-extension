@@ -1,6 +1,4 @@
-"use strict";
-
-window.Progress = (function() {
+self.Progress = (function() {
 	// PRIVATE
 	let DEBUG = Debug.ALL.Progress;
 

@@ -1,9 +1,4 @@
-"use strict";
-
-/*  TALLY DATA MANAGER
- ******************************************************************************/
-
-window.TallyData = (function() {
+self.TallyData = (function() {
 	// PRIVATE
 
 	let DEBUG = Debug.ALL.TallyData,

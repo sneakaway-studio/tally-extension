@@ -1,9 +1,4 @@
-"use strict";
-
-/*  FLAG
- ******************************************************************************/
-
-window.Flag = (function () {
+self.Flag = (function () {
 	// PRIVATE
 
 	let DEBUG = Debug.ALL.Flag;

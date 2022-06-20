@@ -156,4 +156,4 @@ var FS_Number = (function() {
 // if running in node, then export module
 if (typeof process === 'object') module.exports = FS_Number;
 // otherwise add as "global" object window for browser / extension
-else window.FS_Number = FS_Number;
+else self.FS_Number = FS_Number;

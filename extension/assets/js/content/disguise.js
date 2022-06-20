@@ -1,9 +1,4 @@
-"use strict";
-
-/*  DISGUISE
- ******************************************************************************/
-
-window.Disguise = (function() {
+self.Disguise = (function() {
 	// PRIVATE
 
 	let DEBUG = Debug.ALL.Disguise,

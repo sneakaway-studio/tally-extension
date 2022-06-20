@@ -1,9 +1,4 @@
-"use strict";
-
-/*  ACCOUNT
- ******************************************************************************/
-
-window.Account = (function() {
+self.Account = (function() {
 	// PRIVATE
 
 	let DEBUG = Debug.ALL.Account,

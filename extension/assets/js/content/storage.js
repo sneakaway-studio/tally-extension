@@ -1,9 +1,4 @@
-"use strict";
-
-/*  BACKGROUND STORAGE
- ******************************************************************************/
-
-window.TallyStorage = (function () {
+self.TallyStorage = (function () {
 
 	let DEBUG = Debug.ALL.TallyStorage,
 		backgroundConnectErrors = 0;
