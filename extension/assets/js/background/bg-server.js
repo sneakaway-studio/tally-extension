@@ -227,23 +227,23 @@ self.Server = (function() {
 			}
 
 			// returns true if all is good
-			return $.ajax({
-				type: "GET",
-				url: T.tally_meta.env.api + "/monsters/" + T.tally_user.username,
-				contentType: 'application/json',
-				dataType: 'json',
-			}).done(result => {
-				// treat all server data as master
-				// if (DEBUG) console.log("📟 Server.saveTopMonstersFromApi() [1] RESULT =", JSON.stringify(result));
-				T.tally_top_monsters = FS_Object.convertArrayToObject(result.topMonsters, "mid");
-				// if (DEBUG) console.log("📟 Server.saveTopMonstersFromApi() [2] RESULT =", JSON.stringify(T.tally_top_monsters));
-				// store top monsters
-				store("tally_top_monsters", T.tally_top_monsters);
-				return true;
-			}).fail(error => {
-				console.error("📟 Server.saveTopMonstersFromApi() [3] ERROR =", JSON.stringify(error));
-				return false;
-			});
+			fetch(T.tally_meta.env.api + "/monsters/" + T.tally_user.username)
+				.then(handleFetchErrors)
+				.then(response => response.json())
+				.then(result => {
+					console.log(result);
+
+					// treat all server data as master
+					// if (DEBUG) console.log("📟 Server.saveTopMonstersFromApi() [1] RESULT =", JSON.stringify(result));
+					T.tally_top_monsters = FS_Object.convertArrayToObject(result.topMonsters, "mid");
+					// if (DEBUG) console.log("📟 Server.saveTopMonstersFromApi() [2] RESULT =", JSON.stringify(T.tally_top_monsters));
+					// store top monsters
+					store("tally_top_monsters", T.tally_top_monsters);
+					return true;
+				}).catch(error => {
+					console.error("📟 Server.saveTopMonstersFromApi() [3] ERROR =", JSON.stringify(error));
+					return false;
+				});
 		} catch (err) {
 			console.error(err);
 		}
@@ -284,6 +284,15 @@ self.Server = (function() {
 		mergeAttackDataFromServer: mergeAttackDataFromServer
 	};
 }());
+
+// https://www.tjvantoll.com/2015/09/13/fetch-and-errors/
+function handleFetchErrors(response) {
+	if (!response.ok) {
+		throw Error(response.statusText);
+	}
+	return response;
+}
+
 
 
 

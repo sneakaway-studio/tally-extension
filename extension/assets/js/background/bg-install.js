@@ -323,7 +323,7 @@ self.Install = (function() {
 	 */
 	async function getLocation() {
 		try {
-			return $.getJSON('http://www.geoplugin.net/json.gp', function(data) {
+			return await fetch('http://www.geoplugin.net/json.gp', function(data) {
 				if (DEBUG) console.log("Install.getLocation()", JSON.stringify(data, null, 2));
 				return {
 					ip: data.geoplugin_request,
