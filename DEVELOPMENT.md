@@ -19,6 +19,14 @@ See [learn-javascript/topics-extensions.md](https://github.com/omundy/learn-java
 1. Upload to respective web stores
 
 
+Testing URLs
+```
+"http://localhost/*",
+"http://127.0.0.1/*",
+"https://127.0.0.1/*",
+"https://tallysavestheinternet.com/*",
+"https://*.tallysavestheinternet.com/*"
+```
 
 
 

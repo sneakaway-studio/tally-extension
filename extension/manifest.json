@@ -115,25 +115,21 @@
 		],
 		"run_at": "document_end"
 	}],
+
+	"content_security_policy": {
+		"extension_pages": "script-src 'self'; object-src 'self'"
+	},
+
 	"permissions": [
-
-
-		"http://localhost/*",
-		"http://127.0.0.1/*",
-		"https://127.0.0.1/*",
-
-		"https://tallysavestheinternet.com/*",
-		"https://*.tallysavestheinternet.com/*",
 		"activeTab",
 		"storage"
 	],
-	"web_accessible_resources": [
-		"*.svg", "*.png",
-		"*.jpg", "*.JPG",
-		"*.gif", "*.GIF",
-		"/assets/*",
-		"/assets/sounds/*"
-	],
-	"content_security_policy": "script-src 'self'; object-src 'self';"
 
+	"web_accessible_resources": [{
+		"resources": [
+			"*.svg", "*.png", "*.jpg", "*.JPG", "*.gif", "*.GIF",
+			"/assets/*", "/assets/sounds/*"
+		],
+		"matches": ["<all_urls>"]
+	}]
 }
