@@ -143,17 +143,20 @@ window.MonsterCheck = (function() {
 				secondsBlocked = 10 * 60,
 				maxIndex = Math.min(8, T.tally_tag_matches.s0.length); // this array is sorted by occurance of tags
 
-			// remove old tag matches from
-			for (let mid in T.tally_meta.game.midsRecentlyShown) {
-				mid = Number(mid);
-				if (T.tally_meta.game.midsRecentlyShown.hasOwnProperty(mid)) {
-					if (DEBUG) console.log(log, mid, "🧐 was last shown", FS_Date.diffSeconds("now", T.tally_meta.game.midsRecentlyShown[mid]), "seconds ago");
 
-					// if time to remove from block list
-					if (FS_Date.diffSeconds("now", T.tally_meta.game.midsRecentlyShown[mid]) > secondsBlocked) {
-						if (DEBUG) console.log(log, "✅ REMOVING", mid, 'FROM BLOCK LIST');
-						// remove it from array
-						delete T.tally_meta.game.midsRecentlyShown[mid];
+			if (T.tally_meta && T.tally_meta.game && T.tally_meta.game.midsRecentlyShown){
+				// remove old tag matches from
+				for (let mid in T.tally_meta.game.midsRecentlyShown) {
+					mid = Number(mid);
+					if (T.tally_meta.game.midsRecentlyShown.hasOwnProperty(mid)) {
+						if (DEBUG) console.log(log, mid, "🧐 was last shown", FS_Date.diffSeconds("now", T.tally_meta.game.midsRecentlyShown[mid]), "seconds ago");
+
+						// if time to remove from block list
+						if (FS_Date.diffSeconds("now", T.tally_meta.game.midsRecentlyShown[mid]) > secondsBlocked) {
+							if (DEBUG) console.log(log, "✅ REMOVING", mid, 'FROM BLOCK LIST');
+							// remove it from array
+							delete T.tally_meta.game.midsRecentlyShown[mid];
+						}
 					}
 				}
 			}
@@ -173,7 +176,7 @@ window.MonsterCheck = (function() {
 				}
 				if (++safety > 20) break;
 			}
-			return midMatched;
+			return midMatched; 
 
 		} catch (err) {
 			console.error(err);
