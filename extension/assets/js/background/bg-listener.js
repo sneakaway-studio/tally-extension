@@ -349,10 +349,10 @@ self.Listener = (function() {
 		try {
 			if (!_text || _text == '') return;
 			// show tracker numbers in badge
-			chrome.browserAction.setBadgeBackgroundColor({
+			chrome.action.setBadgeBackgroundColor({
 				color: [255, 108, 0, 255]
 			});
-			chrome.browserAction.setBadgeText({
+			chrome.action.setBadgeText({
 				text: "" + _text
 			});
 		} catch (err) {
