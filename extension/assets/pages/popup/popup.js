@@ -4,7 +4,7 @@
 let _tally_options = {},
 	_tally_user = {},
 	_tally_meta = {},
-	updatePage = false,
+	updatePageOnSaveOptions = false,
 	attacksMax = 4,
 	attacksSelected = 0,
 	popupUpdate = createPopupBackgroundUpdate();
@@ -38,7 +38,7 @@ function saveAndClose() {
 	try {
 		saveOptionsInBackground();
 		saveUserInBackground();
-		if (updatePage)
+		if (updatePageOnSaveOptions)
 			// refresh current page with new settings
 			refreshPageWithNewSettings();
 	} catch (err) {
@@ -198,7 +198,7 @@ function getAttacks(callback) {
 					// save attacks on server (not that efficient but reliable)
 					saveAttacksOnServer();
 					// set flag to update page and server when finished
-					updatePage = true;
+					updatePageOnSaveOptions = true;
 					// update display
 					updateSelectedCheckboxesDisplay();
 				} catch (err) {
@@ -394,7 +394,7 @@ function saveUserInBackground() {
 			// show status
 			showStatus('Settings saved');
 			// set flag
-			updatePage = true;
+			updatePageOnSaveOptions = true;
 		});
 	} catch (err) {
 		console.error(err);
@@ -427,7 +427,7 @@ function saveOptionsInBackground() {
 			// display success status
 			showStatus('Options saved');
 			// set flag
-			updatePage = true;
+			updatePageOnSaveOptions = true;
 		});
 	} catch (err) {
 		console.error(err);
@@ -439,16 +439,16 @@ function saveOptionsInBackground() {
  */
 function refreshPageWithNewSettings() {
 	try {
+		sendBackgroundDebugMessage("POPUP", "refreshPageWithNewSettings()");
+
 		// get tab and reload
 		chrome.tabs.query({
 			active: true,
 			currentWindow: true
 		}, function(arrayOfTabs) {
-			//console.log("query again")
-			var code = 'window.location.reload(1);';
-			chrome.tabs.executeScript(arrayOfTabs[0].id, {
-				code: code
-			});
+			console.log("query again", arrayOfTabs);
+			// reload current tab
+			chrome.tabs.reload(arrayOfTabs[0].id) ;
 		});
 	} catch (err) {
 		console.error(err);
