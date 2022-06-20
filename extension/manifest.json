@@ -125,6 +125,16 @@
 		"storage"
 	],
 
+	"host_permissions": [
+		
+		"http://localhost/*",
+		"http://127.0.0.1/*",
+		"https://127.0.0.1/*",
+
+		"https://tallysavestheinternet.com/*",
+		"https://*.tallysavestheinternet.com/*"
+	],
+
 	"web_accessible_resources": [{
 		"resources": [
 			"*.svg", "*.png", "*.jpg", "*.JPG", "*.gif", "*.GIF",
