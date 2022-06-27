@@ -1,14 +1,180 @@
 /*  DATA
  ******************************************************************************/
 
-let _tally_options = {},
-	_tally_user = {},
-	_tally_meta = {},
+let tally_options = {},
+	tally_user = {},
+	tally_meta = {},
 	updatePageOnSaveOptions = false,
 	attacksMax = 4,
 	attacksSelected = 0,
 	popupUpdate = createPopupBackgroundUpdate();
 
+
+
+
+
+
+/*  INIT / PAGE LOAD
+ ******************************************************************************/
+
+// on load
+document.addEventListener('DOMContentLoaded', init);
+async function init() {
+	try {
+
+		// get all required data
+		tally_options = await getDataPromise("getOptions");
+		tally_user = await getDataPromise("getUser");
+		tally_meta = await getDataPromise("getMeta");
+
+		console.log("POPUP > tally_options", JSON.stringify(tally_options));
+		console.log("POPUP > tally_user", JSON.stringify(tally_user));
+		console.log("POPUP > tally_meta", JSON.stringify(tally_meta));
+
+		// show tally header image
+		$('.container').css({
+			'background-image': 'url(' + chrome.runtime.getURL("assets/img/tally/tally-logo-clear-600w.png") + ')'
+		});
+		// user is admin
+		if (tally_user.admin > 0) {
+			$(".hideUnlessAdmin").css({
+				'display': 'block'
+			});
+		}
+
+		getTab();
+
+	} catch (err) {
+		console.error(err);
+	}
+}
+
+
+function getDataPromise(action) {
+	return new Promise((resolve, reject) => {
+		chrome.runtime.sendMessage({
+			"action": action
+		}, response => {
+			if (response.action == action) {
+				resolve(response.data);
+			} else {
+				reject('Something wrong');
+			}
+		});
+	});
+}
+
+
+async function getTab(tab) {
+	try {
+		// user NOT logged in
+		if (!tally_meta.userLoggedIn) {
+			// display only the login prompt
+			let str = "<a href='" + tally_meta.env.website + "/dashboard" + "' target='_blank'>Link your Tally account</a>";
+			$(".content").html(str);
+			return;
+		}
+
+		// the tab to open
+		let tabName;
+
+		// refresh data
+		tally_options = await getDataPromise("getOptions");
+		tally_user = await getDataPromise("getUser");
+		tally_meta = await getDataPromise("getMeta");
+
+		if (tab) {
+			tabName = tab;
+		} else if (tally_options.mostRecentTab && tally_options.mostRecentTab !== "") {
+			tabName = tally_options.mostRecentTab;
+		} else {
+			// default
+			tabName = "status";
+		}
+
+
+		// save most recent tab
+		tally_options.mostRecentTab = tabName;
+		saveOptionsRecentPage();
+		// display tab
+		displayTab(tabName);
+
+	} catch (err) {
+		console.error(err);
+	}
+}
+
+
+async function displayTab(tab) {
+	try {
+		// show correct tab
+		var t = document.getElementsByClassName("tab");
+		for (let i = 0; i < t.length; i++) {
+			t[i].style.display = "none";
+		}
+		document.getElementById(tab + "Tab").style.display = "block";
+
+		// show correct tab button
+		var b = document.getElementsByClassName("tab-button");
+		for (let i = 0; i < b.length; i++) {
+			b[i].classList.remove("active");
+		}
+		document.getElementById(tab + "TabBtn").classList.add("active");
+
+
+
+		updateData();
+
+		if (tab == "items") {
+			displayAttacks();
+		}
+
+	} catch (err) {
+		console.error(err);
+	}
+}
+
+
+
+
+
+function updateData() {
+	try {
+		// STATUS
+		$("#username").html(tally_user.username);
+		$("#level").html(tally_user.level);
+		$("#score").html(tally_user.score.score);
+		$("#clicks").html(tally_user.score.clicks);
+		$("#likes").html(tally_user.score.likes);
+		$("#pages").html(tally_user.score.pages);
+		$("#time").html(moment.utc(tally_user.score.time * 1000).format('HH:mm:ss'));
+		$("#monsters").html(FS_Object.objLength(tally_user.monsters));
+
+		// OPTIONS
+		$("#gameMode").val(tally_options.gameMode);
+		$("#soundVolume").val(tally_options.soundVolume * 100);
+		$("#disabledDomains").val(tally_options.disabledDomains.join("\n"));
+		document.getElementById("showDebugger").checked = tally_options.showDebugger;
+		//document.getElementById("debuggerPosition").value = tally_options.debuggerPosition;
+
+		// META
+		$("#onlineStatus").html((tally_meta.userOnline ? "true" : "false"));
+		$("#serverStatus").html((tally_meta.serverOnline ? "true" : "false"));
+		$("#loggedInStatus").html((tally_meta.userLoggedIn ? "true" : "false"));
+		$("#currentAPI").html((tally_meta.env.currentAPI ? tally_meta.env.currentAPI : "null"));
+		$("#api").html((tally_meta.env.api ? tally_meta.env.api : "null"));
+		$("#installedOn").html(tally_meta.install.date);
+		$("#version").html(tally_meta.install.version);
+	} catch (err) {
+		console.error(err);
+	}
+}
+
+
+
+
+/*  SAVE ON CLOSE
+ ******************************************************************************/
 
 // beforeunload works only by clicking the "X"
 $(window).on("beforeunload", function() {
@@ -51,162 +217,98 @@ function saveAndClose() {
 
 
 
-// if user hasn't logged in then show login only
-function init() {
-	try {
-
-		// show tally image
-		$('.container').css({
-			'background-image': 'url(' + chrome.runtime.getURL("assets/img/tally/tally-logo-clear-600w.png") + ')'
-		});
-
-		chrome.runtime.sendMessage({
-			'action': 'getMeta'
-		}, function(response) {
-			console.log("getMeta()", JSON.stringify(response.data));
-			_tally_meta = response.data;
-			if (!_tally_meta.userLoggedIn) {
-				// display only the login
-				let str = "<a href='" + _tally_meta.env.website + "/dashboard" + "' target='_blank'>Link your Tally account</a>";
-				$(".content").html(str);
-			} else {
-				if (_tally_user.admin > 0)
-					$(".hideUnlessAdmin").css({
-						'display': 'block'
-					});
-				getOptions();
-			}
-		});
-	} catch (err) {
-		console.error(err);
-	}
-}
-// on load
-document.addEventListener('DOMContentLoaded', init);
-
-
-
 /******************** FUNCTIONS ********************/
 
-function getUser(callback) {
+
+async function displayAttacks(callback) {
 	try {
-		chrome.runtime.sendMessage({
-			'action': 'getUser'
-		}, function(response) {
-			//console.log("getUser()",JSON.stringify(response.data));
-			_tally_user = response.data;
-			$("#username").html(_tally_user.username);
-			$("#level").html(_tally_user.level);
-			$("#score").html(_tally_user.score.score);
-			$("#clicks").html(_tally_user.score.clicks);
-			$("#likes").html(_tally_user.score.likes);
-			$("#pages").html(_tally_user.score.pages);
-			$("#time").html(moment.utc(_tally_user.score.time * 1000).format('HH:mm:ss'));
-			$("#monsters").html(FS_Object.objLength(_tally_user.monsters));
-			// do a callback if exists
-			if (callback)
-				for (var i in callback)
-					callback[i]();
-		});
-	} catch (err) {
-		console.error(err);
-	}
-}
-
-function getAttacks(callback) {
-	try {
-		chrome.runtime.sendMessage({
-			'action': 'getUser'
-		}, function(response) {
-			//console.log("getAttacks()",JSON.stringify(response.data));
-			_tally_user = response.data;
-			// reset selected
-			attacksSelected = 0;
-			// start string
-			var str = "";
-			// for each attack
-			for (var key in _tally_user.attacks) {
-				if (_tally_user.attacks.hasOwnProperty(key)) {
-					let checked = "";
-					// if below limit and it should be shown as selected
-					if (attacksSelected < attacksMax && _tally_user.attacks[key].selected === 1) {
-						checked = " checked ";
-						// track # of selected
-						attacksSelected++;
-					}
-					// show defense vs. attack
-					let defenseOption = "";
-
-					// if defense
-					if (_tally_user.attacks[key].type === "defense") {
-						defenseOption = "battle-options-defense";
-					}
-					let title = _tally_user.attacks[key].name + " [" + _tally_user.attacks[key].category + " " + _tally_user.attacks[key].type + "] ";
-					if (_tally_user.attacks[key].description) title += _tally_user.attacks[key].description;
-
-					str += "<li>";
-					str += '<input class="attack-checkbox" type="checkbox" id="' + key + '" name="attacks" ' + checked + ' />';
-					str += "<label " +
-						" for='" + key + "'" +
-						" title='" + title + "' " +
-						" data-attack='" + _tally_user.attacks[key].name + "' " +
-						" class='tally battle-options battle-options-fire " + defenseOption + " attack-" + _tally_user.attacks[key].name + "'>" +
-						"<span class='tally attack-icon attack-icon-" + _tally_user.attacks[key].type + "' ></span>" +
-						key + '</label>';
-					str += "</li>";
-
+		// reset selected
+		attacksSelected = 0;
+		// start string
+		var str = "";
+		// for each attack
+		for (var key in tally_user.attacks) {
+			if (tally_user.attacks.hasOwnProperty(key)) {
+				let checked = "";
+				// if below limit and it should be shown as selected
+				if (attacksSelected < attacksMax && tally_user.attacks[key].selected === 1) {
+					checked = " checked ";
+					// track # of selected
+					attacksSelected++;
 				}
+				// show defense vs. attack
+				let defenseOption = "";
+
+				// if defense
+				if (tally_user.attacks[key].type === "defense") {
+					defenseOption = "battle-options-defense";
+				}
+				let title = tally_user.attacks[key].name + " [" + tally_user.attacks[key].category + " " + tally_user.attacks[key].type + "] ";
+				if (tally_user.attacks[key].description) title += tally_user.attacks[key].description;
+
+				str += "<li>";
+				str += '<input class="attack-checkbox" type="checkbox" id="' + key + '" name="attacks" ' + checked + ' />';
+				str += "<label " +
+					" for='" + key + "'" +
+					" title='" + title + "' " +
+					" data-attack='" + tally_user.attacks[key].name + "' " +
+					" class='tally battle-options battle-options-fire " + defenseOption + " attack-" + tally_user.attacks[key].name + "'>" +
+					"<span class='tally attack-icon attack-icon-" + tally_user.attacks[key].type + "' ></span>" +
+					key + '</label>';
+				str += "</li>";
+
 			}
-			// alert("getAttacks() " + attacksSelected + "/" + attacksMax);
+		}
+		// alert("displayAttacks() " + attacksSelected + "/" + attacksMax);
 
-			// console.log(str);
-			$(".attacksCloud").html(str);
-			// update display
-			updateSelectedCheckboxesDisplay();
+		// console.log(str);
+		$(".attacksCloud").html(str);
+		// update display
+		updateSelectedCheckboxesDisplay();
 
-			// add icons
-			$(".attack-icon-attack").css({
-				"background-image": 'url(' + chrome.runtime.getURL('../../assets/img/battles/sword-pixel-13sq.png') + ')'
-			});
-			$(".attack-icon-defense").css({
-				"background-image": 'url(' + chrome.runtime.getURL('../../assets/img/battles/shield-pixel-13sq.png') + ')'
-			});
+		// add icons
+		$(".attack-icon-attack").css({
+			"background-image": 'url(' + chrome.runtime.getURL('../../assets/img/battles/sword-pixel-13sq.png') + ')'
+		});
+		$(".attack-icon-defense").css({
+			"background-image": 'url(' + chrome.runtime.getURL('../../assets/img/battles/shield-pixel-13sq.png') + ')'
+		});
 
-			// add listener for buttons
-			$('input.attack-checkbox[type="checkbox"]').change(function() {
-				try {
+		// add listener for buttons
+		$('input.attack-checkbox[type="checkbox"]').change(function() {
+			try {
+				// update totals
+				updateSelectedCheckboxesTotal();
+				// get attack name
+				let name = $(this).attr("id");
+				// do not allow selection of more than limit
+				if (attacksSelected > attacksMax) {
+					// show status
+					showInterfaceFeedback('You can only use up to four attacks in battles.');
+					// set back to false
+					$("#" + name).prop('checked', false);
 					// update totals
 					updateSelectedCheckboxesTotal();
-					// get attack name
-					let name = $(this).attr("id");
-					// do not allow selection of more than limit
-					if (attacksSelected > attacksMax) {
-						// show status
-						showStatus('You can only use up to four attacks in battles.');
-						// set back to false
-						$("#" + name).prop('checked', false);
-						// update totals
-						updateSelectedCheckboxesTotal();
-						return;
-					}
-					// set attack selected
-					if (this.checked) _tally_user.attacks[name].selected = 1;
-					else _tally_user.attacks[name].selected = 0;
-
-					// save user in background
-					saveUserInBackground();
-					// save attacks on server (not that efficient but reliable)
-					saveAttacksOnServer();
-					// set flag to update page and server when finished
-					updatePageOnSaveOptions = true;
-					// update display
-					updateSelectedCheckboxesDisplay();
-				} catch (err) {
-					console.error(err);
+					return;
 				}
-			});
-			if (callback) callback();
+				// set attack selected
+				if (this.checked) tally_user.attacks[name].selected = 1;
+				else tally_user.attacks[name].selected = 0;
+
+				// save user in background
+				saveUserInBackground();
+				// save attacks on server (not that efficient but reliable)
+				saveAttacksOnServer();
+				// set flag to update page and server when finished
+				updatePageOnSaveOptions = true;
+				// update display
+				updateSelectedCheckboxesDisplay();
+			} catch (err) {
+				console.error(err);
+			}
 		});
+
+
 	} catch (err) {
 		console.error(err);
 	}
@@ -252,11 +354,11 @@ function saveAttacksOnServer() {
 			// get name
 			let name = $(checkBoxes[i]).attr("id");
 			// double check this is a value
-			if (name && _tally_user.attacks[name] && $("#" + name)) {
+			if (name && tally_user.attacks[name] && $("#" + name)) {
 				// double check selected status in data
-				_tally_user.attacks[name].selected = $("#" + name).prop('checked');
+				tally_user.attacks[name].selected = $("#" + name).prop('checked');
 				//alert(name + "," + JSON.stringify(checkBoxes[i]));
-				attacks.push(_tally_user.attacks[name]);
+				attacks.push(tally_user.attacks[name]);
 			}
 		}
 		popupUpdate.itemData.attacks = attacks;
@@ -312,7 +414,7 @@ function createPopupBackgroundUpdate() {
 function sendBackgroundDebugMessage(caller, str) {
 	try {
 		// time the request
-		// let startTime = new Date().getTime();
+		let startTime = new Date().getTime();
 
 		// if (DEBUG) console.log(getCurrentDateStr(), "🗜️ Debug.sendBackgroundDebugMessage()", caller, str);
 		let msg = {
@@ -322,8 +424,8 @@ function sendBackgroundDebugMessage(caller, str) {
 		};
 
 		chrome.runtime.sendMessage(msg, function(response) {
-			// let endTime = new Date().getTime();
-			// console.log("🗜️ sendBackgroundDebugMessage() time = " + (endTime - startTime) + "ms, RESPONSE =", JSON.stringify(response));
+			let endTime = new Date().getTime();
+			console.log("POPUP > 🗜️ sendBackgroundDebugMessage() time = " + (endTime - startTime) + "ms, RESPONSE =", JSON.stringify(response));
 		});
 	} catch (err) {
 		console.error(err);
@@ -344,8 +446,8 @@ function sendUpdateToBackground() {
 			sendBackgroundDebugMessage("POPUPsendUpdateToBackground() [2]");
 
 			console.log('💾 > sendUpdateToBackground() RESPONSE =', response);
-			// update _tally_user in content
-			_tally_user = response.tally_user;
+			// update tally_user in content
+			tally_user = response.tally_user;
 			// reset
 			popupUpdate = createPopupBackgroundUpdate();
 		});
@@ -355,44 +457,24 @@ function sendUpdateToBackground() {
 }
 
 
-function getOptions() {
-	try {
-		chrome.runtime.sendMessage({
-			'action': 'getData',
-			'name': "tally_options"
-		}, function(response) {
-			//console.log("getOptions()",JSON.stringify(response.data));
-			_tally_options = response.data;
-			// game
-			$("#gameMode").val(_tally_options.gameMode);
-			$("#soundVolume").val(_tally_options.soundVolume * 100);
-			// privacy
-			document.getElementById("disabledDomains").value = _tally_options.disabledDomains.join("\n");
-			// debugging
-			document.getElementById("showDebugger").checked = _tally_options.showDebugger;
-			//document.getElementById("debuggerPosition").value = _tally_options.debuggerPosition;
-		});
-	} catch (err) {
-		console.error(err);
-	}
-}
+
 
 function saveUserInBackground() {
 	try {
-		console.log("saveUserInBackground()", _tally_user);
+		console.log("POPUP > saveUserInBackground()", tally_user);
 		sendBackgroundDebugMessage("POPUP", "saveUserInBackground() [1]");
 
 		// save user in background.js
 		chrome.runtime.sendMessage({
 			'action': 'saveData',
 			'name': "tally_user",
-			'data': _tally_user
+			'data': tally_user
 		}, function(response) {
 			console.log(response);
 			sendBackgroundDebugMessage("POPUP", "saveUserInBackground() [2]");
 
 			// show status
-			showStatus('Settings saved');
+			showInterfaceFeedback('Settings saved');
 			// set flag
 			updatePageOnSaveOptions = true;
 		});
@@ -401,31 +483,31 @@ function saveUserInBackground() {
 	}
 }
 
-function saveOptionsInBackground() {
+async function saveOptionsInBackground() {
 	try {
 		sendBackgroundDebugMessage("POPUP", "saveOptionsInBackground() [1]");
 
 		// game
-		_tally_options.gameMode = $("#gameMode").val();
-		_tally_options.soundVolume = $("#soundVolume").val() / 100;
+		tally_options.gameMode = $("#gameMode").val();
+		tally_options.soundVolume = $("#soundVolume").val() / 100;
 		// privacy
-		_tally_options.disabledDomains = $('#disabledDomains').val().trim().replace(/\r\n/g, "\n").split("\n");
+		tally_options.disabledDomains = $('#disabledDomains').val().trim().replace(/\r\n/g, "\n").split("\n");
 		// debugging
-		_tally_options.showDebugger = $('#showDebugger').prop('checked');
-		_tally_options.debuggerPosition = $("#debuggerPosition").val();
+		tally_options.showDebugger = $('#showDebugger').prop('checked');
+		tally_options.debuggerPosition = $("#debuggerPosition").val();
 
-		console.log("saveOptionsInBackground()", _tally_options);
+		console.log("POPUP > saveOptionsInBackground()", tally_options);
 
 		// save options in background.js
 		chrome.runtime.sendMessage({
 			'action': 'saveOptions',
-			'data': _tally_options
+			'data': tally_options
 		}, function(response) {
 			//console.log(response);
 			sendBackgroundDebugMessage("POPUP", "saveOptionsInBackground() [2]");
 
 			// display success status
-			showStatus('Options saved');
+			showInterfaceFeedback('Options saved');
 			// set flag
 			updatePageOnSaveOptions = true;
 		});
@@ -433,6 +515,24 @@ function saveOptionsInBackground() {
 		console.error(err);
 	}
 }
+
+// save options (just to save recent tab)
+function saveOptionsRecentPage() {
+	try {
+		chrome.runtime.sendMessage({
+			'action': 'saveOptions',
+			'data': tally_options
+		}, function(response) {
+			console.log("POPUP > saveOptionsRecentPage()", response);
+		});
+	} catch (err) {
+		console.error(err);
+	}
+}
+
+
+
+
 
 /**
  *	Refresh the current tab
@@ -446,9 +546,9 @@ function refreshPageWithNewSettings() {
 			active: true,
 			currentWindow: true
 		}, function(arrayOfTabs) {
-			console.log("query again", arrayOfTabs);
+			console.log("POPUP > query again", arrayOfTabs);
 			// reload current tab
-			chrome.tabs.reload(arrayOfTabs[0].id) ;
+			chrome.tabs.reload(arrayOfTabs[0].id);
 		});
 	} catch (err) {
 		console.error(err);
@@ -456,41 +556,22 @@ function refreshPageWithNewSettings() {
 }
 
 
-function getMeta(callback) {
-	try {
-		chrome.runtime.sendMessage({
-			'action': 'getMeta'
-		}, function(response) {
-			//console.log("getMeta()",JSON.stringify(response.data));
-			_tally_meta = response.data;
-
-			$("#onlineStatus").html((_tally_meta.userOnline ? "true" : "false"));
-			$("#serverStatus").html((_tally_meta.serverOnline ? "true" : "false"));
-			$("#loggedInStatus").html((_tally_meta.userLoggedIn ? "true" : "false"));
-			$("#currentAPI").html((_tally_meta.env.currentAPI ? _tally_meta.env.currentAPI : "null"));
-			$("#api").html((_tally_meta.env.api ? _tally_meta.env.api : "null"));
 
 
-			$("#installedOn").html(_tally_meta.install.date);
-			$("#version").html(_tally_meta.install.version);
 
-			// callback
-			if (callback) callback();
-		});
-	} catch (err) {
-		console.error(err);
-	}
-}
 
-// reset _tally_user
+
+
+
+// reset tally_user
 document.getElementById("opt_reset_user").onclick = function() {
 	try {
-		window.open(_tally_meta.env.website + "/dashboard");
+		window.open(tally_meta.env.website + "/dashboard");
 	} catch (err) {
 		console.error(err);
 	}
 };
-// reset _tally_options
+// reset tally_options
 document.getElementById("opt_reset_options").onclick = function() {
 	try {
 		chrome.runtime.sendMessage({
@@ -498,7 +579,7 @@ document.getElementById("opt_reset_options").onclick = function() {
 		}, function(response) {
 			//console.log(response);
 			// display success status
-			showStatus("Options have been reset");
+			showInterfaceFeedback("Options have been reset");
 		});
 	} catch (err) {
 		console.error(err);
@@ -549,90 +630,48 @@ $('#disabledDomains').on('input propertychange change', function() {
 
 
 
-/*  TAB FUNCTIONS
- ******************************************************************************/
 
-function openTab(btn, tabName) {
-	try {
-		// update options from background
-		if (btn == "optionsBtn") {
-			getOptions();
-		}
-		if (btn == "statusBtn") {
-			getUser();
-			getMeta();
-		}
-		if (btn == "itemsBtn") {
-			getAttacks();
-		}
-		if (btn == "debuggingBtn") {
-			getUser([updateSkins]);
-			getMeta();
-		}
-
-		//console.log(tabName)
-		// hide other tab content
-		var t = document.getElementsByClassName("tab");
-		for (let i = 0; i < t.length; i++)
-			t[i].style.display = "none";
-		document.getElementById(tabName).style.display = "block";
-		// hide other tabs
-		var b = document.getElementsByClassName("tab-button");
-		for (let i = 0; i < b.length; i++)
-			b[i].classList.remove("active");
-		// set correct one active
-		document.getElementById(btn).classList.add("active");
-	} catch (err) {
-		console.error(err);
-	}
-}
-
-
-function updateSkins() {
-	try {
-		let str = "";
-		if (!_tally_user.skins) return;
-		for (var key in _tally_user.skins) {
-			str += "<span class='skinThumb'><a href='#'>";
-			str += "<img src='";
-			str += chrome.runtime.getURL('assets/img/tally/skins/skin-' + _tally_user.skins[key] + ".png");
-			str += "'></a></span>";
-		}
-		$("#skinThumbs").html(str);
-	} catch (err) {
-		console.error(err);
-	}
-}
+// function updateSkins() {
+// 	try {
+// 		let str = "";
+// 		if (!tally_user.skins) return;
+// 		for (var key in tally_user.skins) {
+// 			str += "<span class='skinThumb'><a href='#'>";
+// 			str += "<img src='";
+// 			str += chrome.runtime.getURL('assets/img/tally/skins/skin-' + tally_user.skins[key] + ".png");
+// 			str += "'></a></span>";
+// 		}
+// 		$("#skinThumbs").html(str);
+// 	} catch (err) {
+// 		console.error(err);
+// 	}
+// }
 
 
 
 /*  BUTTON FUNCTIONS
  ******************************************************************************/
 
-// set default
-openTab("statusBtn", "statusTab");
-// openTab("itemsBtn", "itemsTab");
-//openTab("optionsBtn","optionsTab");
-
 // tab buttons
-document.getElementById("statusBtn").onclick = function() {
-	openTab("statusBtn", "statusTab");
+document.getElementById("statusTabBtn").onclick = function() {
+	displayTab("status");
 };
-document.getElementById("itemsBtn").onclick = function() {
-	openTab("itemsBtn", "itemsTab");
+document.getElementById("itemsTabBtn").onclick = function() {
+	displayTab("items");
 };
-document.getElementById("optionsBtn").onclick = function() {
-	openTab("optionsBtn", "optionsTab");
+document.getElementById("optionsTabBtn").onclick = function() {
+	displayTab("options");
 };
-document.getElementById("aboutBtn").onclick = function() {
-	openTab("aboutBtn", "aboutTab");
+document.getElementById("aboutTabBtn").onclick = function() {
+	displayTab("about");
 };
-document.getElementById("feedbackBtn").onclick = function() {
-	openTab("feedbackBtn", "feedbackTab");
+document.getElementById("feedbackTabBtn").onclick = function() {
+	displayTab("feedback");
 };
-document.getElementById("debuggingBtn").onclick = function() {
-	openTab("debuggingBtn", "debuggingTab");
+document.getElementById("debuggingTabBtn").onclick = function() {
+	displayTab("debugging");
 };
+
 
 // close the popup window
 document.getElementById("opt_close").onclick = function() {
@@ -644,19 +683,19 @@ $(document).on('click', '#gameTrailerBtn', function() {
 	window.open("https://www.youtube.com/watch?v=hBfq8TNHbCE");
 });
 $(document).on('click', '#viewProfileBtn', function() {
-	window.open(_tally_meta.env.website + "/profile/" + _tally_user.username);
+	window.open(tally_meta.env.website + "/profile/" + tally_user.username);
 });
 $(document).on('click', '#editProfileBtn', function() {
-	window.open(_tally_meta.env.website + "/dashboard");
+	window.open(tally_meta.env.website + "/dashboard");
 });
 $(document).on('click', '#viewLeaderboardsBtn', function() {
-	window.open(_tally_meta.env.website + "/leaderboard");
+	window.open(tally_meta.env.website + "/leaderboard");
 });
 $(document).on('click', '#howToPlayBtn', function() {
-	window.open(_tally_meta.env.website + "/how-to-play");
+	window.open(tally_meta.env.website + "/how-to-play");
 });
 $(document).on('click', '#viewPrivacyPolicyBtn', function() {
-	window.open(_tally_meta.env.website + "/privacy");
+	window.open(tally_meta.env.website + "/privacy");
 });
 
 // surveys
@@ -675,8 +714,8 @@ $(document).on('click', '#bugReportSurveyBtn', function() {
 /*  TAB FUNCTIONS
  ******************************************************************************/
 
-// show status
-function showStatus(msg) {
+// show feedback (saved, etc.)
+function showInterfaceFeedback(msg) {
 	try {
 		$("#status").html(msg).css({
 			'display': 'block'
