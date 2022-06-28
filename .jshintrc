@@ -23,8 +23,9 @@
 		"self": false,
 		"WorkerGlobalScope": false,
 		"importScripts": false,
-		
+
 		"T": false,
+		"S": true,
 
 		"Background": true,
 		"Install": true,

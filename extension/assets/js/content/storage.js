@@ -33,7 +33,7 @@ self.TallyStorage = (function () {
 	}
 
 	/**
-	 *	Generic getData() function - retrieve a key from the background (local storage)
+	 *	Generic function - retrieve a key from the background (local storage)
 	 */
 	async function getData(name, caller = "") {
 		try {

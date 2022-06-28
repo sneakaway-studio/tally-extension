@@ -23,6 +23,9 @@ self.Server = (function() {
 			const log = "📟 Server.send()";
 			if (DEBUG) console.log(log, "[1.0] params =", params);
 
+
+			// S.log();
+
 			// 1. create request from params
 
 			let _url = T.tally_meta.env.api + params.url,
@@ -83,7 +86,7 @@ self.Server = (function() {
 						// go straight to .catch()
 						else throw new Error('Something went wrong');
 					})
-					.then((result) => {
+					.then(async (result) => {
 						if (DEBUG) console.log(log, "[3.0] result =", result);
 						// if result then connection to server was successful
 						if (result) {
@@ -101,7 +104,7 @@ self.Server = (function() {
 								result.attacks = Server.mergeAttackDataFromServer(result.attacks);
 								T.tally_user = result;
 								// store tally_user from response
-								store("tally_user", T.tally_user);
+								await S.getSet("tally_user", T.tally_user);
 								return true;
 							}
 							// if no username while trying an endpoint that required authentication then server failed silently
@@ -150,7 +153,7 @@ self.Server = (function() {
 				"");
 
 			// store object
-			store("tally_meta", T.tally_meta);
+			await S.getSet("tally_meta", T.tally_meta);
 			// return to calling function
 			return responseSuccess;
 		} catch (err) {
@@ -238,7 +241,7 @@ self.Server = (function() {
 					T.tally_top_monsters = FS_Object.convertArrayToObject(result.topMonsters, "mid");
 					// if (DEBUG) console.log("📟 Server.saveTopMonstersFromApi() [2] RESULT =", JSON.stringify(T.tally_top_monsters));
 					// store top monsters
-					store("tally_top_monsters", T.tally_top_monsters);
+					S.getSet("tally_top_monsters", T.tally_top_monsters);
 					return true;
 				}).catch(error => {
 					console.error("📟 Server.saveTopMonstersFromApi() [3] ERROR =", JSON.stringify(error));

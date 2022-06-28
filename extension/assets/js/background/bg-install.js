@@ -17,7 +17,7 @@ self.Install = (function() {
 			// 1. check version
 
 			// if no tally_meta exists, this is a firstTime install
-			if (!store.has("tally_meta")) {
+			if (!await S.isSet("tally_meta")) {
 				if (DEBUG) console.log(`${log} [1.0] NO T.tally_meta found, creating app`);
 				// mark that this is the first time installation
 				installStatus = "firstTime";
@@ -25,7 +25,7 @@ self.Install = (function() {
 			// otherwise is a newVersion or reload
 			else {
 				// get current version
-				let tempMeta = store("tally_meta");
+				let tempMeta = await S.getSet("tally_meta");
 				previousVersion = tempMeta.install.version;
 				// check if new version
 				isNewVersion = checkIfNewVersion(previousVersion);
@@ -37,30 +37,30 @@ self.Install = (function() {
 			}
 
 			// 2. update all game objects from storage (or create defaults)
-			// !!! store them immediately before FF reloads all tabs and writes over them 🙄
+			// !!! S.getSet them immediately before FF reloads all tabs and writes over them 🙄
 
-			T.tally_user = store("tally_user") || createUser();
-			store("tally_user", T.tally_user);
+			T.tally_user = await S.getSet("tally_user") || createUser();
+			await S.getSet("tally_user", T.tally_user);
 
 			// always update/reset meta
 			T.tally_meta = await createMeta();
-			store("tally_meta", T.tally_meta);
+			await S.getSet("tally_meta", T.tally_meta);
 			newVersion = T.tally_meta.install.version;
 
-			T.tally_options = store("tally_options") || createOptions();
-			store("tally_options", T.tally_options);
+			T.tally_options = await S.getSet("tally_options") || createOptions();
+			await S.getSet("tally_options", T.tally_options);
 
-			T.tally_nearby_monsters = store("tally_nearby_monsters") || {};
-			store("tally_nearby_monsters", T.tally_nearby_monsters);
+			T.tally_nearby_monsters = await S.getSet("tally_nearby_monsters") || {};
+			await S.getSet("tally_nearby_monsters", T.tally_nearby_monsters);
 
-			T.tally_stats = store("tally_stats") || {};
-			store("tally_stats", T.tally_stats);
+			T.tally_stats = await S.getSet("tally_stats") || {};
+			await S.getSet("tally_stats", T.tally_stats);
 
-			T.tally_tag_matches = store("tally_tag_matches") || {};
-			store("tally_tag_matches", T.tally_tag_matches);
+			T.tally_tag_matches = await S.getSet("tally_tag_matches") || {};
+			await S.getSet("tally_tag_matches", T.tally_tag_matches);
 
-			T.tally_top_monsters = store("tally_top_monsters") || {};
-			store("tally_top_monsters", T.tally_top_monsters);
+			T.tally_top_monsters = await S.getSet("tally_top_monsters") || {};
+			await S.getSet("tally_top_monsters", T.tally_top_monsters);
 
 			if (DEBUG) console.log(`${log} [2.0] game objects created`);
 
@@ -68,14 +68,14 @@ self.Install = (function() {
 			// 3. get user's geolocation for tutorials on firstTime
 			if (installStatus === "firstTime" || isNewVersion) {
 				T.tally_meta.location = await getLocation();
-				store("tally_meta", T.tally_meta);
+				await S.getSet("tally_meta", T.tally_meta);
 			}
 
 
 
 			if (DEBUG) console.log(`${log} [3.0] previousVersion=${previousVersion} newVersion=${newVersion}`);
 			if (DEBUG) console.log(`${log} [3.1] game installed! installStatus=${installStatus}`);
-			// if (DEBUG) console.log(`${log} [3.2] store("tally_meta")=${store("tally_meta")}`);
+			// if (DEBUG) console.log(`${log} [3.2] S.getSet("tally_meta")=${await S.getSet("tally_meta")}`);
 			// if (DEBUG) console.log(`${log} [3.3] T.tally_meta=${T.tally_meta}`);
 
 			return installStatus;
@@ -129,7 +129,7 @@ self.Install = (function() {
 
 			if (DEBUG) console.log(`🔧 Install.setEnvironment() [1] currentAPI=%c${T.tally_meta.env.currentAPI}`, `${Debug.styles.greenbg}`, `api=${T.tally_meta.env.api} website=${T.tally_meta.env.website}`);
 
-			store("tally_meta", T.tally_meta);
+			await S.getSet("tally_meta", T.tally_meta);
 			return true;
 		} catch (err) {
 			console.error(err);
@@ -191,10 +191,10 @@ self.Install = (function() {
 				// else launch install page
 				chrome.tabs.create({
 					url: T.tally_meta.env.website + pageToShow
-				}, function(newTab) {
+				}, async function(newTab) {
 					// increment and save
 					T.tally_meta.install.loginPrompts.startScreen = T.tally_meta.install.loginPrompts.startScreen + 1;
-					store("tally_meta", T.tally_meta);
+					await S.getSet("tally_meta", T.tally_meta);
 					if (DEBUG) console.log(log, "👍 launching T.tally_meta.install.loginPrompts.startScreen =", T.tally_meta.install.loginPrompts.startScreen);
 					// if (DEBUG) console.log(log, "newTab =", newTab);
 					return true;

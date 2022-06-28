@@ -101,6 +101,7 @@ self.Debug = (function() {
 	}
 	// setAll(true);
 	// setAll(false);
+	// ALL.Storage = true;
 
 	if (!T.envOptions.debugging) {
 		DEBUG = false;
@@ -344,6 +345,10 @@ self.Debug = (function() {
 
 	// global error handler
 	self.onerror = function(msg, url, lineNo, columnNo, error) {
+
+// A new bug in the latest version of Chrome triggers this event every time an expression is evaluated in DevTools.
+if(url.endsWith("bg-modules.js")) return;
+
 		var msgStr = msg.toLowerCase();
 		// ignore CORS / CDN errors
 		if (msgStr.indexOf("script error") > -1) {
