@@ -265,26 +265,55 @@ self.Listener = (function() {
 						}
 						// if (DEBUG) console.log("👂🏼 Listener.onMessage() < getData [1]", request.name);
 
-						// (attempt to) get data from server, response to callback
-						$.ajax({
-							type: "GET",
-							url: T.tally_meta.env.api + request.url,
-							dataType: 'json'
-						}).done(result => {
-							// if (DEBUG) console.log("👂🏼 Listener.getDataFromServer() > RESULT =", JSON.stringify(result));
-							// reply to contentscript
-							sendResponse({
-								"action": request.action,
-								"message": 1,
-								"data": result
+
+
+
+						let serverRequest = {
+							credentials: "include",
+							method: "GET",
+							headers: {
+								'Content-Type': 'application/json'
+							}
+						};
+						await fetch(T.tally_meta.env.api + request.url, serverRequest)
+							.then(response => response.json())
+							.then(result => {
+								// if (DEBUG) console.log("👂🏼 Listener.getDataFromServer() > RESULT =", JSON.stringify(result));
+								// reply to contentscript
+								sendResponse({
+									"action": request.action,
+									"message": 1,
+									"data": result
+								});
+							}).catch(err => {
+								console.error("👂🏼 Listener.getDataFromServer() > RESULT =", JSON.stringify(err));
+								sendResponse({
+									"action": request.action,
+									"message": false
+								});
 							});
-						}).fail(err => {
-							console.error("👂🏼 Listener.getDataFromServer() > RESULT =", JSON.stringify(err));
-							sendResponse({
-								"action": request.action,
-								"message": false
-							});
-						});
+
+
+						// // (attempt to) get data from server, response to callback
+						// $.ajax({
+						// 	type: "GET",
+						// 	url: T.tally_meta.env.api + request.url,
+						// 	dataType: 'json'
+						// }).done(result => {
+						// 	// if (DEBUG) console.log("👂🏼 Listener.getDataFromServer() > RESULT =", JSON.stringify(result));
+						// 	// reply to contentscript
+						// 	sendResponse({
+						// 		"action": request.action,
+						// 		"message": 1,
+						// 		"data": result
+						// 	});
+						// }).fail(err => {
+						// 	console.error("👂🏼 Listener.getDataFromServer() > RESULT =", JSON.stringify(err));
+						// 	sendResponse({
+						// 		"action": request.action,
+						// 		"message": false
+						// 	});
+						// });
 
 						// required so chrome knows this is asynchronous
 						return true;
