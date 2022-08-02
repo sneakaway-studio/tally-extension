@@ -154,8 +154,6 @@ function updateData() {
 		$("#gameMode").val(tally_options.gameMode);
 		$("#soundVolume").val(tally_options.soundVolume * 100);
 		$("#disabledDomains").val(tally_options.disabledDomains.join("\n"));
-		document.getElementById("showDebugger").checked = tally_options.showDebugger;
-		//document.getElementById("debuggerPosition").value = tally_options.debuggerPosition;
 
 		// META
 		$("#onlineStatus").html((tally_meta.userOnline ? "true" : "false"));
@@ -492,9 +490,6 @@ async function saveOptionsInBackground() {
 		tally_options.soundVolume = $("#soundVolume").val() / 100;
 		// privacy
 		tally_options.disabledDomains = $('#disabledDomains').val().trim().replace(/\r\n/g, "\n").split("\n");
-		// debugging
-		tally_options.showDebugger = $('#showDebugger').prop('checked');
-		tally_options.debuggerPosition = $("#debuggerPosition").val();
 
 		console.log("POPUP > saveOptionsInBackground()", tally_options);
 
@@ -589,13 +584,6 @@ document.getElementById("opt_reset_options").onclick = function() {
 
 
 
-/*  FORM FUNCTIONS
- ******************************************************************************/
-
-
-
-
-
 
 /*  FORM FUNCTIONS
  ******************************************************************************/
@@ -628,24 +616,6 @@ $('#disabledDomains').on('input propertychange change', function() {
 });
 
 
-
-
-
-// function updateSkins() {
-// 	try {
-// 		let str = "";
-// 		if (!tally_user.skins) return;
-// 		for (var key in tally_user.skins) {
-// 			str += "<span class='skinThumb'><a href='#'>";
-// 			str += "<img src='";
-// 			str += chrome.runtime.getURL('assets/img/tally/skins/skin-' + tally_user.skins[key] + ".png");
-// 			str += "'></a></span>";
-// 		}
-// 		$("#skinThumbs").html(str);
-// 	} catch (err) {
-// 		console.error(err);
-// 	}
-// }
 
 
 

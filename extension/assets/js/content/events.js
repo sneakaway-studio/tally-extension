@@ -15,7 +15,6 @@ self.TallyEvents = (function () {
 					// if this page is focussed
 					if (document.hasFocus()) {
 						Page.data.time = Page.data.time + 1;
-						Debug.update();
 					}
 				}, 1000),
 

@@ -362,9 +362,6 @@ self.TallyData = (function() {
 					"T.tally_meta.userLoggedIn =", T.tally_meta.userLoggedIn
 				);
 
-
-				// update debugger
-				Debug.update();
 			});
 			// reset all manager vars
 			resetManager();

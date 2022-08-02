@@ -248,7 +248,6 @@ self.Install = (function() {
 	function createOptions() {
 		try {
 			var obj = {
-				debuggerPosition: [0, 300],
 				disabledDomains: [
 					"drive.google.com",
 					"docs.google.com",
@@ -259,7 +258,6 @@ self.Install = (function() {
 				gameMode: "full", // demo | testing | full | chill | stealth | disabled
 				playSounds: true,
 				showClickVisuals: true,
-				showDebugger: false,
 				showNotifications: true, // defined as sounds + dialogue animations
 				showTally: true,
 				soundVolume: 0.2,

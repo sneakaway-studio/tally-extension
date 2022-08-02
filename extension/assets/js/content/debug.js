@@ -53,7 +53,6 @@ self.Debug = (function() {
 			Tracker: true,
 			Tutorial: true
 		},
-		debugButtonListenersAdded = false,
 		tallyConsoleIcon = 'font-size:12px; background:url("' + chrome.runtime.getURL('assets/img/tally/tally-clear-20w.png') + '") no-repeat;';
 
 
@@ -162,113 +161,31 @@ self.Debug = (function() {
 	}
 
 
-	// add the debugger
-	function add() {
-		try {
-			if (!FS_Object.prop(T.tally_options) || !T.tally_options.showDebugger) return;
 
-			// make sure it isn't already there
-			if ($("#tyd").length) return;
+	// MARKED FOR DELETION 
 
-			let str = "<div id='tyd' class='tally draggable data-field grabbable'></div>";
-			$('#tally_wrapper').append(str);
-			// make it draggable
-			$("#tyd").draggable({
-				axis: "y"
-				// ,drag: function () {
-				//if (DEBUG) console.log("🗜️ Debug.add() draggable:drag");
-				// var offset = $(this).offset();
-				// var xPos = offset.left;
-				// var yPos = offset.top - $(window).scrollTop();
-				// T.tally_options.debuggerPosition = [xPos,yPos];
-				// },
-				// stop: function () {
-				//if (DEBUG) console.log("🗜️ Debug.add() draggable:stop");
-				//TallyStorage.saveData("tally_options",T.tally_options,"tyd.draggable.stop");
-				// }
-			});
-		} catch (err) {
-			console.error(err);
-		}
-	}
-
-	function update() {
-		try {
-			if (!FS_Object.prop(T.tally_options) || !T.tally_options.showDebugger) return;
-			if (!$("#tyd").length) return;
-
-			var str =
-				// "<div class='tally'>" +
-				"<button class='tally clickable' id='showRandomUrl'>SHOW RANDOM URL</button> " +
-				"<button class='tally clickable' id='resetTallyUserFromBackground'>RESET FROM BACKGROUND</button> " +
-				"<button class='tally clickable' id='resetTallyUserFromServer'>RESET FROM SERVER</button>" +
-				"";
-
-			// add T.tally_user.score
-			if (FS_Object.prop(T.tally_user.score))
-				str += "<b class='tally'>T.tally_user.score (XP)</b>: " + JSON.stringify(T.tally_user.score) + "<br>";
-
-			// add T.tally_user.monsters
-			if (FS_Object.prop(T.tally_user.monsters))
-				str += "<b class='tally'>T.tally_user.monsters</b>: " + JSON.stringify(T.tally_user.monsters) + "<br>";
-
-			// add T.tally_nearby_monsters
-			// if (FS_Object.prop(T.tally_nearby_monsters))
-			// 	str += "<b class='tally'>T.tally_nearby_monsters (" +
-			// 	FS_Object.objLength(T.tally_nearby_monsters) + ")</b>: " +JSON.stringify(T.tally_nearby_monsters) + "<br>";
-
-			// add T.tally_options
-			if (FS_Object.prop(T.tally_options)) str += "T.tally_options: " + JSON.stringify(T.tally_options) + "<br>";
-
-			// add Page.data
-			if (FS_Object.prop(Page.data)) str += "<b>Page.data</b>: " + JSON.stringify(Page.data) + "<br>";
-
-			// add Page.data.tags
-			// if (FS_Object.prop(Page.data.tags))
-			// 	str += "<b class='tally'>Page.data.tags (" + Page.data.tags.length + ")</b>: " +
-			// 	JSON.stringify(Page.data.tags) + "<br>";
-
-			// add Page.data.trackers
-			// if (FS_Object.prop(Page.data.trackers))
-			// 	str += "<b class='tally'>Page.data.trackers</b>: " +
-			// 	JSON.stringify(Page.data.trackers) + "<br>";
-
-			// str += "</div>";
-			$('#tyd').html(str);
-
-			addDebugButtonListeners();
-
-		} catch (err) {
-			console.error(err);
-		}
-	}
-
-
-	function addDebugButtonListeners() {
-		try {
-			if (debugButtonListenersAdded) return;
-			debugButtonListenersAdded = true;
-
-			if (DEBUG) console.log("🗜️ Debug.addDebugButtons()");
-
-			// add listener for reset buttons
-			$(document).on("click", '#resetTallyUserFromBackground', function() {
-				TallyStorage.getDataFromBackground(TallyMain.contentStartChecks);
-			});
-			$(document).on("click", '#resetTallyUserFromServer', function() {
-				TallyStorage.resetTallyUserFromServer();
-			});
-			$(document).on("click", '#showRandomUrl', function(e) {
-				e.preventDefault();
-				TallyStorage.getDataFromServer("/url/random", function(response) {
-					console.log("🗜️ Debug #showRandomUrl", response.data.urls[0]);
-				});
-			});
-
-		} catch (err) {
-			console.error(err);
-		}
-	}
+	// function addDebugButtonListeners() {
+	// 	try {
+	//
+	//
+	// 		// add listener for reset buttons
+	// 		$(document).on("click", '#resetTallyUserFromBackground', function() {
+	// 			TallyStorage.getDataFromBackground(TallyMain.contentStartChecks);
+	// 		});
+	// 		$(document).on("click", '#resetTallyUserFromServer', function() {
+	// 			TallyStorage.resetTallyUserFromServer();
+	// 		});
+	// 		$(document).on("click", '#showRandomUrl', function(e) {
+	// 			e.preventDefault();
+	// 			TallyStorage.getDataFromServer("/url/random", function(response) {
+	// 				console.log("🗜️ Debug #showRandomUrl", response.data.urls[0]);
+	// 			});
+	// 		});
+	//
+	// 	} catch (err) {
+	// 		console.error(err);
+	// 	}
+	// }
 
 
 
@@ -389,8 +306,6 @@ if(url.endsWith("bg-modules.js")) return;
 		styles: styles,
 		sendBackgroundDebugMessage: sendBackgroundDebugMessage,
 		dataReportHeader: dataReportHeader,
-		add: add,
-		update: update,
 		addKeys: addKeys,
 		elapsedTime: elapsedTime,
 		tallyConsoleIcon: tallyConsoleIcon,

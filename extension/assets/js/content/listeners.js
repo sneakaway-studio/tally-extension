@@ -29,8 +29,6 @@ self.TallyListeners = (function() {
 					setTimeout(function() {
 						Page.data.actions.mouseupFired = false;
 					}, 500);
-					// update
-					Debug.update();
 					// get data about the event
 					let eventData = {
 						action: null,
@@ -138,9 +136,6 @@ self.TallyListeners = (function() {
 			if (eventData.action == "click" || eventData.action == "button") {
 				if (DEBUG) console.log(caller + " => mouseup -> [" + eventData + "]");
 
-				// update
-				Debug.update();
-
 				// more checking...
 
 				// check if it is a FB like
@@ -225,10 +220,10 @@ self.TallyListeners = (function() {
 
 
 	const ignoreNodes = [
-		"tally", "tyd", "body", "tally-clicked"
+		"tally", "body", "tally-clicked"
 	];
 	/**
-	 *	Confirm target is not a Tally or Tally Debugger link (tyd)
+	 *	Confirm target is not a Tally link
 	 */
 	function ignoreNode(str) {
 		try {

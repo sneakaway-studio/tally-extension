@@ -277,7 +277,6 @@ self.Page = (function() {
 			Page.refreshData().then(function() {
 				// check for monsters again
 				MonsterCheck.check();
-				Debug.update();
 			});
 
 		} catch (err) {

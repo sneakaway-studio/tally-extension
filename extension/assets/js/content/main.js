@@ -131,10 +131,6 @@ self.TallyMain = (function() {
 			FS_String.insertStylesheets();
 			// add html for game
 			Interface.addBaseHTML();
-			// add debugger to page and update
-			Debug.add();
-			Debug.update();
-
 
 			// now safe to add Tally
 			addTallyToPage();
@@ -295,8 +291,6 @@ self.TallyMain = (function() {
 			Disguise.displayIfTrackerBlocked();
 			// potentially add a consumable
 			Consumable.randomizer();
-			// update debugger
-			Debug.update();
 			// add key debugging
 			Debug.addKeys();
 			// start Demo if we are running in demo mode
