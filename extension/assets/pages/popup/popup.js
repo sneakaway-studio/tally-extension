@@ -1,10 +1,12 @@
 /*  DATA
  ******************************************************************************/
 
-let tally_options = {},
+let DEBUG = true,
+	tally_options = {},
 	tally_user = {},
 	tally_meta = {},
-	updatePageOnSaveOptions = false,
+	currentTab = "",
+	saveDataOnClose = false,
 	attacksMax = 4,
 	attacksSelected = 0,
 	popupUpdate = createPopupBackgroundUpdate();
@@ -19,54 +21,29 @@ let tally_options = {},
 
 // on load
 document.addEventListener('DOMContentLoaded', init);
+
 async function init() {
 	try {
+		// START LOADING DATA
 
 		// get all required data
 		tally_options = await getDataPromise("getOptions");
 		tally_user = await getDataPromise("getUser");
 		tally_meta = await getDataPromise("getMeta");
 
-		console.log("POPUP > tally_options", JSON.stringify(tally_options));
-		console.log("POPUP > tally_user", JSON.stringify(tally_user));
-		console.log("POPUP > tally_meta", JSON.stringify(tally_meta));
+		if (DEBUG) console.log("POPUP > tally_options", JSON.stringify(tally_options));
+		if (DEBUG) console.log("POPUP > tally_user", JSON.stringify(tally_user));
+		if (DEBUG) console.log("POPUP > tally_meta", JSON.stringify(tally_meta));
+		// alert("hi 3 " + JSON.stringify(tally_options));
+		// alert("hi 3 " + JSON.stringify(tally_meta));
+
+
+		// BUILD PAGE
 
 		// show tally header image
 		$('.container').css({
 			'background-image': 'url(' + chrome.runtime.getURL("assets/img/tally/tally-logo-clear-600w.png") + ')'
 		});
-		// user is admin
-		if (tally_user.admin > 0) {
-			$(".hideUnlessAdmin").css({
-				'display': 'block'
-			});
-		}
-
-		getTab();
-
-	} catch (err) {
-		console.error(err);
-	}
-}
-
-
-function getDataPromise(action) {
-	return new Promise((resolve, reject) => {
-		chrome.runtime.sendMessage({
-			"action": action
-		}, response => {
-			if (response.action == action) {
-				resolve(response.data);
-			} else {
-				reject('Something wrong');
-			}
-		});
-	});
-}
-
-
-async function getTab(tab) {
-	try {
 		// user NOT logged in
 		if (!tally_meta.userLoggedIn) {
 			// display only the login prompt
@@ -74,30 +51,15 @@ async function getTab(tab) {
 			$(".content").html(str);
 			return;
 		}
-
-		// the tab to open
-		let tabName;
-
-		// refresh data
-		tally_options = await getDataPromise("getOptions");
-		tally_user = await getDataPromise("getUser");
-		tally_meta = await getDataPromise("getMeta");
-
-		if (tab) {
-			tabName = tab;
-		} else if (tally_options.mostRecentTab && tally_options.mostRecentTab !== "") {
-			tabName = tally_options.mostRecentTab;
-		} else {
-			// default
-			tabName = "status";
+		// only if user is admin
+		if (tally_user.admin > 0) {
+			$(".hideUnlessAdmin").css({
+				'display': 'block'
+			});
 		}
 
-
-		// save most recent tab
-		tally_options.mostRecentTab = tabName;
-		saveOptionsRecentPage();
 		// display tab
-		displayTab(tabName);
+		displayTab();
 
 	} catch (err) {
 		console.error(err);
@@ -105,40 +67,59 @@ async function getTab(tab) {
 }
 
 
-async function displayTab(tab) {
+async function displayTab(tab = "") {
 	try {
-		// show correct tab
+
+		// FIND THE CORRECT TAB
+
+		// if specific tab requested
+		if (tab != "") {
+			currentTab = tab;
+		}
+		// else see if there was a previous tab open
+		else if (tally_options.mostRecentTab && tally_options.mostRecentTab !== "") {
+			currentTab = tally_options.mostRecentTab;
+		}
+		// default to status tab
+		else {
+			currentTab = "status";
+		}
+
+		if (tally_options.mostRecentTab != currentTab){
+			// save in background
+			tally_options.mostRecentTab = currentTab;
+			saveOptionsRecentPage();
+		}
+		// alert("hi 5 currentTab =" + currentTab);
+
+		// DISPLAY
+
+		// show correct tab in menu
 		var t = document.getElementsByClassName("tab");
 		for (let i = 0; i < t.length; i++) {
 			t[i].style.display = "none";
 		}
-		document.getElementById(tab + "Tab").style.display = "block";
+		document.getElementById(currentTab + "Tab").style.display = "block";
 
-		// show correct tab button
+		// show correct button
 		var b = document.getElementsByClassName("tab-button");
 		for (let i = 0; i < b.length; i++) {
 			b[i].classList.remove("active");
 		}
-		document.getElementById(tab + "TabBtn").classList.add("active");
+		document.getElementById(currentTab + "TabBtn").classList.add("active");
 
-
-
-		updateData();
-
-		if (tab == "items") {
-			displayAttacks();
-		}
+		// display the tab data
+		updateTabData(currentTab);
 
 	} catch (err) {
 		console.error(err);
 	}
 }
 
-
-
-
-
-function updateData() {
+/**
+ *	Update the data displayed in the tab
+ */
+function updateTabData(currentTab) {
 	try {
 		// STATUS
 		$("#username").html(tally_user.username);
@@ -163,6 +144,11 @@ function updateData() {
 		$("#api").html((tally_meta.env.api ? tally_meta.env.api : "null"));
 		$("#installedOn").html(tally_meta.install.date);
 		$("#version").html(tally_meta.install.version);
+
+		// ITEMS
+		if (currentTab == "items") {
+			displayAttacks();
+		}
 	} catch (err) {
 		console.error(err);
 	}
@@ -175,36 +161,32 @@ function updateData() {
  ******************************************************************************/
 
 // beforeunload works only by clicking the "X"
-$(window).on("beforeunload", function() {
+window.addEventListener("beforeunload", async function(){
 	try {
-		sendBackgroundDebugMessage("POPUP", "beforeunload called");
-		saveAndClose();
+		if (DEBUG) sendBackgroundDebugMessage("POPUP", "beforeunload called");
+		await saveAndClose();
 	} catch (err) {
 		console.error(err);
 	}
 });
 
 // called when the page is unloaded
-addEventListener("unload", function(event) {
+window.addEventListener("unload", async function(event) {
 	try {
-		sendBackgroundDebugMessage("POPUP", "unload called");
-		saveAndClose();
+		if (DEBUG) sendBackgroundDebugMessage("POPUP", "unload called");
+		await saveAndClose();
 	} catch (err) {
 		console.error(err);
 	}
 }, true);
 
-
-/**
- *	Save everything on close windopw
- */
-function saveAndClose() {
+// Save everything on close window
+async function saveAndClose() {
 	try {
-		saveOptionsInBackground();
-		saveUserInBackground();
-		if (updatePageOnSaveOptions)
-			// refresh current page with new settings
-			refreshPageWithNewSettings();
+		// this is already done
+		if (!saveDataOnClose) return;
+		await saveOptionsInBackground(false);
+		await saveUserInBackground(false);
 	} catch (err) {
 		console.error(err);
 	}
@@ -217,6 +199,22 @@ function saveAndClose() {
 
 /******************** FUNCTIONS ********************/
 
+/**
+ *	Return data from background - Used by: 3
+ */
+function getDataPromise(action) {
+   return new Promise((resolve, reject) => {
+	   chrome.runtime.sendMessage({
+		   "action": action
+	   }, response => {
+		   if (response.action == action) {
+			   resolve(response.data);
+		   } else {
+			   reject('Something wrong');
+		   }
+	   });
+   });
+}
 
 async function displayAttacks(callback) {
 	try {
@@ -259,7 +257,6 @@ async function displayAttacks(callback) {
 		}
 		// alert("displayAttacks() " + attacksSelected + "/" + attacksMax);
 
-		// console.log(str);
 		$(".attacksCloud").html(str);
 		// update display
 		updateSelectedCheckboxesDisplay();
@@ -294,11 +291,9 @@ async function displayAttacks(callback) {
 				else tally_user.attacks[name].selected = 0;
 
 				// save user in background
-				saveUserInBackground();
+				saveUserInBackground(true);
 				// save attacks on server (not that efficient but reliable)
 				saveAttacksOnServer();
-				// set flag to update page and server when finished
-				updatePageOnSaveOptions = true;
 				// update display
 				updateSelectedCheckboxesDisplay();
 			} catch (err) {
@@ -340,7 +335,7 @@ function updateSelectedCheckboxesDisplay() {
  */
 function saveAttacksOnServer() {
 	try {
-		sendBackgroundDebugMessage("POPUP", "saveAttacksOnServer()");
+		if (DEBUG) sendBackgroundDebugMessage("POPUP", "saveAttacksOnServer()");
 
 		// get all check boxes
 		var checkBoxes = document.querySelectorAll('input[type=checkbox]');
@@ -411,39 +406,38 @@ function createPopupBackgroundUpdate() {
  */
 function sendBackgroundDebugMessage(caller, str) {
 	try {
+		if (true) return;
+
 		// time the request
 		let startTime = new Date().getTime();
 
-		// if (DEBUG) console.log(getCurrentDateStr(), "🗜️ Debug.sendBackgroundDebugMessage()", caller, str);
 		let msg = {
 			'action': 'sendBackgroundDebugMessage',
 			'caller': caller,
 			'str': str
 		};
-
 		chrome.runtime.sendMessage(msg, function(response) {
 			let endTime = new Date().getTime();
-			console.log("POPUP > 🗜️ sendBackgroundDebugMessage() time = " + (endTime - startTime) + "ms, RESPONSE =", JSON.stringify(response));
+			if (DEBUG) console.log("POPUP > 🗜️ sendBackgroundDebugMessage() time = " + (endTime - startTime) + "ms, RESPONSE =", JSON.stringify(response));
 		});
 	} catch (err) {
 		console.error(err);
 	}
 }
 
-
-
-
+/**
+ *	Send an update to background - Used by: 1 - saveAttacksOnServer()
+ */
 function sendUpdateToBackground() {
 	try {
-		sendBackgroundDebugMessage("POPUP", "sendUpdateToBackground() [1]");
+		// if (DEBUG) sendBackgroundDebugMessage("POPUP", "sendUpdateToBackground() [1]");
 
 		chrome.runtime.sendMessage({
 			'action': 'updateTallyUser',
 			'data': popupUpdate
 		}, function(response) {
-			sendBackgroundDebugMessage("POPUPsendUpdateToBackground() [2]");
-
-			console.log('💾 > sendUpdateToBackground() RESPONSE =', response);
+			if (DEBUG) sendBackgroundDebugMessage("POPUP", "sendUpdateToBackground() [2]");
+			if (DEBUG) console.log('💾 > sendUpdateToBackground() RESPONSE =', response);
 			// update tally_user in content
 			tally_user = response.tally_user;
 			// reset
@@ -454,13 +448,12 @@ function sendUpdateToBackground() {
 	}
 }
 
-
-
-
-function saveUserInBackground() {
+/**
+ *	Update user in bg - Used by: 2
+ */
+async function saveUserInBackground(displayFeedback = false) {
 	try {
-		console.log("POPUP > saveUserInBackground()", tally_user);
-		sendBackgroundDebugMessage("POPUP", "saveUserInBackground() [1]");
+		if (DEBUG) sendBackgroundDebugMessage("POPUP", "saveUserInBackground() [1]");
 
 		// save user in background.js
 		chrome.runtime.sendMessage({
@@ -468,43 +461,64 @@ function saveUserInBackground() {
 			'name': "tally_user",
 			'data': tally_user
 		}, function(response) {
-			console.log(response);
-			sendBackgroundDebugMessage("POPUP", "saveUserInBackground() [2]");
+			if (DEBUG) sendBackgroundDebugMessage("POPUP", "saveUserInBackground() [2]");
 
-			// show status
-			showInterfaceFeedback('Settings saved');
-			// set flag
-			updatePageOnSaveOptions = true;
+			// display success status
+			if (displayFeedback) showInterfaceFeedback('Settings saved');
+			// show message letting them know to refresh
+			showRefreshMessage();
 		});
 	} catch (err) {
 		console.error(err);
 	}
 }
 
-async function saveOptionsInBackground() {
+/**
+ *	Update options in bg - Used by: 4
+ */
+async function saveOptionsInBackground(displayFeedback = false) {
 	try {
-		sendBackgroundDebugMessage("POPUP", "saveOptionsInBackground() [1]");
+		if (DEBUG) sendBackgroundDebugMessage("POPUP", "saveOptionsInBackground() [1]");
+		if (DEBUG) console.log("POPUP > saveOptionsInBackground() [1]", tally_options);
 
-		// game
-		tally_options.gameMode = $("#gameMode").val();
-		tally_options.soundVolume = $("#soundVolume").val() / 100;
-		// privacy
-		tally_options.disabledDomains = $('#disabledDomains').val().trim().replace(/\r\n/g, "\n").split("\n");
+		let _gameMode = $("#gameMode").val(),
+			_soundVolume = FS_Number.round($("#soundVolume").val() / 100, 2),
+			_disabledDomains = $('#disabledDomains').val().trim().replace(/\r\n/g, "\n").split("\n");
 
-		console.log("POPUP > saveOptionsInBackground()", tally_options);
+		// set flag if anything is new
+		if (tally_options.gameMode != _gameMode) {
+			if (DEBUG) console.log("POPUP > saveOptionsInBackground() [1]", tally_options.gameMode, _gameMode);
+			tally_options.gameMode = _gameMode;
+			saveDataOnClose = true;
+		}
+		if (tally_options.soundVolume != _soundVolume) {
+			if (DEBUG) console.log("POPUP > saveOptionsInBackground() [1]", tally_options.soundVolume, _soundVolume);
+			tally_options.soundVolume = _soundVolume;
+			saveDataOnClose = true;
+		}
+		if (tally_options.disabledDomains != _disabledDomains) {
+			if (DEBUG) console.log("POPUP > saveOptionsInBackground() [1]", tally_options.disabledDomains, _disabledDomains);
+			tally_options.disabledDomains = _disabledDomains;
+			saveDataOnClose = true;
+		}
+		if (DEBUG) console.log("POPUP > saveOptionsInBackground() [2]", tally_options);
+
+		// if no options were changed
+		if (!saveDataOnClose) return;
 
 		// save options in background.js
 		chrome.runtime.sendMessage({
 			'action': 'saveOptions',
 			'data': tally_options
 		}, function(response) {
-			//console.log(response);
-			sendBackgroundDebugMessage("POPUP", "saveOptionsInBackground() [2]");
-
+			//if (DEBUG) console.log(response);
+			if (DEBUG) sendBackgroundDebugMessage("POPUP", "saveOptionsInBackground() [3]");
 			// display success status
-			showInterfaceFeedback('Options saved');
-			// set flag
-			updatePageOnSaveOptions = true;
+			if (displayFeedback) showInterfaceFeedback('Options saved');
+			// show message letting them know to refresh
+			showRefreshMessage();
+			// this is already done
+			saveDataOnClose = false;
 		});
 	} catch (err) {
 		console.error(err);
@@ -518,30 +532,26 @@ function saveOptionsRecentPage() {
 			'action': 'saveOptions',
 			'data': tally_options
 		}, function(response) {
-			console.log("POPUP > saveOptionsRecentPage()", response);
+			if (DEBUG) console.log("POPUP > saveOptionsRecentPage()", response);
 		});
 	} catch (err) {
 		console.error(err);
 	}
 }
 
-
-
-
-
 /**
  *	Refresh the current tab
  */
-function refreshPageWithNewSettings() {
+function refreshPage() {
 	try {
-		sendBackgroundDebugMessage("POPUP", "refreshPageWithNewSettings()");
+		if (DEBUG) sendBackgroundDebugMessage("POPUP", "refreshPage()");
 
 		// get tab and reload
 		chrome.tabs.query({
 			active: true,
 			currentWindow: true
 		}, function(arrayOfTabs) {
-			console.log("POPUP > query again", arrayOfTabs);
+			if (DEBUG) console.log("POPUP > query again", arrayOfTabs);
 			// reload current tab
 			chrome.tabs.reload(arrayOfTabs[0].id);
 		});
@@ -549,14 +559,6 @@ function refreshPageWithNewSettings() {
 		console.error(err);
 	}
 }
-
-
-
-
-
-
-
-
 
 // reset tally_user
 document.getElementById("opt_reset_user").onclick = function() {
@@ -566,15 +568,21 @@ document.getElementById("opt_reset_user").onclick = function() {
 		console.error(err);
 	}
 };
-// reset tally_options
+
+/**
+ *	Reset tally_options button; Used: 1
+ */
 document.getElementById("opt_reset_options").onclick = function() {
 	try {
 		chrome.runtime.sendMessage({
 			action: "resetOptions"
 		}, function(response) {
-			//console.log(response);
+			//if (DEBUG) console.log(response);
 			// display success status
 			showInterfaceFeedback("Options have been reset");
+			tally_options = response.data;
+			// refresh the tab data
+			updateTabData(currentTab);
 		});
 	} catch (err) {
 		console.error(err);
@@ -591,11 +599,11 @@ document.getElementById("opt_reset_options").onclick = function() {
 $("input").mouseup(function() {
 	// wait a moment so the options are saved before the input has changed value
 	window.setTimeout(function() {
-		saveOptionsInBackground("popup options");
+		saveOptionsInBackground(true);
 	}, 250);
 });
 $("select#gameMode").on('change', function() {
-	saveOptionsInBackground("popup options");
+	saveOptionsInBackground(true);
 });
 $('#soundVolume').on('change', function() {
 	// play a sound to confirm new setting
@@ -606,12 +614,12 @@ $('#soundVolume').on('change', function() {
 // timeout to save textarea
 var timeoutId;
 $('#disabledDomains').on('input propertychange change', function() {
-	//console.log('Textarea Change');
+	//if (DEBUG) console.log('Textarea Change');
 
 	clearTimeout(timeoutId);
 	timeoutId = setTimeout(function() {
 		// Runs 1 second (1000 ms) after the last change
-		saveOptionsInBackground("popup options");
+		saveOptionsInBackground(true);
 	}, 1000);
 });
 
@@ -695,6 +703,15 @@ function showInterfaceFeedback(msg) {
 				'display': 'none'
 			});
 		}, 1250);
+	} catch (err) {
+		console.error(err);
+	}
+}
+function showRefreshMessage() {
+	try {
+		$("#refreshMessage").css({
+			'display': 'block'
+		});
 	} catch (err) {
 		console.error(err);
 	}

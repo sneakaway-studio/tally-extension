@@ -10,8 +10,8 @@ self.Listener = (function() {
 	chrome.runtime.onMessage.addListener(
 		function(request, sender, sendResponse) {
 			try {
-				// if (DEBUG) console.log("👂🏼 Listener.onMessage() request =", JSON.stringify(request), sender, sendResponse);
-				// if (DEBUG) console.log("👂🏼 Listener.onMessage()", request.action, request.name);
+				// if (DEBUG) console.log("👂🏼 Listener.onMessage() [1.0] request =", JSON.stringify(request), sender, sendResponse);
+				// if (DEBUG) console.log("👂🏼 Listener.onMessage() [1.1]", request.action, request.name);
 
 
 
@@ -26,10 +26,12 @@ self.Listener = (function() {
 					// needed for several conditions below, but I think it's already been updated
 					T.tally_user = await S.getSet("tally_user");
 					T.tally_meta = await S.getSet("tally_meta");
-					// console.log("👂🏼 Listener.onMessage() T.tally_user", T.tally_user);
-					// console.log("👂🏼 Listener.onMessage() T.tally_meta", T.tally_meta);
+					// console.log("👂🏼 Listener.onMessage() T.tally_user [2.0]", T.tally_user);
+					// console.log("👂🏼 Listener.onMessage() T.tally_meta [2.1]", T.tally_meta);
 
-
+					// test
+					// T.tally_options = await S.getSet("tally_options");
+					// console.log("👂🏼 Listener.onMessage() T.tally_options [2.2]", T.tally_options);
 
 
 
@@ -58,7 +60,7 @@ self.Listener = (function() {
 						// save data
 						let success = 0;
 						let result = await S.getSet(request.name, request.data);
-						console.log("👂🏼 Listener.onMessage() > result",result);
+						console.log("👂🏼 Listener.onMessage() > result", result);
 						if (result)
 							success = 1;
 						else {
@@ -99,6 +101,7 @@ self.Listener = (function() {
 						await S.getSet("tally_options", Install.createOptions());
 						sendResponse({
 							"action": request.action,
+							"data": await S.getSet("tally_options"),
 							"message": 1
 						}); // send success response
 					}
