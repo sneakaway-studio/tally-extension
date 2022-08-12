@@ -84,7 +84,55 @@ var FS_Date = (function() {
 			let diff = moment().diff(endtime, "minutes");
 			// console.log("FS_Date.moreThanOneHourAgo()",endtime,diff);
 			return (diff > 3);
+		},
+
+
+
+		/*  DATE FUNCTIONS (VANILLA JS, NO LIBRARIES)
+		 ******************************************************************************/
+
+		/**
+		 *	Return a date in ISO string
+		 *	returnDateISO() -> '2022-08-11T15:02:30.476Z' -> (UTC string)
+		 *	returnDateISO(null, ["", "-", "", ""]) -> '20220811-150230' -> (UTC string)
+		 */
+		returnDateISO: function(d = null, delimit = ["-", "T", ":", "Z"]) {
+			let s = '';
+			if (d == null) d = new Date();
+
+			// if no Z included then use local timezone
+			if (delimit[3] != "Z") {
+				// get offset, remove Z https://stackoverflow.com/a/72581185/441878
+				d = new Date(d.getTime() - d.getTimezoneOffset() * 60000);
+			}
+
+			// convert to ISO format string
+			s = d.toISOString();
+			// console.log(s); // -> '2022-08-11T15:02:30.476Z'
+
+			// ? remove milliseconds
+			if (delimit[3] != "Z") {
+				s = s.slice(0, -1);
+				// console.log(s); // -> '2022-08-11T15:02:30.476'
+				s = s.substring(0, s.indexOf('.'));
+				// console.log(s); // -> '2022-08-11T15:02:30'
+			}
+			// use delimit arr to determine what is included ...
+
+			// replace time separator with hyphens
+			s = s.replace(/-/g, delimit[0]);
+			s = s.replace(/T/g, delimit[1]);
+			s = s.replace(/:/g, delimit[2]);
+			s = s.replace(/Z/g, delimit[3]);
+			// console.log(s); // -> '20220811-150230'
+
+			return s;
+		},
+		pad: function(n) {
+			return n < 10 ? '0' + n : n;
 		}
+
+
 
 	};
 })();
@@ -100,21 +148,6 @@ else self.FS_Date = FS_Date;
 /*  DATE FUNCTIONS (OLD, VANILLA JS, BEFORE SWITCHING TO MOMENT() )
  ******************************************************************************/
 
-/**
- *	Return a date in ISO string
- */
-/*
-function returnDateISO(_date = null) {
-	var date = new Date();
-	if (_date != null)
-		date = _date;
-	var s;
-	s = date.toISOString(); //"2011-12-19T15:28:46.493Z"
-	// remove milliseconds
-	s = s.substring(0, s.indexOf('.'));
-	return s;
-}
-*/
 
 
 /**

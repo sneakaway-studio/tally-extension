@@ -221,10 +221,10 @@ self.Consumable = (function() {
 
 					// Math.random so gif replays
 					let img = chrome.runtime.getURL('assets/img/consumables/consumable-explosion.gif?' + Math.random());
-					$(this).html("<img src='" + img + "'>");
+					$("#" + id).html("<img src='" + img + "'>");
 					setTimeout(function() {
 						// remove
-						$(this).remove();
+						$("#" + id).remove();
 					}, 500);
 					collect($(this).attr("data-consumable"));
 				});
