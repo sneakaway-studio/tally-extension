@@ -23,15 +23,13 @@ self.Listener = (function() {
 				// - see also: https://developer.mozilla.org/en-US/docs/Glossary/IIFE
 				(async () => {
 
-					// needed for several conditions below, but I think it's already been updated
+					// go ahead and retrieve objects for use below
 					T.tally_user = await S.getSet("tally_user");
+					// T.tally_options = await S.getSet("tally_options");
 					T.tally_meta = await S.getSet("tally_meta");
 					// console.log("👂🏼 Listener.onMessage() T.tally_user [2.0]", T.tally_user);
-					// console.log("👂🏼 Listener.onMessage() T.tally_meta [2.1]", T.tally_meta);
-
-					// test
-					// T.tally_options = await S.getSet("tally_options");
-					// console.log("👂🏼 Listener.onMessage() T.tally_options [2.2]", T.tally_options);
+					// console.log("👂🏼 Listener.onMessage() T.tally_options [2.1]", T.tally_options);
+					// console.log("👂🏼 Listener.onMessage() T.tally_meta [2.2]", T.tally_meta);
 
 
 
@@ -47,7 +45,8 @@ self.Listener = (function() {
 						let resp = {
 							"action": request.action,
 							"message": 1,
-							"data": T[request.name]
+							// "data": T[] // this one requires we get them all regardless if we are using them
+							"data": await S.getSet(request.name) // this one uses await
 						};
 						if (DEBUG) console.log("👂🏼 Listener.onMessage() > getData [2]", request.name, resp);
 						// send
