@@ -79,18 +79,36 @@ self.Tally = (function() {
 	 */
 	function addCharacter() {
 		try {
+
+			if (DEBUG) console.log("%c   Tally.addCharacter() [1]", Debug.tallyConsoleIcon,
+				"T.tally_options = " + JSON.stringify(T.tally_options));
+
+
+
 			// allow offline
-			if (Page.data.mode.notActive) return;
+			if (Page.data.mode.notActive) {
+				console.warn("Tally.addCharacter() [2.0]", `Page.data.mode.notActive = ${Page.data.mode.notActive}`);
+				return;
+			}
+			// !T.tally_options
+			if (!FS_Object.prop(T.tally_options)) {
+				console.warn("Tally.addCharacter() [2.1]",
+					`FS_Object.prop(T.tally_options) = ${FS_Object.prop(T.tally_options)}`);
+				return;
+			}
 			// don't allow if mode disabled or stealth
-			if (T.tally_options.gameMode === "disabled" || T.tally_options.gameMode === "stealth") return;
+			if (T.tally_options.gameMode === "disabled" || T.tally_options.gameMode === "stealth") {
+				console.warn("Tally.addCharacter() [2.2]", `T.tally_options.gameMode = ${T.tally_options.gameMode} || T.tally_options.gameMode = ${T.tally_options.gameMode}`);
+				return;
+			}
+			// showTally != true
+			if (!T.tally_options.showTally) {
+				console.warn("Tally.addCharacter() [2.3]",
+					`T.tally_options.showTally = ${T.tally_options.showTally}`, T.tally_options);
+				return;
+			}
 
-			if (DEBUG) console.log("%c   Tally.addCharacter()", Debug.tallyConsoleIcon);
 
-			// only show Tally if game mode == full
-			if (!FS_Object.prop(T.tally_options) || !T.tally_options.showTally) return;
-
-			// maybe temp...
-			//Skin.preload(); // don't need now, replacing with svg
 
 			$(document).on("mousemove", function(event) {
 				Tally.setFollowCursor(true);
@@ -144,7 +162,7 @@ self.Tally = (function() {
 				Dialogue.skipToNext();
 			});
 
-			if (DEBUG) console.log("%c   Tally.addCharacter()", Debug.tallyConsoleIcon, T.tally_user, T.tally_options, Page.data.mode);
+			if (DEBUG) console.log("%c   Tally.addCharacter() [2]", Debug.tallyConsoleIcon, T.tally_user, T.tally_options, Page.data.mode);
 
 			// do not allow unless active on page
 			if (!Page.data.mode.active) return;

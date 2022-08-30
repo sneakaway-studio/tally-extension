@@ -124,7 +124,7 @@ self.TallyStorage = (function () {
 				// update Page.data.mode
 				TallyMain.savePageMode();
 				// start game (again)
-				TallyMain.contentStartChecks();
+				TallyMain.runStartupChecks();
 			});
 		} catch (err) {
 			if (!Page.isReloadExtErr(err)) {
@@ -144,7 +144,7 @@ self.TallyStorage = (function () {
 	/**
 	 *	Get all data from background
 	 *  - can be called multiple times, w/ or w/o callback
-	 *  - if sent with TallyMain.contentStartChecks callback then resets game in content script
+	 *  - if sent with TallyMain.runStartupChecks callback then resets game in content script
 	 *  - assumes background data is current (so does not sync with server)
 	 */
 	async function getDataFromBackground(callback = null) {
@@ -255,7 +255,7 @@ self.TallyStorage = (function () {
 			if (DEBUG) console.log('🗄️ > TallyStorage STARTUP PROMISES ->', "T.startUpPromisesResolved =", T.startUpPromisesResolved, result);
 
 			// start game (again) regardless whether server is running
-			TallyMain.contentStartChecks();
+			TallyMain.runStartupChecks();
 		})
 		.catch(function (err) {
 			T.startUpPromisesResolved = false;

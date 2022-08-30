@@ -13,48 +13,21 @@ self.TallyMain = (function() {
 	// PRIVATE
 	let DEBUG = Debug.ALL.TallyMain;
 
-	$(function() {
-		// test();
-	});
-
 	/**
-	 *	0. Script loading order:
-	 *  - t.js, debug.js, storage.js",
-	 *  - everything else ...
-	 *  - main.js
+	 *	Script loading order:
+	 *  0. t.js, debug.js, storage.js", [...], main.js, [...], everything else ...
+	 *	1. TallyMain.runStartupChecks() (et al functions) called after async operations
 	 */
 
-
-	/**
-	 *	1. Perform test - wait until startUpPromisesResolved (data loads from background)
-	 */
-	function test() {
-		try {
-			Debug.elapsedTime("TallyMain.test() [1]");
-			let safety = 0;
-			while (!T.startUpPromisesResolved) {
-				if (++safety > 1000) {
-					console.log("🧰 TallyMain SAFETY FIRST!");
-					console.log("🧰 TallyMain - >", T.tally_user);
-					Debug.elapsedTime("TallyMain.test() [1.2]");
-					contentStartChecks();
-					break;
-				}
-				Debug.elapsedTime("TallyMain.test() [2] T.startUpPromisesResolved =", T.startUpPromisesResolved);
-			}
-		} catch (err) {
-			console.error("🧰 TallyMain.test() failed", err);
-		}
-	}
 
 	/**
 	 *	2. Perform all start checks
 	 *	- confirm it is safe to run game; then add all required elements to DOM
 	 *  - runs every time
 	 */
-	async function contentStartChecks() {
+	async function runStartupChecks() {
 		try {
-			let log = "🧰 TallyMain.contentStartChecks()";
+			let log = "🧰 TallyMain.runStartupChecks()";
 			if (DEBUG) Debug.dataReportHeader(log + " [1]", "#", "before");
 			if (DEBUG) console.log(log, '[1.1] -> T.tally_user.username =', T.tally_user.username);
 
@@ -223,7 +196,6 @@ self.TallyMain = (function() {
 			}
 
 
-
 			// ACTIVE
 			// - background, login, server, and everything else (like the above) is good, let's roll
 			if (mode.notActive === false && mode.userOnline === true && mode.serverOnline === true && mode.loggedIn === true) {
@@ -329,14 +301,10 @@ self.TallyMain = (function() {
 
 			}, 10);
 
-
-
 		} catch (err) {
 			console.error(err);
 		}
 	}
-
-
 
 
 	/**
@@ -358,7 +326,7 @@ self.TallyMain = (function() {
 	// PUBLIC
 	return {
 		savePageMode: savePageMode,
-		contentStartChecks: contentStartChecks,
+		runStartupChecks: runStartupChecks,
 		startGameOnPage: startGameOnPage,
 		inPageChecks: inPageChecks
 	};

@@ -21,26 +21,26 @@ self.Debug = (function() {
 			BattleTest: true,
 			Battle: true,
 
-			Consumable: true,
+			Consumable: false,
 			Core: false,
 			Debug: true,
 			Demo: true,
-			Dialogue: true,
-			Disguise: true,
-			Effect: true,
+			Dialogue: false,
+			Disguise: false,
+			Effect: false,
 			Flag: true,
 			TallyEvents: true,
-			Interface: true,
-			Item: true,
+			Interface: false,
+			Item: false,
 
 			// monsters
-			MonsterCheck: true,
-			Monster: true,
+			MonsterCheck: false,
+			Monster: false,
 
 			Page: true,
-			Progress: true,
+			Progress: false,
 
-			Sound: true,
+			Sound: false,
 			StatsDisplay: false,
 			Stats: false,
 			Skin: false,
@@ -50,8 +50,8 @@ self.Debug = (function() {
 			TallyListeners: false,
 			TallyMain: true,
 			TallyStorage: true,
-			Tracker: true,
-			Tutorial: true
+			Tracker: false,
+			Tutorial: false
 		},
 		tallyConsoleIcon = 'font-size:12px; background:url("' + chrome.runtime.getURL('assets/img/tally/tally-clear-20w.png') + '") no-repeat;';
 
@@ -162,7 +162,7 @@ self.Debug = (function() {
 
 
 
-	// MARKED FOR DELETION 
+	// MARKED FOR DELETION
 
 	// function addDebugButtonListeners() {
 	// 	try {
@@ -170,7 +170,7 @@ self.Debug = (function() {
 	//
 	// 		// add listener for reset buttons
 	// 		$(document).on("click", '#resetTallyUserFromBackground', function() {
-	// 			TallyStorage.getDataFromBackground(TallyMain.contentStartChecks);
+	// 			TallyStorage.getDataFromBackground(TallyMain.runStartupChecks);
 	// 		});
 	// 		$(document).on("click", '#resetTallyUserFromServer', function() {
 	// 			TallyStorage.resetTallyUserFromServer();
