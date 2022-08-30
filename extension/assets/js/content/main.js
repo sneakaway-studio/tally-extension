@@ -58,13 +58,13 @@ self.TallyMain = (function() {
 			if (DEBUG) Debug.dataReportHeader(log + " [1]", "#", "before");
 			if (DEBUG) console.log(log, '[1.1] -> T.tally_user.username =', T.tally_user.username);
 
-			// if (DEBUG) console.log(log, '[1.1] -> T.tally_user =',T.tally_user);
-			// if (DEBUG) console.log(log, '[1.1] -> T.tally_options =',T.tally_options);
-			// if (DEBUG) console.log(log, '[1.1] -> T.tally_meta =',T.tally_meta);
-			// if (DEBUG) console.log(log, '[1.1] -> T.tally_nearby_monsters =',T.tally_nearby_monsters);
-			// if (DEBUG) console.log(log, '[1.1] -> T.tally_tag_matches =',T.tally_tag_matches);
-			// if (DEBUG) console.log(log, '[1.1] -> T.tally_stats =',T.tally_stats);
-			// if (DEBUG) console.log(log, '[1.1] -> T.tally_top_monsters =',T.tally_top_monsters);
+			// if (DEBUG) console.log(log, '[1.1] -> T.tally_user =', T.tally_user);
+			// if (DEBUG) console.log(log, '[1.1] -> T.tally_options =', T.tally_options);
+			// if (DEBUG) console.log(log, '[1.1] -> T.tally_meta =', T.tally_meta);
+			// if (DEBUG) console.log(log, '[1.1] -> T.tally_nearby_monsters =', T.tally_nearby_monsters);
+			// if (DEBUG) console.log(log, '[1.1] -> T.tally_tag_matches =', T.tally_tag_matches);
+			// if (DEBUG) console.log(log, '[1.1] -> T.tally_stats =', T.tally_stats);
+			// if (DEBUG) console.log(log, '[1.1] -> T.tally_top_monsters =', T.tally_top_monsters);
 
 
 			// 2.1. Check Page.data
@@ -144,7 +144,7 @@ self.TallyMain = (function() {
 
 	const ignoreFiletypes = [
 		"jpg", "gif", "png", "pdf",
-		"xml", "json", "txt",
+		"xml", "json", "txt", "svg",
 		"js", "css",
 	];
 
