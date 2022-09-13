@@ -88,7 +88,7 @@ self.Debug = (function() {
 	 */
 	function setAll(state) {
 		try {
-			if (DEBUG) console.log(getCurrentDateStr(), "🗜️ Debug.setAll() state =", state);
+			// if (DEBUG) console.log(getCurrentDateStr(), "🗜️ Debug.setAll() state =", state);
 			for (var key in ALL) {
 				if (ALL.hasOwnProperty(key)) {
 					ALL[key] = state;
@@ -99,7 +99,7 @@ self.Debug = (function() {
 		}
 	}
 	// setAll(true);
-	// setAll(false);
+	setAll(false);
 	// ALL.Storage = true;
 
 	if (!T.envOptions.debugging) {

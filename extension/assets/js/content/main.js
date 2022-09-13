@@ -80,7 +80,10 @@ self.TallyMain = (function() {
 
 
 			// stop if page mode marked notActive
-			if (Page.data.mode.notActive) return console.log(" NOT ACTIVE - Page.data.mode =", Page.data.mode);
+			if (Page.data.mode.notActive) {
+				if (DEBUG) console.log(" NOT ACTIVE - Page.data.mode =", Page.data.mode);
+				return;
+			}
 
 			// 2.3. Remove blocked trackers
 			if (DEBUG) console.log(log, '[2.3] -> Check and block trackers');

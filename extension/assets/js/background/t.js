@@ -9,9 +9,9 @@ function isServiceWorker(){
 
 // run this in global scope to determine if script is in window or worker.
 if (isServiceWorker) {
-	console.log("service worker");
+	// console.log("service worker");
 } else {
-	console.log("web page");
+	// console.log("web page");
 }
 
 
