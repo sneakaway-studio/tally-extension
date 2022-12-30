@@ -5,7 +5,7 @@
 	"dependencies": {
 	},
 	"devDependencies": {
-		"nightwatch": "^1.7.8",
+		"nightwatch": "^2.6.3",
 		"chromedriver": "^96.0.0"
 	}
 }
