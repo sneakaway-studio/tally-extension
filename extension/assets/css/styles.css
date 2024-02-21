@@ -104,7 +104,7 @@
 
 
 
-.disabled {
+.battle-options-row.disabled {
     pointer-events: none;
     opacity: 0.4;
 }
