@@ -9,6 +9,7 @@
 	"unused": false,
 	"globals": {
 
+
 		"$": false,
 		"chrome": false,
 		"prop": false,
@@ -19,7 +20,12 @@
 		"Mousetrap": false,
 
 
+		"self": false,
+		"WorkerGlobalScope": false,
+		"importScripts": false,
+
 		"T": false,
+		"S": true,
 
 		"Background": true,
 		"Install": true,

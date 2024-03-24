@@ -1,9 +1,4 @@
-"use strict";
-
-/*  BATTLE TEST
- ******************************************************************************/
-
-window.BattleTest = (function() {
+self.BattleTest = (function() {
 	// PRIVATE
 	let DEBUG = Debug.ALL.BattleTest;
 

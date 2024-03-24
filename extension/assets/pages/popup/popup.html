@@ -20,15 +20,16 @@
 	<div class="content">
 
 		<div class="tab-button-group">
-			<button class="tab-button active" id="statusBtn">Stats</button>
-			<button class="tab-button" id="itemsBtn">Attacks</button>
-			<button class="tab-button" id="optionsBtn">Options</button>
-			<button class="tab-button" id="aboutBtn">About</button>
-			<button class="tab-button" id="feedbackBtn">Feedback</button>
-			<button class="tab-button hideUnlessAdmin" id="debuggingBtn">Debug</button>
+			<button class="tab-button active" id="statusTabBtn">Stats</button>
+			<button class="tab-button" id="itemsTabBtn">Attacks</button>
+			<button class="tab-button" id="optionsTabBtn">Options</button>
+			<button class="tab-button" id="aboutTabBtn">About</button>
+			<button class="tab-button" id="feedbackTabBtn">Feedback</button>
+			<button class="tab-button hideUnlessAdmin" id="debuggingTabBtn">Debug</button>
 		</div>
 
 
+		<div id="refreshMessage">Refresh the current tab after changing game settings.</div>
 
 
 
@@ -81,22 +82,6 @@
 
 			</div>
 
-			<div class="tabSection">
-				<h3>Game</h3>
-
-				<table>
-					<tr>
-						<td>Version</td>
-						<td><span class="data-field" id="version"></td>
-					</tr>
-					<tr>
-						<td>Installed on</td>
-						<td><span class="data-field" id="installedOn"></td>
-					</tr>
-				</table>
-
-			</div>
-
 
 		</div>
 
@@ -112,8 +97,6 @@
 				<h3>Attacks <span id="attacksInfo"></span></h3>
 				<p>
 					Earn attacks (orange below) and defenses (blue) by leveling up (surfing the internet, collecting badges, beating more monsters).
-
-
 				</p>
 
 	<span class="lite">Click on attack name to activate or deactivate.</span>
@@ -220,6 +203,22 @@
 				<a href="https://www.facebook.com/sneakawaystudio/" target="_blank"><i class="fab fa-facebook"></i></a>
 			</div>
 
+			<div class="tabSection">
+				<h3>Game</h3>
+
+				<table>
+					<tr>
+						<td>Version</td>
+						<td><span class="data-field" id="version"></td>
+					</tr>
+					<tr>
+						<td>Installed on</td>
+						<td><span class="data-field" id="installedOn"></td>
+					</tr>
+				</table>
+
+			</div>
+
 		</div>
 
 
@@ -231,15 +230,6 @@
 
 			<div class="tabSection">
 				<h2>Debugging</h2>
-
-				<label for="showDebugger">Show debugger</label>
-				<input class="option-radio-btn" id="showDebugger" value="true" type="checkbox">
-				<br>
-				<!--
-				<label for="debuggerPosition">Debugger position</label>
-				<input id="debuggerPosition" type="input">
-				<br>
-				-->
 			</div>
 
 
@@ -282,9 +272,10 @@
 
 	</div><!-- content -->
 </div><!-- container -->
-<script src="../../libs/jquery-3.2.1.min.js"></script>
+<script src="../../libs/jquery-3.6.0.min.js"></script>
 <script src="../../libs/moment-2.29.0.js"></script>
 <script src="../../js/functions/fs-objects.js"></script>
+<script src="../../js/functions/fs-numbers.js"></script>
 <script src="./popup.js"></script>
 </body>
 

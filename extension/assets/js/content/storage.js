@@ -1,9 +1,4 @@
-"use strict";
-
-/*  BACKGROUND STORAGE
- ******************************************************************************/
-
-window.TallyStorage = (function () {
+self.TallyStorage = (function () {
 
 	let DEBUG = Debug.ALL.TallyStorage,
 		backgroundConnectErrors = 0;
@@ -38,7 +33,7 @@ window.TallyStorage = (function () {
 	}
 
 	/**
-	 *	Generic getData() function - retrieve a key from the background (local storage)
+	 *	Generic function - retrieve a key from the background (local storage)
 	 */
 	async function getData(name, caller = "") {
 		try {
@@ -129,7 +124,7 @@ window.TallyStorage = (function () {
 				// update Page.data.mode
 				TallyMain.savePageMode();
 				// start game (again)
-				TallyMain.contentStartChecks();
+				TallyMain.runStartupChecks();
 			});
 		} catch (err) {
 			if (!Page.isReloadExtErr(err)) {
@@ -149,7 +144,7 @@ window.TallyStorage = (function () {
 	/**
 	 *	Get all data from background
 	 *  - can be called multiple times, w/ or w/o callback
-	 *  - if sent with TallyMain.contentStartChecks callback then resets game in content script
+	 *  - if sent with TallyMain.runStartupChecks callback then resets game in content script
 	 *  - assumes background data is current (so does not sync with server)
 	 */
 	async function getDataFromBackground(callback = null) {
@@ -260,7 +255,7 @@ window.TallyStorage = (function () {
 			if (DEBUG) console.log('🗄️ > TallyStorage STARTUP PROMISES ->', "T.startUpPromisesResolved =", T.startUpPromisesResolved, result);
 
 			// start game (again) regardless whether server is running
-			TallyMain.contentStartChecks();
+			TallyMain.runStartupChecks();
 		})
 		.catch(function (err) {
 			T.startUpPromisesResolved = false;

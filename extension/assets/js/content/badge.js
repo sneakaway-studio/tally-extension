@@ -1,9 +1,4 @@
-"use strict";
-
-/*  BADGE
- ******************************************************************************/
-
-window.Badge = (function() {
+self.Badge = (function() {
 	// PRIVATE
 
 	let DEBUG = Debug.ALL.Badge;
@@ -373,9 +368,9 @@ window.Badge = (function() {
 				str += "<img class='tally tally-badge-img-wrapper' src='";
 				if (badge.ext && badge.ext !== "")
 					// placeholder for badges not finished
-					str += chrome.extension.getURL('assets/img/badges/' + badge.name + badge.ext);
+					str += chrome.runtime.getURL('assets/img/badges/' + badge.name + badge.ext);
 				else
-					str += chrome.extension.getURL('assets/img/badges/placeholder.png');
+					str += chrome.runtime.getURL('assets/img/badges/placeholder.png');
 				str += "'>";
 
 				// add award text

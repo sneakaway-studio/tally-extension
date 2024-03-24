@@ -54,7 +54,7 @@ Functional (a.k.a. "e2e") tests use [nightwatch](https://nightwatchjs.org/)
 # install chromedriver to match your version of chrome, for example chrome 96...
 npm install chromedriver@96
 
-cd /__tests__/nightwatch/
+cd ./__tests__/nightwatch/
 npm test
 ```
 
@@ -66,7 +66,7 @@ Unit tests use [jest](https://jestjs.io/)
 - Location: These only run against "pure" functions covered in `js/functions/*.test.js`
 
 ```bash
-cd /__tests__/jest/
+cd ./__tests__/jest/
 npm test
 ```
 

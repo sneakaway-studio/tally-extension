@@ -1,9 +1,4 @@
-"use strict";
-
-/*  DEMO ("gallery mode")
- ******************************************************************************/
-
-window.Demo = (function() {
+self.Demo = (function() { // "gallery mode"
 	// PRIVATE
 
 

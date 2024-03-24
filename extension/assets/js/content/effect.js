@@ -1,9 +1,4 @@
-"use strict";
-
-/*  EFFECTS
- ******************************************************************************/
-
-window.Effect = (function() {
+self.Effect = (function() {
 	// PRIVATE
 	let DEBUG = Debug.ALL.Effect;
 

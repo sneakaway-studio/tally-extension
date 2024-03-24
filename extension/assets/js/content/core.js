@@ -1,9 +1,4 @@
-"use strict";
-
-/*  CORE
- ******************************************************************************/
-
-window.Core = (function() {
+self.Core = (function() {
 	// PRIVATE
 
 	let DEBUG = Debug.ALL.Core;

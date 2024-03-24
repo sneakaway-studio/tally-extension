@@ -1,9 +1,4 @@
-"use strict";
-
-/*  STATS
- ******************************************************************************/
-
-window.Stats = (function() {
+self.Stats = (function() {
 	// PRIVATE
 	let DEBUG = Debug.ALL.Stats,
 		levelMultiplier = 9.5,

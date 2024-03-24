@@ -1,9 +1,4 @@
-"use strict";
-
-/*  DISGUISE
- ******************************************************************************/
-
-window.Disguise = (function() {
+self.Disguise = (function() {
 	// PRIVATE
 
 	let DEBUG = Debug.ALL.Disguise,
@@ -98,7 +93,7 @@ window.Disguise = (function() {
 	function returnHtmlStr() {
 		try {
 			// if (DEBUG) console.log("😎 Disguise.returnHtmlStr() [1] currentDisguiseObj =", currentDisguiseObj);
-			return "<img class='tally' src='" + chrome.extension.getURL('assets/img/tally-disguises/' +
+			return "<img class='tally' src='" + chrome.runtime.getURL('assets/img/tally-disguises/' +
 				currentDisguiseObj.name + DisguiseData.data[currentDisguiseObj.name].ext) + "'>";
 		} catch (err) {
 			console.error(err);

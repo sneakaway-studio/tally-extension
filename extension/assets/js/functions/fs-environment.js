@@ -11,6 +11,61 @@
 var Environment = (function () {
 	// PRIVATE
 
+	/**
+	 *  Get location
+	 */
+	async function getLocation() {
+		try {
+			return await fetch('http://www.geoplugin.net/json.gp', function(data) {
+				if (DEBUG) console.log("Environment.getLocation()", JSON.stringify(data, null, 2));
+				return {
+					ip: data.geoplugin_request,
+					city: data.geoplugin_city,
+					region: data.geoplugin_region,
+					country: data.geoplugin_countryName,
+					continent: data.geoplugin_continentName,
+					lat: data.geoplugin_latitude,
+					lng: data.geoplugin_longitude,
+					timezone: data.geoplugin_timezone
+				};
+			});
+		} catch (err) {
+			console.error(err);
+		}
+	}
+
+	/**
+	 *  Get location
+	 */
+	// async function getLocation() {
+	// 	let options = { mode: "no-cors" };
+	// 	return fetch("http://www.geoplugin.net/json.gp", options)
+	// 		.then((resp) => resp.json())
+	// 		.then((data) => {
+	// 			// console.log("Environment.getLocation()", JSON.stringify(data, null, 2));
+	// 			return {
+	// 				ip: data.geoplugin_request,
+	// 				city: data.geoplugin_city,
+	// 				region: data.geoplugin_region,
+	// 				country: data.geoplugin_countryName,
+	// 				continent: data.geoplugin_continentName,
+	// 				lat: data.geoplugin_latitude,
+	// 				lng: data.geoplugin_longitude,
+	// 				timezone: data.geoplugin_timezone,
+	// 			};
+	// 		})
+	// 		.catch((err) => console.error(err));
+	// }
+
+	// 🔋
+	async function getBattery() {
+		return navigator.getBattery().then((battery) => {
+			let level = Math.floor(battery.level * 100);
+			let charging = battery.charging;
+			return { level, charging };
+		});
+	}
+
 	async function getBrowserName() {
 		try {
 			// check brave, then opera first
@@ -233,6 +288,8 @@ var Environment = (function () {
 
 	// PUBLIC
 	return {
+        getBattery: getBattery,
+        getLocation: getLocation,
 		getBrowserName: getBrowserName,
 		getBrowserLanguage: getBrowserLanguage,
 		getPlatform: getPlatform,
@@ -243,4 +300,4 @@ var Environment = (function () {
 // if running in node, then export module
 if (typeof process === "object") module.exports = Environment;
 // otherwise add as "global" object window for browser / extension
-else window.Environment = Environment;
+else self.Environment = Environment;

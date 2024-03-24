@@ -1,6 +1,4 @@
-"use strict";
-
-window.Page = (function() {
+self.Page = (function() {
 	// PRIVATE
 	let DEBUG = Debug.ALL.Page;
 
@@ -279,7 +277,6 @@ window.Page = (function() {
 			Page.refreshData().then(function() {
 				// check for monsters again
 				MonsterCheck.check();
-				Debug.update();
 			});
 
 		} catch (err) {

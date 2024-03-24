@@ -3,7 +3,7 @@
  */
 
 /* jshint strict: true */
-window.MonsterCheck = (function() {
+self.MonsterCheck = (function() {
 	"use strict";
 
 	let DEBUG = Debug.ALL.MonsterCheck,
@@ -176,7 +176,7 @@ window.MonsterCheck = (function() {
 				}
 				if (++safety > 20) break;
 			}
-			return midMatched; 
+			return midMatched;
 
 		} catch (err) {
 			console.error(err);
@@ -607,7 +607,7 @@ window.MonsterCheck = (function() {
 			// remote version that doesn't work with CORS for some reason
 			let url = T.tally_meta.env.website + '/' + 'assets/img/monsters/monsters-140h-solid-lt-purple/' + monster.mid + '-anim-sheet.png';
 			// local version
-			url = chrome.extension.getURL('assets/img/monsters/monsters-140h-solid-lt-purple/' + monster.mid + '-anim-sheet.png');
+			url = chrome.runtime.getURL('assets/img/monsters/monsters-140h-solid-lt-purple/' + monster.mid + '-anim-sheet.png');
 
 
 			// set background color

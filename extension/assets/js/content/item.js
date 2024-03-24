@@ -1,9 +1,4 @@
-"use strict";
-
-/*  ITEM
- ******************************************************************************/
-
-window.Item = (function() {
+self.Item = (function() {
 	// PRIVATE
 
 	let DEBUG = Debug.ALL.Item,
@@ -114,10 +109,10 @@ window.Item = (function() {
 
 			// add icons
 			$(".attack-icon-attack").css({
-				"background-image": 'url(' + chrome.extension.getURL('assets/img/battles/sword-pixel-13sq.png') + ')'
+				"background-image": 'url(' + chrome.runtime.getURL('assets/img/battles/sword-pixel-13sq.png') + ')'
 			});
 			$(".attack-icon-defense").css({
-				"background-image": 'url(' + chrome.extension.getURL('assets/img/battles/shield-pixel-13sq.png') + ')'
+				"background-image": 'url(' + chrome.runtime.getURL('assets/img/battles/shield-pixel-13sq.png') + ')'
 			});
 
 			addListeners();

@@ -224,4 +224,4 @@ var FS_String = (function() {
 // if running in node, then export module
 if (typeof process === 'object') module.exports = FS_String;
 // otherwise add as "global" object window for browser / extension
-else window.FS_String = FS_String;
+else self.FS_String = FS_String;

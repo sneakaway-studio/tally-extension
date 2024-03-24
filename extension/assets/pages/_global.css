@@ -43,6 +43,7 @@ div.tab {
     background-color: #f1f1f1;
     padding: 10px 15px;
     overflow: auto;
+	display: none;
 }
 div.tabSection { float: none; margin: 10px 0 25px 0; clear: both; }
 
@@ -99,6 +100,7 @@ div.tabSection { float: none; margin: 10px 0 25px 0; clear: both; }
     padding: 4px 10px;
     display: none
 }
+#refreshMessage { background-color: #41d728; padding: 4px 10px; display: none; }
 *:focus { outline: none; }
 
 /* soundVolume range slider */

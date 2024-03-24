@@ -1,9 +1,4 @@
-"use strict";
-
-/*  TALLY DATA MANAGER
- ******************************************************************************/
-
-window.TallyData = (function() {
+self.TallyData = (function() {
 	// PRIVATE
 
 	let DEBUG = Debug.ALL.TallyData,
@@ -367,9 +362,6 @@ window.TallyData = (function() {
 					"T.tally_meta.userLoggedIn =", T.tally_meta.userLoggedIn
 				);
 
-
-				// update debugger
-				Debug.update();
 			});
 			// reset all manager vars
 			resetManager();

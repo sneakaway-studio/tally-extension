@@ -1,5 +1,3 @@
-"use strict";
-
 /**
  *  ______     ____
  * /_  __/__ _/ / /_ __
@@ -11,62 +9,35 @@
  *
  */
 
-window.TallyMain = (function() {
+self.TallyMain = (function() {
 	// PRIVATE
 	let DEBUG = Debug.ALL.TallyMain;
 
-	$(function() {
-		// test();
-	});
-
 	/**
-	 *	0. Script loading order:
-	 *  - t.js, debug.js, storage.js",
-	 *  - everything else ...
-	 *  - main.js
+	 *	Script loading order:
+	 *  0. t.js, debug.js, storage.js", [...], main.js, [...], everything else ...
+	 *	1. TallyMain.runStartupChecks() (et al functions) called after async operations
 	 */
 
-
-	/**
-	 *	1. Perform test - wait until startUpPromisesResolved (data loads from background)
-	 */
-	function test() {
-		try {
-			Debug.elapsedTime("TallyMain.test() [1]");
-			let safety = 0;
-			while (!T.startUpPromisesResolved) {
-				if (++safety > 1000) {
-					console.log("🧰 TallyMain SAFETY FIRST!");
-					console.log("🧰 TallyMain - >", T.tally_user);
-					Debug.elapsedTime("TallyMain.test() [1.2]");
-					contentStartChecks();
-					break;
-				}
-				Debug.elapsedTime("TallyMain.test() [2] T.startUpPromisesResolved =", T.startUpPromisesResolved);
-			}
-		} catch (err) {
-			console.error("🧰 TallyMain.test() failed", err);
-		}
-	}
 
 	/**
 	 *	2. Perform all start checks
 	 *	- confirm it is safe to run game; then add all required elements to DOM
 	 *  - runs every time
 	 */
-	async function contentStartChecks() {
+	async function runStartupChecks() {
 		try {
-			let log = "🧰 TallyMain.contentStartChecks()";
+			let log = "🧰 TallyMain.runStartupChecks()";
 			if (DEBUG) Debug.dataReportHeader(log + " [1]", "#", "before");
 			if (DEBUG) console.log(log, '[1.1] -> T.tally_user.username =', T.tally_user.username);
 
-			// if (DEBUG) console.log(log, '[1.1] -> T.tally_user =',T.tally_user);
-			// if (DEBUG) console.log(log, '[1.1] -> T.tally_options =',T.tally_options);
-			// if (DEBUG) console.log(log, '[1.1] -> T.tally_meta =',T.tally_meta);
-			// if (DEBUG) console.log(log, '[1.1] -> T.tally_nearby_monsters =',T.tally_nearby_monsters);
-			// if (DEBUG) console.log(log, '[1.1] -> T.tally_tag_matches =',T.tally_tag_matches);
-			// if (DEBUG) console.log(log, '[1.1] -> T.tally_stats =',T.tally_stats);
-			// if (DEBUG) console.log(log, '[1.1] -> T.tally_top_monsters =',T.tally_top_monsters);
+			// if (DEBUG) console.log(log, '[1.1] -> T.tally_user =', T.tally_user);
+			// if (DEBUG) console.log(log, '[1.1] -> T.tally_options =', T.tally_options);
+			// if (DEBUG) console.log(log, '[1.1] -> T.tally_meta =', T.tally_meta);
+			// if (DEBUG) console.log(log, '[1.1] -> T.tally_nearby_monsters =', T.tally_nearby_monsters);
+			// if (DEBUG) console.log(log, '[1.1] -> T.tally_tag_matches =', T.tally_tag_matches);
+			// if (DEBUG) console.log(log, '[1.1] -> T.tally_stats =', T.tally_stats);
+			// if (DEBUG) console.log(log, '[1.1] -> T.tally_top_monsters =', T.tally_top_monsters);
 
 
 			// 2.1. Check Page.data
@@ -109,7 +80,10 @@ window.TallyMain = (function() {
 
 
 			// stop if page mode marked notActive
-			if (Page.data.mode.notActive) return console.log(" NOT ACTIVE - Page.data.mode =", Page.data.mode);
+			if (Page.data.mode.notActive) {
+				if (DEBUG) console.log(" NOT ACTIVE - Page.data.mode =", Page.data.mode);
+				return;
+			}
 
 			// 2.3. Remove blocked trackers
 			if (DEBUG) console.log(log, '[2.3] -> Check and block trackers');
@@ -133,10 +107,6 @@ window.TallyMain = (function() {
 			FS_String.insertStylesheets();
 			// add html for game
 			Interface.addBaseHTML();
-			// add debugger to page and update
-			Debug.add();
-			Debug.update();
-
 
 			// now safe to add Tally
 			addTallyToPage();
@@ -150,7 +120,7 @@ window.TallyMain = (function() {
 
 	const ignoreFiletypes = [
 		"jpg", "gif", "png", "pdf",
-		"xml", "json", "txt",
+		"xml", "json", "txt", "svg",
 		"js", "css",
 	];
 
@@ -229,7 +199,6 @@ window.TallyMain = (function() {
 			}
 
 
-
 			// ACTIVE
 			// - background, login, server, and everything else (like the above) is good, let's roll
 			if (mode.notActive === false && mode.userOnline === true && mode.serverOnline === true && mode.loggedIn === true) {
@@ -297,8 +266,6 @@ window.TallyMain = (function() {
 			Disguise.displayIfTrackerBlocked();
 			// potentially add a consumable
 			Consumable.randomizer();
-			// update debugger
-			Debug.update();
 			// add key debugging
 			Debug.addKeys();
 			// start Demo if we are running in demo mode
@@ -337,14 +304,10 @@ window.TallyMain = (function() {
 
 			}, 10);
 
-
-
 		} catch (err) {
 			console.error(err);
 		}
 	}
-
-
 
 
 	/**
@@ -366,7 +329,7 @@ window.TallyMain = (function() {
 	// PUBLIC
 	return {
 		savePageMode: savePageMode,
-		contentStartChecks: contentStartChecks,
+		runStartupChecks: runStartupChecks,
 		startGameOnPage: startGameOnPage,
 		inPageChecks: inPageChecks
 	};

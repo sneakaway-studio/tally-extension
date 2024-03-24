@@ -1,6 +1,22 @@
-"use strict";
+/**
+ *	Main file
+ */
 
-window.T = (function() {
+// console.log("navigator", navigator);
+function isServiceWorker(){
+	return (typeof WorkerGlobalScope !== 'undefined' && self instanceof WorkerGlobalScope);
+}
+
+// run this in global scope to determine if script is in window or worker.
+if (isServiceWorker) {
+	// console.log("service worker");
+} else {
+	// console.log("web page");
+}
+
+
+
+self.T = (function() {
 	// PRIVATE
 
 	// objects created on server, mirrored locally
@@ -32,7 +48,7 @@ window.T = (function() {
 			},
 			// true = development, false = production
 			localhost: false, // change to false to quickly shift to production server
-			debugging: false
+			debugging: true
 		},
 		DEBUG = true;
 

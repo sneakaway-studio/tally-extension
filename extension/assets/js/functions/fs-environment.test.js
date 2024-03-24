@@ -9,6 +9,17 @@
 const Mod = require('./fs-environment.js');
 
 
+
+// // getBattery() does not work on FF
+// test('TEST getBattery()', async () => {
+//     var { level, charging } = await Mod.getBattery();
+// 	expect(level).toBeGreaterThan(0);
+// });
+
+
+
+
+
 /*************************** EXTRACT FROM URL *******************************/
 
 // toBe() => compares value, or reference if type allows

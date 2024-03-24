@@ -1,9 +1,4 @@
-"use strict";
-
-/*  (BATTLE) MATH
- ******************************************************************************/
-
-window.BattleMath = (function() {
+self.BattleMath = (function() {
 	// PRIVATE VARS;
 
 	let DEBUG = Debug.ALL.BattleMath,

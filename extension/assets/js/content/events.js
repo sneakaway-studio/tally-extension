@@ -1,9 +1,4 @@
-"use strict";
-
-/*  EVENTS
- ******************************************************************************/
-
-window.TallyEvents = (function () {
+self.TallyEvents = (function () {
 	// PRIVATE
 	let DEBUG = Debug.ALL.TallyEvents,
 		timedEvents = {};
@@ -20,7 +15,6 @@ window.TallyEvents = (function () {
 					// if this page is focussed
 					if (document.hasFocus()) {
 						Page.data.time = Page.data.time + 1;
-						Debug.update();
 					}
 				}, 1000),
 

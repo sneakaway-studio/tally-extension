@@ -38,4 +38,4 @@ var Greeting = (function() {
 // if running in node, then export module
 if (typeof process === 'object') module.exports = Greeting;
 // otherwise add as "global" object window for browser / extension
-else window.Greeting = Greeting;
+else self.Greeting = Greeting;

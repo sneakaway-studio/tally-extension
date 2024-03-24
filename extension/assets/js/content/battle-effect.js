@@ -1,9 +1,4 @@
-"use strict";
-
-/*  BATTLE EFFECT
- ******************************************************************************/
-
-window.BattleEffect = (function() {
+self.BattleEffect = (function() {
 	// PRIVATE
 	let DEBUG = Debug.ALL.BattleEffect,
 		source, // page source for rumbles
@@ -144,7 +139,7 @@ window.BattleEffect = (function() {
 				Core.showElement('#battle_projectile');
 
 				// reference to image file
-				var url = chrome.extension.getURL('assets/img/battles/number-ball.gif');
+				var url = chrome.runtime.getURL('assets/img/battles/number-ball.gif');
 				// set content
 				$('#battle_projectile').css('background-image', 'url("' + url + '")');
 
@@ -227,7 +222,7 @@ window.BattleEffect = (function() {
 			if (FS_Object.prop(attack["animation-name"]) && attack["animation-name"] !== "") file = attack["animation-name"];
 
 			// reference to image file
-			var url = chrome.extension.getURL('assets/img/battles/explosions-gifs/' + file + "?a=" + Math.random());
+			var url = chrome.runtime.getURL('assets/img/battles/explosions-gifs/' + file + "?a=" + Math.random());
 			// set content to none to reset GIF
 			$('#explosion_sprite_inner').css('background-image', 'none');
 			// set content

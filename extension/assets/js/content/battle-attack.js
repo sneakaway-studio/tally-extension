@@ -1,9 +1,4 @@
-"use strict";
-
-/*  BATTLE
- ******************************************************************************/
-
-window.BattleAttack = (function() {
+self.BattleAttack = (function() {
 	// PRIVATE
 
 	let DEBUG = Debug.ALL.BattleAttack,

@@ -1,9 +1,4 @@
-"use strict";
-
-/*  CONSUMABLE
- ******************************************************************************/
-
-window.Consumable = (function() {
+self.Consumable = (function() {
 	// PRIVATE
 
 	let DEBUG = Debug.ALL.Consumable,
@@ -201,7 +196,7 @@ window.Consumable = (function() {
 				if (DEBUG) console.log("🍪 Consumable.add()", randomPos, css);
 
 				// html
-				imgStr = chrome.extension.getURL('assets/img/consumables/' + consumables[i].slug + consumables[i].ext);
+				imgStr = chrome.runtime.getURL('assets/img/consumables/' + consumables[i].slug + consumables[i].ext);
 				id = 'tally_consumable_' + i;
 				str = "<div data-consumable='" + i + "' class='tally_consumable_inner " + consumables[i].type +
 					"' id='" + id + "' style='" + css + "'>";
@@ -225,11 +220,11 @@ window.Consumable = (function() {
 					Page.data.actions.userInteractingWithGame = true;
 
 					// Math.random so gif replays
-					let img = chrome.extension.getURL('assets/img/consumables/consumable-explosion.gif?' + Math.random());
-					$(this).html("<img src='" + img + "'>");
+					let img = chrome.runtime.getURL('assets/img/consumables/consumable-explosion.gif?' + Math.random());
+					$("#" + id).html("<img src='" + img + "'>");
 					setTimeout(function() {
 						// remove
-						$(this).remove();
+						$("#" + id).remove();
 					}, 500);
 					collect($(this).attr("data-consumable"));
 				});

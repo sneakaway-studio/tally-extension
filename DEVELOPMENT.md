@@ -21,9 +21,6 @@ See [learn-javascript/topics-extensions.md](https://github.com/omundy/learn-java
 
 
 
-
-
-
 ## Libraries used in Tally
 
 Links to official versions of our libraries (required for Firefox Addon review)
