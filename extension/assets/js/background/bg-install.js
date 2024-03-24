@@ -67,7 +67,7 @@ self.Install = (function() {
 
 			// 3. get user's geolocation for tutorials on firstTime
 			if (installStatus === "firstTime" || isNewVersion) {
-				T.tally_meta.location = await getLocation();
+				T.tally_meta.location = await Environment.getLocation();
 				await S.getSet("tally_meta", T.tally_meta);
 			}
 
@@ -314,31 +314,6 @@ self.Install = (function() {
 			console.error(err);
 		}
 	}
-
-
-	/**
-	 *  Get location
-	 */
-	async function getLocation() {
-		try {
-			return await fetch('http://www.geoplugin.net/json.gp', function(data) {
-				if (DEBUG) console.log("Install.getLocation()", JSON.stringify(data, null, 2));
-				return {
-					ip: data.geoplugin_request,
-					city: data.geoplugin_city,
-					region: data.geoplugin_region,
-					country: data.geoplugin_countryName,
-					continent: data.geoplugin_continentName,
-					lat: data.geoplugin_latitude,
-					lng: data.geoplugin_longitude,
-					timezone: data.geoplugin_timezone
-				};
-			});
-		} catch (err) {
-			console.error(err);
-		}
-	}
-
 
 	// PUBLIC
 	return {
