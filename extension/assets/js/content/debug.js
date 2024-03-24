@@ -213,15 +213,15 @@ self.Debug = (function() {
 				// Sound.playFile("explosions/explode.mp3", false, 0);
 			});
 
-			Mousetrap.bind(k + ' 0', function() {
-				BattleEffect.showRumble("small");
-			});
-			Mousetrap.bind(k + ' 1', function() {
-				BattleEffect.showRumble("medium");
-			});
-			Mousetrap.bind(k + ' 2', function() {
-				BattleEffect.showRumble("large");
-			});
+			// Mousetrap.bind(k + ' 0', function() {
+			// 	BattleEffect.showRumble("small");
+			// });
+			// Mousetrap.bind(k + ' 1', function() {
+			// 	BattleEffect.showRumble("medium");
+			// });
+			// Mousetrap.bind(k + ' 2', function() {
+			// 	BattleEffect.showRumble("large");
+			// });
 			Mousetrap.bind(k + ' 8', function() {
 				BattleConsole.log("What will Tally do?", "showBattleOptions");
 			});
@@ -233,10 +233,6 @@ self.Debug = (function() {
 			});
 
 
-
-			Mousetrap.bind(k + ' 7', function() {
-
-			});
 
 			Mousetrap.bind(k + ' z', function() {
 				StatsDisplay.adjustStatsBar("tally", "health", Math.random());
