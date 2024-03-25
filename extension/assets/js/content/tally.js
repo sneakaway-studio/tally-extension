@@ -87,23 +87,23 @@ self.Tally = (function() {
 
 			// allow offline
 			if (Page.data.mode.notActive) {
-				console.warn("Tally.addCharacter() [2.0]", `Page.data.mode.notActive = ${Page.data.mode.notActive}`);
+				if (DEBUG) console.warn("Tally.addCharacter() [2.0]", `Page.data.mode.notActive = ${Page.data.mode.notActive}`);
 				return;
 			}
 			// !T.tally_options
 			if (!FS_Object.prop(T.tally_options)) {
-				console.warn("Tally.addCharacter() [2.1]",
+				if (DEBUG) console.warn("Tally.addCharacter() [2.1]",
 					`FS_Object.prop(T.tally_options) = ${FS_Object.prop(T.tally_options)}`);
 				return;
 			}
 			// don't allow if mode disabled or stealth
 			if (T.tally_options.gameMode === "disabled" || T.tally_options.gameMode === "stealth") {
-				console.warn("Tally.addCharacter() [2.2]", `T.tally_options.gameMode = ${T.tally_options.gameMode} || T.tally_options.gameMode = ${T.tally_options.gameMode}`);
+				if (DEBUG) console.warn("Tally.addCharacter() [2.2]", `T.tally_options.gameMode = ${T.tally_options.gameMode} || T.tally_options.gameMode = ${T.tally_options.gameMode}`);
 				return;
 			}
 			// showTally != true
 			if (!T.tally_options.showTally) {
-				console.warn("Tally.addCharacter() [2.3]",
+				if (DEBUG) console.warn("Tally.addCharacter() [2.3]",
 					`T.tally_options.showTally = ${T.tally_options.showTally}`, T.tally_options);
 				return;
 			}

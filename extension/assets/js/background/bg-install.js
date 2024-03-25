@@ -254,6 +254,7 @@ self.Install = (function() {
 					"gmail.com",
 					"mail.google.com",
 					"moodle.davidson.edu",
+					"glitch.com",
 				],
 				gameMode: "full", // demo | testing | full | chill | stealth | disabled
 				playSounds: true,
